@@ -1,0 +1,1 @@
+CREATE INDEX "posts_project_idx" ON "content"."posts" USING btree ("project_id","created_at","id") WHERE "content"."posts"."project_id" is not null and "content"."posts"."deleted_at" is null;

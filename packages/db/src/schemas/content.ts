@@ -70,6 +70,10 @@ export const contentPosts = contentSchema.table(
     index('posts_featured_idx')
       .on(table.featuredAt, table.id)
       .where(sql`${table.featuredAt} is not null and ${table.deletedAt} is null`),
+    // Publications attached to a project, shown on its page (§10.3).
+    index('posts_project_idx')
+      .on(table.projectId, table.createdAt, table.id)
+      .where(sql`${table.projectId} is not null and ${table.deletedAt} is null`),
     index('posts_repost_of_idx')
       .on(table.repostOfId)
       .where(sql`${table.repostOfId} is not null and ${table.deletedAt} is null`),
