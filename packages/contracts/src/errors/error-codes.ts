@@ -242,6 +242,82 @@ export const errorCodes = {
     status: 409,
     title: 'The reversal exceeds the amount of the contribution not yet reversed',
   },
+  PAYMENTS_PROJECT_NOT_OPEN: { status: 409, title: 'The project is not open to contributions' },
+  PAYMENTS_HOLDER_NOT_READY: {
+    status: 409,
+    title: 'The project holder cannot receive payments yet',
+  },
+  PAYMENTS_NO_PAYMENT_ROUTE: {
+    status: 409,
+    title: 'No verified payment route serves the payout country',
+  },
+  PAYMENTS_METHOD_NOT_AVAILABLE: { status: 422, title: 'Payment method not available' },
+  PAYMENTS_CURRENCY_NOT_AVAILABLE: { status: 422, title: 'Payment currency not available' },
+  PAYMENTS_INSTRUMENT_NOT_ACCEPTED: {
+    status: 422,
+    title: 'The project does not accept this kind of contribution',
+  },
+  PAYMENTS_INSTRUMENT_NOT_COLLECTIBLE: {
+    status: 422,
+    title: 'This instrument is never paid online',
+  },
+  PAYMENTS_LICENSED_PARTNER_REQUIRED: {
+    status: 422,
+    title: 'Equity and loans need a licensed partner',
+  },
+  PAYMENTS_AMOUNT_OUT_OF_RANGE: { status: 422, title: 'Amount out of the allowed range' },
+  PAYMENTS_REWARD_NOT_ELIGIBLE: {
+    status: 422,
+    title: 'The contribution does not give access to this reward',
+  },
+  PAYMENTS_ANONYMOUS_NOT_ALLOWED: { status: 422, title: 'Anonymous contributions are not allowed' },
+  PAYMENTS_RATE_LIMITED: { status: 429, title: 'Too many contributions started' },
+  PAYMENTS_CONTRIBUTION_NOT_FOUND: { status: 404, title: 'Contribution not found' },
+  PAYMENTS_INVALID_TRANSITION: {
+    status: 409,
+    title: 'The contribution does not allow this action in its current status',
+  },
+  PAYMENTS_REFUND_INVALID: { status: 409, title: 'The refund exceeds the refundable amount' },
+  PAYMENTS_PROVIDER_UNAVAILABLE: { status: 502, title: 'The payment provider did not answer' },
+  PAYMENTS_PAYOUT_ACCOUNT_EXISTS: { status: 409, title: 'A payout account already exists' },
+  PAYMENTS_PAYOUT_ACCOUNT_NOT_FOUND: { status: 404, title: 'Payout account not found' },
+  PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED: {
+    status: 422,
+    title: 'No verified payment route serves this payout country',
+  },
+  PAYMENTS_PAYOUT_DETAILS_REQUIRED: {
+    status: 422,
+    title: 'Bank details are required for this payout country',
+  },
+  PAYMENTS_KYC_NOT_MANUAL: { status: 409, title: 'Identity is verified by the payment provider' },
+  PAYMENTS_KYC_PENDING: { status: 409, title: 'A KYC submission is already under review' },
+  PAYMENTS_KYC_ALREADY_VERIFIED: { status: 409, title: 'Identity is already verified' },
+  PAYMENTS_KYC_NOT_FOUND: { status: 404, title: 'KYC submission not found' },
+  PAYMENTS_KYC_ALREADY_DECIDED: { status: 409, title: 'The KYC submission was already decided' },
+  PAYMENTS_OFFLINE_NOT_FOUND: { status: 404, title: 'Off-platform contribution not found' },
+  PAYMENTS_OFFLINE_AMOUNT_INVALID: {
+    status: 422,
+    title: 'Amount required for money only, in EUR, XOF or XAF',
+  },
+  PAYMENTS_OFFLINE_INVALID_TRANSITION: {
+    status: 409,
+    title: 'The off-platform contribution does not allow this action',
+  },
+  PAYMENTS_OFFLINE_PROOF_REQUIRED: {
+    status: 409,
+    title: 'A supporting document is required before validation',
+  },
+  PAYMENTS_DISCREPANCY_NOT_FOUND: { status: 404, title: 'Reconciliation discrepancy not found' },
+  PAYMENTS_WEBHOOK_INVALID: { status: 400, title: 'Webhook signature or payload is invalid' },
+  ENGAGEMENT_TIME_ENTRY_NOT_FOUND: { status: 404, title: 'Time entry not found' },
+  ENGAGEMENT_BENEFICIARY_INVALID: {
+    status: 422,
+    title: 'The beneficiary of the time entry is invalid',
+  },
+  ENGAGEMENT_TIME_ENTRY_ALREADY_ANSWERED: {
+    status: 409,
+    title: 'The time entry was already confirmed or disputed',
+  },
   INTERNAL_ERROR: { status: 500, title: 'Internal error' },
   SERVICE_UNAVAILABLE: { status: 503, title: 'Service unavailable' },
 } as const satisfies Record<string, ErrorCodeDefinition>;

@@ -1,6 +1,7 @@
 export * from './access.js';
 export * from './auth-errors.js';
 export * from './content.js';
+export * from './engagement.js';
 export * from './account.js';
 export * from './errors/error-codes.js';
 export * from './errors/problem-details.js';
@@ -14,6 +15,7 @@ export * from './money.js';
 export * from './network.js';
 export * from './organizations.js';
 export * from './pagination.js';
+export * from './payments.js';
 export * from './profiles.js';
 export * from './projects.js';
 export * from './reference-data.js';
