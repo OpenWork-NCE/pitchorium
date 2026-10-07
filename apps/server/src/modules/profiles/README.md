@@ -1,6 +1,52 @@
 # Module profiles
 
-- Responsabilité : Profils personne : bloc commun, entrepreneur et contributeur (casquettes cumulables, type de structure), intention d'arrivée, force du profil, page publique optionnelle, vues de profil avec option de visite privée (§5, §7.2, §10.1, §10.2).
-- Schéma PostgreSQL : `profiles` (`packages/db/src/schemas/profiles.ts`).
-- Dépendances autorisées : identity, media. Accès uniquement par `index.ts` ; aucune lecture de tables d'un autre schéma.
-- Événements émis (indicatifs, à confirmer) : `profiles.profile.created.v1`, `profiles.profile.updated.v1`, `profiles.profile.viewed.v1`.
+Profils personne (cahier des charges §5, §7.2, §10.1) : profil de base, volets entrepreneur et contributeur, intention, identifiant public, force du profil, confidentialité et données de référence (ADR 0016, 0017, 0018).
+
+## Responsabilité
+
+- Profil de base créé à l'inscription (handler de `identity.user.registered.v1`, et à la demande si le worker n'est pas encore passé) avec le nom et la photo du compte : nom affiché, titre (220 caractères), présentation (2 600), pays ISO 3166-1 et ville, langues ISO 639-1, liens https (site, LinkedIn), photo (URL du fournisseur OAuth et `avatar_media_id`), couverture (`cover_media_id`). Les médias seront téléversés par le module media.
+- Intention (`carry_project`, `support_projects`, `both_or_exploring`) : facultative, modifiable, effaçable, sans effet sur les droits.
+- Volet entrepreneur (minimal : entreprise, secteur, stade, pays de l'entreprise) : le pays de l'entreprise doit être en Afrique (M49 002) ou dans les Caraïbes (M49 029), la personne peut résider ailleurs ; besoins, expertises recherchées (texte libre), financement visé (`Money`).
+- Volet contributeur (minimal : au moins une casquette et le type de structure) : organisation en texte libre, pays d'intervention, secteurs, ticket (fourchette en unités mineures, même devise, min ≤ max), instruments, types de mécénat, mentorat, missions d'expertise. Les deux volets peuvent coexister.
+- Correspondance besoin vers casquette pour le matching (`NEED_TO_HATS`, provisoire) : financement vers investisseur, don vers mécène ou donateur, mentorat vers mentor, expertise vers expert, partenariat commercial vers partenaire commercial, recrutement vers recruteur.
+- Identifiant public (`handle`) : généré depuis le nom (`aissatou-ba`, puis `-2`, etc.), modifiable, liste de mots réservés ; les anciens identifiants restent attribués à leur titulaire et redirigent (301) vers l'actuel.
+- Force du profil : calcul déterministe et pondérations provisoires dans `domain/profile-strength.ts` ; niveaux `beginner` (< 40 %), `intermediate` (≥ 40 %), `advanced` (≥ 70 %), `complete` (100 %).
+- Confidentialité : page publique désactivée par défaut ; visibilité `public`, `members` ou `private` pour les détails du volet entrepreneur, ceux du volet contributeur et les listes de réseau (stockée ici, appliquée par le module network).
+- Données de référence : pays et régions UN M49, secteurs (sections CITI/ISIC rév. 4, provisoires), stades (provisoires), libellés dans le namespace i18n `reference`.
+- Prérequis `profile.entrepreneur_facet` et `profile.contributor_facet` fournis au module access.
+
+## Routes
+
+- `GET /v1/me` : utilisateur courant (identité, résumé du profil, rôles, niveaux de confiance, force du profil, locales actives, statut des conditions).
+- `GET /v1/me/profile`, `PATCH /v1/me/profile`, `PUT /v1/me/intention`, `PUT /v1/me/profile/handle`, `PATCH /v1/me/profile/visibility`.
+- `POST|PATCH|DELETE /v1/me/profile/entrepreneur-facet` et `/v1/me/profile/contributor-facet` (`Idempotency-Key` sur `POST`).
+- `GET /v1/profiles/{handle}` (membre), `GET /v1/public/profiles/{handle}` (sans compte, `Cache-Control: public, max-age=60`, 404 si la page publique est désactivée).
+- `GET /v1/reference-data` (public, `Cache-Control: public, max-age=3600`).
+
+## Schéma `profiles`
+
+`profiles` (clé : identifiant de l'utilisateur), `handle_history`, `entrepreneur_facets`, `contributor_facets`, `countries`, `sectors`, `stages`.
+
+## Façade publique (`index.ts`)
+
+`ProfilesModule` et les classes d'événements ci-dessous.
+
+## Événements émis
+
+| Type                                             | Payload                                    |
+| ------------------------------------------------ | ------------------------------------------ |
+| `profiles.profile.created.v1`                    | `handle`                                   |
+| `profiles.profile.updated.v1`                    | `fields` (noms des champs modifiés)        |
+| `profiles.profile.intention-set.v1`              | `intention` (ou `null`)                    |
+| `profiles.profile.entrepreneur-facet-updated.v1` | `change` (`created`, `updated`, `deleted`) |
+| `profiles.profile.contributor-facet-updated.v1`  | `change` (`created`, `updated`, `deleted`) |
+| `profiles.profile.handle-changed.v1`             | `previous`, `current`                      |
+| `profiles.profile.visibility-changed.v1`         | les quatre réglages de visibilité          |
+
+## Événements consommés
+
+`identity.user.registered.v1` : création idempotente du profil de base (handler `profiles.create-base-profile`).
+
+## Dépendances
+
+identity (nom, photo, locale), access (rôles, niveaux de confiance, enregistrement des prérequis), media (à venir).

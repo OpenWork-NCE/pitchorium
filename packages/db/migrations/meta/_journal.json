@@ -29,6 +29,13 @@
       "when": 1791384096498,
       "tag": "0003_reference_data",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1791384096841,
+      "tag": "0004_profiles",
+      "breakpoints": true
     }
   ]
 }
