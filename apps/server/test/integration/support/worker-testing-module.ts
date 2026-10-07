@@ -1,5 +1,5 @@
 import type { DynamicModule, Provider, Type } from '@nestjs/common';
-import { Test, type TestingModule } from '@nestjs/testing';
+import { Test, type TestingModule, type TestingModuleBuilder } from '@nestjs/testing';
 import { ConfigModule } from '../../../src/platform/config';
 import { CoreModule } from '../../../src/platform/core/core.module';
 import { DatabaseModule } from '../../../src/platform/database';
@@ -16,24 +16,27 @@ import { useTestEnvironment } from './environment';
 export async function createWorkerTestingModule(
   providers: Provider[] = [],
   imports: (Type | DynamicModule)[] = [],
+  configure: (builder: TestingModuleBuilder) => TestingModuleBuilder = (builder) => builder,
 ): Promise<TestingModule> {
   useTestEnvironment({ OUTBOX_POLL_INTERVAL_MS: '3600000' });
   // The relay runs one batch at startup: events left by a previous test file must not reach the
   // handlers while the next test truncates the tables.
   await truncateAllTables();
-  const moduleRef = await Test.createTestingModule({
-    imports: [
-      ConfigModule.forWorker(),
-      CoreModule,
-      DatabaseModule,
-      RedisModule,
-      InboxModule,
-      OutboxModule,
-      OutboxRelayModule,
-      ...imports,
-    ],
-    providers,
-  }).compile();
+  const moduleRef = await configure(
+    Test.createTestingModule({
+      imports: [
+        ConfigModule.forWorker(),
+        CoreModule,
+        DatabaseModule,
+        RedisModule,
+        InboxModule,
+        OutboxModule,
+        OutboxRelayModule,
+        ...imports,
+      ],
+      providers,
+    }),
+  ).compile();
   await moduleRef.init();
   await moduleRef.get(OutboxRelayService).beforeApplicationShutdown();
   return moduleRef;

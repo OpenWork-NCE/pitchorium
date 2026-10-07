@@ -13,17 +13,20 @@ export interface ApiTestApp {
   storage: FakeObjectStorage;
 }
 
-/** The real AppModule, HTTP and Socket.IO setup, with storage replaced by an in-memory fake. */
+/**
+ * The real AppModule, HTTP and Socket.IO setup. Storage is an in-memory fake, or MinIO with
+ * `{ storage: 'minio' }`.
+ */
 export async function createApiTestApp(
   controllers: Type[] = [],
   environment: Record<string, string> = {},
+  options: { storage?: 'fake' | 'minio' } = {},
 ): Promise<ApiTestApp> {
   useTestEnvironment(environment);
   const storage = new FakeObjectStorage();
-  const moduleRef = await Test.createTestingModule({ imports: [AppModule], controllers })
-    .overrideProvider(ObjectStorage)
-    .useValue(storage)
-    .compile();
+  const builder = Test.createTestingModule({ imports: [AppModule], controllers });
+  if (options.storage !== 'minio') builder.overrideProvider(ObjectStorage).useValue(storage);
+  const moduleRef = await builder.compile();
   const app = moduleRef.createNestApplication<NestExpressApplication>({ logger: false });
   setupApiApp(app, parseApiConfig(process.env));
   await app.init();

@@ -5,8 +5,9 @@ export const TEST_API_URL = 'http://api.pitchorium.test';
 export const TEST_LEGAL_VERSION = 'test-2026-10';
 
 /**
- * Environment shared by the integration tests: real Postgres, Valkey and Mailpit; storage is a
- * fake and OAuth providers are served by FakeOAuthProviders.
+ * Environment shared by the integration tests: real Postgres, Valkey, Mailpit and MinIO (the
+ * api tests replace storage by a fake unless they ask for MinIO); OAuth providers are served by
+ * FakeOAuthProviders.
  */
 export function useTestEnvironment(overrides: Record<string, string> = {}): void {
   Object.assign(process.env, {
@@ -15,12 +16,13 @@ export function useTestEnvironment(overrides: Record<string, string> = {}): void
     DATABASE_URL: inject('databaseUrl'),
     REDIS_URL: inject('redisUrl'),
     QUEUE_PREFIX: `test-${process.pid}`,
-    S3_ENDPOINT: 'http://storage.invalid',
-    S3_ACCESS_KEY_ID: 'test',
-    S3_SECRET_ACCESS_KEY: 'test',
+    S3_ENDPOINT: inject('minioEndpoint'),
+    S3_FORCE_PATH_STYLE: 'true',
+    S3_ACCESS_KEY_ID: 'pitchorium',
+    S3_SECRET_ACCESS_KEY: 'pitchorium-secret',
     S3_BUCKET_PUBLIC: 'test-public',
     S3_BUCKET_PRIVATE: 'test-private',
-    S3_PUBLIC_BASE_URL: 'http://storage.invalid/test-public',
+    S3_PUBLIC_BASE_URL: `${inject('minioEndpoint')}/test-public`,
     MAIL_TRANSPORT: 'smtp',
     MAIL_FROM: 'Pitchorium <test@pitchorium.invalid>',
     SMTP_URL: inject('mailpitSmtpUrl'),
