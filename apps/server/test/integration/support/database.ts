@@ -33,6 +33,17 @@ const BUSINESS_TABLES = [
   'payments.simulated_accounts',
   'engagement.contribution_facts',
   'engagement.time_entries',
+  'messaging.conversations',
+  'messaging.participants',
+  'messaging.messages',
+  'messaging.introductions',
+  'messaging.settings',
+  'notifications.notifications',
+  'notifications.deliveries',
+  'notifications.preferences',
+  'notifications.settings',
+  'notifications.suppressions',
+  'notifications.unread_message_emails',
 ];
 
 export async function truncatePlatformTables(): Promise<void> {
