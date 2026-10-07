@@ -21,6 +21,10 @@ pnpm db:seed
 pnpm dev
 ```
 
+- api : http://localhost:3000/v1/health/ready, Swagger UI sur http://localhost:3000/docs
+- worker : sonde sur http://localhost:3001/health/ready ; `pnpm --filter @pitchorium/server outbox:ping` écrit un événement technique que le worker relaie et journalise
+- Mailpit : http://localhost:8025, console MinIO : http://localhost:9001
+
 ## Scripts
 
 | Script                              | Rôle                                                                |
