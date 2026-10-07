@@ -15,6 +15,7 @@ import type { Redis } from 'ioredis';
 import type { ApiConfig } from '../../../../platform/config';
 import type { TransactionManager } from '../../../../platform/database';
 import type { IdGenerator } from '../../../../platform/kernel';
+import type { Metrics } from '../../../../platform/observability';
 import type { ActiveLocalesService } from '../../application/active-locales.service';
 import type { IdentityEventsRecorder } from '../../application/identity-events.recorder';
 import type { IdentityUserRepository } from '../../application/identity-user.repository';
@@ -27,7 +28,7 @@ import {
 } from '../identity-mailer';
 import type { AuthRequestScope } from './auth-request-scope';
 import { withIdentityEvents } from './identity-events.adapter';
-import { isPasswordCompromised } from './pwned-passwords';
+import { checkPwnedPassword } from './pwned-passwords';
 import { RedisRateLimitStorage } from './redis-rate-limit.storage';
 import { transactionalDatabase } from './transactional-database';
 
@@ -81,7 +82,11 @@ export interface BetterAuthDependencies {
   events: IdentityEventsRecorder;
   mailer: IdentityMailer;
   locales: ActiveLocalesService;
+  metrics: Metrics;
 }
+
+/** Counter of password checks skipped because Have I Been Pwned gave no usable answer. */
+export const PWNED_CHECK_UNAVAILABLE_METRIC = 'pitchorium.identity.pwned_check.unavailable';
 
 interface HookContext {
   path?: string;
@@ -99,7 +104,7 @@ function headerOf(context: HookContext | null | undefined, name: string): string
  * links implicitly, because Entra ID lets tenants assert arbitrary emails.
  */
 export function createBetterAuth(deps: BetterAuthDependencies) {
-  const { config, scope, users, events, mailer } = deps;
+  const { config, scope, users, events, mailer, metrics } = deps;
   const logger = new Logger('BetterAuth');
   const { providers } = config.auth;
 
@@ -110,9 +115,11 @@ export function createBetterAuth(deps: BetterAuthDependencies) {
 
   /**
    * Have I Been Pwned is called before the endpoint, never inside a database transaction
-   * (ADR 0019). A password outside the length limits is left to Better Auth's validation.
+   * (ADR 0019). A password outside the length limits is left to Better Auth's validation. The
+   * check fails open: when the service is unreachable, too slow or answers an error, the
+   * password is accepted, with a warning and a metric.
    */
-  async function rejectCompromisedPassword(password: unknown): Promise<void> {
+  async function rejectCompromisedPassword(password: unknown, path: string): Promise<void> {
     if (
       !config.auth.pwnedPasswordCheck ||
       typeof password !== 'string' ||
@@ -121,17 +128,15 @@ export function createBetterAuth(deps: BetterAuthDependencies) {
     ) {
       return;
     }
-    let compromised: boolean;
-    try {
-      compromised = await isPasswordCompromised(password);
-    } catch (error) {
-      logger.error(error);
-      throw new APIError('INTERNAL_SERVER_ERROR', {
-        code: 'PASSWORD_CHECK_FAILED',
-        message: 'Failed to check password. Please try again later.',
-      });
+    const result = await checkPwnedPassword(password);
+    if (result.status === 'unavailable') {
+      logger.warn(
+        `Have I Been Pwned unavailable (${result.reason}: ${result.detail}), password accepted on ${path}`,
+      );
+      metrics.increment(PWNED_CHECK_UNAVAILABLE_METRIC, { reason: result.reason, path });
+      return;
     }
-    if (compromised) {
+    if (result.status === 'compromised') {
       throw new APIError('BAD_REQUEST', {
         code: 'PASSWORD_COMPROMISED',
         message: 'The password you entered has been compromised. Please choose another one.',
@@ -325,7 +330,7 @@ export function createBetterAuth(deps: BetterAuthDependencies) {
     hooks: {
       before: createAuthMiddleware(async (ctx) => {
         const body = (ctx.body ?? {}) as Record<string, unknown>;
-        await rejectCompromisedPassword(body[NEW_PASSWORD_FIELDS[ctx.path] ?? '']);
+        await rejectCompromisedPassword(body[NEW_PASSWORD_FIELDS[ctx.path] ?? ''], ctx.path);
         // A password change always signs out the other sessions: it often follows a suspected
         // compromise, which other open sessions would survive.
         if (ctx.path === '/change-password') {

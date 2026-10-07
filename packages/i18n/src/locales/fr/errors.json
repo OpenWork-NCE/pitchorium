@@ -96,7 +96,6 @@
     "ACCOUNT_TEMPORARILY_LOCKED": "Trop de tentatives échouées : votre compte est bloqué temporairement. Réessayez plus tard.",
     "INVALID_TWO_FACTOR_COOKIE": "La vérification a expiré. Reconnectez-vous.",
     "PASSWORD_COMPROMISED": "Ce mot de passe figure dans une fuite de données connue. Choisissez-en un autre.",
-    "PASSWORD_CHECK_FAILED": "Le mot de passe n'a pas pu être vérifié. Réessayez dans quelques instants.",
     "ACCOUNT_NOT_LINKED": "Un compte existe déjà avec cette adresse. Connectez-vous, puis liez ce fournisseur depuis vos paramètres.",
     "UNABLE_TO_LINK_ACCOUNT": "Ce fournisseur n'a pas pu être lié à votre compte.",
     "STATE_MISMATCH": "La connexion a expiré ou a été lancée depuis un autre navigateur. Recommencez.",

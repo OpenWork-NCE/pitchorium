@@ -3,6 +3,7 @@ import type { Redis } from 'ioredis';
 import { API_CONFIG, type ApiConfig } from '../../../../platform/config';
 import { TransactionManager } from '../../../../platform/database';
 import { IdGenerator } from '../../../../platform/kernel';
+import { Metrics } from '../../../../platform/observability';
 import { REDIS } from '../../../../platform/redis';
 import { ActiveLocalesService } from '../../application/active-locales.service';
 import { IdentityEventsRecorder } from '../../application/identity-events.recorder';
@@ -25,6 +26,7 @@ export const betterAuthProvider: Provider<BetterAuthInstance> = {
     IdentityEventsRecorder,
     IdentityMailer,
     ActiveLocalesService,
+    Metrics,
   ],
   useFactory: (
     config: ApiConfig,
@@ -36,6 +38,18 @@ export const betterAuthProvider: Provider<BetterAuthInstance> = {
     events: IdentityEventsRecorder,
     mailer: IdentityMailer,
     locales: ActiveLocalesService,
+    metrics: Metrics,
   ) =>
-    createBetterAuth({ config, transactions, redis, ids, scope, users, events, mailer, locales }),
+    createBetterAuth({
+      config,
+      transactions,
+      redis,
+      ids,
+      scope,
+      users,
+      events,
+      mailer,
+      locales,
+      metrics,
+    }),
 };

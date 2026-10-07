@@ -96,7 +96,6 @@
     "ACCOUNT_TEMPORARILY_LOCKED": "Too many failed attempts: your account is temporarily locked. Please try again later.",
     "INVALID_TWO_FACTOR_COOKIE": "The verification has expired. Please sign in again.",
     "PASSWORD_COMPROMISED": "This password appears in a known data breach. Please choose another one.",
-    "PASSWORD_CHECK_FAILED": "The password could not be checked. Please try again in a moment.",
     "ACCOUNT_NOT_LINKED": "An account already exists with this address. Sign in, then link this provider from your settings.",
     "UNABLE_TO_LINK_ACCOUNT": "This provider could not be linked to your account.",
     "STATE_MISMATCH": "Sign-in expired or was started from another browser. Please start again.",

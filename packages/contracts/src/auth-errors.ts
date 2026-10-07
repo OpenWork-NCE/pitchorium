@@ -50,10 +50,7 @@ export const BETTER_AUTH_ERROR_CODES = [
 ] as const;
 
 /** Codes added by Pitchorium on /v1/auth (password breach check). */
-export const PITCHORIUM_AUTH_ERROR_CODES = [
-  'PASSWORD_COMPROMISED',
-  'PASSWORD_CHECK_FAILED',
-] as const;
+export const PITCHORIUM_AUTH_ERROR_CODES = ['PASSWORD_COMPROMISED'] as const;
 
 /**
  * Lower-case values of the `error` parameter of an OAuth callback or magic link redirect that

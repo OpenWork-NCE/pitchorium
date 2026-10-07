@@ -1,7 +1,9 @@
 import type { NestExpressApplication } from '@nestjs/platform-express';
 import type { DatabaseHandle } from '@pitchorium/db';
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import { PWNED_CHECK_UNAVAILABLE_METRIC } from '../../src/modules/identity/infrastructure/better-auth/better-auth.factory';
 import { DATABASE_HANDLE } from '../../src/platform/database';
+import { OpenTelemetryMetrics } from '../../src/platform/observability';
 import { OutboxService } from '../../src/platform/outbox';
 import { createApiTestApp } from './support/api-app';
 import { query, truncateAllTables } from './support/database';
@@ -29,6 +31,7 @@ describe('auth transactions and external calls', () => {
   let handle: DatabaseHandle;
   const providers = new FakeOAuthProviders();
   let pwnedPause: ReturnType<typeof pause> | undefined;
+  let pwnedFailure: 'http_error' | 'unreachable' | undefined;
   let fetchBeforePwned: typeof fetch;
 
   async function expectNoConnectionHeld(): Promise<void> {
@@ -47,6 +50,8 @@ describe('auth transactions and external calls', () => {
     globalThis.fetch = async (input, init) => {
       const url = input instanceof Request ? input.url : input.toString();
       if (!url.startsWith(PWNED_RANGE_URL)) return fetchBeforePwned(input, init);
+      if (pwnedFailure === 'unreachable') throw new TypeError('fetch failed');
+      if (pwnedFailure === 'http_error') return new Response('busy', { status: 503 });
       const current = pwnedPause;
       pwnedPause = undefined;
       if (current) {
@@ -68,6 +73,25 @@ describe('auth transactions and external calls', () => {
   beforeEach(async () => {
     await truncateAllTables();
     vi.restoreAllMocks();
+    pwnedFailure = undefined;
+  });
+
+  it('accepts the password when Have I Been Pwned fails, with a dedicated metric', async () => {
+    const increment = vi.spyOn(OpenTelemetryMetrics.prototype, 'increment');
+    for (const failure of ['http_error', 'unreachable'] as const) {
+      pwnedFailure = failure;
+      const email = `fail-open-${failure}@example.com`;
+      const response = await browser(app)
+        .post('/v1/auth/sign-up/email')
+        .send({ email, password: PASSWORD, name: 'Fail Open' });
+      expect(response.status, JSON.stringify(response.body)).toBe(200);
+      expect(increment).toHaveBeenLastCalledWith(PWNED_CHECK_UNAVAILABLE_METRIC, {
+        reason: failure,
+        path: '/sign-up/email',
+      });
+      const users = await query('SELECT id FROM identity.users WHERE email = $1', [email]);
+      expect(users).toHaveLength(1);
+    }
   });
 
   it('holds no connection while the OAuth provider exchanges the code', async () => {
