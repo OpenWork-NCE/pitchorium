@@ -88,6 +88,12 @@ Informations nécessaires au développement et absentes du cahier des charges (d
 65. Le journal du temps partagé : durée maximale d'une déclaration (provisoirement 24 heures), délai pour déclarer, sort d'une déclaration sans réponse du bénéficiaire, et prise en compte des heures dans le tableau de bord d'une organisation (aujourd'hui aucune : les heures sont personnelles).
 66. Le tableau de bord d'impact ne compte que les contributions encaissées (§9.4) : les contributions hors plateforme validées doivent-elles y figurer ?
 
+## Messagerie
+
+67. La préférence de messagerie par défaut d'un membre (provisoirement `connections_and_second_degree`, `MESSAGING_DEFAULT_POLICY`) et la portée de `verified_members` : aujourd'hui tout membre à l'email vérifié, seule vérification d'une personne (aucun KYC pour les contributeurs).
+68. La fenêtre de modification d'un message (provisoirement 15 minutes, `MESSAGING_EDIT_WINDOW_MINUTES`), le plafond de premières demandes hors réseau (provisoirement 20 sur 24 heures, `MESSAGING_REQUESTS_PER_DAY`), la longueur de la note d'introduction (provisoirement 1 000 caractères) et le nombre de pièces jointes par message (provisoirement 5).
+69. La durée de conservation des messages et des pièces jointes (voir aussi la question 20) ; un refus de demande est définitif tant que les membres ne se connectent pas.
+
 ## Produit
 
 15. La décision sur les stories (refus, ou « actualités éphémères de projet » en V2 selon le §15).

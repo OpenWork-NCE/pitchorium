@@ -58,3 +58,6 @@ Un fichier par décision, numéroté, au format Contexte / Décision / Conséque
 | [0052](0052-simulated-provider.md)                       | Prestataire simulé                                           |
 | [0053](0053-engagement-projection.md)                    | Projection du module engagement                              |
 | [0054](0054-provider-sandbox-tests.md)                   | Tests contre les sandboxes des prestataires                  |
+| [0055](0055-conversations-and-requests.md)               | Modèle des conversations et des demandes de message          |
+| [0056](0056-realtime-reliability.md)                     | Fiabilité du temps réel                                      |
+| [0057](0057-no-end-to-end-encryption.md)                 | Pas de chiffrement de bout en bout des messages              |

@@ -65,6 +65,7 @@ pnpm dev
 - [Graphe social et fil d'actualité](docs/architecture/social-graph-and-feed.md)
 - [Projets : cycle de vie et flux du financement](docs/architecture/projects-and-funding.md)
 - [Paiements : contributions, rails, ledger et rapprochement](docs/architecture/payments.md) et [hypothèses réglementaires à valider](docs/architecture/payments-compliance.md)
+- [Temps réel : protocole Socket.IO](docs/architecture/realtime.md)
 - [Décisions d'architecture (ADR)](docs/adr/README.md)
 - [Questions ouvertes](docs/open-questions.md)
 - [Infrastructure locale](infra/docker/README.md), [serveur](apps/server/README.md), [base de données](packages/db/README.md), [i18n](packages/i18n/README.md), [emails](packages/emails/README.md), [client d'API](packages/api-client/README.md)
