@@ -63,3 +63,5 @@ Un fichier par décision, numéroté, au format Contexte / Décision / Conséque
 | [0057](0057-no-end-to-end-encryption.md)                 | Pas de chiffrement de bout en bout des messages              |
 | [0058](0058-introductions.md)                            | Introductions à trois                                        |
 | [0059](0059-notification-registry-and-grouping.md)       | Registre et regroupement des notifications                   |
+| [0060](0060-preferences-and-transactional-types.md)      | Préférences et types transactionnels                         |
+| [0061](0061-digests-and-time-zones.md)                   | Digests et fuseaux horaires                                  |
