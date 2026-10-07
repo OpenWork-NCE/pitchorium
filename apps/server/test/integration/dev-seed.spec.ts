@@ -11,6 +11,7 @@ import {
   type DevSeedResult,
   seedDevData,
 } from '../../scripts/dev-seed/seed-dev-data';
+import { seedDevMessaging } from '../../scripts/dev-seed/seed-dev-messaging';
 import { createSeedContext, seedDevProjects } from '../../scripts/dev-seed/seed-dev-projects';
 import { MethodologiesService } from '../../src/modules/impact/application/methodologies.service';
 import { ReconciliationService } from '../../src/modules/payments/application/reconciliation.service';
@@ -30,6 +31,10 @@ const COUNTED_TABLES = [
   'content.posts',
   'content.comments',
   'content.reactions',
+  'messaging.conversations',
+  'messaging.messages',
+  'messaging.introductions',
+  'notifications.notifications',
   'impact.methodologies',
   'impact.assessments',
   'projects.projects',
@@ -159,6 +164,38 @@ describe('development data', () => {
         projectPosts: 0,
       });
       expect(await counts()).toEqual(withProjects);
+      // Messaging and notifications through their services and facade, once.
+      expect(await seedDevMessaging(context, clock)).toEqual({
+        conversations: 5,
+        messages: 10,
+        requests: 3,
+        introductions: 1,
+        notifications: 8,
+      });
+      const grouped = await query<{ actor_count: number; event_count: number }>(
+        `SELECT actor_count, event_count FROM notifications.notifications WHERE type = 'reaction'`,
+      );
+      expect(grouped).toEqual([{ actor_count: 3, event_count: 3 }]);
+      const conversations = await query<{ status: string; kind: string }>(
+        'SELECT status, kind FROM messaging.conversations ORDER BY kind, status',
+      );
+      expect(conversations.map((row) => `${row.kind}:${row.status}`)).toEqual([
+        'direct:active',
+        'direct:active',
+        'direct:active',
+        'direct:declined',
+        'direct:request',
+        'group:active',
+      ]);
+      const withMessaging = await counts();
+      expect(await seedDevMessaging(context, clock)).toEqual({
+        conversations: 0,
+        messages: 0,
+        requests: 0,
+        introductions: 0,
+        notifications: 0,
+      });
+      expect(await counts()).toEqual(withMessaging);
       // ensureDemo is idempotent: it returns the existing DEMO version.
       await expect(
         context.get(MethodologiesService, { strict: false }).ensureDemo({

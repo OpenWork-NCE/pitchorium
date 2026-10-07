@@ -3,6 +3,7 @@ import { loadConfigOrExit, parseWorkerConfig } from '../src/platform/config/conf
 import { FixedClock, SystemClock } from '../src/platform/kernel/clock';
 import { S3ObjectStorage } from '../src/platform/storage/s3-object-storage';
 import { DEMO_EMAIL_DOMAIN, DEMO_PASSWORD, seedDevData } from './dev-seed/seed-dev-data';
+import { seedDevMessaging } from './dev-seed/seed-dev-messaging';
 import { createSeedContext, seedDevProjects } from './dev-seed/seed-dev-projects';
 
 /** pnpm db:seed:dev: demonstration data for the development of the web application. */
@@ -23,8 +24,15 @@ async function main(): Promise<void> {
     // New data goes through the application services and facades (ADR 0035).
     const clock = new FixedClock(now);
     const context = await createSeedContext(clock);
-    const projects = await seedDevProjects(context, clock, now).finally(() => context.close());
-    const inserted = Object.entries({ ...result, ...projects })
+    const services = await (async () => {
+      try {
+        const projects = await seedDevProjects(context, clock, now);
+        return { ...projects, ...(await seedDevMessaging(context, clock, now)) };
+      } finally {
+        await context.close();
+      }
+    })();
+    const inserted = Object.entries({ ...result, ...services })
       .map(([name, count]) => `${count} ${name}`)
       .join(', ');
     process.stdout.write(
