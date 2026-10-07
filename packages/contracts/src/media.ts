@@ -28,6 +28,7 @@ export const MEDIA_REJECTION_REASONS = [
   'type_not_allowed',
   'type_mismatch',
   'size_exceeded',
+  'size_mismatch',
   'malware_detected',
   'image_unreadable',
   'image_too_small',
