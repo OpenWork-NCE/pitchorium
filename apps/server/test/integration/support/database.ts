@@ -21,6 +21,18 @@ const BUSINESS_TABLES = [
   'impact.methodologies',
   'impact.assessments',
   'projects.projects',
+  'payments.contributions',
+  'payments.payout_accounts',
+  'payments.kyc_submissions',
+  'payments.ledger_entries',
+  'payments.offline_contributions',
+  'payments.provider_events',
+  'payments.reconciliation_runs',
+  'payments.discrepancies',
+  'payments.simulated_sessions',
+  'payments.simulated_accounts',
+  'engagement.contribution_facts',
+  'engagement.time_entries',
 ];
 
 export async function truncatePlatformTables(): Promise<void> {
