@@ -1,6 +1,7 @@
 import { BullModule } from '@nestjs/bullmq';
 import { type DynamicModule, Module, type Provider } from '@nestjs/common';
 import { CountersService } from './application/counters.service';
+import { DeliverabilityService } from './application/deliverability.service';
 import { EmailLinks } from './application/email-links';
 import {
   EmailChannel,
@@ -24,6 +25,7 @@ import {
 import { NotificationsController } from './interface/notifications.controller';
 import { NotificationsJobsProcessor } from './interface/notifications-jobs.processor';
 import { NOTIFICATIONS_QUEUE } from './interface/notifications-queue';
+import { ResendWebhookHandler } from './interface/resend-webhook.handler';
 
 const SHARED_PROVIDERS: Provider[] = [
   { provide: NotificationsRepository, useClass: DrizzleNotificationsRepository },
@@ -31,6 +33,7 @@ const SHARED_PROVIDERS: Provider[] = [
   NotificationPresenter,
   CountersService,
   EmailLinks,
+  DeliverabilityService,
   NotificationsFacade,
 ];
 
@@ -44,7 +47,7 @@ export class NotificationsModule {
     return {
       module: NotificationsModule,
       controllers: [NotificationsController],
-      providers: [...SHARED_PROVIDERS, NotificationReadsService],
+      providers: [...SHARED_PROVIDERS, NotificationReadsService, ResendWebhookHandler],
       exports: [NotificationsFacade],
     };
   }

@@ -1,6 +1,6 @@
 # Module notifications
 
-Notifications in-app (temps réel) et email (cahier des charges §10.5, avec §10.4 et §14) : registre des types, regroupement, diffusion en lots, préférences par type et par canal, types transactionnels, digests quotidien et hebdomadaire selon le fuseau du membre, copie des messages non lus, compteurs unifiés, délivrabilité. Architecture : `docs/architecture/notifications.md`.
+Notifications in-app (temps réel) et email (cahier des charges §10.5, avec §10.4 et §14) : registre des types, regroupement, diffusion en lots, préférences par type et par canal, types transactionnels, digests quotidien et hebdomadaire selon le fuseau du membre, copie des messages non lus, compteurs unifiés, délivrabilité. Architecture : `docs/architecture/notifications.md` ; délivrabilité : `docs/architecture/email-deliverability.md`.
 
 ## Registre des types (ADR 0059)
 
@@ -32,9 +32,10 @@ Types couverts : `connection_request`, `connection_accepted`, `new_follower` (su
 
 Si le membre a activé l'email du type `message` (désactivé par défaut), un message non lu après `NOTIFICATIONS_UNREAD_MESSAGE_EMAIL_DELAY_MINUTES` (30, provisoire) déclenche un email ; les messages suivants d'une même conversation rejoignent le même email (une ligne par destinataire et conversation). Rien n'est envoyé si la conversation a été lue entre-temps, mise en sourdine ou masquée par un blocage.
 
-## Désinscription en un clic
+## Délivrabilité (ADR 0062)
 
-Tout email non transactionnel porte les en-têtes `List-Unsubscribe` (`<API_PUBLIC_URL>/v1/notifications/unsubscribe?token=...`) et `List-Unsubscribe-Post: List-Unsubscribe=One-Click` (RFC 8058), et un lien vers la page de l'application web en pied d'email ; le jeton signé (HMAC SHA-256, `EMAIL_LINK_SECRET`) désactive l'email du type, ou le digest.
+- Désinscription en un clic pour tout email non transactionnel : en-têtes `List-Unsubscribe` (`<API_PUBLIC_URL>/v1/notifications/unsubscribe?token=...`) et `List-Unsubscribe-Post: List-Unsubscribe=One-Click` (RFC 8058), lien vers la page de l'application web en pied d'email ; jeton signé (HMAC SHA-256, `EMAIL_LINK_SECRET`) qui désactive l'email du type, ou le digest.
+- Webhook Resend `POST /v1/notifications/webhooks/resend`, signé par Svix (`RESEND_WEBHOOK_SECRET`), dédupliqué par l'inbox : un rebond permanent ou une plainte ajoute l'adresse à la liste de suppression, que le mailer consulte avant chaque envoi.
 
 ## Lecture
 
@@ -50,6 +51,7 @@ Purge quotidienne des notifications sans activité depuis `NOTIFICATIONS_RETENTI
 - `POST /v1/me/notifications/{notificationId}/read`, `POST /v1/me/notifications/read-all`, `DELETE /v1/me/notifications/{notificationId}` (`notifications.manage`)
 - `PATCH /v1/me/notification-preferences` (`notifications.preferences.update`)
 - `POST /v1/notifications/unsubscribe?token=` (public, jeton signé)
+- Hors OpenAPI : `POST /v1/notifications/webhooks/resend` (signature Svix)
 
 ## Schéma `notifications`
 
