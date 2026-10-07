@@ -50,6 +50,9 @@ import type {
   ContributionsControllerOfProjectParams,
   ContributionsControllerOptionsParams,
   ContributionsControllerSupportersParams,
+  ConversationDtoOutput,
+  ConversationPageDtoOutput,
+  CountersDtoOutput,
   CreateCommentDto,
   CreateConnectionRequestDto,
   CreateContributionDto,
@@ -76,6 +79,7 @@ import type {
   DiscrepancyDtoOutput,
   DiscrepancyPageDtoOutput,
   DisputeTimeEntryDto,
+  EditMessageDto,
   EditUpdateDto,
   EngagementControllerDeclaredParams,
   EngagementControllerReceivedParams,
@@ -90,6 +94,8 @@ import type {
   InterestDtoOutput,
   InterestPageDtoOutput,
   InterestsControllerListParams,
+  IntroductionDtoOutput,
+  IntroductionPageDtoOutput,
   InvitationDtoOutput,
   InvitationTokenDto,
   InvitationsDtoOutput,
@@ -111,12 +117,22 @@ import type {
   MemberNetworkControllerPublicConnectionsParams,
   MemberNetworkControllerPublicFollowersParams,
   MemberNetworkControllerPublicFollowingParams,
+  MessageDtoOutput,
+  MessagePageDtoOutput,
+  MessagingControllerListIntroductionsParams,
+  MessagingControllerListParams,
+  MessagingControllerMessagesParams,
+  MessagingSettingsDto,
+  MessagingSettingsDtoOutput,
   MethodologiesDtoOutput,
   MethodologyDtoOutput,
   MyOrganizationDtoOutput,
   MyOrganizationsDtoOutput,
   MyProjectsDtoOutput,
   NetworkSettingsDtoOutput,
+  NotificationPageDtoOutput,
+  NotificationsControllerListParams,
+  NotificationsControllerUnsubscribeParams,
   OfflineContributionsControllerMineParams,
   OfflineContributionsControllerOfProjectParams,
   OfflineDecisionDto,
@@ -131,7 +147,6 @@ import type {
   PostStatsDtoOutput,
   PostsControllerReadParams,
   PostsControllerSavedParams,
-  PreferencesDto,
   PreferencesDtoOutput,
   PrefillDtoOutput,
   ProblemDetails,
@@ -147,10 +162,14 @@ import type {
   ProjectsControllerPublicShowcaseParams,
   ProjectsControllerShowcaseParams,
   ProofsDto,
+  ProposeIntroductionDto,
   PublishDto,
   QuoteDtoOutput,
   QuoteRequestDto,
   ReactionSummaryDtoOutput,
+  ReadAllDtoOutput,
+  ReadConversationDto,
+  ReadResultDtoOutput,
   ReconciliationReportDtoOutput,
   ReferenceDataDtoOutput,
   RefundDtoOutput,
@@ -162,19 +181,23 @@ import type {
   RevocationDto,
   RewardDtoOutput,
   SavedPostPageDtoOutput,
+  SendMessageDto,
   SetDocumentsDto,
   SetGalleryDto,
   SetIntentionDto,
   SetReactionDto,
+  StartConversationDto,
   SubmitAssessmentDto,
   SubmitKycDto,
   SupporterPageDtoOutput,
   TimeEntryDtoOutput,
   TimeEntryPageDtoOutput,
   TransferOwnershipDto,
+  UnsubscribeResultDtoOutput,
   UpdateBaseProfileDto,
   UpdateCommentDto,
   UpdateContributorFacetDto,
+  UpdateConversationDto,
   UpdateDtoOutput,
   UpdateEntrepreneurFacetDto,
   UpdateMemberDto,
@@ -183,6 +206,7 @@ import type {
   UpdateOrganizationDto,
   UpdatePageDtoOutput,
   UpdatePostDto,
+  UpdatePreferencesDto,
   UpdateProjectDto,
   UpdateRewardDto,
   UpdateVisibilityDto,
@@ -676,7 +700,7 @@ export const getAccountControllerUpdatePreferencesUrl = () => {
 };
 
 export const accountControllerUpdatePreferences = async (
-  preferencesDto: PreferencesDto,
+  updatePreferencesDto: UpdatePreferencesDto,
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<PreferencesDtoOutput> => {
   const getHeaders = (
@@ -702,7 +726,7 @@ export const accountControllerUpdatePreferences = async (
     ...options,
     method: 'PUT',
     headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
-    body: JSON.stringify(preferencesDto),
+    body: JSON.stringify(updatePreferencesDto),
   });
 };
 
@@ -748,9 +772,9 @@ export const getAccountControllerUpdatePreferencesMutationOptions = <
 export type AccountControllerUpdatePreferencesMutationResult = NonNullable<
   Awaited<ReturnType<typeof accountControllerUpdatePreferences>>
 >;
-export type AccountControllerUpdatePreferencesMutationBody = PreferencesDto;
+export type AccountControllerUpdatePreferencesMutationBody = UpdatePreferencesDto;
 export type AccountControllerUpdatePreferencesMutationError = ErrorType<ProblemDetails>;
-export type AccountControllerUpdatePreferencesMutationVariables = { data: PreferencesDto };
+export type AccountControllerUpdatePreferencesMutationVariables = { data: UpdatePreferencesDto };
 
 export const useAccountControllerUpdatePreferences = <
   TError = ErrorType<ProblemDetails>,
@@ -857,7 +881,18 @@ export const getAccessControllerPrerequisitesUrl = (
     | 'engagement.organization.dashboard.read'
     | 'engagement.time.declare'
     | 'engagement.time.read'
-    | 'engagement.time.respond',
+    | 'engagement.time.respond'
+    | 'messaging.read'
+    | 'messaging.conversation.start'
+    | 'messaging.conversation.participate'
+    | 'messaging.message.update'
+    | 'messaging.request.respond'
+    | 'messaging.settings.update'
+    | 'messaging.introduction.propose'
+    | 'messaging.introduction.respond'
+    | 'notifications.read'
+    | 'notifications.manage'
+    | 'notifications.preferences.update',
 ) => {
   return `/v1/me/prerequisites/${action}`;
 };
@@ -944,7 +979,18 @@ export const accessControllerPrerequisites = async (
     | 'engagement.organization.dashboard.read'
     | 'engagement.time.declare'
     | 'engagement.time.read'
-    | 'engagement.time.respond',
+    | 'engagement.time.respond'
+    | 'messaging.read'
+    | 'messaging.conversation.start'
+    | 'messaging.conversation.participate'
+    | 'messaging.message.update'
+    | 'messaging.request.respond'
+    | 'messaging.settings.update'
+    | 'messaging.introduction.propose'
+    | 'messaging.introduction.respond'
+    | 'notifications.read'
+    | 'notifications.manage'
+    | 'notifications.preferences.update',
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<ActionPrerequisitesDtoOutput> => {
   return apiFetch<ActionPrerequisitesDtoOutput>(getAccessControllerPrerequisitesUrl(action), {
@@ -1035,7 +1081,18 @@ export const getAccessControllerPrerequisitesQueryKey = (
     | 'engagement.organization.dashboard.read'
     | 'engagement.time.declare'
     | 'engagement.time.read'
-    | 'engagement.time.respond',
+    | 'engagement.time.respond'
+    | 'messaging.read'
+    | 'messaging.conversation.start'
+    | 'messaging.conversation.participate'
+    | 'messaging.message.update'
+    | 'messaging.request.respond'
+    | 'messaging.settings.update'
+    | 'messaging.introduction.propose'
+    | 'messaging.introduction.respond'
+    | 'notifications.read'
+    | 'notifications.manage'
+    | 'notifications.preferences.update',
 ) => {
   return [`/v1/me/prerequisites/${action}`] as const;
 };
@@ -1125,7 +1182,18 @@ export const getAccessControllerPrerequisitesQueryOptions = <
     | 'engagement.organization.dashboard.read'
     | 'engagement.time.declare'
     | 'engagement.time.read'
-    | 'engagement.time.respond',
+    | 'engagement.time.respond'
+    | 'messaging.read'
+    | 'messaging.conversation.start'
+    | 'messaging.conversation.participate'
+    | 'messaging.message.update'
+    | 'messaging.request.respond'
+    | 'messaging.settings.update'
+    | 'messaging.introduction.propose'
+    | 'messaging.introduction.respond'
+    | 'notifications.read'
+    | 'notifications.manage'
+    | 'notifications.preferences.update',
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof accessControllerPrerequisites>>, TError, TData>
@@ -1241,7 +1309,18 @@ export function useAccessControllerPrerequisites<
     | 'engagement.organization.dashboard.read'
     | 'engagement.time.declare'
     | 'engagement.time.read'
-    | 'engagement.time.respond',
+    | 'engagement.time.respond'
+    | 'messaging.read'
+    | 'messaging.conversation.start'
+    | 'messaging.conversation.participate'
+    | 'messaging.message.update'
+    | 'messaging.request.respond'
+    | 'messaging.settings.update'
+    | 'messaging.introduction.propose'
+    | 'messaging.introduction.respond'
+    | 'notifications.read'
+    | 'notifications.manage'
+    | 'notifications.preferences.update',
   options: {
     query: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof accessControllerPrerequisites>>, TError, TData>
@@ -1343,7 +1422,18 @@ export function useAccessControllerPrerequisites<
     | 'engagement.organization.dashboard.read'
     | 'engagement.time.declare'
     | 'engagement.time.read'
-    | 'engagement.time.respond',
+    | 'engagement.time.respond'
+    | 'messaging.read'
+    | 'messaging.conversation.start'
+    | 'messaging.conversation.participate'
+    | 'messaging.message.update'
+    | 'messaging.request.respond'
+    | 'messaging.settings.update'
+    | 'messaging.introduction.propose'
+    | 'messaging.introduction.respond'
+    | 'notifications.read'
+    | 'notifications.manage'
+    | 'notifications.preferences.update',
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof accessControllerPrerequisites>>, TError, TData>
@@ -1445,7 +1535,18 @@ export function useAccessControllerPrerequisites<
     | 'engagement.organization.dashboard.read'
     | 'engagement.time.declare'
     | 'engagement.time.read'
-    | 'engagement.time.respond',
+    | 'engagement.time.respond'
+    | 'messaging.read'
+    | 'messaging.conversation.start'
+    | 'messaging.conversation.participate'
+    | 'messaging.message.update'
+    | 'messaging.request.respond'
+    | 'messaging.settings.update'
+    | 'messaging.introduction.propose'
+    | 'messaging.introduction.respond'
+    | 'notifications.read'
+    | 'notifications.manage'
+    | 'notifications.preferences.update',
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof accessControllerPrerequisites>>, TError, TData>
@@ -1540,7 +1641,18 @@ export function useAccessControllerPrerequisites<
     | 'engagement.organization.dashboard.read'
     | 'engagement.time.declare'
     | 'engagement.time.read'
-    | 'engagement.time.respond',
+    | 'engagement.time.respond'
+    | 'messaging.read'
+    | 'messaging.conversation.start'
+    | 'messaging.conversation.participate'
+    | 'messaging.message.update'
+    | 'messaging.request.respond'
+    | 'messaging.settings.update'
+    | 'messaging.introduction.propose'
+    | 'messaging.introduction.respond'
+    | 'notifications.read'
+    | 'notifications.manage'
+    | 'notifications.preferences.update',
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof accessControllerPrerequisites>>, TError, TData>
@@ -23172,4 +23284,2921 @@ export const useEngagementControllerDispute = <
   TContext
 > => {
   return useMutation(getEngagementControllerDisputeMutationOptions(options), queryClient);
+};
+
+export const getMessagingControllerListUrl = (params?: MessagingControllerListParams) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/v1/messaging/conversations?${stringifiedParams}`
+    : `/v1/messaging/conversations`;
+};
+
+export const messagingControllerList = async (
+  params?: MessagingControllerListParams,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<ConversationPageDtoOutput> => {
+  return apiFetch<ConversationPageDtoOutput>(getMessagingControllerListUrl(params), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getMessagingControllerListQueryKey = (params?: MessagingControllerListParams) => {
+  return [`/v1/messaging/conversations`, ...(params ? [params] : [])] as const;
+};
+
+export const getMessagingControllerListQueryOptions = <
+  TData = Awaited<ReturnType<typeof messagingControllerList>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: MessagingControllerListParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof messagingControllerList>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getMessagingControllerListQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof messagingControllerList>>> = ({
+    signal,
+  }) => messagingControllerList(params, { signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof messagingControllerList>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type MessagingControllerListQueryResult = NonNullable<
+  Awaited<ReturnType<typeof messagingControllerList>>
+>;
+export type MessagingControllerListQueryError = ErrorType<ProblemDetails>;
+
+export function useMessagingControllerList<
+  TData = Awaited<ReturnType<typeof messagingControllerList>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params: undefined | MessagingControllerListParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof messagingControllerList>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof messagingControllerList>>,
+          TError,
+          Awaited<ReturnType<typeof messagingControllerList>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useMessagingControllerList<
+  TData = Awaited<ReturnType<typeof messagingControllerList>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: MessagingControllerListParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof messagingControllerList>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof messagingControllerList>>,
+          TError,
+          Awaited<ReturnType<typeof messagingControllerList>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useMessagingControllerList<
+  TData = Awaited<ReturnType<typeof messagingControllerList>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: MessagingControllerListParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof messagingControllerList>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useMessagingControllerList<
+  TData = Awaited<ReturnType<typeof messagingControllerList>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: MessagingControllerListParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof messagingControllerList>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getMessagingControllerListQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getMessagingControllerStartUrl = () => {
+  return `/v1/messaging/conversations`;
+};
+
+export const messagingControllerStart = async (
+  startConversationDto: StartConversationDto,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<MessageDtoOutput> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit['headers']>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(
+          h as Iterable<Iterable<string>>,
+          (entry) => Array.from(entry) as [string, string],
+        ),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+  return apiFetch<MessageDtoOutput>(getMessagingControllerStartUrl(), {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(startConversationDto),
+  });
+};
+
+export const getMessagingControllerStartMutationKey = () => ['messagingControllerStart'] as const;
+
+export const getMessagingControllerStartMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof messagingControllerStart>>,
+    TError,
+    MessagingControllerStartMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof messagingControllerStart>>,
+  TError,
+  MessagingControllerStartMutationVariables,
+  TContext
+> => {
+  const mutationKey = getMessagingControllerStartMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof messagingControllerStart>>,
+    MessagingControllerStartMutationVariables
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return messagingControllerStart(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type MessagingControllerStartMutationResult = NonNullable<
+  Awaited<ReturnType<typeof messagingControllerStart>>
+>;
+export type MessagingControllerStartMutationBody = StartConversationDto;
+export type MessagingControllerStartMutationError = ErrorType<ProblemDetails>;
+export type MessagingControllerStartMutationVariables = { data: StartConversationDto };
+
+export const useMessagingControllerStart = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof messagingControllerStart>>,
+      TError,
+      MessagingControllerStartMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof messagingControllerStart>>,
+  TError,
+  MessagingControllerStartMutationVariables,
+  TContext
+> => {
+  return useMutation(getMessagingControllerStartMutationOptions(options), queryClient);
+};
+
+export const getMessagingControllerGetUrl = (conversationId: string) => {
+  return `/v1/messaging/conversations/${conversationId}`;
+};
+
+export const messagingControllerGet = async (
+  conversationId: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<ConversationDtoOutput> => {
+  return apiFetch<ConversationDtoOutput>(getMessagingControllerGetUrl(conversationId), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getMessagingControllerGetQueryKey = (conversationId: string) => {
+  return [`/v1/messaging/conversations/${conversationId}`] as const;
+};
+
+export const getMessagingControllerGetQueryOptions = <
+  TData = Awaited<ReturnType<typeof messagingControllerGet>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  conversationId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof messagingControllerGet>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getMessagingControllerGetQueryKey(conversationId);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof messagingControllerGet>>> = ({ signal }) =>
+    messagingControllerGet(conversationId, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: conversationId !== null && conversationId !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<Awaited<ReturnType<typeof messagingControllerGet>>, TError, TData> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+};
+
+export type MessagingControllerGetQueryResult = NonNullable<
+  Awaited<ReturnType<typeof messagingControllerGet>>
+>;
+export type MessagingControllerGetQueryError = ErrorType<ProblemDetails>;
+
+export function useMessagingControllerGet<
+  TData = Awaited<ReturnType<typeof messagingControllerGet>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  conversationId: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof messagingControllerGet>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof messagingControllerGet>>,
+          TError,
+          Awaited<ReturnType<typeof messagingControllerGet>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useMessagingControllerGet<
+  TData = Awaited<ReturnType<typeof messagingControllerGet>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  conversationId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof messagingControllerGet>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof messagingControllerGet>>,
+          TError,
+          Awaited<ReturnType<typeof messagingControllerGet>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useMessagingControllerGet<
+  TData = Awaited<ReturnType<typeof messagingControllerGet>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  conversationId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof messagingControllerGet>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useMessagingControllerGet<
+  TData = Awaited<ReturnType<typeof messagingControllerGet>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  conversationId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof messagingControllerGet>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getMessagingControllerGetQueryOptions(conversationId, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getMessagingControllerUpdateUrl = (conversationId: string) => {
+  return `/v1/messaging/conversations/${conversationId}`;
+};
+
+export const messagingControllerUpdate = async (
+  conversationId: string,
+  updateConversationDto: UpdateConversationDto,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<ConversationDtoOutput> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit['headers']>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(
+          h as Iterable<Iterable<string>>,
+          (entry) => Array.from(entry) as [string, string],
+        ),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+  return apiFetch<ConversationDtoOutput>(getMessagingControllerUpdateUrl(conversationId), {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(updateConversationDto),
+  });
+};
+
+export const getMessagingControllerUpdateMutationKey = () => ['messagingControllerUpdate'] as const;
+
+export const getMessagingControllerUpdateMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof messagingControllerUpdate>>,
+    TError,
+    MessagingControllerUpdateMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof messagingControllerUpdate>>,
+  TError,
+  MessagingControllerUpdateMutationVariables,
+  TContext
+> => {
+  const mutationKey = getMessagingControllerUpdateMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof messagingControllerUpdate>>,
+    MessagingControllerUpdateMutationVariables
+  > = (props) => {
+    const { conversationId, data } = props ?? {};
+
+    return messagingControllerUpdate(conversationId, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type MessagingControllerUpdateMutationResult = NonNullable<
+  Awaited<ReturnType<typeof messagingControllerUpdate>>
+>;
+export type MessagingControllerUpdateMutationBody = UpdateConversationDto;
+export type MessagingControllerUpdateMutationError = ErrorType<ProblemDetails>;
+export type MessagingControllerUpdateMutationVariables = {
+  conversationId: string;
+  data: UpdateConversationDto;
+};
+
+export const useMessagingControllerUpdate = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof messagingControllerUpdate>>,
+      TError,
+      MessagingControllerUpdateMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof messagingControllerUpdate>>,
+  TError,
+  MessagingControllerUpdateMutationVariables,
+  TContext
+> => {
+  return useMutation(getMessagingControllerUpdateMutationOptions(options), queryClient);
+};
+
+export const getMessagingControllerLeaveUrl = (conversationId: string) => {
+  return `/v1/messaging/conversations/${conversationId}/leave`;
+};
+
+export const messagingControllerLeave = async (
+  conversationId: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<void> => {
+  return apiFetch<void>(getMessagingControllerLeaveUrl(conversationId), {
+    ...options,
+    method: 'POST',
+  });
+};
+
+export const getMessagingControllerLeaveMutationKey = () => ['messagingControllerLeave'] as const;
+
+export const getMessagingControllerLeaveMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof messagingControllerLeave>>,
+    TError,
+    MessagingControllerLeaveMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof messagingControllerLeave>>,
+  TError,
+  MessagingControllerLeaveMutationVariables,
+  TContext
+> => {
+  const mutationKey = getMessagingControllerLeaveMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof messagingControllerLeave>>,
+    MessagingControllerLeaveMutationVariables
+  > = (props) => {
+    const { conversationId } = props ?? {};
+
+    return messagingControllerLeave(conversationId, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type MessagingControllerLeaveMutationResult = NonNullable<
+  Awaited<ReturnType<typeof messagingControllerLeave>>
+>;
+
+export type MessagingControllerLeaveMutationError = ErrorType<ProblemDetails>;
+export type MessagingControllerLeaveMutationVariables = { conversationId: string };
+
+export const useMessagingControllerLeave = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof messagingControllerLeave>>,
+      TError,
+      MessagingControllerLeaveMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof messagingControllerLeave>>,
+  TError,
+  MessagingControllerLeaveMutationVariables,
+  TContext
+> => {
+  return useMutation(getMessagingControllerLeaveMutationOptions(options), queryClient);
+};
+
+export const getMessagingControllerMessagesUrl = (
+  conversationId: string,
+  params?: MessagingControllerMessagesParams,
+) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/v1/messaging/conversations/${conversationId}/messages?${stringifiedParams}`
+    : `/v1/messaging/conversations/${conversationId}/messages`;
+};
+
+export const messagingControllerMessages = async (
+  conversationId: string,
+  params?: MessagingControllerMessagesParams,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<MessagePageDtoOutput> => {
+  return apiFetch<MessagePageDtoOutput>(getMessagingControllerMessagesUrl(conversationId, params), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getMessagingControllerMessagesQueryKey = (
+  conversationId: string,
+  params?: MessagingControllerMessagesParams,
+) => {
+  return [
+    `/v1/messaging/conversations/${conversationId}/messages`,
+    ...(params ? [params] : []),
+  ] as const;
+};
+
+export const getMessagingControllerMessagesQueryOptions = <
+  TData = Awaited<ReturnType<typeof messagingControllerMessages>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  conversationId: string,
+  params?: MessagingControllerMessagesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof messagingControllerMessages>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getMessagingControllerMessagesQueryKey(conversationId, params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof messagingControllerMessages>>> = ({
+    signal,
+  }) => messagingControllerMessages(conversationId, params, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: conversationId !== null && conversationId !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<Awaited<ReturnType<typeof messagingControllerMessages>>, TError, TData> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+};
+
+export type MessagingControllerMessagesQueryResult = NonNullable<
+  Awaited<ReturnType<typeof messagingControllerMessages>>
+>;
+export type MessagingControllerMessagesQueryError = ErrorType<ProblemDetails>;
+
+export function useMessagingControllerMessages<
+  TData = Awaited<ReturnType<typeof messagingControllerMessages>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  conversationId: string,
+  params: undefined | MessagingControllerMessagesParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof messagingControllerMessages>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof messagingControllerMessages>>,
+          TError,
+          Awaited<ReturnType<typeof messagingControllerMessages>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useMessagingControllerMessages<
+  TData = Awaited<ReturnType<typeof messagingControllerMessages>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  conversationId: string,
+  params?: MessagingControllerMessagesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof messagingControllerMessages>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof messagingControllerMessages>>,
+          TError,
+          Awaited<ReturnType<typeof messagingControllerMessages>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useMessagingControllerMessages<
+  TData = Awaited<ReturnType<typeof messagingControllerMessages>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  conversationId: string,
+  params?: MessagingControllerMessagesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof messagingControllerMessages>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useMessagingControllerMessages<
+  TData = Awaited<ReturnType<typeof messagingControllerMessages>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  conversationId: string,
+  params?: MessagingControllerMessagesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof messagingControllerMessages>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getMessagingControllerMessagesQueryOptions(conversationId, params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getMessagingControllerSendUrl = (conversationId: string) => {
+  return `/v1/messaging/conversations/${conversationId}/messages`;
+};
+
+export const messagingControllerSend = async (
+  conversationId: string,
+  sendMessageDto: SendMessageDto,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<MessageDtoOutput> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit['headers']>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(
+          h as Iterable<Iterable<string>>,
+          (entry) => Array.from(entry) as [string, string],
+        ),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+  return apiFetch<MessageDtoOutput>(getMessagingControllerSendUrl(conversationId), {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(sendMessageDto),
+  });
+};
+
+export const getMessagingControllerSendMutationKey = () => ['messagingControllerSend'] as const;
+
+export const getMessagingControllerSendMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof messagingControllerSend>>,
+    TError,
+    MessagingControllerSendMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof messagingControllerSend>>,
+  TError,
+  MessagingControllerSendMutationVariables,
+  TContext
+> => {
+  const mutationKey = getMessagingControllerSendMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof messagingControllerSend>>,
+    MessagingControllerSendMutationVariables
+  > = (props) => {
+    const { conversationId, data } = props ?? {};
+
+    return messagingControllerSend(conversationId, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type MessagingControllerSendMutationResult = NonNullable<
+  Awaited<ReturnType<typeof messagingControllerSend>>
+>;
+export type MessagingControllerSendMutationBody = SendMessageDto;
+export type MessagingControllerSendMutationError = ErrorType<ProblemDetails>;
+export type MessagingControllerSendMutationVariables = {
+  conversationId: string;
+  data: SendMessageDto;
+};
+
+export const useMessagingControllerSend = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof messagingControllerSend>>,
+      TError,
+      MessagingControllerSendMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof messagingControllerSend>>,
+  TError,
+  MessagingControllerSendMutationVariables,
+  TContext
+> => {
+  return useMutation(getMessagingControllerSendMutationOptions(options), queryClient);
+};
+
+export const getMessagingControllerReadUrl = (conversationId: string) => {
+  return `/v1/messaging/conversations/${conversationId}/read`;
+};
+
+export const messagingControllerRead = async (
+  conversationId: string,
+  readConversationDto: ReadConversationDto,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<ReadResultDtoOutput> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit['headers']>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(
+          h as Iterable<Iterable<string>>,
+          (entry) => Array.from(entry) as [string, string],
+        ),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+  return apiFetch<ReadResultDtoOutput>(getMessagingControllerReadUrl(conversationId), {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(readConversationDto),
+  });
+};
+
+export const getMessagingControllerReadMutationKey = () => ['messagingControllerRead'] as const;
+
+export const getMessagingControllerReadMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof messagingControllerRead>>,
+    TError,
+    MessagingControllerReadMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof messagingControllerRead>>,
+  TError,
+  MessagingControllerReadMutationVariables,
+  TContext
+> => {
+  const mutationKey = getMessagingControllerReadMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof messagingControllerRead>>,
+    MessagingControllerReadMutationVariables
+  > = (props) => {
+    const { conversationId, data } = props ?? {};
+
+    return messagingControllerRead(conversationId, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type MessagingControllerReadMutationResult = NonNullable<
+  Awaited<ReturnType<typeof messagingControllerRead>>
+>;
+export type MessagingControllerReadMutationBody = ReadConversationDto;
+export type MessagingControllerReadMutationError = ErrorType<ProblemDetails>;
+export type MessagingControllerReadMutationVariables = {
+  conversationId: string;
+  data: ReadConversationDto;
+};
+
+export const useMessagingControllerRead = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof messagingControllerRead>>,
+      TError,
+      MessagingControllerReadMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof messagingControllerRead>>,
+  TError,
+  MessagingControllerReadMutationVariables,
+  TContext
+> => {
+  return useMutation(getMessagingControllerReadMutationOptions(options), queryClient);
+};
+
+export const getMessagingControllerEditUrl = (conversationId: string, messageId: string) => {
+  return `/v1/messaging/conversations/${conversationId}/messages/${messageId}`;
+};
+
+export const messagingControllerEdit = async (
+  conversationId: string,
+  messageId: string,
+  editMessageDto: EditMessageDto,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<MessageDtoOutput> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit['headers']>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(
+          h as Iterable<Iterable<string>>,
+          (entry) => Array.from(entry) as [string, string],
+        ),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+  return apiFetch<MessageDtoOutput>(getMessagingControllerEditUrl(conversationId, messageId), {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(editMessageDto),
+  });
+};
+
+export const getMessagingControllerEditMutationKey = () => ['messagingControllerEdit'] as const;
+
+export const getMessagingControllerEditMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof messagingControllerEdit>>,
+    TError,
+    MessagingControllerEditMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof messagingControllerEdit>>,
+  TError,
+  MessagingControllerEditMutationVariables,
+  TContext
+> => {
+  const mutationKey = getMessagingControllerEditMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof messagingControllerEdit>>,
+    MessagingControllerEditMutationVariables
+  > = (props) => {
+    const { conversationId, messageId, data } = props ?? {};
+
+    return messagingControllerEdit(conversationId, messageId, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type MessagingControllerEditMutationResult = NonNullable<
+  Awaited<ReturnType<typeof messagingControllerEdit>>
+>;
+export type MessagingControllerEditMutationBody = EditMessageDto;
+export type MessagingControllerEditMutationError = ErrorType<ProblemDetails>;
+export type MessagingControllerEditMutationVariables = {
+  conversationId: string;
+  messageId: string;
+  data: EditMessageDto;
+};
+
+export const useMessagingControllerEdit = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof messagingControllerEdit>>,
+      TError,
+      MessagingControllerEditMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof messagingControllerEdit>>,
+  TError,
+  MessagingControllerEditMutationVariables,
+  TContext
+> => {
+  return useMutation(getMessagingControllerEditMutationOptions(options), queryClient);
+};
+
+export const getMessagingControllerRemoveUrl = (conversationId: string, messageId: string) => {
+  return `/v1/messaging/conversations/${conversationId}/messages/${messageId}`;
+};
+
+export const messagingControllerRemove = async (
+  conversationId: string,
+  messageId: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<void> => {
+  return apiFetch<void>(getMessagingControllerRemoveUrl(conversationId, messageId), {
+    ...options,
+    method: 'DELETE',
+  });
+};
+
+export const getMessagingControllerRemoveMutationKey = () => ['messagingControllerRemove'] as const;
+
+export const getMessagingControllerRemoveMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof messagingControllerRemove>>,
+    TError,
+    MessagingControllerRemoveMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof messagingControllerRemove>>,
+  TError,
+  MessagingControllerRemoveMutationVariables,
+  TContext
+> => {
+  const mutationKey = getMessagingControllerRemoveMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof messagingControllerRemove>>,
+    MessagingControllerRemoveMutationVariables
+  > = (props) => {
+    const { conversationId, messageId } = props ?? {};
+
+    return messagingControllerRemove(conversationId, messageId, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type MessagingControllerRemoveMutationResult = NonNullable<
+  Awaited<ReturnType<typeof messagingControllerRemove>>
+>;
+
+export type MessagingControllerRemoveMutationError = ErrorType<ProblemDetails>;
+export type MessagingControllerRemoveMutationVariables = {
+  conversationId: string;
+  messageId: string;
+};
+
+export const useMessagingControllerRemove = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof messagingControllerRemove>>,
+      TError,
+      MessagingControllerRemoveMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof messagingControllerRemove>>,
+  TError,
+  MessagingControllerRemoveMutationVariables,
+  TContext
+> => {
+  return useMutation(getMessagingControllerRemoveMutationOptions(options), queryClient);
+};
+
+export const getMessagingControllerAcceptUrl = (conversationId: string) => {
+  return `/v1/messaging/conversations/${conversationId}/accept`;
+};
+
+export const messagingControllerAccept = async (
+  conversationId: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<void> => {
+  return apiFetch<void>(getMessagingControllerAcceptUrl(conversationId), {
+    ...options,
+    method: 'POST',
+  });
+};
+
+export const getMessagingControllerAcceptMutationKey = () => ['messagingControllerAccept'] as const;
+
+export const getMessagingControllerAcceptMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof messagingControllerAccept>>,
+    TError,
+    MessagingControllerAcceptMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof messagingControllerAccept>>,
+  TError,
+  MessagingControllerAcceptMutationVariables,
+  TContext
+> => {
+  const mutationKey = getMessagingControllerAcceptMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof messagingControllerAccept>>,
+    MessagingControllerAcceptMutationVariables
+  > = (props) => {
+    const { conversationId } = props ?? {};
+
+    return messagingControllerAccept(conversationId, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type MessagingControllerAcceptMutationResult = NonNullable<
+  Awaited<ReturnType<typeof messagingControllerAccept>>
+>;
+
+export type MessagingControllerAcceptMutationError = ErrorType<ProblemDetails>;
+export type MessagingControllerAcceptMutationVariables = { conversationId: string };
+
+export const useMessagingControllerAccept = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof messagingControllerAccept>>,
+      TError,
+      MessagingControllerAcceptMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof messagingControllerAccept>>,
+  TError,
+  MessagingControllerAcceptMutationVariables,
+  TContext
+> => {
+  return useMutation(getMessagingControllerAcceptMutationOptions(options), queryClient);
+};
+
+export const getMessagingControllerDeclineUrl = (conversationId: string) => {
+  return `/v1/messaging/conversations/${conversationId}/decline`;
+};
+
+export const messagingControllerDecline = async (
+  conversationId: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<void> => {
+  return apiFetch<void>(getMessagingControllerDeclineUrl(conversationId), {
+    ...options,
+    method: 'POST',
+  });
+};
+
+export const getMessagingControllerDeclineMutationKey = () =>
+  ['messagingControllerDecline'] as const;
+
+export const getMessagingControllerDeclineMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof messagingControllerDecline>>,
+    TError,
+    MessagingControllerDeclineMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof messagingControllerDecline>>,
+  TError,
+  MessagingControllerDeclineMutationVariables,
+  TContext
+> => {
+  const mutationKey = getMessagingControllerDeclineMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof messagingControllerDecline>>,
+    MessagingControllerDeclineMutationVariables
+  > = (props) => {
+    const { conversationId } = props ?? {};
+
+    return messagingControllerDecline(conversationId, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type MessagingControllerDeclineMutationResult = NonNullable<
+  Awaited<ReturnType<typeof messagingControllerDecline>>
+>;
+
+export type MessagingControllerDeclineMutationError = ErrorType<ProblemDetails>;
+export type MessagingControllerDeclineMutationVariables = { conversationId: string };
+
+export const useMessagingControllerDecline = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof messagingControllerDecline>>,
+      TError,
+      MessagingControllerDeclineMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof messagingControllerDecline>>,
+  TError,
+  MessagingControllerDeclineMutationVariables,
+  TContext
+> => {
+  return useMutation(getMessagingControllerDeclineMutationOptions(options), queryClient);
+};
+
+export const getMessagingControllerSettingsUrl = () => {
+  return `/v1/me/messaging/settings`;
+};
+
+export const messagingControllerSettings = async (
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<MessagingSettingsDtoOutput> => {
+  return apiFetch<MessagingSettingsDtoOutput>(getMessagingControllerSettingsUrl(), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getMessagingControllerSettingsQueryKey = () => {
+  return [`/v1/me/messaging/settings`] as const;
+};
+
+export const getMessagingControllerSettingsQueryOptions = <
+  TData = Awaited<ReturnType<typeof messagingControllerSettings>>,
+  TError = ErrorType<ProblemDetails>,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<Awaited<ReturnType<typeof messagingControllerSettings>>, TError, TData>
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getMessagingControllerSettingsQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof messagingControllerSettings>>> = ({
+    signal,
+  }) => messagingControllerSettings({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof messagingControllerSettings>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type MessagingControllerSettingsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof messagingControllerSettings>>
+>;
+export type MessagingControllerSettingsQueryError = ErrorType<ProblemDetails>;
+
+export function useMessagingControllerSettings<
+  TData = Awaited<ReturnType<typeof messagingControllerSettings>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof messagingControllerSettings>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof messagingControllerSettings>>,
+          TError,
+          Awaited<ReturnType<typeof messagingControllerSettings>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useMessagingControllerSettings<
+  TData = Awaited<ReturnType<typeof messagingControllerSettings>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof messagingControllerSettings>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof messagingControllerSettings>>,
+          TError,
+          Awaited<ReturnType<typeof messagingControllerSettings>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useMessagingControllerSettings<
+  TData = Awaited<ReturnType<typeof messagingControllerSettings>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof messagingControllerSettings>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useMessagingControllerSettings<
+  TData = Awaited<ReturnType<typeof messagingControllerSettings>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof messagingControllerSettings>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getMessagingControllerSettingsQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getMessagingControllerUpdateSettingsUrl = () => {
+  return `/v1/me/messaging/settings`;
+};
+
+export const messagingControllerUpdateSettings = async (
+  messagingSettingsDto: MessagingSettingsDto,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<MessagingSettingsDtoOutput> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit['headers']>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(
+          h as Iterable<Iterable<string>>,
+          (entry) => Array.from(entry) as [string, string],
+        ),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+  return apiFetch<MessagingSettingsDtoOutput>(getMessagingControllerUpdateSettingsUrl(), {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(messagingSettingsDto),
+  });
+};
+
+export const getMessagingControllerUpdateSettingsMutationKey = () =>
+  ['messagingControllerUpdateSettings'] as const;
+
+export const getMessagingControllerUpdateSettingsMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof messagingControllerUpdateSettings>>,
+    TError,
+    MessagingControllerUpdateSettingsMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof messagingControllerUpdateSettings>>,
+  TError,
+  MessagingControllerUpdateSettingsMutationVariables,
+  TContext
+> => {
+  const mutationKey = getMessagingControllerUpdateSettingsMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof messagingControllerUpdateSettings>>,
+    MessagingControllerUpdateSettingsMutationVariables
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return messagingControllerUpdateSettings(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type MessagingControllerUpdateSettingsMutationResult = NonNullable<
+  Awaited<ReturnType<typeof messagingControllerUpdateSettings>>
+>;
+export type MessagingControllerUpdateSettingsMutationBody = MessagingSettingsDto;
+export type MessagingControllerUpdateSettingsMutationError = ErrorType<ProblemDetails>;
+export type MessagingControllerUpdateSettingsMutationVariables = { data: MessagingSettingsDto };
+
+export const useMessagingControllerUpdateSettings = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof messagingControllerUpdateSettings>>,
+      TError,
+      MessagingControllerUpdateSettingsMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof messagingControllerUpdateSettings>>,
+  TError,
+  MessagingControllerUpdateSettingsMutationVariables,
+  TContext
+> => {
+  return useMutation(getMessagingControllerUpdateSettingsMutationOptions(options), queryClient);
+};
+
+export const getMessagingControllerProposeUrl = () => {
+  return `/v1/messaging/introductions`;
+};
+
+export const messagingControllerPropose = async (
+  proposeIntroductionDto: ProposeIntroductionDto,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<IntroductionDtoOutput> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit['headers']>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(
+          h as Iterable<Iterable<string>>,
+          (entry) => Array.from(entry) as [string, string],
+        ),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+  return apiFetch<IntroductionDtoOutput>(getMessagingControllerProposeUrl(), {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(proposeIntroductionDto),
+  });
+};
+
+export const getMessagingControllerProposeMutationKey = () =>
+  ['messagingControllerPropose'] as const;
+
+export const getMessagingControllerProposeMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof messagingControllerPropose>>,
+    TError,
+    MessagingControllerProposeMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof messagingControllerPropose>>,
+  TError,
+  MessagingControllerProposeMutationVariables,
+  TContext
+> => {
+  const mutationKey = getMessagingControllerProposeMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof messagingControllerPropose>>,
+    MessagingControllerProposeMutationVariables
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return messagingControllerPropose(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type MessagingControllerProposeMutationResult = NonNullable<
+  Awaited<ReturnType<typeof messagingControllerPropose>>
+>;
+export type MessagingControllerProposeMutationBody = ProposeIntroductionDto;
+export type MessagingControllerProposeMutationError = ErrorType<ProblemDetails>;
+export type MessagingControllerProposeMutationVariables = { data: ProposeIntroductionDto };
+
+export const useMessagingControllerPropose = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof messagingControllerPropose>>,
+      TError,
+      MessagingControllerProposeMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof messagingControllerPropose>>,
+  TError,
+  MessagingControllerProposeMutationVariables,
+  TContext
+> => {
+  return useMutation(getMessagingControllerProposeMutationOptions(options), queryClient);
+};
+
+export const getMessagingControllerListIntroductionsUrl = (
+  params?: MessagingControllerListIntroductionsParams,
+) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/v1/messaging/introductions?${stringifiedParams}`
+    : `/v1/messaging/introductions`;
+};
+
+export const messagingControllerListIntroductions = async (
+  params?: MessagingControllerListIntroductionsParams,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<IntroductionPageDtoOutput> => {
+  return apiFetch<IntroductionPageDtoOutput>(getMessagingControllerListIntroductionsUrl(params), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getMessagingControllerListIntroductionsQueryKey = (
+  params?: MessagingControllerListIntroductionsParams,
+) => {
+  return [`/v1/messaging/introductions`, ...(params ? [params] : [])] as const;
+};
+
+export const getMessagingControllerListIntroductionsQueryOptions = <
+  TData = Awaited<ReturnType<typeof messagingControllerListIntroductions>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: MessagingControllerListIntroductionsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof messagingControllerListIntroductions>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getMessagingControllerListIntroductionsQueryKey(params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof messagingControllerListIntroductions>>
+  > = ({ signal }) => messagingControllerListIntroductions(params, { signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof messagingControllerListIntroductions>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type MessagingControllerListIntroductionsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof messagingControllerListIntroductions>>
+>;
+export type MessagingControllerListIntroductionsQueryError = ErrorType<ProblemDetails>;
+
+export function useMessagingControllerListIntroductions<
+  TData = Awaited<ReturnType<typeof messagingControllerListIntroductions>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params: undefined | MessagingControllerListIntroductionsParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof messagingControllerListIntroductions>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof messagingControllerListIntroductions>>,
+          TError,
+          Awaited<ReturnType<typeof messagingControllerListIntroductions>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useMessagingControllerListIntroductions<
+  TData = Awaited<ReturnType<typeof messagingControllerListIntroductions>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: MessagingControllerListIntroductionsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof messagingControllerListIntroductions>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof messagingControllerListIntroductions>>,
+          TError,
+          Awaited<ReturnType<typeof messagingControllerListIntroductions>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useMessagingControllerListIntroductions<
+  TData = Awaited<ReturnType<typeof messagingControllerListIntroductions>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: MessagingControllerListIntroductionsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof messagingControllerListIntroductions>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useMessagingControllerListIntroductions<
+  TData = Awaited<ReturnType<typeof messagingControllerListIntroductions>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: MessagingControllerListIntroductionsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof messagingControllerListIntroductions>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getMessagingControllerListIntroductionsQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getMessagingControllerIntroductionUrl = (introductionId: string) => {
+  return `/v1/messaging/introductions/${introductionId}`;
+};
+
+export const messagingControllerIntroduction = async (
+  introductionId: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<IntroductionDtoOutput> => {
+  return apiFetch<IntroductionDtoOutput>(getMessagingControllerIntroductionUrl(introductionId), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getMessagingControllerIntroductionQueryKey = (introductionId: string) => {
+  return [`/v1/messaging/introductions/${introductionId}`] as const;
+};
+
+export const getMessagingControllerIntroductionQueryOptions = <
+  TData = Awaited<ReturnType<typeof messagingControllerIntroduction>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  introductionId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof messagingControllerIntroduction>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getMessagingControllerIntroductionQueryKey(introductionId);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof messagingControllerIntroduction>>> = ({
+    signal,
+  }) => messagingControllerIntroduction(introductionId, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: introductionId !== null && introductionId !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof messagingControllerIntroduction>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type MessagingControllerIntroductionQueryResult = NonNullable<
+  Awaited<ReturnType<typeof messagingControllerIntroduction>>
+>;
+export type MessagingControllerIntroductionQueryError = ErrorType<ProblemDetails>;
+
+export function useMessagingControllerIntroduction<
+  TData = Awaited<ReturnType<typeof messagingControllerIntroduction>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  introductionId: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof messagingControllerIntroduction>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof messagingControllerIntroduction>>,
+          TError,
+          Awaited<ReturnType<typeof messagingControllerIntroduction>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useMessagingControllerIntroduction<
+  TData = Awaited<ReturnType<typeof messagingControllerIntroduction>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  introductionId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof messagingControllerIntroduction>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof messagingControllerIntroduction>>,
+          TError,
+          Awaited<ReturnType<typeof messagingControllerIntroduction>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useMessagingControllerIntroduction<
+  TData = Awaited<ReturnType<typeof messagingControllerIntroduction>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  introductionId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof messagingControllerIntroduction>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useMessagingControllerIntroduction<
+  TData = Awaited<ReturnType<typeof messagingControllerIntroduction>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  introductionId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof messagingControllerIntroduction>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getMessagingControllerIntroductionQueryOptions(introductionId, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getMessagingControllerAcceptIntroductionUrl = (introductionId: string) => {
+  return `/v1/messaging/introductions/${introductionId}/accept`;
+};
+
+export const messagingControllerAcceptIntroduction = async (
+  introductionId: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<IntroductionDtoOutput> => {
+  return apiFetch<IntroductionDtoOutput>(
+    getMessagingControllerAcceptIntroductionUrl(introductionId),
+    {
+      ...options,
+      method: 'POST',
+    },
+  );
+};
+
+export const getMessagingControllerAcceptIntroductionMutationKey = () =>
+  ['messagingControllerAcceptIntroduction'] as const;
+
+export const getMessagingControllerAcceptIntroductionMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof messagingControllerAcceptIntroduction>>,
+    TError,
+    MessagingControllerAcceptIntroductionMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof messagingControllerAcceptIntroduction>>,
+  TError,
+  MessagingControllerAcceptIntroductionMutationVariables,
+  TContext
+> => {
+  const mutationKey = getMessagingControllerAcceptIntroductionMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof messagingControllerAcceptIntroduction>>,
+    MessagingControllerAcceptIntroductionMutationVariables
+  > = (props) => {
+    const { introductionId } = props ?? {};
+
+    return messagingControllerAcceptIntroduction(introductionId, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type MessagingControllerAcceptIntroductionMutationResult = NonNullable<
+  Awaited<ReturnType<typeof messagingControllerAcceptIntroduction>>
+>;
+
+export type MessagingControllerAcceptIntroductionMutationError = ErrorType<ProblemDetails>;
+export type MessagingControllerAcceptIntroductionMutationVariables = { introductionId: string };
+
+export const useMessagingControllerAcceptIntroduction = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof messagingControllerAcceptIntroduction>>,
+      TError,
+      MessagingControllerAcceptIntroductionMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof messagingControllerAcceptIntroduction>>,
+  TError,
+  MessagingControllerAcceptIntroductionMutationVariables,
+  TContext
+> => {
+  return useMutation(getMessagingControllerAcceptIntroductionMutationOptions(options), queryClient);
+};
+
+export const getMessagingControllerDeclineIntroductionUrl = (introductionId: string) => {
+  return `/v1/messaging/introductions/${introductionId}/decline`;
+};
+
+export const messagingControllerDeclineIntroduction = async (
+  introductionId: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<IntroductionDtoOutput> => {
+  return apiFetch<IntroductionDtoOutput>(
+    getMessagingControllerDeclineIntroductionUrl(introductionId),
+    {
+      ...options,
+      method: 'POST',
+    },
+  );
+};
+
+export const getMessagingControllerDeclineIntroductionMutationKey = () =>
+  ['messagingControllerDeclineIntroduction'] as const;
+
+export const getMessagingControllerDeclineIntroductionMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof messagingControllerDeclineIntroduction>>,
+    TError,
+    MessagingControllerDeclineIntroductionMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof messagingControllerDeclineIntroduction>>,
+  TError,
+  MessagingControllerDeclineIntroductionMutationVariables,
+  TContext
+> => {
+  const mutationKey = getMessagingControllerDeclineIntroductionMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof messagingControllerDeclineIntroduction>>,
+    MessagingControllerDeclineIntroductionMutationVariables
+  > = (props) => {
+    const { introductionId } = props ?? {};
+
+    return messagingControllerDeclineIntroduction(introductionId, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type MessagingControllerDeclineIntroductionMutationResult = NonNullable<
+  Awaited<ReturnType<typeof messagingControllerDeclineIntroduction>>
+>;
+
+export type MessagingControllerDeclineIntroductionMutationError = ErrorType<ProblemDetails>;
+export type MessagingControllerDeclineIntroductionMutationVariables = { introductionId: string };
+
+export const useMessagingControllerDeclineIntroduction = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof messagingControllerDeclineIntroduction>>,
+      TError,
+      MessagingControllerDeclineIntroductionMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof messagingControllerDeclineIntroduction>>,
+  TError,
+  MessagingControllerDeclineIntroductionMutationVariables,
+  TContext
+> => {
+  return useMutation(
+    getMessagingControllerDeclineIntroductionMutationOptions(options),
+    queryClient,
+  );
+};
+
+export const getNotificationsControllerListUrl = (params?: NotificationsControllerListParams) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/v1/me/notifications?${stringifiedParams}`
+    : `/v1/me/notifications`;
+};
+
+export const notificationsControllerList = async (
+  params?: NotificationsControllerListParams,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<NotificationPageDtoOutput> => {
+  return apiFetch<NotificationPageDtoOutput>(getNotificationsControllerListUrl(params), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getNotificationsControllerListQueryKey = (
+  params?: NotificationsControllerListParams,
+) => {
+  return [`/v1/me/notifications`, ...(params ? [params] : [])] as const;
+};
+
+export const getNotificationsControllerListQueryOptions = <
+  TData = Awaited<ReturnType<typeof notificationsControllerList>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: NotificationsControllerListParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof notificationsControllerList>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getNotificationsControllerListQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof notificationsControllerList>>> = ({
+    signal,
+  }) => notificationsControllerList(params, { signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof notificationsControllerList>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type NotificationsControllerListQueryResult = NonNullable<
+  Awaited<ReturnType<typeof notificationsControllerList>>
+>;
+export type NotificationsControllerListQueryError = ErrorType<ProblemDetails>;
+
+export function useNotificationsControllerList<
+  TData = Awaited<ReturnType<typeof notificationsControllerList>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params: undefined | NotificationsControllerListParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof notificationsControllerList>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof notificationsControllerList>>,
+          TError,
+          Awaited<ReturnType<typeof notificationsControllerList>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useNotificationsControllerList<
+  TData = Awaited<ReturnType<typeof notificationsControllerList>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: NotificationsControllerListParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof notificationsControllerList>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof notificationsControllerList>>,
+          TError,
+          Awaited<ReturnType<typeof notificationsControllerList>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useNotificationsControllerList<
+  TData = Awaited<ReturnType<typeof notificationsControllerList>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: NotificationsControllerListParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof notificationsControllerList>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useNotificationsControllerList<
+  TData = Awaited<ReturnType<typeof notificationsControllerList>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: NotificationsControllerListParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof notificationsControllerList>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getNotificationsControllerListQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getNotificationsControllerReadAllUrl = () => {
+  return `/v1/me/notifications/read-all`;
+};
+
+export const notificationsControllerReadAll = async (
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<ReadAllDtoOutput> => {
+  return apiFetch<ReadAllDtoOutput>(getNotificationsControllerReadAllUrl(), {
+    ...options,
+    method: 'POST',
+  });
+};
+
+export const getNotificationsControllerReadAllMutationKey = () =>
+  ['notificationsControllerReadAll'] as const;
+
+export const getNotificationsControllerReadAllMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof notificationsControllerReadAll>>,
+    TError,
+    void,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof notificationsControllerReadAll>>,
+  TError,
+  void,
+  TContext
+> => {
+  const mutationKey = getNotificationsControllerReadAllMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof notificationsControllerReadAll>>,
+    void
+  > = () => {
+    return notificationsControllerReadAll(requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type NotificationsControllerReadAllMutationResult = NonNullable<
+  Awaited<ReturnType<typeof notificationsControllerReadAll>>
+>;
+
+export type NotificationsControllerReadAllMutationError = ErrorType<ProblemDetails>;
+
+export const useNotificationsControllerReadAll = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof notificationsControllerReadAll>>,
+      TError,
+      void,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof notificationsControllerReadAll>>,
+  TError,
+  void,
+  TContext
+> => {
+  return useMutation(getNotificationsControllerReadAllMutationOptions(options), queryClient);
+};
+
+export const getNotificationsControllerReadUrl = (notificationId: string) => {
+  return `/v1/me/notifications/${notificationId}/read`;
+};
+
+export const notificationsControllerRead = async (
+  notificationId: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<void> => {
+  return apiFetch<void>(getNotificationsControllerReadUrl(notificationId), {
+    ...options,
+    method: 'POST',
+  });
+};
+
+export const getNotificationsControllerReadMutationKey = () =>
+  ['notificationsControllerRead'] as const;
+
+export const getNotificationsControllerReadMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof notificationsControllerRead>>,
+    TError,
+    NotificationsControllerReadMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof notificationsControllerRead>>,
+  TError,
+  NotificationsControllerReadMutationVariables,
+  TContext
+> => {
+  const mutationKey = getNotificationsControllerReadMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof notificationsControllerRead>>,
+    NotificationsControllerReadMutationVariables
+  > = (props) => {
+    const { notificationId } = props ?? {};
+
+    return notificationsControllerRead(notificationId, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type NotificationsControllerReadMutationResult = NonNullable<
+  Awaited<ReturnType<typeof notificationsControllerRead>>
+>;
+
+export type NotificationsControllerReadMutationError = ErrorType<ProblemDetails>;
+export type NotificationsControllerReadMutationVariables = { notificationId: string };
+
+export const useNotificationsControllerRead = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof notificationsControllerRead>>,
+      TError,
+      NotificationsControllerReadMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof notificationsControllerRead>>,
+  TError,
+  NotificationsControllerReadMutationVariables,
+  TContext
+> => {
+  return useMutation(getNotificationsControllerReadMutationOptions(options), queryClient);
+};
+
+export const getNotificationsControllerRemoveUrl = (notificationId: string) => {
+  return `/v1/me/notifications/${notificationId}`;
+};
+
+export const notificationsControllerRemove = async (
+  notificationId: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<void> => {
+  return apiFetch<void>(getNotificationsControllerRemoveUrl(notificationId), {
+    ...options,
+    method: 'DELETE',
+  });
+};
+
+export const getNotificationsControllerRemoveMutationKey = () =>
+  ['notificationsControllerRemove'] as const;
+
+export const getNotificationsControllerRemoveMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof notificationsControllerRemove>>,
+    TError,
+    NotificationsControllerRemoveMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof notificationsControllerRemove>>,
+  TError,
+  NotificationsControllerRemoveMutationVariables,
+  TContext
+> => {
+  const mutationKey = getNotificationsControllerRemoveMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof notificationsControllerRemove>>,
+    NotificationsControllerRemoveMutationVariables
+  > = (props) => {
+    const { notificationId } = props ?? {};
+
+    return notificationsControllerRemove(notificationId, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type NotificationsControllerRemoveMutationResult = NonNullable<
+  Awaited<ReturnType<typeof notificationsControllerRemove>>
+>;
+
+export type NotificationsControllerRemoveMutationError = ErrorType<ProblemDetails>;
+export type NotificationsControllerRemoveMutationVariables = { notificationId: string };
+
+export const useNotificationsControllerRemove = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof notificationsControllerRemove>>,
+      TError,
+      NotificationsControllerRemoveMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof notificationsControllerRemove>>,
+  TError,
+  NotificationsControllerRemoveMutationVariables,
+  TContext
+> => {
+  return useMutation(getNotificationsControllerRemoveMutationOptions(options), queryClient);
+};
+
+export const getNotificationsControllerCountersUrl = () => {
+  return `/v1/me/counters`;
+};
+
+export const notificationsControllerCounters = async (
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<CountersDtoOutput> => {
+  return apiFetch<CountersDtoOutput>(getNotificationsControllerCountersUrl(), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getNotificationsControllerCountersQueryKey = () => {
+  return [`/v1/me/counters`] as const;
+};
+
+export const getNotificationsControllerCountersQueryOptions = <
+  TData = Awaited<ReturnType<typeof notificationsControllerCounters>>,
+  TError = ErrorType<ProblemDetails>,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<Awaited<ReturnType<typeof notificationsControllerCounters>>, TError, TData>
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getNotificationsControllerCountersQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof notificationsControllerCounters>>> = ({
+    signal,
+  }) => notificationsControllerCounters({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof notificationsControllerCounters>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type NotificationsControllerCountersQueryResult = NonNullable<
+  Awaited<ReturnType<typeof notificationsControllerCounters>>
+>;
+export type NotificationsControllerCountersQueryError = ErrorType<ProblemDetails>;
+
+export function useNotificationsControllerCounters<
+  TData = Awaited<ReturnType<typeof notificationsControllerCounters>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof notificationsControllerCounters>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof notificationsControllerCounters>>,
+          TError,
+          Awaited<ReturnType<typeof notificationsControllerCounters>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useNotificationsControllerCounters<
+  TData = Awaited<ReturnType<typeof notificationsControllerCounters>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof notificationsControllerCounters>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof notificationsControllerCounters>>,
+          TError,
+          Awaited<ReturnType<typeof notificationsControllerCounters>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useNotificationsControllerCounters<
+  TData = Awaited<ReturnType<typeof notificationsControllerCounters>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof notificationsControllerCounters>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useNotificationsControllerCounters<
+  TData = Awaited<ReturnType<typeof notificationsControllerCounters>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof notificationsControllerCounters>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getNotificationsControllerCountersQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getNotificationsControllerPreferencesUrl = () => {
+  return `/v1/me/notification-preferences`;
+};
+
+export const notificationsControllerPreferences = async (
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<PreferencesDtoOutput> => {
+  return apiFetch<PreferencesDtoOutput>(getNotificationsControllerPreferencesUrl(), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getNotificationsControllerPreferencesQueryKey = () => {
+  return [`/v1/me/notification-preferences`] as const;
+};
+
+export const getNotificationsControllerPreferencesQueryOptions = <
+  TData = Awaited<ReturnType<typeof notificationsControllerPreferences>>,
+  TError = ErrorType<ProblemDetails>,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<Awaited<ReturnType<typeof notificationsControllerPreferences>>, TError, TData>
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getNotificationsControllerPreferencesQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof notificationsControllerPreferences>>> = ({
+    signal,
+  }) => notificationsControllerPreferences({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof notificationsControllerPreferences>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type NotificationsControllerPreferencesQueryResult = NonNullable<
+  Awaited<ReturnType<typeof notificationsControllerPreferences>>
+>;
+export type NotificationsControllerPreferencesQueryError = ErrorType<ProblemDetails>;
+
+export function useNotificationsControllerPreferences<
+  TData = Awaited<ReturnType<typeof notificationsControllerPreferences>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof notificationsControllerPreferences>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof notificationsControllerPreferences>>,
+          TError,
+          Awaited<ReturnType<typeof notificationsControllerPreferences>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useNotificationsControllerPreferences<
+  TData = Awaited<ReturnType<typeof notificationsControllerPreferences>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof notificationsControllerPreferences>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof notificationsControllerPreferences>>,
+          TError,
+          Awaited<ReturnType<typeof notificationsControllerPreferences>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useNotificationsControllerPreferences<
+  TData = Awaited<ReturnType<typeof notificationsControllerPreferences>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof notificationsControllerPreferences>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useNotificationsControllerPreferences<
+  TData = Awaited<ReturnType<typeof notificationsControllerPreferences>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof notificationsControllerPreferences>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getNotificationsControllerPreferencesQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getNotificationsControllerUpdatePreferencesUrl = () => {
+  return `/v1/me/notification-preferences`;
+};
+
+export const notificationsControllerUpdatePreferences = async (
+  updatePreferencesDto: UpdatePreferencesDto,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<PreferencesDtoOutput> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit['headers']>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(
+          h as Iterable<Iterable<string>>,
+          (entry) => Array.from(entry) as [string, string],
+        ),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+  return apiFetch<PreferencesDtoOutput>(getNotificationsControllerUpdatePreferencesUrl(), {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(updatePreferencesDto),
+  });
+};
+
+export const getNotificationsControllerUpdatePreferencesMutationKey = () =>
+  ['notificationsControllerUpdatePreferences'] as const;
+
+export const getNotificationsControllerUpdatePreferencesMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof notificationsControllerUpdatePreferences>>,
+    TError,
+    NotificationsControllerUpdatePreferencesMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof notificationsControllerUpdatePreferences>>,
+  TError,
+  NotificationsControllerUpdatePreferencesMutationVariables,
+  TContext
+> => {
+  const mutationKey = getNotificationsControllerUpdatePreferencesMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof notificationsControllerUpdatePreferences>>,
+    NotificationsControllerUpdatePreferencesMutationVariables
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return notificationsControllerUpdatePreferences(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type NotificationsControllerUpdatePreferencesMutationResult = NonNullable<
+  Awaited<ReturnType<typeof notificationsControllerUpdatePreferences>>
+>;
+export type NotificationsControllerUpdatePreferencesMutationBody = UpdatePreferencesDto;
+export type NotificationsControllerUpdatePreferencesMutationError = ErrorType<ProblemDetails>;
+export type NotificationsControllerUpdatePreferencesMutationVariables = {
+  data: UpdatePreferencesDto;
+};
+
+export const useNotificationsControllerUpdatePreferences = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof notificationsControllerUpdatePreferences>>,
+      TError,
+      NotificationsControllerUpdatePreferencesMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof notificationsControllerUpdatePreferences>>,
+  TError,
+  NotificationsControllerUpdatePreferencesMutationVariables,
+  TContext
+> => {
+  return useMutation(
+    getNotificationsControllerUpdatePreferencesMutationOptions(options),
+    queryClient,
+  );
+};
+
+export const getNotificationsControllerUnsubscribeUrl = (
+  params: NotificationsControllerUnsubscribeParams,
+) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/v1/notifications/unsubscribe?${stringifiedParams}`
+    : `/v1/notifications/unsubscribe`;
+};
+
+export const notificationsControllerUnsubscribe = async (
+  params: NotificationsControllerUnsubscribeParams,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<UnsubscribeResultDtoOutput> => {
+  return apiFetch<UnsubscribeResultDtoOutput>(getNotificationsControllerUnsubscribeUrl(params), {
+    ...options,
+    method: 'POST',
+  });
+};
+
+export const getNotificationsControllerUnsubscribeMutationKey = () =>
+  ['notificationsControllerUnsubscribe'] as const;
+
+export const getNotificationsControllerUnsubscribeMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof notificationsControllerUnsubscribe>>,
+    TError,
+    NotificationsControllerUnsubscribeMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof notificationsControllerUnsubscribe>>,
+  TError,
+  NotificationsControllerUnsubscribeMutationVariables,
+  TContext
+> => {
+  const mutationKey = getNotificationsControllerUnsubscribeMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof notificationsControllerUnsubscribe>>,
+    NotificationsControllerUnsubscribeMutationVariables
+  > = (props) => {
+    const { params } = props ?? {};
+
+    return notificationsControllerUnsubscribe(params, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type NotificationsControllerUnsubscribeMutationResult = NonNullable<
+  Awaited<ReturnType<typeof notificationsControllerUnsubscribe>>
+>;
+
+export type NotificationsControllerUnsubscribeMutationError = ErrorType<ProblemDetails>;
+export type NotificationsControllerUnsubscribeMutationVariables = {
+  params: NotificationsControllerUnsubscribeParams;
+};
+
+export const useNotificationsControllerUnsubscribe = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof notificationsControllerUnsubscribe>>,
+      TError,
+      NotificationsControllerUnsubscribeMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof notificationsControllerUnsubscribe>>,
+  TError,
+  NotificationsControllerUnsubscribeMutationVariables,
+  TContext
+> => {
+  return useMutation(getNotificationsControllerUnsubscribeMutationOptions(options), queryClient);
 };

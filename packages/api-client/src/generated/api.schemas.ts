@@ -73,33 +73,142 @@ export interface LegalStatusDtoOutput {
   current: LegalStatusDtoOutputCurrent;
 }
 
-export type PreferencesDtoLocale = (typeof PreferencesDtoLocale)[keyof typeof PreferencesDtoLocale];
+export type UpdatePreferencesDtoEmailDigest =
+  (typeof UpdatePreferencesDtoEmailDigest)[keyof typeof UpdatePreferencesDtoEmailDigest];
 
-export const PreferencesDtoLocale = {
-  fr: 'fr',
-  en: 'en',
-  sw: 'sw',
-  wo: 'wo',
-  ln: 'ln',
+export const UpdatePreferencesDtoEmailDigest = {
+  off: 'off',
+  daily: 'daily',
+  weekly: 'weekly',
 } as const;
 
-export interface PreferencesDto {
-  locale: PreferencesDtoLocale;
+export type UpdatePreferencesDtoChangesItemType =
+  (typeof UpdatePreferencesDtoChangesItemType)[keyof typeof UpdatePreferencesDtoChangesItemType];
+
+export const UpdatePreferencesDtoChangesItemType = {
+  connection_request: 'connection_request',
+  connection_accepted: 'connection_accepted',
+  new_follower: 'new_follower',
+  reaction: 'reaction',
+  comment: 'comment',
+  mention: 'mention',
+  followed_post: 'followed_post',
+  message: 'message',
+  message_request: 'message_request',
+  message_request_accepted: 'message_request_accepted',
+  introduction_proposed: 'introduction_proposed',
+  introduction_completed: 'introduction_completed',
+  introduction_declined: 'introduction_declined',
+  profile_views: 'profile_views',
+  project_contribution: 'project_contribution',
+  tier_unlocked: 'tier_unlocked',
+  project_update: 'project_update',
+  project_ending_soon: 'project_ending_soon',
+  project_funded: 'project_funded',
+  project_closed: 'project_closed',
+  project_interest: 'project_interest',
+  project_team_invitation: 'project_team_invitation',
+  project_team_joined: 'project_team_joined',
+  project_team_invitation_declined: 'project_team_invitation_declined',
+  organization_invitation: 'organization_invitation',
+  organization_member_joined: 'organization_member_joined',
+  organization_role_changed: 'organization_role_changed',
+  organization_ownership_transferred: 'organization_ownership_transferred',
+  organization_verification_decided: 'organization_verification_decided',
+  kyc_decided: 'kyc_decided',
+  contribution_refunded: 'contribution_refunded',
+  offline_contribution_declared: 'offline_contribution_declared',
+  offline_contribution_decided: 'offline_contribution_decided',
+  time_entry_declared: 'time_entry_declared',
+  time_entry_answered: 'time_entry_answered',
+  security_alert: 'security_alert',
+} as const;
+
+export type UpdatePreferencesDtoChangesItemChannel =
+  (typeof UpdatePreferencesDtoChangesItemChannel)[keyof typeof UpdatePreferencesDtoChangesItemChannel];
+
+export const UpdatePreferencesDtoChangesItemChannel = {
+  in_app: 'in_app',
+  email: 'email',
+} as const;
+
+export type UpdatePreferencesDtoChangesItem = {
+  type: UpdatePreferencesDtoChangesItemType;
+  channel: UpdatePreferencesDtoChangesItemChannel;
+  enabled: boolean;
+};
+
+export interface UpdatePreferencesDto {
+  emailDigest?: UpdatePreferencesDtoEmailDigest;
+  /** @maxItems 72 */
+  changes?: UpdatePreferencesDtoChangesItem[];
 }
 
-export type PreferencesDtoOutputLocale =
-  (typeof PreferencesDtoOutputLocale)[keyof typeof PreferencesDtoOutputLocale];
+export type PreferencesDtoOutputEmailDigest =
+  (typeof PreferencesDtoOutputEmailDigest)[keyof typeof PreferencesDtoOutputEmailDigest];
 
-export const PreferencesDtoOutputLocale = {
-  fr: 'fr',
-  en: 'en',
-  sw: 'sw',
-  wo: 'wo',
-  ln: 'ln',
+export const PreferencesDtoOutputEmailDigest = {
+  off: 'off',
+  daily: 'daily',
+  weekly: 'weekly',
 } as const;
 
+export type PreferencesDtoOutputTypesItemType =
+  (typeof PreferencesDtoOutputTypesItemType)[keyof typeof PreferencesDtoOutputTypesItemType];
+
+export const PreferencesDtoOutputTypesItemType = {
+  connection_request: 'connection_request',
+  connection_accepted: 'connection_accepted',
+  new_follower: 'new_follower',
+  reaction: 'reaction',
+  comment: 'comment',
+  mention: 'mention',
+  followed_post: 'followed_post',
+  message: 'message',
+  message_request: 'message_request',
+  message_request_accepted: 'message_request_accepted',
+  introduction_proposed: 'introduction_proposed',
+  introduction_completed: 'introduction_completed',
+  introduction_declined: 'introduction_declined',
+  profile_views: 'profile_views',
+  project_contribution: 'project_contribution',
+  tier_unlocked: 'tier_unlocked',
+  project_update: 'project_update',
+  project_ending_soon: 'project_ending_soon',
+  project_funded: 'project_funded',
+  project_closed: 'project_closed',
+  project_interest: 'project_interest',
+  project_team_invitation: 'project_team_invitation',
+  project_team_joined: 'project_team_joined',
+  project_team_invitation_declined: 'project_team_invitation_declined',
+  organization_invitation: 'organization_invitation',
+  organization_member_joined: 'organization_member_joined',
+  organization_role_changed: 'organization_role_changed',
+  organization_ownership_transferred: 'organization_ownership_transferred',
+  organization_verification_decided: 'organization_verification_decided',
+  kyc_decided: 'kyc_decided',
+  contribution_refunded: 'contribution_refunded',
+  offline_contribution_declared: 'offline_contribution_declared',
+  offline_contribution_decided: 'offline_contribution_decided',
+  time_entry_declared: 'time_entry_declared',
+  time_entry_answered: 'time_entry_answered',
+  security_alert: 'security_alert',
+} as const;
+
+export type PreferencesDtoOutputTypesItemChannels = {
+  in_app: boolean;
+  email: boolean;
+};
+
+export type PreferencesDtoOutputTypesItem = {
+  type: PreferencesDtoOutputTypesItemType;
+  transactional: boolean;
+  channels: PreferencesDtoOutputTypesItemChannels;
+};
+
 export interface PreferencesDtoOutput {
-  locale: PreferencesDtoOutputLocale;
+  emailDigest: PreferencesDtoOutputEmailDigest;
+  types: PreferencesDtoOutputTypesItem[];
 }
 
 export type ActionPrerequisitesDtoOutputAction =
@@ -187,6 +296,17 @@ export const ActionPrerequisitesDtoOutputAction = {
   engagementtimedeclare: 'engagement.time.declare',
   engagementtimeread: 'engagement.time.read',
   engagementtimerespond: 'engagement.time.respond',
+  messagingread: 'messaging.read',
+  messagingconversationstart: 'messaging.conversation.start',
+  messagingconversationparticipate: 'messaging.conversation.participate',
+  messagingmessageupdate: 'messaging.message.update',
+  messagingrequestrespond: 'messaging.request.respond',
+  messagingsettingsupdate: 'messaging.settings.update',
+  messagingintroductionpropose: 'messaging.introduction.propose',
+  messagingintroductionrespond: 'messaging.introduction.respond',
+  notificationsread: 'notifications.read',
+  notificationsmanage: 'notifications.manage',
+  notificationspreferencesupdate: 'notifications.preferences.update',
 } as const;
 
 export type ActionPrerequisitesDtoOutputCode =
@@ -339,6 +459,31 @@ export const ActionPrerequisitesDtoOutputCode = {
   ENGAGEMENT_TIME_ENTRY_NOT_FOUND: 'ENGAGEMENT_TIME_ENTRY_NOT_FOUND',
   ENGAGEMENT_BENEFICIARY_INVALID: 'ENGAGEMENT_BENEFICIARY_INVALID',
   ENGAGEMENT_TIME_ENTRY_ALREADY_ANSWERED: 'ENGAGEMENT_TIME_ENTRY_ALREADY_ANSWERED',
+  MESSAGING_CONVERSATION_NOT_FOUND: 'MESSAGING_CONVERSATION_NOT_FOUND',
+  MESSAGING_RECIPIENT_NOT_FOUND: 'MESSAGING_RECIPIENT_NOT_FOUND',
+  MESSAGING_SELF_CONVERSATION: 'MESSAGING_SELF_CONVERSATION',
+  MESSAGING_RECIPIENT_NOT_ACCEPTING: 'MESSAGING_RECIPIENT_NOT_ACCEPTING',
+  MESSAGING_REQUEST_PENDING: 'MESSAGING_REQUEST_PENDING',
+  MESSAGING_REQUEST_LIMIT: 'MESSAGING_REQUEST_LIMIT',
+  MESSAGING_REQUEST_NOT_FOUND: 'MESSAGING_REQUEST_NOT_FOUND',
+  MESSAGING_CANNOT_SEND: 'MESSAGING_CANNOT_SEND',
+  MESSAGING_MESSAGE_EMPTY: 'MESSAGING_MESSAGE_EMPTY',
+  MESSAGING_MESSAGE_NOT_FOUND: 'MESSAGING_MESSAGE_NOT_FOUND',
+  MESSAGING_NOT_SENDER: 'MESSAGING_NOT_SENDER',
+  MESSAGING_EDIT_WINDOW_CLOSED: 'MESSAGING_EDIT_WINDOW_CLOSED',
+  MESSAGING_MESSAGE_DELETED: 'MESSAGING_MESSAGE_DELETED',
+  MESSAGING_CLIENT_ID_REUSED: 'MESSAGING_CLIENT_ID_REUSED',
+  MESSAGING_SHARED_POST_NOT_FOUND: 'MESSAGING_SHARED_POST_NOT_FOUND',
+  MESSAGING_NOT_A_GROUP: 'MESSAGING_NOT_A_GROUP',
+  MESSAGING_INTRODUCTION_NOT_FOUND: 'MESSAGING_INTRODUCTION_NOT_FOUND',
+  MESSAGING_INTRODUCTION_INVALID: 'MESSAGING_INTRODUCTION_INVALID',
+  MESSAGING_INTRODUCTION_NOT_CONNECTED: 'MESSAGING_INTRODUCTION_NOT_CONNECTED',
+  MESSAGING_INTRODUCTION_PENDING: 'MESSAGING_INTRODUCTION_PENDING',
+  MESSAGING_INTRODUCTION_ALREADY_ANSWERED: 'MESSAGING_INTRODUCTION_ALREADY_ANSWERED',
+  NOTIFICATIONS_NOT_FOUND: 'NOTIFICATIONS_NOT_FOUND',
+  NOTIFICATIONS_PREFERENCE_LOCKED: 'NOTIFICATIONS_PREFERENCE_LOCKED',
+  NOTIFICATIONS_UNSUBSCRIBE_INVALID: 'NOTIFICATIONS_UNSUBSCRIBE_INVALID',
+  NOTIFICATIONS_WEBHOOK_INVALID: 'NOTIFICATIONS_WEBHOOK_INVALID',
   INTERNAL_ERROR: 'INTERNAL_ERROR',
   SERVICE_UNAVAILABLE: 'SERVICE_UNAVAILABLE',
 } as const;
@@ -423,6 +568,7 @@ export const CurrentUserDtoOutputPreferencesLocale = {
 
 export type CurrentUserDtoOutputPreferences = {
   locale: CurrentUserDtoOutputPreferencesLocale;
+  timeZone: string;
 };
 
 export type CurrentUserDtoOutputActiveLocalesItem =
@@ -8679,6 +8825,2566 @@ export interface DisputeTimeEntryDto {
   reason: string;
 }
 
+export type ConversationPageDtoOutputItemsItemKind =
+  (typeof ConversationPageDtoOutputItemsItemKind)[keyof typeof ConversationPageDtoOutputItemsItemKind];
+
+export const ConversationPageDtoOutputItemsItemKind = {
+  direct: 'direct',
+  group: 'group',
+} as const;
+
+export type ConversationPageDtoOutputItemsItemRequestState =
+  (typeof ConversationPageDtoOutputItemsItemRequestState)[keyof typeof ConversationPageDtoOutputItemsItemRequestState];
+
+export const ConversationPageDtoOutputItemsItemRequestState = {
+  none: 'none',
+  sent: 'sent',
+  received: 'received',
+} as const;
+
+export type ConversationPageDtoOutputItemsItemParticipantsItemMember = {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  displayName: string;
+  /** @nullable */
+  headline: string | null;
+  /** @nullable */
+  avatarUrl: string | null;
+};
+
+export type ConversationPageDtoOutputItemsItemParticipantsItem = {
+  member: ConversationPageDtoOutputItemsItemParticipantsItemMember;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  lastReadSequence: number;
+  left: boolean;
+};
+
+export type ConversationPageDtoOutputItemsItemLastMessageKind =
+  (typeof ConversationPageDtoOutputItemsItemLastMessageKind)[keyof typeof ConversationPageDtoOutputItemsItemLastMessageKind];
+
+export const ConversationPageDtoOutputItemsItemLastMessageKind = {
+  text: 'text',
+  introduction: 'introduction',
+} as const;
+
+export type ConversationPageDtoOutputItemsItemLastMessageAttachmentsItemImageVariants = {
+  [key: string]: {
+    /**
+     * @minimum -9007199254740991
+     * @maximum 9007199254740991
+     */
+    width: number;
+    /**
+     * @minimum -9007199254740991
+     * @maximum 9007199254740991
+     */
+    height: number;
+    /** @nullable */
+    webp: string | null;
+    /** @nullable */
+    avif: string | null;
+  };
+};
+
+export type ConversationPageDtoOutputItemsItemLastMessageAttachmentsItemImage = {
+  url: string;
+  variants: ConversationPageDtoOutputItemsItemLastMessageAttachmentsItemImageVariants;
+} | null;
+
+export type ConversationPageDtoOutputItemsItemLastMessageAttachmentsItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  mediaId: string;
+  image: ConversationPageDtoOutputItemsItemLastMessageAttachmentsItemImage;
+};
+
+export type ConversationPageDtoOutputItemsItemLastMessageSharedPostPostAuthor =
+  | {
+      type: 'member';
+      member: {
+        /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+        handle: string;
+        displayName: string;
+        /** @nullable */
+        headline: string | null;
+        /** @nullable */
+        avatarUrl: string | null;
+      };
+    }
+  | {
+      type: 'organization';
+      organization: {
+        /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+        id: string;
+        slug: string;
+        name: string;
+        /** @nullable */
+        logoUrl: string | null;
+        verified: boolean;
+      };
+    };
+
+export type ConversationPageDtoOutputItemsItemLastMessageSharedPostPostLanguageSource =
+  (typeof ConversationPageDtoOutputItemsItemLastMessageSharedPostPostLanguageSource)[keyof typeof ConversationPageDtoOutputItemsItemLastMessageSharedPostPostLanguageSource];
+
+export const ConversationPageDtoOutputItemsItemLastMessageSharedPostPostLanguageSource = {
+  declared: 'declared',
+  detected: 'detected',
+  undetermined: 'undetermined',
+} as const;
+
+export type ConversationPageDtoOutputItemsItemLastMessageSharedPostPostVisibility =
+  (typeof ConversationPageDtoOutputItemsItemLastMessageSharedPostPostVisibility)[keyof typeof ConversationPageDtoOutputItemsItemLastMessageSharedPostPostVisibility];
+
+export const ConversationPageDtoOutputItemsItemLastMessageSharedPostPostVisibility = {
+  public: 'public',
+  members: 'members',
+  connections: 'connections',
+} as const;
+
+export type ConversationPageDtoOutputItemsItemLastMessageSharedPostPostImagesItemVariants = {
+  [key: string]: {
+    /**
+     * @minimum -9007199254740991
+     * @maximum 9007199254740991
+     */
+    width: number;
+    /**
+     * @minimum -9007199254740991
+     * @maximum 9007199254740991
+     */
+    height: number;
+    /** @nullable */
+    webp: string | null;
+    /** @nullable */
+    avif: string | null;
+  };
+};
+
+export type ConversationPageDtoOutputItemsItemLastMessageSharedPostPostImagesItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  mediaId: string;
+  url: string;
+  variants: ConversationPageDtoOutputItemsItemLastMessageSharedPostPostImagesItemVariants;
+};
+
+export type ConversationPageDtoOutputItemsItemLastMessageSharedPostPostDocument = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  mediaId: string;
+  /** @nullable */
+  thumbnailUrl: string | null;
+  pageCount: number | null;
+} | null;
+
+export type ConversationPageDtoOutputItemsItemLastMessageSharedPostPostLinkStatus =
+  (typeof ConversationPageDtoOutputItemsItemLastMessageSharedPostPostLinkStatus)[keyof typeof ConversationPageDtoOutputItemsItemLastMessageSharedPostPostLinkStatus];
+
+export const ConversationPageDtoOutputItemsItemLastMessageSharedPostPostLinkStatus = {
+  pending: 'pending',
+  ready: 'ready',
+  failed: 'failed',
+} as const;
+
+export type ConversationPageDtoOutputItemsItemLastMessageSharedPostPostLink = {
+  url: string;
+  status: ConversationPageDtoOutputItemsItemLastMessageSharedPostPostLinkStatus;
+  /** @nullable */
+  title: string | null;
+  /** @nullable */
+  description: string | null;
+  /** @nullable */
+  siteName: string | null;
+  /** @nullable */
+  imageUrl: string | null;
+} | null;
+
+export type ConversationPageDtoOutputItemsItemLastMessageSharedPostPostMentionsItemType =
+  (typeof ConversationPageDtoOutputItemsItemLastMessageSharedPostPostMentionsItemType)[keyof typeof ConversationPageDtoOutputItemsItemLastMessageSharedPostPostMentionsItemType];
+
+export const ConversationPageDtoOutputItemsItemLastMessageSharedPostPostMentionsItemType = {
+  member: 'member',
+  organization: 'organization',
+} as const;
+
+export type ConversationPageDtoOutputItemsItemLastMessageSharedPostPostMentionsItem = {
+  token: string;
+  type: ConversationPageDtoOutputItemsItemLastMessageSharedPostPostMentionsItemType;
+  key: string;
+  displayName: string;
+};
+
+export type ConversationPageDtoOutputItemsItemLastMessageSharedPostPostReactionsCounts = {
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  like: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  bravo: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  insightful: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  support: number;
+};
+
+export type ConversationPageDtoOutputItemsItemLastMessageSharedPostPostReactionsViewerReaction =
+  | (typeof ConversationPageDtoOutputItemsItemLastMessageSharedPostPostReactionsViewerReaction)[keyof typeof ConversationPageDtoOutputItemsItemLastMessageSharedPostPostReactionsViewerReaction]
+  | null;
+
+export const ConversationPageDtoOutputItemsItemLastMessageSharedPostPostReactionsViewerReaction = {
+  like: 'like',
+  bravo: 'bravo',
+  insightful: 'insightful',
+  support: 'support',
+} as const;
+
+export type ConversationPageDtoOutputItemsItemLastMessageSharedPostPostReactions = {
+  counts: ConversationPageDtoOutputItemsItemLastMessageSharedPostPostReactionsCounts;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  total: number;
+  viewerReaction: ConversationPageDtoOutputItemsItemLastMessageSharedPostPostReactionsViewerReaction;
+};
+
+export type ConversationPageDtoOutputItemsItemLastMessageSharedPostPostKind =
+  (typeof ConversationPageDtoOutputItemsItemLastMessageSharedPostPostKind)[keyof typeof ConversationPageDtoOutputItemsItemLastMessageSharedPostPostKind];
+
+export const ConversationPageDtoOutputItemsItemLastMessageSharedPostPostKind = {
+  post: 'post',
+  repost: 'repost',
+} as const;
+
+export type ConversationPageDtoOutputItemsItemLastMessageSharedPostPostRepostOfAuthor =
+  | {
+      type: 'member';
+      member: {
+        /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+        handle: string;
+        displayName: string;
+        /** @nullable */
+        headline: string | null;
+        /** @nullable */
+        avatarUrl: string | null;
+      };
+    }
+  | {
+      type: 'organization';
+      organization: {
+        /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+        id: string;
+        slug: string;
+        name: string;
+        /** @nullable */
+        logoUrl: string | null;
+        verified: boolean;
+      };
+    };
+
+export type ConversationPageDtoOutputItemsItemLastMessageSharedPostPostRepostOfLanguageSource =
+  (typeof ConversationPageDtoOutputItemsItemLastMessageSharedPostPostRepostOfLanguageSource)[keyof typeof ConversationPageDtoOutputItemsItemLastMessageSharedPostPostRepostOfLanguageSource];
+
+export const ConversationPageDtoOutputItemsItemLastMessageSharedPostPostRepostOfLanguageSource = {
+  declared: 'declared',
+  detected: 'detected',
+  undetermined: 'undetermined',
+} as const;
+
+export type ConversationPageDtoOutputItemsItemLastMessageSharedPostPostRepostOfVisibility =
+  (typeof ConversationPageDtoOutputItemsItemLastMessageSharedPostPostRepostOfVisibility)[keyof typeof ConversationPageDtoOutputItemsItemLastMessageSharedPostPostRepostOfVisibility];
+
+export const ConversationPageDtoOutputItemsItemLastMessageSharedPostPostRepostOfVisibility = {
+  public: 'public',
+  members: 'members',
+  connections: 'connections',
+} as const;
+
+export type ConversationPageDtoOutputItemsItemLastMessageSharedPostPostRepostOfImagesItemVariants =
+  {
+    [key: string]: {
+      /**
+       * @minimum -9007199254740991
+       * @maximum 9007199254740991
+       */
+      width: number;
+      /**
+       * @minimum -9007199254740991
+       * @maximum 9007199254740991
+       */
+      height: number;
+      /** @nullable */
+      webp: string | null;
+      /** @nullable */
+      avif: string | null;
+    };
+  };
+
+export type ConversationPageDtoOutputItemsItemLastMessageSharedPostPostRepostOfImagesItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  mediaId: string;
+  url: string;
+  variants: ConversationPageDtoOutputItemsItemLastMessageSharedPostPostRepostOfImagesItemVariants;
+};
+
+export type ConversationPageDtoOutputItemsItemLastMessageSharedPostPostRepostOfDocument = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  mediaId: string;
+  /** @nullable */
+  thumbnailUrl: string | null;
+  pageCount: number | null;
+} | null;
+
+export type ConversationPageDtoOutputItemsItemLastMessageSharedPostPostRepostOfLinkStatus =
+  (typeof ConversationPageDtoOutputItemsItemLastMessageSharedPostPostRepostOfLinkStatus)[keyof typeof ConversationPageDtoOutputItemsItemLastMessageSharedPostPostRepostOfLinkStatus];
+
+export const ConversationPageDtoOutputItemsItemLastMessageSharedPostPostRepostOfLinkStatus = {
+  pending: 'pending',
+  ready: 'ready',
+  failed: 'failed',
+} as const;
+
+export type ConversationPageDtoOutputItemsItemLastMessageSharedPostPostRepostOfLink = {
+  url: string;
+  status: ConversationPageDtoOutputItemsItemLastMessageSharedPostPostRepostOfLinkStatus;
+  /** @nullable */
+  title: string | null;
+  /** @nullable */
+  description: string | null;
+  /** @nullable */
+  siteName: string | null;
+  /** @nullable */
+  imageUrl: string | null;
+} | null;
+
+export type ConversationPageDtoOutputItemsItemLastMessageSharedPostPostRepostOfMentionsItemType =
+  (typeof ConversationPageDtoOutputItemsItemLastMessageSharedPostPostRepostOfMentionsItemType)[keyof typeof ConversationPageDtoOutputItemsItemLastMessageSharedPostPostRepostOfMentionsItemType];
+
+export const ConversationPageDtoOutputItemsItemLastMessageSharedPostPostRepostOfMentionsItemType = {
+  member: 'member',
+  organization: 'organization',
+} as const;
+
+export type ConversationPageDtoOutputItemsItemLastMessageSharedPostPostRepostOfMentionsItem = {
+  token: string;
+  type: ConversationPageDtoOutputItemsItemLastMessageSharedPostPostRepostOfMentionsItemType;
+  key: string;
+  displayName: string;
+};
+
+export type ConversationPageDtoOutputItemsItemLastMessageSharedPostPostRepostOfReactionsCounts = {
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  like: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  bravo: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  insightful: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  support: number;
+};
+
+export type ConversationPageDtoOutputItemsItemLastMessageSharedPostPostRepostOfReactionsViewerReaction =
+  | (typeof ConversationPageDtoOutputItemsItemLastMessageSharedPostPostRepostOfReactionsViewerReaction)[keyof typeof ConversationPageDtoOutputItemsItemLastMessageSharedPostPostRepostOfReactionsViewerReaction]
+  | null;
+
+export const ConversationPageDtoOutputItemsItemLastMessageSharedPostPostRepostOfReactionsViewerReaction =
+  {
+    like: 'like',
+    bravo: 'bravo',
+    insightful: 'insightful',
+    support: 'support',
+  } as const;
+
+export type ConversationPageDtoOutputItemsItemLastMessageSharedPostPostRepostOfReactions = {
+  counts: ConversationPageDtoOutputItemsItemLastMessageSharedPostPostRepostOfReactionsCounts;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  total: number;
+  viewerReaction: ConversationPageDtoOutputItemsItemLastMessageSharedPostPostRepostOfReactionsViewerReaction;
+};
+
+export type ConversationPageDtoOutputItemsItemLastMessageSharedPostPostRepostOf = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  author: ConversationPageDtoOutputItemsItemLastMessageSharedPostPostRepostOfAuthor;
+  /** @nullable */
+  text: string | null;
+  /** @nullable */
+  language: string | null;
+  languageSource: ConversationPageDtoOutputItemsItemLastMessageSharedPostPostRepostOfLanguageSource;
+  visibility: ConversationPageDtoOutputItemsItemLastMessageSharedPostPostRepostOfVisibility;
+  images: ConversationPageDtoOutputItemsItemLastMessageSharedPostPostRepostOfImagesItem[];
+  document: ConversationPageDtoOutputItemsItemLastMessageSharedPostPostRepostOfDocument;
+  link: ConversationPageDtoOutputItemsItemLastMessageSharedPostPostRepostOfLink;
+  mentions: ConversationPageDtoOutputItemsItemLastMessageSharedPostPostRepostOfMentionsItem[];
+  projectId: string | null;
+  commentsDisabled: boolean;
+  reactions: ConversationPageDtoOutputItemsItemLastMessageSharedPostPostRepostOfReactions;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  commentCount: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  repostCount: number;
+  saved: boolean;
+  viewerIsAuthor: boolean;
+  featured: boolean;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+  editedAt: string | null;
+} | null;
+
+export type ConversationPageDtoOutputItemsItemLastMessageSharedPostPost = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  author: ConversationPageDtoOutputItemsItemLastMessageSharedPostPostAuthor;
+  /** @nullable */
+  text: string | null;
+  /** @nullable */
+  language: string | null;
+  languageSource: ConversationPageDtoOutputItemsItemLastMessageSharedPostPostLanguageSource;
+  visibility: ConversationPageDtoOutputItemsItemLastMessageSharedPostPostVisibility;
+  images: ConversationPageDtoOutputItemsItemLastMessageSharedPostPostImagesItem[];
+  document: ConversationPageDtoOutputItemsItemLastMessageSharedPostPostDocument;
+  link: ConversationPageDtoOutputItemsItemLastMessageSharedPostPostLink;
+  mentions: ConversationPageDtoOutputItemsItemLastMessageSharedPostPostMentionsItem[];
+  projectId: string | null;
+  commentsDisabled: boolean;
+  reactions: ConversationPageDtoOutputItemsItemLastMessageSharedPostPostReactions;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  commentCount: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  repostCount: number;
+  saved: boolean;
+  viewerIsAuthor: boolean;
+  featured: boolean;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+  editedAt: string | null;
+  kind: ConversationPageDtoOutputItemsItemLastMessageSharedPostPostKind;
+  repostOf: ConversationPageDtoOutputItemsItemLastMessageSharedPostPostRepostOf;
+} | null;
+
+export type ConversationPageDtoOutputItemsItemLastMessageSharedPost = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  postId: string;
+  post: ConversationPageDtoOutputItemsItemLastMessageSharedPostPost;
+} | null;
+
+export type ConversationPageDtoOutputItemsItemLastMessageModerationStatus =
+  (typeof ConversationPageDtoOutputItemsItemLastMessageModerationStatus)[keyof typeof ConversationPageDtoOutputItemsItemLastMessageModerationStatus];
+
+export const ConversationPageDtoOutputItemsItemLastMessageModerationStatus = {
+  visible: 'visible',
+  hidden: 'hidden',
+  removed: 'removed',
+} as const;
+
+export type ConversationPageDtoOutputItemsItemLastMessage = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  conversationId: string;
+  /**
+   * @maximum 9007199254740991
+   * @exclusiveMinimum 0
+   */
+  sequence: number;
+  clientMessageId: string;
+  kind: ConversationPageDtoOutputItemsItemLastMessageKind;
+  senderHandle: string | null;
+  mine: boolean;
+  /** @nullable */
+  body: string | null;
+  attachments: ConversationPageDtoOutputItemsItemLastMessageAttachmentsItem[];
+  sharedPost: ConversationPageDtoOutputItemsItemLastMessageSharedPost;
+  edited: boolean;
+  deleted: boolean;
+  moderationStatus: ConversationPageDtoOutputItemsItemLastMessageModerationStatus;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+  editedAt: string | null;
+} | null;
+
+export type ConversationPageDtoOutputItemsItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  kind: ConversationPageDtoOutputItemsItemKind;
+  requestState: ConversationPageDtoOutputItemsItemRequestState;
+  participants: ConversationPageDtoOutputItemsItemParticipantsItem[];
+  lastMessage: ConversationPageDtoOutputItemsItemLastMessage;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  lastSequence: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  lastReadSequence: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  unreadCount: number;
+  markedUnread: boolean;
+  archived: boolean;
+  muted: boolean;
+  canSend: boolean;
+  introductionId: string | null;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  lastMessageAt: string;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+};
+
+export interface ConversationPageDtoOutput {
+  items: ConversationPageDtoOutputItemsItem[];
+  nextCursor: string[];
+}
+
+export interface StartConversationDto {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  recipientHandle: string;
+  /** @pattern ^[A-Za-z0-9_-]{8,64}$ */
+  clientMessageId: string;
+  /** @maxLength 8000 */
+  body?: string;
+  /**
+   * @maxItems 5
+   * @items.pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$
+   */
+  attachmentIds?: string[];
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  sharedPostId?: string;
+}
+
+export type MessageDtoOutputKind = (typeof MessageDtoOutputKind)[keyof typeof MessageDtoOutputKind];
+
+export const MessageDtoOutputKind = {
+  text: 'text',
+  introduction: 'introduction',
+} as const;
+
+export type MessageDtoOutputAttachmentsItemImageVariants = {
+  [key: string]: {
+    /**
+     * @minimum -9007199254740991
+     * @maximum 9007199254740991
+     */
+    width: number;
+    /**
+     * @minimum -9007199254740991
+     * @maximum 9007199254740991
+     */
+    height: number;
+    /** @nullable */
+    webp: string | null;
+    /** @nullable */
+    avif: string | null;
+  };
+};
+
+export type MessageDtoOutputAttachmentsItemImage = {
+  url: string;
+  variants: MessageDtoOutputAttachmentsItemImageVariants;
+} | null;
+
+export type MessageDtoOutputAttachmentsItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  mediaId: string;
+  image: MessageDtoOutputAttachmentsItemImage;
+};
+
+export type MessageDtoOutputSharedPostPostAuthor =
+  | {
+      type: 'member';
+      member: {
+        /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+        handle: string;
+        displayName: string;
+        /** @nullable */
+        headline: string | null;
+        /** @nullable */
+        avatarUrl: string | null;
+      };
+    }
+  | {
+      type: 'organization';
+      organization: {
+        /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+        id: string;
+        slug: string;
+        name: string;
+        /** @nullable */
+        logoUrl: string | null;
+        verified: boolean;
+      };
+    };
+
+export type MessageDtoOutputSharedPostPostLanguageSource =
+  (typeof MessageDtoOutputSharedPostPostLanguageSource)[keyof typeof MessageDtoOutputSharedPostPostLanguageSource];
+
+export const MessageDtoOutputSharedPostPostLanguageSource = {
+  declared: 'declared',
+  detected: 'detected',
+  undetermined: 'undetermined',
+} as const;
+
+export type MessageDtoOutputSharedPostPostVisibility =
+  (typeof MessageDtoOutputSharedPostPostVisibility)[keyof typeof MessageDtoOutputSharedPostPostVisibility];
+
+export const MessageDtoOutputSharedPostPostVisibility = {
+  public: 'public',
+  members: 'members',
+  connections: 'connections',
+} as const;
+
+export type MessageDtoOutputSharedPostPostImagesItemVariants = {
+  [key: string]: {
+    /**
+     * @minimum -9007199254740991
+     * @maximum 9007199254740991
+     */
+    width: number;
+    /**
+     * @minimum -9007199254740991
+     * @maximum 9007199254740991
+     */
+    height: number;
+    /** @nullable */
+    webp: string | null;
+    /** @nullable */
+    avif: string | null;
+  };
+};
+
+export type MessageDtoOutputSharedPostPostImagesItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  mediaId: string;
+  url: string;
+  variants: MessageDtoOutputSharedPostPostImagesItemVariants;
+};
+
+export type MessageDtoOutputSharedPostPostDocument = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  mediaId: string;
+  /** @nullable */
+  thumbnailUrl: string | null;
+  pageCount: number | null;
+} | null;
+
+export type MessageDtoOutputSharedPostPostLinkStatus =
+  (typeof MessageDtoOutputSharedPostPostLinkStatus)[keyof typeof MessageDtoOutputSharedPostPostLinkStatus];
+
+export const MessageDtoOutputSharedPostPostLinkStatus = {
+  pending: 'pending',
+  ready: 'ready',
+  failed: 'failed',
+} as const;
+
+export type MessageDtoOutputSharedPostPostLink = {
+  url: string;
+  status: MessageDtoOutputSharedPostPostLinkStatus;
+  /** @nullable */
+  title: string | null;
+  /** @nullable */
+  description: string | null;
+  /** @nullable */
+  siteName: string | null;
+  /** @nullable */
+  imageUrl: string | null;
+} | null;
+
+export type MessageDtoOutputSharedPostPostMentionsItemType =
+  (typeof MessageDtoOutputSharedPostPostMentionsItemType)[keyof typeof MessageDtoOutputSharedPostPostMentionsItemType];
+
+export const MessageDtoOutputSharedPostPostMentionsItemType = {
+  member: 'member',
+  organization: 'organization',
+} as const;
+
+export type MessageDtoOutputSharedPostPostMentionsItem = {
+  token: string;
+  type: MessageDtoOutputSharedPostPostMentionsItemType;
+  key: string;
+  displayName: string;
+};
+
+export type MessageDtoOutputSharedPostPostReactionsCounts = {
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  like: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  bravo: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  insightful: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  support: number;
+};
+
+export type MessageDtoOutputSharedPostPostReactionsViewerReaction =
+  | (typeof MessageDtoOutputSharedPostPostReactionsViewerReaction)[keyof typeof MessageDtoOutputSharedPostPostReactionsViewerReaction]
+  | null;
+
+export const MessageDtoOutputSharedPostPostReactionsViewerReaction = {
+  like: 'like',
+  bravo: 'bravo',
+  insightful: 'insightful',
+  support: 'support',
+} as const;
+
+export type MessageDtoOutputSharedPostPostReactions = {
+  counts: MessageDtoOutputSharedPostPostReactionsCounts;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  total: number;
+  viewerReaction: MessageDtoOutputSharedPostPostReactionsViewerReaction;
+};
+
+export type MessageDtoOutputSharedPostPostKind =
+  (typeof MessageDtoOutputSharedPostPostKind)[keyof typeof MessageDtoOutputSharedPostPostKind];
+
+export const MessageDtoOutputSharedPostPostKind = {
+  post: 'post',
+  repost: 'repost',
+} as const;
+
+export type MessageDtoOutputSharedPostPostRepostOfAuthor =
+  | {
+      type: 'member';
+      member: {
+        /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+        handle: string;
+        displayName: string;
+        /** @nullable */
+        headline: string | null;
+        /** @nullable */
+        avatarUrl: string | null;
+      };
+    }
+  | {
+      type: 'organization';
+      organization: {
+        /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+        id: string;
+        slug: string;
+        name: string;
+        /** @nullable */
+        logoUrl: string | null;
+        verified: boolean;
+      };
+    };
+
+export type MessageDtoOutputSharedPostPostRepostOfLanguageSource =
+  (typeof MessageDtoOutputSharedPostPostRepostOfLanguageSource)[keyof typeof MessageDtoOutputSharedPostPostRepostOfLanguageSource];
+
+export const MessageDtoOutputSharedPostPostRepostOfLanguageSource = {
+  declared: 'declared',
+  detected: 'detected',
+  undetermined: 'undetermined',
+} as const;
+
+export type MessageDtoOutputSharedPostPostRepostOfVisibility =
+  (typeof MessageDtoOutputSharedPostPostRepostOfVisibility)[keyof typeof MessageDtoOutputSharedPostPostRepostOfVisibility];
+
+export const MessageDtoOutputSharedPostPostRepostOfVisibility = {
+  public: 'public',
+  members: 'members',
+  connections: 'connections',
+} as const;
+
+export type MessageDtoOutputSharedPostPostRepostOfImagesItemVariants = {
+  [key: string]: {
+    /**
+     * @minimum -9007199254740991
+     * @maximum 9007199254740991
+     */
+    width: number;
+    /**
+     * @minimum -9007199254740991
+     * @maximum 9007199254740991
+     */
+    height: number;
+    /** @nullable */
+    webp: string | null;
+    /** @nullable */
+    avif: string | null;
+  };
+};
+
+export type MessageDtoOutputSharedPostPostRepostOfImagesItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  mediaId: string;
+  url: string;
+  variants: MessageDtoOutputSharedPostPostRepostOfImagesItemVariants;
+};
+
+export type MessageDtoOutputSharedPostPostRepostOfDocument = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  mediaId: string;
+  /** @nullable */
+  thumbnailUrl: string | null;
+  pageCount: number | null;
+} | null;
+
+export type MessageDtoOutputSharedPostPostRepostOfLinkStatus =
+  (typeof MessageDtoOutputSharedPostPostRepostOfLinkStatus)[keyof typeof MessageDtoOutputSharedPostPostRepostOfLinkStatus];
+
+export const MessageDtoOutputSharedPostPostRepostOfLinkStatus = {
+  pending: 'pending',
+  ready: 'ready',
+  failed: 'failed',
+} as const;
+
+export type MessageDtoOutputSharedPostPostRepostOfLink = {
+  url: string;
+  status: MessageDtoOutputSharedPostPostRepostOfLinkStatus;
+  /** @nullable */
+  title: string | null;
+  /** @nullable */
+  description: string | null;
+  /** @nullable */
+  siteName: string | null;
+  /** @nullable */
+  imageUrl: string | null;
+} | null;
+
+export type MessageDtoOutputSharedPostPostRepostOfMentionsItemType =
+  (typeof MessageDtoOutputSharedPostPostRepostOfMentionsItemType)[keyof typeof MessageDtoOutputSharedPostPostRepostOfMentionsItemType];
+
+export const MessageDtoOutputSharedPostPostRepostOfMentionsItemType = {
+  member: 'member',
+  organization: 'organization',
+} as const;
+
+export type MessageDtoOutputSharedPostPostRepostOfMentionsItem = {
+  token: string;
+  type: MessageDtoOutputSharedPostPostRepostOfMentionsItemType;
+  key: string;
+  displayName: string;
+};
+
+export type MessageDtoOutputSharedPostPostRepostOfReactionsCounts = {
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  like: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  bravo: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  insightful: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  support: number;
+};
+
+export type MessageDtoOutputSharedPostPostRepostOfReactionsViewerReaction =
+  | (typeof MessageDtoOutputSharedPostPostRepostOfReactionsViewerReaction)[keyof typeof MessageDtoOutputSharedPostPostRepostOfReactionsViewerReaction]
+  | null;
+
+export const MessageDtoOutputSharedPostPostRepostOfReactionsViewerReaction = {
+  like: 'like',
+  bravo: 'bravo',
+  insightful: 'insightful',
+  support: 'support',
+} as const;
+
+export type MessageDtoOutputSharedPostPostRepostOfReactions = {
+  counts: MessageDtoOutputSharedPostPostRepostOfReactionsCounts;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  total: number;
+  viewerReaction: MessageDtoOutputSharedPostPostRepostOfReactionsViewerReaction;
+};
+
+export type MessageDtoOutputSharedPostPostRepostOf = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  author: MessageDtoOutputSharedPostPostRepostOfAuthor;
+  /** @nullable */
+  text: string | null;
+  /** @nullable */
+  language: string | null;
+  languageSource: MessageDtoOutputSharedPostPostRepostOfLanguageSource;
+  visibility: MessageDtoOutputSharedPostPostRepostOfVisibility;
+  images: MessageDtoOutputSharedPostPostRepostOfImagesItem[];
+  document: MessageDtoOutputSharedPostPostRepostOfDocument;
+  link: MessageDtoOutputSharedPostPostRepostOfLink;
+  mentions: MessageDtoOutputSharedPostPostRepostOfMentionsItem[];
+  projectId: string | null;
+  commentsDisabled: boolean;
+  reactions: MessageDtoOutputSharedPostPostRepostOfReactions;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  commentCount: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  repostCount: number;
+  saved: boolean;
+  viewerIsAuthor: boolean;
+  featured: boolean;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+  editedAt: string | null;
+} | null;
+
+export type MessageDtoOutputSharedPostPost = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  author: MessageDtoOutputSharedPostPostAuthor;
+  /** @nullable */
+  text: string | null;
+  /** @nullable */
+  language: string | null;
+  languageSource: MessageDtoOutputSharedPostPostLanguageSource;
+  visibility: MessageDtoOutputSharedPostPostVisibility;
+  images: MessageDtoOutputSharedPostPostImagesItem[];
+  document: MessageDtoOutputSharedPostPostDocument;
+  link: MessageDtoOutputSharedPostPostLink;
+  mentions: MessageDtoOutputSharedPostPostMentionsItem[];
+  projectId: string | null;
+  commentsDisabled: boolean;
+  reactions: MessageDtoOutputSharedPostPostReactions;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  commentCount: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  repostCount: number;
+  saved: boolean;
+  viewerIsAuthor: boolean;
+  featured: boolean;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+  editedAt: string | null;
+  kind: MessageDtoOutputSharedPostPostKind;
+  repostOf: MessageDtoOutputSharedPostPostRepostOf;
+} | null;
+
+export type MessageDtoOutputSharedPost = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  postId: string;
+  post: MessageDtoOutputSharedPostPost;
+} | null;
+
+export type MessageDtoOutputModerationStatus =
+  (typeof MessageDtoOutputModerationStatus)[keyof typeof MessageDtoOutputModerationStatus];
+
+export const MessageDtoOutputModerationStatus = {
+  visible: 'visible',
+  hidden: 'hidden',
+  removed: 'removed',
+} as const;
+
+export interface MessageDtoOutput {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  conversationId: string;
+  /**
+   * @maximum 9007199254740991
+   * @exclusiveMinimum 0
+   */
+  sequence: number;
+  clientMessageId: string;
+  kind: MessageDtoOutputKind;
+  senderHandle: string | null;
+  mine: boolean;
+  body: string[];
+  attachments: MessageDtoOutputAttachmentsItem[];
+  sharedPost: MessageDtoOutputSharedPost;
+  edited: boolean;
+  deleted: boolean;
+  moderationStatus: MessageDtoOutputModerationStatus;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+  editedAt: string | null;
+}
+
+export type ConversationDtoOutputKind =
+  (typeof ConversationDtoOutputKind)[keyof typeof ConversationDtoOutputKind];
+
+export const ConversationDtoOutputKind = {
+  direct: 'direct',
+  group: 'group',
+} as const;
+
+export type ConversationDtoOutputRequestState =
+  (typeof ConversationDtoOutputRequestState)[keyof typeof ConversationDtoOutputRequestState];
+
+export const ConversationDtoOutputRequestState = {
+  none: 'none',
+  sent: 'sent',
+  received: 'received',
+} as const;
+
+export type ConversationDtoOutputParticipantsItemMember = {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  displayName: string;
+  /** @nullable */
+  headline: string | null;
+  /** @nullable */
+  avatarUrl: string | null;
+};
+
+export type ConversationDtoOutputParticipantsItem = {
+  member: ConversationDtoOutputParticipantsItemMember;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  lastReadSequence: number;
+  left: boolean;
+};
+
+export type ConversationDtoOutputLastMessageKind =
+  (typeof ConversationDtoOutputLastMessageKind)[keyof typeof ConversationDtoOutputLastMessageKind];
+
+export const ConversationDtoOutputLastMessageKind = {
+  text: 'text',
+  introduction: 'introduction',
+} as const;
+
+export type ConversationDtoOutputLastMessageAttachmentsItemImageVariants = {
+  [key: string]: {
+    /**
+     * @minimum -9007199254740991
+     * @maximum 9007199254740991
+     */
+    width: number;
+    /**
+     * @minimum -9007199254740991
+     * @maximum 9007199254740991
+     */
+    height: number;
+    /** @nullable */
+    webp: string | null;
+    /** @nullable */
+    avif: string | null;
+  };
+};
+
+export type ConversationDtoOutputLastMessageAttachmentsItemImage = {
+  url: string;
+  variants: ConversationDtoOutputLastMessageAttachmentsItemImageVariants;
+} | null;
+
+export type ConversationDtoOutputLastMessageAttachmentsItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  mediaId: string;
+  image: ConversationDtoOutputLastMessageAttachmentsItemImage;
+};
+
+export type ConversationDtoOutputLastMessageSharedPostPostAuthor =
+  | {
+      type: 'member';
+      member: {
+        /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+        handle: string;
+        displayName: string;
+        /** @nullable */
+        headline: string | null;
+        /** @nullable */
+        avatarUrl: string | null;
+      };
+    }
+  | {
+      type: 'organization';
+      organization: {
+        /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+        id: string;
+        slug: string;
+        name: string;
+        /** @nullable */
+        logoUrl: string | null;
+        verified: boolean;
+      };
+    };
+
+export type ConversationDtoOutputLastMessageSharedPostPostLanguageSource =
+  (typeof ConversationDtoOutputLastMessageSharedPostPostLanguageSource)[keyof typeof ConversationDtoOutputLastMessageSharedPostPostLanguageSource];
+
+export const ConversationDtoOutputLastMessageSharedPostPostLanguageSource = {
+  declared: 'declared',
+  detected: 'detected',
+  undetermined: 'undetermined',
+} as const;
+
+export type ConversationDtoOutputLastMessageSharedPostPostVisibility =
+  (typeof ConversationDtoOutputLastMessageSharedPostPostVisibility)[keyof typeof ConversationDtoOutputLastMessageSharedPostPostVisibility];
+
+export const ConversationDtoOutputLastMessageSharedPostPostVisibility = {
+  public: 'public',
+  members: 'members',
+  connections: 'connections',
+} as const;
+
+export type ConversationDtoOutputLastMessageSharedPostPostImagesItemVariants = {
+  [key: string]: {
+    /**
+     * @minimum -9007199254740991
+     * @maximum 9007199254740991
+     */
+    width: number;
+    /**
+     * @minimum -9007199254740991
+     * @maximum 9007199254740991
+     */
+    height: number;
+    /** @nullable */
+    webp: string | null;
+    /** @nullable */
+    avif: string | null;
+  };
+};
+
+export type ConversationDtoOutputLastMessageSharedPostPostImagesItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  mediaId: string;
+  url: string;
+  variants: ConversationDtoOutputLastMessageSharedPostPostImagesItemVariants;
+};
+
+export type ConversationDtoOutputLastMessageSharedPostPostDocument = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  mediaId: string;
+  /** @nullable */
+  thumbnailUrl: string | null;
+  pageCount: number | null;
+} | null;
+
+export type ConversationDtoOutputLastMessageSharedPostPostLinkStatus =
+  (typeof ConversationDtoOutputLastMessageSharedPostPostLinkStatus)[keyof typeof ConversationDtoOutputLastMessageSharedPostPostLinkStatus];
+
+export const ConversationDtoOutputLastMessageSharedPostPostLinkStatus = {
+  pending: 'pending',
+  ready: 'ready',
+  failed: 'failed',
+} as const;
+
+export type ConversationDtoOutputLastMessageSharedPostPostLink = {
+  url: string;
+  status: ConversationDtoOutputLastMessageSharedPostPostLinkStatus;
+  /** @nullable */
+  title: string | null;
+  /** @nullable */
+  description: string | null;
+  /** @nullable */
+  siteName: string | null;
+  /** @nullable */
+  imageUrl: string | null;
+} | null;
+
+export type ConversationDtoOutputLastMessageSharedPostPostMentionsItemType =
+  (typeof ConversationDtoOutputLastMessageSharedPostPostMentionsItemType)[keyof typeof ConversationDtoOutputLastMessageSharedPostPostMentionsItemType];
+
+export const ConversationDtoOutputLastMessageSharedPostPostMentionsItemType = {
+  member: 'member',
+  organization: 'organization',
+} as const;
+
+export type ConversationDtoOutputLastMessageSharedPostPostMentionsItem = {
+  token: string;
+  type: ConversationDtoOutputLastMessageSharedPostPostMentionsItemType;
+  key: string;
+  displayName: string;
+};
+
+export type ConversationDtoOutputLastMessageSharedPostPostReactionsCounts = {
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  like: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  bravo: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  insightful: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  support: number;
+};
+
+export type ConversationDtoOutputLastMessageSharedPostPostReactionsViewerReaction =
+  | (typeof ConversationDtoOutputLastMessageSharedPostPostReactionsViewerReaction)[keyof typeof ConversationDtoOutputLastMessageSharedPostPostReactionsViewerReaction]
+  | null;
+
+export const ConversationDtoOutputLastMessageSharedPostPostReactionsViewerReaction = {
+  like: 'like',
+  bravo: 'bravo',
+  insightful: 'insightful',
+  support: 'support',
+} as const;
+
+export type ConversationDtoOutputLastMessageSharedPostPostReactions = {
+  counts: ConversationDtoOutputLastMessageSharedPostPostReactionsCounts;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  total: number;
+  viewerReaction: ConversationDtoOutputLastMessageSharedPostPostReactionsViewerReaction;
+};
+
+export type ConversationDtoOutputLastMessageSharedPostPostKind =
+  (typeof ConversationDtoOutputLastMessageSharedPostPostKind)[keyof typeof ConversationDtoOutputLastMessageSharedPostPostKind];
+
+export const ConversationDtoOutputLastMessageSharedPostPostKind = {
+  post: 'post',
+  repost: 'repost',
+} as const;
+
+export type ConversationDtoOutputLastMessageSharedPostPostRepostOfAuthor =
+  | {
+      type: 'member';
+      member: {
+        /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+        handle: string;
+        displayName: string;
+        /** @nullable */
+        headline: string | null;
+        /** @nullable */
+        avatarUrl: string | null;
+      };
+    }
+  | {
+      type: 'organization';
+      organization: {
+        /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+        id: string;
+        slug: string;
+        name: string;
+        /** @nullable */
+        logoUrl: string | null;
+        verified: boolean;
+      };
+    };
+
+export type ConversationDtoOutputLastMessageSharedPostPostRepostOfLanguageSource =
+  (typeof ConversationDtoOutputLastMessageSharedPostPostRepostOfLanguageSource)[keyof typeof ConversationDtoOutputLastMessageSharedPostPostRepostOfLanguageSource];
+
+export const ConversationDtoOutputLastMessageSharedPostPostRepostOfLanguageSource = {
+  declared: 'declared',
+  detected: 'detected',
+  undetermined: 'undetermined',
+} as const;
+
+export type ConversationDtoOutputLastMessageSharedPostPostRepostOfVisibility =
+  (typeof ConversationDtoOutputLastMessageSharedPostPostRepostOfVisibility)[keyof typeof ConversationDtoOutputLastMessageSharedPostPostRepostOfVisibility];
+
+export const ConversationDtoOutputLastMessageSharedPostPostRepostOfVisibility = {
+  public: 'public',
+  members: 'members',
+  connections: 'connections',
+} as const;
+
+export type ConversationDtoOutputLastMessageSharedPostPostRepostOfImagesItemVariants = {
+  [key: string]: {
+    /**
+     * @minimum -9007199254740991
+     * @maximum 9007199254740991
+     */
+    width: number;
+    /**
+     * @minimum -9007199254740991
+     * @maximum 9007199254740991
+     */
+    height: number;
+    /** @nullable */
+    webp: string | null;
+    /** @nullable */
+    avif: string | null;
+  };
+};
+
+export type ConversationDtoOutputLastMessageSharedPostPostRepostOfImagesItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  mediaId: string;
+  url: string;
+  variants: ConversationDtoOutputLastMessageSharedPostPostRepostOfImagesItemVariants;
+};
+
+export type ConversationDtoOutputLastMessageSharedPostPostRepostOfDocument = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  mediaId: string;
+  /** @nullable */
+  thumbnailUrl: string | null;
+  pageCount: number | null;
+} | null;
+
+export type ConversationDtoOutputLastMessageSharedPostPostRepostOfLinkStatus =
+  (typeof ConversationDtoOutputLastMessageSharedPostPostRepostOfLinkStatus)[keyof typeof ConversationDtoOutputLastMessageSharedPostPostRepostOfLinkStatus];
+
+export const ConversationDtoOutputLastMessageSharedPostPostRepostOfLinkStatus = {
+  pending: 'pending',
+  ready: 'ready',
+  failed: 'failed',
+} as const;
+
+export type ConversationDtoOutputLastMessageSharedPostPostRepostOfLink = {
+  url: string;
+  status: ConversationDtoOutputLastMessageSharedPostPostRepostOfLinkStatus;
+  /** @nullable */
+  title: string | null;
+  /** @nullable */
+  description: string | null;
+  /** @nullable */
+  siteName: string | null;
+  /** @nullable */
+  imageUrl: string | null;
+} | null;
+
+export type ConversationDtoOutputLastMessageSharedPostPostRepostOfMentionsItemType =
+  (typeof ConversationDtoOutputLastMessageSharedPostPostRepostOfMentionsItemType)[keyof typeof ConversationDtoOutputLastMessageSharedPostPostRepostOfMentionsItemType];
+
+export const ConversationDtoOutputLastMessageSharedPostPostRepostOfMentionsItemType = {
+  member: 'member',
+  organization: 'organization',
+} as const;
+
+export type ConversationDtoOutputLastMessageSharedPostPostRepostOfMentionsItem = {
+  token: string;
+  type: ConversationDtoOutputLastMessageSharedPostPostRepostOfMentionsItemType;
+  key: string;
+  displayName: string;
+};
+
+export type ConversationDtoOutputLastMessageSharedPostPostRepostOfReactionsCounts = {
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  like: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  bravo: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  insightful: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  support: number;
+};
+
+export type ConversationDtoOutputLastMessageSharedPostPostRepostOfReactionsViewerReaction =
+  | (typeof ConversationDtoOutputLastMessageSharedPostPostRepostOfReactionsViewerReaction)[keyof typeof ConversationDtoOutputLastMessageSharedPostPostRepostOfReactionsViewerReaction]
+  | null;
+
+export const ConversationDtoOutputLastMessageSharedPostPostRepostOfReactionsViewerReaction = {
+  like: 'like',
+  bravo: 'bravo',
+  insightful: 'insightful',
+  support: 'support',
+} as const;
+
+export type ConversationDtoOutputLastMessageSharedPostPostRepostOfReactions = {
+  counts: ConversationDtoOutputLastMessageSharedPostPostRepostOfReactionsCounts;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  total: number;
+  viewerReaction: ConversationDtoOutputLastMessageSharedPostPostRepostOfReactionsViewerReaction;
+};
+
+export type ConversationDtoOutputLastMessageSharedPostPostRepostOf = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  author: ConversationDtoOutputLastMessageSharedPostPostRepostOfAuthor;
+  /** @nullable */
+  text: string | null;
+  /** @nullable */
+  language: string | null;
+  languageSource: ConversationDtoOutputLastMessageSharedPostPostRepostOfLanguageSource;
+  visibility: ConversationDtoOutputLastMessageSharedPostPostRepostOfVisibility;
+  images: ConversationDtoOutputLastMessageSharedPostPostRepostOfImagesItem[];
+  document: ConversationDtoOutputLastMessageSharedPostPostRepostOfDocument;
+  link: ConversationDtoOutputLastMessageSharedPostPostRepostOfLink;
+  mentions: ConversationDtoOutputLastMessageSharedPostPostRepostOfMentionsItem[];
+  projectId: string | null;
+  commentsDisabled: boolean;
+  reactions: ConversationDtoOutputLastMessageSharedPostPostRepostOfReactions;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  commentCount: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  repostCount: number;
+  saved: boolean;
+  viewerIsAuthor: boolean;
+  featured: boolean;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+  editedAt: string | null;
+} | null;
+
+export type ConversationDtoOutputLastMessageSharedPostPost = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  author: ConversationDtoOutputLastMessageSharedPostPostAuthor;
+  /** @nullable */
+  text: string | null;
+  /** @nullable */
+  language: string | null;
+  languageSource: ConversationDtoOutputLastMessageSharedPostPostLanguageSource;
+  visibility: ConversationDtoOutputLastMessageSharedPostPostVisibility;
+  images: ConversationDtoOutputLastMessageSharedPostPostImagesItem[];
+  document: ConversationDtoOutputLastMessageSharedPostPostDocument;
+  link: ConversationDtoOutputLastMessageSharedPostPostLink;
+  mentions: ConversationDtoOutputLastMessageSharedPostPostMentionsItem[];
+  projectId: string | null;
+  commentsDisabled: boolean;
+  reactions: ConversationDtoOutputLastMessageSharedPostPostReactions;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  commentCount: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  repostCount: number;
+  saved: boolean;
+  viewerIsAuthor: boolean;
+  featured: boolean;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+  editedAt: string | null;
+  kind: ConversationDtoOutputLastMessageSharedPostPostKind;
+  repostOf: ConversationDtoOutputLastMessageSharedPostPostRepostOf;
+} | null;
+
+export type ConversationDtoOutputLastMessageSharedPost = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  postId: string;
+  post: ConversationDtoOutputLastMessageSharedPostPost;
+} | null;
+
+export type ConversationDtoOutputLastMessageModerationStatus =
+  (typeof ConversationDtoOutputLastMessageModerationStatus)[keyof typeof ConversationDtoOutputLastMessageModerationStatus];
+
+export const ConversationDtoOutputLastMessageModerationStatus = {
+  visible: 'visible',
+  hidden: 'hidden',
+  removed: 'removed',
+} as const;
+
+export type ConversationDtoOutputLastMessage = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  conversationId: string;
+  /**
+   * @maximum 9007199254740991
+   * @exclusiveMinimum 0
+   */
+  sequence: number;
+  clientMessageId: string;
+  kind: ConversationDtoOutputLastMessageKind;
+  senderHandle: string | null;
+  mine: boolean;
+  /** @nullable */
+  body: string | null;
+  attachments: ConversationDtoOutputLastMessageAttachmentsItem[];
+  sharedPost: ConversationDtoOutputLastMessageSharedPost;
+  edited: boolean;
+  deleted: boolean;
+  moderationStatus: ConversationDtoOutputLastMessageModerationStatus;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+  editedAt: string | null;
+} | null;
+
+export interface ConversationDtoOutput {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  kind: ConversationDtoOutputKind;
+  requestState: ConversationDtoOutputRequestState;
+  participants: ConversationDtoOutputParticipantsItem[];
+  lastMessage: ConversationDtoOutputLastMessage;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  lastSequence: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  lastReadSequence: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  unreadCount: number;
+  markedUnread: boolean;
+  archived: boolean;
+  muted: boolean;
+  canSend: boolean;
+  introductionId: string | null;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  lastMessageAt: string;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+}
+
+export interface UpdateConversationDto {
+  archived?: boolean;
+  muted?: boolean;
+  unread?: boolean;
+}
+
+export type MessagePageDtoOutputItemsItemKind =
+  (typeof MessagePageDtoOutputItemsItemKind)[keyof typeof MessagePageDtoOutputItemsItemKind];
+
+export const MessagePageDtoOutputItemsItemKind = {
+  text: 'text',
+  introduction: 'introduction',
+} as const;
+
+export type MessagePageDtoOutputItemsItemAttachmentsItemImageVariants = {
+  [key: string]: {
+    /**
+     * @minimum -9007199254740991
+     * @maximum 9007199254740991
+     */
+    width: number;
+    /**
+     * @minimum -9007199254740991
+     * @maximum 9007199254740991
+     */
+    height: number;
+    /** @nullable */
+    webp: string | null;
+    /** @nullable */
+    avif: string | null;
+  };
+};
+
+export type MessagePageDtoOutputItemsItemAttachmentsItemImage = {
+  url: string;
+  variants: MessagePageDtoOutputItemsItemAttachmentsItemImageVariants;
+} | null;
+
+export type MessagePageDtoOutputItemsItemAttachmentsItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  mediaId: string;
+  image: MessagePageDtoOutputItemsItemAttachmentsItemImage;
+};
+
+export type MessagePageDtoOutputItemsItemSharedPostPostAuthor =
+  | {
+      type: 'member';
+      member: {
+        /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+        handle: string;
+        displayName: string;
+        /** @nullable */
+        headline: string | null;
+        /** @nullable */
+        avatarUrl: string | null;
+      };
+    }
+  | {
+      type: 'organization';
+      organization: {
+        /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+        id: string;
+        slug: string;
+        name: string;
+        /** @nullable */
+        logoUrl: string | null;
+        verified: boolean;
+      };
+    };
+
+export type MessagePageDtoOutputItemsItemSharedPostPostLanguageSource =
+  (typeof MessagePageDtoOutputItemsItemSharedPostPostLanguageSource)[keyof typeof MessagePageDtoOutputItemsItemSharedPostPostLanguageSource];
+
+export const MessagePageDtoOutputItemsItemSharedPostPostLanguageSource = {
+  declared: 'declared',
+  detected: 'detected',
+  undetermined: 'undetermined',
+} as const;
+
+export type MessagePageDtoOutputItemsItemSharedPostPostVisibility =
+  (typeof MessagePageDtoOutputItemsItemSharedPostPostVisibility)[keyof typeof MessagePageDtoOutputItemsItemSharedPostPostVisibility];
+
+export const MessagePageDtoOutputItemsItemSharedPostPostVisibility = {
+  public: 'public',
+  members: 'members',
+  connections: 'connections',
+} as const;
+
+export type MessagePageDtoOutputItemsItemSharedPostPostImagesItemVariants = {
+  [key: string]: {
+    /**
+     * @minimum -9007199254740991
+     * @maximum 9007199254740991
+     */
+    width: number;
+    /**
+     * @minimum -9007199254740991
+     * @maximum 9007199254740991
+     */
+    height: number;
+    /** @nullable */
+    webp: string | null;
+    /** @nullable */
+    avif: string | null;
+  };
+};
+
+export type MessagePageDtoOutputItemsItemSharedPostPostImagesItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  mediaId: string;
+  url: string;
+  variants: MessagePageDtoOutputItemsItemSharedPostPostImagesItemVariants;
+};
+
+export type MessagePageDtoOutputItemsItemSharedPostPostDocument = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  mediaId: string;
+  /** @nullable */
+  thumbnailUrl: string | null;
+  pageCount: number | null;
+} | null;
+
+export type MessagePageDtoOutputItemsItemSharedPostPostLinkStatus =
+  (typeof MessagePageDtoOutputItemsItemSharedPostPostLinkStatus)[keyof typeof MessagePageDtoOutputItemsItemSharedPostPostLinkStatus];
+
+export const MessagePageDtoOutputItemsItemSharedPostPostLinkStatus = {
+  pending: 'pending',
+  ready: 'ready',
+  failed: 'failed',
+} as const;
+
+export type MessagePageDtoOutputItemsItemSharedPostPostLink = {
+  url: string;
+  status: MessagePageDtoOutputItemsItemSharedPostPostLinkStatus;
+  /** @nullable */
+  title: string | null;
+  /** @nullable */
+  description: string | null;
+  /** @nullable */
+  siteName: string | null;
+  /** @nullable */
+  imageUrl: string | null;
+} | null;
+
+export type MessagePageDtoOutputItemsItemSharedPostPostMentionsItemType =
+  (typeof MessagePageDtoOutputItemsItemSharedPostPostMentionsItemType)[keyof typeof MessagePageDtoOutputItemsItemSharedPostPostMentionsItemType];
+
+export const MessagePageDtoOutputItemsItemSharedPostPostMentionsItemType = {
+  member: 'member',
+  organization: 'organization',
+} as const;
+
+export type MessagePageDtoOutputItemsItemSharedPostPostMentionsItem = {
+  token: string;
+  type: MessagePageDtoOutputItemsItemSharedPostPostMentionsItemType;
+  key: string;
+  displayName: string;
+};
+
+export type MessagePageDtoOutputItemsItemSharedPostPostReactionsCounts = {
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  like: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  bravo: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  insightful: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  support: number;
+};
+
+export type MessagePageDtoOutputItemsItemSharedPostPostReactionsViewerReaction =
+  | (typeof MessagePageDtoOutputItemsItemSharedPostPostReactionsViewerReaction)[keyof typeof MessagePageDtoOutputItemsItemSharedPostPostReactionsViewerReaction]
+  | null;
+
+export const MessagePageDtoOutputItemsItemSharedPostPostReactionsViewerReaction = {
+  like: 'like',
+  bravo: 'bravo',
+  insightful: 'insightful',
+  support: 'support',
+} as const;
+
+export type MessagePageDtoOutputItemsItemSharedPostPostReactions = {
+  counts: MessagePageDtoOutputItemsItemSharedPostPostReactionsCounts;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  total: number;
+  viewerReaction: MessagePageDtoOutputItemsItemSharedPostPostReactionsViewerReaction;
+};
+
+export type MessagePageDtoOutputItemsItemSharedPostPostKind =
+  (typeof MessagePageDtoOutputItemsItemSharedPostPostKind)[keyof typeof MessagePageDtoOutputItemsItemSharedPostPostKind];
+
+export const MessagePageDtoOutputItemsItemSharedPostPostKind = {
+  post: 'post',
+  repost: 'repost',
+} as const;
+
+export type MessagePageDtoOutputItemsItemSharedPostPostRepostOfAuthor =
+  | {
+      type: 'member';
+      member: {
+        /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+        handle: string;
+        displayName: string;
+        /** @nullable */
+        headline: string | null;
+        /** @nullable */
+        avatarUrl: string | null;
+      };
+    }
+  | {
+      type: 'organization';
+      organization: {
+        /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+        id: string;
+        slug: string;
+        name: string;
+        /** @nullable */
+        logoUrl: string | null;
+        verified: boolean;
+      };
+    };
+
+export type MessagePageDtoOutputItemsItemSharedPostPostRepostOfLanguageSource =
+  (typeof MessagePageDtoOutputItemsItemSharedPostPostRepostOfLanguageSource)[keyof typeof MessagePageDtoOutputItemsItemSharedPostPostRepostOfLanguageSource];
+
+export const MessagePageDtoOutputItemsItemSharedPostPostRepostOfLanguageSource = {
+  declared: 'declared',
+  detected: 'detected',
+  undetermined: 'undetermined',
+} as const;
+
+export type MessagePageDtoOutputItemsItemSharedPostPostRepostOfVisibility =
+  (typeof MessagePageDtoOutputItemsItemSharedPostPostRepostOfVisibility)[keyof typeof MessagePageDtoOutputItemsItemSharedPostPostRepostOfVisibility];
+
+export const MessagePageDtoOutputItemsItemSharedPostPostRepostOfVisibility = {
+  public: 'public',
+  members: 'members',
+  connections: 'connections',
+} as const;
+
+export type MessagePageDtoOutputItemsItemSharedPostPostRepostOfImagesItemVariants = {
+  [key: string]: {
+    /**
+     * @minimum -9007199254740991
+     * @maximum 9007199254740991
+     */
+    width: number;
+    /**
+     * @minimum -9007199254740991
+     * @maximum 9007199254740991
+     */
+    height: number;
+    /** @nullable */
+    webp: string | null;
+    /** @nullable */
+    avif: string | null;
+  };
+};
+
+export type MessagePageDtoOutputItemsItemSharedPostPostRepostOfImagesItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  mediaId: string;
+  url: string;
+  variants: MessagePageDtoOutputItemsItemSharedPostPostRepostOfImagesItemVariants;
+};
+
+export type MessagePageDtoOutputItemsItemSharedPostPostRepostOfDocument = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  mediaId: string;
+  /** @nullable */
+  thumbnailUrl: string | null;
+  pageCount: number | null;
+} | null;
+
+export type MessagePageDtoOutputItemsItemSharedPostPostRepostOfLinkStatus =
+  (typeof MessagePageDtoOutputItemsItemSharedPostPostRepostOfLinkStatus)[keyof typeof MessagePageDtoOutputItemsItemSharedPostPostRepostOfLinkStatus];
+
+export const MessagePageDtoOutputItemsItemSharedPostPostRepostOfLinkStatus = {
+  pending: 'pending',
+  ready: 'ready',
+  failed: 'failed',
+} as const;
+
+export type MessagePageDtoOutputItemsItemSharedPostPostRepostOfLink = {
+  url: string;
+  status: MessagePageDtoOutputItemsItemSharedPostPostRepostOfLinkStatus;
+  /** @nullable */
+  title: string | null;
+  /** @nullable */
+  description: string | null;
+  /** @nullable */
+  siteName: string | null;
+  /** @nullable */
+  imageUrl: string | null;
+} | null;
+
+export type MessagePageDtoOutputItemsItemSharedPostPostRepostOfMentionsItemType =
+  (typeof MessagePageDtoOutputItemsItemSharedPostPostRepostOfMentionsItemType)[keyof typeof MessagePageDtoOutputItemsItemSharedPostPostRepostOfMentionsItemType];
+
+export const MessagePageDtoOutputItemsItemSharedPostPostRepostOfMentionsItemType = {
+  member: 'member',
+  organization: 'organization',
+} as const;
+
+export type MessagePageDtoOutputItemsItemSharedPostPostRepostOfMentionsItem = {
+  token: string;
+  type: MessagePageDtoOutputItemsItemSharedPostPostRepostOfMentionsItemType;
+  key: string;
+  displayName: string;
+};
+
+export type MessagePageDtoOutputItemsItemSharedPostPostRepostOfReactionsCounts = {
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  like: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  bravo: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  insightful: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  support: number;
+};
+
+export type MessagePageDtoOutputItemsItemSharedPostPostRepostOfReactionsViewerReaction =
+  | (typeof MessagePageDtoOutputItemsItemSharedPostPostRepostOfReactionsViewerReaction)[keyof typeof MessagePageDtoOutputItemsItemSharedPostPostRepostOfReactionsViewerReaction]
+  | null;
+
+export const MessagePageDtoOutputItemsItemSharedPostPostRepostOfReactionsViewerReaction = {
+  like: 'like',
+  bravo: 'bravo',
+  insightful: 'insightful',
+  support: 'support',
+} as const;
+
+export type MessagePageDtoOutputItemsItemSharedPostPostRepostOfReactions = {
+  counts: MessagePageDtoOutputItemsItemSharedPostPostRepostOfReactionsCounts;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  total: number;
+  viewerReaction: MessagePageDtoOutputItemsItemSharedPostPostRepostOfReactionsViewerReaction;
+};
+
+export type MessagePageDtoOutputItemsItemSharedPostPostRepostOf = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  author: MessagePageDtoOutputItemsItemSharedPostPostRepostOfAuthor;
+  /** @nullable */
+  text: string | null;
+  /** @nullable */
+  language: string | null;
+  languageSource: MessagePageDtoOutputItemsItemSharedPostPostRepostOfLanguageSource;
+  visibility: MessagePageDtoOutputItemsItemSharedPostPostRepostOfVisibility;
+  images: MessagePageDtoOutputItemsItemSharedPostPostRepostOfImagesItem[];
+  document: MessagePageDtoOutputItemsItemSharedPostPostRepostOfDocument;
+  link: MessagePageDtoOutputItemsItemSharedPostPostRepostOfLink;
+  mentions: MessagePageDtoOutputItemsItemSharedPostPostRepostOfMentionsItem[];
+  projectId: string | null;
+  commentsDisabled: boolean;
+  reactions: MessagePageDtoOutputItemsItemSharedPostPostRepostOfReactions;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  commentCount: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  repostCount: number;
+  saved: boolean;
+  viewerIsAuthor: boolean;
+  featured: boolean;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+  editedAt: string | null;
+} | null;
+
+export type MessagePageDtoOutputItemsItemSharedPostPost = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  author: MessagePageDtoOutputItemsItemSharedPostPostAuthor;
+  /** @nullable */
+  text: string | null;
+  /** @nullable */
+  language: string | null;
+  languageSource: MessagePageDtoOutputItemsItemSharedPostPostLanguageSource;
+  visibility: MessagePageDtoOutputItemsItemSharedPostPostVisibility;
+  images: MessagePageDtoOutputItemsItemSharedPostPostImagesItem[];
+  document: MessagePageDtoOutputItemsItemSharedPostPostDocument;
+  link: MessagePageDtoOutputItemsItemSharedPostPostLink;
+  mentions: MessagePageDtoOutputItemsItemSharedPostPostMentionsItem[];
+  projectId: string | null;
+  commentsDisabled: boolean;
+  reactions: MessagePageDtoOutputItemsItemSharedPostPostReactions;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  commentCount: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  repostCount: number;
+  saved: boolean;
+  viewerIsAuthor: boolean;
+  featured: boolean;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+  editedAt: string | null;
+  kind: MessagePageDtoOutputItemsItemSharedPostPostKind;
+  repostOf: MessagePageDtoOutputItemsItemSharedPostPostRepostOf;
+} | null;
+
+export type MessagePageDtoOutputItemsItemSharedPost = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  postId: string;
+  post: MessagePageDtoOutputItemsItemSharedPostPost;
+} | null;
+
+export type MessagePageDtoOutputItemsItemModerationStatus =
+  (typeof MessagePageDtoOutputItemsItemModerationStatus)[keyof typeof MessagePageDtoOutputItemsItemModerationStatus];
+
+export const MessagePageDtoOutputItemsItemModerationStatus = {
+  visible: 'visible',
+  hidden: 'hidden',
+  removed: 'removed',
+} as const;
+
+export type MessagePageDtoOutputItemsItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  conversationId: string;
+  /**
+   * @maximum 9007199254740991
+   * @exclusiveMinimum 0
+   */
+  sequence: number;
+  clientMessageId: string;
+  kind: MessagePageDtoOutputItemsItemKind;
+  senderHandle: string | null;
+  mine: boolean;
+  /** @nullable */
+  body: string | null;
+  attachments: MessagePageDtoOutputItemsItemAttachmentsItem[];
+  sharedPost: MessagePageDtoOutputItemsItemSharedPost;
+  edited: boolean;
+  deleted: boolean;
+  moderationStatus: MessagePageDtoOutputItemsItemModerationStatus;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+  editedAt: string | null;
+};
+
+export interface MessagePageDtoOutput {
+  items: MessagePageDtoOutputItemsItem[];
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  lastSequence: number;
+  hasMore: boolean;
+}
+
+export interface SendMessageDto {
+  /** @pattern ^[A-Za-z0-9_-]{8,64}$ */
+  clientMessageId: string;
+  /** @maxLength 8000 */
+  body?: string;
+  /**
+   * @maxItems 5
+   * @items.pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$
+   */
+  attachmentIds?: string[];
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  sharedPostId?: string;
+}
+
+export interface ReadConversationDto {
+  /**
+   * @minimum 0
+   * @maximum 9007199254740991
+   */
+  sequence: number;
+}
+
+export interface ReadResultDtoOutput {
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  sequence: number;
+}
+
+export interface EditMessageDto {
+  /**
+   * @minLength 1
+   * @maxLength 8000
+   */
+  body: string;
+}
+
+export type MessagingSettingsDtoOutputMessagePolicy =
+  (typeof MessagingSettingsDtoOutputMessagePolicy)[keyof typeof MessagingSettingsDtoOutputMessagePolicy];
+
+export const MessagingSettingsDtoOutputMessagePolicy = {
+  connections_only: 'connections_only',
+  connections_and_second_degree: 'connections_and_second_degree',
+  verified_members: 'verified_members',
+} as const;
+
+export interface MessagingSettingsDtoOutput {
+  messagePolicy: MessagingSettingsDtoOutputMessagePolicy;
+}
+
+export type MessagingSettingsDtoMessagePolicy =
+  (typeof MessagingSettingsDtoMessagePolicy)[keyof typeof MessagingSettingsDtoMessagePolicy];
+
+export const MessagingSettingsDtoMessagePolicy = {
+  connections_only: 'connections_only',
+  connections_and_second_degree: 'connections_and_second_degree',
+  verified_members: 'verified_members',
+} as const;
+
+export interface MessagingSettingsDto {
+  messagePolicy: MessagingSettingsDtoMessagePolicy;
+}
+
+export interface ProposeIntroductionDto {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  firstHandle: string;
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  secondHandle: string;
+  /**
+   * @minLength 1
+   * @maxLength 1000
+   */
+  note: string;
+}
+
+export type IntroductionDtoOutputRole =
+  (typeof IntroductionDtoOutputRole)[keyof typeof IntroductionDtoOutputRole];
+
+export const IntroductionDtoOutputRole = {
+  introducer: 'introducer',
+  first: 'first',
+  second: 'second',
+} as const;
+
+export type IntroductionDtoOutputIntroducer = {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  displayName: string;
+  /** @nullable */
+  headline: string | null;
+  /** @nullable */
+  avatarUrl: string | null;
+} | null;
+
+export type IntroductionDtoOutputFirst = {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  displayName: string;
+  /** @nullable */
+  headline: string | null;
+  /** @nullable */
+  avatarUrl: string | null;
+} | null;
+
+export type IntroductionDtoOutputSecond = {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  displayName: string;
+  /** @nullable */
+  headline: string | null;
+  /** @nullable */
+  avatarUrl: string | null;
+} | null;
+
+export type IntroductionDtoOutputAnswersFirst =
+  (typeof IntroductionDtoOutputAnswersFirst)[keyof typeof IntroductionDtoOutputAnswersFirst];
+
+export const IntroductionDtoOutputAnswersFirst = {
+  pending: 'pending',
+  accepted: 'accepted',
+  declined: 'declined',
+} as const;
+
+export type IntroductionDtoOutputAnswersSecond =
+  (typeof IntroductionDtoOutputAnswersSecond)[keyof typeof IntroductionDtoOutputAnswersSecond];
+
+export const IntroductionDtoOutputAnswersSecond = {
+  pending: 'pending',
+  accepted: 'accepted',
+  declined: 'declined',
+} as const;
+
+export type IntroductionDtoOutputAnswers = {
+  first: IntroductionDtoOutputAnswersFirst;
+  second: IntroductionDtoOutputAnswersSecond;
+};
+
+export type IntroductionDtoOutputStatus =
+  (typeof IntroductionDtoOutputStatus)[keyof typeof IntroductionDtoOutputStatus];
+
+export const IntroductionDtoOutputStatus = {
+  pending: 'pending',
+  completed: 'completed',
+  declined: 'declined',
+} as const;
+
+export interface IntroductionDtoOutput {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  role: IntroductionDtoOutputRole;
+  introducer: IntroductionDtoOutputIntroducer;
+  first: IntroductionDtoOutputFirst;
+  second: IntroductionDtoOutputSecond;
+  note: string;
+  answers: IntroductionDtoOutputAnswers;
+  status: IntroductionDtoOutputStatus;
+  conversationId: string | null;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+}
+
+export type IntroductionPageDtoOutputItemsItemRole =
+  (typeof IntroductionPageDtoOutputItemsItemRole)[keyof typeof IntroductionPageDtoOutputItemsItemRole];
+
+export const IntroductionPageDtoOutputItemsItemRole = {
+  introducer: 'introducer',
+  first: 'first',
+  second: 'second',
+} as const;
+
+export type IntroductionPageDtoOutputItemsItemIntroducer = {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  displayName: string;
+  /** @nullable */
+  headline: string | null;
+  /** @nullable */
+  avatarUrl: string | null;
+} | null;
+
+export type IntroductionPageDtoOutputItemsItemFirst = {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  displayName: string;
+  /** @nullable */
+  headline: string | null;
+  /** @nullable */
+  avatarUrl: string | null;
+} | null;
+
+export type IntroductionPageDtoOutputItemsItemSecond = {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  displayName: string;
+  /** @nullable */
+  headline: string | null;
+  /** @nullable */
+  avatarUrl: string | null;
+} | null;
+
+export type IntroductionPageDtoOutputItemsItemAnswersFirst =
+  (typeof IntroductionPageDtoOutputItemsItemAnswersFirst)[keyof typeof IntroductionPageDtoOutputItemsItemAnswersFirst];
+
+export const IntroductionPageDtoOutputItemsItemAnswersFirst = {
+  pending: 'pending',
+  accepted: 'accepted',
+  declined: 'declined',
+} as const;
+
+export type IntroductionPageDtoOutputItemsItemAnswersSecond =
+  (typeof IntroductionPageDtoOutputItemsItemAnswersSecond)[keyof typeof IntroductionPageDtoOutputItemsItemAnswersSecond];
+
+export const IntroductionPageDtoOutputItemsItemAnswersSecond = {
+  pending: 'pending',
+  accepted: 'accepted',
+  declined: 'declined',
+} as const;
+
+export type IntroductionPageDtoOutputItemsItemAnswers = {
+  first: IntroductionPageDtoOutputItemsItemAnswersFirst;
+  second: IntroductionPageDtoOutputItemsItemAnswersSecond;
+};
+
+export type IntroductionPageDtoOutputItemsItemStatus =
+  (typeof IntroductionPageDtoOutputItemsItemStatus)[keyof typeof IntroductionPageDtoOutputItemsItemStatus];
+
+export const IntroductionPageDtoOutputItemsItemStatus = {
+  pending: 'pending',
+  completed: 'completed',
+  declined: 'declined',
+} as const;
+
+export type IntroductionPageDtoOutputItemsItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  role: IntroductionPageDtoOutputItemsItemRole;
+  introducer: IntroductionPageDtoOutputItemsItemIntroducer;
+  first: IntroductionPageDtoOutputItemsItemFirst;
+  second: IntroductionPageDtoOutputItemsItemSecond;
+  note: string;
+  answers: IntroductionPageDtoOutputItemsItemAnswers;
+  status: IntroductionPageDtoOutputItemsItemStatus;
+  conversationId: string | null;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+};
+
+export interface IntroductionPageDtoOutput {
+  items: IntroductionPageDtoOutputItemsItem[];
+  nextCursor: string[];
+}
+
+export type NotificationPageDtoOutputItemsItemType =
+  (typeof NotificationPageDtoOutputItemsItemType)[keyof typeof NotificationPageDtoOutputItemsItemType];
+
+export const NotificationPageDtoOutputItemsItemType = {
+  connection_request: 'connection_request',
+  connection_accepted: 'connection_accepted',
+  new_follower: 'new_follower',
+  reaction: 'reaction',
+  comment: 'comment',
+  mention: 'mention',
+  followed_post: 'followed_post',
+  message: 'message',
+  message_request: 'message_request',
+  message_request_accepted: 'message_request_accepted',
+  introduction_proposed: 'introduction_proposed',
+  introduction_completed: 'introduction_completed',
+  introduction_declined: 'introduction_declined',
+  profile_views: 'profile_views',
+  project_contribution: 'project_contribution',
+  tier_unlocked: 'tier_unlocked',
+  project_update: 'project_update',
+  project_ending_soon: 'project_ending_soon',
+  project_funded: 'project_funded',
+  project_closed: 'project_closed',
+  project_interest: 'project_interest',
+  project_team_invitation: 'project_team_invitation',
+  project_team_joined: 'project_team_joined',
+  project_team_invitation_declined: 'project_team_invitation_declined',
+  organization_invitation: 'organization_invitation',
+  organization_member_joined: 'organization_member_joined',
+  organization_role_changed: 'organization_role_changed',
+  organization_ownership_transferred: 'organization_ownership_transferred',
+  organization_verification_decided: 'organization_verification_decided',
+  kyc_decided: 'kyc_decided',
+  contribution_refunded: 'contribution_refunded',
+  offline_contribution_declared: 'offline_contribution_declared',
+  offline_contribution_decided: 'offline_contribution_decided',
+  time_entry_declared: 'time_entry_declared',
+  time_entry_answered: 'time_entry_answered',
+  security_alert: 'security_alert',
+} as const;
+
+export type NotificationPageDtoOutputItemsItemPriority =
+  (typeof NotificationPageDtoOutputItemsItemPriority)[keyof typeof NotificationPageDtoOutputItemsItemPriority];
+
+export const NotificationPageDtoOutputItemsItemPriority = {
+  normal: 'normal',
+  low: 'low',
+} as const;
+
+export type NotificationPageDtoOutputItemsItemActorsItem = {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  displayName: string;
+  /** @nullable */
+  headline: string | null;
+  /** @nullable */
+  avatarUrl: string | null;
+};
+
+export type NotificationPageDtoOutputItemsItemTargetType =
+  (typeof NotificationPageDtoOutputItemsItemTargetType)[keyof typeof NotificationPageDtoOutputItemsItemTargetType];
+
+export const NotificationPageDtoOutputItemsItemTargetType = {
+  member: 'member',
+  post: 'post',
+  conversation: 'conversation',
+  message_requests: 'message_requests',
+  introduction: 'introduction',
+  project: 'project',
+  project_invitations: 'project_invitations',
+  organization: 'organization',
+  organization_invitations: 'organization_invitations',
+  contribution: 'contribution',
+  payout_account: 'payout_account',
+  offline_contribution: 'offline_contribution',
+  time_entry: 'time_entry',
+  profile_views: 'profile_views',
+  connection_requests: 'connection_requests',
+  account_security: 'account_security',
+} as const;
+
+export type NotificationPageDtoOutputItemsItemTarget = {
+  type: NotificationPageDtoOutputItemsItemTargetType;
+  key: string;
+  path: string;
+};
+
+export type NotificationPageDtoOutputItemsItemData = {
+  [key: string]: string | number | boolean | null;
+};
+
+export type NotificationPageDtoOutputItemsItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  type: NotificationPageDtoOutputItemsItemType;
+  priority: NotificationPageDtoOutputItemsItemPriority;
+  actors: NotificationPageDtoOutputItemsItemActorsItem[];
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  actorCount: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  eventCount: number;
+  target: NotificationPageDtoOutputItemsItemTarget;
+  data: NotificationPageDtoOutputItemsItemData;
+  read: boolean;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  updatedAt: string;
+};
+
+export interface NotificationPageDtoOutput {
+  items: NotificationPageDtoOutputItemsItem[];
+  nextCursor: string[];
+}
+
+export interface ReadAllDtoOutput {
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  read: number;
+}
+
+export type CountersDtoOutputMessages = {
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  unread: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  conversations: number;
+};
+
+export type CountersDtoOutputInvitations = {
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  connections: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  introductions: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  projects: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  organizations: number;
+};
+
+export interface CountersDtoOutput {
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  notifications: number;
+  messages: CountersDtoOutputMessages;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  messageRequests: number;
+  invitations: CountersDtoOutputInvitations;
+}
+
+export interface UnsubscribeResultDtoOutput {
+  scope:
+    | 'connection_request'
+    | 'connection_accepted'
+    | 'new_follower'
+    | 'reaction'
+    | 'comment'
+    | 'mention'
+    | 'followed_post'
+    | 'message'
+    | 'message_request'
+    | 'message_request_accepted'
+    | 'introduction_proposed'
+    | 'introduction_completed'
+    | 'introduction_declined'
+    | 'profile_views'
+    | 'project_contribution'
+    | 'tier_unlocked'
+    | 'project_update'
+    | 'project_ending_soon'
+    | 'project_funded'
+    | 'project_closed'
+    | 'project_interest'
+    | 'project_team_invitation'
+    | 'project_team_joined'
+    | 'project_team_invitation_declined'
+    | 'organization_invitation'
+    | 'organization_member_joined'
+    | 'organization_role_changed'
+    | 'organization_ownership_transferred'
+    | 'organization_verification_decided'
+    | 'kyc_decided'
+    | 'contribution_refunded'
+    | 'offline_contribution_declared'
+    | 'offline_contribution_decided'
+    | 'time_entry_declared'
+    | 'time_entry_answered'
+    | 'security_alert'
+    | 'digest';
+}
+
 export type ProblemDetailsCode = (typeof ProblemDetailsCode)[keyof typeof ProblemDetailsCode];
 
 export const ProblemDetailsCode = {
@@ -8828,6 +11534,31 @@ export const ProblemDetailsCode = {
   ENGAGEMENT_TIME_ENTRY_NOT_FOUND: 'ENGAGEMENT_TIME_ENTRY_NOT_FOUND',
   ENGAGEMENT_BENEFICIARY_INVALID: 'ENGAGEMENT_BENEFICIARY_INVALID',
   ENGAGEMENT_TIME_ENTRY_ALREADY_ANSWERED: 'ENGAGEMENT_TIME_ENTRY_ALREADY_ANSWERED',
+  MESSAGING_CONVERSATION_NOT_FOUND: 'MESSAGING_CONVERSATION_NOT_FOUND',
+  MESSAGING_RECIPIENT_NOT_FOUND: 'MESSAGING_RECIPIENT_NOT_FOUND',
+  MESSAGING_SELF_CONVERSATION: 'MESSAGING_SELF_CONVERSATION',
+  MESSAGING_RECIPIENT_NOT_ACCEPTING: 'MESSAGING_RECIPIENT_NOT_ACCEPTING',
+  MESSAGING_REQUEST_PENDING: 'MESSAGING_REQUEST_PENDING',
+  MESSAGING_REQUEST_LIMIT: 'MESSAGING_REQUEST_LIMIT',
+  MESSAGING_REQUEST_NOT_FOUND: 'MESSAGING_REQUEST_NOT_FOUND',
+  MESSAGING_CANNOT_SEND: 'MESSAGING_CANNOT_SEND',
+  MESSAGING_MESSAGE_EMPTY: 'MESSAGING_MESSAGE_EMPTY',
+  MESSAGING_MESSAGE_NOT_FOUND: 'MESSAGING_MESSAGE_NOT_FOUND',
+  MESSAGING_NOT_SENDER: 'MESSAGING_NOT_SENDER',
+  MESSAGING_EDIT_WINDOW_CLOSED: 'MESSAGING_EDIT_WINDOW_CLOSED',
+  MESSAGING_MESSAGE_DELETED: 'MESSAGING_MESSAGE_DELETED',
+  MESSAGING_CLIENT_ID_REUSED: 'MESSAGING_CLIENT_ID_REUSED',
+  MESSAGING_SHARED_POST_NOT_FOUND: 'MESSAGING_SHARED_POST_NOT_FOUND',
+  MESSAGING_NOT_A_GROUP: 'MESSAGING_NOT_A_GROUP',
+  MESSAGING_INTRODUCTION_NOT_FOUND: 'MESSAGING_INTRODUCTION_NOT_FOUND',
+  MESSAGING_INTRODUCTION_INVALID: 'MESSAGING_INTRODUCTION_INVALID',
+  MESSAGING_INTRODUCTION_NOT_CONNECTED: 'MESSAGING_INTRODUCTION_NOT_CONNECTED',
+  MESSAGING_INTRODUCTION_PENDING: 'MESSAGING_INTRODUCTION_PENDING',
+  MESSAGING_INTRODUCTION_ALREADY_ANSWERED: 'MESSAGING_INTRODUCTION_ALREADY_ANSWERED',
+  NOTIFICATIONS_NOT_FOUND: 'NOTIFICATIONS_NOT_FOUND',
+  NOTIFICATIONS_PREFERENCE_LOCKED: 'NOTIFICATIONS_PREFERENCE_LOCKED',
+  NOTIFICATIONS_UNSUBSCRIBE_INVALID: 'NOTIFICATIONS_UNSUBSCRIBE_INVALID',
+  NOTIFICATIONS_WEBHOOK_INVALID: 'NOTIFICATIONS_WEBHOOK_INVALID',
   INTERNAL_ERROR: 'INTERNAL_ERROR',
   SERVICE_UNAVAILABLE: 'SERVICE_UNAVAILABLE',
 } as const;
@@ -9487,3 +12218,87 @@ export const EngagementControllerReceivedStatus = {
   confirmed: 'confirmed',
   disputed: 'disputed',
 } as const;
+
+export type MessagingControllerListParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+  box?: MessagingControllerListBox;
+};
+
+export type MessagingControllerListBox =
+  (typeof MessagingControllerListBox)[keyof typeof MessagingControllerListBox];
+
+export const MessagingControllerListBox = {
+  inbox: 'inbox',
+  requests: 'requests',
+  archived: 'archived',
+} as const;
+
+export type MessagingControllerMessagesParams = {
+  /**
+   * @minimum 0
+   * @maximum 9007199254740991
+   */
+  afterSequence?: number;
+  /**
+   * @minimum 1
+   * @maximum 9007199254740991
+   */
+  beforeSequence?: number;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+};
+
+export type MessagingControllerListIntroductionsParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+};
+
+export type NotificationsControllerListParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+  unread?: NotificationsControllerListUnread;
+};
+
+export type NotificationsControllerListUnread =
+  (typeof NotificationsControllerListUnread)[keyof typeof NotificationsControllerListUnread];
+
+export const NotificationsControllerListUnread = {
+  true: 'true',
+  false: 'false',
+} as const;
+
+export type NotificationsControllerUnsubscribeParams = {
+  /**
+   * @minLength 16
+   * @maxLength 512
+   */
+  token: string;
+};
