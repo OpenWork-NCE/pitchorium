@@ -29,12 +29,12 @@ Pages organisation (cahier des charges §5, §10.7, §13) : fondations, entrepri
 ## Visibilité
 
 - `GET /v1/public/organizations/{slug}` : sans compte, `Cache-Control: public, max-age=60` ; seuls les membres dont la page publique de profil est activée sont listés.
-- `GET /v1/organizations/{slug}` : membres connectés ; tous les membres, avec le rôle du lecteur (`viewerRole`).
+- `GET /v1/organizations/by-slug/{slug}` : membres connectés ; tous les membres, avec le rôle du lecteur (`viewerRole`).
 - Projets portés et soutenus : `projects.carried` et `projects.supported`, fournis par les modules projects et payments via `registerProjectsProvider` ; vides tant qu'aucun fournisseur n'est enregistré.
 
 ## Routes
 
-- `POST /v1/organizations` (`organization.create`, `Idempotency-Key`), `GET /v1/me/organizations`, `GET /v1/organizations/{slug}`, `GET /v1/public/organizations/{slug}` (public)
+- `POST /v1/organizations` (`organization.create`, `Idempotency-Key`), `GET /v1/me/organizations`, `GET /v1/organizations/by-slug/{slug}`, `GET /v1/public/organizations/{slug}` (public)
 - `PATCH /v1/organizations/{organizationId}`, `PUT /v1/organizations/{organizationId}/slug`, `PUT|DELETE /v1/organizations/{organizationId}/logo` et `/cover` (`organization.update`), `DELETE /v1/organizations/{organizationId}` (`organization.delete`)
 - `PATCH|DELETE /v1/organizations/{organizationId}/members/{userId}` (`organization.member.manage`), `POST /v1/organizations/{organizationId}/leave` (`organization.member.leave`), `POST /v1/organizations/{organizationId}/ownership-transfer` (`organization.ownership.transfer`)
 - `POST|GET /v1/organizations/{organizationId}/invitations`, `DELETE /v1/organizations/{organizationId}/invitations/{invitationId}` (`organization.member.invite`), `POST /v1/organization-invitations/accept` et `/decline` (`organization.invitation.respond`)

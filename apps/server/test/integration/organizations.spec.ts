@@ -339,7 +339,9 @@ describe('organizations', () => {
     expect((await fetch(visitor.body.logoUrl as string)).status).toBe(200);
 
     const reader = await createMember(app, 'reader@example.com');
-    const forMembers = await reader.agent.get('/v1/organizations/fondation-teranga').expect(200);
+    const forMembers = await reader.agent
+      .get('/v1/organizations/by-slug/fondation-teranga')
+      .expect(200);
     expect(handles(forMembers.body)).toEqual(['awa-ndiaye', 'discret-membre']);
   });
 
@@ -353,8 +355,10 @@ describe('organizations', () => {
 
     const moved = await browser(app).get('/v1/public/organizations/fondation-teranga').expect(301);
     expect(moved.headers['location']).toBe('/v1/public/organizations/teranga');
-    const forMember = await awa.agent.get('/v1/organizations/fondation-teranga').expect(301);
-    expect(forMember.headers['location']).toBe('/v1/organizations/teranga');
+    const forMember = await awa.agent
+      .get('/v1/organizations/by-slug/fondation-teranga')
+      .expect(301);
+    expect(forMember.headers['location']).toBe('/v1/organizations/by-slug/teranga');
 
     const other = await createOrganization(awa, { ...TERANGA, name: 'Autre Fondation' });
     const taken = await awa.agent

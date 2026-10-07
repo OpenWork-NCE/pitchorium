@@ -94,7 +94,7 @@ export class OrganizationsController {
   }
 
   /** Member view: every member, with the reader's role. */
-  @Get('organizations/:slug')
+  @Get('organizations/by-slug/:slug')
   @RequireAction('organization.read')
   @ApiOkResponse({ type: OrganizationDto.Output })
   @ApiMovedPermanentlyResponse({ description: 'Former slug: Location gives the current one.' })
@@ -103,7 +103,11 @@ export class OrganizationsController {
     @Param() params: SlugParamsDto,
     @Res() response: Response,
   ): Promise<void> {
-    reply(response, await this.reads.bySlug(params.slug, principal.userId), '/v1/organizations');
+    reply(
+      response,
+      await this.reads.bySlug(params.slug, principal.userId),
+      '/v1/organizations/by-slug',
+    );
   }
 
   /** Public page: members with a public profile page only. Cacheable by shared caches. */
