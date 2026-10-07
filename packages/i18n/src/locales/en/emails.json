@@ -63,5 +63,65 @@
     "notYou": "If you did not make this change, secure your account right away.",
     "action": "Review my account security",
     "reason": "You receive this email for every change of your sign-in methods."
+  },
+  "organizationNotice": {
+    "greeting": "Hello {{name}},",
+    "greetingAnonymous": "Hello,",
+    "reason": "Reason: {{reason}}",
+    "roles": {
+      "owner": "owner",
+      "admin": "administrator",
+      "member": "member"
+    },
+    "invitation": {
+      "subject": "Invitation to join {{organization}} on Pitchorium",
+      "preview": "{{member}} invites you to join {{organization}}.",
+      "body": "{{member}} invites you to join {{organization}} on Pitchorium as {{role}}. Create your account or sign in with this email address, then accept the invitation.",
+      "action": "View the invitation",
+      "note": "This invitation works once and expires on {{expiresAt}} (UTC). If you do not know this organization, ignore this email."
+    },
+    "invitation_accepted": {
+      "subject": "{{member}} joined {{organization}}",
+      "preview": "A new member joined {{organization}}.",
+      "body": "{{member}} accepted the invitation and joined {{organization}} as {{role}}.",
+      "action": "View the organization"
+    },
+    "role_changed": {
+      "subject": "Your role in {{organization}} changed",
+      "preview": "You are now {{role}} of {{organization}}.",
+      "body": "You are now {{role}} of {{organization}}.",
+      "action": "View the organization"
+    },
+    "ownership_transferred": {
+      "subject": "Ownership of {{organization}} was transferred",
+      "preview": "{{member}} is now an owner of {{organization}}.",
+      "body": "Ownership of {{organization}} was transferred to {{member}}. The previous owner remains an administrator.",
+      "action": "View the organization"
+    },
+    "verification_requested": {
+      "subject": "Verification request received for {{organization}}",
+      "preview": "A moderator will review your verification request.",
+      "body": "We received the verification request of {{organization}}. A moderator will review it; you will be told of the decision by email.",
+      "action": "View the organization"
+    },
+    "verification_approved": {
+      "subject": "{{organization}} is verified",
+      "preview": "The verification badge is shown on the page of {{organization}}.",
+      "body": "The verification of {{organization}} is approved: the verification badge is now shown on its page.",
+      "action": "View the organization"
+    },
+    "verification_rejected": {
+      "subject": "Verification of {{organization}} declined",
+      "preview": "The verification request of {{organization}} was not approved.",
+      "body": "The verification request of {{organization}} was not approved.",
+      "action": "View the organization",
+      "note": "You may submit a new request with additional documents."
+    },
+    "verification_revoked": {
+      "subject": "Verification of {{organization}} withdrawn",
+      "preview": "The verification badge of {{organization}} was withdrawn.",
+      "body": "The verification badge of {{organization}} was withdrawn by the moderation team.",
+      "action": "View the organization"
+    }
   }
 }

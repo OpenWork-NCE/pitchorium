@@ -12,6 +12,10 @@ import NewSignInEmail, {
   newSignInSubject,
   type NewSignInEmailProps,
 } from './templates/new-sign-in.js';
+import OrganizationNoticeEmail, {
+  organizationNoticeSubject,
+  type OrganizationNoticeEmailProps,
+} from './templates/organization-notice.js';
 import PasswordResetEmail, {
   passwordResetSubject,
   type PasswordResetEmailProps,
@@ -29,6 +33,11 @@ export type { RenderedEmail } from './render.js';
 export type { EmailVerificationEmailProps } from './templates/email-verification.js';
 export type { MagicLinkEmailProps } from './templates/magic-link.js';
 export type { NewSignInEmailProps } from './templates/new-sign-in.js';
+export type {
+  OrganizationNoticeEmailProps,
+  OrganizationNoticeKind,
+  OrganizationRoleLabel,
+} from './templates/organization-notice.js';
 export type { PasswordResetEmailProps } from './templates/password-reset.js';
 export type {
   SignInMethodChange,
@@ -67,5 +76,14 @@ export function renderSignInMethodChangedEmail(
   return renderEmail(
     signInMethodChangedSubject(props.locale),
     createElement(SignInMethodChangedEmail, props),
+  );
+}
+
+export function renderOrganizationNoticeEmail(
+  props: OrganizationNoticeEmailProps,
+): Promise<RenderedEmail> {
+  return renderEmail(
+    organizationNoticeSubject(props),
+    createElement(OrganizationNoticeEmail, props),
   );
 }

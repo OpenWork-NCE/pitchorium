@@ -4,6 +4,8 @@ import {
   renderEmailVerificationEmail,
   renderMagicLinkEmail,
   renderNewSignInEmail,
+  renderOrganizationNoticeEmail,
+  type OrganizationNoticeKind,
   renderPasswordResetEmail,
   renderSignInMethodChangedEmail,
   renderTechnicalTestEmail,
@@ -23,7 +25,7 @@ const url = 'https://app.pitchorium.test/action?token=abc';
 
 /** A missing key renders as the key itself; an unresolved parameter keeps its braces. */
 const MISSING_TRANSLATION =
-  /\{\{|\b(?:layout|providers|emailVerification|magicLink|passwordReset|newSignIn|signInMethodChanged|technicalTest)\./;
+  /\{\{|\b(?:layout|providers|emailVerification|magicLink|passwordReset|newSignIn|signInMethodChanged|technicalTest|organizationNotice)\./;
 
 const cases: TemplateCase[] = [
   {
@@ -79,6 +81,25 @@ const cases: TemplateCase[] = [
     subjects: { fr: 'Vos méthodes de connexion ont changé', en: 'Your sign-in methods changed' },
     mustContain: 'LinkedIn',
   },
+  {
+    name: 'organization invitation',
+    render: (locale) =>
+      renderOrganizationNoticeEmail({
+        locale,
+        kind: 'invitation',
+        name: null,
+        organization: 'Fondation Teranga',
+        actionUrl: url,
+        role: 'admin',
+        member: 'Amina Diop',
+        expiresAt: '2026-10-14 10:00',
+      }),
+    subjects: {
+      fr: 'Invitation à rejoindre Fondation Teranga sur Pitchorium',
+      en: 'Invitation to join Fondation Teranga on Pitchorium',
+    },
+    mustContain: url,
+  },
 ];
 
 describe('email templates', () => {
@@ -118,5 +139,41 @@ describe('email templates', () => {
 
     expect(new Set(texts).size).toBe(changes.length);
     expect(texts[2]).toContain('Your password was changed');
+  });
+
+  it('renders every organization email in French and English', async () => {
+    const kinds: OrganizationNoticeKind[] = [
+      'invitation',
+      'invitation_accepted',
+      'role_changed',
+      'ownership_transferred',
+      'verification_requested',
+      'verification_approved',
+      'verification_rejected',
+      'verification_revoked',
+    ];
+    for (const locale of ['fr', 'en'] as const) {
+      const emails = await Promise.all(
+        kinds.map((kind) =>
+          renderOrganizationNoticeEmail({
+            locale,
+            kind,
+            name: 'Amina',
+            organization: 'Fondation Teranga',
+            actionUrl: url,
+            role: 'member',
+            member: 'Kofi Mensah',
+            reason: 'Statuts fournis et site officiel concordant.',
+            expiresAt: '2026-10-14 10:00',
+          }),
+        ),
+      );
+      expect(new Set(emails.map((email) => email.subject)).size).toBe(kinds.length);
+      for (const email of emails) {
+        expect(email.subject).toContain('Fondation Teranga');
+        expect(email.text).not.toMatch(MISSING_TRANSLATION);
+      }
+      expect(emails[6]?.text).toContain('Statuts fournis et site officiel concordant.');
+    }
   });
 });

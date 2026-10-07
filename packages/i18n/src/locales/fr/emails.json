@@ -63,5 +63,65 @@
     "notYou": "Si vous n'êtes pas à l'origine de ce changement, sécurisez votre compte sans attendre.",
     "action": "Vérifier la sécurité de mon compte",
     "reason": "Vous recevez cet email à chaque changement de méthode de connexion."
+  },
+  "organizationNotice": {
+    "greeting": "Bonjour {{name}},",
+    "greetingAnonymous": "Bonjour,",
+    "reason": "Motif : {{reason}}",
+    "roles": {
+      "owner": "propriétaire",
+      "admin": "administrateur",
+      "member": "membre"
+    },
+    "invitation": {
+      "subject": "Invitation à rejoindre {{organization}} sur Pitchorium",
+      "preview": "{{member}} vous invite à rejoindre {{organization}}.",
+      "body": "{{member}} vous invite à rejoindre {{organization}} sur Pitchorium en tant que {{role}}. Créez votre compte ou connectez-vous avec cette adresse email, puis acceptez l'invitation.",
+      "action": "Voir l'invitation",
+      "note": "Cette invitation ne fonctionne qu'une fois et expire le {{expiresAt}} (UTC). Si vous ne connaissez pas cette organisation, ignorez cet email."
+    },
+    "invitation_accepted": {
+      "subject": "{{member}} a rejoint {{organization}}",
+      "preview": "Un nouveau membre a rejoint {{organization}}.",
+      "body": "{{member}} a accepté l'invitation et a rejoint {{organization}} en tant que {{role}}.",
+      "action": "Voir l'organisation"
+    },
+    "role_changed": {
+      "subject": "Votre rôle dans {{organization}} a changé",
+      "preview": "Vous êtes désormais {{role}} de {{organization}}.",
+      "body": "Vous êtes désormais {{role}} de {{organization}}.",
+      "action": "Voir l'organisation"
+    },
+    "ownership_transferred": {
+      "subject": "La propriété de {{organization}} a été transférée",
+      "preview": "{{member}} est désormais propriétaire de {{organization}}.",
+      "body": "La propriété de {{organization}} a été transférée à {{member}}. L'ancien propriétaire en reste administrateur.",
+      "action": "Voir l'organisation"
+    },
+    "verification_requested": {
+      "subject": "Demande de vérification reçue pour {{organization}}",
+      "preview": "Votre demande de vérification sera examinée par un modérateur.",
+      "body": "Nous avons bien reçu la demande de vérification de {{organization}}. Un modérateur va l'examiner ; vous serez prévenu de sa décision par email.",
+      "action": "Voir l'organisation"
+    },
+    "verification_approved": {
+      "subject": "{{organization}} est vérifiée",
+      "preview": "Le badge de vérification est affiché sur la page de {{organization}}.",
+      "body": "La vérification de {{organization}} est acceptée : le badge de vérification est désormais affiché sur sa page.",
+      "action": "Voir l'organisation"
+    },
+    "verification_rejected": {
+      "subject": "Vérification de {{organization}} refusée",
+      "preview": "La demande de vérification de {{organization}} n'a pas été acceptée.",
+      "body": "La demande de vérification de {{organization}} n'a pas été acceptée.",
+      "action": "Voir l'organisation",
+      "note": "Vous pouvez déposer une nouvelle demande avec des pièces complémentaires."
+    },
+    "verification_revoked": {
+      "subject": "Vérification de {{organization}} retirée",
+      "preview": "Le badge de vérification de {{organization}} a été retiré.",
+      "body": "Le badge de vérification de {{organization}} a été retiré par l'équipe de modération.",
+      "action": "Voir l'organisation"
+    }
   }
 }
