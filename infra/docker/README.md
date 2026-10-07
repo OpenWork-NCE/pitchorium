@@ -9,7 +9,9 @@
 | `minio`      | `pgsty/minio:RELEASE.2026-08-04T00-00-00Z` | 9000 (S3), 9001 (console)         | `pitchorium` / `pitchorium-secret`                                   |
 | `minio-init` | `pgsty/mc:RELEASE.2026-09-16T00-00-00Z`    | aucun                             | crée `pitchorium-public` (lecture anonyme) et `pitchorium-private`   |
 | `mailpit`    | `axllent/mailpit:v1.31.4`                  | 1025 (SMTP), 8025 (interface web) | aucun                                                                |
+| `clamav`     | `clamav/clamav:1.5.4`                      | 3310 (clamd)                      | aucun                                                                |
 
 - `postgres/init/01-init.sh` crée la base de test et active `pg_trgm`, `unaccent` et `citext` à la première initialisation du volume. La migration initiale crée aussi ces extensions.
 - Valkey tourne avec `maxmemory-policy noeviction`, exigé par BullMQ.
+- ClamAV charge ses signatures au démarrage (une à deux minutes, environ 1,5 Go de mémoire) puis les met à jour avec freshclam ; le worker l'interroge sur le port 3310 (ADR 0023).
 - MinIO ne publie plus d'images Docker depuis octobre 2025 : les images utilisées sont celles du fork communautaire Pigsty (voir `docs/adr/0011-minio-community-images.md`).

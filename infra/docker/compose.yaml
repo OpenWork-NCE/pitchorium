@@ -78,7 +78,24 @@ services:
       timeout: 3s
       retries: 10
 
+  clamav:
+    image: clamav/clamav:1.5.4
+    # The image ships the signatures; freshclam updates them while the container runs.
+    environment:
+      CLAMAV_NO_MILTERD: 'true'
+    ports:
+      - '127.0.0.1:3310:3310'
+    volumes:
+      - clamav-data:/var/lib/clamav
+    healthcheck:
+      test: ['CMD', 'clamdcheck.sh']
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 120s
+
 volumes:
+  clamav-data:
   postgres-data:
   valkey-data:
   minio-data:

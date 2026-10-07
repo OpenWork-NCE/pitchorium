@@ -25,7 +25,7 @@
     "i18n:check": "turbo run check:keys",
     "openapi:generate": "turbo run openapi:generate",
     "api-client:generate": "turbo run api-client:generate",
-    "infra:up": "docker compose -f infra/docker/compose.yaml up -d --wait postgres valkey minio mailpit && docker compose -f infra/docker/compose.yaml run --rm minio-init",
+    "infra:up": "docker compose -f infra/docker/compose.yaml up -d --wait postgres valkey minio mailpit clamav && docker compose -f infra/docker/compose.yaml run --rm minio-init",
     "infra:down": "docker compose -f infra/docker/compose.yaml down",
     "check:box-drawing": "sh scripts/check-box-drawing.sh",
     "prepare": "husky"
