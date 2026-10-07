@@ -108,7 +108,7 @@ describe('profile media', () => {
     );
     const publicPhoto = await fetch(page.avatarUrl);
     expect(publicPhoto.status).toBe(200);
-    expect(publicPhoto.headers.get('cache-control')).toBe('public, max-age=3600');
+    expect(publicPhoto.headers.get('cache-control')).toBe('public, max-age=31536000, immutable');
     expect((await fetch(own.body.avatarUrl as string)).status).toBe(404);
 
     // A cover is not a photo, and a file can be attached only once.
