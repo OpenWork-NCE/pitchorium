@@ -165,6 +165,28 @@ export const ActionPrerequisitesDtoOutputAction = {
   contentcommentcreate: 'content.comment.create',
   contentcommentupdate: 'content.comment.update',
   contentcommentdelete: 'content.comment.delete',
+  paymentquote: 'payment.quote',
+  paymentcontribute: 'payment.contribute',
+  paymentcontributeorganization: 'payment.contribute.organization',
+  paymentcontributionread: 'payment.contribution.read',
+  paymentcontributioncancel: 'payment.contribution.cancel',
+  paymentprojectcontributionsread: 'payment.project.contributions.read',
+  paymentprojectcontributionsexport: 'payment.project.contributions.export',
+  paymentcollectionopen: 'payment.collection.open',
+  paymentofflinedeclare: 'payment.offline.declare',
+  paymentofflinedeclareteam: 'payment.offline.declare.team',
+  paymentofflinerespond: 'payment.offline.respond',
+  paymentofflinevalidate: 'payment.offline.validate',
+  paymentpayoutconfigure: 'payment.payout.configure',
+  paymentkycsubmit: 'payment.kyc.submit',
+  paymentkycreview: 'payment.kyc.review',
+  paymentrefund: 'payment.refund',
+  paymentreconciliationmanage: 'payment.reconciliation.manage',
+  engagementdashboardread: 'engagement.dashboard.read',
+  engagementorganizationdashboardread: 'engagement.organization.dashboard.read',
+  engagementtimedeclare: 'engagement.time.declare',
+  engagementtimeread: 'engagement.time.read',
+  engagementtimerespond: 'engagement.time.respond',
 } as const;
 
 export type ActionPrerequisitesDtoOutputCode =
@@ -282,6 +304,41 @@ export const ActionPrerequisitesDtoOutputCode = {
   PROJECTS_NOT_OPEN: 'PROJECTS_NOT_OPEN',
   PROJECTS_CONTRIBUTION_CONFLICT: 'PROJECTS_CONTRIBUTION_CONFLICT',
   PROJECTS_CONTRIBUTION_NOT_FOUND: 'PROJECTS_CONTRIBUTION_NOT_FOUND',
+  PROJECTS_REVERSAL_INVALID: 'PROJECTS_REVERSAL_INVALID',
+  PAYMENTS_PROJECT_NOT_OPEN: 'PAYMENTS_PROJECT_NOT_OPEN',
+  PAYMENTS_HOLDER_NOT_READY: 'PAYMENTS_HOLDER_NOT_READY',
+  PAYMENTS_NO_PAYMENT_ROUTE: 'PAYMENTS_NO_PAYMENT_ROUTE',
+  PAYMENTS_METHOD_NOT_AVAILABLE: 'PAYMENTS_METHOD_NOT_AVAILABLE',
+  PAYMENTS_CURRENCY_NOT_AVAILABLE: 'PAYMENTS_CURRENCY_NOT_AVAILABLE',
+  PAYMENTS_INSTRUMENT_NOT_ACCEPTED: 'PAYMENTS_INSTRUMENT_NOT_ACCEPTED',
+  PAYMENTS_INSTRUMENT_NOT_COLLECTIBLE: 'PAYMENTS_INSTRUMENT_NOT_COLLECTIBLE',
+  PAYMENTS_LICENSED_PARTNER_REQUIRED: 'PAYMENTS_LICENSED_PARTNER_REQUIRED',
+  PAYMENTS_AMOUNT_OUT_OF_RANGE: 'PAYMENTS_AMOUNT_OUT_OF_RANGE',
+  PAYMENTS_REWARD_NOT_ELIGIBLE: 'PAYMENTS_REWARD_NOT_ELIGIBLE',
+  PAYMENTS_ANONYMOUS_NOT_ALLOWED: 'PAYMENTS_ANONYMOUS_NOT_ALLOWED',
+  PAYMENTS_RATE_LIMITED: 'PAYMENTS_RATE_LIMITED',
+  PAYMENTS_CONTRIBUTION_NOT_FOUND: 'PAYMENTS_CONTRIBUTION_NOT_FOUND',
+  PAYMENTS_INVALID_TRANSITION: 'PAYMENTS_INVALID_TRANSITION',
+  PAYMENTS_REFUND_INVALID: 'PAYMENTS_REFUND_INVALID',
+  PAYMENTS_PROVIDER_UNAVAILABLE: 'PAYMENTS_PROVIDER_UNAVAILABLE',
+  PAYMENTS_PAYOUT_ACCOUNT_EXISTS: 'PAYMENTS_PAYOUT_ACCOUNT_EXISTS',
+  PAYMENTS_PAYOUT_ACCOUNT_NOT_FOUND: 'PAYMENTS_PAYOUT_ACCOUNT_NOT_FOUND',
+  PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED: 'PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED',
+  PAYMENTS_PAYOUT_DETAILS_REQUIRED: 'PAYMENTS_PAYOUT_DETAILS_REQUIRED',
+  PAYMENTS_KYC_NOT_MANUAL: 'PAYMENTS_KYC_NOT_MANUAL',
+  PAYMENTS_KYC_PENDING: 'PAYMENTS_KYC_PENDING',
+  PAYMENTS_KYC_ALREADY_VERIFIED: 'PAYMENTS_KYC_ALREADY_VERIFIED',
+  PAYMENTS_KYC_NOT_FOUND: 'PAYMENTS_KYC_NOT_FOUND',
+  PAYMENTS_KYC_ALREADY_DECIDED: 'PAYMENTS_KYC_ALREADY_DECIDED',
+  PAYMENTS_OFFLINE_NOT_FOUND: 'PAYMENTS_OFFLINE_NOT_FOUND',
+  PAYMENTS_OFFLINE_AMOUNT_INVALID: 'PAYMENTS_OFFLINE_AMOUNT_INVALID',
+  PAYMENTS_OFFLINE_INVALID_TRANSITION: 'PAYMENTS_OFFLINE_INVALID_TRANSITION',
+  PAYMENTS_OFFLINE_PROOF_REQUIRED: 'PAYMENTS_OFFLINE_PROOF_REQUIRED',
+  PAYMENTS_DISCREPANCY_NOT_FOUND: 'PAYMENTS_DISCREPANCY_NOT_FOUND',
+  PAYMENTS_WEBHOOK_INVALID: 'PAYMENTS_WEBHOOK_INVALID',
+  ENGAGEMENT_TIME_ENTRY_NOT_FOUND: 'ENGAGEMENT_TIME_ENTRY_NOT_FOUND',
+  ENGAGEMENT_BENEFICIARY_INVALID: 'ENGAGEMENT_BENEFICIARY_INVALID',
+  ENGAGEMENT_TIME_ENTRY_ALREADY_ANSWERED: 'ENGAGEMENT_TIME_ENTRY_ALREADY_ANSWERED',
   INTERNAL_ERROR: 'INTERNAL_ERROR',
   SERVICE_UNAVAILABLE: 'SERVICE_UNAVAILABLE',
 } as const;
@@ -296,6 +353,7 @@ export const ActionPrerequisitesDtoOutputMissingItem = {
   two_factor: 'two_factor',
   profileentrepreneur_facet: 'profile.entrepreneur_facet',
   profilecontributor_facet: 'profile.contributor_facet',
+  payout_account: 'payout_account',
 } as const;
 
 export interface ActionPrerequisitesDtoOutput {
@@ -6689,6 +6747,1938 @@ export interface PrefillDtoOutput {
   answers: PrefillDtoOutputAnswers;
 }
 
+export type PaymentOptionsDtoOutputUnavailableReason =
+  | (typeof PaymentOptionsDtoOutputUnavailableReason)[keyof typeof PaymentOptionsDtoOutputUnavailableReason]
+  | null;
+
+export const PaymentOptionsDtoOutputUnavailableReason = {
+  project_not_open: 'project_not_open',
+  holder_not_ready: 'holder_not_ready',
+  no_payment_route: 'no_payment_route',
+} as const;
+
+export type PaymentOptionsDtoOutputKindsItem =
+  (typeof PaymentOptionsDtoOutputKindsItem)[keyof typeof PaymentOptionsDtoOutputKindsItem];
+
+export const PaymentOptionsDtoOutputKindsItem = {
+  donation: 'donation',
+  reward_crowdfunding: 'reward_crowdfunding',
+  love_money: 'love_money',
+} as const;
+
+export type PaymentOptionsDtoOutputCurrenciesItemMin = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+};
+
+export type PaymentOptionsDtoOutputCurrenciesItemMax = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+};
+
+export type PaymentOptionsDtoOutputCurrenciesItemMethodsItemMethod =
+  (typeof PaymentOptionsDtoOutputCurrenciesItemMethodsItemMethod)[keyof typeof PaymentOptionsDtoOutputCurrenciesItemMethodsItemMethod];
+
+export const PaymentOptionsDtoOutputCurrenciesItemMethodsItemMethod = {
+  card: 'card',
+  sepa_debit: 'sepa_debit',
+  apple_pay: 'apple_pay',
+  google_pay: 'google_pay',
+  paypal: 'paypal',
+  mobile_money: 'mobile_money',
+  bank_transfer: 'bank_transfer',
+  bank_account: 'bank_account',
+  ussd: 'ussd',
+} as const;
+
+export type PaymentOptionsDtoOutputCurrenciesItemMethodsItem = {
+  method: PaymentOptionsDtoOutputCurrenciesItemMethodsItemMethod;
+  operators: string[];
+};
+
+export type PaymentOptionsDtoOutputCurrenciesItem = {
+  currency: string;
+  min: PaymentOptionsDtoOutputCurrenciesItemMin;
+  max: PaymentOptionsDtoOutputCurrenciesItemMax;
+  methods: PaymentOptionsDtoOutputCurrenciesItemMethodsItem[];
+};
+
+export interface PaymentOptionsDtoOutput {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  projectId: string;
+  acceptsPayments: boolean;
+  unavailableReason: PaymentOptionsDtoOutputUnavailableReason;
+  contributorCountry: string | null;
+  kinds: PaymentOptionsDtoOutputKindsItem[];
+  currencies: PaymentOptionsDtoOutputCurrenciesItem[];
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  commissionRateBps: number;
+  anonymousDonations: boolean;
+}
+
+export type QuoteRequestDtoKind = (typeof QuoteRequestDtoKind)[keyof typeof QuoteRequestDtoKind];
+
+export const QuoteRequestDtoKind = {
+  donation: 'donation',
+  reward_crowdfunding: 'reward_crowdfunding',
+  love_money: 'love_money',
+  grant: 'grant',
+  honor_loan: 'honor_loan',
+  equity: 'equity',
+  convertible_bonds: 'convertible_bonds',
+  loan: 'loan',
+} as const;
+
+export type QuoteRequestDtoAmount = {
+  /** @pattern ^[1-9]\d{0,17}$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+};
+
+export type QuoteRequestDtoMethod =
+  (typeof QuoteRequestDtoMethod)[keyof typeof QuoteRequestDtoMethod];
+
+export const QuoteRequestDtoMethod = {
+  card: 'card',
+  sepa_debit: 'sepa_debit',
+  apple_pay: 'apple_pay',
+  google_pay: 'google_pay',
+  paypal: 'paypal',
+  mobile_money: 'mobile_money',
+  bank_transfer: 'bank_transfer',
+  bank_account: 'bank_account',
+  ussd: 'ussd',
+} as const;
+
+export interface QuoteRequestDto {
+  kind: QuoteRequestDtoKind;
+  amount: QuoteRequestDtoAmount;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  rewardId?: string;
+  method?: QuoteRequestDtoMethod;
+  /** @pattern ^[A-Z]{2}$ */
+  country?: string;
+}
+
+export type QuoteDtoOutputKind = (typeof QuoteDtoOutputKind)[keyof typeof QuoteDtoOutputKind];
+
+export const QuoteDtoOutputKind = {
+  donation: 'donation',
+  reward_crowdfunding: 'reward_crowdfunding',
+  love_money: 'love_money',
+} as const;
+
+export type QuoteDtoOutputAmount = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+};
+
+export type QuoteDtoOutputEurEquivalent = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+};
+
+export type QuoteDtoOutputRateSource =
+  (typeof QuoteDtoOutputRateSource)[keyof typeof QuoteDtoOutputRateSource];
+
+export const QuoteDtoOutputRateSource = {
+  identity: 'identity',
+  fixed_parity: 'fixed_parity',
+  provider: 'provider',
+  simulated: 'simulated',
+} as const;
+
+export type QuoteDtoOutputRate = {
+  /** @pattern ^(0|[1-9]\d*)(\.\d+)?$ */
+  unitsPerEur: string;
+  source: QuoteDtoOutputRateSource;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  at: string;
+};
+
+export type QuoteDtoOutputCommission = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+};
+
+export type QuoteDtoOutputEstimatedProviderFee = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+} | null;
+
+export type QuoteDtoOutputEstimatedHolderAmount = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+} | null;
+
+export type QuoteDtoOutputRewardMinAmount = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+};
+
+export type QuoteDtoOutputReward = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  rewardId: string;
+  minAmount: QuoteDtoOutputRewardMinAmount;
+  eligible: boolean;
+} | null;
+
+export type QuoteDtoOutputMethodsItemMethod =
+  (typeof QuoteDtoOutputMethodsItemMethod)[keyof typeof QuoteDtoOutputMethodsItemMethod];
+
+export const QuoteDtoOutputMethodsItemMethod = {
+  card: 'card',
+  sepa_debit: 'sepa_debit',
+  apple_pay: 'apple_pay',
+  google_pay: 'google_pay',
+  paypal: 'paypal',
+  mobile_money: 'mobile_money',
+  bank_transfer: 'bank_transfer',
+  bank_account: 'bank_account',
+  ussd: 'ussd',
+} as const;
+
+export type QuoteDtoOutputMethodsItem = {
+  method: QuoteDtoOutputMethodsItemMethod;
+  operators: string[];
+};
+
+export interface QuoteDtoOutput {
+  kind: QuoteDtoOutputKind;
+  amount: QuoteDtoOutputAmount;
+  eurEquivalent: QuoteDtoOutputEurEquivalent;
+  rate: QuoteDtoOutputRate;
+  commission: QuoteDtoOutputCommission;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  commissionRateBps: number;
+  commissionVersion: string;
+  estimatedProviderFee: QuoteDtoOutputEstimatedProviderFee;
+  estimatedHolderAmount: QuoteDtoOutputEstimatedHolderAmount;
+  reward: QuoteDtoOutputReward;
+  methods: QuoteDtoOutputMethodsItem[];
+}
+
+export type CreateContributionDtoKind =
+  (typeof CreateContributionDtoKind)[keyof typeof CreateContributionDtoKind];
+
+export const CreateContributionDtoKind = {
+  donation: 'donation',
+  reward_crowdfunding: 'reward_crowdfunding',
+  love_money: 'love_money',
+  grant: 'grant',
+  honor_loan: 'honor_loan',
+  equity: 'equity',
+  convertible_bonds: 'convertible_bonds',
+  loan: 'loan',
+} as const;
+
+export type CreateContributionDtoAmount = {
+  /** @pattern ^[1-9]\d{0,17}$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+};
+
+export type CreateContributionDtoMethod =
+  (typeof CreateContributionDtoMethod)[keyof typeof CreateContributionDtoMethod];
+
+export const CreateContributionDtoMethod = {
+  card: 'card',
+  sepa_debit: 'sepa_debit',
+  apple_pay: 'apple_pay',
+  google_pay: 'google_pay',
+  paypal: 'paypal',
+  mobile_money: 'mobile_money',
+  bank_transfer: 'bank_transfer',
+  bank_account: 'bank_account',
+  ussd: 'ussd',
+} as const;
+
+export interface CreateContributionDto {
+  kind: CreateContributionDtoKind;
+  amount: CreateContributionDtoAmount;
+  method: CreateContributionDtoMethod;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  rewardId?: string;
+  /** @pattern ^[A-Z]{2}$ */
+  country?: string;
+  publicDisplay?: boolean;
+  anonymous?: boolean;
+}
+
+export type ContributionDtoOutputProject = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  slug: string;
+  title: string;
+};
+
+export type ContributionDtoOutputKind =
+  (typeof ContributionDtoOutputKind)[keyof typeof ContributionDtoOutputKind];
+
+export const ContributionDtoOutputKind = {
+  donation: 'donation',
+  reward_crowdfunding: 'reward_crowdfunding',
+  love_money: 'love_money',
+} as const;
+
+export type ContributionDtoOutputStatus =
+  (typeof ContributionDtoOutputStatus)[keyof typeof ContributionDtoOutputStatus];
+
+export const ContributionDtoOutputStatus = {
+  pending_payment: 'pending_payment',
+  succeeded: 'succeeded',
+  failed: 'failed',
+  expired: 'expired',
+  canceled: 'canceled',
+  partially_refunded: 'partially_refunded',
+  refunded: 'refunded',
+  disputed: 'disputed',
+  dispute_won: 'dispute_won',
+  dispute_lost: 'dispute_lost',
+} as const;
+
+export type ContributionDtoOutputMethod =
+  (typeof ContributionDtoOutputMethod)[keyof typeof ContributionDtoOutputMethod];
+
+export const ContributionDtoOutputMethod = {
+  card: 'card',
+  sepa_debit: 'sepa_debit',
+  apple_pay: 'apple_pay',
+  google_pay: 'google_pay',
+  paypal: 'paypal',
+  mobile_money: 'mobile_money',
+  bank_transfer: 'bank_transfer',
+  bank_account: 'bank_account',
+  ussd: 'ussd',
+} as const;
+
+export type ContributionDtoOutputAmount = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+};
+
+export type ContributionDtoOutputEurEquivalent = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+};
+
+export type ContributionDtoOutputRateSource =
+  (typeof ContributionDtoOutputRateSource)[keyof typeof ContributionDtoOutputRateSource];
+
+export const ContributionDtoOutputRateSource = {
+  identity: 'identity',
+  fixed_parity: 'fixed_parity',
+  provider: 'provider',
+  simulated: 'simulated',
+} as const;
+
+export type ContributionDtoOutputRate = {
+  /** @pattern ^(0|[1-9]\d*)(\.\d+)?$ */
+  unitsPerEur: string;
+  source: ContributionDtoOutputRateSource;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  at: string;
+};
+
+export type ContributionDtoOutputCommission = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+};
+
+export type ContributionDtoOutputProviderFee = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+} | null;
+
+export type ContributionDtoOutputRefunded = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+};
+
+export type ContributionDtoOutputRewardState =
+  (typeof ContributionDtoOutputRewardState)[keyof typeof ContributionDtoOutputRewardState];
+
+export const ContributionDtoOutputRewardState = {
+  none: 'none',
+  reserved: 'reserved',
+  confirmed: 'confirmed',
+  released: 'released',
+} as const;
+
+export interface ContributionDtoOutput {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  project: ContributionDtoOutputProject;
+  organizationId: string | null;
+  kind: ContributionDtoOutputKind;
+  status: ContributionDtoOutputStatus;
+  method: ContributionDtoOutputMethod;
+  amount: ContributionDtoOutputAmount;
+  eurEquivalent: ContributionDtoOutputEurEquivalent;
+  rate: ContributionDtoOutputRate;
+  commission: ContributionDtoOutputCommission;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  commissionRateBps: number;
+  providerFee: ContributionDtoOutputProviderFee;
+  refunded: ContributionDtoOutputRefunded;
+  rewardId: string | null;
+  rewardState: ContributionDtoOutputRewardState;
+  publicDisplay: boolean;
+  anonymous: boolean;
+  paymentUrl: string[];
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  expiresAt: string;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+  succeededAt: string | null;
+}
+
+export type CreateOrganizationContributionDtoKind =
+  (typeof CreateOrganizationContributionDtoKind)[keyof typeof CreateOrganizationContributionDtoKind];
+
+export const CreateOrganizationContributionDtoKind = {
+  donation: 'donation',
+  reward_crowdfunding: 'reward_crowdfunding',
+  love_money: 'love_money',
+  grant: 'grant',
+  honor_loan: 'honor_loan',
+  equity: 'equity',
+  convertible_bonds: 'convertible_bonds',
+  loan: 'loan',
+} as const;
+
+export type CreateOrganizationContributionDtoAmount = {
+  /** @pattern ^[1-9]\d{0,17}$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+};
+
+export type CreateOrganizationContributionDtoMethod =
+  (typeof CreateOrganizationContributionDtoMethod)[keyof typeof CreateOrganizationContributionDtoMethod];
+
+export const CreateOrganizationContributionDtoMethod = {
+  card: 'card',
+  sepa_debit: 'sepa_debit',
+  apple_pay: 'apple_pay',
+  google_pay: 'google_pay',
+  paypal: 'paypal',
+  mobile_money: 'mobile_money',
+  bank_transfer: 'bank_transfer',
+  bank_account: 'bank_account',
+  ussd: 'ussd',
+} as const;
+
+export interface CreateOrganizationContributionDto {
+  kind: CreateOrganizationContributionDtoKind;
+  amount: CreateOrganizationContributionDtoAmount;
+  method: CreateOrganizationContributionDtoMethod;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  rewardId?: string;
+  /** @pattern ^[A-Z]{2}$ */
+  country?: string;
+  publicDisplay?: boolean;
+  anonymous?: boolean;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  projectId: string;
+}
+
+export type ContributionPageDtoOutputItemsItemProject = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  slug: string;
+  title: string;
+};
+
+export type ContributionPageDtoOutputItemsItemKind =
+  (typeof ContributionPageDtoOutputItemsItemKind)[keyof typeof ContributionPageDtoOutputItemsItemKind];
+
+export const ContributionPageDtoOutputItemsItemKind = {
+  donation: 'donation',
+  reward_crowdfunding: 'reward_crowdfunding',
+  love_money: 'love_money',
+} as const;
+
+export type ContributionPageDtoOutputItemsItemStatus =
+  (typeof ContributionPageDtoOutputItemsItemStatus)[keyof typeof ContributionPageDtoOutputItemsItemStatus];
+
+export const ContributionPageDtoOutputItemsItemStatus = {
+  pending_payment: 'pending_payment',
+  succeeded: 'succeeded',
+  failed: 'failed',
+  expired: 'expired',
+  canceled: 'canceled',
+  partially_refunded: 'partially_refunded',
+  refunded: 'refunded',
+  disputed: 'disputed',
+  dispute_won: 'dispute_won',
+  dispute_lost: 'dispute_lost',
+} as const;
+
+export type ContributionPageDtoOutputItemsItemMethod =
+  (typeof ContributionPageDtoOutputItemsItemMethod)[keyof typeof ContributionPageDtoOutputItemsItemMethod];
+
+export const ContributionPageDtoOutputItemsItemMethod = {
+  card: 'card',
+  sepa_debit: 'sepa_debit',
+  apple_pay: 'apple_pay',
+  google_pay: 'google_pay',
+  paypal: 'paypal',
+  mobile_money: 'mobile_money',
+  bank_transfer: 'bank_transfer',
+  bank_account: 'bank_account',
+  ussd: 'ussd',
+} as const;
+
+export type ContributionPageDtoOutputItemsItemAmount = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+};
+
+export type ContributionPageDtoOutputItemsItemEurEquivalent = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+};
+
+export type ContributionPageDtoOutputItemsItemRateSource =
+  (typeof ContributionPageDtoOutputItemsItemRateSource)[keyof typeof ContributionPageDtoOutputItemsItemRateSource];
+
+export const ContributionPageDtoOutputItemsItemRateSource = {
+  identity: 'identity',
+  fixed_parity: 'fixed_parity',
+  provider: 'provider',
+  simulated: 'simulated',
+} as const;
+
+export type ContributionPageDtoOutputItemsItemRate = {
+  /** @pattern ^(0|[1-9]\d*)(\.\d+)?$ */
+  unitsPerEur: string;
+  source: ContributionPageDtoOutputItemsItemRateSource;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  at: string;
+};
+
+export type ContributionPageDtoOutputItemsItemCommission = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+};
+
+export type ContributionPageDtoOutputItemsItemProviderFee = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+} | null;
+
+export type ContributionPageDtoOutputItemsItemRefunded = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+};
+
+export type ContributionPageDtoOutputItemsItemRewardState =
+  (typeof ContributionPageDtoOutputItemsItemRewardState)[keyof typeof ContributionPageDtoOutputItemsItemRewardState];
+
+export const ContributionPageDtoOutputItemsItemRewardState = {
+  none: 'none',
+  reserved: 'reserved',
+  confirmed: 'confirmed',
+  released: 'released',
+} as const;
+
+export type ContributionPageDtoOutputItemsItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  project: ContributionPageDtoOutputItemsItemProject;
+  organizationId: string | null;
+  kind: ContributionPageDtoOutputItemsItemKind;
+  status: ContributionPageDtoOutputItemsItemStatus;
+  method: ContributionPageDtoOutputItemsItemMethod;
+  amount: ContributionPageDtoOutputItemsItemAmount;
+  eurEquivalent: ContributionPageDtoOutputItemsItemEurEquivalent;
+  rate: ContributionPageDtoOutputItemsItemRate;
+  commission: ContributionPageDtoOutputItemsItemCommission;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  commissionRateBps: number;
+  providerFee: ContributionPageDtoOutputItemsItemProviderFee;
+  refunded: ContributionPageDtoOutputItemsItemRefunded;
+  rewardId: string | null;
+  rewardState: ContributionPageDtoOutputItemsItemRewardState;
+  publicDisplay: boolean;
+  anonymous: boolean;
+  /** @nullable */
+  paymentUrl: string | null;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  expiresAt: string;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+  succeededAt: string | null;
+};
+
+export interface ContributionPageDtoOutput {
+  items: ContributionPageDtoOutputItemsItem[];
+  nextCursor: string[];
+}
+
+export type ProjectContributionPageDtoOutputItemsItemProject = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  slug: string;
+  title: string;
+};
+
+export type ProjectContributionPageDtoOutputItemsItemKind =
+  (typeof ProjectContributionPageDtoOutputItemsItemKind)[keyof typeof ProjectContributionPageDtoOutputItemsItemKind];
+
+export const ProjectContributionPageDtoOutputItemsItemKind = {
+  donation: 'donation',
+  reward_crowdfunding: 'reward_crowdfunding',
+  love_money: 'love_money',
+} as const;
+
+export type ProjectContributionPageDtoOutputItemsItemStatus =
+  (typeof ProjectContributionPageDtoOutputItemsItemStatus)[keyof typeof ProjectContributionPageDtoOutputItemsItemStatus];
+
+export const ProjectContributionPageDtoOutputItemsItemStatus = {
+  pending_payment: 'pending_payment',
+  succeeded: 'succeeded',
+  failed: 'failed',
+  expired: 'expired',
+  canceled: 'canceled',
+  partially_refunded: 'partially_refunded',
+  refunded: 'refunded',
+  disputed: 'disputed',
+  dispute_won: 'dispute_won',
+  dispute_lost: 'dispute_lost',
+} as const;
+
+export type ProjectContributionPageDtoOutputItemsItemMethod =
+  (typeof ProjectContributionPageDtoOutputItemsItemMethod)[keyof typeof ProjectContributionPageDtoOutputItemsItemMethod];
+
+export const ProjectContributionPageDtoOutputItemsItemMethod = {
+  card: 'card',
+  sepa_debit: 'sepa_debit',
+  apple_pay: 'apple_pay',
+  google_pay: 'google_pay',
+  paypal: 'paypal',
+  mobile_money: 'mobile_money',
+  bank_transfer: 'bank_transfer',
+  bank_account: 'bank_account',
+  ussd: 'ussd',
+} as const;
+
+export type ProjectContributionPageDtoOutputItemsItemAmount = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+};
+
+export type ProjectContributionPageDtoOutputItemsItemEurEquivalent = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+};
+
+export type ProjectContributionPageDtoOutputItemsItemRateSource =
+  (typeof ProjectContributionPageDtoOutputItemsItemRateSource)[keyof typeof ProjectContributionPageDtoOutputItemsItemRateSource];
+
+export const ProjectContributionPageDtoOutputItemsItemRateSource = {
+  identity: 'identity',
+  fixed_parity: 'fixed_parity',
+  provider: 'provider',
+  simulated: 'simulated',
+} as const;
+
+export type ProjectContributionPageDtoOutputItemsItemRate = {
+  /** @pattern ^(0|[1-9]\d*)(\.\d+)?$ */
+  unitsPerEur: string;
+  source: ProjectContributionPageDtoOutputItemsItemRateSource;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  at: string;
+};
+
+export type ProjectContributionPageDtoOutputItemsItemCommission = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+};
+
+export type ProjectContributionPageDtoOutputItemsItemProviderFee = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+} | null;
+
+export type ProjectContributionPageDtoOutputItemsItemRefunded = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+};
+
+export type ProjectContributionPageDtoOutputItemsItemRewardState =
+  (typeof ProjectContributionPageDtoOutputItemsItemRewardState)[keyof typeof ProjectContributionPageDtoOutputItemsItemRewardState];
+
+export const ProjectContributionPageDtoOutputItemsItemRewardState = {
+  none: 'none',
+  reserved: 'reserved',
+  confirmed: 'confirmed',
+  released: 'released',
+} as const;
+
+export type ProjectContributionPageDtoOutputItemsItemContributor = {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  displayName: string;
+  /** @nullable */
+  headline: string | null;
+  /** @nullable */
+  avatarUrl: string | null;
+} | null;
+
+export type ProjectContributionPageDtoOutputItemsItemOrganization = {
+  slug: string;
+  title: string;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+} | null;
+
+export type ProjectContributionPageDtoOutputItemsItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  project: ProjectContributionPageDtoOutputItemsItemProject;
+  organizationId: string | null;
+  kind: ProjectContributionPageDtoOutputItemsItemKind;
+  status: ProjectContributionPageDtoOutputItemsItemStatus;
+  method: ProjectContributionPageDtoOutputItemsItemMethod;
+  amount: ProjectContributionPageDtoOutputItemsItemAmount;
+  eurEquivalent: ProjectContributionPageDtoOutputItemsItemEurEquivalent;
+  rate: ProjectContributionPageDtoOutputItemsItemRate;
+  commission: ProjectContributionPageDtoOutputItemsItemCommission;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  commissionRateBps: number;
+  providerFee: ProjectContributionPageDtoOutputItemsItemProviderFee;
+  refunded: ProjectContributionPageDtoOutputItemsItemRefunded;
+  rewardId: string | null;
+  rewardState: ProjectContributionPageDtoOutputItemsItemRewardState;
+  publicDisplay: boolean;
+  anonymous: boolean;
+  /** @nullable */
+  paymentUrl: string | null;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  expiresAt: string;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+  succeededAt: string | null;
+  contributor: ProjectContributionPageDtoOutputItemsItemContributor;
+  organization: ProjectContributionPageDtoOutputItemsItemOrganization;
+};
+
+export interface ProjectContributionPageDtoOutput {
+  items: ProjectContributionPageDtoOutputItemsItem[];
+  nextCursor: string[];
+}
+
+export type SupporterPageDtoOutputItemsItemType =
+  (typeof SupporterPageDtoOutputItemsItemType)[keyof typeof SupporterPageDtoOutputItemsItemType];
+
+export const SupporterPageDtoOutputItemsItemType = {
+  member: 'member',
+  organization: 'organization',
+} as const;
+
+export type SupporterPageDtoOutputItemsItemKind =
+  (typeof SupporterPageDtoOutputItemsItemKind)[keyof typeof SupporterPageDtoOutputItemsItemKind];
+
+export const SupporterPageDtoOutputItemsItemKind = {
+  donation: 'donation',
+  reward_crowdfunding: 'reward_crowdfunding',
+  love_money: 'love_money',
+} as const;
+
+export type SupporterPageDtoOutputItemsItem = {
+  type: SupporterPageDtoOutputItemsItemType;
+  displayName: string;
+  key: string;
+  /** @nullable */
+  avatarUrl: string | null;
+  kind: SupporterPageDtoOutputItemsItemKind;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  supportedAt: string;
+};
+
+export interface SupporterPageDtoOutput {
+  items: SupporterPageDtoOutputItemsItem[];
+  nextCursor: string[];
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  contributionCount: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  commitmentCount: number;
+}
+
+export type DeclareOfflineDtoKind =
+  (typeof DeclareOfflineDtoKind)[keyof typeof DeclareOfflineDtoKind];
+
+export const DeclareOfflineDtoKind = {
+  cash: 'cash',
+  institutional_transfer: 'institutional_transfer',
+  love_money_commitment: 'love_money_commitment',
+  skills_sponsorship: 'skills_sponsorship',
+} as const;
+
+export type DeclareOfflineDtoAmount = {
+  /** @pattern ^[1-9]\d{0,17}$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+};
+
+export interface DeclareOfflineDto {
+  kind: DeclareOfflineDtoKind;
+  amount?: DeclareOfflineDtoAmount;
+  /**
+   * @minLength 1
+   * @maxLength 1000
+   */
+  description?: string;
+}
+
+export type OfflineDtoOutputProject = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  slug: string;
+  title: string;
+};
+
+export type OfflineDtoOutputKind = (typeof OfflineDtoOutputKind)[keyof typeof OfflineDtoOutputKind];
+
+export const OfflineDtoOutputKind = {
+  cash: 'cash',
+  institutional_transfer: 'institutional_transfer',
+  love_money_commitment: 'love_money_commitment',
+  skills_sponsorship: 'skills_sponsorship',
+} as const;
+
+export type OfflineDtoOutputStatus =
+  (typeof OfflineDtoOutputStatus)[keyof typeof OfflineDtoOutputStatus];
+
+export const OfflineDtoOutputStatus = {
+  declared: 'declared',
+  confirmed: 'confirmed',
+  validated: 'validated',
+  rejected: 'rejected',
+} as const;
+
+export type OfflineDtoOutputAmount = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+} | null;
+
+export type OfflineDtoOutputEurEquivalent = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+} | null;
+
+export type OfflineDtoOutputDeclaredBy =
+  (typeof OfflineDtoOutputDeclaredBy)[keyof typeof OfflineDtoOutputDeclaredBy];
+
+export const OfflineDtoOutputDeclaredBy = {
+  contributor: 'contributor',
+  holder: 'holder',
+} as const;
+
+export type OfflineDtoOutputContributor = {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  displayName: string;
+  /** @nullable */
+  headline: string | null;
+  /** @nullable */
+  avatarUrl: string | null;
+} | null;
+
+export interface OfflineDtoOutput {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  project: OfflineDtoOutputProject;
+  kind: OfflineDtoOutputKind;
+  status: OfflineDtoOutputStatus;
+  amount: OfflineDtoOutputAmount;
+  eurEquivalent: OfflineDtoOutputEurEquivalent;
+  declaredBy: OfflineDtoOutputDeclaredBy;
+  contributor: OfflineDtoOutputContributor;
+  description: string[];
+  /** @items.pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  proofMediaIds: string[];
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+  confirmedAt: string | null;
+  decidedAt: string | null;
+  decisionReason: string[];
+}
+
+export type DeclareTeamOfflineDtoKind =
+  (typeof DeclareTeamOfflineDtoKind)[keyof typeof DeclareTeamOfflineDtoKind];
+
+export const DeclareTeamOfflineDtoKind = {
+  cash: 'cash',
+  institutional_transfer: 'institutional_transfer',
+  love_money_commitment: 'love_money_commitment',
+  skills_sponsorship: 'skills_sponsorship',
+} as const;
+
+export type DeclareTeamOfflineDtoAmount = {
+  /** @pattern ^[1-9]\d{0,17}$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+};
+
+export interface DeclareTeamOfflineDto {
+  kind: DeclareTeamOfflineDtoKind;
+  amount?: DeclareTeamOfflineDtoAmount;
+  /**
+   * @minLength 1
+   * @maxLength 1000
+   */
+  description?: string;
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  contributorHandle: string;
+}
+
+export type OfflinePageDtoOutputItemsItemProject = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  slug: string;
+  title: string;
+};
+
+export type OfflinePageDtoOutputItemsItemKind =
+  (typeof OfflinePageDtoOutputItemsItemKind)[keyof typeof OfflinePageDtoOutputItemsItemKind];
+
+export const OfflinePageDtoOutputItemsItemKind = {
+  cash: 'cash',
+  institutional_transfer: 'institutional_transfer',
+  love_money_commitment: 'love_money_commitment',
+  skills_sponsorship: 'skills_sponsorship',
+} as const;
+
+export type OfflinePageDtoOutputItemsItemStatus =
+  (typeof OfflinePageDtoOutputItemsItemStatus)[keyof typeof OfflinePageDtoOutputItemsItemStatus];
+
+export const OfflinePageDtoOutputItemsItemStatus = {
+  declared: 'declared',
+  confirmed: 'confirmed',
+  validated: 'validated',
+  rejected: 'rejected',
+} as const;
+
+export type OfflinePageDtoOutputItemsItemAmount = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+} | null;
+
+export type OfflinePageDtoOutputItemsItemEurEquivalent = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+} | null;
+
+export type OfflinePageDtoOutputItemsItemDeclaredBy =
+  (typeof OfflinePageDtoOutputItemsItemDeclaredBy)[keyof typeof OfflinePageDtoOutputItemsItemDeclaredBy];
+
+export const OfflinePageDtoOutputItemsItemDeclaredBy = {
+  contributor: 'contributor',
+  holder: 'holder',
+} as const;
+
+export type OfflinePageDtoOutputItemsItemContributor = {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  displayName: string;
+  /** @nullable */
+  headline: string | null;
+  /** @nullable */
+  avatarUrl: string | null;
+} | null;
+
+export type OfflinePageDtoOutputItemsItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  project: OfflinePageDtoOutputItemsItemProject;
+  kind: OfflinePageDtoOutputItemsItemKind;
+  status: OfflinePageDtoOutputItemsItemStatus;
+  amount: OfflinePageDtoOutputItemsItemAmount;
+  eurEquivalent: OfflinePageDtoOutputItemsItemEurEquivalent;
+  declaredBy: OfflinePageDtoOutputItemsItemDeclaredBy;
+  contributor: OfflinePageDtoOutputItemsItemContributor;
+  /** @nullable */
+  description: string | null;
+  /** @items.pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  proofMediaIds: string[];
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+  confirmedAt: string | null;
+  decidedAt: string | null;
+  /** @nullable */
+  decisionReason: string | null;
+};
+
+export interface OfflinePageDtoOutput {
+  items: OfflinePageDtoOutputItemsItem[];
+  nextCursor: string[];
+}
+
+export interface RejectionDto {
+  /**
+   * @minLength 1
+   * @maxLength 1000
+   */
+  reason: string;
+}
+
+export interface ProofsDto {
+  /**
+   * @minItems 1
+   * @maxItems 5
+   * @items.pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$
+   */
+  mediaIds: string[];
+}
+
+export type PayoutAccountDtoOutputStatus =
+  (typeof PayoutAccountDtoOutputStatus)[keyof typeof PayoutAccountDtoOutputStatus];
+
+export const PayoutAccountDtoOutputStatus = {
+  pending: 'pending',
+  active: 'active',
+  restricted: 'restricted',
+} as const;
+
+export type PayoutAccountDtoOutputOnboarding =
+  (typeof PayoutAccountDtoOutputOnboarding)[keyof typeof PayoutAccountDtoOutputOnboarding];
+
+export const PayoutAccountDtoOutputOnboarding = {
+  hosted: 'hosted',
+  bank_details: 'bank_details',
+} as const;
+
+export type PayoutAccountDtoOutputKycMode =
+  (typeof PayoutAccountDtoOutputKycMode)[keyof typeof PayoutAccountDtoOutputKycMode];
+
+export const PayoutAccountDtoOutputKycMode = {
+  provider: 'provider',
+  manual_review: 'manual_review',
+} as const;
+
+export type PayoutAccountDtoOutputKycStatus =
+  (typeof PayoutAccountDtoOutputKycStatus)[keyof typeof PayoutAccountDtoOutputKycStatus];
+
+export const PayoutAccountDtoOutputKycStatus = {
+  not_submitted: 'not_submitted',
+  pending: 'pending',
+  verified: 'verified',
+  rejected: 'rejected',
+} as const;
+
+export type PayoutAccountDtoOutputKyc = {
+  mode: PayoutAccountDtoOutputKycMode;
+  status: PayoutAccountDtoOutputKycStatus;
+};
+
+export interface PayoutAccountDtoOutput {
+  /** @pattern ^[A-Z]{2}$ */
+  country: string;
+  currency: string;
+  status: PayoutAccountDtoOutputStatus;
+  onboarding: PayoutAccountDtoOutputOnboarding;
+  onboardingUrl: string[];
+  kyc: PayoutAccountDtoOutputKyc;
+  collectionOpen: boolean;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  updatedAt: string;
+}
+
+export type CreatePayoutAccountDtoBankAccount = {
+  /**
+   * @minLength 1
+   * @maxLength 32
+   */
+  bankCode: string;
+  /**
+   * @minLength 4
+   * @maxLength 64
+   */
+  accountNumber: string;
+  /**
+   * @minLength 1
+   * @maxLength 120
+   */
+  accountName: string;
+  /** @pattern ^\+?[0-9]{6,15}$ */
+  mobileNumber?: string;
+};
+
+export interface CreatePayoutAccountDto {
+  /** @pattern ^[A-Z]{2}$ */
+  country: string;
+  bankAccount?: CreatePayoutAccountDtoBankAccount;
+}
+
+export type KycOverviewDtoOutputMode =
+  (typeof KycOverviewDtoOutputMode)[keyof typeof KycOverviewDtoOutputMode] | null;
+
+export const KycOverviewDtoOutputMode = {
+  provider: 'provider',
+  manual_review: 'manual_review',
+} as const;
+
+export type KycOverviewDtoOutputStatus =
+  (typeof KycOverviewDtoOutputStatus)[keyof typeof KycOverviewDtoOutputStatus];
+
+export const KycOverviewDtoOutputStatus = {
+  not_submitted: 'not_submitted',
+  pending: 'pending',
+  verified: 'verified',
+  rejected: 'rejected',
+} as const;
+
+export type KycOverviewDtoOutputLatestHolder = {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  displayName: string;
+  /** @nullable */
+  headline: string | null;
+  /** @nullable */
+  avatarUrl: string | null;
+} | null;
+
+export type KycOverviewDtoOutputLatestStatus =
+  (typeof KycOverviewDtoOutputLatestStatus)[keyof typeof KycOverviewDtoOutputLatestStatus];
+
+export const KycOverviewDtoOutputLatestStatus = {
+  pending: 'pending',
+  approved: 'approved',
+  rejected: 'rejected',
+} as const;
+
+export type KycOverviewDtoOutputLatest = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  userId: string;
+  holder: KycOverviewDtoOutputLatestHolder;
+  status: KycOverviewDtoOutputLatestStatus;
+  /** @items.pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  documentMediaIds: string[];
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  submittedAt: string;
+  decidedAt: string | null;
+  /** @nullable */
+  decisionReason: string | null;
+} | null;
+
+export interface KycOverviewDtoOutput {
+  mode: KycOverviewDtoOutputMode;
+  status: KycOverviewDtoOutputStatus;
+  latest: KycOverviewDtoOutputLatest;
+}
+
+export interface SubmitKycDto {
+  /**
+   * @minItems 1
+   * @maxItems 10
+   * @items.pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$
+   */
+  documentMediaIds: string[];
+  certification: true;
+}
+
+export type KycSubmissionDtoOutputHolder = {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  displayName: string;
+  /** @nullable */
+  headline: string | null;
+  /** @nullable */
+  avatarUrl: string | null;
+} | null;
+
+export type KycSubmissionDtoOutputStatus =
+  (typeof KycSubmissionDtoOutputStatus)[keyof typeof KycSubmissionDtoOutputStatus];
+
+export const KycSubmissionDtoOutputStatus = {
+  pending: 'pending',
+  approved: 'approved',
+  rejected: 'rejected',
+} as const;
+
+export interface KycSubmissionDtoOutput {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  userId: string;
+  holder: KycSubmissionDtoOutputHolder;
+  status: KycSubmissionDtoOutputStatus;
+  /** @items.pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  documentMediaIds: string[];
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  submittedAt: string;
+  decidedAt: string | null;
+  decisionReason: string[];
+}
+
+export type AdminContributionDtoOutputProject = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  slug: string;
+  title: string;
+};
+
+export type AdminContributionDtoOutputKind =
+  (typeof AdminContributionDtoOutputKind)[keyof typeof AdminContributionDtoOutputKind];
+
+export const AdminContributionDtoOutputKind = {
+  donation: 'donation',
+  reward_crowdfunding: 'reward_crowdfunding',
+  love_money: 'love_money',
+} as const;
+
+export type AdminContributionDtoOutputStatus =
+  (typeof AdminContributionDtoOutputStatus)[keyof typeof AdminContributionDtoOutputStatus];
+
+export const AdminContributionDtoOutputStatus = {
+  pending_payment: 'pending_payment',
+  succeeded: 'succeeded',
+  failed: 'failed',
+  expired: 'expired',
+  canceled: 'canceled',
+  partially_refunded: 'partially_refunded',
+  refunded: 'refunded',
+  disputed: 'disputed',
+  dispute_won: 'dispute_won',
+  dispute_lost: 'dispute_lost',
+} as const;
+
+export type AdminContributionDtoOutputMethod =
+  (typeof AdminContributionDtoOutputMethod)[keyof typeof AdminContributionDtoOutputMethod];
+
+export const AdminContributionDtoOutputMethod = {
+  card: 'card',
+  sepa_debit: 'sepa_debit',
+  apple_pay: 'apple_pay',
+  google_pay: 'google_pay',
+  paypal: 'paypal',
+  mobile_money: 'mobile_money',
+  bank_transfer: 'bank_transfer',
+  bank_account: 'bank_account',
+  ussd: 'ussd',
+} as const;
+
+export type AdminContributionDtoOutputAmount = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+};
+
+export type AdminContributionDtoOutputEurEquivalent = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+};
+
+export type AdminContributionDtoOutputRateSource =
+  (typeof AdminContributionDtoOutputRateSource)[keyof typeof AdminContributionDtoOutputRateSource];
+
+export const AdminContributionDtoOutputRateSource = {
+  identity: 'identity',
+  fixed_parity: 'fixed_parity',
+  provider: 'provider',
+  simulated: 'simulated',
+} as const;
+
+export type AdminContributionDtoOutputRate = {
+  /** @pattern ^(0|[1-9]\d*)(\.\d+)?$ */
+  unitsPerEur: string;
+  source: AdminContributionDtoOutputRateSource;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  at: string;
+};
+
+export type AdminContributionDtoOutputCommission = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+};
+
+export type AdminContributionDtoOutputProviderFee = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+} | null;
+
+export type AdminContributionDtoOutputRefunded = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+};
+
+export type AdminContributionDtoOutputRewardState =
+  (typeof AdminContributionDtoOutputRewardState)[keyof typeof AdminContributionDtoOutputRewardState];
+
+export const AdminContributionDtoOutputRewardState = {
+  none: 'none',
+  reserved: 'reserved',
+  confirmed: 'confirmed',
+  released: 'released',
+} as const;
+
+export type AdminContributionDtoOutputContributor = {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  displayName: string;
+  /** @nullable */
+  headline: string | null;
+  /** @nullable */
+  avatarUrl: string | null;
+} | null;
+
+export type AdminContributionDtoOutputOrganization = {
+  slug: string;
+  title: string;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+} | null;
+
+export type AdminContributionDtoOutputRefundsItemAmount = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+};
+
+export type AdminContributionDtoOutputRefundsItemCommissionRefunded = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+};
+
+export type AdminContributionDtoOutputRefundsItemStatus =
+  (typeof AdminContributionDtoOutputRefundsItemStatus)[keyof typeof AdminContributionDtoOutputRefundsItemStatus];
+
+export const AdminContributionDtoOutputRefundsItemStatus = {
+  pending: 'pending',
+  succeeded: 'succeeded',
+  failed: 'failed',
+} as const;
+
+export type AdminContributionDtoOutputRefundsItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  contributionId: string;
+  amount: AdminContributionDtoOutputRefundsItemAmount;
+  commissionRefunded: AdminContributionDtoOutputRefundsItemCommissionRefunded;
+  status: AdminContributionDtoOutputRefundsItemStatus;
+  reason: string;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+};
+
+export interface AdminContributionDtoOutput {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  project: AdminContributionDtoOutputProject;
+  organizationId: string | null;
+  kind: AdminContributionDtoOutputKind;
+  status: AdminContributionDtoOutputStatus;
+  method: AdminContributionDtoOutputMethod;
+  amount: AdminContributionDtoOutputAmount;
+  eurEquivalent: AdminContributionDtoOutputEurEquivalent;
+  rate: AdminContributionDtoOutputRate;
+  commission: AdminContributionDtoOutputCommission;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  commissionRateBps: number;
+  providerFee: AdminContributionDtoOutputProviderFee;
+  refunded: AdminContributionDtoOutputRefunded;
+  rewardId: string | null;
+  rewardState: AdminContributionDtoOutputRewardState;
+  publicDisplay: boolean;
+  anonymous: boolean;
+  paymentUrl: string[];
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  expiresAt: string;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+  succeededAt: string | null;
+  contributor: AdminContributionDtoOutputContributor;
+  organization: AdminContributionDtoOutputOrganization;
+  refunds: AdminContributionDtoOutputRefundsItem[];
+}
+
+export type RefundRequestDtoAmount = {
+  /** @pattern ^[1-9]\d{0,17}$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+};
+
+export interface RefundRequestDto {
+  amount?: RefundRequestDtoAmount;
+  /**
+   * @minLength 1
+   * @maxLength 1000
+   */
+  reason: string;
+}
+
+export type RefundDtoOutputAmount = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+};
+
+export type RefundDtoOutputCommissionRefunded = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+};
+
+export type RefundDtoOutputStatus =
+  (typeof RefundDtoOutputStatus)[keyof typeof RefundDtoOutputStatus];
+
+export const RefundDtoOutputStatus = {
+  pending: 'pending',
+  succeeded: 'succeeded',
+  failed: 'failed',
+} as const;
+
+export interface RefundDtoOutput {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  contributionId: string;
+  amount: RefundDtoOutputAmount;
+  commissionRefunded: RefundDtoOutputCommissionRefunded;
+  status: RefundDtoOutputStatus;
+  reason: string;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+}
+
+export type KycPageDtoOutputItemsItemHolder = {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  displayName: string;
+  /** @nullable */
+  headline: string | null;
+  /** @nullable */
+  avatarUrl: string | null;
+} | null;
+
+export type KycPageDtoOutputItemsItemStatus =
+  (typeof KycPageDtoOutputItemsItemStatus)[keyof typeof KycPageDtoOutputItemsItemStatus];
+
+export const KycPageDtoOutputItemsItemStatus = {
+  pending: 'pending',
+  approved: 'approved',
+  rejected: 'rejected',
+} as const;
+
+export type KycPageDtoOutputItemsItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  userId: string;
+  holder: KycPageDtoOutputItemsItemHolder;
+  status: KycPageDtoOutputItemsItemStatus;
+  /** @items.pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  documentMediaIds: string[];
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  submittedAt: string;
+  decidedAt: string | null;
+  /** @nullable */
+  decisionReason: string | null;
+};
+
+export interface KycPageDtoOutput {
+  items: KycPageDtoOutputItemsItem[];
+  nextCursor: string[];
+}
+
+export type KycDecisionDtoDecision =
+  (typeof KycDecisionDtoDecision)[keyof typeof KycDecisionDtoDecision];
+
+export const KycDecisionDtoDecision = {
+  approved: 'approved',
+  rejected: 'rejected',
+} as const;
+
+export interface KycDecisionDto {
+  decision: KycDecisionDtoDecision;
+  /**
+   * @minLength 1
+   * @maxLength 1000
+   */
+  reason: string;
+}
+
+export type OfflineDecisionDtoDecision =
+  (typeof OfflineDecisionDtoDecision)[keyof typeof OfflineDecisionDtoDecision];
+
+export const OfflineDecisionDtoDecision = {
+  validated: 'validated',
+  rejected: 'rejected',
+} as const;
+
+export interface OfflineDecisionDto {
+  decision: OfflineDecisionDtoDecision;
+  /**
+   * @minLength 1
+   * @maxLength 1000
+   */
+  reason: string;
+}
+
+export type DiscrepancyPageDtoOutputItemsItemKind =
+  (typeof DiscrepancyPageDtoOutputItemsItemKind)[keyof typeof DiscrepancyPageDtoOutputItemsItemKind];
+
+export const DiscrepancyPageDtoOutputItemsItemKind = {
+  missing_contribution: 'missing_contribution',
+  missing_provider_transaction: 'missing_provider_transaction',
+  status_mismatch: 'status_mismatch',
+  amount_mismatch: 'amount_mismatch',
+  refund_mismatch: 'refund_mismatch',
+  ledger_mismatch: 'ledger_mismatch',
+  ledger_unbalanced: 'ledger_unbalanced',
+  project_total_mismatch: 'project_total_mismatch',
+} as const;
+
+export type DiscrepancyPageDtoOutputItemsItemStatus =
+  (typeof DiscrepancyPageDtoOutputItemsItemStatus)[keyof typeof DiscrepancyPageDtoOutputItemsItemStatus];
+
+export const DiscrepancyPageDtoOutputItemsItemStatus = {
+  open: 'open',
+  resolved: 'resolved',
+} as const;
+
+export type DiscrepancyPageDtoOutputItemsItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  kind: DiscrepancyPageDtoOutputItemsItemKind;
+  /** @nullable */
+  provider: string | null;
+  reference: string;
+  contributionId: string | null;
+  projectId: string | null;
+  /** @nullable */
+  expected: string | null;
+  /** @nullable */
+  actual: string | null;
+  status: DiscrepancyPageDtoOutputItemsItemStatus;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  detectedAt: string;
+  resolvedAt: string | null;
+  /** @nullable */
+  resolution: string | null;
+};
+
+export interface DiscrepancyPageDtoOutput {
+  items: DiscrepancyPageDtoOutputItemsItem[];
+  nextCursor: string[];
+}
+
+export interface ResolveDiscrepancyDto {
+  /**
+   * @minLength 1
+   * @maxLength 1000
+   */
+  note: string;
+}
+
+export type DiscrepancyDtoOutputKind =
+  (typeof DiscrepancyDtoOutputKind)[keyof typeof DiscrepancyDtoOutputKind];
+
+export const DiscrepancyDtoOutputKind = {
+  missing_contribution: 'missing_contribution',
+  missing_provider_transaction: 'missing_provider_transaction',
+  status_mismatch: 'status_mismatch',
+  amount_mismatch: 'amount_mismatch',
+  refund_mismatch: 'refund_mismatch',
+  ledger_mismatch: 'ledger_mismatch',
+  ledger_unbalanced: 'ledger_unbalanced',
+  project_total_mismatch: 'project_total_mismatch',
+} as const;
+
+export type DiscrepancyDtoOutputStatus =
+  (typeof DiscrepancyDtoOutputStatus)[keyof typeof DiscrepancyDtoOutputStatus];
+
+export const DiscrepancyDtoOutputStatus = {
+  open: 'open',
+  resolved: 'resolved',
+} as const;
+
+export interface DiscrepancyDtoOutput {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  kind: DiscrepancyDtoOutputKind;
+  provider: string[];
+  reference: string;
+  contributionId: string | null;
+  projectId: string | null;
+  expected: string[];
+  actual: string[];
+  status: DiscrepancyDtoOutputStatus;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  detectedAt: string;
+  resolvedAt: string | null;
+  resolution: string[];
+}
+
+export type ReconciliationReportDtoOutputDiscrepanciesItemKind =
+  (typeof ReconciliationReportDtoOutputDiscrepanciesItemKind)[keyof typeof ReconciliationReportDtoOutputDiscrepanciesItemKind];
+
+export const ReconciliationReportDtoOutputDiscrepanciesItemKind = {
+  missing_contribution: 'missing_contribution',
+  missing_provider_transaction: 'missing_provider_transaction',
+  status_mismatch: 'status_mismatch',
+  amount_mismatch: 'amount_mismatch',
+  refund_mismatch: 'refund_mismatch',
+  ledger_mismatch: 'ledger_mismatch',
+  ledger_unbalanced: 'ledger_unbalanced',
+  project_total_mismatch: 'project_total_mismatch',
+} as const;
+
+export type ReconciliationReportDtoOutputDiscrepanciesItem = {
+  kind: ReconciliationReportDtoOutputDiscrepanciesItemKind;
+  reference: string;
+};
+
+export interface ReconciliationReportDtoOutput {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  runId: string;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  checkedTransactions: number;
+  discrepancies: ReconciliationReportDtoOutputDiscrepanciesItem[];
+}
+
+export type DashboardDtoOutputOwnerType =
+  (typeof DashboardDtoOutputOwnerType)[keyof typeof DashboardDtoOutputOwnerType];
+
+export const DashboardDtoOutputOwnerType = {
+  member: 'member',
+  organization: 'organization',
+} as const;
+
+export type DashboardDtoOutputOwner = {
+  type: DashboardDtoOutputOwnerType;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+};
+
+export type DashboardDtoOutputGivenThisMonth = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+};
+
+export type DashboardDtoOutputGivenTotal = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+};
+
+export type DashboardDtoOutputMinutes = {
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  declared: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  confirmed: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  disputed: number;
+};
+
+export interface DashboardDtoOutput {
+  owner: DashboardDtoOutputOwner;
+  givenThisMonth: DashboardDtoOutputGivenThisMonth;
+  givenTotal: DashboardDtoOutputGivenTotal;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  projectsSupported: number;
+  minutes: DashboardDtoOutputMinutes;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  monthStart: string;
+}
+
+export type DeclareTimeEntryDtoKind =
+  (typeof DeclareTimeEntryDtoKind)[keyof typeof DeclareTimeEntryDtoKind];
+
+export const DeclareTimeEntryDtoKind = {
+  mentoring: 'mentoring',
+  expertise: 'expertise',
+} as const;
+
+export interface DeclareTimeEntryDto {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  projectId?: string;
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  entrepreneurHandle?: string;
+  kind: DeclareTimeEntryDtoKind;
+  /**
+   * @minimum 1
+   * @maximum 1440
+   */
+  minutes: number;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))$ */
+  date: string;
+  /**
+   * @minLength 1
+   * @maxLength 1000
+   */
+  description: string;
+}
+
+export type TimeEntryDtoOutputContributor = {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  displayName: string;
+  /** @nullable */
+  headline: string | null;
+  /** @nullable */
+  avatarUrl: string | null;
+} | null;
+
+export type TimeEntryDtoOutputProject = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  slug: string;
+  title: string;
+} | null;
+
+export type TimeEntryDtoOutputEntrepreneur = {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  displayName: string;
+  /** @nullable */
+  headline: string | null;
+  /** @nullable */
+  avatarUrl: string | null;
+} | null;
+
+export type TimeEntryDtoOutputKind =
+  (typeof TimeEntryDtoOutputKind)[keyof typeof TimeEntryDtoOutputKind];
+
+export const TimeEntryDtoOutputKind = {
+  mentoring: 'mentoring',
+  expertise: 'expertise',
+} as const;
+
+export type TimeEntryDtoOutputStatus =
+  (typeof TimeEntryDtoOutputStatus)[keyof typeof TimeEntryDtoOutputStatus];
+
+export const TimeEntryDtoOutputStatus = {
+  declared: 'declared',
+  confirmed: 'confirmed',
+  disputed: 'disputed',
+} as const;
+
+export interface TimeEntryDtoOutput {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  contributor: TimeEntryDtoOutputContributor;
+  project: TimeEntryDtoOutputProject;
+  entrepreneur: TimeEntryDtoOutputEntrepreneur;
+  kind: TimeEntryDtoOutputKind;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  minutes: number;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))$ */
+  date: string;
+  description: string;
+  status: TimeEntryDtoOutputStatus;
+  respondedAt: string | null;
+  disputeReason: string[];
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+}
+
+export type TimeEntryPageDtoOutputItemsItemContributor = {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  displayName: string;
+  /** @nullable */
+  headline: string | null;
+  /** @nullable */
+  avatarUrl: string | null;
+} | null;
+
+export type TimeEntryPageDtoOutputItemsItemProject = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  slug: string;
+  title: string;
+} | null;
+
+export type TimeEntryPageDtoOutputItemsItemEntrepreneur = {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  displayName: string;
+  /** @nullable */
+  headline: string | null;
+  /** @nullable */
+  avatarUrl: string | null;
+} | null;
+
+export type TimeEntryPageDtoOutputItemsItemKind =
+  (typeof TimeEntryPageDtoOutputItemsItemKind)[keyof typeof TimeEntryPageDtoOutputItemsItemKind];
+
+export const TimeEntryPageDtoOutputItemsItemKind = {
+  mentoring: 'mentoring',
+  expertise: 'expertise',
+} as const;
+
+export type TimeEntryPageDtoOutputItemsItemStatus =
+  (typeof TimeEntryPageDtoOutputItemsItemStatus)[keyof typeof TimeEntryPageDtoOutputItemsItemStatus];
+
+export const TimeEntryPageDtoOutputItemsItemStatus = {
+  declared: 'declared',
+  confirmed: 'confirmed',
+  disputed: 'disputed',
+} as const;
+
+export type TimeEntryPageDtoOutputItemsItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  contributor: TimeEntryPageDtoOutputItemsItemContributor;
+  project: TimeEntryPageDtoOutputItemsItemProject;
+  entrepreneur: TimeEntryPageDtoOutputItemsItemEntrepreneur;
+  kind: TimeEntryPageDtoOutputItemsItemKind;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  minutes: number;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))$ */
+  date: string;
+  description: string;
+  status: TimeEntryPageDtoOutputItemsItemStatus;
+  respondedAt: string | null;
+  /** @nullable */
+  disputeReason: string | null;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+};
+
+export interface TimeEntryPageDtoOutput {
+  items: TimeEntryPageDtoOutputItemsItem[];
+  nextCursor: string[];
+}
+
+export interface DisputeTimeEntryDto {
+  /**
+   * @minLength 1
+   * @maxLength 1000
+   */
+  reason: string;
+}
+
 export type ProblemDetailsCode = (typeof ProblemDetailsCode)[keyof typeof ProblemDetailsCode];
 
 export const ProblemDetailsCode = {
@@ -6803,6 +8793,41 @@ export const ProblemDetailsCode = {
   PROJECTS_NOT_OPEN: 'PROJECTS_NOT_OPEN',
   PROJECTS_CONTRIBUTION_CONFLICT: 'PROJECTS_CONTRIBUTION_CONFLICT',
   PROJECTS_CONTRIBUTION_NOT_FOUND: 'PROJECTS_CONTRIBUTION_NOT_FOUND',
+  PROJECTS_REVERSAL_INVALID: 'PROJECTS_REVERSAL_INVALID',
+  PAYMENTS_PROJECT_NOT_OPEN: 'PAYMENTS_PROJECT_NOT_OPEN',
+  PAYMENTS_HOLDER_NOT_READY: 'PAYMENTS_HOLDER_NOT_READY',
+  PAYMENTS_NO_PAYMENT_ROUTE: 'PAYMENTS_NO_PAYMENT_ROUTE',
+  PAYMENTS_METHOD_NOT_AVAILABLE: 'PAYMENTS_METHOD_NOT_AVAILABLE',
+  PAYMENTS_CURRENCY_NOT_AVAILABLE: 'PAYMENTS_CURRENCY_NOT_AVAILABLE',
+  PAYMENTS_INSTRUMENT_NOT_ACCEPTED: 'PAYMENTS_INSTRUMENT_NOT_ACCEPTED',
+  PAYMENTS_INSTRUMENT_NOT_COLLECTIBLE: 'PAYMENTS_INSTRUMENT_NOT_COLLECTIBLE',
+  PAYMENTS_LICENSED_PARTNER_REQUIRED: 'PAYMENTS_LICENSED_PARTNER_REQUIRED',
+  PAYMENTS_AMOUNT_OUT_OF_RANGE: 'PAYMENTS_AMOUNT_OUT_OF_RANGE',
+  PAYMENTS_REWARD_NOT_ELIGIBLE: 'PAYMENTS_REWARD_NOT_ELIGIBLE',
+  PAYMENTS_ANONYMOUS_NOT_ALLOWED: 'PAYMENTS_ANONYMOUS_NOT_ALLOWED',
+  PAYMENTS_RATE_LIMITED: 'PAYMENTS_RATE_LIMITED',
+  PAYMENTS_CONTRIBUTION_NOT_FOUND: 'PAYMENTS_CONTRIBUTION_NOT_FOUND',
+  PAYMENTS_INVALID_TRANSITION: 'PAYMENTS_INVALID_TRANSITION',
+  PAYMENTS_REFUND_INVALID: 'PAYMENTS_REFUND_INVALID',
+  PAYMENTS_PROVIDER_UNAVAILABLE: 'PAYMENTS_PROVIDER_UNAVAILABLE',
+  PAYMENTS_PAYOUT_ACCOUNT_EXISTS: 'PAYMENTS_PAYOUT_ACCOUNT_EXISTS',
+  PAYMENTS_PAYOUT_ACCOUNT_NOT_FOUND: 'PAYMENTS_PAYOUT_ACCOUNT_NOT_FOUND',
+  PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED: 'PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED',
+  PAYMENTS_PAYOUT_DETAILS_REQUIRED: 'PAYMENTS_PAYOUT_DETAILS_REQUIRED',
+  PAYMENTS_KYC_NOT_MANUAL: 'PAYMENTS_KYC_NOT_MANUAL',
+  PAYMENTS_KYC_PENDING: 'PAYMENTS_KYC_PENDING',
+  PAYMENTS_KYC_ALREADY_VERIFIED: 'PAYMENTS_KYC_ALREADY_VERIFIED',
+  PAYMENTS_KYC_NOT_FOUND: 'PAYMENTS_KYC_NOT_FOUND',
+  PAYMENTS_KYC_ALREADY_DECIDED: 'PAYMENTS_KYC_ALREADY_DECIDED',
+  PAYMENTS_OFFLINE_NOT_FOUND: 'PAYMENTS_OFFLINE_NOT_FOUND',
+  PAYMENTS_OFFLINE_AMOUNT_INVALID: 'PAYMENTS_OFFLINE_AMOUNT_INVALID',
+  PAYMENTS_OFFLINE_INVALID_TRANSITION: 'PAYMENTS_OFFLINE_INVALID_TRANSITION',
+  PAYMENTS_OFFLINE_PROOF_REQUIRED: 'PAYMENTS_OFFLINE_PROOF_REQUIRED',
+  PAYMENTS_DISCREPANCY_NOT_FOUND: 'PAYMENTS_DISCREPANCY_NOT_FOUND',
+  PAYMENTS_WEBHOOK_INVALID: 'PAYMENTS_WEBHOOK_INVALID',
+  ENGAGEMENT_TIME_ENTRY_NOT_FOUND: 'ENGAGEMENT_TIME_ENTRY_NOT_FOUND',
+  ENGAGEMENT_BENEFICIARY_INVALID: 'ENGAGEMENT_BENEFICIARY_INVALID',
+  ENGAGEMENT_TIME_ENTRY_ALREADY_ANSWERED: 'ENGAGEMENT_TIME_ENTRY_ALREADY_ANSWERED',
   INTERNAL_ERROR: 'INTERNAL_ERROR',
   SERVICE_UNAVAILABLE: 'SERVICE_UNAVAILABLE',
 } as const;
@@ -7219,3 +9244,246 @@ export type InterestsControllerListParams = {
    */
   limit?: number;
 };
+
+export type ContributionsControllerOptionsParams = {
+  /**
+   * @pattern ^[A-Z]{2}$
+   */
+  country?: string;
+};
+
+export type ContributionsControllerOfProjectParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+  status?: ContributionsControllerOfProjectStatus;
+};
+
+export type ContributionsControllerOfProjectStatus =
+  (typeof ContributionsControllerOfProjectStatus)[keyof typeof ContributionsControllerOfProjectStatus];
+
+export const ContributionsControllerOfProjectStatus = {
+  pending_payment: 'pending_payment',
+  succeeded: 'succeeded',
+  failed: 'failed',
+  expired: 'expired',
+  canceled: 'canceled',
+  partially_refunded: 'partially_refunded',
+  refunded: 'refunded',
+  disputed: 'disputed',
+  dispute_won: 'dispute_won',
+  dispute_lost: 'dispute_lost',
+} as const;
+
+export type ContributionsControllerMineParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+  status?: ContributionsControllerMineStatus;
+};
+
+export type ContributionsControllerMineStatus =
+  (typeof ContributionsControllerMineStatus)[keyof typeof ContributionsControllerMineStatus];
+
+export const ContributionsControllerMineStatus = {
+  pending_payment: 'pending_payment',
+  succeeded: 'succeeded',
+  failed: 'failed',
+  expired: 'expired',
+  canceled: 'canceled',
+  partially_refunded: 'partially_refunded',
+  refunded: 'refunded',
+  disputed: 'disputed',
+  dispute_won: 'dispute_won',
+  dispute_lost: 'dispute_lost',
+} as const;
+
+export type ContributionsControllerSupportersParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+};
+
+export type OfflineContributionsControllerOfProjectParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+  status?: OfflineContributionsControllerOfProjectStatus;
+};
+
+export type OfflineContributionsControllerOfProjectStatus =
+  (typeof OfflineContributionsControllerOfProjectStatus)[keyof typeof OfflineContributionsControllerOfProjectStatus];
+
+export const OfflineContributionsControllerOfProjectStatus = {
+  declared: 'declared',
+  confirmed: 'confirmed',
+  validated: 'validated',
+  rejected: 'rejected',
+} as const;
+
+export type OfflineContributionsControllerMineParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+  status?: OfflineContributionsControllerMineStatus;
+};
+
+export type OfflineContributionsControllerMineStatus =
+  (typeof OfflineContributionsControllerMineStatus)[keyof typeof OfflineContributionsControllerMineStatus];
+
+export const OfflineContributionsControllerMineStatus = {
+  declared: 'declared',
+  confirmed: 'confirmed',
+  validated: 'validated',
+  rejected: 'rejected',
+} as const;
+
+export type AdminPaymentsControllerKycQueueParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+  status?: AdminPaymentsControllerKycQueueStatus;
+};
+
+export type AdminPaymentsControllerKycQueueStatus =
+  (typeof AdminPaymentsControllerKycQueueStatus)[keyof typeof AdminPaymentsControllerKycQueueStatus];
+
+export const AdminPaymentsControllerKycQueueStatus = {
+  pending: 'pending',
+  approved: 'approved',
+  rejected: 'rejected',
+} as const;
+
+export type AdminPaymentsControllerOfflineQueueParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+  status?: AdminPaymentsControllerOfflineQueueStatus;
+};
+
+export type AdminPaymentsControllerOfflineQueueStatus =
+  (typeof AdminPaymentsControllerOfflineQueueStatus)[keyof typeof AdminPaymentsControllerOfflineQueueStatus];
+
+export const AdminPaymentsControllerOfflineQueueStatus = {
+  declared: 'declared',
+  confirmed: 'confirmed',
+  validated: 'validated',
+  rejected: 'rejected',
+} as const;
+
+export type AdminPaymentsControllerDiscrepanciesParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+  status?: AdminPaymentsControllerDiscrepanciesStatus;
+};
+
+export type AdminPaymentsControllerDiscrepanciesStatus =
+  (typeof AdminPaymentsControllerDiscrepanciesStatus)[keyof typeof AdminPaymentsControllerDiscrepanciesStatus];
+
+export const AdminPaymentsControllerDiscrepanciesStatus = {
+  open: 'open',
+  resolved: 'resolved',
+} as const;
+
+export type EngagementControllerDeclaredParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+  status?: EngagementControllerDeclaredStatus;
+};
+
+export type EngagementControllerDeclaredStatus =
+  (typeof EngagementControllerDeclaredStatus)[keyof typeof EngagementControllerDeclaredStatus];
+
+export const EngagementControllerDeclaredStatus = {
+  declared: 'declared',
+  confirmed: 'confirmed',
+  disputed: 'disputed',
+} as const;
+
+export type EngagementControllerReceivedParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+  status?: EngagementControllerReceivedStatus;
+};
+
+export type EngagementControllerReceivedStatus =
+  (typeof EngagementControllerReceivedStatus)[keyof typeof EngagementControllerReceivedStatus];
+
+export const EngagementControllerReceivedStatus = {
+  declared: 'declared',
+  confirmed: 'confirmed',
+  disputed: 'disputed',
+} as const;

@@ -24,6 +24,10 @@ import type {
 import type {
   AcceptDto,
   ActionPrerequisitesDtoOutput,
+  AdminContributionDtoOutput,
+  AdminPaymentsControllerDiscrepanciesParams,
+  AdminPaymentsControllerKycQueueParams,
+  AdminPaymentsControllerOfflineQueueParams,
   AssessmentDtoOutput,
   AssessmentHistoryDtoOutput,
   AttachMediaDto,
@@ -40,13 +44,22 @@ import type {
   ConnectionRequestDtoOutput,
   ConnectionRequestPageDtoOutput,
   ConnectionsControllerListParams,
+  ContributionDtoOutput,
+  ContributionPageDtoOutput,
+  ContributionsControllerMineParams,
+  ContributionsControllerOfProjectParams,
+  ContributionsControllerOptionsParams,
+  ContributionsControllerSupportersParams,
   CreateCommentDto,
   CreateConnectionRequestDto,
+  CreateContributionDto,
   CreateContributorFacetDto,
   CreateEntrepreneurFacetDto,
   CreateInvitationDto,
   CreateMethodologyDto,
+  CreateOrganizationContributionDto,
   CreateOrganizationDto,
+  CreatePayoutAccountDto,
   CreatePostDto,
   CreateProjectDto,
   CreateRepostDto,
@@ -55,8 +68,17 @@ import type {
   CreateUploadDto,
   CreateVerificationRequestDto,
   CurrentUserDtoOutput,
+  DashboardDtoOutput,
   DecisionDto,
+  DeclareOfflineDto,
+  DeclareTeamOfflineDto,
+  DeclareTimeEntryDto,
+  DiscrepancyDtoOutput,
+  DiscrepancyPageDtoOutput,
+  DisputeTimeEntryDto,
   EditUpdateDto,
+  EngagementControllerDeclaredParams,
+  EngagementControllerReceivedParams,
   ExpressInterestDto,
   FeedPageDtoOutput,
   FollowDtoOutput,
@@ -72,6 +94,10 @@ import type {
   InvitationTokenDto,
   InvitationsDtoOutput,
   InviteDto,
+  KycDecisionDto,
+  KycOverviewDtoOutput,
+  KycPageDtoOutput,
+  KycSubmissionDtoOutput,
   LegalAcceptanceRequestDto,
   LegalStatusDtoOutput,
   LegalVersionsDtoOutput,
@@ -91,8 +117,15 @@ import type {
   MyOrganizationsDtoOutput,
   MyProjectsDtoOutput,
   NetworkSettingsDtoOutput,
+  OfflineContributionsControllerMineParams,
+  OfflineContributionsControllerOfProjectParams,
+  OfflineDecisionDto,
+  OfflineDtoOutput,
+  OfflinePageDtoOutput,
   OrganizationDtoOutput,
   OwnProfileDtoOutput,
+  PaymentOptionsDtoOutput,
+  PayoutAccountDtoOutput,
   PostDtoOutput,
   PostPageDtoOutput,
   PostStatsDtoOutput,
@@ -107,16 +140,25 @@ import type {
   ProfileViewsSummaryDtoOutput,
   ProfileVisitPageDtoOutput,
   ProjectCardPageDtoOutput,
+  ProjectContributionPageDtoOutput,
   ProjectDtoOutput,
   ProjectsControllerPostsParams,
   ProjectsControllerPublicPostsParams,
   ProjectsControllerPublicShowcaseParams,
   ProjectsControllerShowcaseParams,
+  ProofsDto,
   PublishDto,
+  QuoteDtoOutput,
+  QuoteRequestDto,
   ReactionSummaryDtoOutput,
+  ReconciliationReportDtoOutput,
   ReferenceDataDtoOutput,
+  RefundDtoOutput,
+  RefundRequestDto,
+  RejectionDto,
   RelationshipDtoOutput,
   ReplaceTiersDto,
+  ResolveDiscrepancyDto,
   RevocationDto,
   RewardDtoOutput,
   SavedPostPageDtoOutput,
@@ -125,6 +167,10 @@ import type {
   SetIntentionDto,
   SetReactionDto,
   SubmitAssessmentDto,
+  SubmitKycDto,
+  SupporterPageDtoOutput,
+  TimeEntryDtoOutput,
+  TimeEntryPageDtoOutput,
   TransferOwnershipDto,
   UpdateBaseProfileDto,
   UpdateCommentDto,
@@ -789,7 +835,29 @@ export const getAccessControllerPrerequisitesUrl = (
     | 'content.reaction.set'
     | 'content.comment.create'
     | 'content.comment.update'
-    | 'content.comment.delete',
+    | 'content.comment.delete'
+    | 'payment.quote'
+    | 'payment.contribute'
+    | 'payment.contribute.organization'
+    | 'payment.contribution.read'
+    | 'payment.contribution.cancel'
+    | 'payment.project.contributions.read'
+    | 'payment.project.contributions.export'
+    | 'payment.collection.open'
+    | 'payment.offline.declare'
+    | 'payment.offline.declare.team'
+    | 'payment.offline.respond'
+    | 'payment.offline.validate'
+    | 'payment.payout.configure'
+    | 'payment.kyc.submit'
+    | 'payment.kyc.review'
+    | 'payment.refund'
+    | 'payment.reconciliation.manage'
+    | 'engagement.dashboard.read'
+    | 'engagement.organization.dashboard.read'
+    | 'engagement.time.declare'
+    | 'engagement.time.read'
+    | 'engagement.time.respond',
 ) => {
   return `/v1/me/prerequisites/${action}`;
 };
@@ -854,7 +922,29 @@ export const accessControllerPrerequisites = async (
     | 'content.reaction.set'
     | 'content.comment.create'
     | 'content.comment.update'
-    | 'content.comment.delete',
+    | 'content.comment.delete'
+    | 'payment.quote'
+    | 'payment.contribute'
+    | 'payment.contribute.organization'
+    | 'payment.contribution.read'
+    | 'payment.contribution.cancel'
+    | 'payment.project.contributions.read'
+    | 'payment.project.contributions.export'
+    | 'payment.collection.open'
+    | 'payment.offline.declare'
+    | 'payment.offline.declare.team'
+    | 'payment.offline.respond'
+    | 'payment.offline.validate'
+    | 'payment.payout.configure'
+    | 'payment.kyc.submit'
+    | 'payment.kyc.review'
+    | 'payment.refund'
+    | 'payment.reconciliation.manage'
+    | 'engagement.dashboard.read'
+    | 'engagement.organization.dashboard.read'
+    | 'engagement.time.declare'
+    | 'engagement.time.read'
+    | 'engagement.time.respond',
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<ActionPrerequisitesDtoOutput> => {
   return apiFetch<ActionPrerequisitesDtoOutput>(getAccessControllerPrerequisitesUrl(action), {
@@ -923,7 +1013,29 @@ export const getAccessControllerPrerequisitesQueryKey = (
     | 'content.reaction.set'
     | 'content.comment.create'
     | 'content.comment.update'
-    | 'content.comment.delete',
+    | 'content.comment.delete'
+    | 'payment.quote'
+    | 'payment.contribute'
+    | 'payment.contribute.organization'
+    | 'payment.contribution.read'
+    | 'payment.contribution.cancel'
+    | 'payment.project.contributions.read'
+    | 'payment.project.contributions.export'
+    | 'payment.collection.open'
+    | 'payment.offline.declare'
+    | 'payment.offline.declare.team'
+    | 'payment.offline.respond'
+    | 'payment.offline.validate'
+    | 'payment.payout.configure'
+    | 'payment.kyc.submit'
+    | 'payment.kyc.review'
+    | 'payment.refund'
+    | 'payment.reconciliation.manage'
+    | 'engagement.dashboard.read'
+    | 'engagement.organization.dashboard.read'
+    | 'engagement.time.declare'
+    | 'engagement.time.read'
+    | 'engagement.time.respond',
 ) => {
   return [`/v1/me/prerequisites/${action}`] as const;
 };
@@ -991,7 +1103,29 @@ export const getAccessControllerPrerequisitesQueryOptions = <
     | 'content.reaction.set'
     | 'content.comment.create'
     | 'content.comment.update'
-    | 'content.comment.delete',
+    | 'content.comment.delete'
+    | 'payment.quote'
+    | 'payment.contribute'
+    | 'payment.contribute.organization'
+    | 'payment.contribution.read'
+    | 'payment.contribution.cancel'
+    | 'payment.project.contributions.read'
+    | 'payment.project.contributions.export'
+    | 'payment.collection.open'
+    | 'payment.offline.declare'
+    | 'payment.offline.declare.team'
+    | 'payment.offline.respond'
+    | 'payment.offline.validate'
+    | 'payment.payout.configure'
+    | 'payment.kyc.submit'
+    | 'payment.kyc.review'
+    | 'payment.refund'
+    | 'payment.reconciliation.manage'
+    | 'engagement.dashboard.read'
+    | 'engagement.organization.dashboard.read'
+    | 'engagement.time.declare'
+    | 'engagement.time.read'
+    | 'engagement.time.respond',
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof accessControllerPrerequisites>>, TError, TData>
@@ -1085,7 +1219,29 @@ export function useAccessControllerPrerequisites<
     | 'content.reaction.set'
     | 'content.comment.create'
     | 'content.comment.update'
-    | 'content.comment.delete',
+    | 'content.comment.delete'
+    | 'payment.quote'
+    | 'payment.contribute'
+    | 'payment.contribute.organization'
+    | 'payment.contribution.read'
+    | 'payment.contribution.cancel'
+    | 'payment.project.contributions.read'
+    | 'payment.project.contributions.export'
+    | 'payment.collection.open'
+    | 'payment.offline.declare'
+    | 'payment.offline.declare.team'
+    | 'payment.offline.respond'
+    | 'payment.offline.validate'
+    | 'payment.payout.configure'
+    | 'payment.kyc.submit'
+    | 'payment.kyc.review'
+    | 'payment.refund'
+    | 'payment.reconciliation.manage'
+    | 'engagement.dashboard.read'
+    | 'engagement.organization.dashboard.read'
+    | 'engagement.time.declare'
+    | 'engagement.time.read'
+    | 'engagement.time.respond',
   options: {
     query: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof accessControllerPrerequisites>>, TError, TData>
@@ -1165,7 +1321,29 @@ export function useAccessControllerPrerequisites<
     | 'content.reaction.set'
     | 'content.comment.create'
     | 'content.comment.update'
-    | 'content.comment.delete',
+    | 'content.comment.delete'
+    | 'payment.quote'
+    | 'payment.contribute'
+    | 'payment.contribute.organization'
+    | 'payment.contribution.read'
+    | 'payment.contribution.cancel'
+    | 'payment.project.contributions.read'
+    | 'payment.project.contributions.export'
+    | 'payment.collection.open'
+    | 'payment.offline.declare'
+    | 'payment.offline.declare.team'
+    | 'payment.offline.respond'
+    | 'payment.offline.validate'
+    | 'payment.payout.configure'
+    | 'payment.kyc.submit'
+    | 'payment.kyc.review'
+    | 'payment.refund'
+    | 'payment.reconciliation.manage'
+    | 'engagement.dashboard.read'
+    | 'engagement.organization.dashboard.read'
+    | 'engagement.time.declare'
+    | 'engagement.time.read'
+    | 'engagement.time.respond',
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof accessControllerPrerequisites>>, TError, TData>
@@ -1245,7 +1423,29 @@ export function useAccessControllerPrerequisites<
     | 'content.reaction.set'
     | 'content.comment.create'
     | 'content.comment.update'
-    | 'content.comment.delete',
+    | 'content.comment.delete'
+    | 'payment.quote'
+    | 'payment.contribute'
+    | 'payment.contribute.organization'
+    | 'payment.contribution.read'
+    | 'payment.contribution.cancel'
+    | 'payment.project.contributions.read'
+    | 'payment.project.contributions.export'
+    | 'payment.collection.open'
+    | 'payment.offline.declare'
+    | 'payment.offline.declare.team'
+    | 'payment.offline.respond'
+    | 'payment.offline.validate'
+    | 'payment.payout.configure'
+    | 'payment.kyc.submit'
+    | 'payment.kyc.review'
+    | 'payment.refund'
+    | 'payment.reconciliation.manage'
+    | 'engagement.dashboard.read'
+    | 'engagement.organization.dashboard.read'
+    | 'engagement.time.declare'
+    | 'engagement.time.read'
+    | 'engagement.time.respond',
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof accessControllerPrerequisites>>, TError, TData>
@@ -1318,7 +1518,29 @@ export function useAccessControllerPrerequisites<
     | 'content.reaction.set'
     | 'content.comment.create'
     | 'content.comment.update'
-    | 'content.comment.delete',
+    | 'content.comment.delete'
+    | 'payment.quote'
+    | 'payment.contribute'
+    | 'payment.contribute.organization'
+    | 'payment.contribution.read'
+    | 'payment.contribution.cancel'
+    | 'payment.project.contributions.read'
+    | 'payment.project.contributions.export'
+    | 'payment.collection.open'
+    | 'payment.offline.declare'
+    | 'payment.offline.declare.team'
+    | 'payment.offline.respond'
+    | 'payment.offline.validate'
+    | 'payment.payout.configure'
+    | 'payment.kyc.submit'
+    | 'payment.kyc.review'
+    | 'payment.refund'
+    | 'payment.reconciliation.manage'
+    | 'engagement.dashboard.read'
+    | 'engagement.organization.dashboard.read'
+    | 'engagement.time.declare'
+    | 'engagement.time.read'
+    | 'engagement.time.respond',
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof accessControllerPrerequisites>>, TError, TData>
@@ -17777,3 +17999,5177 @@ export function useProjectImpactControllerPrefill<
 
   return withQueryKey(query, queryOptions.queryKey);
 }
+
+export const getContributionsControllerOptionsUrl = (
+  projectId: string,
+  params?: ContributionsControllerOptionsParams,
+) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/v1/projects/${projectId}/payment-options?${stringifiedParams}`
+    : `/v1/projects/${projectId}/payment-options`;
+};
+
+export const contributionsControllerOptions = async (
+  projectId: string,
+  params?: ContributionsControllerOptionsParams,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<PaymentOptionsDtoOutput> => {
+  return apiFetch<PaymentOptionsDtoOutput>(
+    getContributionsControllerOptionsUrl(projectId, params),
+    {
+      ...options,
+      method: 'GET',
+    },
+  );
+};
+
+export const getContributionsControllerOptionsQueryKey = (
+  projectId: string,
+  params?: ContributionsControllerOptionsParams,
+) => {
+  return [`/v1/projects/${projectId}/payment-options`, ...(params ? [params] : [])] as const;
+};
+
+export const getContributionsControllerOptionsQueryOptions = <
+  TData = Awaited<ReturnType<typeof contributionsControllerOptions>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  params?: ContributionsControllerOptionsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof contributionsControllerOptions>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getContributionsControllerOptionsQueryKey(projectId, params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof contributionsControllerOptions>>> = ({
+    signal,
+  }) => contributionsControllerOptions(projectId, params, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: projectId !== null && projectId !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof contributionsControllerOptions>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ContributionsControllerOptionsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof contributionsControllerOptions>>
+>;
+export type ContributionsControllerOptionsQueryError = ErrorType<ProblemDetails>;
+
+export function useContributionsControllerOptions<
+  TData = Awaited<ReturnType<typeof contributionsControllerOptions>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  params: undefined | ContributionsControllerOptionsParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof contributionsControllerOptions>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof contributionsControllerOptions>>,
+          TError,
+          Awaited<ReturnType<typeof contributionsControllerOptions>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useContributionsControllerOptions<
+  TData = Awaited<ReturnType<typeof contributionsControllerOptions>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  params?: ContributionsControllerOptionsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof contributionsControllerOptions>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof contributionsControllerOptions>>,
+          TError,
+          Awaited<ReturnType<typeof contributionsControllerOptions>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useContributionsControllerOptions<
+  TData = Awaited<ReturnType<typeof contributionsControllerOptions>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  params?: ContributionsControllerOptionsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof contributionsControllerOptions>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useContributionsControllerOptions<
+  TData = Awaited<ReturnType<typeof contributionsControllerOptions>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  params?: ContributionsControllerOptionsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof contributionsControllerOptions>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getContributionsControllerOptionsQueryOptions(projectId, params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getContributionsControllerQuoteUrl = (projectId: string) => {
+  return `/v1/projects/${projectId}/contribution-quotes`;
+};
+
+export const contributionsControllerQuote = async (
+  projectId: string,
+  quoteRequestDto: QuoteRequestDto,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<QuoteDtoOutput> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit['headers']>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(
+          h as Iterable<Iterable<string>>,
+          (entry) => Array.from(entry) as [string, string],
+        ),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+  return apiFetch<QuoteDtoOutput>(getContributionsControllerQuoteUrl(projectId), {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(quoteRequestDto),
+  });
+};
+
+export const getContributionsControllerQuoteMutationKey = () =>
+  ['contributionsControllerQuote'] as const;
+
+export const getContributionsControllerQuoteMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof contributionsControllerQuote>>,
+    TError,
+    ContributionsControllerQuoteMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof contributionsControllerQuote>>,
+  TError,
+  ContributionsControllerQuoteMutationVariables,
+  TContext
+> => {
+  const mutationKey = getContributionsControllerQuoteMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof contributionsControllerQuote>>,
+    ContributionsControllerQuoteMutationVariables
+  > = (props) => {
+    const { projectId, data } = props ?? {};
+
+    return contributionsControllerQuote(projectId, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ContributionsControllerQuoteMutationResult = NonNullable<
+  Awaited<ReturnType<typeof contributionsControllerQuote>>
+>;
+export type ContributionsControllerQuoteMutationBody = QuoteRequestDto;
+export type ContributionsControllerQuoteMutationError = ErrorType<ProblemDetails>;
+export type ContributionsControllerQuoteMutationVariables = {
+  projectId: string;
+  data: QuoteRequestDto;
+};
+
+export const useContributionsControllerQuote = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof contributionsControllerQuote>>,
+      TError,
+      ContributionsControllerQuoteMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof contributionsControllerQuote>>,
+  TError,
+  ContributionsControllerQuoteMutationVariables,
+  TContext
+> => {
+  return useMutation(getContributionsControllerQuoteMutationOptions(options), queryClient);
+};
+
+export const getContributionsControllerCreateUrl = (projectId: string) => {
+  return `/v1/projects/${projectId}/contributions`;
+};
+
+export const contributionsControllerCreate = async (
+  projectId: string,
+  createContributionDto: CreateContributionDto,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<ContributionDtoOutput> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit['headers']>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(
+          h as Iterable<Iterable<string>>,
+          (entry) => Array.from(entry) as [string, string],
+        ),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+  return apiFetch<ContributionDtoOutput>(getContributionsControllerCreateUrl(projectId), {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(createContributionDto),
+  });
+};
+
+export const getContributionsControllerCreateMutationKey = () =>
+  ['contributionsControllerCreate'] as const;
+
+export const getContributionsControllerCreateMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof contributionsControllerCreate>>,
+    TError,
+    ContributionsControllerCreateMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof contributionsControllerCreate>>,
+  TError,
+  ContributionsControllerCreateMutationVariables,
+  TContext
+> => {
+  const mutationKey = getContributionsControllerCreateMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof contributionsControllerCreate>>,
+    ContributionsControllerCreateMutationVariables
+  > = (props) => {
+    const { projectId, data } = props ?? {};
+
+    return contributionsControllerCreate(projectId, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ContributionsControllerCreateMutationResult = NonNullable<
+  Awaited<ReturnType<typeof contributionsControllerCreate>>
+>;
+export type ContributionsControllerCreateMutationBody = CreateContributionDto;
+export type ContributionsControllerCreateMutationError = ErrorType<ProblemDetails>;
+export type ContributionsControllerCreateMutationVariables = {
+  projectId: string;
+  data: CreateContributionDto;
+};
+
+export const useContributionsControllerCreate = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof contributionsControllerCreate>>,
+      TError,
+      ContributionsControllerCreateMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof contributionsControllerCreate>>,
+  TError,
+  ContributionsControllerCreateMutationVariables,
+  TContext
+> => {
+  return useMutation(getContributionsControllerCreateMutationOptions(options), queryClient);
+};
+
+export const getContributionsControllerOfProjectUrl = (
+  projectId: string,
+  params?: ContributionsControllerOfProjectParams,
+) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/v1/projects/${projectId}/contributions?${stringifiedParams}`
+    : `/v1/projects/${projectId}/contributions`;
+};
+
+export const contributionsControllerOfProject = async (
+  projectId: string,
+  params?: ContributionsControllerOfProjectParams,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<ProjectContributionPageDtoOutput> => {
+  return apiFetch<ProjectContributionPageDtoOutput>(
+    getContributionsControllerOfProjectUrl(projectId, params),
+    {
+      ...options,
+      method: 'GET',
+    },
+  );
+};
+
+export const getContributionsControllerOfProjectQueryKey = (
+  projectId: string,
+  params?: ContributionsControllerOfProjectParams,
+) => {
+  return [`/v1/projects/${projectId}/contributions`, ...(params ? [params] : [])] as const;
+};
+
+export const getContributionsControllerOfProjectQueryOptions = <
+  TData = Awaited<ReturnType<typeof contributionsControllerOfProject>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  params?: ContributionsControllerOfProjectParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof contributionsControllerOfProject>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getContributionsControllerOfProjectQueryKey(projectId, params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof contributionsControllerOfProject>>> = ({
+    signal,
+  }) => contributionsControllerOfProject(projectId, params, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: projectId !== null && projectId !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof contributionsControllerOfProject>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ContributionsControllerOfProjectQueryResult = NonNullable<
+  Awaited<ReturnType<typeof contributionsControllerOfProject>>
+>;
+export type ContributionsControllerOfProjectQueryError = ErrorType<ProblemDetails>;
+
+export function useContributionsControllerOfProject<
+  TData = Awaited<ReturnType<typeof contributionsControllerOfProject>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  params: undefined | ContributionsControllerOfProjectParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof contributionsControllerOfProject>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof contributionsControllerOfProject>>,
+          TError,
+          Awaited<ReturnType<typeof contributionsControllerOfProject>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useContributionsControllerOfProject<
+  TData = Awaited<ReturnType<typeof contributionsControllerOfProject>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  params?: ContributionsControllerOfProjectParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof contributionsControllerOfProject>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof contributionsControllerOfProject>>,
+          TError,
+          Awaited<ReturnType<typeof contributionsControllerOfProject>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useContributionsControllerOfProject<
+  TData = Awaited<ReturnType<typeof contributionsControllerOfProject>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  params?: ContributionsControllerOfProjectParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof contributionsControllerOfProject>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useContributionsControllerOfProject<
+  TData = Awaited<ReturnType<typeof contributionsControllerOfProject>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  params?: ContributionsControllerOfProjectParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof contributionsControllerOfProject>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getContributionsControllerOfProjectQueryOptions(projectId, params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getContributionsControllerCreateForOrganizationUrl = (organizationId: string) => {
+  return `/v1/organizations/${organizationId}/contributions`;
+};
+
+export const contributionsControllerCreateForOrganization = async (
+  organizationId: string,
+  createOrganizationContributionDto: CreateOrganizationContributionDto,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<ContributionDtoOutput> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit['headers']>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(
+          h as Iterable<Iterable<string>>,
+          (entry) => Array.from(entry) as [string, string],
+        ),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+  return apiFetch<ContributionDtoOutput>(
+    getContributionsControllerCreateForOrganizationUrl(organizationId),
+    {
+      ...options,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+      body: JSON.stringify(createOrganizationContributionDto),
+    },
+  );
+};
+
+export const getContributionsControllerCreateForOrganizationMutationKey = () =>
+  ['contributionsControllerCreateForOrganization'] as const;
+
+export const getContributionsControllerCreateForOrganizationMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof contributionsControllerCreateForOrganization>>,
+    TError,
+    ContributionsControllerCreateForOrganizationMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof contributionsControllerCreateForOrganization>>,
+  TError,
+  ContributionsControllerCreateForOrganizationMutationVariables,
+  TContext
+> => {
+  const mutationKey = getContributionsControllerCreateForOrganizationMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof contributionsControllerCreateForOrganization>>,
+    ContributionsControllerCreateForOrganizationMutationVariables
+  > = (props) => {
+    const { organizationId, data } = props ?? {};
+
+    return contributionsControllerCreateForOrganization(organizationId, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ContributionsControllerCreateForOrganizationMutationResult = NonNullable<
+  Awaited<ReturnType<typeof contributionsControllerCreateForOrganization>>
+>;
+export type ContributionsControllerCreateForOrganizationMutationBody =
+  CreateOrganizationContributionDto;
+export type ContributionsControllerCreateForOrganizationMutationError = ErrorType<ProblemDetails>;
+export type ContributionsControllerCreateForOrganizationMutationVariables = {
+  organizationId: string;
+  data: CreateOrganizationContributionDto;
+};
+
+export const useContributionsControllerCreateForOrganization = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof contributionsControllerCreateForOrganization>>,
+      TError,
+      ContributionsControllerCreateForOrganizationMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof contributionsControllerCreateForOrganization>>,
+  TError,
+  ContributionsControllerCreateForOrganizationMutationVariables,
+  TContext
+> => {
+  return useMutation(
+    getContributionsControllerCreateForOrganizationMutationOptions(options),
+    queryClient,
+  );
+};
+
+export const getContributionsControllerMineUrl = (params?: ContributionsControllerMineParams) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/v1/me/contributions?${stringifiedParams}`
+    : `/v1/me/contributions`;
+};
+
+export const contributionsControllerMine = async (
+  params?: ContributionsControllerMineParams,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<ContributionPageDtoOutput> => {
+  return apiFetch<ContributionPageDtoOutput>(getContributionsControllerMineUrl(params), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getContributionsControllerMineQueryKey = (
+  params?: ContributionsControllerMineParams,
+) => {
+  return [`/v1/me/contributions`, ...(params ? [params] : [])] as const;
+};
+
+export const getContributionsControllerMineQueryOptions = <
+  TData = Awaited<ReturnType<typeof contributionsControllerMine>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: ContributionsControllerMineParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof contributionsControllerMine>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getContributionsControllerMineQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof contributionsControllerMine>>> = ({
+    signal,
+  }) => contributionsControllerMine(params, { signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof contributionsControllerMine>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ContributionsControllerMineQueryResult = NonNullable<
+  Awaited<ReturnType<typeof contributionsControllerMine>>
+>;
+export type ContributionsControllerMineQueryError = ErrorType<ProblemDetails>;
+
+export function useContributionsControllerMine<
+  TData = Awaited<ReturnType<typeof contributionsControllerMine>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params: undefined | ContributionsControllerMineParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof contributionsControllerMine>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof contributionsControllerMine>>,
+          TError,
+          Awaited<ReturnType<typeof contributionsControllerMine>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useContributionsControllerMine<
+  TData = Awaited<ReturnType<typeof contributionsControllerMine>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: ContributionsControllerMineParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof contributionsControllerMine>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof contributionsControllerMine>>,
+          TError,
+          Awaited<ReturnType<typeof contributionsControllerMine>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useContributionsControllerMine<
+  TData = Awaited<ReturnType<typeof contributionsControllerMine>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: ContributionsControllerMineParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof contributionsControllerMine>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useContributionsControllerMine<
+  TData = Awaited<ReturnType<typeof contributionsControllerMine>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: ContributionsControllerMineParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof contributionsControllerMine>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getContributionsControllerMineQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getContributionsControllerOneUrl = (contributionId: string) => {
+  return `/v1/me/contributions/${contributionId}`;
+};
+
+export const contributionsControllerOne = async (
+  contributionId: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<ContributionDtoOutput> => {
+  return apiFetch<ContributionDtoOutput>(getContributionsControllerOneUrl(contributionId), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getContributionsControllerOneQueryKey = (contributionId: string) => {
+  return [`/v1/me/contributions/${contributionId}`] as const;
+};
+
+export const getContributionsControllerOneQueryOptions = <
+  TData = Awaited<ReturnType<typeof contributionsControllerOne>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  contributionId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof contributionsControllerOne>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getContributionsControllerOneQueryKey(contributionId);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof contributionsControllerOne>>> = ({
+    signal,
+  }) => contributionsControllerOne(contributionId, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: contributionId !== null && contributionId !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<Awaited<ReturnType<typeof contributionsControllerOne>>, TError, TData> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+};
+
+export type ContributionsControllerOneQueryResult = NonNullable<
+  Awaited<ReturnType<typeof contributionsControllerOne>>
+>;
+export type ContributionsControllerOneQueryError = ErrorType<ProblemDetails>;
+
+export function useContributionsControllerOne<
+  TData = Awaited<ReturnType<typeof contributionsControllerOne>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  contributionId: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof contributionsControllerOne>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof contributionsControllerOne>>,
+          TError,
+          Awaited<ReturnType<typeof contributionsControllerOne>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useContributionsControllerOne<
+  TData = Awaited<ReturnType<typeof contributionsControllerOne>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  contributionId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof contributionsControllerOne>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof contributionsControllerOne>>,
+          TError,
+          Awaited<ReturnType<typeof contributionsControllerOne>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useContributionsControllerOne<
+  TData = Awaited<ReturnType<typeof contributionsControllerOne>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  contributionId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof contributionsControllerOne>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useContributionsControllerOne<
+  TData = Awaited<ReturnType<typeof contributionsControllerOne>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  contributionId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof contributionsControllerOne>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getContributionsControllerOneQueryOptions(contributionId, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getContributionsControllerReturnedUrl = (contributionId: string) => {
+  return `/v1/me/contributions/${contributionId}/return`;
+};
+
+export const contributionsControllerReturned = async (
+  contributionId: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<ContributionDtoOutput> => {
+  return apiFetch<ContributionDtoOutput>(getContributionsControllerReturnedUrl(contributionId), {
+    ...options,
+    method: 'POST',
+  });
+};
+
+export const getContributionsControllerReturnedMutationKey = () =>
+  ['contributionsControllerReturned'] as const;
+
+export const getContributionsControllerReturnedMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof contributionsControllerReturned>>,
+    TError,
+    ContributionsControllerReturnedMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof contributionsControllerReturned>>,
+  TError,
+  ContributionsControllerReturnedMutationVariables,
+  TContext
+> => {
+  const mutationKey = getContributionsControllerReturnedMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof contributionsControllerReturned>>,
+    ContributionsControllerReturnedMutationVariables
+  > = (props) => {
+    const { contributionId } = props ?? {};
+
+    return contributionsControllerReturned(contributionId, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ContributionsControllerReturnedMutationResult = NonNullable<
+  Awaited<ReturnType<typeof contributionsControllerReturned>>
+>;
+
+export type ContributionsControllerReturnedMutationError = ErrorType<ProblemDetails>;
+export type ContributionsControllerReturnedMutationVariables = { contributionId: string };
+
+export const useContributionsControllerReturned = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof contributionsControllerReturned>>,
+      TError,
+      ContributionsControllerReturnedMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof contributionsControllerReturned>>,
+  TError,
+  ContributionsControllerReturnedMutationVariables,
+  TContext
+> => {
+  return useMutation(getContributionsControllerReturnedMutationOptions(options), queryClient);
+};
+
+export const getContributionsControllerCancelUrl = (contributionId: string) => {
+  return `/v1/me/contributions/${contributionId}/cancel`;
+};
+
+export const contributionsControllerCancel = async (
+  contributionId: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<ContributionDtoOutput> => {
+  return apiFetch<ContributionDtoOutput>(getContributionsControllerCancelUrl(contributionId), {
+    ...options,
+    method: 'POST',
+  });
+};
+
+export const getContributionsControllerCancelMutationKey = () =>
+  ['contributionsControllerCancel'] as const;
+
+export const getContributionsControllerCancelMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof contributionsControllerCancel>>,
+    TError,
+    ContributionsControllerCancelMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof contributionsControllerCancel>>,
+  TError,
+  ContributionsControllerCancelMutationVariables,
+  TContext
+> => {
+  const mutationKey = getContributionsControllerCancelMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof contributionsControllerCancel>>,
+    ContributionsControllerCancelMutationVariables
+  > = (props) => {
+    const { contributionId } = props ?? {};
+
+    return contributionsControllerCancel(contributionId, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ContributionsControllerCancelMutationResult = NonNullable<
+  Awaited<ReturnType<typeof contributionsControllerCancel>>
+>;
+
+export type ContributionsControllerCancelMutationError = ErrorType<ProblemDetails>;
+export type ContributionsControllerCancelMutationVariables = { contributionId: string };
+
+export const useContributionsControllerCancel = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof contributionsControllerCancel>>,
+      TError,
+      ContributionsControllerCancelMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof contributionsControllerCancel>>,
+  TError,
+  ContributionsControllerCancelMutationVariables,
+  TContext
+> => {
+  return useMutation(getContributionsControllerCancelMutationOptions(options), queryClient);
+};
+
+export const getContributionsControllerExportUrl = (projectId: string) => {
+  return `/v1/projects/${projectId}/contributions/export`;
+};
+
+export const contributionsControllerExport = async (
+  projectId: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<string> => {
+  return apiFetch<string>(getContributionsControllerExportUrl(projectId), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getContributionsControllerExportQueryKey = (projectId: string) => {
+  return [`/v1/projects/${projectId}/contributions/export`] as const;
+};
+
+export const getContributionsControllerExportQueryOptions = <
+  TData = Awaited<ReturnType<typeof contributionsControllerExport>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof contributionsControllerExport>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getContributionsControllerExportQueryKey(projectId);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof contributionsControllerExport>>> = ({
+    signal,
+  }) => contributionsControllerExport(projectId, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: projectId !== null && projectId !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<Awaited<ReturnType<typeof contributionsControllerExport>>, TError, TData> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+};
+
+export type ContributionsControllerExportQueryResult = NonNullable<
+  Awaited<ReturnType<typeof contributionsControllerExport>>
+>;
+export type ContributionsControllerExportQueryError = ErrorType<ProblemDetails>;
+
+export function useContributionsControllerExport<
+  TData = Awaited<ReturnType<typeof contributionsControllerExport>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof contributionsControllerExport>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof contributionsControllerExport>>,
+          TError,
+          Awaited<ReturnType<typeof contributionsControllerExport>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useContributionsControllerExport<
+  TData = Awaited<ReturnType<typeof contributionsControllerExport>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof contributionsControllerExport>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof contributionsControllerExport>>,
+          TError,
+          Awaited<ReturnType<typeof contributionsControllerExport>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useContributionsControllerExport<
+  TData = Awaited<ReturnType<typeof contributionsControllerExport>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof contributionsControllerExport>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useContributionsControllerExport<
+  TData = Awaited<ReturnType<typeof contributionsControllerExport>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof contributionsControllerExport>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getContributionsControllerExportQueryOptions(projectId, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getContributionsControllerSupportersUrl = (
+  projectId: string,
+  params?: ContributionsControllerSupportersParams,
+) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/v1/public/projects/${projectId}/supporters?${stringifiedParams}`
+    : `/v1/public/projects/${projectId}/supporters`;
+};
+
+export const contributionsControllerSupporters = async (
+  projectId: string,
+  params?: ContributionsControllerSupportersParams,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<SupporterPageDtoOutput> => {
+  return apiFetch<SupporterPageDtoOutput>(
+    getContributionsControllerSupportersUrl(projectId, params),
+    {
+      ...options,
+      method: 'GET',
+    },
+  );
+};
+
+export const getContributionsControllerSupportersQueryKey = (
+  projectId: string,
+  params?: ContributionsControllerSupportersParams,
+) => {
+  return [`/v1/public/projects/${projectId}/supporters`, ...(params ? [params] : [])] as const;
+};
+
+export const getContributionsControllerSupportersQueryOptions = <
+  TData = Awaited<ReturnType<typeof contributionsControllerSupporters>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  params?: ContributionsControllerSupportersParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof contributionsControllerSupporters>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getContributionsControllerSupportersQueryKey(projectId, params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof contributionsControllerSupporters>>> = ({
+    signal,
+  }) => contributionsControllerSupporters(projectId, params, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: projectId !== null && projectId !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof contributionsControllerSupporters>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ContributionsControllerSupportersQueryResult = NonNullable<
+  Awaited<ReturnType<typeof contributionsControllerSupporters>>
+>;
+export type ContributionsControllerSupportersQueryError = ErrorType<ProblemDetails>;
+
+export function useContributionsControllerSupporters<
+  TData = Awaited<ReturnType<typeof contributionsControllerSupporters>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  params: undefined | ContributionsControllerSupportersParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof contributionsControllerSupporters>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof contributionsControllerSupporters>>,
+          TError,
+          Awaited<ReturnType<typeof contributionsControllerSupporters>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useContributionsControllerSupporters<
+  TData = Awaited<ReturnType<typeof contributionsControllerSupporters>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  params?: ContributionsControllerSupportersParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof contributionsControllerSupporters>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof contributionsControllerSupporters>>,
+          TError,
+          Awaited<ReturnType<typeof contributionsControllerSupporters>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useContributionsControllerSupporters<
+  TData = Awaited<ReturnType<typeof contributionsControllerSupporters>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  params?: ContributionsControllerSupportersParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof contributionsControllerSupporters>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useContributionsControllerSupporters<
+  TData = Awaited<ReturnType<typeof contributionsControllerSupporters>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  params?: ContributionsControllerSupportersParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof contributionsControllerSupporters>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getContributionsControllerSupportersQueryOptions(projectId, params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getOfflineContributionsControllerDeclareUrl = (projectId: string) => {
+  return `/v1/projects/${projectId}/offline-contributions`;
+};
+
+export const offlineContributionsControllerDeclare = async (
+  projectId: string,
+  declareOfflineDto: DeclareOfflineDto,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<OfflineDtoOutput> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit['headers']>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(
+          h as Iterable<Iterable<string>>,
+          (entry) => Array.from(entry) as [string, string],
+        ),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+  return apiFetch<OfflineDtoOutput>(getOfflineContributionsControllerDeclareUrl(projectId), {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(declareOfflineDto),
+  });
+};
+
+export const getOfflineContributionsControllerDeclareMutationKey = () =>
+  ['offlineContributionsControllerDeclare'] as const;
+
+export const getOfflineContributionsControllerDeclareMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof offlineContributionsControllerDeclare>>,
+    TError,
+    OfflineContributionsControllerDeclareMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof offlineContributionsControllerDeclare>>,
+  TError,
+  OfflineContributionsControllerDeclareMutationVariables,
+  TContext
+> => {
+  const mutationKey = getOfflineContributionsControllerDeclareMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof offlineContributionsControllerDeclare>>,
+    OfflineContributionsControllerDeclareMutationVariables
+  > = (props) => {
+    const { projectId, data } = props ?? {};
+
+    return offlineContributionsControllerDeclare(projectId, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type OfflineContributionsControllerDeclareMutationResult = NonNullable<
+  Awaited<ReturnType<typeof offlineContributionsControllerDeclare>>
+>;
+export type OfflineContributionsControllerDeclareMutationBody = DeclareOfflineDto;
+export type OfflineContributionsControllerDeclareMutationError = ErrorType<ProblemDetails>;
+export type OfflineContributionsControllerDeclareMutationVariables = {
+  projectId: string;
+  data: DeclareOfflineDto;
+};
+
+export const useOfflineContributionsControllerDeclare = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof offlineContributionsControllerDeclare>>,
+      TError,
+      OfflineContributionsControllerDeclareMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof offlineContributionsControllerDeclare>>,
+  TError,
+  OfflineContributionsControllerDeclareMutationVariables,
+  TContext
+> => {
+  return useMutation(getOfflineContributionsControllerDeclareMutationOptions(options), queryClient);
+};
+
+export const getOfflineContributionsControllerOfProjectUrl = (
+  projectId: string,
+  params?: OfflineContributionsControllerOfProjectParams,
+) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/v1/projects/${projectId}/offline-contributions?${stringifiedParams}`
+    : `/v1/projects/${projectId}/offline-contributions`;
+};
+
+export const offlineContributionsControllerOfProject = async (
+  projectId: string,
+  params?: OfflineContributionsControllerOfProjectParams,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<OfflinePageDtoOutput> => {
+  return apiFetch<OfflinePageDtoOutput>(
+    getOfflineContributionsControllerOfProjectUrl(projectId, params),
+    {
+      ...options,
+      method: 'GET',
+    },
+  );
+};
+
+export const getOfflineContributionsControllerOfProjectQueryKey = (
+  projectId: string,
+  params?: OfflineContributionsControllerOfProjectParams,
+) => {
+  return [`/v1/projects/${projectId}/offline-contributions`, ...(params ? [params] : [])] as const;
+};
+
+export const getOfflineContributionsControllerOfProjectQueryOptions = <
+  TData = Awaited<ReturnType<typeof offlineContributionsControllerOfProject>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  params?: OfflineContributionsControllerOfProjectParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof offlineContributionsControllerOfProject>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getOfflineContributionsControllerOfProjectQueryKey(projectId, params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof offlineContributionsControllerOfProject>>
+  > = ({ signal }) =>
+    offlineContributionsControllerOfProject(projectId, params, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: projectId !== null && projectId !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof offlineContributionsControllerOfProject>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type OfflineContributionsControllerOfProjectQueryResult = NonNullable<
+  Awaited<ReturnType<typeof offlineContributionsControllerOfProject>>
+>;
+export type OfflineContributionsControllerOfProjectQueryError = ErrorType<ProblemDetails>;
+
+export function useOfflineContributionsControllerOfProject<
+  TData = Awaited<ReturnType<typeof offlineContributionsControllerOfProject>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  params: undefined | OfflineContributionsControllerOfProjectParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof offlineContributionsControllerOfProject>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof offlineContributionsControllerOfProject>>,
+          TError,
+          Awaited<ReturnType<typeof offlineContributionsControllerOfProject>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useOfflineContributionsControllerOfProject<
+  TData = Awaited<ReturnType<typeof offlineContributionsControllerOfProject>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  params?: OfflineContributionsControllerOfProjectParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof offlineContributionsControllerOfProject>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof offlineContributionsControllerOfProject>>,
+          TError,
+          Awaited<ReturnType<typeof offlineContributionsControllerOfProject>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useOfflineContributionsControllerOfProject<
+  TData = Awaited<ReturnType<typeof offlineContributionsControllerOfProject>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  params?: OfflineContributionsControllerOfProjectParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof offlineContributionsControllerOfProject>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useOfflineContributionsControllerOfProject<
+  TData = Awaited<ReturnType<typeof offlineContributionsControllerOfProject>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  params?: OfflineContributionsControllerOfProjectParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof offlineContributionsControllerOfProject>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getOfflineContributionsControllerOfProjectQueryOptions(
+    projectId,
+    params,
+    options,
+  );
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getOfflineContributionsControllerDeclareForMemberUrl = (projectId: string) => {
+  return `/v1/projects/${projectId}/team/offline-contributions`;
+};
+
+export const offlineContributionsControllerDeclareForMember = async (
+  projectId: string,
+  declareTeamOfflineDto: DeclareTeamOfflineDto,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<OfflineDtoOutput> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit['headers']>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(
+          h as Iterable<Iterable<string>>,
+          (entry) => Array.from(entry) as [string, string],
+        ),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+  return apiFetch<OfflineDtoOutput>(
+    getOfflineContributionsControllerDeclareForMemberUrl(projectId),
+    {
+      ...options,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+      body: JSON.stringify(declareTeamOfflineDto),
+    },
+  );
+};
+
+export const getOfflineContributionsControllerDeclareForMemberMutationKey = () =>
+  ['offlineContributionsControllerDeclareForMember'] as const;
+
+export const getOfflineContributionsControllerDeclareForMemberMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof offlineContributionsControllerDeclareForMember>>,
+    TError,
+    OfflineContributionsControllerDeclareForMemberMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof offlineContributionsControllerDeclareForMember>>,
+  TError,
+  OfflineContributionsControllerDeclareForMemberMutationVariables,
+  TContext
+> => {
+  const mutationKey = getOfflineContributionsControllerDeclareForMemberMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof offlineContributionsControllerDeclareForMember>>,
+    OfflineContributionsControllerDeclareForMemberMutationVariables
+  > = (props) => {
+    const { projectId, data } = props ?? {};
+
+    return offlineContributionsControllerDeclareForMember(projectId, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type OfflineContributionsControllerDeclareForMemberMutationResult = NonNullable<
+  Awaited<ReturnType<typeof offlineContributionsControllerDeclareForMember>>
+>;
+export type OfflineContributionsControllerDeclareForMemberMutationBody = DeclareTeamOfflineDto;
+export type OfflineContributionsControllerDeclareForMemberMutationError = ErrorType<ProblemDetails>;
+export type OfflineContributionsControllerDeclareForMemberMutationVariables = {
+  projectId: string;
+  data: DeclareTeamOfflineDto;
+};
+
+export const useOfflineContributionsControllerDeclareForMember = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof offlineContributionsControllerDeclareForMember>>,
+      TError,
+      OfflineContributionsControllerDeclareForMemberMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof offlineContributionsControllerDeclareForMember>>,
+  TError,
+  OfflineContributionsControllerDeclareForMemberMutationVariables,
+  TContext
+> => {
+  return useMutation(
+    getOfflineContributionsControllerDeclareForMemberMutationOptions(options),
+    queryClient,
+  );
+};
+
+export const getOfflineContributionsControllerMineUrl = (
+  params?: OfflineContributionsControllerMineParams,
+) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/v1/me/offline-contributions?${stringifiedParams}`
+    : `/v1/me/offline-contributions`;
+};
+
+export const offlineContributionsControllerMine = async (
+  params?: OfflineContributionsControllerMineParams,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<OfflinePageDtoOutput> => {
+  return apiFetch<OfflinePageDtoOutput>(getOfflineContributionsControllerMineUrl(params), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getOfflineContributionsControllerMineQueryKey = (
+  params?: OfflineContributionsControllerMineParams,
+) => {
+  return [`/v1/me/offline-contributions`, ...(params ? [params] : [])] as const;
+};
+
+export const getOfflineContributionsControllerMineQueryOptions = <
+  TData = Awaited<ReturnType<typeof offlineContributionsControllerMine>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: OfflineContributionsControllerMineParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof offlineContributionsControllerMine>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getOfflineContributionsControllerMineQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof offlineContributionsControllerMine>>> = ({
+    signal,
+  }) => offlineContributionsControllerMine(params, { signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof offlineContributionsControllerMine>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type OfflineContributionsControllerMineQueryResult = NonNullable<
+  Awaited<ReturnType<typeof offlineContributionsControllerMine>>
+>;
+export type OfflineContributionsControllerMineQueryError = ErrorType<ProblemDetails>;
+
+export function useOfflineContributionsControllerMine<
+  TData = Awaited<ReturnType<typeof offlineContributionsControllerMine>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params: undefined | OfflineContributionsControllerMineParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof offlineContributionsControllerMine>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof offlineContributionsControllerMine>>,
+          TError,
+          Awaited<ReturnType<typeof offlineContributionsControllerMine>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useOfflineContributionsControllerMine<
+  TData = Awaited<ReturnType<typeof offlineContributionsControllerMine>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: OfflineContributionsControllerMineParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof offlineContributionsControllerMine>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof offlineContributionsControllerMine>>,
+          TError,
+          Awaited<ReturnType<typeof offlineContributionsControllerMine>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useOfflineContributionsControllerMine<
+  TData = Awaited<ReturnType<typeof offlineContributionsControllerMine>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: OfflineContributionsControllerMineParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof offlineContributionsControllerMine>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useOfflineContributionsControllerMine<
+  TData = Awaited<ReturnType<typeof offlineContributionsControllerMine>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: OfflineContributionsControllerMineParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof offlineContributionsControllerMine>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getOfflineContributionsControllerMineQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getOfflineContributionsControllerConfirmUrl = (offlineContributionId: string) => {
+  return `/v1/offline-contributions/${offlineContributionId}/confirm`;
+};
+
+export const offlineContributionsControllerConfirm = async (
+  offlineContributionId: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<OfflineDtoOutput> => {
+  return apiFetch<OfflineDtoOutput>(
+    getOfflineContributionsControllerConfirmUrl(offlineContributionId),
+    {
+      ...options,
+      method: 'POST',
+    },
+  );
+};
+
+export const getOfflineContributionsControllerConfirmMutationKey = () =>
+  ['offlineContributionsControllerConfirm'] as const;
+
+export const getOfflineContributionsControllerConfirmMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof offlineContributionsControllerConfirm>>,
+    TError,
+    OfflineContributionsControllerConfirmMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof offlineContributionsControllerConfirm>>,
+  TError,
+  OfflineContributionsControllerConfirmMutationVariables,
+  TContext
+> => {
+  const mutationKey = getOfflineContributionsControllerConfirmMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof offlineContributionsControllerConfirm>>,
+    OfflineContributionsControllerConfirmMutationVariables
+  > = (props) => {
+    const { offlineContributionId } = props ?? {};
+
+    return offlineContributionsControllerConfirm(offlineContributionId, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type OfflineContributionsControllerConfirmMutationResult = NonNullable<
+  Awaited<ReturnType<typeof offlineContributionsControllerConfirm>>
+>;
+
+export type OfflineContributionsControllerConfirmMutationError = ErrorType<ProblemDetails>;
+export type OfflineContributionsControllerConfirmMutationVariables = {
+  offlineContributionId: string;
+};
+
+export const useOfflineContributionsControllerConfirm = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof offlineContributionsControllerConfirm>>,
+      TError,
+      OfflineContributionsControllerConfirmMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof offlineContributionsControllerConfirm>>,
+  TError,
+  OfflineContributionsControllerConfirmMutationVariables,
+  TContext
+> => {
+  return useMutation(getOfflineContributionsControllerConfirmMutationOptions(options), queryClient);
+};
+
+export const getOfflineContributionsControllerRejectUrl = (offlineContributionId: string) => {
+  return `/v1/offline-contributions/${offlineContributionId}/reject`;
+};
+
+export const offlineContributionsControllerReject = async (
+  offlineContributionId: string,
+  rejectionDto: RejectionDto,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<OfflineDtoOutput> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit['headers']>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(
+          h as Iterable<Iterable<string>>,
+          (entry) => Array.from(entry) as [string, string],
+        ),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+  return apiFetch<OfflineDtoOutput>(
+    getOfflineContributionsControllerRejectUrl(offlineContributionId),
+    {
+      ...options,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+      body: JSON.stringify(rejectionDto),
+    },
+  );
+};
+
+export const getOfflineContributionsControllerRejectMutationKey = () =>
+  ['offlineContributionsControllerReject'] as const;
+
+export const getOfflineContributionsControllerRejectMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof offlineContributionsControllerReject>>,
+    TError,
+    OfflineContributionsControllerRejectMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof offlineContributionsControllerReject>>,
+  TError,
+  OfflineContributionsControllerRejectMutationVariables,
+  TContext
+> => {
+  const mutationKey = getOfflineContributionsControllerRejectMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof offlineContributionsControllerReject>>,
+    OfflineContributionsControllerRejectMutationVariables
+  > = (props) => {
+    const { offlineContributionId, data } = props ?? {};
+
+    return offlineContributionsControllerReject(offlineContributionId, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type OfflineContributionsControllerRejectMutationResult = NonNullable<
+  Awaited<ReturnType<typeof offlineContributionsControllerReject>>
+>;
+export type OfflineContributionsControllerRejectMutationBody = RejectionDto;
+export type OfflineContributionsControllerRejectMutationError = ErrorType<ProblemDetails>;
+export type OfflineContributionsControllerRejectMutationVariables = {
+  offlineContributionId: string;
+  data: RejectionDto;
+};
+
+export const useOfflineContributionsControllerReject = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof offlineContributionsControllerReject>>,
+      TError,
+      OfflineContributionsControllerRejectMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof offlineContributionsControllerReject>>,
+  TError,
+  OfflineContributionsControllerRejectMutationVariables,
+  TContext
+> => {
+  return useMutation(getOfflineContributionsControllerRejectMutationOptions(options), queryClient);
+};
+
+export const getOfflineContributionsControllerProofsUrl = (offlineContributionId: string) => {
+  return `/v1/offline-contributions/${offlineContributionId}/proofs`;
+};
+
+export const offlineContributionsControllerProofs = async (
+  offlineContributionId: string,
+  proofsDto: ProofsDto,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<OfflineDtoOutput> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit['headers']>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(
+          h as Iterable<Iterable<string>>,
+          (entry) => Array.from(entry) as [string, string],
+        ),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+  return apiFetch<OfflineDtoOutput>(
+    getOfflineContributionsControllerProofsUrl(offlineContributionId),
+    {
+      ...options,
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+      body: JSON.stringify(proofsDto),
+    },
+  );
+};
+
+export const getOfflineContributionsControllerProofsMutationKey = () =>
+  ['offlineContributionsControllerProofs'] as const;
+
+export const getOfflineContributionsControllerProofsMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof offlineContributionsControllerProofs>>,
+    TError,
+    OfflineContributionsControllerProofsMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof offlineContributionsControllerProofs>>,
+  TError,
+  OfflineContributionsControllerProofsMutationVariables,
+  TContext
+> => {
+  const mutationKey = getOfflineContributionsControllerProofsMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof offlineContributionsControllerProofs>>,
+    OfflineContributionsControllerProofsMutationVariables
+  > = (props) => {
+    const { offlineContributionId, data } = props ?? {};
+
+    return offlineContributionsControllerProofs(offlineContributionId, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type OfflineContributionsControllerProofsMutationResult = NonNullable<
+  Awaited<ReturnType<typeof offlineContributionsControllerProofs>>
+>;
+export type OfflineContributionsControllerProofsMutationBody = ProofsDto;
+export type OfflineContributionsControllerProofsMutationError = ErrorType<ProblemDetails>;
+export type OfflineContributionsControllerProofsMutationVariables = {
+  offlineContributionId: string;
+  data: ProofsDto;
+};
+
+export const useOfflineContributionsControllerProofs = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof offlineContributionsControllerProofs>>,
+      TError,
+      OfflineContributionsControllerProofsMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof offlineContributionsControllerProofs>>,
+  TError,
+  OfflineContributionsControllerProofsMutationVariables,
+  TContext
+> => {
+  return useMutation(getOfflineContributionsControllerProofsMutationOptions(options), queryClient);
+};
+
+export const getPayoutControllerAccountUrl = () => {
+  return `/v1/me/payout-account`;
+};
+
+export const payoutControllerAccount = async (
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<PayoutAccountDtoOutput> => {
+  return apiFetch<PayoutAccountDtoOutput>(getPayoutControllerAccountUrl(), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getPayoutControllerAccountQueryKey = () => {
+  return [`/v1/me/payout-account`] as const;
+};
+
+export const getPayoutControllerAccountQueryOptions = <
+  TData = Awaited<ReturnType<typeof payoutControllerAccount>>,
+  TError = ErrorType<ProblemDetails>,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<Awaited<ReturnType<typeof payoutControllerAccount>>, TError, TData>
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getPayoutControllerAccountQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof payoutControllerAccount>>> = ({
+    signal,
+  }) => payoutControllerAccount({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof payoutControllerAccount>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type PayoutControllerAccountQueryResult = NonNullable<
+  Awaited<ReturnType<typeof payoutControllerAccount>>
+>;
+export type PayoutControllerAccountQueryError = ErrorType<ProblemDetails>;
+
+export function usePayoutControllerAccount<
+  TData = Awaited<ReturnType<typeof payoutControllerAccount>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof payoutControllerAccount>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof payoutControllerAccount>>,
+          TError,
+          Awaited<ReturnType<typeof payoutControllerAccount>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function usePayoutControllerAccount<
+  TData = Awaited<ReturnType<typeof payoutControllerAccount>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof payoutControllerAccount>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof payoutControllerAccount>>,
+          TError,
+          Awaited<ReturnType<typeof payoutControllerAccount>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function usePayoutControllerAccount<
+  TData = Awaited<ReturnType<typeof payoutControllerAccount>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof payoutControllerAccount>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function usePayoutControllerAccount<
+  TData = Awaited<ReturnType<typeof payoutControllerAccount>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof payoutControllerAccount>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getPayoutControllerAccountQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getPayoutControllerCreateUrl = () => {
+  return `/v1/me/payout-account`;
+};
+
+export const payoutControllerCreate = async (
+  createPayoutAccountDto: CreatePayoutAccountDto,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<PayoutAccountDtoOutput> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit['headers']>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(
+          h as Iterable<Iterable<string>>,
+          (entry) => Array.from(entry) as [string, string],
+        ),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+  return apiFetch<PayoutAccountDtoOutput>(getPayoutControllerCreateUrl(), {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(createPayoutAccountDto),
+  });
+};
+
+export const getPayoutControllerCreateMutationKey = () => ['payoutControllerCreate'] as const;
+
+export const getPayoutControllerCreateMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof payoutControllerCreate>>,
+    TError,
+    PayoutControllerCreateMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof payoutControllerCreate>>,
+  TError,
+  PayoutControllerCreateMutationVariables,
+  TContext
+> => {
+  const mutationKey = getPayoutControllerCreateMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof payoutControllerCreate>>,
+    PayoutControllerCreateMutationVariables
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return payoutControllerCreate(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type PayoutControllerCreateMutationResult = NonNullable<
+  Awaited<ReturnType<typeof payoutControllerCreate>>
+>;
+export type PayoutControllerCreateMutationBody = CreatePayoutAccountDto;
+export type PayoutControllerCreateMutationError = ErrorType<ProblemDetails>;
+export type PayoutControllerCreateMutationVariables = { data: CreatePayoutAccountDto };
+
+export const usePayoutControllerCreate = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof payoutControllerCreate>>,
+      TError,
+      PayoutControllerCreateMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof payoutControllerCreate>>,
+  TError,
+  PayoutControllerCreateMutationVariables,
+  TContext
+> => {
+  return useMutation(getPayoutControllerCreateMutationOptions(options), queryClient);
+};
+
+export const getPayoutControllerRefreshUrl = () => {
+  return `/v1/me/payout-account/refresh`;
+};
+
+export const payoutControllerRefresh = async (
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<PayoutAccountDtoOutput> => {
+  return apiFetch<PayoutAccountDtoOutput>(getPayoutControllerRefreshUrl(), {
+    ...options,
+    method: 'POST',
+  });
+};
+
+export const getPayoutControllerRefreshMutationKey = () => ['payoutControllerRefresh'] as const;
+
+export const getPayoutControllerRefreshMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof payoutControllerRefresh>>,
+    TError,
+    void,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof payoutControllerRefresh>>,
+  TError,
+  void,
+  TContext
+> => {
+  const mutationKey = getPayoutControllerRefreshMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof payoutControllerRefresh>>,
+    void
+  > = () => {
+    return payoutControllerRefresh(requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type PayoutControllerRefreshMutationResult = NonNullable<
+  Awaited<ReturnType<typeof payoutControllerRefresh>>
+>;
+
+export type PayoutControllerRefreshMutationError = ErrorType<ProblemDetails>;
+
+export const usePayoutControllerRefresh = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof payoutControllerRefresh>>,
+      TError,
+      void,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof payoutControllerRefresh>>,
+  TError,
+  void,
+  TContext
+> => {
+  return useMutation(getPayoutControllerRefreshMutationOptions(options), queryClient);
+};
+
+export const getPayoutControllerKycUrl = () => {
+  return `/v1/me/kyc`;
+};
+
+export const payoutControllerKyc = async (
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<KycOverviewDtoOutput> => {
+  return apiFetch<KycOverviewDtoOutput>(getPayoutControllerKycUrl(), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getPayoutControllerKycQueryKey = () => {
+  return [`/v1/me/kyc`] as const;
+};
+
+export const getPayoutControllerKycQueryOptions = <
+  TData = Awaited<ReturnType<typeof payoutControllerKyc>>,
+  TError = ErrorType<ProblemDetails>,
+>(options?: {
+  query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof payoutControllerKyc>>, TError, TData>>;
+  request?: SecondParameter<typeof apiFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getPayoutControllerKycQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof payoutControllerKyc>>> = ({ signal }) =>
+    payoutControllerKyc({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof payoutControllerKyc>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type PayoutControllerKycQueryResult = NonNullable<
+  Awaited<ReturnType<typeof payoutControllerKyc>>
+>;
+export type PayoutControllerKycQueryError = ErrorType<ProblemDetails>;
+
+export function usePayoutControllerKyc<
+  TData = Awaited<ReturnType<typeof payoutControllerKyc>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof payoutControllerKyc>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof payoutControllerKyc>>,
+          TError,
+          Awaited<ReturnType<typeof payoutControllerKyc>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function usePayoutControllerKyc<
+  TData = Awaited<ReturnType<typeof payoutControllerKyc>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof payoutControllerKyc>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof payoutControllerKyc>>,
+          TError,
+          Awaited<ReturnType<typeof payoutControllerKyc>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function usePayoutControllerKyc<
+  TData = Awaited<ReturnType<typeof payoutControllerKyc>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof payoutControllerKyc>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function usePayoutControllerKyc<
+  TData = Awaited<ReturnType<typeof payoutControllerKyc>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof payoutControllerKyc>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getPayoutControllerKycQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getPayoutControllerSubmitUrl = () => {
+  return `/v1/me/kyc/submissions`;
+};
+
+export const payoutControllerSubmit = async (
+  submitKycDto: SubmitKycDto,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<KycSubmissionDtoOutput> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit['headers']>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(
+          h as Iterable<Iterable<string>>,
+          (entry) => Array.from(entry) as [string, string],
+        ),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+  return apiFetch<KycSubmissionDtoOutput>(getPayoutControllerSubmitUrl(), {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(submitKycDto),
+  });
+};
+
+export const getPayoutControllerSubmitMutationKey = () => ['payoutControllerSubmit'] as const;
+
+export const getPayoutControllerSubmitMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof payoutControllerSubmit>>,
+    TError,
+    PayoutControllerSubmitMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof payoutControllerSubmit>>,
+  TError,
+  PayoutControllerSubmitMutationVariables,
+  TContext
+> => {
+  const mutationKey = getPayoutControllerSubmitMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof payoutControllerSubmit>>,
+    PayoutControllerSubmitMutationVariables
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return payoutControllerSubmit(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type PayoutControllerSubmitMutationResult = NonNullable<
+  Awaited<ReturnType<typeof payoutControllerSubmit>>
+>;
+export type PayoutControllerSubmitMutationBody = SubmitKycDto;
+export type PayoutControllerSubmitMutationError = ErrorType<ProblemDetails>;
+export type PayoutControllerSubmitMutationVariables = { data: SubmitKycDto };
+
+export const usePayoutControllerSubmit = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof payoutControllerSubmit>>,
+      TError,
+      PayoutControllerSubmitMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof payoutControllerSubmit>>,
+  TError,
+  PayoutControllerSubmitMutationVariables,
+  TContext
+> => {
+  return useMutation(getPayoutControllerSubmitMutationOptions(options), queryClient);
+};
+
+export const getAdminPaymentsControllerContributionUrl = (contributionId: string) => {
+  return `/v1/admin/payments/contributions/${contributionId}`;
+};
+
+export const adminPaymentsControllerContribution = async (
+  contributionId: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<AdminContributionDtoOutput> => {
+  return apiFetch<AdminContributionDtoOutput>(
+    getAdminPaymentsControllerContributionUrl(contributionId),
+    {
+      ...options,
+      method: 'GET',
+    },
+  );
+};
+
+export const getAdminPaymentsControllerContributionQueryKey = (contributionId: string) => {
+  return [`/v1/admin/payments/contributions/${contributionId}`] as const;
+};
+
+export const getAdminPaymentsControllerContributionQueryOptions = <
+  TData = Awaited<ReturnType<typeof adminPaymentsControllerContribution>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  contributionId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof adminPaymentsControllerContribution>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getAdminPaymentsControllerContributionQueryKey(contributionId);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof adminPaymentsControllerContribution>>> = ({
+    signal,
+  }) => adminPaymentsControllerContribution(contributionId, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: contributionId !== null && contributionId !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof adminPaymentsControllerContribution>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type AdminPaymentsControllerContributionQueryResult = NonNullable<
+  Awaited<ReturnType<typeof adminPaymentsControllerContribution>>
+>;
+export type AdminPaymentsControllerContributionQueryError = ErrorType<ProblemDetails>;
+
+export function useAdminPaymentsControllerContribution<
+  TData = Awaited<ReturnType<typeof adminPaymentsControllerContribution>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  contributionId: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof adminPaymentsControllerContribution>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof adminPaymentsControllerContribution>>,
+          TError,
+          Awaited<ReturnType<typeof adminPaymentsControllerContribution>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useAdminPaymentsControllerContribution<
+  TData = Awaited<ReturnType<typeof adminPaymentsControllerContribution>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  contributionId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof adminPaymentsControllerContribution>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof adminPaymentsControllerContribution>>,
+          TError,
+          Awaited<ReturnType<typeof adminPaymentsControllerContribution>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useAdminPaymentsControllerContribution<
+  TData = Awaited<ReturnType<typeof adminPaymentsControllerContribution>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  contributionId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof adminPaymentsControllerContribution>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useAdminPaymentsControllerContribution<
+  TData = Awaited<ReturnType<typeof adminPaymentsControllerContribution>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  contributionId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof adminPaymentsControllerContribution>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getAdminPaymentsControllerContributionQueryOptions(contributionId, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getAdminPaymentsControllerRefundUrl = (contributionId: string) => {
+  return `/v1/admin/payments/contributions/${contributionId}/refunds`;
+};
+
+export const adminPaymentsControllerRefund = async (
+  contributionId: string,
+  refundRequestDto: RefundRequestDto,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<RefundDtoOutput> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit['headers']>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(
+          h as Iterable<Iterable<string>>,
+          (entry) => Array.from(entry) as [string, string],
+        ),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+  return apiFetch<RefundDtoOutput>(getAdminPaymentsControllerRefundUrl(contributionId), {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(refundRequestDto),
+  });
+};
+
+export const getAdminPaymentsControllerRefundMutationKey = () =>
+  ['adminPaymentsControllerRefund'] as const;
+
+export const getAdminPaymentsControllerRefundMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof adminPaymentsControllerRefund>>,
+    TError,
+    AdminPaymentsControllerRefundMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof adminPaymentsControllerRefund>>,
+  TError,
+  AdminPaymentsControllerRefundMutationVariables,
+  TContext
+> => {
+  const mutationKey = getAdminPaymentsControllerRefundMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof adminPaymentsControllerRefund>>,
+    AdminPaymentsControllerRefundMutationVariables
+  > = (props) => {
+    const { contributionId, data } = props ?? {};
+
+    return adminPaymentsControllerRefund(contributionId, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type AdminPaymentsControllerRefundMutationResult = NonNullable<
+  Awaited<ReturnType<typeof adminPaymentsControllerRefund>>
+>;
+export type AdminPaymentsControllerRefundMutationBody = RefundRequestDto;
+export type AdminPaymentsControllerRefundMutationError = ErrorType<ProblemDetails>;
+export type AdminPaymentsControllerRefundMutationVariables = {
+  contributionId: string;
+  data: RefundRequestDto;
+};
+
+export const useAdminPaymentsControllerRefund = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof adminPaymentsControllerRefund>>,
+      TError,
+      AdminPaymentsControllerRefundMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof adminPaymentsControllerRefund>>,
+  TError,
+  AdminPaymentsControllerRefundMutationVariables,
+  TContext
+> => {
+  return useMutation(getAdminPaymentsControllerRefundMutationOptions(options), queryClient);
+};
+
+export const getAdminPaymentsControllerKycQueueUrl = (
+  params?: AdminPaymentsControllerKycQueueParams,
+) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/v1/admin/payments/kyc-submissions?${stringifiedParams}`
+    : `/v1/admin/payments/kyc-submissions`;
+};
+
+export const adminPaymentsControllerKycQueue = async (
+  params?: AdminPaymentsControllerKycQueueParams,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<KycPageDtoOutput> => {
+  return apiFetch<KycPageDtoOutput>(getAdminPaymentsControllerKycQueueUrl(params), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getAdminPaymentsControllerKycQueueQueryKey = (
+  params?: AdminPaymentsControllerKycQueueParams,
+) => {
+  return [`/v1/admin/payments/kyc-submissions`, ...(params ? [params] : [])] as const;
+};
+
+export const getAdminPaymentsControllerKycQueueQueryOptions = <
+  TData = Awaited<ReturnType<typeof adminPaymentsControllerKycQueue>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: AdminPaymentsControllerKycQueueParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof adminPaymentsControllerKycQueue>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getAdminPaymentsControllerKycQueueQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof adminPaymentsControllerKycQueue>>> = ({
+    signal,
+  }) => adminPaymentsControllerKycQueue(params, { signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof adminPaymentsControllerKycQueue>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type AdminPaymentsControllerKycQueueQueryResult = NonNullable<
+  Awaited<ReturnType<typeof adminPaymentsControllerKycQueue>>
+>;
+export type AdminPaymentsControllerKycQueueQueryError = ErrorType<ProblemDetails>;
+
+export function useAdminPaymentsControllerKycQueue<
+  TData = Awaited<ReturnType<typeof adminPaymentsControllerKycQueue>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params: undefined | AdminPaymentsControllerKycQueueParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof adminPaymentsControllerKycQueue>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof adminPaymentsControllerKycQueue>>,
+          TError,
+          Awaited<ReturnType<typeof adminPaymentsControllerKycQueue>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useAdminPaymentsControllerKycQueue<
+  TData = Awaited<ReturnType<typeof adminPaymentsControllerKycQueue>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: AdminPaymentsControllerKycQueueParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof adminPaymentsControllerKycQueue>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof adminPaymentsControllerKycQueue>>,
+          TError,
+          Awaited<ReturnType<typeof adminPaymentsControllerKycQueue>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useAdminPaymentsControllerKycQueue<
+  TData = Awaited<ReturnType<typeof adminPaymentsControllerKycQueue>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: AdminPaymentsControllerKycQueueParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof adminPaymentsControllerKycQueue>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useAdminPaymentsControllerKycQueue<
+  TData = Awaited<ReturnType<typeof adminPaymentsControllerKycQueue>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: AdminPaymentsControllerKycQueueParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof adminPaymentsControllerKycQueue>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getAdminPaymentsControllerKycQueueQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getAdminPaymentsControllerKycSubmissionUrl = (kycSubmissionId: string) => {
+  return `/v1/admin/payments/kyc-submissions/${kycSubmissionId}`;
+};
+
+export const adminPaymentsControllerKycSubmission = async (
+  kycSubmissionId: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<KycSubmissionDtoOutput> => {
+  return apiFetch<KycSubmissionDtoOutput>(
+    getAdminPaymentsControllerKycSubmissionUrl(kycSubmissionId),
+    {
+      ...options,
+      method: 'GET',
+    },
+  );
+};
+
+export const getAdminPaymentsControllerKycSubmissionQueryKey = (kycSubmissionId: string) => {
+  return [`/v1/admin/payments/kyc-submissions/${kycSubmissionId}`] as const;
+};
+
+export const getAdminPaymentsControllerKycSubmissionQueryOptions = <
+  TData = Awaited<ReturnType<typeof adminPaymentsControllerKycSubmission>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  kycSubmissionId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof adminPaymentsControllerKycSubmission>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getAdminPaymentsControllerKycSubmissionQueryKey(kycSubmissionId);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof adminPaymentsControllerKycSubmission>>
+  > = ({ signal }) =>
+    adminPaymentsControllerKycSubmission(kycSubmissionId, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: kycSubmissionId !== null && kycSubmissionId !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof adminPaymentsControllerKycSubmission>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type AdminPaymentsControllerKycSubmissionQueryResult = NonNullable<
+  Awaited<ReturnType<typeof adminPaymentsControllerKycSubmission>>
+>;
+export type AdminPaymentsControllerKycSubmissionQueryError = ErrorType<ProblemDetails>;
+
+export function useAdminPaymentsControllerKycSubmission<
+  TData = Awaited<ReturnType<typeof adminPaymentsControllerKycSubmission>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  kycSubmissionId: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof adminPaymentsControllerKycSubmission>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof adminPaymentsControllerKycSubmission>>,
+          TError,
+          Awaited<ReturnType<typeof adminPaymentsControllerKycSubmission>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useAdminPaymentsControllerKycSubmission<
+  TData = Awaited<ReturnType<typeof adminPaymentsControllerKycSubmission>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  kycSubmissionId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof adminPaymentsControllerKycSubmission>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof adminPaymentsControllerKycSubmission>>,
+          TError,
+          Awaited<ReturnType<typeof adminPaymentsControllerKycSubmission>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useAdminPaymentsControllerKycSubmission<
+  TData = Awaited<ReturnType<typeof adminPaymentsControllerKycSubmission>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  kycSubmissionId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof adminPaymentsControllerKycSubmission>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useAdminPaymentsControllerKycSubmission<
+  TData = Awaited<ReturnType<typeof adminPaymentsControllerKycSubmission>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  kycSubmissionId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof adminPaymentsControllerKycSubmission>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getAdminPaymentsControllerKycSubmissionQueryOptions(
+    kycSubmissionId,
+    options,
+  );
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getAdminPaymentsControllerDecideKycUrl = (kycSubmissionId: string) => {
+  return `/v1/admin/payments/kyc-submissions/${kycSubmissionId}/decision`;
+};
+
+export const adminPaymentsControllerDecideKyc = async (
+  kycSubmissionId: string,
+  kycDecisionDto: KycDecisionDto,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<KycSubmissionDtoOutput> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit['headers']>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(
+          h as Iterable<Iterable<string>>,
+          (entry) => Array.from(entry) as [string, string],
+        ),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+  return apiFetch<KycSubmissionDtoOutput>(getAdminPaymentsControllerDecideKycUrl(kycSubmissionId), {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(kycDecisionDto),
+  });
+};
+
+export const getAdminPaymentsControllerDecideKycMutationKey = () =>
+  ['adminPaymentsControllerDecideKyc'] as const;
+
+export const getAdminPaymentsControllerDecideKycMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof adminPaymentsControllerDecideKyc>>,
+    TError,
+    AdminPaymentsControllerDecideKycMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof adminPaymentsControllerDecideKyc>>,
+  TError,
+  AdminPaymentsControllerDecideKycMutationVariables,
+  TContext
+> => {
+  const mutationKey = getAdminPaymentsControllerDecideKycMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof adminPaymentsControllerDecideKyc>>,
+    AdminPaymentsControllerDecideKycMutationVariables
+  > = (props) => {
+    const { kycSubmissionId, data } = props ?? {};
+
+    return adminPaymentsControllerDecideKyc(kycSubmissionId, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type AdminPaymentsControllerDecideKycMutationResult = NonNullable<
+  Awaited<ReturnType<typeof adminPaymentsControllerDecideKyc>>
+>;
+export type AdminPaymentsControllerDecideKycMutationBody = KycDecisionDto;
+export type AdminPaymentsControllerDecideKycMutationError = ErrorType<ProblemDetails>;
+export type AdminPaymentsControllerDecideKycMutationVariables = {
+  kycSubmissionId: string;
+  data: KycDecisionDto;
+};
+
+export const useAdminPaymentsControllerDecideKyc = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof adminPaymentsControllerDecideKyc>>,
+      TError,
+      AdminPaymentsControllerDecideKycMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof adminPaymentsControllerDecideKyc>>,
+  TError,
+  AdminPaymentsControllerDecideKycMutationVariables,
+  TContext
+> => {
+  return useMutation(getAdminPaymentsControllerDecideKycMutationOptions(options), queryClient);
+};
+
+export const getAdminPaymentsControllerOfflineQueueUrl = (
+  params?: AdminPaymentsControllerOfflineQueueParams,
+) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/v1/admin/payments/offline-contributions?${stringifiedParams}`
+    : `/v1/admin/payments/offline-contributions`;
+};
+
+export const adminPaymentsControllerOfflineQueue = async (
+  params?: AdminPaymentsControllerOfflineQueueParams,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<OfflinePageDtoOutput> => {
+  return apiFetch<OfflinePageDtoOutput>(getAdminPaymentsControllerOfflineQueueUrl(params), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getAdminPaymentsControllerOfflineQueueQueryKey = (
+  params?: AdminPaymentsControllerOfflineQueueParams,
+) => {
+  return [`/v1/admin/payments/offline-contributions`, ...(params ? [params] : [])] as const;
+};
+
+export const getAdminPaymentsControllerOfflineQueueQueryOptions = <
+  TData = Awaited<ReturnType<typeof adminPaymentsControllerOfflineQueue>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: AdminPaymentsControllerOfflineQueueParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof adminPaymentsControllerOfflineQueue>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getAdminPaymentsControllerOfflineQueueQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof adminPaymentsControllerOfflineQueue>>> = ({
+    signal,
+  }) => adminPaymentsControllerOfflineQueue(params, { signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof adminPaymentsControllerOfflineQueue>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type AdminPaymentsControllerOfflineQueueQueryResult = NonNullable<
+  Awaited<ReturnType<typeof adminPaymentsControllerOfflineQueue>>
+>;
+export type AdminPaymentsControllerOfflineQueueQueryError = ErrorType<ProblemDetails>;
+
+export function useAdminPaymentsControllerOfflineQueue<
+  TData = Awaited<ReturnType<typeof adminPaymentsControllerOfflineQueue>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params: undefined | AdminPaymentsControllerOfflineQueueParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof adminPaymentsControllerOfflineQueue>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof adminPaymentsControllerOfflineQueue>>,
+          TError,
+          Awaited<ReturnType<typeof adminPaymentsControllerOfflineQueue>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useAdminPaymentsControllerOfflineQueue<
+  TData = Awaited<ReturnType<typeof adminPaymentsControllerOfflineQueue>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: AdminPaymentsControllerOfflineQueueParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof adminPaymentsControllerOfflineQueue>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof adminPaymentsControllerOfflineQueue>>,
+          TError,
+          Awaited<ReturnType<typeof adminPaymentsControllerOfflineQueue>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useAdminPaymentsControllerOfflineQueue<
+  TData = Awaited<ReturnType<typeof adminPaymentsControllerOfflineQueue>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: AdminPaymentsControllerOfflineQueueParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof adminPaymentsControllerOfflineQueue>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useAdminPaymentsControllerOfflineQueue<
+  TData = Awaited<ReturnType<typeof adminPaymentsControllerOfflineQueue>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: AdminPaymentsControllerOfflineQueueParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof adminPaymentsControllerOfflineQueue>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getAdminPaymentsControllerOfflineQueueQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getAdminPaymentsControllerDecideOfflineUrl = (offlineContributionId: string) => {
+  return `/v1/admin/payments/offline-contributions/${offlineContributionId}/decision`;
+};
+
+export const adminPaymentsControllerDecideOffline = async (
+  offlineContributionId: string,
+  offlineDecisionDto: OfflineDecisionDto,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<OfflineDtoOutput> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit['headers']>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(
+          h as Iterable<Iterable<string>>,
+          (entry) => Array.from(entry) as [string, string],
+        ),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+  return apiFetch<OfflineDtoOutput>(
+    getAdminPaymentsControllerDecideOfflineUrl(offlineContributionId),
+    {
+      ...options,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+      body: JSON.stringify(offlineDecisionDto),
+    },
+  );
+};
+
+export const getAdminPaymentsControllerDecideOfflineMutationKey = () =>
+  ['adminPaymentsControllerDecideOffline'] as const;
+
+export const getAdminPaymentsControllerDecideOfflineMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof adminPaymentsControllerDecideOffline>>,
+    TError,
+    AdminPaymentsControllerDecideOfflineMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof adminPaymentsControllerDecideOffline>>,
+  TError,
+  AdminPaymentsControllerDecideOfflineMutationVariables,
+  TContext
+> => {
+  const mutationKey = getAdminPaymentsControllerDecideOfflineMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof adminPaymentsControllerDecideOffline>>,
+    AdminPaymentsControllerDecideOfflineMutationVariables
+  > = (props) => {
+    const { offlineContributionId, data } = props ?? {};
+
+    return adminPaymentsControllerDecideOffline(offlineContributionId, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type AdminPaymentsControllerDecideOfflineMutationResult = NonNullable<
+  Awaited<ReturnType<typeof adminPaymentsControllerDecideOffline>>
+>;
+export type AdminPaymentsControllerDecideOfflineMutationBody = OfflineDecisionDto;
+export type AdminPaymentsControllerDecideOfflineMutationError = ErrorType<ProblemDetails>;
+export type AdminPaymentsControllerDecideOfflineMutationVariables = {
+  offlineContributionId: string;
+  data: OfflineDecisionDto;
+};
+
+export const useAdminPaymentsControllerDecideOffline = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof adminPaymentsControllerDecideOffline>>,
+      TError,
+      AdminPaymentsControllerDecideOfflineMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof adminPaymentsControllerDecideOffline>>,
+  TError,
+  AdminPaymentsControllerDecideOfflineMutationVariables,
+  TContext
+> => {
+  return useMutation(getAdminPaymentsControllerDecideOfflineMutationOptions(options), queryClient);
+};
+
+export const getAdminPaymentsControllerDiscrepanciesUrl = (
+  params?: AdminPaymentsControllerDiscrepanciesParams,
+) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/v1/admin/payments/discrepancies?${stringifiedParams}`
+    : `/v1/admin/payments/discrepancies`;
+};
+
+export const adminPaymentsControllerDiscrepancies = async (
+  params?: AdminPaymentsControllerDiscrepanciesParams,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<DiscrepancyPageDtoOutput> => {
+  return apiFetch<DiscrepancyPageDtoOutput>(getAdminPaymentsControllerDiscrepanciesUrl(params), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getAdminPaymentsControllerDiscrepanciesQueryKey = (
+  params?: AdminPaymentsControllerDiscrepanciesParams,
+) => {
+  return [`/v1/admin/payments/discrepancies`, ...(params ? [params] : [])] as const;
+};
+
+export const getAdminPaymentsControllerDiscrepanciesQueryOptions = <
+  TData = Awaited<ReturnType<typeof adminPaymentsControllerDiscrepancies>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: AdminPaymentsControllerDiscrepanciesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof adminPaymentsControllerDiscrepancies>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getAdminPaymentsControllerDiscrepanciesQueryKey(params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof adminPaymentsControllerDiscrepancies>>
+  > = ({ signal }) => adminPaymentsControllerDiscrepancies(params, { signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof adminPaymentsControllerDiscrepancies>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type AdminPaymentsControllerDiscrepanciesQueryResult = NonNullable<
+  Awaited<ReturnType<typeof adminPaymentsControllerDiscrepancies>>
+>;
+export type AdminPaymentsControllerDiscrepanciesQueryError = ErrorType<ProblemDetails>;
+
+export function useAdminPaymentsControllerDiscrepancies<
+  TData = Awaited<ReturnType<typeof adminPaymentsControllerDiscrepancies>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params: undefined | AdminPaymentsControllerDiscrepanciesParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof adminPaymentsControllerDiscrepancies>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof adminPaymentsControllerDiscrepancies>>,
+          TError,
+          Awaited<ReturnType<typeof adminPaymentsControllerDiscrepancies>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useAdminPaymentsControllerDiscrepancies<
+  TData = Awaited<ReturnType<typeof adminPaymentsControllerDiscrepancies>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: AdminPaymentsControllerDiscrepanciesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof adminPaymentsControllerDiscrepancies>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof adminPaymentsControllerDiscrepancies>>,
+          TError,
+          Awaited<ReturnType<typeof adminPaymentsControllerDiscrepancies>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useAdminPaymentsControllerDiscrepancies<
+  TData = Awaited<ReturnType<typeof adminPaymentsControllerDiscrepancies>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: AdminPaymentsControllerDiscrepanciesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof adminPaymentsControllerDiscrepancies>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useAdminPaymentsControllerDiscrepancies<
+  TData = Awaited<ReturnType<typeof adminPaymentsControllerDiscrepancies>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: AdminPaymentsControllerDiscrepanciesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof adminPaymentsControllerDiscrepancies>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getAdminPaymentsControllerDiscrepanciesQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getAdminPaymentsControllerResolveUrl = (discrepancyId: string) => {
+  return `/v1/admin/payments/discrepancies/${discrepancyId}/resolve`;
+};
+
+export const adminPaymentsControllerResolve = async (
+  discrepancyId: string,
+  resolveDiscrepancyDto: ResolveDiscrepancyDto,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<DiscrepancyDtoOutput> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit['headers']>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(
+          h as Iterable<Iterable<string>>,
+          (entry) => Array.from(entry) as [string, string],
+        ),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+  return apiFetch<DiscrepancyDtoOutput>(getAdminPaymentsControllerResolveUrl(discrepancyId), {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(resolveDiscrepancyDto),
+  });
+};
+
+export const getAdminPaymentsControllerResolveMutationKey = () =>
+  ['adminPaymentsControllerResolve'] as const;
+
+export const getAdminPaymentsControllerResolveMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof adminPaymentsControllerResolve>>,
+    TError,
+    AdminPaymentsControllerResolveMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof adminPaymentsControllerResolve>>,
+  TError,
+  AdminPaymentsControllerResolveMutationVariables,
+  TContext
+> => {
+  const mutationKey = getAdminPaymentsControllerResolveMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof adminPaymentsControllerResolve>>,
+    AdminPaymentsControllerResolveMutationVariables
+  > = (props) => {
+    const { discrepancyId, data } = props ?? {};
+
+    return adminPaymentsControllerResolve(discrepancyId, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type AdminPaymentsControllerResolveMutationResult = NonNullable<
+  Awaited<ReturnType<typeof adminPaymentsControllerResolve>>
+>;
+export type AdminPaymentsControllerResolveMutationBody = ResolveDiscrepancyDto;
+export type AdminPaymentsControllerResolveMutationError = ErrorType<ProblemDetails>;
+export type AdminPaymentsControllerResolveMutationVariables = {
+  discrepancyId: string;
+  data: ResolveDiscrepancyDto;
+};
+
+export const useAdminPaymentsControllerResolve = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof adminPaymentsControllerResolve>>,
+      TError,
+      AdminPaymentsControllerResolveMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof adminPaymentsControllerResolve>>,
+  TError,
+  AdminPaymentsControllerResolveMutationVariables,
+  TContext
+> => {
+  return useMutation(getAdminPaymentsControllerResolveMutationOptions(options), queryClient);
+};
+
+export const getAdminPaymentsControllerReconcileUrl = () => {
+  return `/v1/admin/payments/reconciliation-runs`;
+};
+
+export const adminPaymentsControllerReconcile = async (
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<ReconciliationReportDtoOutput> => {
+  return apiFetch<ReconciliationReportDtoOutput>(getAdminPaymentsControllerReconcileUrl(), {
+    ...options,
+    method: 'POST',
+  });
+};
+
+export const getAdminPaymentsControllerReconcileMutationKey = () =>
+  ['adminPaymentsControllerReconcile'] as const;
+
+export const getAdminPaymentsControllerReconcileMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof adminPaymentsControllerReconcile>>,
+    TError,
+    void,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof adminPaymentsControllerReconcile>>,
+  TError,
+  void,
+  TContext
+> => {
+  const mutationKey = getAdminPaymentsControllerReconcileMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof adminPaymentsControllerReconcile>>,
+    void
+  > = () => {
+    return adminPaymentsControllerReconcile(requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type AdminPaymentsControllerReconcileMutationResult = NonNullable<
+  Awaited<ReturnType<typeof adminPaymentsControllerReconcile>>
+>;
+
+export type AdminPaymentsControllerReconcileMutationError = ErrorType<ProblemDetails>;
+
+export const useAdminPaymentsControllerReconcile = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof adminPaymentsControllerReconcile>>,
+      TError,
+      void,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof adminPaymentsControllerReconcile>>,
+  TError,
+  void,
+  TContext
+> => {
+  return useMutation(getAdminPaymentsControllerReconcileMutationOptions(options), queryClient);
+};
+
+export const getEngagementControllerMineUrl = () => {
+  return `/v1/me/impact-dashboard`;
+};
+
+export const engagementControllerMine = async (
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<DashboardDtoOutput> => {
+  return apiFetch<DashboardDtoOutput>(getEngagementControllerMineUrl(), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getEngagementControllerMineQueryKey = () => {
+  return [`/v1/me/impact-dashboard`] as const;
+};
+
+export const getEngagementControllerMineQueryOptions = <
+  TData = Awaited<ReturnType<typeof engagementControllerMine>>,
+  TError = ErrorType<ProblemDetails>,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<Awaited<ReturnType<typeof engagementControllerMine>>, TError, TData>
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getEngagementControllerMineQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof engagementControllerMine>>> = ({
+    signal,
+  }) => engagementControllerMine({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof engagementControllerMine>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type EngagementControllerMineQueryResult = NonNullable<
+  Awaited<ReturnType<typeof engagementControllerMine>>
+>;
+export type EngagementControllerMineQueryError = ErrorType<ProblemDetails>;
+
+export function useEngagementControllerMine<
+  TData = Awaited<ReturnType<typeof engagementControllerMine>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof engagementControllerMine>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof engagementControllerMine>>,
+          TError,
+          Awaited<ReturnType<typeof engagementControllerMine>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useEngagementControllerMine<
+  TData = Awaited<ReturnType<typeof engagementControllerMine>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof engagementControllerMine>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof engagementControllerMine>>,
+          TError,
+          Awaited<ReturnType<typeof engagementControllerMine>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useEngagementControllerMine<
+  TData = Awaited<ReturnType<typeof engagementControllerMine>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof engagementControllerMine>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useEngagementControllerMine<
+  TData = Awaited<ReturnType<typeof engagementControllerMine>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof engagementControllerMine>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getEngagementControllerMineQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getEngagementControllerMyHistoryUrl = () => {
+  return `/v1/me/impact-dashboard/history`;
+};
+
+export const engagementControllerMyHistory = async (
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<string> => {
+  return apiFetch<string>(getEngagementControllerMyHistoryUrl(), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getEngagementControllerMyHistoryQueryKey = () => {
+  return [`/v1/me/impact-dashboard/history`] as const;
+};
+
+export const getEngagementControllerMyHistoryQueryOptions = <
+  TData = Awaited<ReturnType<typeof engagementControllerMyHistory>>,
+  TError = ErrorType<ProblemDetails>,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<Awaited<ReturnType<typeof engagementControllerMyHistory>>, TError, TData>
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getEngagementControllerMyHistoryQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof engagementControllerMyHistory>>> = ({
+    signal,
+  }) => engagementControllerMyHistory({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof engagementControllerMyHistory>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type EngagementControllerMyHistoryQueryResult = NonNullable<
+  Awaited<ReturnType<typeof engagementControllerMyHistory>>
+>;
+export type EngagementControllerMyHistoryQueryError = ErrorType<ProblemDetails>;
+
+export function useEngagementControllerMyHistory<
+  TData = Awaited<ReturnType<typeof engagementControllerMyHistory>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof engagementControllerMyHistory>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof engagementControllerMyHistory>>,
+          TError,
+          Awaited<ReturnType<typeof engagementControllerMyHistory>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useEngagementControllerMyHistory<
+  TData = Awaited<ReturnType<typeof engagementControllerMyHistory>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof engagementControllerMyHistory>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof engagementControllerMyHistory>>,
+          TError,
+          Awaited<ReturnType<typeof engagementControllerMyHistory>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useEngagementControllerMyHistory<
+  TData = Awaited<ReturnType<typeof engagementControllerMyHistory>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof engagementControllerMyHistory>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useEngagementControllerMyHistory<
+  TData = Awaited<ReturnType<typeof engagementControllerMyHistory>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof engagementControllerMyHistory>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getEngagementControllerMyHistoryQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getEngagementControllerOrganizationUrl = (organizationId: string) => {
+  return `/v1/organizations/${organizationId}/impact-dashboard`;
+};
+
+export const engagementControllerOrganization = async (
+  organizationId: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<DashboardDtoOutput> => {
+  return apiFetch<DashboardDtoOutput>(getEngagementControllerOrganizationUrl(organizationId), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getEngagementControllerOrganizationQueryKey = (organizationId: string) => {
+  return [`/v1/organizations/${organizationId}/impact-dashboard`] as const;
+};
+
+export const getEngagementControllerOrganizationQueryOptions = <
+  TData = Awaited<ReturnType<typeof engagementControllerOrganization>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  organizationId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof engagementControllerOrganization>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getEngagementControllerOrganizationQueryKey(organizationId);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof engagementControllerOrganization>>> = ({
+    signal,
+  }) => engagementControllerOrganization(organizationId, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: organizationId !== null && organizationId !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof engagementControllerOrganization>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type EngagementControllerOrganizationQueryResult = NonNullable<
+  Awaited<ReturnType<typeof engagementControllerOrganization>>
+>;
+export type EngagementControllerOrganizationQueryError = ErrorType<ProblemDetails>;
+
+export function useEngagementControllerOrganization<
+  TData = Awaited<ReturnType<typeof engagementControllerOrganization>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  organizationId: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof engagementControllerOrganization>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof engagementControllerOrganization>>,
+          TError,
+          Awaited<ReturnType<typeof engagementControllerOrganization>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useEngagementControllerOrganization<
+  TData = Awaited<ReturnType<typeof engagementControllerOrganization>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  organizationId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof engagementControllerOrganization>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof engagementControllerOrganization>>,
+          TError,
+          Awaited<ReturnType<typeof engagementControllerOrganization>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useEngagementControllerOrganization<
+  TData = Awaited<ReturnType<typeof engagementControllerOrganization>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  organizationId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof engagementControllerOrganization>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useEngagementControllerOrganization<
+  TData = Awaited<ReturnType<typeof engagementControllerOrganization>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  organizationId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof engagementControllerOrganization>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getEngagementControllerOrganizationQueryOptions(organizationId, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getEngagementControllerOrganizationHistoryUrl = (organizationId: string) => {
+  return `/v1/organizations/${organizationId}/impact-dashboard/history`;
+};
+
+export const engagementControllerOrganizationHistory = async (
+  organizationId: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<string> => {
+  return apiFetch<string>(getEngagementControllerOrganizationHistoryUrl(organizationId), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getEngagementControllerOrganizationHistoryQueryKey = (organizationId: string) => {
+  return [`/v1/organizations/${organizationId}/impact-dashboard/history`] as const;
+};
+
+export const getEngagementControllerOrganizationHistoryQueryOptions = <
+  TData = Awaited<ReturnType<typeof engagementControllerOrganizationHistory>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  organizationId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof engagementControllerOrganizationHistory>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getEngagementControllerOrganizationHistoryQueryKey(organizationId);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof engagementControllerOrganizationHistory>>
+  > = ({ signal }) =>
+    engagementControllerOrganizationHistory(organizationId, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: organizationId !== null && organizationId !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof engagementControllerOrganizationHistory>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type EngagementControllerOrganizationHistoryQueryResult = NonNullable<
+  Awaited<ReturnType<typeof engagementControllerOrganizationHistory>>
+>;
+export type EngagementControllerOrganizationHistoryQueryError = ErrorType<ProblemDetails>;
+
+export function useEngagementControllerOrganizationHistory<
+  TData = Awaited<ReturnType<typeof engagementControllerOrganizationHistory>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  organizationId: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof engagementControllerOrganizationHistory>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof engagementControllerOrganizationHistory>>,
+          TError,
+          Awaited<ReturnType<typeof engagementControllerOrganizationHistory>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useEngagementControllerOrganizationHistory<
+  TData = Awaited<ReturnType<typeof engagementControllerOrganizationHistory>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  organizationId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof engagementControllerOrganizationHistory>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof engagementControllerOrganizationHistory>>,
+          TError,
+          Awaited<ReturnType<typeof engagementControllerOrganizationHistory>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useEngagementControllerOrganizationHistory<
+  TData = Awaited<ReturnType<typeof engagementControllerOrganizationHistory>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  organizationId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof engagementControllerOrganizationHistory>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useEngagementControllerOrganizationHistory<
+  TData = Awaited<ReturnType<typeof engagementControllerOrganizationHistory>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  organizationId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof engagementControllerOrganizationHistory>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getEngagementControllerOrganizationHistoryQueryOptions(
+    organizationId,
+    options,
+  );
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getEngagementControllerDeclareUrl = () => {
+  return `/v1/me/time-entries`;
+};
+
+export const engagementControllerDeclare = async (
+  declareTimeEntryDto: DeclareTimeEntryDto,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<TimeEntryDtoOutput> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit['headers']>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(
+          h as Iterable<Iterable<string>>,
+          (entry) => Array.from(entry) as [string, string],
+        ),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+  return apiFetch<TimeEntryDtoOutput>(getEngagementControllerDeclareUrl(), {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(declareTimeEntryDto),
+  });
+};
+
+export const getEngagementControllerDeclareMutationKey = () =>
+  ['engagementControllerDeclare'] as const;
+
+export const getEngagementControllerDeclareMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof engagementControllerDeclare>>,
+    TError,
+    EngagementControllerDeclareMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof engagementControllerDeclare>>,
+  TError,
+  EngagementControllerDeclareMutationVariables,
+  TContext
+> => {
+  const mutationKey = getEngagementControllerDeclareMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof engagementControllerDeclare>>,
+    EngagementControllerDeclareMutationVariables
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return engagementControllerDeclare(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type EngagementControllerDeclareMutationResult = NonNullable<
+  Awaited<ReturnType<typeof engagementControllerDeclare>>
+>;
+export type EngagementControllerDeclareMutationBody = DeclareTimeEntryDto;
+export type EngagementControllerDeclareMutationError = ErrorType<ProblemDetails>;
+export type EngagementControllerDeclareMutationVariables = { data: DeclareTimeEntryDto };
+
+export const useEngagementControllerDeclare = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof engagementControllerDeclare>>,
+      TError,
+      EngagementControllerDeclareMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof engagementControllerDeclare>>,
+  TError,
+  EngagementControllerDeclareMutationVariables,
+  TContext
+> => {
+  return useMutation(getEngagementControllerDeclareMutationOptions(options), queryClient);
+};
+
+export const getEngagementControllerDeclaredUrl = (params?: EngagementControllerDeclaredParams) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/v1/me/time-entries?${stringifiedParams}`
+    : `/v1/me/time-entries`;
+};
+
+export const engagementControllerDeclared = async (
+  params?: EngagementControllerDeclaredParams,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<TimeEntryPageDtoOutput> => {
+  return apiFetch<TimeEntryPageDtoOutput>(getEngagementControllerDeclaredUrl(params), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getEngagementControllerDeclaredQueryKey = (
+  params?: EngagementControllerDeclaredParams,
+) => {
+  return [`/v1/me/time-entries`, ...(params ? [params] : [])] as const;
+};
+
+export const getEngagementControllerDeclaredQueryOptions = <
+  TData = Awaited<ReturnType<typeof engagementControllerDeclared>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: EngagementControllerDeclaredParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof engagementControllerDeclared>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getEngagementControllerDeclaredQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof engagementControllerDeclared>>> = ({
+    signal,
+  }) => engagementControllerDeclared(params, { signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof engagementControllerDeclared>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type EngagementControllerDeclaredQueryResult = NonNullable<
+  Awaited<ReturnType<typeof engagementControllerDeclared>>
+>;
+export type EngagementControllerDeclaredQueryError = ErrorType<ProblemDetails>;
+
+export function useEngagementControllerDeclared<
+  TData = Awaited<ReturnType<typeof engagementControllerDeclared>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params: undefined | EngagementControllerDeclaredParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof engagementControllerDeclared>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof engagementControllerDeclared>>,
+          TError,
+          Awaited<ReturnType<typeof engagementControllerDeclared>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useEngagementControllerDeclared<
+  TData = Awaited<ReturnType<typeof engagementControllerDeclared>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: EngagementControllerDeclaredParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof engagementControllerDeclared>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof engagementControllerDeclared>>,
+          TError,
+          Awaited<ReturnType<typeof engagementControllerDeclared>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useEngagementControllerDeclared<
+  TData = Awaited<ReturnType<typeof engagementControllerDeclared>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: EngagementControllerDeclaredParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof engagementControllerDeclared>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useEngagementControllerDeclared<
+  TData = Awaited<ReturnType<typeof engagementControllerDeclared>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: EngagementControllerDeclaredParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof engagementControllerDeclared>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getEngagementControllerDeclaredQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getEngagementControllerReceivedUrl = (params?: EngagementControllerReceivedParams) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/v1/me/time-entries/received?${stringifiedParams}`
+    : `/v1/me/time-entries/received`;
+};
+
+export const engagementControllerReceived = async (
+  params?: EngagementControllerReceivedParams,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<TimeEntryPageDtoOutput> => {
+  return apiFetch<TimeEntryPageDtoOutput>(getEngagementControllerReceivedUrl(params), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getEngagementControllerReceivedQueryKey = (
+  params?: EngagementControllerReceivedParams,
+) => {
+  return [`/v1/me/time-entries/received`, ...(params ? [params] : [])] as const;
+};
+
+export const getEngagementControllerReceivedQueryOptions = <
+  TData = Awaited<ReturnType<typeof engagementControllerReceived>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: EngagementControllerReceivedParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof engagementControllerReceived>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getEngagementControllerReceivedQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof engagementControllerReceived>>> = ({
+    signal,
+  }) => engagementControllerReceived(params, { signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof engagementControllerReceived>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type EngagementControllerReceivedQueryResult = NonNullable<
+  Awaited<ReturnType<typeof engagementControllerReceived>>
+>;
+export type EngagementControllerReceivedQueryError = ErrorType<ProblemDetails>;
+
+export function useEngagementControllerReceived<
+  TData = Awaited<ReturnType<typeof engagementControllerReceived>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params: undefined | EngagementControllerReceivedParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof engagementControllerReceived>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof engagementControllerReceived>>,
+          TError,
+          Awaited<ReturnType<typeof engagementControllerReceived>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useEngagementControllerReceived<
+  TData = Awaited<ReturnType<typeof engagementControllerReceived>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: EngagementControllerReceivedParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof engagementControllerReceived>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof engagementControllerReceived>>,
+          TError,
+          Awaited<ReturnType<typeof engagementControllerReceived>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useEngagementControllerReceived<
+  TData = Awaited<ReturnType<typeof engagementControllerReceived>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: EngagementControllerReceivedParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof engagementControllerReceived>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useEngagementControllerReceived<
+  TData = Awaited<ReturnType<typeof engagementControllerReceived>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: EngagementControllerReceivedParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof engagementControllerReceived>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getEngagementControllerReceivedQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getEngagementControllerConfirmUrl = (timeEntryId: string) => {
+  return `/v1/time-entries/${timeEntryId}/confirm`;
+};
+
+export const engagementControllerConfirm = async (
+  timeEntryId: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<TimeEntryDtoOutput> => {
+  return apiFetch<TimeEntryDtoOutput>(getEngagementControllerConfirmUrl(timeEntryId), {
+    ...options,
+    method: 'POST',
+  });
+};
+
+export const getEngagementControllerConfirmMutationKey = () =>
+  ['engagementControllerConfirm'] as const;
+
+export const getEngagementControllerConfirmMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof engagementControllerConfirm>>,
+    TError,
+    EngagementControllerConfirmMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof engagementControllerConfirm>>,
+  TError,
+  EngagementControllerConfirmMutationVariables,
+  TContext
+> => {
+  const mutationKey = getEngagementControllerConfirmMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof engagementControllerConfirm>>,
+    EngagementControllerConfirmMutationVariables
+  > = (props) => {
+    const { timeEntryId } = props ?? {};
+
+    return engagementControllerConfirm(timeEntryId, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type EngagementControllerConfirmMutationResult = NonNullable<
+  Awaited<ReturnType<typeof engagementControllerConfirm>>
+>;
+
+export type EngagementControllerConfirmMutationError = ErrorType<ProblemDetails>;
+export type EngagementControllerConfirmMutationVariables = { timeEntryId: string };
+
+export const useEngagementControllerConfirm = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof engagementControllerConfirm>>,
+      TError,
+      EngagementControllerConfirmMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof engagementControllerConfirm>>,
+  TError,
+  EngagementControllerConfirmMutationVariables,
+  TContext
+> => {
+  return useMutation(getEngagementControllerConfirmMutationOptions(options), queryClient);
+};
+
+export const getEngagementControllerDisputeUrl = (timeEntryId: string) => {
+  return `/v1/time-entries/${timeEntryId}/dispute`;
+};
+
+export const engagementControllerDispute = async (
+  timeEntryId: string,
+  disputeTimeEntryDto: DisputeTimeEntryDto,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<TimeEntryDtoOutput> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit['headers']>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(
+          h as Iterable<Iterable<string>>,
+          (entry) => Array.from(entry) as [string, string],
+        ),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+  return apiFetch<TimeEntryDtoOutput>(getEngagementControllerDisputeUrl(timeEntryId), {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(disputeTimeEntryDto),
+  });
+};
+
+export const getEngagementControllerDisputeMutationKey = () =>
+  ['engagementControllerDispute'] as const;
+
+export const getEngagementControllerDisputeMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof engagementControllerDispute>>,
+    TError,
+    EngagementControllerDisputeMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof engagementControllerDispute>>,
+  TError,
+  EngagementControllerDisputeMutationVariables,
+  TContext
+> => {
+  const mutationKey = getEngagementControllerDisputeMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof engagementControllerDispute>>,
+    EngagementControllerDisputeMutationVariables
+  > = (props) => {
+    const { timeEntryId, data } = props ?? {};
+
+    return engagementControllerDispute(timeEntryId, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type EngagementControllerDisputeMutationResult = NonNullable<
+  Awaited<ReturnType<typeof engagementControllerDispute>>
+>;
+export type EngagementControllerDisputeMutationBody = DisputeTimeEntryDto;
+export type EngagementControllerDisputeMutationError = ErrorType<ProblemDetails>;
+export type EngagementControllerDisputeMutationVariables = {
+  timeEntryId: string;
+  data: DisputeTimeEntryDto;
+};
+
+export const useEngagementControllerDispute = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof engagementControllerDispute>>,
+      TError,
+      EngagementControllerDisputeMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof engagementControllerDispute>>,
+  TError,
+  EngagementControllerDisputeMutationVariables,
+  TContext
+> => {
+  return useMutation(getEngagementControllerDisputeMutationOptions(options), queryClient);
+};
