@@ -32,6 +32,7 @@ import {
   NetworkRepository,
   type PageRequest,
   type ProfileViewRecord,
+  type ProfileViewsOfDay,
 } from '../application/ports';
 
 type FollowRow = typeof networkFollows.$inferSelect;
@@ -188,6 +189,27 @@ export class DrizzleNetworkRepository extends NetworkRepository {
         and(eq(networkFollows.followerId, followerId), eq(networkFollows.targetType, targetType)),
       );
     return rows.map((row) => row.targetId);
+  }
+
+  async followerIdsAfter(
+    targetType: string,
+    targetId: string,
+    afterFollowerId: string | null,
+    limit: number,
+  ): Promise<string[]> {
+    const rows = await this.db
+      .select({ followerId: networkFollows.followerId })
+      .from(networkFollows)
+      .where(
+        and(
+          eq(networkFollows.targetType, targetType),
+          eq(networkFollows.targetId, targetId),
+          afterFollowerId ? gt(networkFollows.followerId, afterFollowerId) : undefined,
+        ),
+      )
+      .orderBy(networkFollows.followerId)
+      .limit(limit);
+    return rows.map((row) => row.followerId);
   }
 
   async countFollowers(targetType: string, targetId: string): Promise<number> {
@@ -349,6 +371,20 @@ export class DrizzleNetworkRepository extends NetworkRepository {
     return updated.length > 0;
   }
 
+  async countPendingReceived(userId: string, openAt: Date): Promise<number> {
+    const [row] = await this.db
+      .select({ value: count() })
+      .from(networkConnectionRequests)
+      .where(
+        and(
+          eq(networkConnectionRequests.addresseeId, userId),
+          eq(networkConnectionRequests.status, 'pending'),
+          gt(networkConnectionRequests.expiresAt, openAt),
+        ),
+      );
+    return row?.value ?? 0;
+  }
+
   async requests(
     userId: string,
     direction: ConnectionRequestDirection,
@@ -500,6 +536,36 @@ export class DrizzleNetworkRepository extends NetworkRepository {
       .onConflictDoNothing()
       .returning({ viewerId: networkProfileViews.viewerId });
     return inserted.length;
+  }
+
+  async profileViewsOfDay(
+    day: string,
+    afterViewedId: string | null,
+    limit: number,
+  ): Promise<ProfileViewsOfDay[]> {
+    const rows = await this.db
+      .select({
+        viewedId: networkProfileViews.viewedId,
+        total: count(),
+        visible: sql<
+          string[]
+        >`coalesce(array_agg(${networkProfileViews.viewerId} order by ${networkProfileViews.viewedAt} desc) filter (where not ${networkProfileViews.private}), '{}')`,
+      })
+      .from(networkProfileViews)
+      .where(
+        and(
+          sql`${networkProfileViews.day} = ${day}::date`,
+          afterViewedId ? gt(networkProfileViews.viewedId, afterViewedId) : undefined,
+        ),
+      )
+      .groupBy(networkProfileViews.viewedId)
+      .orderBy(networkProfileViews.viewedId)
+      .limit(limit);
+    return rows.map((row) => ({
+      viewedId: row.viewedId,
+      total: row.total,
+      visibleViewerIds: row.visible,
+    }));
   }
 
   async countProfileViews(

@@ -39,6 +39,14 @@ export interface PageRequest {
   excludedUserIds?: readonly string[];
 }
 
+export interface ProfileViewsOfDay {
+  viewedId: string;
+  /** Every view of the day, private visits included. */
+  total: number;
+  /** Visitors who did not choose a private visit, the latest first. */
+  visibleViewerIds: string[];
+}
+
 export abstract class NetworkRepository {
   /** Transaction-scoped lock on a key (a pair of members, the requests of a member). */
   abstract lock(key: string): Promise<void>;
@@ -64,6 +72,13 @@ export abstract class NetworkRepository {
     page: PageRequest,
   ): Promise<FollowRecord[]>;
   abstract followedIds(followerId: string, targetType: string): Promise<string[]>;
+  /** Followers of a target by ascending id, for batched fan-outs. */
+  abstract followerIdsAfter(
+    targetType: string,
+    targetId: string,
+    afterFollowerId: string | null,
+    limit: number,
+  ): Promise<string[]>;
   abstract countFollowers(targetType: string, targetId: string): Promise<number>;
 
   abstract insertConnection(a: string, b: string, at: Date): Promise<void>;
@@ -92,6 +107,7 @@ export abstract class NetworkRepository {
   ): Promise<ConnectionRequestRecord[]>;
   /** Marks expired the pending requests past their expiry; returns how many. */
   abstract expirePending(now: Date, limit: number): Promise<number>;
+  abstract countPendingReceived(userId: string, openAt: Date): Promise<number>;
 
   /** False when the block already existed. */
   abstract insertBlock(block: BlockRecord): Promise<boolean>;
@@ -123,6 +139,12 @@ export abstract class NetworkRepository {
     },
   ): Promise<ProfileViewRecord[]>;
   abstract purgeProfileViewsBefore(day: string): Promise<number>;
+  /** Views of one day grouped by viewed member, by ascending viewed id. */
+  abstract profileViewsOfDay(
+    day: string,
+    afterViewedId: string | null,
+    limit: number,
+  ): Promise<ProfileViewsOfDay[]>;
 }
 
 export interface BufferedProfileView {
