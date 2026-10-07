@@ -200,6 +200,21 @@ export class ProjectsFacade implements OnModuleInit {
   }
 
   /** Active role of a member in the team of a project, null otherwise. */
+  /** Active members of the team holding one of the roles (notifications of a project). */
+  async teamMemberIds(
+    projectId: string,
+    roles: readonly ProjectTeamRole[] = ['owner', 'editor'],
+  ): Promise<string[]> {
+    return (await this.projects.teamMembers(projectId))
+      .filter((member) => member.status === 'active' && roles.includes(member.role))
+      .map((member) => member.userId);
+  }
+
+  /** Pending invitations of a member into the team of a live project (unified counters). */
+  async pendingInvitations(userId: string): Promise<number> {
+    return (await this.projects.invitationsOf(userId)).length;
+  }
+
   teamRoleOf(projectId: string, userId: string): Promise<ProjectTeamRole | null> {
     return this.reads.teamRoleOf(projectId, userId);
   }

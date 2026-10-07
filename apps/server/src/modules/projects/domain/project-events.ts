@@ -129,6 +129,31 @@ export class RewardSoldOut extends ProjectEvent<{ rewardId: string }> {
   }
 }
 
+/** A member was invited into the team (A4: notified by the notifications module). */
+export class TeamMemberInvited extends ProjectEvent<{
+  userId: string;
+  role: ProjectTeamRole;
+  invitedBy: string;
+}> {
+  static readonly TYPE = 'projects.team.member-invited.v1';
+  readonly type = TeamMemberInvited.TYPE;
+  constructor(props: DomainEventProps<TeamMemberInvited['payload']>) {
+    super(props);
+  }
+}
+
+/** The invited member declined. */
+export class TeamInvitationDeclined extends ProjectEvent<{
+  userId: string;
+  invitedBy: string | null;
+}> {
+  static readonly TYPE = 'projects.team.invitation-declined.v1';
+  readonly type = TeamInvitationDeclined.TYPE;
+  constructor(props: DomainEventProps<TeamInvitationDeclined['payload']>) {
+    super(props);
+  }
+}
+
 /** An invited member accepted, with their public display consent. */
 export class TeamMemberAdded extends ProjectEvent<{ userId: string; role: ProjectTeamRole }> {
   static readonly TYPE = 'projects.team.member-added.v1';

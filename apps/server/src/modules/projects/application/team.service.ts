@@ -4,7 +4,12 @@ import { TransactionManager } from '../../../platform/database';
 import { Clock, DomainError } from '../../../platform/kernel';
 import { ProfilesFacade } from '../../profiles';
 import type { TeamMemberRecord } from '../domain/project';
-import { TeamMemberAdded, TeamMemberRemoved } from '../domain/project-events';
+import {
+  TeamInvitationDeclined,
+  TeamMemberAdded,
+  TeamMemberInvited,
+  TeamMemberRemoved,
+} from '../domain/project-events';
 import { assertCanGo, assertRoleChange } from '../domain/team';
 import { ProjectEventsRecorder } from './project-events.recorder';
 import { ProjectRepository } from './ports';
@@ -51,6 +56,11 @@ export class TeamService {
       if (!inserted) {
         throw new DomainError('PROJECTS_TEAM_MEMBER_EXISTS', 'Already in the team or invited');
       }
+      await this.events.record(TeamMemberInvited, projectId, {
+        userId,
+        role: request.role,
+        invitedBy: actorId,
+      });
     });
   }
 
@@ -70,8 +80,12 @@ export class TeamService {
 
   async decline(projectId: string, userId: string): Promise<void> {
     await this.inTeamLock(projectId, async () => {
-      await this.invitation(projectId, userId);
+      const invitation = await this.invitation(projectId, userId);
       await this.projects.deleteTeamMember(projectId, userId);
+      await this.events.record(TeamInvitationDeclined, projectId, {
+        userId,
+        invitedBy: invitation.invitedBy,
+      });
     });
   }
 
