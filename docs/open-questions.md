@@ -83,6 +83,11 @@ Informations nécessaires au développement et absentes du cahier des charges (d
 63. Les grilles de frais des prestataires hors France (Stripe) et hors Nigeria (Flutterwave), pour l'estimation du devis.
 64. La migration éventuelle vers l'API v4 de Flutterwave (authentification OAuth, signature HMAC des webhooks).
 
+### Engagement
+
+65. Le journal du temps partagé : durée maximale d'une déclaration (provisoirement 24 heures), délai pour déclarer, sort d'une déclaration sans réponse du bénéficiaire, et prise en compte des heures dans le tableau de bord d'une organisation (aujourd'hui aucune : les heures sont personnelles).
+66. Le tableau de bord d'impact ne compte que les contributions encaissées (§9.4) : les contributions hors plateforme validées doivent-elles y figurer ?
+
 ## Produit
 
 15. La décision sur les stories (refus, ou « actualités éphémères de projet » en V2 selon le §15).
