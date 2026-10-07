@@ -35,7 +35,10 @@ export interface MediaAssetRecord {
   usage: MediaUsage;
   source: MediaSource;
   status: MediaStatus;
+  /** Bucket holding the files. */
   visibility: MediaVisibility;
+  /** Bucket the files must move to, null when no move is pending (ADR 0026). */
+  targetVisibility: MediaVisibility | null;
   declaredContentType: MediaContentType;
   declaredSize: number;
   contentType: MediaContentType | null;
@@ -73,6 +76,23 @@ export const storageKeys = {
     `media/${id}/${name}-${digest.slice(0, 16)}.${format}`,
   file: (id: string, digest: string) => `media/${id}/file-${digest.slice(0, 16)}.pdf`,
 };
+
+/** Type of a stored object, from the extension its key was given. */
+export function contentTypeOfKey(key: string): string {
+  if (key.endsWith('.webp')) return 'image/webp';
+  if (key.endsWith('.avif')) return 'image/avif';
+  if (key.endsWith('.pdf')) return PDF_CONTENT_TYPE;
+  return 'application/octet-stream';
+}
+
+/** True when the files of a ready asset must move to another bucket. */
+export function hasPendingMove(asset: MediaAssetRecord): boolean {
+  return (
+    asset.status === 'ready' &&
+    asset.targetVisibility !== null &&
+    asset.targetVisibility !== asset.visibility
+  );
+}
 
 /** Every stored object of a processed asset (quarantine excluded). */
 export function fileKeys(files: MediaFiles): string[] {

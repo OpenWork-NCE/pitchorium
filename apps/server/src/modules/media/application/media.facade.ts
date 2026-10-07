@@ -1,5 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import type { MediaModerationStatus, MediaUsage, MediaVariant } from '@pitchorium/contracts';
+import type {
+  MediaModerationStatus,
+  MediaUsage,
+  MediaVariant,
+  MediaVisibility,
+} from '@pitchorium/contracts';
 import { TransactionManager } from '../../../platform/database';
 import { Clock, DomainError, IdGenerator } from '../../../platform/kernel';
 import { ObjectStorage } from '../../../platform/storage';
@@ -10,11 +15,11 @@ import {
   type MediaResourceRef,
   storageKeys,
 } from '../domain/media-asset';
-import { MediaRequested } from '../domain/media-events';
-import { USAGE_RULES } from '../domain/usages';
+import { MediaRequested, MediaVisibilityRequested } from '../domain/media-events';
+import { initialVisibility, USAGE_RULES, visibilityFor } from '../domain/usages';
 import { MediaEventsRecorder } from './media-events.recorder';
 import { MediaReadRegistry } from './media-read.registry';
-import { variantsOf } from './media-views';
+import { signedVariantsOf, variantsOf } from './media-views';
 import { type MediaReadAuthorizer, MediaRepository } from './ports';
 
 export interface AttachRequest {
@@ -23,15 +28,26 @@ export interface AttachRequest {
   ownerId: string;
   usage: MediaUsage;
   resource: MediaResourceRef;
+  /**
+   * Visibility of the resource, for a usage that follows it (ADR 0026): its files are public
+   * only for a public resource. Private by default.
+   */
+  resourceVisibility?: MediaVisibility;
 }
 
-/** A public, ready image as other modules display it. */
+/**
+ * A ready image as other modules display it: public URLs for a public file, short-lived
+ * presigned URLs for a private one (the caller shows it only to viewers it authorized).
+ */
 export interface MediaImage {
   mediaId: string;
   /** Largest WebP variant. */
   url: string;
   variants: Record<string, MediaVariant>;
 }
+
+/** Lifetime of the presigned URLs of private images; they are stable for half of it. */
+export const PRIVATE_IMAGE_URL_TTL_SECONDS = 600;
 
 export interface MediaSummary {
   id: string;
@@ -83,7 +99,41 @@ export class MediaFacade {
         ['ready'],
       );
       if (!updated) throw new DomainError('MEDIA_NOT_READY', 'Media is not ready');
+      await this.requestVisibility(asset, request.resourceVisibility ?? 'private');
     });
+  }
+
+  /**
+   * The resource changed visibility: the files of its usages that follow it move to the
+   * matching bucket, asynchronously (worker). Joins the caller's transaction.
+   */
+  setResourceVisibility(resource: MediaResourceRef, visibility: MediaVisibility): Promise<void> {
+    return this.transactions.run(async () => {
+      for (const asset of await this.assets.attachedTo(resource)) {
+        await this.requestVisibility(asset, visibility);
+      }
+    });
+  }
+
+  /** Records the bucket the files belong in and asks the worker to move them when needed. */
+  private async requestVisibility(
+    asset: MediaAssetRecord,
+    resource: MediaVisibility,
+  ): Promise<void> {
+    const rule = USAGE_RULES[asset.usage];
+    if (rule.visibility !== 'resource' || asset.status !== 'ready') return;
+    const target = visibilityFor(rule, resource);
+    const current = asset.targetVisibility ?? asset.visibility;
+    if (target === current) return;
+    const now = this.clock.now();
+    await this.assets.update(
+      asset.id,
+      { targetVisibility: target === asset.visibility ? null : target },
+      now,
+    );
+    if (target !== asset.visibility) {
+      await this.events.record(MediaVisibilityRequested, asset.id, { visibility: target });
+    }
   }
 
   /** Detaches an asset; the orphan cleanup deletes it after MEDIA_ORPHAN_TTL_HOURS. */
@@ -110,14 +160,27 @@ export class MediaFacade {
       : null;
   }
 
-  /** Public images that can be displayed, by asset id; other ids are absent from the map. */
+  /**
+   * Images that can be displayed, by asset id (variants of an image, thumbnail of a PDF);
+   * other ids are absent from the map. A private file gets presigned URLs, signed at the start
+   * of a window of half their lifetime so that browsers can cache them: callers only ask for
+   * the images of resources the viewer may see.
+   */
   async images(mediaIds: readonly (string | null)[]): Promise<Map<string, MediaImage>> {
     const ids = [...new Set(mediaIds.filter((id): id is string => id !== null))];
     if (ids.length === 0) return new Map();
+    const window = (PRIVATE_IMAGE_URL_TTL_SECONDS / 2) * 1000;
+    const signedAt = new Date(Math.floor(this.clock.now().getTime() / window) * window);
     const images = new Map<string, MediaImage>();
     for (const asset of await this.assets.findByIds(ids)) {
-      if (asset.visibility !== 'public' || !isServable(asset)) continue;
-      const variants = variantsOf(asset, this.storage);
+      if (!isServable(asset)) continue;
+      const variants =
+        asset.visibility === 'public'
+          ? variantsOf(asset, this.storage)
+          : await signedVariantsOf(asset, this.storage, {
+              signedAt,
+              expiresInSeconds: PRIVATE_IMAGE_URL_TTL_SECONDS,
+            });
       const largest = Object.values(variants).sort((a, b) => b.width - a.width)[0];
       if (largest?.webp) images.set(asset.id, { mediaId: asset.id, url: largest.webp, variants });
     }
@@ -153,7 +216,8 @@ export class MediaFacade {
         usage: request.usage,
         source: 'import',
         status: 'pending',
-        visibility: rule.visibility,
+        visibility: initialVisibility(rule),
+        targetVisibility: null,
         declaredContentType: contentType,
         declaredSize: 0,
         contentType: null,

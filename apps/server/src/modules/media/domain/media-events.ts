@@ -1,4 +1,4 @@
-import type { MediaRejectionReason, MediaUsage } from '@pitchorium/contracts';
+import type { MediaRejectionReason, MediaUsage, MediaVisibility } from '@pitchorium/contracts';
 import { DomainEvent, type DomainEventProps } from '../../../platform/kernel';
 import type { MediaSource } from './media-asset';
 
@@ -69,6 +69,20 @@ export class MediaDeleted extends DomainEvent<{
   readonly aggregateType = AGGREGATE;
 
   constructor(props: DomainEventProps<MediaDeleted['payload']>) {
+    super(props);
+  }
+}
+
+/**
+ * Internal to the media module: the files must move to the bucket of the new visibility of
+ * their resource; the worker copies them, then deletes the source (ADR 0026).
+ */
+export class MediaVisibilityRequested extends DomainEvent<{ visibility: MediaVisibility }> {
+  static readonly TYPE = 'media.asset.visibility-requested.v1';
+  readonly type = MediaVisibilityRequested.TYPE;
+  readonly aggregateType = AGGREGATE;
+
+  constructor(props: DomainEventProps<MediaVisibilityRequested['payload']>) {
     super(props);
   }
 }

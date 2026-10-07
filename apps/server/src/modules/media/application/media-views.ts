@@ -22,6 +22,40 @@ export function variantsOf(
   );
 }
 
+/** Variants of a private, servable asset with presigned URLs. */
+export async function signedVariantsOf(
+  asset: MediaAssetRecord,
+  storage: ObjectStorage,
+  signature: { signedAt: Date; expiresInSeconds: number },
+): Promise<Record<string, MediaVariant>> {
+  const sign = async (key: string | null) =>
+    key
+      ? (
+          await storage.createDownloadUrl({
+            visibility: asset.visibility,
+            key,
+            signedAt: signature.signedAt,
+            expiresInSeconds: signature.expiresInSeconds,
+          })
+        ).url
+      : null;
+  const entries = await Promise.all(
+    Object.entries(asset.files?.variants ?? {}).map(
+      async ([name, variant]) =>
+        [
+          name,
+          {
+            width: variant.width,
+            height: variant.height,
+            webp: await sign(variant.webpKey),
+            avif: await sign(variant.avifKey),
+          },
+        ] as const,
+    ),
+  );
+  return Object.fromEntries(entries);
+}
+
 /** The owner's view of an asset (status, limits checked, URLs). */
 export function mediaAssetView(asset: MediaAssetRecord, storage: ObjectStorage): MediaAsset {
   const exposed = asset.visibility === 'public' && isServable(asset);

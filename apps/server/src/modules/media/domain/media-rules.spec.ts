@@ -9,8 +9,15 @@ import {
   checkImageDimensions,
   checkPdfPages,
   type MediaAssetRecord,
+  hasPendingMove,
 } from './media-asset';
-import { isImageType, USAGE_RULES } from './usages';
+import {
+  cacheControlFor,
+  initialVisibility,
+  isImageType,
+  USAGE_RULES,
+  visibilityFor,
+} from './usages';
 
 const codeOf = (work: () => unknown) => {
   try {
@@ -28,6 +35,7 @@ const asset = (overrides: Partial<MediaAssetRecord> = {}): MediaAssetRecord => (
   source: 'upload',
   status: 'ready',
   visibility: 'public',
+  targetVisibility: null,
   declaredContentType: 'image/png',
   declaredSize: 1000,
   contentType: 'image/png',
@@ -125,5 +133,36 @@ describe('attachment', () => {
     expect(
       codeOf(() => assertAttachable(asset({ status: 'processing' }), 'user-1', 'avatar')),
     ).toBe('MEDIA_NOT_READY');
+  });
+});
+
+describe('visibility of files (ADR 0026)', () => {
+  it('keeps documents private and lets images follow their resource', () => {
+    for (const usage of MEDIA_USAGES) {
+      const rule = USAGE_RULES[usage];
+      if (rule.pdf) expect(visibilityFor(rule, 'public')).toBe('private');
+    }
+    const postImage = USAGE_RULES.post_image;
+    expect(initialVisibility(postImage)).toBe('private');
+    expect(visibilityFor(postImage, 'public')).toBe('public');
+    expect(visibilityFor(postImage, 'private')).toBe('private');
+    expect(visibilityFor(USAGE_RULES.organization_logo, 'private')).toBe('public');
+  });
+
+  it('caches public files of a resource-following usage for one hour only', () => {
+    expect(cacheControlFor(USAGE_RULES.post_image, 'public')).toBe('public, max-age=3600');
+    expect(cacheControlFor(USAGE_RULES.organization_logo, 'public')).toContain('immutable');
+    expect(cacheControlFor(USAGE_RULES.post_image, 'private')).toBe('private, no-store');
+  });
+
+  it('detects a pending move of a ready asset only', () => {
+    expect(hasPendingMove(asset({ visibility: 'private', targetVisibility: 'public' }))).toBe(true);
+    expect(hasPendingMove(asset({ visibility: 'public', targetVisibility: 'public' }))).toBe(false);
+    expect(hasPendingMove(asset({ targetVisibility: null }))).toBe(false);
+    expect(
+      hasPendingMove(
+        asset({ status: 'deleted', visibility: 'private', targetVisibility: 'public' }),
+      ),
+    ).toBe(false);
   });
 });

@@ -15,6 +15,7 @@ import { query, truncateAllTables } from './support/database';
 import { corruptPdf, jpegWithExif, minimalPdf, png } from './support/files';
 import { putToStorage, requestUpload, uploadFile, waitUntilProcessed } from './support/media';
 import { createMember, type Member } from './support/members';
+import type { MediaAsset } from '@pitchorium/contracts';
 import { createWorkerTestingModule } from './support/worker-testing-module';
 
 const IMMUTABLE = 'public, max-age=31536000, immutable';
@@ -59,19 +60,20 @@ describe('media', () => {
     const id = await uploadFile(member.agent, original, 'post_image', 'image/jpeg');
     const media = await waitUntilProcessed(member.agent, id, deliver);
 
+    // A post image follows its post: private until attached to a public resource.
     expect(media).toMatchObject({
       status: 'ready',
       contentType: 'image/jpeg',
-      visibility: 'public',
+      visibility: 'private',
       width: 800,
       height: 1200,
       rejectionReason: null,
     });
-    const large = media.variants['large'];
+    const large = (await worker.get(MediaFacade).images([id])).get(id)?.variants['large'];
     expect(large).toMatchObject({ width: 800, height: 1200 });
     const webp = await fetch(large?.webp ?? '');
     expect(webp.status).toBe(200);
-    expect(webp.headers.get('cache-control')).toBe(IMMUTABLE);
+    expect(webp.headers.get('cache-control')).toBe('private, no-store');
     const produced = await sharp(Buffer.from(await webp.arrayBuffer())).metadata();
     expect(produced).toMatchObject({ format: 'webp', width: 800, height: 1200 });
     expect(produced.exif).toBeUndefined();
@@ -185,6 +187,78 @@ describe('media', () => {
     expect(refused.body.code).toBe('MEDIA_QUOTA_EXCEEDED');
   });
 
+  it('moves the files of a usage following its resource with the resource visibility', async () => {
+    const facade = worker.get(MediaFacade);
+    const storage = worker.get(ObjectStorage);
+    const image = await uploadFile(member.agent, await png(400, 400), 'post_image', 'image/png');
+    const document = await uploadFile(
+      member.agent,
+      minimalPdf(),
+      'post_document',
+      'application/pdf',
+    );
+    const logo = await uploadFile(
+      member.agent,
+      await png(400, 400),
+      'organization_logo',
+      'image/png',
+    );
+    for (const id of [image, document, logo]) await waitUntilProcessed(member.agent, id, deliver);
+    const post = { type: 'test_post', id: 'post-1' };
+    const status = async (id: string) =>
+      (await member.agent.get(`/v1/media/${id}`).expect(200)).body as MediaAsset;
+    const settle = (id: string, visibility: 'public' | 'private') =>
+      vi.waitFor(
+        async () => {
+          await deliver();
+          expect((await status(id)).visibility).toBe(visibility);
+        },
+        { timeout: 20_000, interval: 200 },
+      );
+
+    await facade.attach({
+      mediaId: image,
+      ownerId: member.userId,
+      usage: 'post_image',
+      resource: post,
+      resourceVisibility: 'public',
+    });
+    await facade.attach({
+      mediaId: document,
+      ownerId: member.userId,
+      usage: 'post_document',
+      resource: post,
+      resourceVisibility: 'public',
+    });
+    await settle(image, 'public');
+    const publicUrl = (await status(image)).variants['large']?.webp ?? '';
+    const served = await fetch(publicUrl);
+    expect(served.status).toBe(200);
+    expect(served.headers.get('cache-control')).toBe('public, max-age=3600');
+    const keys = Object.values(
+      (
+        await query<{ files: { variants: Record<string, { webpKey: string }> } }>(
+          'SELECT files FROM media.assets WHERE id = $1',
+          [image],
+        )
+      )[0]?.files.variants ?? {},
+    ).map((variant) => variant.webpKey);
+    for (const key of keys) expect(await storage.headObject('private', key)).toBeNull();
+    // Documents (PDF) are always private, whatever the resource.
+    expect((await status(document)).visibility).toBe('private');
+
+    await facade.setResourceVisibility(post, 'private');
+    await settle(image, 'private');
+    expect((await fetch(publicUrl)).status).toBe(404);
+    const signed = (await facade.images([image])).get(image)?.url ?? '';
+    expect(signed).toContain('X-Amz-Signature=');
+    expect((await fetch(signed)).status).toBe(200);
+
+    // An always public usage is cached for a year: its files never change under their key.
+    const logoUrl = (await status(logo)).variants['large']?.webp ?? '';
+    expect((await fetch(logoUrl)).headers.get('cache-control')).toBe(IMMUTABLE);
+  });
+
   it('limits the upload requests of each member per hour', async () => {
     // Deleting each pending upload keeps the quota free: only the hourly limit applies.
     for (let index = 0; index < 6; index += 1) {
@@ -233,11 +307,9 @@ describe('media', () => {
     const orphan = await uploadFile(member.agent, await png(400, 400), 'post_image', 'image/png');
     const kept = await uploadFile(member.agent, await png(400, 400), 'post_image', 'image/png');
     const removed = await uploadFile(member.agent, await png(400, 400), 'post_image', 'image/png');
-    const urls: string[] = [];
-    for (const id of [orphan, kept, removed]) {
-      const media = await waitUntilProcessed(member.agent, id, deliver);
-      urls.push(media.variants['large']?.webp ?? '');
-    }
+    for (const id of [orphan, kept, removed]) await waitUntilProcessed(member.agent, id, deliver);
+    const images = await worker.get(MediaFacade).images([orphan, kept, removed]);
+    const urls = [orphan, kept, removed].map((id) => images.get(id)?.url ?? '');
     await worker.get(MediaFacade).attach({
       mediaId: kept,
       ownerId: member.userId,

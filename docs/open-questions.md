@@ -24,7 +24,6 @@ Informations nécessaires au développement et absentes du cahier des charges (d
 
 33. Les limites par usage (types acceptés, taille maximale, dimensions minimales et maximales, nombre de pages, nombre par ressource, visibilité par défaut) : valeurs provisoires dans `apps/server/src/modules/media/domain/usages.ts` et dans le README du module media.
 34. Les quotas par membre (provisoirement 500 fichiers, 1 Gio et 60 demandes de téléversement par heure) et le délai de suppression des fichiers non attachés (provisoirement 24 heures).
-35. La visibilité des documents de publication et de projet (PDF de pitch, one-pager) : privés par défaut, lus par URL présignée ; à rendre publics si le produit le souhaite pour les projets publiés.
 
 ## Organisations
 

@@ -11,6 +11,8 @@ export type MediaAssetPatch = Partial<
   Pick<
     MediaAssetRecord,
     | 'status'
+    | 'visibility'
+    | 'targetVisibility'
     | 'contentType'
     | 'size'
     | 'sha256'
@@ -44,6 +46,8 @@ export abstract class MediaRepository {
     now: Date,
     fromStatuses?: readonly MediaAssetRecord['status'][],
   ): Promise<boolean>;
+  /** Assets attached to a resource, not deleted. */
+  abstract attachedTo(resource: MediaResourceRef): Promise<MediaAssetRecord[]>;
   /** Attached assets of a usage on a resource, other than `exceptId`. */
   abstract countAttached(
     resource: MediaResourceRef,

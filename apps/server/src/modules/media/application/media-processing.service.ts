@@ -16,7 +16,7 @@ import {
   type StoredVariant,
 } from '../domain/media-asset';
 import { MediaReady, MediaRejected } from '../domain/media-events';
-import { PDF_THUMBNAIL, ruleOf, type UsageRule } from '../domain/usages';
+import { cacheControlFor, PDF_THUMBNAIL, ruleOf, type UsageRule } from '../domain/usages';
 import { MediaEventsRecorder } from './media-events.recorder';
 import {
   ContentTypeDetector,
@@ -29,9 +29,6 @@ import {
   type RenderedImage,
   RemoteImageFetcher,
 } from './ports';
-
-/** Public files never change under a key (the key holds a content digest). */
-const IMMUTABLE_CACHE = 'public, max-age=31536000, immutable';
 
 const digest = (content: Buffer) => createHash('sha256').update(content).digest('hex');
 
@@ -224,7 +221,7 @@ export class MediaProcessingService {
   }
 
   private cacheControl(asset: MediaAssetRecord): string {
-    return asset.visibility === 'public' ? IMMUTABLE_CACHE : 'private, no-store';
+    return cacheControlFor(ruleOf(asset.usage), asset.visibility);
   }
 
   /** Writes the result and its event; files of an asset deleted meanwhile are removed. */

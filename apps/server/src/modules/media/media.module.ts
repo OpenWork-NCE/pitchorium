@@ -6,6 +6,7 @@ import { MediaMaintenanceService } from './application/media-maintenance.service
 import { MediaProcessingService } from './application/media-processing.service';
 import { MediaReadRegistry } from './application/media-read.registry';
 import { MediaUploadsService } from './application/media-uploads.service';
+import { MediaVisibilityService } from './application/media-visibility.service';
 import {
   ContentTypeDetector,
   ImageProcessor,
@@ -63,6 +64,7 @@ export class MediaModule {
         ...SHARED_PROVIDERS,
         MediaProcessingService,
         MediaMaintenanceService,
+        MediaVisibilityService,
         { provide: ContentTypeDetector, useClass: FileTypeDetector },
         { provide: MalwareScanner, useClass: ClamAvMalwareScanner },
         { provide: ImageProcessor, useClass: SharpImageProcessor },

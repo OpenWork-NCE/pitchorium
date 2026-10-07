@@ -2,6 +2,7 @@ import type {
   MediaContentType,
   MediaUsage,
   MediaUsageLimits,
+  MediaUsageVisibility,
   MediaVisibility,
 } from '@pitchorium/contracts';
 
@@ -29,7 +30,11 @@ export interface UsageRule {
   /** Null when the usage accepts no PDF. */
   pdf: { maxPages: number } | null;
   maxPerResource: number;
-  visibility: MediaVisibility;
+  /**
+   * `resource`: the files are public only while the resource they are attached to is public
+   * (ADR 0026). Documents (PDF) are always private.
+   */
+  visibility: MediaUsageVisibility;
 }
 
 export const IMAGE_CONTENT_TYPES = ['image/jpeg', 'image/png', 'image/webp'] as const;
@@ -90,7 +95,7 @@ export const USAGE_RULES: Readonly<Record<MediaUsage, UsageRule>> = {
     },
     pdf: null,
     maxPerResource: 1,
-    visibility: 'public',
+    visibility: 'resource',
   },
   profile_cover: {
     contentTypes: IMAGE_CONTENT_TYPES,
@@ -98,7 +103,7 @@ export const USAGE_RULES: Readonly<Record<MediaUsage, UsageRule>> = {
     image: COVER,
     pdf: null,
     maxPerResource: 1,
-    visibility: 'public',
+    visibility: 'resource',
   },
   organization_logo: {
     contentTypes: IMAGE_CONTENT_TYPES,
@@ -128,7 +133,7 @@ export const USAGE_RULES: Readonly<Record<MediaUsage, UsageRule>> = {
     image: FEED_IMAGE,
     pdf: null,
     maxPerResource: 10,
-    visibility: 'public',
+    visibility: 'resource',
   },
   post_document: {
     contentTypes: [PDF_CONTENT_TYPE],
@@ -153,7 +158,7 @@ export const USAGE_RULES: Readonly<Record<MediaUsage, UsageRule>> = {
     },
     pdf: null,
     maxPerResource: 20,
-    visibility: 'public',
+    visibility: 'resource',
   },
   project_document: {
     contentTypes: [PDF_CONTENT_TYPE],
@@ -199,6 +204,29 @@ export const USAGE_RULES: Readonly<Record<MediaUsage, UsageRule>> = {
 
 export function ruleOf(usage: MediaUsage): UsageRule {
   return USAGE_RULES[usage];
+}
+
+/** Bucket of a new asset: a usage following its resource starts private until attached. */
+export function initialVisibility(rule: UsageRule): MediaVisibility {
+  return rule.visibility === 'public' ? 'public' : 'private';
+}
+
+/** Bucket the files of an asset attached to a resource of this visibility belong in. */
+export function visibilityFor(rule: UsageRule, resource: MediaVisibility): MediaVisibility {
+  return rule.visibility === 'resource' ? resource : rule.visibility;
+}
+
+/** Files of an always public usage never change under their key: cached for a year. */
+const IMMUTABLE_CACHE = 'public, max-age=31536000, immutable';
+/**
+ * Public files of a usage following its resource may become private: a shared cache keeps them
+ * one hour at most after the move (no CDN purge, ADR 0026).
+ */
+const RESOURCE_PUBLIC_CACHE = 'public, max-age=3600';
+
+export function cacheControlFor(rule: UsageRule, visibility: MediaVisibility): string {
+  if (visibility === 'private') return 'private, no-store';
+  return rule.visibility === 'resource' ? RESOURCE_PUBLIC_CACHE : IMMUTABLE_CACHE;
 }
 
 export function isImageType(contentType: string): boolean {

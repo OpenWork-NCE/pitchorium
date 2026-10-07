@@ -5,7 +5,8 @@ import { WORKER_CONFIG, type WorkerConfig } from '../../../platform/config';
 import { repeatEvery } from '../../../platform/queue';
 import { MediaMaintenanceService } from '../application/media-maintenance.service';
 import { MediaProcessingService } from '../application/media-processing.service';
-import { MEDIA_JOBS, MEDIA_QUEUE, type ProcessJobData } from './media-queue';
+import { MediaVisibilityService } from '../application/media-visibility.service';
+import { MEDIA_JOBS, MEDIA_QUEUE, type MoveJobData, type ProcessJobData } from './media-queue';
 
 /**
  * Processing jobs and scheduled tasks of the media module. A processing job retried after a
@@ -19,6 +20,7 @@ export class MediaJobsProcessor extends WorkerHost implements OnApplicationBoots
     @InjectQueue(MEDIA_QUEUE) private readonly queue: Queue,
     private readonly processing: MediaProcessingService,
     private readonly maintenance: MediaMaintenanceService,
+    private readonly visibility: MediaVisibilityService,
     @Inject(WORKER_CONFIG) private readonly config: WorkerConfig,
   ) {
     super();
@@ -46,6 +48,9 @@ export class MediaJobsProcessor extends WorkerHost implements OnApplicationBoots
         await this.processing.process(mediaId, lastAttempt);
         return;
       }
+      case MEDIA_JOBS.move:
+        await this.visibility.move((job.data as MoveJobData).mediaId);
+        return;
       case MEDIA_JOBS.deleteOrphans:
         await this.maintenance.deleteOrphans();
         return;

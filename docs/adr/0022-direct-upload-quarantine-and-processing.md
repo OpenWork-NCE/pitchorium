@@ -16,6 +16,8 @@ Les membres envoient des photos, des couvertures, des logos, des images de publi
 - Statuts `pending`, `processing`, `ready`, `rejected`, `deleted` ; motifs de rejet stables. Suppression logique, puis purge des objets par une tâche planifiée ; un actif non attaché après `MEDIA_ORPHAN_TTL_HOURS` est supprimé.
 - Les autres modules ne manipulent qu'un identifiant et passent par `MediaFacade` (`attach`, `detach`, `images`) ; la lecture d'un fichier privé est déléguée au module propriétaire de la ressource (`MediaReadAuthorizer`).
 
+La visibilité des fichiers (bucket public ou privé, déplacement quand la ressource change de visibilité) est précisée par l'ADR 0026.
+
 ## Conséquences
 
 - Le frontend enchaîne trois appels (demande, `PUT`, confirmation) puis suit le statut ; un fichier n'est utilisable qu'une fois `ready`.

@@ -55,11 +55,18 @@ export class MediaMaintenanceService {
     return deleted;
   }
 
-  /** Removes the stored objects of deleted assets, outside any transaction. */
+  /**
+   * Removes the stored objects of deleted assets, outside any transaction. Both buckets are
+   * cleared: a move between buckets may have been interrupted (ADR 0026).
+   */
   async purgeDeleted(): Promise<number> {
     const pending = await this.assets.unpurged(BATCH_SIZE);
     for (const asset of pending) {
-      if (asset.files) await this.storage.deleteObjects(asset.visibility, fileKeys(asset.files));
+      if (asset.files) {
+        const keys = fileKeys(asset.files);
+        await this.storage.deleteObjects('public', keys);
+        await this.storage.deleteObjects('private', keys);
+      }
       await this.storage.deleteObjects('private', [asset.quarantineKey]);
       await this.assets.markPurged(asset.id, this.clock.now());
     }

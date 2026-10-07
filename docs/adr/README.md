@@ -29,3 +29,4 @@ Un fichier par décision, numéroté, au format Contexte / Décision / Conséque
 | [0023](0023-antivirus.md)                                | Antivirus ClamAV                                             |
 | [0024](0024-no-video-hosting.md)                         | Pas d'hébergement vidéo                                      |
 | [0025](0025-organization-members-and-verification.md)    | Membres et vérification des organisations                    |
+| [0026](0026-file-visibility.md)                          | Visibilité des fichiers                                      |

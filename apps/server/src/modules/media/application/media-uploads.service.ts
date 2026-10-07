@@ -19,6 +19,7 @@ import {
   storageKeys,
 } from '../domain/media-asset';
 import { MediaDeleted, MediaRequested, MediaUploaded } from '../domain/media-events';
+import { initialVisibility } from '../domain/usages';
 import { MediaEventsRecorder } from './media-events.recorder';
 import { MediaReadRegistry } from './media-read.registry';
 import { mediaAssetView } from './media-views';
@@ -61,7 +62,8 @@ export class MediaUploadsService {
         usage: request.usage,
         source: 'upload',
         status: 'pending',
-        visibility: rule.visibility,
+        visibility: initialVisibility(rule),
+        targetVisibility: null,
         declaredContentType: request.contentType,
         declaredSize: request.size,
         contentType: null,

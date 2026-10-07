@@ -22,22 +22,26 @@ Motifs de rejet : `upload_missing`, `type_not_allowed`, `type_mismatch`, `size_e
 
 | Usage                   | Types                | Taille max | Dimensions (min / max) | Pages max | Par ressource | Visibilité | Variantes                                         |
 | ----------------------- | -------------------- | ---------- | ---------------------- | --------- | ------------- | ---------- | ------------------------------------------------- |
-| `avatar`                | JPEG, PNG, WebP      | 5 Mo       | 200x200 / 8000x8000    |           | 1             | public     | `large` 400x400, `small` 128x128 (recadrées)      |
-| `profile_cover`         | JPEG, PNG, WebP      | 8 Mo       | 1200x300 / 10000x10000 |           | 1             | public     | `large` 1584x396, `small` 792x198 (recadrées)     |
+| `avatar`                | JPEG, PNG, WebP      | 5 Mo       | 200x200 / 8000x8000    |           | 1             | ressource  | `large` 400x400, `small` 128x128 (recadrées)      |
+| `profile_cover`         | JPEG, PNG, WebP      | 8 Mo       | 1200x300 / 10000x10000 |           | 1             | ressource  | `large` 1584x396, `small` 792x198 (recadrées)     |
 | `organization_logo`     | JPEG, PNG, WebP      | 5 Mo       | 200x200 / 8000x8000    |           | 1             | public     | `large` 400x400, `small` 128x128 (sans recadrage) |
 | `organization_cover`    | JPEG, PNG, WebP      | 8 Mo       | 1200x300 / 10000x10000 |           | 1             | public     | comme `profile_cover`                             |
-| `post_image`            | JPEG, PNG, WebP      | 10 Mo      | 200x200 / 10000x10000  |           | 10            | public     | `large` 1600, `medium` 800 de large               |
+| `post_image`            | JPEG, PNG, WebP      | 10 Mo      | 200x200 / 10000x10000  |           | 10            | ressource  | `large` 1600, `medium` 800 de large               |
 | `post_document`         | PDF                  | 20 Mo      |                        | 50        | 5             | privé      | miniature `thumbnail` 800 de large                |
-| `project_gallery`       | JPEG, PNG, WebP      | 10 Mo      | 600x400 / 10000x10000  |           | 20            | public     | `large`, `medium`, `thumbnail` 400x300            |
+| `project_gallery`       | JPEG, PNG, WebP      | 10 Mo      | 600x400 / 10000x10000  |           | 20            | ressource  | `large`, `medium`, `thumbnail` 400x300            |
 | `project_document`      | PDF                  | 20 Mo      |                        | 50        | 10            | privé      | miniature                                         |
 | `message_attachment`    | JPEG, PNG, WebP, PDF | 10 Mo      | 1x1 / 10000x10000      | 50        | 5             | privé      | `large` 1600, `thumbnail` 400 ; miniature (PDF)   |
 | `verification_document` | JPEG, PNG, PDF       | 10 Mo      | 600x600 / 10000x10000  | 100       | 10            | privé      | `large` 2000 ; miniature (PDF)                    |
 
 `GET /v1/media/usages` publie ces limites. Les SVG, GIF et HEIC ne sont pas acceptés.
 
+Visibilité (ADR 0026) : `public` et `privé` sont fixes ; `ressource` signifie que les fichiers sont publics seulement tant que la ressource à laquelle ils sont attachés est publique (profil avec page publique, publication `public`, projet publié). Les documents PDF sont toujours privés.
+
 ## Accès
 
-- Fichiers publics : URL sous `S3_PUBLIC_BASE_URL` (domaine CDN), `Cache-Control: public, max-age=31536000, immutable`.
+- Fichiers publics : URL sous `S3_PUBLIC_BASE_URL` (domaine CDN), `Cache-Control: public, max-age=31536000, immutable` pour un usage toujours public, `public, max-age=3600` pour un usage `ressource` (il peut redevenir privé).
+- Images privées affichées par un autre module : `images()` de la façade renvoie des URL présignées de 10 minutes, identiques pendant une fenêtre de 5 minutes (cache du navigateur) ; le module appelant ne les demande que pour les ressources visibles par le lecteur.
+- Déplacement entre buckets : à l'attachement (`resourceVisibility`) et à chaque changement de visibilité de la ressource (`setResourceVisibility`), la façade enregistre le bucket cible et émet `media.asset.visibility-requested.v1` ; le worker copie les fichiers (job `move`), bascule le bucket dans une transaction courte si la cible n'a pas changé, puis supprime la source. La purge d'un actif supprimé vide les deux buckets.
 - Fichiers privés : `GET /v1/media/{mediaId}/download-url` (action `media.read`) renvoie une URL présignée de lecture valable `MEDIA_DOWNLOAD_URL_TTL_SECONDS`, au propriétaire ou à un membre que le module propriétaire de la ressource autorise (`MediaReadAuthorizer` enregistré par `registerReadAuthorizer`) ; sinon 404, comme pour un fichier inexistant.
 - Modération : `moderation_status` (`none`, `flagged`, `removed`) modifiable par `setModerationStatus` ; un fichier `removed` n'est plus servi.
 
@@ -60,21 +64,22 @@ Motifs de rejet : `upload_missing`, `type_not_allowed`, `type_mismatch`, `size_e
 
 ## Façade publique (`index.ts`)
 
-`MediaFacade` : `attach`, `detach`, `describe`, `images` (URLs publiques par identifiant), `setModerationStatus`, `requestImport`, `registerReadAuthorizer` ; types `MediaReadAuthorizer`, `MediaImage`, `MediaResourceRef` ; classes d'événements.
+`MediaFacade` : `attach` (avec `resourceVisibility`), `detach`, `describe`, `images` (URL publiques ou présignées par identifiant), `setResourceVisibility`, `setModerationStatus`, `requestImport`, `registerReadAuthorizer` ; types `MediaReadAuthorizer`, `MediaImage`, `MediaResourceRef` ; classes d'événements.
 
 ## Événements émis
 
-| Type                       | Payload                                                          |
-| -------------------------- | ---------------------------------------------------------------- |
-| `media.asset.requested.v1` | `usage`, `source`, `ownerId`                                     |
-| `media.asset.uploaded.v1`  | `usage` (interne : déclenche le job)                             |
-| `media.asset.ready.v1`     | `usage`, `source`, `ownerId`                                     |
-| `media.asset.rejected.v1`  | `usage`, `source`, `ownerId`, `reason`                           |
-| `media.asset.deleted.v1`   | `usage`, `ownerId`, `reason` (`owner_request`, `orphan_cleanup`) |
+| Type                                  | Payload                                                          |
+| ------------------------------------- | ---------------------------------------------------------------- |
+| `media.asset.requested.v1`            | `usage`, `source`, `ownerId`                                     |
+| `media.asset.uploaded.v1`             | `usage` (interne : déclenche le job)                             |
+| `media.asset.visibility-requested.v1` | `visibility` (interne : déclenche le job `move`)                 |
+| `media.asset.ready.v1`                | `usage`, `source`, `ownerId`                                     |
+| `media.asset.rejected.v1`             | `usage`, `source`, `ownerId`, `reason`                           |
+| `media.asset.deleted.v1`              | `usage`, `ownerId`, `reason` (`owner_request`, `orphan_cleanup`) |
 
 ## Événements consommés
 
-`media.asset.uploaded.v1`, `media.asset.requested.v1` (source `import`) : mise en file du traitement (handler `media.queue-processing`).
+`media.asset.uploaded.v1`, `media.asset.requested.v1` (source `import`) : mise en file du traitement ; `media.asset.visibility-requested.v1` : mise en file du déplacement (handler `media.queue-processing`).
 
 ## Dépendances
 

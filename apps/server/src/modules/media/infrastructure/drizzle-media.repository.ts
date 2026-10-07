@@ -28,6 +28,7 @@ function toRecord(row: Row): MediaAssetRecord {
     source: row.source as MediaSource,
     status: row.status as MediaStatus,
     visibility: row.visibility as MediaVisibility,
+    targetVisibility: row.targetVisibility as MediaVisibility | null,
     declaredContentType: row.declaredContentType as MediaContentType,
     declaredSize: row.declaredSize,
     contentType: row.contentType as MediaContentType | null,
@@ -130,6 +131,20 @@ export class DrizzleMediaRepository extends MediaRepository {
       .where(and(...conditions))
       .returning({ id: mediaAssets.id });
     return updated.length > 0;
+  }
+
+  async attachedTo(resource: MediaResourceRef): Promise<MediaAssetRecord[]> {
+    const rows = await this.db
+      .select()
+      .from(mediaAssets)
+      .where(
+        and(
+          eq(mediaAssets.attachedResourceType, resource.type),
+          eq(mediaAssets.attachedResourceId, resource.id),
+          isNull(mediaAssets.deletedAt),
+        ),
+      );
+    return rows.map(toRecord);
   }
 
   async countAttached(
