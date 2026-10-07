@@ -27,6 +27,8 @@ export const identityUsers = identitySchema.table(
     emailVerified: boolean('email_verified').notNull(),
     image: text('image'),
     locale: text('locale').notNull(),
+    /** IANA time zone of the member (digests, ADR 0061). */
+    timeZone: text('time_zone').notNull().default('UTC'),
     twoFactorEnabled: boolean('two_factor_enabled').notNull().default(false),
     // Last accepted versions; the full history is in legal_acceptances.
     acceptedTermsVersion: text('accepted_terms_version'),
