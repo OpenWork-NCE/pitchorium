@@ -4,6 +4,7 @@ Client Drizzle partagé, schémas PostgreSQL, migrations et seed.
 
 - `src/schemas/<module>.ts` : un `pgSchema` par module métier. Les tables d'un module y sont déclarées et seul ce module importe `@pitchorium/db/schemas/<module>` (règle ESLint).
 - `src/schemas/platform.ts` : tables techniques (`outbox_events`, `inbox_messages`, `idempotency_keys`, `audit_log`, `feature_flags`).
+- `src/orm.ts` : réexporte drizzle-orm sous `@pitchorium/db/orm`. Les autres packages importent Drizzle uniquement par ce chemin : le serveur, en CommonJS, chargerait sinon une seconde copie aux types incompatibles.
 - `migrations/` : migrations SQL générées par drizzle-kit et versionnées. La migration initiale crée aussi les extensions `pg_trgm`, `unaccent` et `citext`. Le journal des migrations appliquées est la table `drizzle.__drizzle_migrations`.
 
 | Commande (racine)  | Effet                                                                                                                             |

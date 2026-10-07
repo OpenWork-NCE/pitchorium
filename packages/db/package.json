@@ -8,6 +8,10 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
+    "./orm": {
+      "types": "./dist/orm.d.ts",
+      "default": "./dist/orm.js"
+    },
     "./schemas/*": {
       "types": "./dist/schemas/*.d.ts",
       "default": "./dist/schemas/*.js"
