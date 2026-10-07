@@ -190,6 +190,15 @@ export class ProjectsFacade implements OnModuleInit {
     };
   }
 
+  /** Live projects where the member is an active owner of the team. */
+  async ownedProjectIds(userId: string): Promise<string[]> {
+    const projects = await this.projects.projectsOfMember(userId);
+    const roles = await Promise.all(
+      projects.map((project) => this.reads.teamRoleOf(project.id, userId)),
+    );
+    return projects.filter((_, index) => roles[index] === 'owner').map((project) => project.id);
+  }
+
   /** Active role of a member in the team of a project, null otherwise. */
   teamRoleOf(projectId: string, userId: string): Promise<ProjectTeamRole | null> {
     return this.reads.teamRoleOf(projectId, userId);
