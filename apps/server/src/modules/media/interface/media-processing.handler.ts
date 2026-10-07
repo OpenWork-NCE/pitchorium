@@ -6,23 +6,45 @@ import {
   type DomainEventSubscriber,
   type OutboxEnvelope,
 } from '../../../platform/outbox';
-import { MediaRequested, MediaUploaded, MediaVisibilityRequested } from '../domain/media-events';
-import { MEDIA_JOBS, MEDIA_QUEUE, type ProcessJobData } from './media-queue';
+import {
+  MediaCdnPurgeRequested,
+  MediaRequested,
+  MediaUploaded,
+  MediaVisibilityRequested,
+} from '../domain/media-events';
+import { MEDIA_JOBS, MEDIA_QUEUE, type ProcessJobData, type PurgeCdnJobData } from './media-queue';
 
 /**
- * Queues the processing of a confirmed upload or of a requested import, and the moves between
- * buckets. The work itself runs in its own job, outside the inbox transaction of this handler
+ * Queues the processing of a confirmed upload or of a requested import, the moves between
+ * buckets and the CDN purges. The work itself runs in its own job, outside the inbox transaction of this handler
  * (ADR 0019).
  */
 @Injectable()
 @DomainEventHandler({
   name: 'media.queue-processing',
-  eventTypes: [MediaUploaded.TYPE, MediaRequested.TYPE, MediaVisibilityRequested.TYPE],
+  eventTypes: [
+    MediaUploaded.TYPE,
+    MediaRequested.TYPE,
+    MediaVisibilityRequested.TYPE,
+    MediaCdnPurgeRequested.TYPE,
+  ],
 })
 export class MediaProcessingHandler implements DomainEventSubscriber {
-  constructor(@InjectQueue(MEDIA_QUEUE) private readonly queue: Queue<ProcessJobData>) {}
+  constructor(
+    @InjectQueue(MEDIA_QUEUE) private readonly queue: Queue<ProcessJobData | PurgeCdnJobData>,
+  ) {}
 
   async handle(event: OutboxEnvelope): Promise<void> {
+    if (event.type === MediaCdnPurgeRequested.TYPE) {
+      // Retried with the default backoff of the queue until the CDN accepts the purge.
+      const keys = event.payload['keys'] as string[];
+      await this.queue.add(
+        MEDIA_JOBS.purgeCdn,
+        { mediaId: event.aggregateId, keys },
+        { jobId: `${MEDIA_JOBS.purgeCdn}-${event.id}` },
+      );
+      return;
+    }
     if (event.type === MediaVisibilityRequested.TYPE) {
       // One job per request: the job checks the current target, so stale requests do nothing.
       await this.queue.add(

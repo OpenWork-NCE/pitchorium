@@ -221,7 +221,7 @@ export class MediaProcessingService {
   }
 
   private cacheControl(asset: MediaAssetRecord): string {
-    return cacheControlFor(ruleOf(asset.usage), asset.visibility);
+    return cacheControlFor(asset.visibility);
   }
 
   /** Writes the result and its event; files of an asset deleted meanwhile are removed. */

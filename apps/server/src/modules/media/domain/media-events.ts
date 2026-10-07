@@ -86,3 +86,20 @@ export class MediaVisibilityRequested extends DomainEvent<{ visibility: MediaVis
     super(props);
   }
 }
+
+/**
+ * Internal to the media module: public files left the public bucket (their resource became
+ * private, or the asset was deleted) and must be purged from the CDN (ADR 0026).
+ */
+export class MediaCdnPurgeRequested extends DomainEvent<{
+  keys: string[];
+  reason: 'unpublished' | 'deleted';
+}> {
+  static readonly TYPE = 'media.asset.cdn-purge-requested.v1';
+  readonly type = MediaCdnPurgeRequested.TYPE;
+  readonly aggregateType = AGGREGATE;
+
+  constructor(props: DomainEventProps<MediaCdnPurgeRequested['payload']>) {
+    super(props);
+  }
+}

@@ -3,10 +3,17 @@ import { Inject, Logger, type OnApplicationBootstrap } from '@nestjs/common';
 import type { Job, Queue } from 'bullmq';
 import { WORKER_CONFIG, type WorkerConfig } from '../../../platform/config';
 import { repeatEvery } from '../../../platform/queue';
+import { MediaCdnPurgeService } from '../application/media-cdn-purge.service';
 import { MediaMaintenanceService } from '../application/media-maintenance.service';
 import { MediaProcessingService } from '../application/media-processing.service';
 import { MediaVisibilityService } from '../application/media-visibility.service';
-import { MEDIA_JOBS, MEDIA_QUEUE, type MoveJobData, type ProcessJobData } from './media-queue';
+import {
+  MEDIA_JOBS,
+  MEDIA_QUEUE,
+  type MoveJobData,
+  type ProcessJobData,
+  type PurgeCdnJobData,
+} from './media-queue';
 
 /**
  * Processing jobs and scheduled tasks of the media module. A processing job retried after a
@@ -21,6 +28,7 @@ export class MediaJobsProcessor extends WorkerHost implements OnApplicationBoots
     private readonly processing: MediaProcessingService,
     private readonly maintenance: MediaMaintenanceService,
     private readonly visibility: MediaVisibilityService,
+    private readonly cdnPurge: MediaCdnPurgeService,
     @Inject(WORKER_CONFIG) private readonly config: WorkerConfig,
   ) {
     super();
@@ -51,6 +59,11 @@ export class MediaJobsProcessor extends WorkerHost implements OnApplicationBoots
       case MEDIA_JOBS.move:
         await this.visibility.move((job.data as MoveJobData).mediaId);
         return;
+      case MEDIA_JOBS.purgeCdn: {
+        const { mediaId, keys } = job.data as PurgeCdnJobData;
+        await this.cdnPurge.purge(mediaId, keys);
+        return;
+      }
       case MEDIA_JOBS.deleteOrphans:
         await this.maintenance.deleteOrphans();
         return;

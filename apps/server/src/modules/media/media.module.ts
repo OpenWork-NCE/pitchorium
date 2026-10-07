@@ -1,5 +1,6 @@
 import { BullModule } from '@nestjs/bullmq';
 import { type DynamicModule, Module, type Provider } from '@nestjs/common';
+import { MediaCdnPurgeService } from './application/media-cdn-purge.service';
 import { MediaEventsRecorder } from './application/media-events.recorder';
 import { MediaFacade } from './application/media.facade';
 import { MediaMaintenanceService } from './application/media-maintenance.service';
@@ -65,6 +66,7 @@ export class MediaModule {
         MediaProcessingService,
         MediaMaintenanceService,
         MediaVisibilityService,
+        MediaCdnPurgeService,
         { provide: ContentTypeDetector, useClass: FileTypeDetector },
         { provide: MalwareScanner, useClass: ClamAvMalwareScanner },
         { provide: ImageProcessor, useClass: SharpImageProcessor },

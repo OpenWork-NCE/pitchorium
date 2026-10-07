@@ -149,10 +149,9 @@ describe('visibility of files (ADR 0026)', () => {
     expect(visibilityFor(USAGE_RULES.organization_logo, 'private')).toBe('public');
   });
 
-  it('caches public files of a resource-following usage for one hour only', () => {
-    expect(cacheControlFor(USAGE_RULES.post_image, 'public')).toBe('public, max-age=3600');
-    expect(cacheControlFor(USAGE_RULES.organization_logo, 'public')).toContain('immutable');
-    expect(cacheControlFor(USAGE_RULES.post_image, 'private')).toBe('private, no-store');
+  it('caches public files for a year under their content-derived key, private ones nowhere', () => {
+    expect(cacheControlFor('public')).toBe('public, max-age=31536000, immutable');
+    expect(cacheControlFor('private')).toBe('private, no-store');
   });
 
   it('detects a pending move of a ready asset only', () => {

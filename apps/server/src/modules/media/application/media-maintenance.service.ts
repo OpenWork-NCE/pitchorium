@@ -4,7 +4,7 @@ import { TransactionManager } from '../../../platform/database';
 import { Clock } from '../../../platform/kernel';
 import { ObjectStorage } from '../../../platform/storage';
 import { fileKeys } from '../domain/media-asset';
-import { MediaDeleted } from '../domain/media-events';
+import { MediaCdnPurgeRequested, MediaDeleted } from '../domain/media-events';
 import { MediaEventsRecorder } from './media-events.recorder';
 import { MediaRepository } from './ports';
 
@@ -57,18 +57,25 @@ export class MediaMaintenanceService {
 
   /**
    * Removes the stored objects of deleted assets, outside any transaction. Both buckets are
-   * cleared: a move between buckets may have been interrupted (ADR 0026).
+   * cleared: a move between buckets may have been interrupted (ADR 0026). Files that were
+   * public are then purged from the CDN, by a job requested with the purge mark.
    */
   async purgeDeleted(): Promise<number> {
     const pending = await this.assets.unpurged(BATCH_SIZE);
     for (const asset of pending) {
-      if (asset.files) {
-        const keys = fileKeys(asset.files);
+      const keys = asset.files ? fileKeys(asset.files) : [];
+      if (keys.length > 0) {
         await this.storage.deleteObjects('public', keys);
         await this.storage.deleteObjects('private', keys);
       }
       await this.storage.deleteObjects('private', [asset.quarantineKey]);
-      await this.assets.markPurged(asset.id, this.clock.now());
+      const wasPublic = asset.visibility === 'public' || asset.targetVisibility === 'public';
+      await this.transactions.run(async () => {
+        await this.assets.markPurged(asset.id, this.clock.now());
+        if (wasPublic && keys.length > 0) {
+          await this.events.record(MediaCdnPurgeRequested, asset.id, { keys, reason: 'deleted' });
+        }
+      });
     }
     return pending.length;
   }

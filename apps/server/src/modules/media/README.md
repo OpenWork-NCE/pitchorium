@@ -40,7 +40,7 @@ Visibilité (ADR 0026) : `public` et `privé` sont fixes ; `ressource` signifie 
 
 ## Accès
 
-- Fichiers publics : URL sous `S3_PUBLIC_BASE_URL` (domaine CDN), `Cache-Control: public, max-age=31536000, immutable` pour un usage toujours public, `public, max-age=3600` pour un usage `ressource` (il peut redevenir privé).
+- Fichiers publics : URL sous `S3_PUBLIC_BASE_URL` (domaine CDN), `Cache-Control: public, max-age=31536000, immutable` (clés dérivées de l'empreinte du contenu). Un fichier qui quitte le bucket public (ressource devenue privée, actif supprimé) est purgé du CDN par le job `purge-cdn` (port `CdnCache`, Cloudflare en production, ADR 0026).
 - Images privées affichées par un autre module : `images()` de la façade renvoie des URL présignées de 10 minutes, identiques pendant une fenêtre de 5 minutes (cache du navigateur) ; le module appelant ne les demande que pour les ressources visibles par le lecteur.
 - Déplacement entre buckets : à l'attachement (`resourceVisibility`) et à chaque changement de visibilité de la ressource (`setResourceVisibility`), la façade enregistre le bucket cible et émet `media.asset.visibility-requested.v1` ; le worker copie les fichiers (job `move`), bascule le bucket dans une transaction courte si la cible n'a pas changé, puis supprime la source. La purge d'un actif supprimé vide les deux buckets.
 - Fichiers privés : `GET /v1/media/{mediaId}/download-url` (action `media.read`) renvoie une URL présignée de lecture valable `MEDIA_DOWNLOAD_URL_TTL_SECONDS`, au propriétaire ou à un membre que le module propriétaire de la ressource autorise (`MediaReadAuthorizer` enregistré par `registerReadAuthorizer`) ; sinon 404, comme pour un fichier inexistant.
@@ -73,18 +73,19 @@ Usage `link_preview` : le module content demande l'import (`requestImport`) de l
 
 ## Événements émis
 
-| Type                                  | Payload                                                          |
-| ------------------------------------- | ---------------------------------------------------------------- |
-| `media.asset.requested.v1`            | `usage`, `source`, `ownerId`                                     |
-| `media.asset.uploaded.v1`             | `usage` (interne : déclenche le job)                             |
-| `media.asset.visibility-requested.v1` | `visibility` (interne : déclenche le job `move`)                 |
-| `media.asset.ready.v1`                | `usage`, `source`, `ownerId`                                     |
-| `media.asset.rejected.v1`             | `usage`, `source`, `ownerId`, `reason`                           |
-| `media.asset.deleted.v1`              | `usage`, `ownerId`, `reason` (`owner_request`, `orphan_cleanup`) |
+| Type                                  | Payload                                                                 |
+| ------------------------------------- | ----------------------------------------------------------------------- |
+| `media.asset.requested.v1`            | `usage`, `source`, `ownerId`                                            |
+| `media.asset.uploaded.v1`             | `usage` (interne : déclenche le job)                                    |
+| `media.asset.visibility-requested.v1` | `visibility` (interne : déclenche le job `move`)                        |
+| `media.asset.cdn-purge-requested.v1`  | `keys`, `reason` (`unpublished`, `deleted`) (interne : job `purge-cdn`) |
+| `media.asset.ready.v1`                | `usage`, `source`, `ownerId`                                            |
+| `media.asset.rejected.v1`             | `usage`, `source`, `ownerId`, `reason`                                  |
+| `media.asset.deleted.v1`              | `usage`, `ownerId`, `reason` (`owner_request`, `orphan_cleanup`)        |
 
 ## Événements consommés
 
-`media.asset.uploaded.v1`, `media.asset.requested.v1` (source `import`) : mise en file du traitement ; `media.asset.visibility-requested.v1` : mise en file du déplacement (handler `media.queue-processing`).
+`media.asset.uploaded.v1`, `media.asset.requested.v1` (source `import`) : mise en file du traitement ; `media.asset.visibility-requested.v1` : mise en file du déplacement ; `media.asset.cdn-purge-requested.v1` : mise en file de la purge du CDN (handler `media.queue-processing`).
 
 ## Dépendances
 

@@ -234,17 +234,14 @@ export function visibilityFor(rule: UsageRule, resource: MediaVisibility): Media
   return rule.visibility === 'resource' ? resource : rule.visibility;
 }
 
-/** Files of an always public usage never change under their key: cached for a year. */
-const IMMUTABLE_CACHE = 'public, max-age=31536000, immutable';
 /**
- * Public files of a usage following its resource may become private: a shared cache keeps them
- * one hour at most after the move (no CDN purge, ADR 0026).
+ * Public files never change under their key, derived from a digest of their content: cached for
+ * a year. A file that leaves the public bucket is purged from the CDN (ADR 0026).
  */
-const RESOURCE_PUBLIC_CACHE = 'public, max-age=3600';
+const IMMUTABLE_CACHE = 'public, max-age=31536000, immutable';
 
-export function cacheControlFor(rule: UsageRule, visibility: MediaVisibility): string {
-  if (visibility === 'private') return 'private, no-store';
-  return rule.visibility === 'resource' ? RESOURCE_PUBLIC_CACHE : IMMUTABLE_CACHE;
+export function cacheControlFor(visibility: MediaVisibility): string {
+  return visibility === 'private' ? 'private, no-store' : IMMUTABLE_CACHE;
 }
 
 export function isImageType(contentType: string): boolean {

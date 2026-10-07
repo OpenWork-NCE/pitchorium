@@ -8,13 +8,14 @@ import { MediaMaintenanceService } from '../../src/modules/media/application/med
 import { MediaProcessingService } from '../../src/modules/media/application/media-processing.service';
 import { MalwareScanner } from '../../src/modules/media/application/ports';
 import { OutboxRelayService } from '../../src/platform/outbox';
-import { ObjectStorage, StorageModule } from '../../src/platform/storage';
+import { CdnCache, ObjectStorage, StorageModule } from '../../src/platform/storage';
 import { createApiTestApp } from './support/api-app';
 import { EICAR, startClamAv } from './support/clamav';
 import { query, truncateAllTables } from './support/database';
 import { corruptPdf, jpegWithExif, minimalPdf, png } from './support/files';
 import { putToStorage, requestUpload, uploadFile, waitUntilProcessed } from './support/media';
 import { createMember, type Member } from './support/members';
+import { SpyCdnCache } from './support/spy-cdn-cache';
 import type { MediaAsset } from '@pitchorium/contracts';
 import { createWorkerTestingModule } from './support/worker-testing-module';
 
@@ -26,6 +27,7 @@ describe('media', () => {
   let worker: TestingModule;
   let clamav: StartedTestContainer;
   let member: Member;
+  const cdn = new SpyCdnCache();
   const deliver = () => worker.get(OutboxRelayService).relayBatch();
 
   beforeAll(async () => {
@@ -37,7 +39,11 @@ describe('media', () => {
       { MEDIA_QUOTA_MAX_FILES: '4', MEDIA_UPLOAD_REQUESTS_PER_HOUR: '6' },
       { storage: 'minio' },
     ));
-    worker = await createWorkerTestingModule([], [StorageModule, MediaModule.forWorker()]);
+    worker = await createWorkerTestingModule(
+      [],
+      [StorageModule, MediaModule.forWorker()],
+      (builder) => builder.overrideProvider(CdnCache).useValue(cdn),
+    );
   }, 300_000);
 
   afterAll(async () => {
@@ -48,6 +54,7 @@ describe('media', () => {
 
   beforeEach(async () => {
     await truncateAllTables();
+    cdn.purged.length = 0;
     member = await createMember(app, 'files@example.com');
   });
 
@@ -234,7 +241,8 @@ describe('media', () => {
     const publicUrl = (await status(image)).variants['large']?.webp ?? '';
     const served = await fetch(publicUrl);
     expect(served.status).toBe(200);
-    expect(served.headers.get('cache-control')).toBe('public, max-age=3600');
+    // Public keys derive from the content digest: cached for a year, purged when unpublished.
+    expect(served.headers.get('cache-control')).toBe(IMMUTABLE);
     const keys = Object.values(
       (
         await query<{ files: { variants: Record<string, { webpKey: string }> } }>(
@@ -247,8 +255,18 @@ describe('media', () => {
     // Documents (PDF) are always private, whatever the resource.
     expect((await status(document)).visibility).toBe('private');
 
+    expect(cdn.purged).toEqual([]);
     await facade.setResourceVisibility(post, 'private');
     await settle(image, 'private');
+    // The purge job runs after the switch: every public URL of the asset, its files gone.
+    const publicUrls = keys.map((key) => storage.publicUrl(key));
+    await vi.waitFor(
+      async () => {
+        await deliver();
+        expect(cdn.purged).toEqual(expect.arrayContaining(publicUrls));
+      },
+      { timeout: 20_000, interval: 200 },
+    );
     expect((await fetch(publicUrl)).status).toBe(404);
     const signed = (await facade.images([image])).get(image)?.url ?? '';
     expect(signed).toContain('X-Amz-Signature=');
@@ -301,6 +319,42 @@ describe('media', () => {
     );
     expect(rejected?.payload).toMatchObject({ reason: 'processing_failed' });
     vi.restoreAllMocks();
+  });
+
+  it('purges from the CDN the public files of a deleted asset', async () => {
+    const logo = await uploadFile(
+      member.agent,
+      await png(400, 400),
+      'organization_logo',
+      'image/png',
+    );
+    const privateImage = await uploadFile(
+      member.agent,
+      await png(400, 400),
+      'post_image',
+      'image/png',
+    );
+    for (const id of [logo, privateImage]) await waitUntilProcessed(member.agent, id, deliver);
+    const logoUrls = Object.values(
+      ((await member.agent.get(`/v1/media/${logo}`).expect(200)).body as MediaAsset).variants,
+    )
+      .flatMap((variant) => [variant.webp, variant.avif])
+      .filter((url): url is string => url !== null);
+    await member.agent.delete(`/v1/media/${logo}`).expect(204);
+    await member.agent.delete(`/v1/media/${privateImage}`).expect(204);
+    expect(await worker.get(MediaMaintenanceService).purgeDeleted()).toBe(2);
+    await vi.waitFor(
+      async () => {
+        await deliver();
+        expect([...cdn.purged].sort()).toEqual([...logoUrls].sort());
+      },
+      { timeout: 20_000, interval: 200 },
+    );
+    const requests = await query<{ payload: { reason: string } }>(
+      `SELECT payload FROM platform.outbox_events
+       WHERE event_type = 'media.asset.cdn-purge-requested.v1'`,
+    );
+    expect(requests.map((event) => event.payload.reason)).toEqual(['deleted']);
   });
 
   it('deletes orphans and owner deletions logically, then purges their files', async () => {
