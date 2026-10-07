@@ -10,6 +10,8 @@ export const MEDIA_USAGES = [
   'post_document',
   'project_gallery',
   'project_document',
+  'project_update_image',
+  'project_interest_document',
   'message_attachment',
   'verification_document',
   'link_preview',

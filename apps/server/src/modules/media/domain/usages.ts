@@ -168,6 +168,24 @@ export const USAGE_RULES: Readonly<Record<MediaUsage, UsageRule>> = {
     maxPerResource: 10,
     visibility: 'private',
   },
+  /** Images of a project update; public while the project is published. */
+  project_update_image: {
+    contentTypes: IMAGE_CONTENT_TYPES,
+    maxBytes: 10 * MB,
+    image: FEED_IMAGE,
+    pdf: null,
+    maxPerResource: 6,
+    visibility: 'resource',
+  },
+  /** Documents attached to an expression of interest, read by the project team only. */
+  project_interest_document: {
+    contentTypes: [PDF_CONTENT_TYPE],
+    maxBytes: 20 * MB,
+    image: null,
+    pdf: { maxPages: 50 },
+    maxPerResource: 3,
+    visibility: 'private',
+  },
   message_attachment: {
     contentTypes: [...IMAGE_CONTENT_TYPES, PDF_CONTENT_TYPE],
     maxBytes: 10 * MB,
