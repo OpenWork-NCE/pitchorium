@@ -27,6 +27,7 @@ import {
   ProfileUpdated,
   VisibilityChanged,
 } from '../domain/profile-events';
+import { OrganizationDirectoryRegistry } from './organization-directory.registry';
 import { ProfileEventsRecorder } from './profile-events.recorder';
 import { type ProfileImageSlot, ProfileRepository } from './ports';
 import { ReferenceDataService } from './reference-data.service';
@@ -39,6 +40,7 @@ export class ProfilesService {
     private readonly reference: ReferenceDataService,
     private readonly identity: IdentityFacade,
     private readonly media: MediaFacade,
+    private readonly organizations: OrganizationDirectoryRegistry,
     private readonly events: ProfileEventsRecorder,
     private readonly transactions: TransactionManager,
     private readonly clock: Clock,
@@ -251,6 +253,7 @@ export class ProfilesService {
       userId,
       {
         organizationName: null,
+        organizationId: null,
         interventionCountryCodes: [],
         sectorCodes: [],
         ticket: null,
@@ -304,6 +307,7 @@ export class ProfilesService {
     change: 'created' | 'updated',
   ): Promise<void> {
     assertContributorFacet(facet);
+    if (facet.organizationId) await this.organizations.assertLinkable(facet.organizationId, userId);
     await this.reference.assertCountries(facet.interventionCountryCodes);
     await this.reference.assertSectors(facet.sectorCodes);
     await this.transactions.run(async () => {

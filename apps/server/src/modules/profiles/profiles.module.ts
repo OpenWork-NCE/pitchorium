@@ -1,7 +1,9 @@
 import { type DynamicModule, Module, type Provider } from '@nestjs/common';
 import { CurrentUserService } from './application/current-user.service';
 import { ProfileEventsRecorder } from './application/profile-events.recorder';
-import { ProfileImagesService } from './application/profile-images.service';
+import { OrganizationDirectoryRegistry } from './application/organization-directory.registry';
+import { ProfileDisplayService } from './application/profile-display.service';
+import { ProfilesFacade } from './application/profiles.facade';
 import { ProfilePrerequisitesProvider } from './application/profile-prerequisites.provider';
 import { ProfileReadsService } from './application/profile-reads.service';
 import { ProfilesService } from './application/profiles.service';
@@ -24,27 +26,32 @@ const SHARED_PROVIDERS: Provider[] = [
   ReferenceDataService,
   ProfilesService,
   ProfilePrerequisitesProvider,
+  OrganizationDirectoryRegistry,
+  ProfileDisplayService,
+  ProfilesFacade,
 ];
 
-/** Base profile, entrepreneur and contributor facets, handle, privacy and reference data. */
+/**
+ * Base profile, entrepreneur and contributor facets, handle, privacy and reference data.
+ * Global so that other modules can inject ProfilesFacade; imports go through index.ts.
+ */
 @Module({})
 export class ProfilesModule {
   static forApi(): DynamicModule {
     return {
       module: ProfilesModule,
+      global: true,
       controllers: [MeController, ProfilesController],
-      providers: [
-        ...SHARED_PROVIDERS,
-        ProfileImagesService,
-        ProfileReadsService,
-        CurrentUserService,
-      ],
+      providers: [...SHARED_PROVIDERS, ProfileReadsService, CurrentUserService],
+      exports: [ProfilesFacade],
     };
   }
 
   static forWorker(): DynamicModule {
     return {
       module: ProfilesModule,
+      global: true,
+      exports: [ProfilesFacade],
       providers: [
         ...SHARED_PROVIDERS,
         UserRegisteredHandler,

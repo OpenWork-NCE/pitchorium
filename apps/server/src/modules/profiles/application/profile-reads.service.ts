@@ -3,7 +3,7 @@ import type { OwnProfile, ProfileView } from '@pitchorium/contracts';
 import { DomainError } from '../../../platform/kernel';
 import { profileStrength } from '../domain/profile-strength';
 import { ownProfileView, profileView, publicProfileView } from '../domain/profile-views';
-import { ProfileImagesService } from './profile-images.service';
+import { ProfileDisplayService } from './profile-display.service';
 import { ProfileRepository } from './ports';
 import { ProfilesService } from './profiles.service';
 
@@ -18,12 +18,12 @@ export class ProfileReadsService {
   constructor(
     private readonly profiles: ProfileRepository,
     private readonly writer: ProfilesService,
-    private readonly images: ProfileImagesService,
+    private readonly display: ProfileDisplayService,
   ) {}
 
   async own(userId: string): Promise<OwnProfile> {
     const profile = await this.writer.ensureProfile(userId);
-    return ownProfileView(profile, profileStrength(profile), await this.images.resolve(profile));
+    return ownProfileView(profile, profileStrength(profile), await this.display.resolve(profile));
   }
 
   /** Member view; a former handle answers with the current one (redirect). */
@@ -36,7 +36,7 @@ export class ProfileReadsService {
     const audience = resolved.userId === viewerId ? 'owner' : 'member';
     return {
       kind: 'found',
-      view: profileView(profile, audience, await this.images.resolve(profile)),
+      view: profileView(profile, audience, await this.display.resolve(profile)),
     };
   }
 
@@ -47,7 +47,7 @@ export class ProfileReadsService {
   async forPublic(handle: string): Promise<ProfileLookup> {
     const resolved = await this.profiles.resolveHandle(handle);
     const profile = resolved ? await this.profiles.findByUserId(resolved.userId) : null;
-    const view = profile ? publicProfileView(profile, await this.images.resolve(profile)) : null;
+    const view = profile ? publicProfileView(profile, await this.display.resolve(profile)) : null;
     if (!resolved || !profile || !view) throw notFound();
     return resolved.current
       ? { kind: 'found', view }

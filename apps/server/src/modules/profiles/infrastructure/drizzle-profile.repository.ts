@@ -12,7 +12,7 @@ import {
   structureTypeSchema,
   visibilityLevelSchema,
 } from '@pitchorium/contracts';
-import { and, eq, ne } from '@pitchorium/db/orm';
+import { and, eq, inArray, ne } from '@pitchorium/db/orm';
 import {
   profilesContributorFacets,
   profilesEntrepreneurFacets,
@@ -81,6 +81,7 @@ function toContributor(row: ContributorRow): ContributorFacet {
     hats: row.hats.map((hat) => contributorHatSchema.parse(hat)),
     structureType: structureTypeSchema.parse(row.structureType),
     organizationName: row.organizationName,
+    organizationId: row.organizationId,
     interventionCountryCodes: row.interventionCountryCodes,
     sectorCodes: row.sectorCodes,
     ticket:
@@ -128,6 +129,29 @@ export class DrizzleProfileRepository extends ProfileRepository {
       entrepreneur: entrepreneur ? toEntrepreneur(entrepreneur) : null,
       contributor: contributor ? toContributor(contributor) : null,
     };
+  }
+
+  async findBaseProfiles(userIds: readonly string[]): Promise<BaseProfile[]> {
+    if (userIds.length === 0) return [];
+    const rows = await this.db
+      .select()
+      .from(profilesProfiles)
+      .where(inArray(profilesProfiles.userId, [...userIds]));
+    return rows.map(toBase);
+  }
+
+  async clearContributorOrganization(userId: string, organizationId: string): Promise<boolean> {
+    const cleared = await this.db
+      .update(profilesContributorFacets)
+      .set({ organizationId: null })
+      .where(
+        and(
+          eq(profilesContributorFacets.userId, userId),
+          eq(profilesContributorFacets.organizationId, organizationId),
+        ),
+      )
+      .returning({ userId: profilesContributorFacets.userId });
+    return cleared.length > 0;
   }
 
   async resolveHandle(handle: string): Promise<{ userId: string; current: boolean } | null> {
@@ -288,6 +312,7 @@ export class DrizzleProfileRepository extends ProfileRepository {
       hats: facet.hats,
       structureType: facet.structureType,
       organizationName: facet.organizationName,
+      organizationId: facet.organizationId,
       interventionCountryCodes: facet.interventionCountryCodes,
       sectorCodes: facet.sectorCodes,
       ticketMinMinor: facet.ticket ? BigInt(facet.ticket.minAmountMinor) : null,

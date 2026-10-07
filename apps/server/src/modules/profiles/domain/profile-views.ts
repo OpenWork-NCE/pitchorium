@@ -9,16 +9,28 @@ import type { Profile } from './profile';
 
 export type Audience = 'owner' | 'member' | 'public';
 
-/** Display URLs resolved by the media module (fallback: the provider photo). */
-export interface ProfileImages {
-  avatarUrl: string | null;
-  coverUrl: string | null;
+export interface LinkedOrganization {
+  id: string;
+  slug: string;
+  name: string;
+  verified: boolean;
 }
 
-/** Without media: only the provider photo can be shown. */
-export const providerImages = (profile: Profile): ProfileImages => ({
+/**
+ * Data resolved by other modules: display URLs (media, fallback: the provider photo) and the
+ * organization linked to the contributor facet.
+ */
+export interface ProfileDisplay {
+  avatarUrl: string | null;
+  coverUrl: string | null;
+  contributorOrganization: LinkedOrganization | null;
+}
+
+/** Without other modules: only the provider photo can be shown. */
+export const minimalDisplay = (profile: Profile): ProfileDisplay => ({
   avatarUrl: profile.base.avatarUrl,
   coverUrl: null,
+  contributorOrganization: null,
 });
 
 function canSee(level: VisibilityLevel, audience: Audience): boolean {
@@ -31,9 +43,11 @@ function canSee(level: VisibilityLevel, audience: Audience): boolean {
 export function profileView(
   profile: Profile,
   audience: Audience,
-  images: ProfileImages = providerImages(profile),
+  display: ProfileDisplay = minimalDisplay(profile),
 ): ProfileView {
   const { base, entrepreneur, contributor } = profile;
+  const contributorVisible =
+    contributor !== null && canSee(base.visibility.contributorDetails, audience);
   return {
     handle: base.handle,
     displayName: base.displayName,
@@ -43,30 +57,30 @@ export function profileView(
     city: base.city,
     languages: base.languages,
     links: base.links,
-    avatarUrl: images.avatarUrl,
+    avatarUrl: display.avatarUrl,
     avatarMediaId: base.avatarMediaId,
-    coverUrl: images.coverUrl,
+    coverUrl: display.coverUrl,
     coverMediaId: base.coverMediaId,
     facets: { entrepreneur: entrepreneur !== null, contributor: contributor !== null },
     entrepreneur:
       entrepreneur && canSee(base.visibility.entrepreneurDetails, audience) ? entrepreneur : null,
-    contributor:
-      contributor && canSee(base.visibility.contributorDetails, audience) ? contributor : null,
+    contributor: contributorVisible ? contributor : null,
+    contributorOrganization: contributorVisible ? display.contributorOrganization : null,
   };
 }
 
 /** Null when the owner has not enabled the public page: the profile must not be found. */
-export function publicProfileView(profile: Profile, images?: ProfileImages): ProfileView | null {
-  return profile.base.visibility.publicPageEnabled ? profileView(profile, 'public', images) : null;
+export function publicProfileView(profile: Profile, display?: ProfileDisplay): ProfileView | null {
+  return profile.base.visibility.publicPageEnabled ? profileView(profile, 'public', display) : null;
 }
 
 export function ownProfileView(
   profile: Profile,
   strength: ProfileStrength,
-  images?: ProfileImages,
+  display?: ProfileDisplay,
 ): OwnProfile {
   return {
-    ...profileView(profile, 'owner', images),
+    ...profileView(profile, 'owner', display),
     userId: profile.base.userId,
     intention: profile.base.intention,
     visibility: profile.base.visibility,
@@ -78,13 +92,13 @@ export function ownProfileView(
 
 export function profileSummary(
   profile: Profile,
-  images: ProfileImages = providerImages(profile),
+  display: ProfileDisplay = minimalDisplay(profile),
 ): ProfileSummary {
   return {
     handle: profile.base.handle,
     displayName: profile.base.displayName,
     headline: profile.base.headline,
-    avatarUrl: images.avatarUrl,
+    avatarUrl: display.avatarUrl,
     intention: profile.base.intention,
     facets: {
       entrepreneur: profile.entrepreneur !== null,

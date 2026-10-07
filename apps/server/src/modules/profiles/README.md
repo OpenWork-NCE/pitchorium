@@ -9,7 +9,7 @@ Profils personne (cahier des charges §5, §7.2, §10.1) : profil de base, volet
 - Import de la photo du fournisseur : à la création du profil (`profiles.profile.created.v1`), la photo OAuth est confiée au module media (`requestImport`), téléchargée par le worker depuis une liste fermée d'hôtes et traitée comme un téléversement ; une fois prête (`media.asset.ready.v1`), elle devient la photo du profil, sauf si le membre en a choisi une entre-temps. En cas d'échec, l'URL du fournisseur reste affichée.
 - Intention (`carry_project`, `support_projects`, `both_or_exploring`) : facultative, modifiable, effaçable, sans effet sur les droits.
 - Volet entrepreneur (minimal : entreprise, secteur, stade, pays de l'entreprise) : le pays de l'entreprise doit être en Afrique (M49 002) ou dans les Caraïbes (M49 029), la personne peut résider ailleurs ; besoins, expertises recherchées (texte libre), financement visé (`Money`).
-- Volet contributeur (minimal : au moins une casquette et le type de structure) : organisation en texte libre, pays d'intervention, secteurs, ticket (fourchette en unités mineures, même devise, min ≤ max), instruments, types de mécénat, mentorat, missions d'expertise. Les deux volets peuvent coexister.
+- Volet contributeur (minimal : au moins une casquette et le type de structure) : organisation de la plateforme dont le membre fait partie (`organizationId`, vérifié auprès du module organizations) ou, à défaut, en texte libre ; pays d'intervention, secteurs, ticket (fourchette en unités mineures, même devise, min ≤ max), instruments, types de mécénat, mentorat, missions d'expertise. Les deux volets peuvent coexister.
 - Correspondance besoin vers casquette pour le matching (`NEED_TO_HATS`, provisoire) : financement vers investisseur, don vers mécène ou donateur, mentorat vers mentor, expertise vers expert, partenariat commercial vers partenaire commercial, recrutement vers recruteur.
 - Identifiant public (`handle`) : généré depuis le nom (`aissatou-ba`, puis `-2`, etc.), modifiable, liste de mots réservés ; les anciens identifiants restent attribués à leur titulaire et redirigent (301) vers l'actuel.
 - Force du profil : calcul déterministe et pondérations provisoires dans `domain/profile-strength.ts` ; niveaux `beginner` (< 40 %), `intermediate` (≥ 40 %), `advanced` (≥ 70 %), `complete` (100 %).
@@ -32,7 +32,9 @@ Profils personne (cahier des charges §5, §7.2, §10.1) : profil de base, volet
 
 ## Façade publique (`index.ts`)
 
-`ProfilesModule` et les classes d'événements ci-dessous.
+- `ProfilesFacade` : `assertCountries`, `assertSectors` (données de référence), `memberCards` (carte d'un membre : identifiant public, nom, titre, photo, page publique activée ou non), `unlinkOrganization`, `registerOrganizationDirectory`.
+- Interface `OrganizationDirectory`, implémentée et enregistrée par le module organizations au démarrage (`isMember`, `summaries`) : profiles valide le lien du volet contributeur et l'affiche (`contributorOrganization` dans les vues) sans dépendre de organizations. Sans annuaire enregistré, aucun lien n'est accepté.
+- `ProfilesModule` et les classes d'événements ci-dessous.
 
 ## Événements émis
 

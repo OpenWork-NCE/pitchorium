@@ -22,6 +22,9 @@ export interface BaseProfilePatch {
 
 export abstract class ProfileRepository {
   abstract findByUserId(userId: string): Promise<Profile | null>;
+  abstract findBaseProfiles(userIds: readonly string[]): Promise<BaseProfile[]>;
+  /** Clears the link of a contributor facet to this organization; false when there was none. */
+  abstract clearContributorOrganization(userId: string, organizationId: string): Promise<boolean>;
   /** Current handle first, then former handles (for redirects). */
   abstract resolveHandle(handle: string): Promise<{ userId: string; current: boolean } | null>;
   /** True when the handle is current for another member or was ever used by one. */
@@ -56,6 +59,22 @@ export interface ReferenceData {
   countries: CountryReferenceRow[];
   sectors: { code: string; isicSection: string }[];
   stages: { code: string }[];
+}
+
+export interface OrganizationSummary {
+  id: string;
+  slug: string;
+  name: string;
+  verified: boolean;
+}
+
+/**
+ * Implemented by the organizations module and registered at startup, so that profiles can
+ * validate and display the organization of a contributor without depending on it.
+ */
+export interface OrganizationDirectory {
+  isMember(organizationId: string, userId: string): Promise<boolean>;
+  summaries(organizationIds: readonly string[]): Promise<Map<string, OrganizationSummary>>;
 }
 
 export abstract class ReferenceDataRepository {

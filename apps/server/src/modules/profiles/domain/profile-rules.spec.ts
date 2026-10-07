@@ -47,6 +47,7 @@ const contributor: ContributorFacet = {
   hats: ['mentor'],
   structureType: 'individual',
   organizationName: null,
+  organizationId: null,
   interventionCountryCodes: [],
   sectorCodes: [],
   ticket: null,
