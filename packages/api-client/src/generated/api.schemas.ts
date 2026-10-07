@@ -113,7 +113,22 @@ export const ActionPrerequisitesDtoOutputAction = {
   profileupdate: 'profile.update',
   accessrolesread: 'access.roles.read',
   accessrolesmanage: 'access.roles.manage',
+  projectcreate: 'project.create',
+  projectread: 'project.read',
+  projectupdate: 'project.update',
+  projectdelete: 'project.delete',
   projectpublish: 'project.publish',
+  projectteammanage: 'project.team.manage',
+  projectteamleave: 'project.team.leave',
+  projectinvitationrespond: 'project.invitation.respond',
+  projectupdatespublish: 'project.updates.publish',
+  projectinterestexpress: 'project.interest.express',
+  projectinterestread: 'project.interest.read',
+  projectimpactassess: 'project.impact.assess',
+  projectfeature: 'project.feature',
+  impactmethodologymanage: 'impact.methodology.manage',
+  impactassessmentsubmit: 'impact.assessment.submit',
+  impactassessmentread: 'impact.assessment.read',
   mediaupload: 'media.upload',
   mediaread: 'media.read',
   mediadelete: 'media.delete',
@@ -232,6 +247,41 @@ export const ActionPrerequisitesDtoOutputCode = {
   CONTENT_COMMENTS_DISABLED: 'CONTENT_COMMENTS_DISABLED',
   CONTENT_REPLY_DEPTH: 'CONTENT_REPLY_DEPTH',
   CONTENT_ORGANIZATION_ROLE_REQUIRED: 'CONTENT_ORGANIZATION_ROLE_REQUIRED',
+  IMPACT_METHODOLOGY_UNAVAILABLE: 'IMPACT_METHODOLOGY_UNAVAILABLE',
+  IMPACT_METHODOLOGY_NOT_FOUND: 'IMPACT_METHODOLOGY_NOT_FOUND',
+  IMPACT_METHODOLOGY_NOT_DRAFT: 'IMPACT_METHODOLOGY_NOT_DRAFT',
+  IMPACT_METHODOLOGY_NOT_PUBLISHED: 'IMPACT_METHODOLOGY_NOT_PUBLISHED',
+  IMPACT_METHODOLOGY_OUTDATED: 'IMPACT_METHODOLOGY_OUTDATED',
+  IMPACT_ANSWERS_INVALID: 'IMPACT_ANSWERS_INVALID',
+  IMPACT_DEMO_REFUSED: 'IMPACT_DEMO_REFUSED',
+  PROJECTS_NOT_FOUND: 'PROJECTS_NOT_FOUND',
+  PROJECTS_SLUG_TAKEN: 'PROJECTS_SLUG_TAKEN',
+  PROJECTS_SLUG_RESERVED: 'PROJECTS_SLUG_RESERVED',
+  PROJECTS_NOT_DRAFT: 'PROJECTS_NOT_DRAFT',
+  PROJECTS_INVALID_TRANSITION: 'PROJECTS_INVALID_TRANSITION',
+  PROJECTS_NOT_PUBLISHABLE: 'PROJECTS_NOT_PUBLISHABLE',
+  PROJECTS_PUBLIC_DISPLAY_CONSENT_REQUIRED: 'PROJECTS_PUBLIC_DISPLAY_CONSENT_REQUIRED',
+  PROJECTS_IMPACT_ASSESSMENT_REQUIRED: 'PROJECTS_IMPACT_ASSESSMENT_REQUIRED',
+  PROJECTS_CURRENCY_NOT_SUPPORTED: 'PROJECTS_CURRENCY_NOT_SUPPORTED',
+  PROJECTS_TIERS_INVALID: 'PROJECTS_TIERS_INVALID',
+  PROJECTS_COUNTRY_NOT_ELIGIBLE: 'PROJECTS_COUNTRY_NOT_ELIGIBLE',
+  PROJECTS_VIDEO_URL_INVALID: 'PROJECTS_VIDEO_URL_INVALID',
+  PROJECTS_DESCRIPTION_INVALID: 'PROJECTS_DESCRIPTION_INVALID',
+  PROJECTS_FUNDING_LOCKED: 'PROJECTS_FUNDING_LOCKED',
+  PROJECTS_ORGANIZATION_ROLE_REQUIRED: 'PROJECTS_ORGANIZATION_ROLE_REQUIRED',
+  PROJECTS_TEAM_MEMBER_NOT_FOUND: 'PROJECTS_TEAM_MEMBER_NOT_FOUND',
+  PROJECTS_TEAM_MEMBER_EXISTS: 'PROJECTS_TEAM_MEMBER_EXISTS',
+  PROJECTS_INVITATION_NOT_FOUND: 'PROJECTS_INVITATION_NOT_FOUND',
+  PROJECTS_LAST_OWNER: 'PROJECTS_LAST_OWNER',
+  PROJECTS_REWARD_NOT_FOUND: 'PROJECTS_REWARD_NOT_FOUND',
+  PROJECTS_REWARD_INVALID: 'PROJECTS_REWARD_INVALID',
+  PROJECTS_REWARD_SOLD_OUT: 'PROJECTS_REWARD_SOLD_OUT',
+  PROJECTS_REWARD_IN_USE: 'PROJECTS_REWARD_IN_USE',
+  PROJECTS_RESERVATION_NOT_FOUND: 'PROJECTS_RESERVATION_NOT_FOUND',
+  PROJECTS_UPDATE_NOT_FOUND: 'PROJECTS_UPDATE_NOT_FOUND',
+  PROJECTS_NOT_OPEN: 'PROJECTS_NOT_OPEN',
+  PROJECTS_CONTRIBUTION_CONFLICT: 'PROJECTS_CONTRIBUTION_CONFLICT',
+  PROJECTS_CONTRIBUTION_NOT_FOUND: 'PROJECTS_CONTRIBUTION_NOT_FOUND',
   INTERNAL_ERROR: 'INTERNAL_ERROR',
   SERVICE_UNAVAILABLE: 'SERVICE_UNAVAILABLE',
 } as const;
@@ -1268,6 +1318,8 @@ export const MediaUsagesDtoOutputItemsItemUsage = {
   post_document: 'post_document',
   project_gallery: 'project_gallery',
   project_document: 'project_document',
+  project_update_image: 'project_update_image',
+  project_interest_document: 'project_interest_document',
   message_attachment: 'message_attachment',
   verification_document: 'verification_document',
   link_preview: 'link_preview',
@@ -1328,6 +1380,8 @@ export const CreateUploadDtoUsage = {
   post_document: 'post_document',
   project_gallery: 'project_gallery',
   project_document: 'project_document',
+  project_update_image: 'project_update_image',
+  project_interest_document: 'project_interest_document',
   message_attachment: 'message_attachment',
   verification_document: 'verification_document',
   link_preview: 'link_preview',
@@ -1365,6 +1419,8 @@ export const UploadTicketDtoOutputMediaUsage = {
   post_document: 'post_document',
   project_gallery: 'project_gallery',
   project_document: 'project_document',
+  project_update_image: 'project_update_image',
+  project_interest_document: 'project_interest_document',
   message_attachment: 'message_attachment',
   verification_document: 'verification_document',
   link_preview: 'link_preview',
@@ -1488,6 +1544,8 @@ export const MediaAssetDtoOutputUsage = {
   post_document: 'post_document',
   project_gallery: 'project_gallery',
   project_document: 'project_document',
+  project_update_image: 'project_update_image',
+  project_interest_document: 'project_interest_document',
   message_attachment: 'message_attachment',
   verification_document: 'verification_document',
   link_preview: 'link_preview',
@@ -1789,7 +1847,7 @@ export interface UpdateOrganizationDto {
 }
 
 export interface ChangeSlugDto {
-  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,59}$ */
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,79}$ */
   slug: string;
 }
 
@@ -1860,37 +1918,154 @@ export interface InvitationDtoOutput {
   createdAt: string;
 }
 
+export type InvitationsDtoOutputItemsItemProjectStatus =
+  (typeof InvitationsDtoOutputItemsItemProjectStatus)[keyof typeof InvitationsDtoOutputItemsItemProjectStatus];
+
+export const InvitationsDtoOutputItemsItemProjectStatus = {
+  draft: 'draft',
+  funding: 'funding',
+  funded: 'funded',
+  closed: 'closed',
+} as const;
+
+export type InvitationsDtoOutputItemsItemProjectOwner = {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  displayName: string;
+  /** @nullable */
+  headline: string | null;
+  /** @nullable */
+  avatarUrl: string | null;
+} | null;
+
+export type InvitationsDtoOutputItemsItemProjectOrganization = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  slug: string;
+  name: string;
+  /** @nullable */
+  logoUrl: string | null;
+  verified: boolean;
+} | null;
+
+export type InvitationsDtoOutputItemsItemProjectFundingGoal = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+} | null;
+
+export type InvitationsDtoOutputItemsItemProjectFundingCollected = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+};
+
+export type InvitationsDtoOutputItemsItemProjectFundingInstrumentsItem =
+  (typeof InvitationsDtoOutputItemsItemProjectFundingInstrumentsItem)[keyof typeof InvitationsDtoOutputItemsItemProjectFundingInstrumentsItem];
+
+export const InvitationsDtoOutputItemsItemProjectFundingInstrumentsItem = {
+  donation: 'donation',
+  reward_crowdfunding: 'reward_crowdfunding',
+  love_money: 'love_money',
+  grant: 'grant',
+  honor_loan: 'honor_loan',
+  equity: 'equity',
+  convertible_bonds: 'convertible_bonds',
+} as const;
+
+export type InvitationsDtoOutputItemsItemProjectFunding = {
+  goal: InvitationsDtoOutputItemsItemProjectFundingGoal;
+  collected: InvitationsDtoOutputItemsItemProjectFundingCollected;
+  /**
+   * @minimum 0
+   * @maximum 9007199254740991
+   */
+  progressPercent: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  contributionCount: number;
+  daysLeft: number | null;
+  instruments: InvitationsDtoOutputItemsItemProjectFundingInstrumentsItem[];
+  opensCapital: boolean;
+};
+
+export type InvitationsDtoOutputItemsItemProjectImpactLevel =
+  (typeof InvitationsDtoOutputItemsItemProjectImpactLevel)[keyof typeof InvitationsDtoOutputItemsItemProjectImpactLevel];
+
+export const InvitationsDtoOutputItemsItemProjectImpactLevel = {
+  emerging: 'emerging',
+  moderate: 'moderate',
+  strong: 'strong',
+} as const;
+
+export type InvitationsDtoOutputItemsItemProjectImpact = {
+  selfDeclared: true;
+  /**
+   * @minimum 0
+   * @maximum 100
+   */
+  score: number;
+  level: InvitationsDtoOutputItemsItemProjectImpactLevel;
+  /**
+   * @maximum 9007199254740991
+   * @exclusiveMinimum 0
+   */
+  methodologyVersion: number;
+} | null;
+
+export type InvitationsDtoOutputItemsItemProject = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,79}$ */
+  slug: string;
+  title: string;
+  /** @nullable */
+  summary: string | null;
+  status: InvitationsDtoOutputItemsItemProjectStatus;
+  /** @nullable */
+  sectorCode: string | null;
+  countryCodes: string[];
+  /** @nullable */
+  coverImageUrl: string | null;
+  owner: InvitationsDtoOutputItemsItemProjectOwner;
+  organization: InvitationsDtoOutputItemsItemProjectOrganization;
+  funding: InvitationsDtoOutputItemsItemProjectFunding;
+  impact: InvitationsDtoOutputItemsItemProjectImpact;
+  featured: boolean;
+  publishedAt: string | null;
+  endsAt: string | null;
+};
+
 export type InvitationsDtoOutputItemsItemRole =
   (typeof InvitationsDtoOutputItemsItemRole)[keyof typeof InvitationsDtoOutputItemsItemRole];
 
 export const InvitationsDtoOutputItemsItemRole = {
-  admin: 'admin',
-  member: 'member',
+  owner: 'owner',
+  editor: 'editor',
 } as const;
 
-export type InvitationsDtoOutputItemsItemStatus =
-  (typeof InvitationsDtoOutputItemsItemStatus)[keyof typeof InvitationsDtoOutputItemsItemStatus];
-
-export const InvitationsDtoOutputItemsItemStatus = {
-  pending: 'pending',
-  accepted: 'accepted',
-  declined: 'declined',
-  revoked: 'revoked',
-  expired: 'expired',
-} as const;
+export type InvitationsDtoOutputItemsItemInvitedBy = {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  displayName: string;
+  /** @nullable */
+  headline: string | null;
+  /** @nullable */
+  avatarUrl: string | null;
+} | null;
 
 export type InvitationsDtoOutputItemsItem = {
-  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
-  id: string;
-  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
-  organizationId: string;
-  email: string;
+  project: InvitationsDtoOutputItemsItemProject;
   role: InvitationsDtoOutputItemsItemRole;
-  status: InvitationsDtoOutputItemsItemStatus;
+  /** @nullable */
+  function: string | null;
+  invitedBy: InvitationsDtoOutputItemsItemInvitedBy;
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
-  expiresAt: string;
-  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
-  createdAt: string;
+  invitedAt: string;
 };
 
 export interface InvitationsDtoOutput {
@@ -3202,6 +3377,61 @@ export type FeedPageDtoOutputItemsItem =
           editedAt: string | null;
         } | null;
       };
+    }
+  | {
+      type: 'project_update';
+      id: string;
+      update: {
+        /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+        id: string;
+        /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+        projectId: string;
+        author: {
+          /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+          handle: string;
+          displayName: string;
+          /** @nullable */
+          headline: string | null;
+          /** @nullable */
+          avatarUrl: string | null;
+        };
+        text: string;
+        images: {
+          /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+          mediaId: string;
+          url: string;
+          variants: {
+            [key: string]: {
+              /**
+               * @minimum -9007199254740991
+               * @maximum 9007199254740991
+               */
+              width: number;
+              /**
+               * @minimum -9007199254740991
+               * @maximum 9007199254740991
+               */
+              height: number;
+              /** @nullable */
+              webp: string | null;
+              /** @nullable */
+              avif: string | null;
+            };
+          };
+        }[];
+        /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+        publishedAt: string;
+        editedAt: string | null;
+        project: {
+          /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+          id: string;
+          /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,79}$ */
+          slug: string;
+          title: string;
+          /** @nullable */
+          coverImageUrl: string | null;
+        };
+      };
     };
 
 export interface FeedPageDtoOutput {
@@ -4323,6 +4553,2142 @@ export interface UpdateCommentDto {
   text: string;
 }
 
+export type MethodologyDtoOutputStatus =
+  (typeof MethodologyDtoOutputStatus)[keyof typeof MethodologyDtoOutputStatus];
+
+export const MethodologyDtoOutputStatus = {
+  draft: 'draft',
+  published: 'published',
+  archived: 'archived',
+} as const;
+
+export type MethodologyDtoOutputCriteriaItemScaleItem = {
+  /** @pattern ^[a-z][a-z0-9_]{0,47}$ */
+  key: string;
+  /**
+   * @maxLength 128
+   * @pattern ^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)+$
+   */
+  labelKey: string;
+  /**
+   * @minimum 0
+   * @maximum 100
+   */
+  value: number;
+};
+
+export type MethodologyDtoOutputCriteriaItem = {
+  /** @pattern ^[a-z][a-z0-9_]{0,47}$ */
+  key: string;
+  /**
+   * @maxLength 128
+   * @pattern ^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)+$
+   */
+  labelKey: string;
+  /**
+   * @maxLength 128
+   * @pattern ^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)+$
+   */
+  descriptionKey: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  weight: number;
+  /**
+   * @minItems 2
+   * @maxItems 10
+   */
+  scale: MethodologyDtoOutputCriteriaItemScaleItem[];
+};
+
+export interface MethodologyDtoOutput {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  /**
+   * @maximum 9007199254740991
+   * @exclusiveMinimum 0
+   */
+  version: number;
+  name: string;
+  status: MethodologyDtoOutputStatus;
+  demo: boolean;
+  criteria: MethodologyDtoOutputCriteriaItem[];
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+  publishedAt: string | null;
+  archivedAt: string | null;
+}
+
+export type MethodologiesDtoOutputItemsItemStatus =
+  (typeof MethodologiesDtoOutputItemsItemStatus)[keyof typeof MethodologiesDtoOutputItemsItemStatus];
+
+export const MethodologiesDtoOutputItemsItemStatus = {
+  draft: 'draft',
+  published: 'published',
+  archived: 'archived',
+} as const;
+
+export type MethodologiesDtoOutputItemsItemCriteriaItemScaleItem = {
+  /** @pattern ^[a-z][a-z0-9_]{0,47}$ */
+  key: string;
+  /**
+   * @maxLength 128
+   * @pattern ^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)+$
+   */
+  labelKey: string;
+  /**
+   * @minimum 0
+   * @maximum 100
+   */
+  value: number;
+};
+
+export type MethodologiesDtoOutputItemsItemCriteriaItem = {
+  /** @pattern ^[a-z][a-z0-9_]{0,47}$ */
+  key: string;
+  /**
+   * @maxLength 128
+   * @pattern ^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)+$
+   */
+  labelKey: string;
+  /**
+   * @maxLength 128
+   * @pattern ^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)+$
+   */
+  descriptionKey: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  weight: number;
+  /**
+   * @minItems 2
+   * @maxItems 10
+   */
+  scale: MethodologiesDtoOutputItemsItemCriteriaItemScaleItem[];
+};
+
+export type MethodologiesDtoOutputItemsItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  /**
+   * @maximum 9007199254740991
+   * @exclusiveMinimum 0
+   */
+  version: number;
+  name: string;
+  status: MethodologiesDtoOutputItemsItemStatus;
+  demo: boolean;
+  criteria: MethodologiesDtoOutputItemsItemCriteriaItem[];
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+  publishedAt: string | null;
+  archivedAt: string | null;
+};
+
+export interface MethodologiesDtoOutput {
+  items: MethodologiesDtoOutputItemsItem[];
+}
+
+export type CreateMethodologyDtoCriteriaItemScaleItem = {
+  /** @pattern ^[a-z][a-z0-9_]{0,47}$ */
+  key: string;
+  /**
+   * @maxLength 128
+   * @pattern ^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)+$
+   */
+  labelKey: string;
+  /**
+   * @minimum 0
+   * @maximum 100
+   */
+  value: number;
+};
+
+export type CreateMethodologyDtoCriteriaItem = {
+  /** @pattern ^[a-z][a-z0-9_]{0,47}$ */
+  key: string;
+  /**
+   * @maxLength 128
+   * @pattern ^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)+$
+   */
+  labelKey: string;
+  /**
+   * @maxLength 128
+   * @pattern ^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)+$
+   */
+  descriptionKey: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  weight: number;
+  /**
+   * @minItems 2
+   * @maxItems 10
+   */
+  scale: CreateMethodologyDtoCriteriaItemScaleItem[];
+};
+
+export interface CreateMethodologyDto {
+  /**
+   * @minLength 1
+   * @maxLength 120
+   */
+  name: string;
+  /**
+   * @minItems 1
+   * @maxItems 30
+   */
+  criteria: CreateMethodologyDtoCriteriaItem[];
+}
+
+export type UpdateMethodologyDtoCriteriaItemScaleItem = {
+  /** @pattern ^[a-z][a-z0-9_]{0,47}$ */
+  key: string;
+  /**
+   * @maxLength 128
+   * @pattern ^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)+$
+   */
+  labelKey: string;
+  /**
+   * @minimum 0
+   * @maximum 100
+   */
+  value: number;
+};
+
+export type UpdateMethodologyDtoCriteriaItem = {
+  /** @pattern ^[a-z][a-z0-9_]{0,47}$ */
+  key: string;
+  /**
+   * @maxLength 128
+   * @pattern ^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)+$
+   */
+  labelKey: string;
+  /**
+   * @maxLength 128
+   * @pattern ^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)+$
+   */
+  descriptionKey: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  weight: number;
+  /**
+   * @minItems 2
+   * @maxItems 10
+   */
+  scale: UpdateMethodologyDtoCriteriaItemScaleItem[];
+};
+
+export interface UpdateMethodologyDto {
+  /**
+   * @minLength 1
+   * @maxLength 120
+   */
+  name: string;
+  /**
+   * @minItems 1
+   * @maxItems 30
+   */
+  criteria: UpdateMethodologyDtoCriteriaItem[];
+}
+
+export type AssessmentHistoryDtoOutputItemsItemSubjectType =
+  (typeof AssessmentHistoryDtoOutputItemsItemSubjectType)[keyof typeof AssessmentHistoryDtoOutputItemsItemSubjectType];
+
+export const AssessmentHistoryDtoOutputItemsItemSubjectType = {
+  entrepreneur_facet: 'entrepreneur_facet',
+  project: 'project',
+} as const;
+
+export type AssessmentHistoryDtoOutputItemsItemMethodology = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  /**
+   * @maximum 9007199254740991
+   * @exclusiveMinimum 0
+   */
+  version: number;
+  name: string;
+  demo: boolean;
+};
+
+export type AssessmentHistoryDtoOutputItemsItemLevel =
+  (typeof AssessmentHistoryDtoOutputItemsItemLevel)[keyof typeof AssessmentHistoryDtoOutputItemsItemLevel];
+
+export const AssessmentHistoryDtoOutputItemsItemLevel = {
+  emerging: 'emerging',
+  moderate: 'moderate',
+  strong: 'strong',
+} as const;
+
+export type AssessmentHistoryDtoOutputItemsItemDetailsItem = {
+  /** @pattern ^[a-z][a-z0-9_]{0,47}$ */
+  criterionKey: string;
+  /**
+   * @maxLength 128
+   * @pattern ^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)+$
+   */
+  labelKey: string;
+  /**
+   * @maxLength 128
+   * @pattern ^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)+$
+   */
+  descriptionKey: string;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  weight: number;
+  /** @pattern ^[a-z][a-z0-9_]{0,47}$ */
+  answerKey: string;
+  /**
+   * @maxLength 128
+   * @pattern ^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)+$
+   */
+  answerLabelKey: string;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  value: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  maxValue: number;
+};
+
+export type AssessmentHistoryDtoOutputItemsItemSource =
+  (typeof AssessmentHistoryDtoOutputItemsItemSource)[keyof typeof AssessmentHistoryDtoOutputItemsItemSource];
+
+export const AssessmentHistoryDtoOutputItemsItemSource = {
+  answered: 'answered',
+  prefilled: 'prefilled',
+} as const;
+
+export type AssessmentHistoryDtoOutputItemsItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  subjectType: AssessmentHistoryDtoOutputItemsItemSubjectType;
+  selfDeclared: true;
+  methodology: AssessmentHistoryDtoOutputItemsItemMethodology;
+  /**
+   * @minimum 0
+   * @maximum 100
+   */
+  score: number;
+  level: AssessmentHistoryDtoOutputItemsItemLevel;
+  details: AssessmentHistoryDtoOutputItemsItemDetailsItem[];
+  source: AssessmentHistoryDtoOutputItemsItemSource;
+  reassessmentSuggested: boolean;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  submittedAt: string;
+};
+
+export interface AssessmentHistoryDtoOutput {
+  items: AssessmentHistoryDtoOutputItemsItem[];
+}
+
+export type SubmitAssessmentDtoAnswers = { [key: string]: string };
+
+export interface SubmitAssessmentDto {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  methodologyId: string;
+  answers: SubmitAssessmentDtoAnswers;
+}
+
+export type AssessmentDtoOutputSubjectType =
+  (typeof AssessmentDtoOutputSubjectType)[keyof typeof AssessmentDtoOutputSubjectType];
+
+export const AssessmentDtoOutputSubjectType = {
+  entrepreneur_facet: 'entrepreneur_facet',
+  project: 'project',
+} as const;
+
+export type AssessmentDtoOutputMethodology = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  /**
+   * @maximum 9007199254740991
+   * @exclusiveMinimum 0
+   */
+  version: number;
+  name: string;
+  demo: boolean;
+};
+
+export type AssessmentDtoOutputLevel =
+  (typeof AssessmentDtoOutputLevel)[keyof typeof AssessmentDtoOutputLevel];
+
+export const AssessmentDtoOutputLevel = {
+  emerging: 'emerging',
+  moderate: 'moderate',
+  strong: 'strong',
+} as const;
+
+export type AssessmentDtoOutputDetailsItem = {
+  /** @pattern ^[a-z][a-z0-9_]{0,47}$ */
+  criterionKey: string;
+  /**
+   * @maxLength 128
+   * @pattern ^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)+$
+   */
+  labelKey: string;
+  /**
+   * @maxLength 128
+   * @pattern ^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)+$
+   */
+  descriptionKey: string;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  weight: number;
+  /** @pattern ^[a-z][a-z0-9_]{0,47}$ */
+  answerKey: string;
+  /**
+   * @maxLength 128
+   * @pattern ^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)+$
+   */
+  answerLabelKey: string;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  value: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  maxValue: number;
+};
+
+export type AssessmentDtoOutputSource =
+  (typeof AssessmentDtoOutputSource)[keyof typeof AssessmentDtoOutputSource];
+
+export const AssessmentDtoOutputSource = {
+  answered: 'answered',
+  prefilled: 'prefilled',
+} as const;
+
+export interface AssessmentDtoOutput {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  subjectType: AssessmentDtoOutputSubjectType;
+  selfDeclared: true;
+  methodology: AssessmentDtoOutputMethodology;
+  /**
+   * @minimum 0
+   * @maximum 100
+   */
+  score: number;
+  level: AssessmentDtoOutputLevel;
+  details: AssessmentDtoOutputDetailsItem[];
+  source: AssessmentDtoOutputSource;
+  reassessmentSuggested: boolean;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  submittedAt: string;
+}
+
+export type CreateProjectDtoInstrumentsItem =
+  (typeof CreateProjectDtoInstrumentsItem)[keyof typeof CreateProjectDtoInstrumentsItem];
+
+export const CreateProjectDtoInstrumentsItem = {
+  donation: 'donation',
+  reward_crowdfunding: 'reward_crowdfunding',
+  love_money: 'love_money',
+  grant: 'grant',
+  honor_loan: 'honor_loan',
+  equity: 'equity',
+  convertible_bonds: 'convertible_bonds',
+} as const;
+
+export type CreateProjectDtoGoal = {
+  /** @pattern ^[1-9]\d{0,17}$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+};
+
+export interface CreateProjectDto {
+  /**
+   * @minLength 1
+   * @maxLength 120
+   */
+  title: string;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  organizationId?: string;
+  /**
+   * @minLength 1
+   * @maxLength 300
+   */
+  summary?: string;
+  /**
+   * @minLength 1
+   * @maxLength 20000
+   */
+  description?: string;
+  /** @pattern ^[a-z0-9_]{1,48}$ */
+  sectorCode?: string;
+  /**
+   * @minLength 1
+   * @maxLength 200
+   */
+  impactArea?: string;
+  /**
+   * @minItems 1
+   * @maxItems 10
+   * @items.pattern ^[A-Z]{2}$
+   */
+  countryCodes?: string[];
+  /** @maxLength 2048 */
+  videoUrl?: string;
+  /**
+   * @minItems 1
+   * @maxItems 7
+   */
+  instruments?: CreateProjectDtoInstrumentsItem[];
+  opensCapital?: boolean;
+  goal?: CreateProjectDtoGoal;
+  /**
+   * @minimum 30
+   * @maximum 90
+   */
+  durationDays?: number;
+}
+
+export type ProjectDtoOutputStatus =
+  (typeof ProjectDtoOutputStatus)[keyof typeof ProjectDtoOutputStatus];
+
+export const ProjectDtoOutputStatus = {
+  draft: 'draft',
+  funding: 'funding',
+  funded: 'funded',
+  closed: 'closed',
+} as const;
+
+export type ProjectDtoOutputOwner = {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  displayName: string;
+  /** @nullable */
+  headline: string | null;
+  /** @nullable */
+  avatarUrl: string | null;
+} | null;
+
+export type ProjectDtoOutputOrganization = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  slug: string;
+  name: string;
+  /** @nullable */
+  logoUrl: string | null;
+  verified: boolean;
+} | null;
+
+export type ProjectDtoOutputFundingGoal = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+} | null;
+
+export type ProjectDtoOutputFundingCollected = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+};
+
+export type ProjectDtoOutputFundingInstrumentsItem =
+  (typeof ProjectDtoOutputFundingInstrumentsItem)[keyof typeof ProjectDtoOutputFundingInstrumentsItem];
+
+export const ProjectDtoOutputFundingInstrumentsItem = {
+  donation: 'donation',
+  reward_crowdfunding: 'reward_crowdfunding',
+  love_money: 'love_money',
+  grant: 'grant',
+  honor_loan: 'honor_loan',
+  equity: 'equity',
+  convertible_bonds: 'convertible_bonds',
+} as const;
+
+export type ProjectDtoOutputFunding = {
+  goal: ProjectDtoOutputFundingGoal;
+  collected: ProjectDtoOutputFundingCollected;
+  /**
+   * @minimum 0
+   * @maximum 9007199254740991
+   */
+  progressPercent: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  contributionCount: number;
+  daysLeft: number | null;
+  instruments: ProjectDtoOutputFundingInstrumentsItem[];
+  opensCapital: boolean;
+};
+
+export type ProjectDtoOutputImpactLevel =
+  (typeof ProjectDtoOutputImpactLevel)[keyof typeof ProjectDtoOutputImpactLevel];
+
+export const ProjectDtoOutputImpactLevel = {
+  emerging: 'emerging',
+  moderate: 'moderate',
+  strong: 'strong',
+} as const;
+
+export type ProjectDtoOutputImpact = {
+  selfDeclared: true;
+  /**
+   * @minimum 0
+   * @maximum 100
+   */
+  score: number;
+  level: ProjectDtoOutputImpactLevel;
+  /**
+   * @maximum 9007199254740991
+   * @exclusiveMinimum 0
+   */
+  methodologyVersion: number;
+} | null;
+
+export type ProjectDtoOutputVideoProvider =
+  (typeof ProjectDtoOutputVideoProvider)[keyof typeof ProjectDtoOutputVideoProvider];
+
+export const ProjectDtoOutputVideoProvider = {
+  youtube: 'youtube',
+  vimeo: 'vimeo',
+} as const;
+
+export type ProjectDtoOutputVideo = {
+  provider: ProjectDtoOutputVideoProvider;
+  videoId: string;
+  embedUrl: string;
+} | null;
+
+export type ProjectDtoOutputGalleryItemVariants = {
+  [key: string]: {
+    /**
+     * @minimum -9007199254740991
+     * @maximum 9007199254740991
+     */
+    width: number;
+    /**
+     * @minimum -9007199254740991
+     * @maximum 9007199254740991
+     */
+    height: number;
+    /** @nullable */
+    webp: string | null;
+    /** @nullable */
+    avif: string | null;
+  };
+};
+
+export type ProjectDtoOutputGalleryItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  mediaId: string;
+  url: string;
+  variants: ProjectDtoOutputGalleryItemVariants;
+};
+
+export type ProjectDtoOutputDocumentsItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  mediaId: string;
+  pageCount: number | null;
+  /** @nullable */
+  thumbnailUrl: string | null;
+};
+
+export type ProjectDtoOutputTiersItemThreshold = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+};
+
+export type ProjectDtoOutputTiersItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  /**
+   * @minimum 1
+   * @maximum 9007199254740991
+   */
+  position: number;
+  threshold: ProjectDtoOutputTiersItemThreshold;
+  description: string;
+  unlocked: boolean;
+  unlockedAt: string | null;
+};
+
+export type ProjectDtoOutputRewardsItemMinAmount = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+};
+
+export type ProjectDtoOutputRewardsItemInstrumentsItem =
+  (typeof ProjectDtoOutputRewardsItemInstrumentsItem)[keyof typeof ProjectDtoOutputRewardsItemInstrumentsItem];
+
+export const ProjectDtoOutputRewardsItemInstrumentsItem = {
+  donation: 'donation',
+  reward_crowdfunding: 'reward_crowdfunding',
+} as const;
+
+export type ProjectDtoOutputRewardsItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  title: string;
+  description: string;
+  minAmount: ProjectDtoOutputRewardsItemMinAmount;
+  instruments: ProjectDtoOutputRewardsItemInstrumentsItem[];
+  quantity: number | null;
+  available: number | null;
+  soldOut: boolean;
+  estimatedDelivery: string | null;
+};
+
+export type ProjectDtoOutputUpdatesItemAuthor = {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  displayName: string;
+  /** @nullable */
+  headline: string | null;
+  /** @nullable */
+  avatarUrl: string | null;
+};
+
+export type ProjectDtoOutputUpdatesItemImagesItemVariants = {
+  [key: string]: {
+    /**
+     * @minimum -9007199254740991
+     * @maximum 9007199254740991
+     */
+    width: number;
+    /**
+     * @minimum -9007199254740991
+     * @maximum 9007199254740991
+     */
+    height: number;
+    /** @nullable */
+    webp: string | null;
+    /** @nullable */
+    avif: string | null;
+  };
+};
+
+export type ProjectDtoOutputUpdatesItemImagesItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  mediaId: string;
+  url: string;
+  variants: ProjectDtoOutputUpdatesItemImagesItemVariants;
+};
+
+export type ProjectDtoOutputUpdatesItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  projectId: string;
+  author: ProjectDtoOutputUpdatesItemAuthor;
+  text: string;
+  images: ProjectDtoOutputUpdatesItemImagesItem[];
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  publishedAt: string;
+  editedAt: string | null;
+};
+
+export type ProjectDtoOutputTeamItemMember = {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  displayName: string;
+  /** @nullable */
+  headline: string | null;
+  /** @nullable */
+  avatarUrl: string | null;
+};
+
+export type ProjectDtoOutputTeamItemRole =
+  (typeof ProjectDtoOutputTeamItemRole)[keyof typeof ProjectDtoOutputTeamItemRole];
+
+export const ProjectDtoOutputTeamItemRole = {
+  owner: 'owner',
+  editor: 'editor',
+} as const;
+
+export type ProjectDtoOutputTeamItem = {
+  member: ProjectDtoOutputTeamItemMember;
+  role: ProjectDtoOutputTeamItemRole;
+  /** @nullable */
+  function: string | null;
+};
+
+export type ProjectDtoOutputImpactAssessmentSubjectType =
+  (typeof ProjectDtoOutputImpactAssessmentSubjectType)[keyof typeof ProjectDtoOutputImpactAssessmentSubjectType];
+
+export const ProjectDtoOutputImpactAssessmentSubjectType = {
+  entrepreneur_facet: 'entrepreneur_facet',
+  project: 'project',
+} as const;
+
+export type ProjectDtoOutputImpactAssessmentMethodology = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  /**
+   * @maximum 9007199254740991
+   * @exclusiveMinimum 0
+   */
+  version: number;
+  name: string;
+  demo: boolean;
+};
+
+export type ProjectDtoOutputImpactAssessmentLevel =
+  (typeof ProjectDtoOutputImpactAssessmentLevel)[keyof typeof ProjectDtoOutputImpactAssessmentLevel];
+
+export const ProjectDtoOutputImpactAssessmentLevel = {
+  emerging: 'emerging',
+  moderate: 'moderate',
+  strong: 'strong',
+} as const;
+
+export type ProjectDtoOutputImpactAssessmentDetailsItem = {
+  /** @pattern ^[a-z][a-z0-9_]{0,47}$ */
+  criterionKey: string;
+  /**
+   * @maxLength 128
+   * @pattern ^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)+$
+   */
+  labelKey: string;
+  /**
+   * @maxLength 128
+   * @pattern ^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)+$
+   */
+  descriptionKey: string;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  weight: number;
+  /** @pattern ^[a-z][a-z0-9_]{0,47}$ */
+  answerKey: string;
+  /**
+   * @maxLength 128
+   * @pattern ^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)+$
+   */
+  answerLabelKey: string;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  value: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  maxValue: number;
+};
+
+export type ProjectDtoOutputImpactAssessmentSource =
+  (typeof ProjectDtoOutputImpactAssessmentSource)[keyof typeof ProjectDtoOutputImpactAssessmentSource];
+
+export const ProjectDtoOutputImpactAssessmentSource = {
+  answered: 'answered',
+  prefilled: 'prefilled',
+} as const;
+
+export type ProjectDtoOutputImpactAssessment = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  subjectType: ProjectDtoOutputImpactAssessmentSubjectType;
+  selfDeclared: true;
+  methodology: ProjectDtoOutputImpactAssessmentMethodology;
+  /**
+   * @minimum 0
+   * @maximum 100
+   */
+  score: number;
+  level: ProjectDtoOutputImpactAssessmentLevel;
+  details: ProjectDtoOutputImpactAssessmentDetailsItem[];
+  source: ProjectDtoOutputImpactAssessmentSource;
+  reassessmentSuggested: boolean;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  submittedAt: string;
+} | null;
+
+export type ProjectDtoOutputShare = {
+  title: string;
+  /** @nullable */
+  description: string | null;
+  /** @nullable */
+  imageUrl: string | null;
+};
+
+export type ProjectDtoOutputViewerTeamRole =
+  (typeof ProjectDtoOutputViewerTeamRole)[keyof typeof ProjectDtoOutputViewerTeamRole] | null;
+
+export const ProjectDtoOutputViewerTeamRole = {
+  owner: 'owner',
+  editor: 'editor',
+} as const;
+
+export type ProjectDtoOutputViewer = {
+  following: boolean;
+  teamRole: ProjectDtoOutputViewerTeamRole;
+} | null;
+
+export type ProjectDtoOutputManagementViewerRole =
+  (typeof ProjectDtoOutputManagementViewerRole)[keyof typeof ProjectDtoOutputManagementViewerRole];
+
+export const ProjectDtoOutputManagementViewerRole = {
+  owner: 'owner',
+  editor: 'editor',
+} as const;
+
+export type ProjectDtoOutputManagementModerationStatus =
+  (typeof ProjectDtoOutputManagementModerationStatus)[keyof typeof ProjectDtoOutputManagementModerationStatus];
+
+export const ProjectDtoOutputManagementModerationStatus = {
+  visible: 'visible',
+  hidden: 'hidden',
+  removed: 'removed',
+} as const;
+
+export type ProjectDtoOutputManagementInvitationsItemMember = {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  displayName: string;
+  /** @nullable */
+  headline: string | null;
+  /** @nullable */
+  avatarUrl: string | null;
+};
+
+export type ProjectDtoOutputManagementInvitationsItemRole =
+  (typeof ProjectDtoOutputManagementInvitationsItemRole)[keyof typeof ProjectDtoOutputManagementInvitationsItemRole];
+
+export const ProjectDtoOutputManagementInvitationsItemRole = {
+  owner: 'owner',
+  editor: 'editor',
+} as const;
+
+export type ProjectDtoOutputManagementInvitationsItem = {
+  member: ProjectDtoOutputManagementInvitationsItemMember;
+  role: ProjectDtoOutputManagementInvitationsItemRole;
+  /** @nullable */
+  function: string | null;
+};
+
+export type ProjectDtoOutputManagement = {
+  viewerRole: ProjectDtoOutputManagementViewerRole;
+  moderationStatus: ProjectDtoOutputManagementModerationStatus;
+  durationDays: number | null;
+  fundingLocked: boolean;
+  publicDisplayConsentAt: string | null;
+  invitations: ProjectDtoOutputManagementInvitationsItem[];
+  impactAssessmentRequired: boolean;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  updatedAt: string;
+} | null;
+
+export interface ProjectDtoOutput {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,79}$ */
+  slug: string;
+  title: string;
+  summary: string[];
+  status: ProjectDtoOutputStatus;
+  sectorCode: string[];
+  countryCodes: string[];
+  coverImageUrl: string[];
+  owner: ProjectDtoOutputOwner;
+  organization: ProjectDtoOutputOrganization;
+  funding: ProjectDtoOutputFunding;
+  impact: ProjectDtoOutputImpact;
+  featured: boolean;
+  publishedAt: string | null;
+  endsAt: string | null;
+  description: string[];
+  impactArea: string[];
+  video: ProjectDtoOutputVideo;
+  gallery: ProjectDtoOutputGalleryItem[];
+  documents: ProjectDtoOutputDocumentsItem[];
+  tiers: ProjectDtoOutputTiersItem[];
+  rewards: ProjectDtoOutputRewardsItem[];
+  updates: ProjectDtoOutputUpdatesItem[];
+  team: ProjectDtoOutputTeamItem[];
+  impactAssessment: ProjectDtoOutputImpactAssessment;
+  share: ProjectDtoOutputShare;
+  viewer: ProjectDtoOutputViewer;
+  management: ProjectDtoOutputManagement;
+}
+
+export type MyProjectsDtoOutputItemsItemProjectStatus =
+  (typeof MyProjectsDtoOutputItemsItemProjectStatus)[keyof typeof MyProjectsDtoOutputItemsItemProjectStatus];
+
+export const MyProjectsDtoOutputItemsItemProjectStatus = {
+  draft: 'draft',
+  funding: 'funding',
+  funded: 'funded',
+  closed: 'closed',
+} as const;
+
+export type MyProjectsDtoOutputItemsItemProjectOwner = {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  displayName: string;
+  /** @nullable */
+  headline: string | null;
+  /** @nullable */
+  avatarUrl: string | null;
+} | null;
+
+export type MyProjectsDtoOutputItemsItemProjectOrganization = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  slug: string;
+  name: string;
+  /** @nullable */
+  logoUrl: string | null;
+  verified: boolean;
+} | null;
+
+export type MyProjectsDtoOutputItemsItemProjectFundingGoal = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+} | null;
+
+export type MyProjectsDtoOutputItemsItemProjectFundingCollected = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+};
+
+export type MyProjectsDtoOutputItemsItemProjectFundingInstrumentsItem =
+  (typeof MyProjectsDtoOutputItemsItemProjectFundingInstrumentsItem)[keyof typeof MyProjectsDtoOutputItemsItemProjectFundingInstrumentsItem];
+
+export const MyProjectsDtoOutputItemsItemProjectFundingInstrumentsItem = {
+  donation: 'donation',
+  reward_crowdfunding: 'reward_crowdfunding',
+  love_money: 'love_money',
+  grant: 'grant',
+  honor_loan: 'honor_loan',
+  equity: 'equity',
+  convertible_bonds: 'convertible_bonds',
+} as const;
+
+export type MyProjectsDtoOutputItemsItemProjectFunding = {
+  goal: MyProjectsDtoOutputItemsItemProjectFundingGoal;
+  collected: MyProjectsDtoOutputItemsItemProjectFundingCollected;
+  /**
+   * @minimum 0
+   * @maximum 9007199254740991
+   */
+  progressPercent: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  contributionCount: number;
+  daysLeft: number | null;
+  instruments: MyProjectsDtoOutputItemsItemProjectFundingInstrumentsItem[];
+  opensCapital: boolean;
+};
+
+export type MyProjectsDtoOutputItemsItemProjectImpactLevel =
+  (typeof MyProjectsDtoOutputItemsItemProjectImpactLevel)[keyof typeof MyProjectsDtoOutputItemsItemProjectImpactLevel];
+
+export const MyProjectsDtoOutputItemsItemProjectImpactLevel = {
+  emerging: 'emerging',
+  moderate: 'moderate',
+  strong: 'strong',
+} as const;
+
+export type MyProjectsDtoOutputItemsItemProjectImpact = {
+  selfDeclared: true;
+  /**
+   * @minimum 0
+   * @maximum 100
+   */
+  score: number;
+  level: MyProjectsDtoOutputItemsItemProjectImpactLevel;
+  /**
+   * @maximum 9007199254740991
+   * @exclusiveMinimum 0
+   */
+  methodologyVersion: number;
+} | null;
+
+export type MyProjectsDtoOutputItemsItemProject = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,79}$ */
+  slug: string;
+  title: string;
+  /** @nullable */
+  summary: string | null;
+  status: MyProjectsDtoOutputItemsItemProjectStatus;
+  /** @nullable */
+  sectorCode: string | null;
+  countryCodes: string[];
+  /** @nullable */
+  coverImageUrl: string | null;
+  owner: MyProjectsDtoOutputItemsItemProjectOwner;
+  organization: MyProjectsDtoOutputItemsItemProjectOrganization;
+  funding: MyProjectsDtoOutputItemsItemProjectFunding;
+  impact: MyProjectsDtoOutputItemsItemProjectImpact;
+  featured: boolean;
+  publishedAt: string | null;
+  endsAt: string | null;
+};
+
+export type MyProjectsDtoOutputItemsItemRole =
+  (typeof MyProjectsDtoOutputItemsItemRole)[keyof typeof MyProjectsDtoOutputItemsItemRole];
+
+export const MyProjectsDtoOutputItemsItemRole = {
+  owner: 'owner',
+  editor: 'editor',
+} as const;
+
+export type MyProjectsDtoOutputItemsItem = {
+  project: MyProjectsDtoOutputItemsItemProject;
+  role: MyProjectsDtoOutputItemsItemRole;
+};
+
+export interface MyProjectsDtoOutput {
+  items: MyProjectsDtoOutputItemsItem[];
+}
+
+export type ProjectCardPageDtoOutputItemsItemStatus =
+  (typeof ProjectCardPageDtoOutputItemsItemStatus)[keyof typeof ProjectCardPageDtoOutputItemsItemStatus];
+
+export const ProjectCardPageDtoOutputItemsItemStatus = {
+  draft: 'draft',
+  funding: 'funding',
+  funded: 'funded',
+  closed: 'closed',
+} as const;
+
+export type ProjectCardPageDtoOutputItemsItemOwner = {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  displayName: string;
+  /** @nullable */
+  headline: string | null;
+  /** @nullable */
+  avatarUrl: string | null;
+} | null;
+
+export type ProjectCardPageDtoOutputItemsItemOrganization = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  slug: string;
+  name: string;
+  /** @nullable */
+  logoUrl: string | null;
+  verified: boolean;
+} | null;
+
+export type ProjectCardPageDtoOutputItemsItemFundingGoal = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+} | null;
+
+export type ProjectCardPageDtoOutputItemsItemFundingCollected = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+};
+
+export type ProjectCardPageDtoOutputItemsItemFundingInstrumentsItem =
+  (typeof ProjectCardPageDtoOutputItemsItemFundingInstrumentsItem)[keyof typeof ProjectCardPageDtoOutputItemsItemFundingInstrumentsItem];
+
+export const ProjectCardPageDtoOutputItemsItemFundingInstrumentsItem = {
+  donation: 'donation',
+  reward_crowdfunding: 'reward_crowdfunding',
+  love_money: 'love_money',
+  grant: 'grant',
+  honor_loan: 'honor_loan',
+  equity: 'equity',
+  convertible_bonds: 'convertible_bonds',
+} as const;
+
+export type ProjectCardPageDtoOutputItemsItemFunding = {
+  goal: ProjectCardPageDtoOutputItemsItemFundingGoal;
+  collected: ProjectCardPageDtoOutputItemsItemFundingCollected;
+  /**
+   * @minimum 0
+   * @maximum 9007199254740991
+   */
+  progressPercent: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  contributionCount: number;
+  daysLeft: number | null;
+  instruments: ProjectCardPageDtoOutputItemsItemFundingInstrumentsItem[];
+  opensCapital: boolean;
+};
+
+export type ProjectCardPageDtoOutputItemsItemImpactLevel =
+  (typeof ProjectCardPageDtoOutputItemsItemImpactLevel)[keyof typeof ProjectCardPageDtoOutputItemsItemImpactLevel];
+
+export const ProjectCardPageDtoOutputItemsItemImpactLevel = {
+  emerging: 'emerging',
+  moderate: 'moderate',
+  strong: 'strong',
+} as const;
+
+export type ProjectCardPageDtoOutputItemsItemImpact = {
+  selfDeclared: true;
+  /**
+   * @minimum 0
+   * @maximum 100
+   */
+  score: number;
+  level: ProjectCardPageDtoOutputItemsItemImpactLevel;
+  /**
+   * @maximum 9007199254740991
+   * @exclusiveMinimum 0
+   */
+  methodologyVersion: number;
+} | null;
+
+export type ProjectCardPageDtoOutputItemsItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,79}$ */
+  slug: string;
+  title: string;
+  /** @nullable */
+  summary: string | null;
+  status: ProjectCardPageDtoOutputItemsItemStatus;
+  /** @nullable */
+  sectorCode: string | null;
+  countryCodes: string[];
+  /** @nullable */
+  coverImageUrl: string | null;
+  owner: ProjectCardPageDtoOutputItemsItemOwner;
+  organization: ProjectCardPageDtoOutputItemsItemOrganization;
+  funding: ProjectCardPageDtoOutputItemsItemFunding;
+  impact: ProjectCardPageDtoOutputItemsItemImpact;
+  featured: boolean;
+  publishedAt: string | null;
+  endsAt: string | null;
+};
+
+export interface ProjectCardPageDtoOutput {
+  items: ProjectCardPageDtoOutputItemsItem[];
+  nextCursor: string[];
+}
+
+export type PostPageDtoOutputItemsItemAuthor =
+  | {
+      type: 'member';
+      member: {
+        /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+        handle: string;
+        displayName: string;
+        /** @nullable */
+        headline: string | null;
+        /** @nullable */
+        avatarUrl: string | null;
+      };
+    }
+  | {
+      type: 'organization';
+      organization: {
+        /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+        id: string;
+        slug: string;
+        name: string;
+        /** @nullable */
+        logoUrl: string | null;
+        verified: boolean;
+      };
+    };
+
+export type PostPageDtoOutputItemsItemLanguageSource =
+  (typeof PostPageDtoOutputItemsItemLanguageSource)[keyof typeof PostPageDtoOutputItemsItemLanguageSource];
+
+export const PostPageDtoOutputItemsItemLanguageSource = {
+  declared: 'declared',
+  detected: 'detected',
+  undetermined: 'undetermined',
+} as const;
+
+export type PostPageDtoOutputItemsItemVisibility =
+  (typeof PostPageDtoOutputItemsItemVisibility)[keyof typeof PostPageDtoOutputItemsItemVisibility];
+
+export const PostPageDtoOutputItemsItemVisibility = {
+  public: 'public',
+  members: 'members',
+  connections: 'connections',
+} as const;
+
+export type PostPageDtoOutputItemsItemImagesItemVariants = {
+  [key: string]: {
+    /**
+     * @minimum -9007199254740991
+     * @maximum 9007199254740991
+     */
+    width: number;
+    /**
+     * @minimum -9007199254740991
+     * @maximum 9007199254740991
+     */
+    height: number;
+    /** @nullable */
+    webp: string | null;
+    /** @nullable */
+    avif: string | null;
+  };
+};
+
+export type PostPageDtoOutputItemsItemImagesItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  mediaId: string;
+  url: string;
+  variants: PostPageDtoOutputItemsItemImagesItemVariants;
+};
+
+export type PostPageDtoOutputItemsItemDocument = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  mediaId: string;
+  /** @nullable */
+  thumbnailUrl: string | null;
+  pageCount: number | null;
+} | null;
+
+export type PostPageDtoOutputItemsItemLinkStatus =
+  (typeof PostPageDtoOutputItemsItemLinkStatus)[keyof typeof PostPageDtoOutputItemsItemLinkStatus];
+
+export const PostPageDtoOutputItemsItemLinkStatus = {
+  pending: 'pending',
+  ready: 'ready',
+  failed: 'failed',
+} as const;
+
+export type PostPageDtoOutputItemsItemLink = {
+  url: string;
+  status: PostPageDtoOutputItemsItemLinkStatus;
+  /** @nullable */
+  title: string | null;
+  /** @nullable */
+  description: string | null;
+  /** @nullable */
+  siteName: string | null;
+  /** @nullable */
+  imageUrl: string | null;
+} | null;
+
+export type PostPageDtoOutputItemsItemMentionsItemType =
+  (typeof PostPageDtoOutputItemsItemMentionsItemType)[keyof typeof PostPageDtoOutputItemsItemMentionsItemType];
+
+export const PostPageDtoOutputItemsItemMentionsItemType = {
+  member: 'member',
+  organization: 'organization',
+} as const;
+
+export type PostPageDtoOutputItemsItemMentionsItem = {
+  token: string;
+  type: PostPageDtoOutputItemsItemMentionsItemType;
+  key: string;
+  displayName: string;
+};
+
+export type PostPageDtoOutputItemsItemReactionsCounts = {
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  like: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  bravo: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  insightful: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  support: number;
+};
+
+export type PostPageDtoOutputItemsItemReactionsViewerReaction =
+  | (typeof PostPageDtoOutputItemsItemReactionsViewerReaction)[keyof typeof PostPageDtoOutputItemsItemReactionsViewerReaction]
+  | null;
+
+export const PostPageDtoOutputItemsItemReactionsViewerReaction = {
+  like: 'like',
+  bravo: 'bravo',
+  insightful: 'insightful',
+  support: 'support',
+} as const;
+
+export type PostPageDtoOutputItemsItemReactions = {
+  counts: PostPageDtoOutputItemsItemReactionsCounts;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  total: number;
+  viewerReaction: PostPageDtoOutputItemsItemReactionsViewerReaction;
+};
+
+export type PostPageDtoOutputItemsItemKind =
+  (typeof PostPageDtoOutputItemsItemKind)[keyof typeof PostPageDtoOutputItemsItemKind];
+
+export const PostPageDtoOutputItemsItemKind = {
+  post: 'post',
+  repost: 'repost',
+} as const;
+
+export type PostPageDtoOutputItemsItemRepostOfAuthor =
+  | {
+      type: 'member';
+      member: {
+        /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+        handle: string;
+        displayName: string;
+        /** @nullable */
+        headline: string | null;
+        /** @nullable */
+        avatarUrl: string | null;
+      };
+    }
+  | {
+      type: 'organization';
+      organization: {
+        /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+        id: string;
+        slug: string;
+        name: string;
+        /** @nullable */
+        logoUrl: string | null;
+        verified: boolean;
+      };
+    };
+
+export type PostPageDtoOutputItemsItemRepostOfLanguageSource =
+  (typeof PostPageDtoOutputItemsItemRepostOfLanguageSource)[keyof typeof PostPageDtoOutputItemsItemRepostOfLanguageSource];
+
+export const PostPageDtoOutputItemsItemRepostOfLanguageSource = {
+  declared: 'declared',
+  detected: 'detected',
+  undetermined: 'undetermined',
+} as const;
+
+export type PostPageDtoOutputItemsItemRepostOfVisibility =
+  (typeof PostPageDtoOutputItemsItemRepostOfVisibility)[keyof typeof PostPageDtoOutputItemsItemRepostOfVisibility];
+
+export const PostPageDtoOutputItemsItemRepostOfVisibility = {
+  public: 'public',
+  members: 'members',
+  connections: 'connections',
+} as const;
+
+export type PostPageDtoOutputItemsItemRepostOfImagesItemVariants = {
+  [key: string]: {
+    /**
+     * @minimum -9007199254740991
+     * @maximum 9007199254740991
+     */
+    width: number;
+    /**
+     * @minimum -9007199254740991
+     * @maximum 9007199254740991
+     */
+    height: number;
+    /** @nullable */
+    webp: string | null;
+    /** @nullable */
+    avif: string | null;
+  };
+};
+
+export type PostPageDtoOutputItemsItemRepostOfImagesItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  mediaId: string;
+  url: string;
+  variants: PostPageDtoOutputItemsItemRepostOfImagesItemVariants;
+};
+
+export type PostPageDtoOutputItemsItemRepostOfDocument = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  mediaId: string;
+  /** @nullable */
+  thumbnailUrl: string | null;
+  pageCount: number | null;
+} | null;
+
+export type PostPageDtoOutputItemsItemRepostOfLinkStatus =
+  (typeof PostPageDtoOutputItemsItemRepostOfLinkStatus)[keyof typeof PostPageDtoOutputItemsItemRepostOfLinkStatus];
+
+export const PostPageDtoOutputItemsItemRepostOfLinkStatus = {
+  pending: 'pending',
+  ready: 'ready',
+  failed: 'failed',
+} as const;
+
+export type PostPageDtoOutputItemsItemRepostOfLink = {
+  url: string;
+  status: PostPageDtoOutputItemsItemRepostOfLinkStatus;
+  /** @nullable */
+  title: string | null;
+  /** @nullable */
+  description: string | null;
+  /** @nullable */
+  siteName: string | null;
+  /** @nullable */
+  imageUrl: string | null;
+} | null;
+
+export type PostPageDtoOutputItemsItemRepostOfMentionsItemType =
+  (typeof PostPageDtoOutputItemsItemRepostOfMentionsItemType)[keyof typeof PostPageDtoOutputItemsItemRepostOfMentionsItemType];
+
+export const PostPageDtoOutputItemsItemRepostOfMentionsItemType = {
+  member: 'member',
+  organization: 'organization',
+} as const;
+
+export type PostPageDtoOutputItemsItemRepostOfMentionsItem = {
+  token: string;
+  type: PostPageDtoOutputItemsItemRepostOfMentionsItemType;
+  key: string;
+  displayName: string;
+};
+
+export type PostPageDtoOutputItemsItemRepostOfReactionsCounts = {
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  like: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  bravo: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  insightful: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  support: number;
+};
+
+export type PostPageDtoOutputItemsItemRepostOfReactionsViewerReaction =
+  | (typeof PostPageDtoOutputItemsItemRepostOfReactionsViewerReaction)[keyof typeof PostPageDtoOutputItemsItemRepostOfReactionsViewerReaction]
+  | null;
+
+export const PostPageDtoOutputItemsItemRepostOfReactionsViewerReaction = {
+  like: 'like',
+  bravo: 'bravo',
+  insightful: 'insightful',
+  support: 'support',
+} as const;
+
+export type PostPageDtoOutputItemsItemRepostOfReactions = {
+  counts: PostPageDtoOutputItemsItemRepostOfReactionsCounts;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  total: number;
+  viewerReaction: PostPageDtoOutputItemsItemRepostOfReactionsViewerReaction;
+};
+
+export type PostPageDtoOutputItemsItemRepostOf = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  author: PostPageDtoOutputItemsItemRepostOfAuthor;
+  /** @nullable */
+  text: string | null;
+  /** @nullable */
+  language: string | null;
+  languageSource: PostPageDtoOutputItemsItemRepostOfLanguageSource;
+  visibility: PostPageDtoOutputItemsItemRepostOfVisibility;
+  images: PostPageDtoOutputItemsItemRepostOfImagesItem[];
+  document: PostPageDtoOutputItemsItemRepostOfDocument;
+  link: PostPageDtoOutputItemsItemRepostOfLink;
+  mentions: PostPageDtoOutputItemsItemRepostOfMentionsItem[];
+  projectId: string | null;
+  commentsDisabled: boolean;
+  reactions: PostPageDtoOutputItemsItemRepostOfReactions;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  commentCount: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  repostCount: number;
+  saved: boolean;
+  viewerIsAuthor: boolean;
+  featured: boolean;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+  editedAt: string | null;
+} | null;
+
+export type PostPageDtoOutputItemsItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  author: PostPageDtoOutputItemsItemAuthor;
+  /** @nullable */
+  text: string | null;
+  /** @nullable */
+  language: string | null;
+  languageSource: PostPageDtoOutputItemsItemLanguageSource;
+  visibility: PostPageDtoOutputItemsItemVisibility;
+  images: PostPageDtoOutputItemsItemImagesItem[];
+  document: PostPageDtoOutputItemsItemDocument;
+  link: PostPageDtoOutputItemsItemLink;
+  mentions: PostPageDtoOutputItemsItemMentionsItem[];
+  projectId: string | null;
+  commentsDisabled: boolean;
+  reactions: PostPageDtoOutputItemsItemReactions;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  commentCount: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  repostCount: number;
+  saved: boolean;
+  viewerIsAuthor: boolean;
+  featured: boolean;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+  editedAt: string | null;
+  kind: PostPageDtoOutputItemsItemKind;
+  repostOf: PostPageDtoOutputItemsItemRepostOf;
+};
+
+export interface PostPageDtoOutput {
+  items: PostPageDtoOutputItemsItem[];
+  nextCursor: string[];
+}
+
+export type UpdateProjectDtoInstrumentsItem =
+  (typeof UpdateProjectDtoInstrumentsItem)[keyof typeof UpdateProjectDtoInstrumentsItem];
+
+export const UpdateProjectDtoInstrumentsItem = {
+  donation: 'donation',
+  reward_crowdfunding: 'reward_crowdfunding',
+  love_money: 'love_money',
+  grant: 'grant',
+  honor_loan: 'honor_loan',
+  equity: 'equity',
+  convertible_bonds: 'convertible_bonds',
+} as const;
+
+export type UpdateProjectDtoGoal = {
+  /** @pattern ^[1-9]\d{0,17}$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+} | null;
+
+export interface UpdateProjectDto {
+  /**
+   * @minLength 1
+   * @maxLength 120
+   */
+  title?: string;
+  organizationId?: string | null;
+  summary?: string | null;
+  description?: string | null;
+  sectorCode?: string | null;
+  impactArea?: string | null;
+  /**
+   * @minItems 1
+   * @maxItems 10
+   * @items.pattern ^[A-Z]{2}$
+   */
+  countryCodes?: string[];
+  videoUrl?: string | null;
+  /**
+   * @minItems 1
+   * @maxItems 7
+   */
+  instruments?: UpdateProjectDtoInstrumentsItem[];
+  opensCapital?: boolean;
+  goal?: UpdateProjectDtoGoal;
+  durationDays?: number | null;
+}
+
+export type ReplaceTiersDtoTiersItemThreshold = {
+  /** @pattern ^[1-9]\d{0,17}$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+};
+
+export type ReplaceTiersDtoTiersItem = {
+  threshold: ReplaceTiersDtoTiersItemThreshold;
+  /**
+   * @minLength 1
+   * @maxLength 500
+   */
+  description: string;
+};
+
+export interface ReplaceTiersDto {
+  /**
+   * @minItems 1
+   * @maxItems 5
+   */
+  tiers: ReplaceTiersDtoTiersItem[];
+}
+
+export interface SetGalleryDto {
+  /**
+   * @maxItems 20
+   * @items.pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$
+   */
+  mediaIds: string[];
+}
+
+export interface SetDocumentsDto {
+  /**
+   * @maxItems 10
+   * @items.pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$
+   */
+  mediaIds: string[];
+}
+
+export const PublishDtoValue = {
+  publicDisplayConsent: true,
+} as const;
+export type PublishDto = typeof PublishDtoValue;
+
+export type InviteDtoRole = (typeof InviteDtoRole)[keyof typeof InviteDtoRole];
+
+export const InviteDtoRole = {
+  owner: 'owner',
+  editor: 'editor',
+} as const;
+
+export interface InviteDto {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  role: InviteDtoRole;
+  /**
+   * @minLength 1
+   * @maxLength 80
+   */
+  function?: string;
+}
+
+export type UpdateMemberDtoRole = (typeof UpdateMemberDtoRole)[keyof typeof UpdateMemberDtoRole];
+
+export const UpdateMemberDtoRole = {
+  owner: 'owner',
+  editor: 'editor',
+} as const;
+
+export interface UpdateMemberDto {
+  role?: UpdateMemberDtoRole;
+  function?: string | null;
+}
+
+export const AcceptDtoValue = {
+  publicDisplayConsent: true,
+} as const;
+export type AcceptDto = typeof AcceptDtoValue;
+
+export type CreateRewardDtoMinAmount = {
+  /** @pattern ^[1-9]\d{0,17}$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+};
+
+export type CreateRewardDtoInstrumentsItem =
+  (typeof CreateRewardDtoInstrumentsItem)[keyof typeof CreateRewardDtoInstrumentsItem];
+
+export const CreateRewardDtoInstrumentsItem = {
+  donation: 'donation',
+  reward_crowdfunding: 'reward_crowdfunding',
+} as const;
+
+export interface CreateRewardDto {
+  /**
+   * @minLength 1
+   * @maxLength 120
+   */
+  title: string;
+  /**
+   * @minLength 1
+   * @maxLength 1000
+   */
+  description: string;
+  minAmount: CreateRewardDtoMinAmount;
+  /**
+   * @minItems 1
+   * @maxItems 2
+   */
+  instruments: CreateRewardDtoInstrumentsItem[];
+  quantity?: number | null;
+  estimatedDelivery?: string | null;
+}
+
+export type RewardDtoOutputMinAmount = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+};
+
+export type RewardDtoOutputInstrumentsItem =
+  (typeof RewardDtoOutputInstrumentsItem)[keyof typeof RewardDtoOutputInstrumentsItem];
+
+export const RewardDtoOutputInstrumentsItem = {
+  donation: 'donation',
+  reward_crowdfunding: 'reward_crowdfunding',
+} as const;
+
+export interface RewardDtoOutput {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  title: string;
+  description: string;
+  minAmount: RewardDtoOutputMinAmount;
+  instruments: RewardDtoOutputInstrumentsItem[];
+  quantity: number | null;
+  available: number | null;
+  soldOut: boolean;
+  estimatedDelivery: string | null;
+}
+
+export type UpdateRewardDtoMinAmount = {
+  /** @pattern ^[1-9]\d{0,17}$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+};
+
+export type UpdateRewardDtoInstrumentsItem =
+  (typeof UpdateRewardDtoInstrumentsItem)[keyof typeof UpdateRewardDtoInstrumentsItem];
+
+export const UpdateRewardDtoInstrumentsItem = {
+  donation: 'donation',
+  reward_crowdfunding: 'reward_crowdfunding',
+} as const;
+
+export interface UpdateRewardDto {
+  /**
+   * @minLength 1
+   * @maxLength 120
+   */
+  title?: string;
+  /**
+   * @minLength 1
+   * @maxLength 1000
+   */
+  description?: string;
+  minAmount?: UpdateRewardDtoMinAmount;
+  /**
+   * @minItems 1
+   * @maxItems 2
+   */
+  instruments?: UpdateRewardDtoInstrumentsItem[];
+  quantity?: number | null;
+  estimatedDelivery?: string | null;
+}
+
+export interface CreateUpdateDto {
+  /**
+   * @minLength 1
+   * @maxLength 5000
+   */
+  text: string;
+  /**
+   * @maxItems 6
+   * @items.pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$
+   */
+  imageMediaIds?: string[];
+}
+
+export type UpdateDtoOutputAuthor = {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  displayName: string;
+  /** @nullable */
+  headline: string | null;
+  /** @nullable */
+  avatarUrl: string | null;
+};
+
+export type UpdateDtoOutputImagesItemVariants = {
+  [key: string]: {
+    /**
+     * @minimum -9007199254740991
+     * @maximum 9007199254740991
+     */
+    width: number;
+    /**
+     * @minimum -9007199254740991
+     * @maximum 9007199254740991
+     */
+    height: number;
+    /** @nullable */
+    webp: string | null;
+    /** @nullable */
+    avif: string | null;
+  };
+};
+
+export type UpdateDtoOutputImagesItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  mediaId: string;
+  url: string;
+  variants: UpdateDtoOutputImagesItemVariants;
+};
+
+export interface UpdateDtoOutput {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  projectId: string;
+  author: UpdateDtoOutputAuthor;
+  text: string;
+  images: UpdateDtoOutputImagesItem[];
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  publishedAt: string;
+  editedAt: string | null;
+}
+
+export type UpdatePageDtoOutputItemsItemAuthor = {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  displayName: string;
+  /** @nullable */
+  headline: string | null;
+  /** @nullable */
+  avatarUrl: string | null;
+};
+
+export type UpdatePageDtoOutputItemsItemImagesItemVariants = {
+  [key: string]: {
+    /**
+     * @minimum -9007199254740991
+     * @maximum 9007199254740991
+     */
+    width: number;
+    /**
+     * @minimum -9007199254740991
+     * @maximum 9007199254740991
+     */
+    height: number;
+    /** @nullable */
+    webp: string | null;
+    /** @nullable */
+    avif: string | null;
+  };
+};
+
+export type UpdatePageDtoOutputItemsItemImagesItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  mediaId: string;
+  url: string;
+  variants: UpdatePageDtoOutputItemsItemImagesItemVariants;
+};
+
+export type UpdatePageDtoOutputItemsItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  projectId: string;
+  author: UpdatePageDtoOutputItemsItemAuthor;
+  text: string;
+  images: UpdatePageDtoOutputItemsItemImagesItem[];
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  publishedAt: string;
+  editedAt: string | null;
+};
+
+export interface UpdatePageDtoOutput {
+  items: UpdatePageDtoOutputItemsItem[];
+  nextCursor: string[];
+}
+
+export interface EditUpdateDto {
+  /**
+   * @minLength 1
+   * @maxLength 5000
+   */
+  text: string;
+}
+
+export type ExpressInterestDtoKind =
+  (typeof ExpressInterestDtoKind)[keyof typeof ExpressInterestDtoKind];
+
+export const ExpressInterestDtoKind = {
+  grant: 'grant',
+  honor_loan: 'honor_loan',
+  equity: 'equity',
+  general: 'general',
+} as const;
+
+export type ExpressInterestDtoIndicativeAmount = {
+  /** @pattern ^[1-9]\d{0,17}$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+};
+
+export interface ExpressInterestDto {
+  kind: ExpressInterestDtoKind;
+  /**
+   * @minLength 1
+   * @maxLength 2000
+   */
+  message: string;
+  indicativeAmount?: ExpressInterestDtoIndicativeAmount;
+  /**
+   * @maxItems 3
+   * @items.pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$
+   */
+  documentMediaIds?: string[];
+}
+
+export type InterestDtoOutputKind =
+  (typeof InterestDtoOutputKind)[keyof typeof InterestDtoOutputKind];
+
+export const InterestDtoOutputKind = {
+  grant: 'grant',
+  honor_loan: 'honor_loan',
+  equity: 'equity',
+  general: 'general',
+} as const;
+
+export type InterestDtoOutputMember = {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  displayName: string;
+  /** @nullable */
+  headline: string | null;
+  /** @nullable */
+  avatarUrl: string | null;
+};
+
+export type InterestDtoOutputIndicativeAmount = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+} | null;
+
+export type InterestDtoOutputDocumentsItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  mediaId: string;
+};
+
+export interface InterestDtoOutput {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  kind: InterestDtoOutputKind;
+  member: InterestDtoOutputMember;
+  message: string;
+  indicativeAmount: InterestDtoOutputIndicativeAmount;
+  documents: InterestDtoOutputDocumentsItem[];
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+}
+
+export type InterestPageDtoOutputItemsItemKind =
+  (typeof InterestPageDtoOutputItemsItemKind)[keyof typeof InterestPageDtoOutputItemsItemKind];
+
+export const InterestPageDtoOutputItemsItemKind = {
+  grant: 'grant',
+  honor_loan: 'honor_loan',
+  equity: 'equity',
+  general: 'general',
+} as const;
+
+export type InterestPageDtoOutputItemsItemMember = {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  displayName: string;
+  /** @nullable */
+  headline: string | null;
+  /** @nullable */
+  avatarUrl: string | null;
+};
+
+export type InterestPageDtoOutputItemsItemIndicativeAmount = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+} | null;
+
+export type InterestPageDtoOutputItemsItemDocumentsItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  mediaId: string;
+};
+
+export type InterestPageDtoOutputItemsItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  kind: InterestPageDtoOutputItemsItemKind;
+  member: InterestPageDtoOutputItemsItemMember;
+  message: string;
+  indicativeAmount: InterestPageDtoOutputItemsItemIndicativeAmount;
+  documents: InterestPageDtoOutputItemsItemDocumentsItem[];
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+};
+
+export interface InterestPageDtoOutput {
+  items: InterestPageDtoOutputItemsItem[];
+  nextCursor: string[];
+}
+
+export type PrefillDtoOutputAnswers = { [key: string]: string };
+
+export interface PrefillDtoOutput {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  methodologyId: string;
+  answers: PrefillDtoOutputAnswers;
+}
+
 export type ProblemDetailsCode = (typeof ProblemDetailsCode)[keyof typeof ProblemDetailsCode];
 
 export const ProblemDetailsCode = {
@@ -4402,6 +6768,41 @@ export const ProblemDetailsCode = {
   CONTENT_COMMENTS_DISABLED: 'CONTENT_COMMENTS_DISABLED',
   CONTENT_REPLY_DEPTH: 'CONTENT_REPLY_DEPTH',
   CONTENT_ORGANIZATION_ROLE_REQUIRED: 'CONTENT_ORGANIZATION_ROLE_REQUIRED',
+  IMPACT_METHODOLOGY_UNAVAILABLE: 'IMPACT_METHODOLOGY_UNAVAILABLE',
+  IMPACT_METHODOLOGY_NOT_FOUND: 'IMPACT_METHODOLOGY_NOT_FOUND',
+  IMPACT_METHODOLOGY_NOT_DRAFT: 'IMPACT_METHODOLOGY_NOT_DRAFT',
+  IMPACT_METHODOLOGY_NOT_PUBLISHED: 'IMPACT_METHODOLOGY_NOT_PUBLISHED',
+  IMPACT_METHODOLOGY_OUTDATED: 'IMPACT_METHODOLOGY_OUTDATED',
+  IMPACT_ANSWERS_INVALID: 'IMPACT_ANSWERS_INVALID',
+  IMPACT_DEMO_REFUSED: 'IMPACT_DEMO_REFUSED',
+  PROJECTS_NOT_FOUND: 'PROJECTS_NOT_FOUND',
+  PROJECTS_SLUG_TAKEN: 'PROJECTS_SLUG_TAKEN',
+  PROJECTS_SLUG_RESERVED: 'PROJECTS_SLUG_RESERVED',
+  PROJECTS_NOT_DRAFT: 'PROJECTS_NOT_DRAFT',
+  PROJECTS_INVALID_TRANSITION: 'PROJECTS_INVALID_TRANSITION',
+  PROJECTS_NOT_PUBLISHABLE: 'PROJECTS_NOT_PUBLISHABLE',
+  PROJECTS_PUBLIC_DISPLAY_CONSENT_REQUIRED: 'PROJECTS_PUBLIC_DISPLAY_CONSENT_REQUIRED',
+  PROJECTS_IMPACT_ASSESSMENT_REQUIRED: 'PROJECTS_IMPACT_ASSESSMENT_REQUIRED',
+  PROJECTS_CURRENCY_NOT_SUPPORTED: 'PROJECTS_CURRENCY_NOT_SUPPORTED',
+  PROJECTS_TIERS_INVALID: 'PROJECTS_TIERS_INVALID',
+  PROJECTS_COUNTRY_NOT_ELIGIBLE: 'PROJECTS_COUNTRY_NOT_ELIGIBLE',
+  PROJECTS_VIDEO_URL_INVALID: 'PROJECTS_VIDEO_URL_INVALID',
+  PROJECTS_DESCRIPTION_INVALID: 'PROJECTS_DESCRIPTION_INVALID',
+  PROJECTS_FUNDING_LOCKED: 'PROJECTS_FUNDING_LOCKED',
+  PROJECTS_ORGANIZATION_ROLE_REQUIRED: 'PROJECTS_ORGANIZATION_ROLE_REQUIRED',
+  PROJECTS_TEAM_MEMBER_NOT_FOUND: 'PROJECTS_TEAM_MEMBER_NOT_FOUND',
+  PROJECTS_TEAM_MEMBER_EXISTS: 'PROJECTS_TEAM_MEMBER_EXISTS',
+  PROJECTS_INVITATION_NOT_FOUND: 'PROJECTS_INVITATION_NOT_FOUND',
+  PROJECTS_LAST_OWNER: 'PROJECTS_LAST_OWNER',
+  PROJECTS_REWARD_NOT_FOUND: 'PROJECTS_REWARD_NOT_FOUND',
+  PROJECTS_REWARD_INVALID: 'PROJECTS_REWARD_INVALID',
+  PROJECTS_REWARD_SOLD_OUT: 'PROJECTS_REWARD_SOLD_OUT',
+  PROJECTS_REWARD_IN_USE: 'PROJECTS_REWARD_IN_USE',
+  PROJECTS_RESERVATION_NOT_FOUND: 'PROJECTS_RESERVATION_NOT_FOUND',
+  PROJECTS_UPDATE_NOT_FOUND: 'PROJECTS_UPDATE_NOT_FOUND',
+  PROJECTS_NOT_OPEN: 'PROJECTS_NOT_OPEN',
+  PROJECTS_CONTRIBUTION_CONFLICT: 'PROJECTS_CONTRIBUTION_CONFLICT',
+  PROJECTS_CONTRIBUTION_NOT_FOUND: 'PROJECTS_CONTRIBUTION_NOT_FOUND',
   INTERNAL_ERROR: 'INTERNAL_ERROR',
   SERVICE_UNAVAILABLE: 'SERVICE_UNAVAILABLE',
 } as const;
@@ -4634,6 +7035,179 @@ export type CommentsControllerListParams = {
 };
 
 export type CommentsControllerRepliesParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+};
+
+export type ProjectsControllerShowcaseParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+  /**
+   * @pattern ^[A-Z]{2}$
+   */
+  countryCode?: string;
+  /**
+   * @pattern ^[a-z0-9_]{1,48}$
+   */
+  sectorCode?: string;
+  status?: ProjectsControllerShowcaseStatus;
+  /**
+   * @minimum 0
+   * @maximum 100
+   */
+  minImpact?: number;
+  featured?: ProjectsControllerShowcaseFeatured;
+  sort?: ProjectsControllerShowcaseSort;
+};
+
+export type ProjectsControllerShowcaseStatus =
+  (typeof ProjectsControllerShowcaseStatus)[keyof typeof ProjectsControllerShowcaseStatus];
+
+export const ProjectsControllerShowcaseStatus = {
+  funding: 'funding',
+  funded: 'funded',
+  closed: 'closed',
+} as const;
+
+export type ProjectsControllerShowcaseFeatured =
+  (typeof ProjectsControllerShowcaseFeatured)[keyof typeof ProjectsControllerShowcaseFeatured];
+
+export const ProjectsControllerShowcaseFeatured = {
+  true: 'true',
+  false: 'false',
+} as const;
+
+export type ProjectsControllerShowcaseSort =
+  (typeof ProjectsControllerShowcaseSort)[keyof typeof ProjectsControllerShowcaseSort];
+
+export const ProjectsControllerShowcaseSort = {
+  recent: 'recent',
+  ending_soon: 'ending_soon',
+} as const;
+
+export type ProjectsControllerPublicShowcaseParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+  /**
+   * @pattern ^[A-Z]{2}$
+   */
+  countryCode?: string;
+  /**
+   * @pattern ^[a-z0-9_]{1,48}$
+   */
+  sectorCode?: string;
+  status?: ProjectsControllerPublicShowcaseStatus;
+  /**
+   * @minimum 0
+   * @maximum 100
+   */
+  minImpact?: number;
+  featured?: ProjectsControllerPublicShowcaseFeatured;
+  sort?: ProjectsControllerPublicShowcaseSort;
+};
+
+export type ProjectsControllerPublicShowcaseStatus =
+  (typeof ProjectsControllerPublicShowcaseStatus)[keyof typeof ProjectsControllerPublicShowcaseStatus];
+
+export const ProjectsControllerPublicShowcaseStatus = {
+  funding: 'funding',
+  funded: 'funded',
+  closed: 'closed',
+} as const;
+
+export type ProjectsControllerPublicShowcaseFeatured =
+  (typeof ProjectsControllerPublicShowcaseFeatured)[keyof typeof ProjectsControllerPublicShowcaseFeatured];
+
+export const ProjectsControllerPublicShowcaseFeatured = {
+  true: 'true',
+  false: 'false',
+} as const;
+
+export type ProjectsControllerPublicShowcaseSort =
+  (typeof ProjectsControllerPublicShowcaseSort)[keyof typeof ProjectsControllerPublicShowcaseSort];
+
+export const ProjectsControllerPublicShowcaseSort = {
+  recent: 'recent',
+  ending_soon: 'ending_soon',
+} as const;
+
+export type ProjectsControllerPublicPostsParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+};
+
+export type ProjectsControllerPostsParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+};
+
+export type UpdatesControllerListParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+};
+
+export type UpdatesControllerPublicListParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+};
+
+export type InterestsControllerListParams = {
   /**
    * @minLength 1
    * @maxLength 512

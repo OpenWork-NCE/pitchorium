@@ -22,7 +22,10 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  AcceptDto,
   ActionPrerequisitesDtoOutput,
+  AssessmentDtoOutput,
+  AssessmentHistoryDtoOutput,
   AttachMediaDto,
   BlockPageDtoOutput,
   BlocksControllerListParams,
@@ -42,13 +45,19 @@ import type {
   CreateContributorFacetDto,
   CreateEntrepreneurFacetDto,
   CreateInvitationDto,
+  CreateMethodologyDto,
   CreateOrganizationDto,
   CreatePostDto,
+  CreateProjectDto,
   CreateRepostDto,
+  CreateRewardDto,
+  CreateUpdateDto,
   CreateUploadDto,
   CreateVerificationRequestDto,
   CurrentUserDtoOutput,
   DecisionDto,
+  EditUpdateDto,
+  ExpressInterestDto,
   FeedPageDtoOutput,
   FollowDtoOutput,
   FollowPageDtoOutput,
@@ -56,9 +65,13 @@ import type {
   FollowsControllerFollowersParams,
   GrantRoleRequestDto,
   HealthResponseDtoOutput,
+  InterestDtoOutput,
+  InterestPageDtoOutput,
+  InterestsControllerListParams,
   InvitationDtoOutput,
   InvitationTokenDto,
   InvitationsDtoOutput,
+  InviteDto,
   LegalAcceptanceRequestDto,
   LegalStatusDtoOutput,
   LegalVersionsDtoOutput,
@@ -72,38 +85,63 @@ import type {
   MemberNetworkControllerPublicConnectionsParams,
   MemberNetworkControllerPublicFollowersParams,
   MemberNetworkControllerPublicFollowingParams,
+  MethodologiesDtoOutput,
+  MethodologyDtoOutput,
   MyOrganizationDtoOutput,
   MyOrganizationsDtoOutput,
+  MyProjectsDtoOutput,
   NetworkSettingsDtoOutput,
   OrganizationDtoOutput,
   OwnProfileDtoOutput,
   PostDtoOutput,
+  PostPageDtoOutput,
   PostStatsDtoOutput,
   PostsControllerReadParams,
   PostsControllerSavedParams,
   PreferencesDto,
   PreferencesDtoOutput,
+  PrefillDtoOutput,
   ProblemDetails,
   ProfileViewDtoOutput,
   ProfileViewsControllerVisitsParams,
   ProfileViewsSummaryDtoOutput,
   ProfileVisitPageDtoOutput,
+  ProjectCardPageDtoOutput,
+  ProjectDtoOutput,
+  ProjectsControllerPostsParams,
+  ProjectsControllerPublicPostsParams,
+  ProjectsControllerPublicShowcaseParams,
+  ProjectsControllerShowcaseParams,
+  PublishDto,
   ReactionSummaryDtoOutput,
   ReferenceDataDtoOutput,
   RelationshipDtoOutput,
+  ReplaceTiersDto,
   RevocationDto,
+  RewardDtoOutput,
   SavedPostPageDtoOutput,
+  SetDocumentsDto,
+  SetGalleryDto,
   SetIntentionDto,
   SetReactionDto,
+  SubmitAssessmentDto,
   TransferOwnershipDto,
   UpdateBaseProfileDto,
   UpdateCommentDto,
   UpdateContributorFacetDto,
+  UpdateDtoOutput,
   UpdateEntrepreneurFacetDto,
+  UpdateMemberDto,
+  UpdateMethodologyDto,
   UpdateNetworkSettingsDto,
   UpdateOrganizationDto,
+  UpdatePageDtoOutput,
   UpdatePostDto,
+  UpdateProjectDto,
+  UpdateRewardDto,
   UpdateVisibilityDto,
+  UpdatesControllerListParams,
+  UpdatesControllerPublicListParams,
   UploadTicketDtoOutput,
   UserRolesDtoOutput,
   VerificationControllerQueueParams,
@@ -700,7 +738,22 @@ export const getAccessControllerPrerequisitesUrl = (
     | 'profile.update'
     | 'access.roles.read'
     | 'access.roles.manage'
+    | 'project.create'
+    | 'project.read'
+    | 'project.update'
+    | 'project.delete'
     | 'project.publish'
+    | 'project.team.manage'
+    | 'project.team.leave'
+    | 'project.invitation.respond'
+    | 'project.updates.publish'
+    | 'project.interest.express'
+    | 'project.interest.read'
+    | 'project.impact.assess'
+    | 'project.feature'
+    | 'impact.methodology.manage'
+    | 'impact.assessment.submit'
+    | 'impact.assessment.read'
     | 'media.upload'
     | 'media.read'
     | 'media.delete'
@@ -750,7 +803,22 @@ export const accessControllerPrerequisites = async (
     | 'profile.update'
     | 'access.roles.read'
     | 'access.roles.manage'
+    | 'project.create'
+    | 'project.read'
+    | 'project.update'
+    | 'project.delete'
     | 'project.publish'
+    | 'project.team.manage'
+    | 'project.team.leave'
+    | 'project.invitation.respond'
+    | 'project.updates.publish'
+    | 'project.interest.express'
+    | 'project.interest.read'
+    | 'project.impact.assess'
+    | 'project.feature'
+    | 'impact.methodology.manage'
+    | 'impact.assessment.submit'
+    | 'impact.assessment.read'
     | 'media.upload'
     | 'media.read'
     | 'media.delete'
@@ -804,7 +872,22 @@ export const getAccessControllerPrerequisitesQueryKey = (
     | 'profile.update'
     | 'access.roles.read'
     | 'access.roles.manage'
+    | 'project.create'
+    | 'project.read'
+    | 'project.update'
+    | 'project.delete'
     | 'project.publish'
+    | 'project.team.manage'
+    | 'project.team.leave'
+    | 'project.invitation.respond'
+    | 'project.updates.publish'
+    | 'project.interest.express'
+    | 'project.interest.read'
+    | 'project.impact.assess'
+    | 'project.feature'
+    | 'impact.methodology.manage'
+    | 'impact.assessment.submit'
+    | 'impact.assessment.read'
     | 'media.upload'
     | 'media.read'
     | 'media.delete'
@@ -857,7 +940,22 @@ export const getAccessControllerPrerequisitesQueryOptions = <
     | 'profile.update'
     | 'access.roles.read'
     | 'access.roles.manage'
+    | 'project.create'
+    | 'project.read'
+    | 'project.update'
+    | 'project.delete'
     | 'project.publish'
+    | 'project.team.manage'
+    | 'project.team.leave'
+    | 'project.invitation.respond'
+    | 'project.updates.publish'
+    | 'project.interest.express'
+    | 'project.interest.read'
+    | 'project.impact.assess'
+    | 'project.feature'
+    | 'impact.methodology.manage'
+    | 'impact.assessment.submit'
+    | 'impact.assessment.read'
     | 'media.upload'
     | 'media.read'
     | 'media.delete'
@@ -936,7 +1034,22 @@ export function useAccessControllerPrerequisites<
     | 'profile.update'
     | 'access.roles.read'
     | 'access.roles.manage'
+    | 'project.create'
+    | 'project.read'
+    | 'project.update'
+    | 'project.delete'
     | 'project.publish'
+    | 'project.team.manage'
+    | 'project.team.leave'
+    | 'project.invitation.respond'
+    | 'project.updates.publish'
+    | 'project.interest.express'
+    | 'project.interest.read'
+    | 'project.impact.assess'
+    | 'project.feature'
+    | 'impact.methodology.manage'
+    | 'impact.assessment.submit'
+    | 'impact.assessment.read'
     | 'media.upload'
     | 'media.read'
     | 'media.delete'
@@ -1001,7 +1114,22 @@ export function useAccessControllerPrerequisites<
     | 'profile.update'
     | 'access.roles.read'
     | 'access.roles.manage'
+    | 'project.create'
+    | 'project.read'
+    | 'project.update'
+    | 'project.delete'
     | 'project.publish'
+    | 'project.team.manage'
+    | 'project.team.leave'
+    | 'project.invitation.respond'
+    | 'project.updates.publish'
+    | 'project.interest.express'
+    | 'project.interest.read'
+    | 'project.impact.assess'
+    | 'project.feature'
+    | 'impact.methodology.manage'
+    | 'impact.assessment.submit'
+    | 'impact.assessment.read'
     | 'media.upload'
     | 'media.read'
     | 'media.delete'
@@ -1066,7 +1194,22 @@ export function useAccessControllerPrerequisites<
     | 'profile.update'
     | 'access.roles.read'
     | 'access.roles.manage'
+    | 'project.create'
+    | 'project.read'
+    | 'project.update'
+    | 'project.delete'
     | 'project.publish'
+    | 'project.team.manage'
+    | 'project.team.leave'
+    | 'project.invitation.respond'
+    | 'project.updates.publish'
+    | 'project.interest.express'
+    | 'project.interest.read'
+    | 'project.impact.assess'
+    | 'project.feature'
+    | 'impact.methodology.manage'
+    | 'impact.assessment.submit'
+    | 'impact.assessment.read'
     | 'media.upload'
     | 'media.read'
     | 'media.delete'
@@ -1124,7 +1267,22 @@ export function useAccessControllerPrerequisites<
     | 'profile.update'
     | 'access.roles.read'
     | 'access.roles.manage'
+    | 'project.create'
+    | 'project.read'
+    | 'project.update'
+    | 'project.delete'
     | 'project.publish'
+    | 'project.team.manage'
+    | 'project.team.leave'
+    | 'project.invitation.respond'
+    | 'project.updates.publish'
+    | 'project.interest.express'
+    | 'project.interest.read'
+    | 'project.impact.assess'
+    | 'project.feature'
+    | 'impact.methodology.manage'
+    | 'impact.assessment.submit'
+    | 'impact.assessment.read'
     | 'media.upload'
     | 'media.read'
     | 'media.delete'
@@ -12152,3 +12310,5470 @@ export const useCommentsControllerUnreact = <
 > => {
   return useMutation(getCommentsControllerUnreactMutationOptions(options), queryClient);
 };
+
+export const getMethodologiesControllerPublishedUrl = () => {
+  return `/v1/impact/methodology`;
+};
+
+export const methodologiesControllerPublished = async (
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<MethodologyDtoOutput> => {
+  return apiFetch<MethodologyDtoOutput>(getMethodologiesControllerPublishedUrl(), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getMethodologiesControllerPublishedQueryKey = () => {
+  return [`/v1/impact/methodology`] as const;
+};
+
+export const getMethodologiesControllerPublishedQueryOptions = <
+  TData = Awaited<ReturnType<typeof methodologiesControllerPublished>>,
+  TError = ErrorType<ProblemDetails>,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<Awaited<ReturnType<typeof methodologiesControllerPublished>>, TError, TData>
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getMethodologiesControllerPublishedQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof methodologiesControllerPublished>>> = ({
+    signal,
+  }) => methodologiesControllerPublished({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof methodologiesControllerPublished>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type MethodologiesControllerPublishedQueryResult = NonNullable<
+  Awaited<ReturnType<typeof methodologiesControllerPublished>>
+>;
+export type MethodologiesControllerPublishedQueryError = ErrorType<ProblemDetails>;
+
+export function useMethodologiesControllerPublished<
+  TData = Awaited<ReturnType<typeof methodologiesControllerPublished>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof methodologiesControllerPublished>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof methodologiesControllerPublished>>,
+          TError,
+          Awaited<ReturnType<typeof methodologiesControllerPublished>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useMethodologiesControllerPublished<
+  TData = Awaited<ReturnType<typeof methodologiesControllerPublished>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof methodologiesControllerPublished>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof methodologiesControllerPublished>>,
+          TError,
+          Awaited<ReturnType<typeof methodologiesControllerPublished>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useMethodologiesControllerPublished<
+  TData = Awaited<ReturnType<typeof methodologiesControllerPublished>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof methodologiesControllerPublished>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useMethodologiesControllerPublished<
+  TData = Awaited<ReturnType<typeof methodologiesControllerPublished>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof methodologiesControllerPublished>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getMethodologiesControllerPublishedQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getMethodologiesControllerListUrl = () => {
+  return `/v1/admin/impact/methodologies`;
+};
+
+export const methodologiesControllerList = async (
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<MethodologiesDtoOutput> => {
+  return apiFetch<MethodologiesDtoOutput>(getMethodologiesControllerListUrl(), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getMethodologiesControllerListQueryKey = () => {
+  return [`/v1/admin/impact/methodologies`] as const;
+};
+
+export const getMethodologiesControllerListQueryOptions = <
+  TData = Awaited<ReturnType<typeof methodologiesControllerList>>,
+  TError = ErrorType<ProblemDetails>,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<Awaited<ReturnType<typeof methodologiesControllerList>>, TError, TData>
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getMethodologiesControllerListQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof methodologiesControllerList>>> = ({
+    signal,
+  }) => methodologiesControllerList({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof methodologiesControllerList>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type MethodologiesControllerListQueryResult = NonNullable<
+  Awaited<ReturnType<typeof methodologiesControllerList>>
+>;
+export type MethodologiesControllerListQueryError = ErrorType<ProblemDetails>;
+
+export function useMethodologiesControllerList<
+  TData = Awaited<ReturnType<typeof methodologiesControllerList>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof methodologiesControllerList>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof methodologiesControllerList>>,
+          TError,
+          Awaited<ReturnType<typeof methodologiesControllerList>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useMethodologiesControllerList<
+  TData = Awaited<ReturnType<typeof methodologiesControllerList>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof methodologiesControllerList>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof methodologiesControllerList>>,
+          TError,
+          Awaited<ReturnType<typeof methodologiesControllerList>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useMethodologiesControllerList<
+  TData = Awaited<ReturnType<typeof methodologiesControllerList>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof methodologiesControllerList>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useMethodologiesControllerList<
+  TData = Awaited<ReturnType<typeof methodologiesControllerList>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof methodologiesControllerList>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getMethodologiesControllerListQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getMethodologiesControllerCreateUrl = () => {
+  return `/v1/admin/impact/methodologies`;
+};
+
+export const methodologiesControllerCreate = async (
+  createMethodologyDto: CreateMethodologyDto,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<MethodologyDtoOutput> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit['headers']>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(
+          h as Iterable<Iterable<string>>,
+          (entry) => Array.from(entry) as [string, string],
+        ),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+  return apiFetch<MethodologyDtoOutput>(getMethodologiesControllerCreateUrl(), {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(createMethodologyDto),
+  });
+};
+
+export const getMethodologiesControllerCreateMutationKey = () =>
+  ['methodologiesControllerCreate'] as const;
+
+export const getMethodologiesControllerCreateMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof methodologiesControllerCreate>>,
+    TError,
+    MethodologiesControllerCreateMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof methodologiesControllerCreate>>,
+  TError,
+  MethodologiesControllerCreateMutationVariables,
+  TContext
+> => {
+  const mutationKey = getMethodologiesControllerCreateMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof methodologiesControllerCreate>>,
+    MethodologiesControllerCreateMutationVariables
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return methodologiesControllerCreate(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type MethodologiesControllerCreateMutationResult = NonNullable<
+  Awaited<ReturnType<typeof methodologiesControllerCreate>>
+>;
+export type MethodologiesControllerCreateMutationBody = CreateMethodologyDto;
+export type MethodologiesControllerCreateMutationError = ErrorType<ProblemDetails>;
+export type MethodologiesControllerCreateMutationVariables = { data: CreateMethodologyDto };
+
+export const useMethodologiesControllerCreate = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof methodologiesControllerCreate>>,
+      TError,
+      MethodologiesControllerCreateMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof methodologiesControllerCreate>>,
+  TError,
+  MethodologiesControllerCreateMutationVariables,
+  TContext
+> => {
+  return useMutation(getMethodologiesControllerCreateMutationOptions(options), queryClient);
+};
+
+export const getMethodologiesControllerGetUrl = (methodologyId: string) => {
+  return `/v1/admin/impact/methodologies/${methodologyId}`;
+};
+
+export const methodologiesControllerGet = async (
+  methodologyId: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<MethodologyDtoOutput> => {
+  return apiFetch<MethodologyDtoOutput>(getMethodologiesControllerGetUrl(methodologyId), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getMethodologiesControllerGetQueryKey = (methodologyId: string) => {
+  return [`/v1/admin/impact/methodologies/${methodologyId}`] as const;
+};
+
+export const getMethodologiesControllerGetQueryOptions = <
+  TData = Awaited<ReturnType<typeof methodologiesControllerGet>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  methodologyId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof methodologiesControllerGet>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getMethodologiesControllerGetQueryKey(methodologyId);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof methodologiesControllerGet>>> = ({
+    signal,
+  }) => methodologiesControllerGet(methodologyId, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: methodologyId !== null && methodologyId !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<Awaited<ReturnType<typeof methodologiesControllerGet>>, TError, TData> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+};
+
+export type MethodologiesControllerGetQueryResult = NonNullable<
+  Awaited<ReturnType<typeof methodologiesControllerGet>>
+>;
+export type MethodologiesControllerGetQueryError = ErrorType<ProblemDetails>;
+
+export function useMethodologiesControllerGet<
+  TData = Awaited<ReturnType<typeof methodologiesControllerGet>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  methodologyId: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof methodologiesControllerGet>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof methodologiesControllerGet>>,
+          TError,
+          Awaited<ReturnType<typeof methodologiesControllerGet>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useMethodologiesControllerGet<
+  TData = Awaited<ReturnType<typeof methodologiesControllerGet>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  methodologyId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof methodologiesControllerGet>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof methodologiesControllerGet>>,
+          TError,
+          Awaited<ReturnType<typeof methodologiesControllerGet>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useMethodologiesControllerGet<
+  TData = Awaited<ReturnType<typeof methodologiesControllerGet>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  methodologyId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof methodologiesControllerGet>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useMethodologiesControllerGet<
+  TData = Awaited<ReturnType<typeof methodologiesControllerGet>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  methodologyId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof methodologiesControllerGet>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getMethodologiesControllerGetQueryOptions(methodologyId, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getMethodologiesControllerUpdateUrl = (methodologyId: string) => {
+  return `/v1/admin/impact/methodologies/${methodologyId}`;
+};
+
+export const methodologiesControllerUpdate = async (
+  methodologyId: string,
+  updateMethodologyDto: UpdateMethodologyDto,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<MethodologyDtoOutput> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit['headers']>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(
+          h as Iterable<Iterable<string>>,
+          (entry) => Array.from(entry) as [string, string],
+        ),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+  return apiFetch<MethodologyDtoOutput>(getMethodologiesControllerUpdateUrl(methodologyId), {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(updateMethodologyDto),
+  });
+};
+
+export const getMethodologiesControllerUpdateMutationKey = () =>
+  ['methodologiesControllerUpdate'] as const;
+
+export const getMethodologiesControllerUpdateMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof methodologiesControllerUpdate>>,
+    TError,
+    MethodologiesControllerUpdateMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof methodologiesControllerUpdate>>,
+  TError,
+  MethodologiesControllerUpdateMutationVariables,
+  TContext
+> => {
+  const mutationKey = getMethodologiesControllerUpdateMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof methodologiesControllerUpdate>>,
+    MethodologiesControllerUpdateMutationVariables
+  > = (props) => {
+    const { methodologyId, data } = props ?? {};
+
+    return methodologiesControllerUpdate(methodologyId, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type MethodologiesControllerUpdateMutationResult = NonNullable<
+  Awaited<ReturnType<typeof methodologiesControllerUpdate>>
+>;
+export type MethodologiesControllerUpdateMutationBody = UpdateMethodologyDto;
+export type MethodologiesControllerUpdateMutationError = ErrorType<ProblemDetails>;
+export type MethodologiesControllerUpdateMutationVariables = {
+  methodologyId: string;
+  data: UpdateMethodologyDto;
+};
+
+export const useMethodologiesControllerUpdate = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof methodologiesControllerUpdate>>,
+      TError,
+      MethodologiesControllerUpdateMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof methodologiesControllerUpdate>>,
+  TError,
+  MethodologiesControllerUpdateMutationVariables,
+  TContext
+> => {
+  return useMutation(getMethodologiesControllerUpdateMutationOptions(options), queryClient);
+};
+
+export const getMethodologiesControllerDeleteUrl = (methodologyId: string) => {
+  return `/v1/admin/impact/methodologies/${methodologyId}`;
+};
+
+export const methodologiesControllerDelete = async (
+  methodologyId: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<void> => {
+  return apiFetch<void>(getMethodologiesControllerDeleteUrl(methodologyId), {
+    ...options,
+    method: 'DELETE',
+  });
+};
+
+export const getMethodologiesControllerDeleteMutationKey = () =>
+  ['methodologiesControllerDelete'] as const;
+
+export const getMethodologiesControllerDeleteMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof methodologiesControllerDelete>>,
+    TError,
+    MethodologiesControllerDeleteMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof methodologiesControllerDelete>>,
+  TError,
+  MethodologiesControllerDeleteMutationVariables,
+  TContext
+> => {
+  const mutationKey = getMethodologiesControllerDeleteMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof methodologiesControllerDelete>>,
+    MethodologiesControllerDeleteMutationVariables
+  > = (props) => {
+    const { methodologyId } = props ?? {};
+
+    return methodologiesControllerDelete(methodologyId, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type MethodologiesControllerDeleteMutationResult = NonNullable<
+  Awaited<ReturnType<typeof methodologiesControllerDelete>>
+>;
+
+export type MethodologiesControllerDeleteMutationError = ErrorType<ProblemDetails>;
+export type MethodologiesControllerDeleteMutationVariables = { methodologyId: string };
+
+export const useMethodologiesControllerDelete = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof methodologiesControllerDelete>>,
+      TError,
+      MethodologiesControllerDeleteMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof methodologiesControllerDelete>>,
+  TError,
+  MethodologiesControllerDeleteMutationVariables,
+  TContext
+> => {
+  return useMutation(getMethodologiesControllerDeleteMutationOptions(options), queryClient);
+};
+
+export const getMethodologiesControllerPublishUrl = (methodologyId: string) => {
+  return `/v1/admin/impact/methodologies/${methodologyId}/publish`;
+};
+
+export const methodologiesControllerPublish = async (
+  methodologyId: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<MethodologyDtoOutput> => {
+  return apiFetch<MethodologyDtoOutput>(getMethodologiesControllerPublishUrl(methodologyId), {
+    ...options,
+    method: 'POST',
+  });
+};
+
+export const getMethodologiesControllerPublishMutationKey = () =>
+  ['methodologiesControllerPublish'] as const;
+
+export const getMethodologiesControllerPublishMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof methodologiesControllerPublish>>,
+    TError,
+    MethodologiesControllerPublishMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof methodologiesControllerPublish>>,
+  TError,
+  MethodologiesControllerPublishMutationVariables,
+  TContext
+> => {
+  const mutationKey = getMethodologiesControllerPublishMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof methodologiesControllerPublish>>,
+    MethodologiesControllerPublishMutationVariables
+  > = (props) => {
+    const { methodologyId } = props ?? {};
+
+    return methodologiesControllerPublish(methodologyId, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type MethodologiesControllerPublishMutationResult = NonNullable<
+  Awaited<ReturnType<typeof methodologiesControllerPublish>>
+>;
+
+export type MethodologiesControllerPublishMutationError = ErrorType<ProblemDetails>;
+export type MethodologiesControllerPublishMutationVariables = { methodologyId: string };
+
+export const useMethodologiesControllerPublish = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof methodologiesControllerPublish>>,
+      TError,
+      MethodologiesControllerPublishMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof methodologiesControllerPublish>>,
+  TError,
+  MethodologiesControllerPublishMutationVariables,
+  TContext
+> => {
+  return useMutation(getMethodologiesControllerPublishMutationOptions(options), queryClient);
+};
+
+export const getMethodologiesControllerArchiveUrl = (methodologyId: string) => {
+  return `/v1/admin/impact/methodologies/${methodologyId}/archive`;
+};
+
+export const methodologiesControllerArchive = async (
+  methodologyId: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<MethodologyDtoOutput> => {
+  return apiFetch<MethodologyDtoOutput>(getMethodologiesControllerArchiveUrl(methodologyId), {
+    ...options,
+    method: 'POST',
+  });
+};
+
+export const getMethodologiesControllerArchiveMutationKey = () =>
+  ['methodologiesControllerArchive'] as const;
+
+export const getMethodologiesControllerArchiveMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof methodologiesControllerArchive>>,
+    TError,
+    MethodologiesControllerArchiveMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof methodologiesControllerArchive>>,
+  TError,
+  MethodologiesControllerArchiveMutationVariables,
+  TContext
+> => {
+  const mutationKey = getMethodologiesControllerArchiveMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof methodologiesControllerArchive>>,
+    MethodologiesControllerArchiveMutationVariables
+  > = (props) => {
+    const { methodologyId } = props ?? {};
+
+    return methodologiesControllerArchive(methodologyId, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type MethodologiesControllerArchiveMutationResult = NonNullable<
+  Awaited<ReturnType<typeof methodologiesControllerArchive>>
+>;
+
+export type MethodologiesControllerArchiveMutationError = ErrorType<ProblemDetails>;
+export type MethodologiesControllerArchiveMutationVariables = { methodologyId: string };
+
+export const useMethodologiesControllerArchive = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof methodologiesControllerArchive>>,
+      TError,
+      MethodologiesControllerArchiveMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof methodologiesControllerArchive>>,
+  TError,
+  MethodologiesControllerArchiveMutationVariables,
+  TContext
+> => {
+  return useMutation(getMethodologiesControllerArchiveMutationOptions(options), queryClient);
+};
+
+export const getMyAssessmentsControllerHistoryUrl = () => {
+  return `/v1/me/impact/assessments`;
+};
+
+export const myAssessmentsControllerHistory = async (
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<AssessmentHistoryDtoOutput> => {
+  return apiFetch<AssessmentHistoryDtoOutput>(getMyAssessmentsControllerHistoryUrl(), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getMyAssessmentsControllerHistoryQueryKey = () => {
+  return [`/v1/me/impact/assessments`] as const;
+};
+
+export const getMyAssessmentsControllerHistoryQueryOptions = <
+  TData = Awaited<ReturnType<typeof myAssessmentsControllerHistory>>,
+  TError = ErrorType<ProblemDetails>,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<Awaited<ReturnType<typeof myAssessmentsControllerHistory>>, TError, TData>
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getMyAssessmentsControllerHistoryQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof myAssessmentsControllerHistory>>> = ({
+    signal,
+  }) => myAssessmentsControllerHistory({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof myAssessmentsControllerHistory>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type MyAssessmentsControllerHistoryQueryResult = NonNullable<
+  Awaited<ReturnType<typeof myAssessmentsControllerHistory>>
+>;
+export type MyAssessmentsControllerHistoryQueryError = ErrorType<ProblemDetails>;
+
+export function useMyAssessmentsControllerHistory<
+  TData = Awaited<ReturnType<typeof myAssessmentsControllerHistory>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof myAssessmentsControllerHistory>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof myAssessmentsControllerHistory>>,
+          TError,
+          Awaited<ReturnType<typeof myAssessmentsControllerHistory>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useMyAssessmentsControllerHistory<
+  TData = Awaited<ReturnType<typeof myAssessmentsControllerHistory>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof myAssessmentsControllerHistory>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof myAssessmentsControllerHistory>>,
+          TError,
+          Awaited<ReturnType<typeof myAssessmentsControllerHistory>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useMyAssessmentsControllerHistory<
+  TData = Awaited<ReturnType<typeof myAssessmentsControllerHistory>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof myAssessmentsControllerHistory>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useMyAssessmentsControllerHistory<
+  TData = Awaited<ReturnType<typeof myAssessmentsControllerHistory>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof myAssessmentsControllerHistory>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getMyAssessmentsControllerHistoryQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getMyAssessmentsControllerSubmitUrl = () => {
+  return `/v1/me/impact/assessments`;
+};
+
+export const myAssessmentsControllerSubmit = async (
+  submitAssessmentDto: SubmitAssessmentDto,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<AssessmentDtoOutput> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit['headers']>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(
+          h as Iterable<Iterable<string>>,
+          (entry) => Array.from(entry) as [string, string],
+        ),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+  return apiFetch<AssessmentDtoOutput>(getMyAssessmentsControllerSubmitUrl(), {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(submitAssessmentDto),
+  });
+};
+
+export const getMyAssessmentsControllerSubmitMutationKey = () =>
+  ['myAssessmentsControllerSubmit'] as const;
+
+export const getMyAssessmentsControllerSubmitMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof myAssessmentsControllerSubmit>>,
+    TError,
+    MyAssessmentsControllerSubmitMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof myAssessmentsControllerSubmit>>,
+  TError,
+  MyAssessmentsControllerSubmitMutationVariables,
+  TContext
+> => {
+  const mutationKey = getMyAssessmentsControllerSubmitMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof myAssessmentsControllerSubmit>>,
+    MyAssessmentsControllerSubmitMutationVariables
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return myAssessmentsControllerSubmit(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type MyAssessmentsControllerSubmitMutationResult = NonNullable<
+  Awaited<ReturnType<typeof myAssessmentsControllerSubmit>>
+>;
+export type MyAssessmentsControllerSubmitMutationBody = SubmitAssessmentDto;
+export type MyAssessmentsControllerSubmitMutationError = ErrorType<ProblemDetails>;
+export type MyAssessmentsControllerSubmitMutationVariables = { data: SubmitAssessmentDto };
+
+export const useMyAssessmentsControllerSubmit = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof myAssessmentsControllerSubmit>>,
+      TError,
+      MyAssessmentsControllerSubmitMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof myAssessmentsControllerSubmit>>,
+  TError,
+  MyAssessmentsControllerSubmitMutationVariables,
+  TContext
+> => {
+  return useMutation(getMyAssessmentsControllerSubmitMutationOptions(options), queryClient);
+};
+
+export const getProjectsControllerCreateUrl = () => {
+  return `/v1/projects`;
+};
+
+export const projectsControllerCreate = async (
+  createProjectDto: CreateProjectDto,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<ProjectDtoOutput> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit['headers']>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(
+          h as Iterable<Iterable<string>>,
+          (entry) => Array.from(entry) as [string, string],
+        ),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+  return apiFetch<ProjectDtoOutput>(getProjectsControllerCreateUrl(), {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(createProjectDto),
+  });
+};
+
+export const getProjectsControllerCreateMutationKey = () => ['projectsControllerCreate'] as const;
+
+export const getProjectsControllerCreateMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof projectsControllerCreate>>,
+    TError,
+    ProjectsControllerCreateMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof projectsControllerCreate>>,
+  TError,
+  ProjectsControllerCreateMutationVariables,
+  TContext
+> => {
+  const mutationKey = getProjectsControllerCreateMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof projectsControllerCreate>>,
+    ProjectsControllerCreateMutationVariables
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return projectsControllerCreate(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ProjectsControllerCreateMutationResult = NonNullable<
+  Awaited<ReturnType<typeof projectsControllerCreate>>
+>;
+export type ProjectsControllerCreateMutationBody = CreateProjectDto;
+export type ProjectsControllerCreateMutationError = ErrorType<ProblemDetails>;
+export type ProjectsControllerCreateMutationVariables = { data: CreateProjectDto };
+
+export const useProjectsControllerCreate = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof projectsControllerCreate>>,
+      TError,
+      ProjectsControllerCreateMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof projectsControllerCreate>>,
+  TError,
+  ProjectsControllerCreateMutationVariables,
+  TContext
+> => {
+  return useMutation(getProjectsControllerCreateMutationOptions(options), queryClient);
+};
+
+export const getProjectsControllerShowcaseUrl = (params?: ProjectsControllerShowcaseParams) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/v1/projects?${stringifiedParams}` : `/v1/projects`;
+};
+
+export const projectsControllerShowcase = async (
+  params?: ProjectsControllerShowcaseParams,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<ProjectCardPageDtoOutput> => {
+  return apiFetch<ProjectCardPageDtoOutput>(getProjectsControllerShowcaseUrl(params), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getProjectsControllerShowcaseQueryKey = (
+  params?: ProjectsControllerShowcaseParams,
+) => {
+  return [`/v1/projects`, ...(params ? [params] : [])] as const;
+};
+
+export const getProjectsControllerShowcaseQueryOptions = <
+  TData = Awaited<ReturnType<typeof projectsControllerShowcase>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: ProjectsControllerShowcaseParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerShowcase>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getProjectsControllerShowcaseQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof projectsControllerShowcase>>> = ({
+    signal,
+  }) => projectsControllerShowcase(params, { signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof projectsControllerShowcase>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ProjectsControllerShowcaseQueryResult = NonNullable<
+  Awaited<ReturnType<typeof projectsControllerShowcase>>
+>;
+export type ProjectsControllerShowcaseQueryError = ErrorType<ProblemDetails>;
+
+export function useProjectsControllerShowcase<
+  TData = Awaited<ReturnType<typeof projectsControllerShowcase>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params: undefined | ProjectsControllerShowcaseParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerShowcase>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof projectsControllerShowcase>>,
+          TError,
+          Awaited<ReturnType<typeof projectsControllerShowcase>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useProjectsControllerShowcase<
+  TData = Awaited<ReturnType<typeof projectsControllerShowcase>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: ProjectsControllerShowcaseParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerShowcase>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof projectsControllerShowcase>>,
+          TError,
+          Awaited<ReturnType<typeof projectsControllerShowcase>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useProjectsControllerShowcase<
+  TData = Awaited<ReturnType<typeof projectsControllerShowcase>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: ProjectsControllerShowcaseParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerShowcase>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useProjectsControllerShowcase<
+  TData = Awaited<ReturnType<typeof projectsControllerShowcase>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: ProjectsControllerShowcaseParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerShowcase>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getProjectsControllerShowcaseQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getProjectsControllerMineUrl = () => {
+  return `/v1/me/projects`;
+};
+
+export const projectsControllerMine = async (
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<MyProjectsDtoOutput> => {
+  return apiFetch<MyProjectsDtoOutput>(getProjectsControllerMineUrl(), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getProjectsControllerMineQueryKey = () => {
+  return [`/v1/me/projects`] as const;
+};
+
+export const getProjectsControllerMineQueryOptions = <
+  TData = Awaited<ReturnType<typeof projectsControllerMine>>,
+  TError = ErrorType<ProblemDetails>,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<Awaited<ReturnType<typeof projectsControllerMine>>, TError, TData>
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getProjectsControllerMineQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof projectsControllerMine>>> = ({ signal }) =>
+    projectsControllerMine({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof projectsControllerMine>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ProjectsControllerMineQueryResult = NonNullable<
+  Awaited<ReturnType<typeof projectsControllerMine>>
+>;
+export type ProjectsControllerMineQueryError = ErrorType<ProblemDetails>;
+
+export function useProjectsControllerMine<
+  TData = Awaited<ReturnType<typeof projectsControllerMine>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerMine>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof projectsControllerMine>>,
+          TError,
+          Awaited<ReturnType<typeof projectsControllerMine>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useProjectsControllerMine<
+  TData = Awaited<ReturnType<typeof projectsControllerMine>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerMine>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof projectsControllerMine>>,
+          TError,
+          Awaited<ReturnType<typeof projectsControllerMine>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useProjectsControllerMine<
+  TData = Awaited<ReturnType<typeof projectsControllerMine>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerMine>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useProjectsControllerMine<
+  TData = Awaited<ReturnType<typeof projectsControllerMine>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerMine>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getProjectsControllerMineQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getProjectsControllerPublicShowcaseUrl = (
+  params?: ProjectsControllerPublicShowcaseParams,
+) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/v1/public/projects?${stringifiedParams}`
+    : `/v1/public/projects`;
+};
+
+export const projectsControllerPublicShowcase = async (
+  params?: ProjectsControllerPublicShowcaseParams,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<ProjectCardPageDtoOutput> => {
+  return apiFetch<ProjectCardPageDtoOutput>(getProjectsControllerPublicShowcaseUrl(params), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getProjectsControllerPublicShowcaseQueryKey = (
+  params?: ProjectsControllerPublicShowcaseParams,
+) => {
+  return [`/v1/public/projects`, ...(params ? [params] : [])] as const;
+};
+
+export const getProjectsControllerPublicShowcaseQueryOptions = <
+  TData = Awaited<ReturnType<typeof projectsControllerPublicShowcase>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: ProjectsControllerPublicShowcaseParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerPublicShowcase>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getProjectsControllerPublicShowcaseQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof projectsControllerPublicShowcase>>> = ({
+    signal,
+  }) => projectsControllerPublicShowcase(params, { signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof projectsControllerPublicShowcase>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ProjectsControllerPublicShowcaseQueryResult = NonNullable<
+  Awaited<ReturnType<typeof projectsControllerPublicShowcase>>
+>;
+export type ProjectsControllerPublicShowcaseQueryError = ErrorType<ProblemDetails>;
+
+export function useProjectsControllerPublicShowcase<
+  TData = Awaited<ReturnType<typeof projectsControllerPublicShowcase>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params: undefined | ProjectsControllerPublicShowcaseParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerPublicShowcase>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof projectsControllerPublicShowcase>>,
+          TError,
+          Awaited<ReturnType<typeof projectsControllerPublicShowcase>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useProjectsControllerPublicShowcase<
+  TData = Awaited<ReturnType<typeof projectsControllerPublicShowcase>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: ProjectsControllerPublicShowcaseParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerPublicShowcase>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof projectsControllerPublicShowcase>>,
+          TError,
+          Awaited<ReturnType<typeof projectsControllerPublicShowcase>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useProjectsControllerPublicShowcase<
+  TData = Awaited<ReturnType<typeof projectsControllerPublicShowcase>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: ProjectsControllerPublicShowcaseParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerPublicShowcase>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useProjectsControllerPublicShowcase<
+  TData = Awaited<ReturnType<typeof projectsControllerPublicShowcase>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: ProjectsControllerPublicShowcaseParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerPublicShowcase>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getProjectsControllerPublicShowcaseQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getProjectsControllerForMemberUrl = (slug: string) => {
+  return `/v1/projects/by-slug/${slug}`;
+};
+
+export const projectsControllerForMember = async (
+  slug: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<ProjectDtoOutput> => {
+  return apiFetch<ProjectDtoOutput>(getProjectsControllerForMemberUrl(slug), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getProjectsControllerForMemberQueryKey = (slug: string) => {
+  return [`/v1/projects/by-slug/${slug}`] as const;
+};
+
+export const getProjectsControllerForMemberQueryOptions = <
+  TData = Awaited<ReturnType<typeof projectsControllerForMember>>,
+  TError = ErrorType<void | ProblemDetails>,
+>(
+  slug: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerForMember>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getProjectsControllerForMemberQueryKey(slug);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof projectsControllerForMember>>> = ({
+    signal,
+  }) => projectsControllerForMember(slug, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: slug !== null && slug !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<Awaited<ReturnType<typeof projectsControllerForMember>>, TError, TData> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+};
+
+export type ProjectsControllerForMemberQueryResult = NonNullable<
+  Awaited<ReturnType<typeof projectsControllerForMember>>
+>;
+export type ProjectsControllerForMemberQueryError = ErrorType<void | ProblemDetails>;
+
+export function useProjectsControllerForMember<
+  TData = Awaited<ReturnType<typeof projectsControllerForMember>>,
+  TError = ErrorType<void | ProblemDetails>,
+>(
+  slug: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerForMember>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof projectsControllerForMember>>,
+          TError,
+          Awaited<ReturnType<typeof projectsControllerForMember>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useProjectsControllerForMember<
+  TData = Awaited<ReturnType<typeof projectsControllerForMember>>,
+  TError = ErrorType<void | ProblemDetails>,
+>(
+  slug: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerForMember>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof projectsControllerForMember>>,
+          TError,
+          Awaited<ReturnType<typeof projectsControllerForMember>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useProjectsControllerForMember<
+  TData = Awaited<ReturnType<typeof projectsControllerForMember>>,
+  TError = ErrorType<void | ProblemDetails>,
+>(
+  slug: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerForMember>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useProjectsControllerForMember<
+  TData = Awaited<ReturnType<typeof projectsControllerForMember>>,
+  TError = ErrorType<void | ProblemDetails>,
+>(
+  slug: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerForMember>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getProjectsControllerForMemberQueryOptions(slug, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getProjectsControllerForPublicUrl = (slug: string) => {
+  return `/v1/public/projects/${slug}`;
+};
+
+export const projectsControllerForPublic = async (
+  slug: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<ProjectDtoOutput> => {
+  return apiFetch<ProjectDtoOutput>(getProjectsControllerForPublicUrl(slug), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getProjectsControllerForPublicQueryKey = (slug: string) => {
+  return [`/v1/public/projects/${slug}`] as const;
+};
+
+export const getProjectsControllerForPublicQueryOptions = <
+  TData = Awaited<ReturnType<typeof projectsControllerForPublic>>,
+  TError = ErrorType<void | ProblemDetails>,
+>(
+  slug: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerForPublic>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getProjectsControllerForPublicQueryKey(slug);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof projectsControllerForPublic>>> = ({
+    signal,
+  }) => projectsControllerForPublic(slug, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: slug !== null && slug !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<Awaited<ReturnType<typeof projectsControllerForPublic>>, TError, TData> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+};
+
+export type ProjectsControllerForPublicQueryResult = NonNullable<
+  Awaited<ReturnType<typeof projectsControllerForPublic>>
+>;
+export type ProjectsControllerForPublicQueryError = ErrorType<void | ProblemDetails>;
+
+export function useProjectsControllerForPublic<
+  TData = Awaited<ReturnType<typeof projectsControllerForPublic>>,
+  TError = ErrorType<void | ProblemDetails>,
+>(
+  slug: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerForPublic>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof projectsControllerForPublic>>,
+          TError,
+          Awaited<ReturnType<typeof projectsControllerForPublic>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useProjectsControllerForPublic<
+  TData = Awaited<ReturnType<typeof projectsControllerForPublic>>,
+  TError = ErrorType<void | ProblemDetails>,
+>(
+  slug: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerForPublic>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof projectsControllerForPublic>>,
+          TError,
+          Awaited<ReturnType<typeof projectsControllerForPublic>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useProjectsControllerForPublic<
+  TData = Awaited<ReturnType<typeof projectsControllerForPublic>>,
+  TError = ErrorType<void | ProblemDetails>,
+>(
+  slug: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerForPublic>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useProjectsControllerForPublic<
+  TData = Awaited<ReturnType<typeof projectsControllerForPublic>>,
+  TError = ErrorType<void | ProblemDetails>,
+>(
+  slug: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerForPublic>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getProjectsControllerForPublicQueryOptions(slug, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getProjectsControllerPublicPostsUrl = (
+  projectId: string,
+  params?: ProjectsControllerPublicPostsParams,
+) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/v1/public/projects/${projectId}/posts?${stringifiedParams}`
+    : `/v1/public/projects/${projectId}/posts`;
+};
+
+export const projectsControllerPublicPosts = async (
+  projectId: string,
+  params?: ProjectsControllerPublicPostsParams,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<PostPageDtoOutput> => {
+  return apiFetch<PostPageDtoOutput>(getProjectsControllerPublicPostsUrl(projectId, params), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getProjectsControllerPublicPostsQueryKey = (
+  projectId: string,
+  params?: ProjectsControllerPublicPostsParams,
+) => {
+  return [`/v1/public/projects/${projectId}/posts`, ...(params ? [params] : [])] as const;
+};
+
+export const getProjectsControllerPublicPostsQueryOptions = <
+  TData = Awaited<ReturnType<typeof projectsControllerPublicPosts>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  params?: ProjectsControllerPublicPostsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerPublicPosts>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getProjectsControllerPublicPostsQueryKey(projectId, params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof projectsControllerPublicPosts>>> = ({
+    signal,
+  }) => projectsControllerPublicPosts(projectId, params, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: projectId !== null && projectId !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<Awaited<ReturnType<typeof projectsControllerPublicPosts>>, TError, TData> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+};
+
+export type ProjectsControllerPublicPostsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof projectsControllerPublicPosts>>
+>;
+export type ProjectsControllerPublicPostsQueryError = ErrorType<ProblemDetails>;
+
+export function useProjectsControllerPublicPosts<
+  TData = Awaited<ReturnType<typeof projectsControllerPublicPosts>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  params: undefined | ProjectsControllerPublicPostsParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerPublicPosts>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof projectsControllerPublicPosts>>,
+          TError,
+          Awaited<ReturnType<typeof projectsControllerPublicPosts>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useProjectsControllerPublicPosts<
+  TData = Awaited<ReturnType<typeof projectsControllerPublicPosts>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  params?: ProjectsControllerPublicPostsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerPublicPosts>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof projectsControllerPublicPosts>>,
+          TError,
+          Awaited<ReturnType<typeof projectsControllerPublicPosts>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useProjectsControllerPublicPosts<
+  TData = Awaited<ReturnType<typeof projectsControllerPublicPosts>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  params?: ProjectsControllerPublicPostsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerPublicPosts>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useProjectsControllerPublicPosts<
+  TData = Awaited<ReturnType<typeof projectsControllerPublicPosts>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  params?: ProjectsControllerPublicPostsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerPublicPosts>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getProjectsControllerPublicPostsQueryOptions(projectId, params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getProjectsControllerGetUrl = (projectId: string) => {
+  return `/v1/projects/${projectId}`;
+};
+
+export const projectsControllerGet = async (
+  projectId: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<ProjectDtoOutput> => {
+  return apiFetch<ProjectDtoOutput>(getProjectsControllerGetUrl(projectId), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getProjectsControllerGetQueryKey = (projectId: string) => {
+  return [`/v1/projects/${projectId}`] as const;
+};
+
+export const getProjectsControllerGetQueryOptions = <
+  TData = Awaited<ReturnType<typeof projectsControllerGet>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerGet>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getProjectsControllerGetQueryKey(projectId);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof projectsControllerGet>>> = ({ signal }) =>
+    projectsControllerGet(projectId, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: projectId !== null && projectId !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<Awaited<ReturnType<typeof projectsControllerGet>>, TError, TData> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+};
+
+export type ProjectsControllerGetQueryResult = NonNullable<
+  Awaited<ReturnType<typeof projectsControllerGet>>
+>;
+export type ProjectsControllerGetQueryError = ErrorType<ProblemDetails>;
+
+export function useProjectsControllerGet<
+  TData = Awaited<ReturnType<typeof projectsControllerGet>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerGet>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof projectsControllerGet>>,
+          TError,
+          Awaited<ReturnType<typeof projectsControllerGet>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useProjectsControllerGet<
+  TData = Awaited<ReturnType<typeof projectsControllerGet>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerGet>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof projectsControllerGet>>,
+          TError,
+          Awaited<ReturnType<typeof projectsControllerGet>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useProjectsControllerGet<
+  TData = Awaited<ReturnType<typeof projectsControllerGet>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerGet>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useProjectsControllerGet<
+  TData = Awaited<ReturnType<typeof projectsControllerGet>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerGet>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getProjectsControllerGetQueryOptions(projectId, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getProjectsControllerUpdateUrl = (projectId: string) => {
+  return `/v1/projects/${projectId}`;
+};
+
+export const projectsControllerUpdate = async (
+  projectId: string,
+  updateProjectDto: UpdateProjectDto,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<ProjectDtoOutput> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit['headers']>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(
+          h as Iterable<Iterable<string>>,
+          (entry) => Array.from(entry) as [string, string],
+        ),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+  return apiFetch<ProjectDtoOutput>(getProjectsControllerUpdateUrl(projectId), {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(updateProjectDto),
+  });
+};
+
+export const getProjectsControllerUpdateMutationKey = () => ['projectsControllerUpdate'] as const;
+
+export const getProjectsControllerUpdateMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof projectsControllerUpdate>>,
+    TError,
+    ProjectsControllerUpdateMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof projectsControllerUpdate>>,
+  TError,
+  ProjectsControllerUpdateMutationVariables,
+  TContext
+> => {
+  const mutationKey = getProjectsControllerUpdateMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof projectsControllerUpdate>>,
+    ProjectsControllerUpdateMutationVariables
+  > = (props) => {
+    const { projectId, data } = props ?? {};
+
+    return projectsControllerUpdate(projectId, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ProjectsControllerUpdateMutationResult = NonNullable<
+  Awaited<ReturnType<typeof projectsControllerUpdate>>
+>;
+export type ProjectsControllerUpdateMutationBody = UpdateProjectDto;
+export type ProjectsControllerUpdateMutationError = ErrorType<ProblemDetails>;
+export type ProjectsControllerUpdateMutationVariables = {
+  projectId: string;
+  data: UpdateProjectDto;
+};
+
+export const useProjectsControllerUpdate = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof projectsControllerUpdate>>,
+      TError,
+      ProjectsControllerUpdateMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof projectsControllerUpdate>>,
+  TError,
+  ProjectsControllerUpdateMutationVariables,
+  TContext
+> => {
+  return useMutation(getProjectsControllerUpdateMutationOptions(options), queryClient);
+};
+
+export const getProjectsControllerDeleteUrl = (projectId: string) => {
+  return `/v1/projects/${projectId}`;
+};
+
+export const projectsControllerDelete = async (
+  projectId: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<void> => {
+  return apiFetch<void>(getProjectsControllerDeleteUrl(projectId), {
+    ...options,
+    method: 'DELETE',
+  });
+};
+
+export const getProjectsControllerDeleteMutationKey = () => ['projectsControllerDelete'] as const;
+
+export const getProjectsControllerDeleteMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof projectsControllerDelete>>,
+    TError,
+    ProjectsControllerDeleteMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof projectsControllerDelete>>,
+  TError,
+  ProjectsControllerDeleteMutationVariables,
+  TContext
+> => {
+  const mutationKey = getProjectsControllerDeleteMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof projectsControllerDelete>>,
+    ProjectsControllerDeleteMutationVariables
+  > = (props) => {
+    const { projectId } = props ?? {};
+
+    return projectsControllerDelete(projectId, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ProjectsControllerDeleteMutationResult = NonNullable<
+  Awaited<ReturnType<typeof projectsControllerDelete>>
+>;
+
+export type ProjectsControllerDeleteMutationError = ErrorType<ProblemDetails>;
+export type ProjectsControllerDeleteMutationVariables = { projectId: string };
+
+export const useProjectsControllerDelete = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof projectsControllerDelete>>,
+      TError,
+      ProjectsControllerDeleteMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof projectsControllerDelete>>,
+  TError,
+  ProjectsControllerDeleteMutationVariables,
+  TContext
+> => {
+  return useMutation(getProjectsControllerDeleteMutationOptions(options), queryClient);
+};
+
+export const getProjectsControllerPreviewUrl = (projectId: string) => {
+  return `/v1/projects/${projectId}/preview`;
+};
+
+export const projectsControllerPreview = async (
+  projectId: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<ProjectDtoOutput> => {
+  return apiFetch<ProjectDtoOutput>(getProjectsControllerPreviewUrl(projectId), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getProjectsControllerPreviewQueryKey = (projectId: string) => {
+  return [`/v1/projects/${projectId}/preview`] as const;
+};
+
+export const getProjectsControllerPreviewQueryOptions = <
+  TData = Awaited<ReturnType<typeof projectsControllerPreview>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerPreview>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getProjectsControllerPreviewQueryKey(projectId);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof projectsControllerPreview>>> = ({
+    signal,
+  }) => projectsControllerPreview(projectId, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: projectId !== null && projectId !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<Awaited<ReturnType<typeof projectsControllerPreview>>, TError, TData> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+};
+
+export type ProjectsControllerPreviewQueryResult = NonNullable<
+  Awaited<ReturnType<typeof projectsControllerPreview>>
+>;
+export type ProjectsControllerPreviewQueryError = ErrorType<ProblemDetails>;
+
+export function useProjectsControllerPreview<
+  TData = Awaited<ReturnType<typeof projectsControllerPreview>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerPreview>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof projectsControllerPreview>>,
+          TError,
+          Awaited<ReturnType<typeof projectsControllerPreview>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useProjectsControllerPreview<
+  TData = Awaited<ReturnType<typeof projectsControllerPreview>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerPreview>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof projectsControllerPreview>>,
+          TError,
+          Awaited<ReturnType<typeof projectsControllerPreview>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useProjectsControllerPreview<
+  TData = Awaited<ReturnType<typeof projectsControllerPreview>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerPreview>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useProjectsControllerPreview<
+  TData = Awaited<ReturnType<typeof projectsControllerPreview>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerPreview>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getProjectsControllerPreviewQueryOptions(projectId, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getProjectsControllerPostsUrl = (
+  projectId: string,
+  params?: ProjectsControllerPostsParams,
+) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/v1/projects/${projectId}/posts?${stringifiedParams}`
+    : `/v1/projects/${projectId}/posts`;
+};
+
+export const projectsControllerPosts = async (
+  projectId: string,
+  params?: ProjectsControllerPostsParams,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<PostPageDtoOutput> => {
+  return apiFetch<PostPageDtoOutput>(getProjectsControllerPostsUrl(projectId, params), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getProjectsControllerPostsQueryKey = (
+  projectId: string,
+  params?: ProjectsControllerPostsParams,
+) => {
+  return [`/v1/projects/${projectId}/posts`, ...(params ? [params] : [])] as const;
+};
+
+export const getProjectsControllerPostsQueryOptions = <
+  TData = Awaited<ReturnType<typeof projectsControllerPosts>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  params?: ProjectsControllerPostsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerPosts>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getProjectsControllerPostsQueryKey(projectId, params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof projectsControllerPosts>>> = ({
+    signal,
+  }) => projectsControllerPosts(projectId, params, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: projectId !== null && projectId !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<Awaited<ReturnType<typeof projectsControllerPosts>>, TError, TData> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+};
+
+export type ProjectsControllerPostsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof projectsControllerPosts>>
+>;
+export type ProjectsControllerPostsQueryError = ErrorType<ProblemDetails>;
+
+export function useProjectsControllerPosts<
+  TData = Awaited<ReturnType<typeof projectsControllerPosts>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  params: undefined | ProjectsControllerPostsParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerPosts>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof projectsControllerPosts>>,
+          TError,
+          Awaited<ReturnType<typeof projectsControllerPosts>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useProjectsControllerPosts<
+  TData = Awaited<ReturnType<typeof projectsControllerPosts>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  params?: ProjectsControllerPostsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerPosts>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof projectsControllerPosts>>,
+          TError,
+          Awaited<ReturnType<typeof projectsControllerPosts>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useProjectsControllerPosts<
+  TData = Awaited<ReturnType<typeof projectsControllerPosts>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  params?: ProjectsControllerPostsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerPosts>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useProjectsControllerPosts<
+  TData = Awaited<ReturnType<typeof projectsControllerPosts>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  params?: ProjectsControllerPostsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerPosts>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getProjectsControllerPostsQueryOptions(projectId, params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getProjectsControllerChangeSlugUrl = (projectId: string) => {
+  return `/v1/projects/${projectId}/slug`;
+};
+
+export const projectsControllerChangeSlug = async (
+  projectId: string,
+  changeSlugDto: ChangeSlugDto,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<ProjectDtoOutput> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit['headers']>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(
+          h as Iterable<Iterable<string>>,
+          (entry) => Array.from(entry) as [string, string],
+        ),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+  return apiFetch<ProjectDtoOutput>(getProjectsControllerChangeSlugUrl(projectId), {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(changeSlugDto),
+  });
+};
+
+export const getProjectsControllerChangeSlugMutationKey = () =>
+  ['projectsControllerChangeSlug'] as const;
+
+export const getProjectsControllerChangeSlugMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof projectsControllerChangeSlug>>,
+    TError,
+    ProjectsControllerChangeSlugMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof projectsControllerChangeSlug>>,
+  TError,
+  ProjectsControllerChangeSlugMutationVariables,
+  TContext
+> => {
+  const mutationKey = getProjectsControllerChangeSlugMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof projectsControllerChangeSlug>>,
+    ProjectsControllerChangeSlugMutationVariables
+  > = (props) => {
+    const { projectId, data } = props ?? {};
+
+    return projectsControllerChangeSlug(projectId, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ProjectsControllerChangeSlugMutationResult = NonNullable<
+  Awaited<ReturnType<typeof projectsControllerChangeSlug>>
+>;
+export type ProjectsControllerChangeSlugMutationBody = ChangeSlugDto;
+export type ProjectsControllerChangeSlugMutationError = ErrorType<ProblemDetails>;
+export type ProjectsControllerChangeSlugMutationVariables = {
+  projectId: string;
+  data: ChangeSlugDto;
+};
+
+export const useProjectsControllerChangeSlug = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof projectsControllerChangeSlug>>,
+      TError,
+      ProjectsControllerChangeSlugMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof projectsControllerChangeSlug>>,
+  TError,
+  ProjectsControllerChangeSlugMutationVariables,
+  TContext
+> => {
+  return useMutation(getProjectsControllerChangeSlugMutationOptions(options), queryClient);
+};
+
+export const getProjectsControllerReplaceTiersUrl = (projectId: string) => {
+  return `/v1/projects/${projectId}/tiers`;
+};
+
+export const projectsControllerReplaceTiers = async (
+  projectId: string,
+  replaceTiersDto: ReplaceTiersDto,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<ProjectDtoOutput> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit['headers']>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(
+          h as Iterable<Iterable<string>>,
+          (entry) => Array.from(entry) as [string, string],
+        ),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+  return apiFetch<ProjectDtoOutput>(getProjectsControllerReplaceTiersUrl(projectId), {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(replaceTiersDto),
+  });
+};
+
+export const getProjectsControllerReplaceTiersMutationKey = () =>
+  ['projectsControllerReplaceTiers'] as const;
+
+export const getProjectsControllerReplaceTiersMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof projectsControllerReplaceTiers>>,
+    TError,
+    ProjectsControllerReplaceTiersMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof projectsControllerReplaceTiers>>,
+  TError,
+  ProjectsControllerReplaceTiersMutationVariables,
+  TContext
+> => {
+  const mutationKey = getProjectsControllerReplaceTiersMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof projectsControllerReplaceTiers>>,
+    ProjectsControllerReplaceTiersMutationVariables
+  > = (props) => {
+    const { projectId, data } = props ?? {};
+
+    return projectsControllerReplaceTiers(projectId, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ProjectsControllerReplaceTiersMutationResult = NonNullable<
+  Awaited<ReturnType<typeof projectsControllerReplaceTiers>>
+>;
+export type ProjectsControllerReplaceTiersMutationBody = ReplaceTiersDto;
+export type ProjectsControllerReplaceTiersMutationError = ErrorType<ProblemDetails>;
+export type ProjectsControllerReplaceTiersMutationVariables = {
+  projectId: string;
+  data: ReplaceTiersDto;
+};
+
+export const useProjectsControllerReplaceTiers = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof projectsControllerReplaceTiers>>,
+      TError,
+      ProjectsControllerReplaceTiersMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof projectsControllerReplaceTiers>>,
+  TError,
+  ProjectsControllerReplaceTiersMutationVariables,
+  TContext
+> => {
+  return useMutation(getProjectsControllerReplaceTiersMutationOptions(options), queryClient);
+};
+
+export const getProjectsControllerSetGalleryUrl = (projectId: string) => {
+  return `/v1/projects/${projectId}/gallery`;
+};
+
+export const projectsControllerSetGallery = async (
+  projectId: string,
+  setGalleryDto: SetGalleryDto,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<ProjectDtoOutput> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit['headers']>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(
+          h as Iterable<Iterable<string>>,
+          (entry) => Array.from(entry) as [string, string],
+        ),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+  return apiFetch<ProjectDtoOutput>(getProjectsControllerSetGalleryUrl(projectId), {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(setGalleryDto),
+  });
+};
+
+export const getProjectsControllerSetGalleryMutationKey = () =>
+  ['projectsControllerSetGallery'] as const;
+
+export const getProjectsControllerSetGalleryMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof projectsControllerSetGallery>>,
+    TError,
+    ProjectsControllerSetGalleryMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof projectsControllerSetGallery>>,
+  TError,
+  ProjectsControllerSetGalleryMutationVariables,
+  TContext
+> => {
+  const mutationKey = getProjectsControllerSetGalleryMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof projectsControllerSetGallery>>,
+    ProjectsControllerSetGalleryMutationVariables
+  > = (props) => {
+    const { projectId, data } = props ?? {};
+
+    return projectsControllerSetGallery(projectId, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ProjectsControllerSetGalleryMutationResult = NonNullable<
+  Awaited<ReturnType<typeof projectsControllerSetGallery>>
+>;
+export type ProjectsControllerSetGalleryMutationBody = SetGalleryDto;
+export type ProjectsControllerSetGalleryMutationError = ErrorType<ProblemDetails>;
+export type ProjectsControllerSetGalleryMutationVariables = {
+  projectId: string;
+  data: SetGalleryDto;
+};
+
+export const useProjectsControllerSetGallery = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof projectsControllerSetGallery>>,
+      TError,
+      ProjectsControllerSetGalleryMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof projectsControllerSetGallery>>,
+  TError,
+  ProjectsControllerSetGalleryMutationVariables,
+  TContext
+> => {
+  return useMutation(getProjectsControllerSetGalleryMutationOptions(options), queryClient);
+};
+
+export const getProjectsControllerSetDocumentsUrl = (projectId: string) => {
+  return `/v1/projects/${projectId}/documents`;
+};
+
+export const projectsControllerSetDocuments = async (
+  projectId: string,
+  setDocumentsDto: SetDocumentsDto,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<ProjectDtoOutput> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit['headers']>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(
+          h as Iterable<Iterable<string>>,
+          (entry) => Array.from(entry) as [string, string],
+        ),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+  return apiFetch<ProjectDtoOutput>(getProjectsControllerSetDocumentsUrl(projectId), {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(setDocumentsDto),
+  });
+};
+
+export const getProjectsControllerSetDocumentsMutationKey = () =>
+  ['projectsControllerSetDocuments'] as const;
+
+export const getProjectsControllerSetDocumentsMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof projectsControllerSetDocuments>>,
+    TError,
+    ProjectsControllerSetDocumentsMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof projectsControllerSetDocuments>>,
+  TError,
+  ProjectsControllerSetDocumentsMutationVariables,
+  TContext
+> => {
+  const mutationKey = getProjectsControllerSetDocumentsMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof projectsControllerSetDocuments>>,
+    ProjectsControllerSetDocumentsMutationVariables
+  > = (props) => {
+    const { projectId, data } = props ?? {};
+
+    return projectsControllerSetDocuments(projectId, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ProjectsControllerSetDocumentsMutationResult = NonNullable<
+  Awaited<ReturnType<typeof projectsControllerSetDocuments>>
+>;
+export type ProjectsControllerSetDocumentsMutationBody = SetDocumentsDto;
+export type ProjectsControllerSetDocumentsMutationError = ErrorType<ProblemDetails>;
+export type ProjectsControllerSetDocumentsMutationVariables = {
+  projectId: string;
+  data: SetDocumentsDto;
+};
+
+export const useProjectsControllerSetDocuments = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof projectsControllerSetDocuments>>,
+      TError,
+      ProjectsControllerSetDocumentsMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof projectsControllerSetDocuments>>,
+  TError,
+  ProjectsControllerSetDocumentsMutationVariables,
+  TContext
+> => {
+  return useMutation(getProjectsControllerSetDocumentsMutationOptions(options), queryClient);
+};
+
+export const getProjectsControllerPublishUrl = (projectId: string) => {
+  return `/v1/projects/${projectId}/publish`;
+};
+
+export const projectsControllerPublish = async (
+  projectId: string,
+  publishDto: PublishDto,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<ProjectDtoOutput> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit['headers']>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(
+          h as Iterable<Iterable<string>>,
+          (entry) => Array.from(entry) as [string, string],
+        ),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+  return apiFetch<ProjectDtoOutput>(getProjectsControllerPublishUrl(projectId), {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(publishDto),
+  });
+};
+
+export const getProjectsControllerPublishMutationKey = () => ['projectsControllerPublish'] as const;
+
+export const getProjectsControllerPublishMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof projectsControllerPublish>>,
+    TError,
+    ProjectsControllerPublishMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof projectsControllerPublish>>,
+  TError,
+  ProjectsControllerPublishMutationVariables,
+  TContext
+> => {
+  const mutationKey = getProjectsControllerPublishMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof projectsControllerPublish>>,
+    ProjectsControllerPublishMutationVariables
+  > = (props) => {
+    const { projectId, data } = props ?? {};
+
+    return projectsControllerPublish(projectId, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ProjectsControllerPublishMutationResult = NonNullable<
+  Awaited<ReturnType<typeof projectsControllerPublish>>
+>;
+export type ProjectsControllerPublishMutationBody = PublishDto;
+export type ProjectsControllerPublishMutationError = ErrorType<ProblemDetails>;
+export type ProjectsControllerPublishMutationVariables = { projectId: string; data: PublishDto };
+
+export const useProjectsControllerPublish = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof projectsControllerPublish>>,
+      TError,
+      ProjectsControllerPublishMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof projectsControllerPublish>>,
+  TError,
+  ProjectsControllerPublishMutationVariables,
+  TContext
+> => {
+  return useMutation(getProjectsControllerPublishMutationOptions(options), queryClient);
+};
+
+export const getProjectsControllerFeatureUrl = (projectId: string) => {
+  return `/v1/projects/${projectId}/feature`;
+};
+
+export const projectsControllerFeature = async (
+  projectId: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<void> => {
+  return apiFetch<void>(getProjectsControllerFeatureUrl(projectId), {
+    ...options,
+    method: 'PUT',
+  });
+};
+
+export const getProjectsControllerFeatureMutationKey = () => ['projectsControllerFeature'] as const;
+
+export const getProjectsControllerFeatureMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof projectsControllerFeature>>,
+    TError,
+    ProjectsControllerFeatureMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof projectsControllerFeature>>,
+  TError,
+  ProjectsControllerFeatureMutationVariables,
+  TContext
+> => {
+  const mutationKey = getProjectsControllerFeatureMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof projectsControllerFeature>>,
+    ProjectsControllerFeatureMutationVariables
+  > = (props) => {
+    const { projectId } = props ?? {};
+
+    return projectsControllerFeature(projectId, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ProjectsControllerFeatureMutationResult = NonNullable<
+  Awaited<ReturnType<typeof projectsControllerFeature>>
+>;
+
+export type ProjectsControllerFeatureMutationError = ErrorType<ProblemDetails>;
+export type ProjectsControllerFeatureMutationVariables = { projectId: string };
+
+export const useProjectsControllerFeature = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof projectsControllerFeature>>,
+      TError,
+      ProjectsControllerFeatureMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof projectsControllerFeature>>,
+  TError,
+  ProjectsControllerFeatureMutationVariables,
+  TContext
+> => {
+  return useMutation(getProjectsControllerFeatureMutationOptions(options), queryClient);
+};
+
+export const getProjectsControllerUnfeatureUrl = (projectId: string) => {
+  return `/v1/projects/${projectId}/feature`;
+};
+
+export const projectsControllerUnfeature = async (
+  projectId: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<void> => {
+  return apiFetch<void>(getProjectsControllerUnfeatureUrl(projectId), {
+    ...options,
+    method: 'DELETE',
+  });
+};
+
+export const getProjectsControllerUnfeatureMutationKey = () =>
+  ['projectsControllerUnfeature'] as const;
+
+export const getProjectsControllerUnfeatureMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof projectsControllerUnfeature>>,
+    TError,
+    ProjectsControllerUnfeatureMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof projectsControllerUnfeature>>,
+  TError,
+  ProjectsControllerUnfeatureMutationVariables,
+  TContext
+> => {
+  const mutationKey = getProjectsControllerUnfeatureMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof projectsControllerUnfeature>>,
+    ProjectsControllerUnfeatureMutationVariables
+  > = (props) => {
+    const { projectId } = props ?? {};
+
+    return projectsControllerUnfeature(projectId, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ProjectsControllerUnfeatureMutationResult = NonNullable<
+  Awaited<ReturnType<typeof projectsControllerUnfeature>>
+>;
+
+export type ProjectsControllerUnfeatureMutationError = ErrorType<ProblemDetails>;
+export type ProjectsControllerUnfeatureMutationVariables = { projectId: string };
+
+export const useProjectsControllerUnfeature = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof projectsControllerUnfeature>>,
+      TError,
+      ProjectsControllerUnfeatureMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof projectsControllerUnfeature>>,
+  TError,
+  ProjectsControllerUnfeatureMutationVariables,
+  TContext
+> => {
+  return useMutation(getProjectsControllerUnfeatureMutationOptions(options), queryClient);
+};
+
+export const getTeamControllerInviteUrl = (projectId: string) => {
+  return `/v1/projects/${projectId}/team/invitations`;
+};
+
+export const teamControllerInvite = async (
+  projectId: string,
+  inviteDto: InviteDto,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<void> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit['headers']>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(
+          h as Iterable<Iterable<string>>,
+          (entry) => Array.from(entry) as [string, string],
+        ),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+  return apiFetch<void>(getTeamControllerInviteUrl(projectId), {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(inviteDto),
+  });
+};
+
+export const getTeamControllerInviteMutationKey = () => ['teamControllerInvite'] as const;
+
+export const getTeamControllerInviteMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof teamControllerInvite>>,
+    TError,
+    TeamControllerInviteMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof teamControllerInvite>>,
+  TError,
+  TeamControllerInviteMutationVariables,
+  TContext
+> => {
+  const mutationKey = getTeamControllerInviteMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof teamControllerInvite>>,
+    TeamControllerInviteMutationVariables
+  > = (props) => {
+    const { projectId, data } = props ?? {};
+
+    return teamControllerInvite(projectId, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type TeamControllerInviteMutationResult = NonNullable<
+  Awaited<ReturnType<typeof teamControllerInvite>>
+>;
+export type TeamControllerInviteMutationBody = InviteDto;
+export type TeamControllerInviteMutationError = ErrorType<ProblemDetails>;
+export type TeamControllerInviteMutationVariables = { projectId: string; data: InviteDto };
+
+export const useTeamControllerInvite = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof teamControllerInvite>>,
+      TError,
+      TeamControllerInviteMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof teamControllerInvite>>,
+  TError,
+  TeamControllerInviteMutationVariables,
+  TContext
+> => {
+  return useMutation(getTeamControllerInviteMutationOptions(options), queryClient);
+};
+
+export const getTeamControllerUpdateUrl = (projectId: string, handle: string) => {
+  return `/v1/projects/${projectId}/team/${handle}`;
+};
+
+export const teamControllerUpdate = async (
+  projectId: string,
+  handle: string,
+  updateMemberDto: UpdateMemberDto,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<void> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit['headers']>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(
+          h as Iterable<Iterable<string>>,
+          (entry) => Array.from(entry) as [string, string],
+        ),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+  return apiFetch<void>(getTeamControllerUpdateUrl(projectId, handle), {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(updateMemberDto),
+  });
+};
+
+export const getTeamControllerUpdateMutationKey = () => ['teamControllerUpdate'] as const;
+
+export const getTeamControllerUpdateMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof teamControllerUpdate>>,
+    TError,
+    TeamControllerUpdateMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof teamControllerUpdate>>,
+  TError,
+  TeamControllerUpdateMutationVariables,
+  TContext
+> => {
+  const mutationKey = getTeamControllerUpdateMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof teamControllerUpdate>>,
+    TeamControllerUpdateMutationVariables
+  > = (props) => {
+    const { projectId, handle, data } = props ?? {};
+
+    return teamControllerUpdate(projectId, handle, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type TeamControllerUpdateMutationResult = NonNullable<
+  Awaited<ReturnType<typeof teamControllerUpdate>>
+>;
+export type TeamControllerUpdateMutationBody = UpdateMemberDto;
+export type TeamControllerUpdateMutationError = ErrorType<ProblemDetails>;
+export type TeamControllerUpdateMutationVariables = {
+  projectId: string;
+  handle: string;
+  data: UpdateMemberDto;
+};
+
+export const useTeamControllerUpdate = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof teamControllerUpdate>>,
+      TError,
+      TeamControllerUpdateMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof teamControllerUpdate>>,
+  TError,
+  TeamControllerUpdateMutationVariables,
+  TContext
+> => {
+  return useMutation(getTeamControllerUpdateMutationOptions(options), queryClient);
+};
+
+export const getTeamControllerRemoveUrl = (projectId: string, handle: string) => {
+  return `/v1/projects/${projectId}/team/${handle}`;
+};
+
+export const teamControllerRemove = async (
+  projectId: string,
+  handle: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<void> => {
+  return apiFetch<void>(getTeamControllerRemoveUrl(projectId, handle), {
+    ...options,
+    method: 'DELETE',
+  });
+};
+
+export const getTeamControllerRemoveMutationKey = () => ['teamControllerRemove'] as const;
+
+export const getTeamControllerRemoveMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof teamControllerRemove>>,
+    TError,
+    TeamControllerRemoveMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof teamControllerRemove>>,
+  TError,
+  TeamControllerRemoveMutationVariables,
+  TContext
+> => {
+  const mutationKey = getTeamControllerRemoveMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof teamControllerRemove>>,
+    TeamControllerRemoveMutationVariables
+  > = (props) => {
+    const { projectId, handle } = props ?? {};
+
+    return teamControllerRemove(projectId, handle, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type TeamControllerRemoveMutationResult = NonNullable<
+  Awaited<ReturnType<typeof teamControllerRemove>>
+>;
+
+export type TeamControllerRemoveMutationError = ErrorType<ProblemDetails>;
+export type TeamControllerRemoveMutationVariables = { projectId: string; handle: string };
+
+export const useTeamControllerRemove = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof teamControllerRemove>>,
+      TError,
+      TeamControllerRemoveMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof teamControllerRemove>>,
+  TError,
+  TeamControllerRemoveMutationVariables,
+  TContext
+> => {
+  return useMutation(getTeamControllerRemoveMutationOptions(options), queryClient);
+};
+
+export const getTeamControllerLeaveUrl = (projectId: string) => {
+  return `/v1/projects/${projectId}/team/leave`;
+};
+
+export const teamControllerLeave = async (
+  projectId: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<void> => {
+  return apiFetch<void>(getTeamControllerLeaveUrl(projectId), {
+    ...options,
+    method: 'POST',
+  });
+};
+
+export const getTeamControllerLeaveMutationKey = () => ['teamControllerLeave'] as const;
+
+export const getTeamControllerLeaveMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof teamControllerLeave>>,
+    TError,
+    TeamControllerLeaveMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof teamControllerLeave>>,
+  TError,
+  TeamControllerLeaveMutationVariables,
+  TContext
+> => {
+  const mutationKey = getTeamControllerLeaveMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof teamControllerLeave>>,
+    TeamControllerLeaveMutationVariables
+  > = (props) => {
+    const { projectId } = props ?? {};
+
+    return teamControllerLeave(projectId, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type TeamControllerLeaveMutationResult = NonNullable<
+  Awaited<ReturnType<typeof teamControllerLeave>>
+>;
+
+export type TeamControllerLeaveMutationError = ErrorType<ProblemDetails>;
+export type TeamControllerLeaveMutationVariables = { projectId: string };
+
+export const useTeamControllerLeave = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof teamControllerLeave>>,
+      TError,
+      TeamControllerLeaveMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof teamControllerLeave>>,
+  TError,
+  TeamControllerLeaveMutationVariables,
+  TContext
+> => {
+  return useMutation(getTeamControllerLeaveMutationOptions(options), queryClient);
+};
+
+export const getTeamControllerInvitationsUrl = () => {
+  return `/v1/me/project-invitations`;
+};
+
+export const teamControllerInvitations = async (
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<InvitationsDtoOutput> => {
+  return apiFetch<InvitationsDtoOutput>(getTeamControllerInvitationsUrl(), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getTeamControllerInvitationsQueryKey = () => {
+  return [`/v1/me/project-invitations`] as const;
+};
+
+export const getTeamControllerInvitationsQueryOptions = <
+  TData = Awaited<ReturnType<typeof teamControllerInvitations>>,
+  TError = ErrorType<ProblemDetails>,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<Awaited<ReturnType<typeof teamControllerInvitations>>, TError, TData>
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getTeamControllerInvitationsQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof teamControllerInvitations>>> = ({
+    signal,
+  }) => teamControllerInvitations({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof teamControllerInvitations>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type TeamControllerInvitationsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof teamControllerInvitations>>
+>;
+export type TeamControllerInvitationsQueryError = ErrorType<ProblemDetails>;
+
+export function useTeamControllerInvitations<
+  TData = Awaited<ReturnType<typeof teamControllerInvitations>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof teamControllerInvitations>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof teamControllerInvitations>>,
+          TError,
+          Awaited<ReturnType<typeof teamControllerInvitations>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useTeamControllerInvitations<
+  TData = Awaited<ReturnType<typeof teamControllerInvitations>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof teamControllerInvitations>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof teamControllerInvitations>>,
+          TError,
+          Awaited<ReturnType<typeof teamControllerInvitations>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useTeamControllerInvitations<
+  TData = Awaited<ReturnType<typeof teamControllerInvitations>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof teamControllerInvitations>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useTeamControllerInvitations<
+  TData = Awaited<ReturnType<typeof teamControllerInvitations>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof teamControllerInvitations>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getTeamControllerInvitationsQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getTeamControllerAcceptUrl = (projectId: string) => {
+  return `/v1/me/project-invitations/${projectId}/accept`;
+};
+
+export const teamControllerAccept = async (
+  projectId: string,
+  acceptDto: AcceptDto,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<void> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit['headers']>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(
+          h as Iterable<Iterable<string>>,
+          (entry) => Array.from(entry) as [string, string],
+        ),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+  return apiFetch<void>(getTeamControllerAcceptUrl(projectId), {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(acceptDto),
+  });
+};
+
+export const getTeamControllerAcceptMutationKey = () => ['teamControllerAccept'] as const;
+
+export const getTeamControllerAcceptMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof teamControllerAccept>>,
+    TError,
+    TeamControllerAcceptMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof teamControllerAccept>>,
+  TError,
+  TeamControllerAcceptMutationVariables,
+  TContext
+> => {
+  const mutationKey = getTeamControllerAcceptMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof teamControllerAccept>>,
+    TeamControllerAcceptMutationVariables
+  > = (props) => {
+    const { projectId, data } = props ?? {};
+
+    return teamControllerAccept(projectId, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type TeamControllerAcceptMutationResult = NonNullable<
+  Awaited<ReturnType<typeof teamControllerAccept>>
+>;
+export type TeamControllerAcceptMutationBody = AcceptDto;
+export type TeamControllerAcceptMutationError = ErrorType<ProblemDetails>;
+export type TeamControllerAcceptMutationVariables = { projectId: string; data: AcceptDto };
+
+export const useTeamControllerAccept = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof teamControllerAccept>>,
+      TError,
+      TeamControllerAcceptMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof teamControllerAccept>>,
+  TError,
+  TeamControllerAcceptMutationVariables,
+  TContext
+> => {
+  return useMutation(getTeamControllerAcceptMutationOptions(options), queryClient);
+};
+
+export const getTeamControllerDeclineUrl = (projectId: string) => {
+  return `/v1/me/project-invitations/${projectId}/decline`;
+};
+
+export const teamControllerDecline = async (
+  projectId: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<void> => {
+  return apiFetch<void>(getTeamControllerDeclineUrl(projectId), {
+    ...options,
+    method: 'POST',
+  });
+};
+
+export const getTeamControllerDeclineMutationKey = () => ['teamControllerDecline'] as const;
+
+export const getTeamControllerDeclineMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof teamControllerDecline>>,
+    TError,
+    TeamControllerDeclineMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof teamControllerDecline>>,
+  TError,
+  TeamControllerDeclineMutationVariables,
+  TContext
+> => {
+  const mutationKey = getTeamControllerDeclineMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof teamControllerDecline>>,
+    TeamControllerDeclineMutationVariables
+  > = (props) => {
+    const { projectId } = props ?? {};
+
+    return teamControllerDecline(projectId, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type TeamControllerDeclineMutationResult = NonNullable<
+  Awaited<ReturnType<typeof teamControllerDecline>>
+>;
+
+export type TeamControllerDeclineMutationError = ErrorType<ProblemDetails>;
+export type TeamControllerDeclineMutationVariables = { projectId: string };
+
+export const useTeamControllerDecline = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof teamControllerDecline>>,
+      TError,
+      TeamControllerDeclineMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof teamControllerDecline>>,
+  TError,
+  TeamControllerDeclineMutationVariables,
+  TContext
+> => {
+  return useMutation(getTeamControllerDeclineMutationOptions(options), queryClient);
+};
+
+export const getRewardsControllerCreateUrl = (projectId: string) => {
+  return `/v1/projects/${projectId}/rewards`;
+};
+
+export const rewardsControllerCreate = async (
+  projectId: string,
+  createRewardDto: CreateRewardDto,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<RewardDtoOutput> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit['headers']>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(
+          h as Iterable<Iterable<string>>,
+          (entry) => Array.from(entry) as [string, string],
+        ),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+  return apiFetch<RewardDtoOutput>(getRewardsControllerCreateUrl(projectId), {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(createRewardDto),
+  });
+};
+
+export const getRewardsControllerCreateMutationKey = () => ['rewardsControllerCreate'] as const;
+
+export const getRewardsControllerCreateMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof rewardsControllerCreate>>,
+    TError,
+    RewardsControllerCreateMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof rewardsControllerCreate>>,
+  TError,
+  RewardsControllerCreateMutationVariables,
+  TContext
+> => {
+  const mutationKey = getRewardsControllerCreateMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof rewardsControllerCreate>>,
+    RewardsControllerCreateMutationVariables
+  > = (props) => {
+    const { projectId, data } = props ?? {};
+
+    return rewardsControllerCreate(projectId, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type RewardsControllerCreateMutationResult = NonNullable<
+  Awaited<ReturnType<typeof rewardsControllerCreate>>
+>;
+export type RewardsControllerCreateMutationBody = CreateRewardDto;
+export type RewardsControllerCreateMutationError = ErrorType<ProblemDetails>;
+export type RewardsControllerCreateMutationVariables = { projectId: string; data: CreateRewardDto };
+
+export const useRewardsControllerCreate = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof rewardsControllerCreate>>,
+      TError,
+      RewardsControllerCreateMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof rewardsControllerCreate>>,
+  TError,
+  RewardsControllerCreateMutationVariables,
+  TContext
+> => {
+  return useMutation(getRewardsControllerCreateMutationOptions(options), queryClient);
+};
+
+export const getRewardsControllerUpdateUrl = (projectId: string, rewardId: string) => {
+  return `/v1/projects/${projectId}/rewards/${rewardId}`;
+};
+
+export const rewardsControllerUpdate = async (
+  projectId: string,
+  rewardId: string,
+  updateRewardDto: UpdateRewardDto,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<RewardDtoOutput> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit['headers']>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(
+          h as Iterable<Iterable<string>>,
+          (entry) => Array.from(entry) as [string, string],
+        ),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+  return apiFetch<RewardDtoOutput>(getRewardsControllerUpdateUrl(projectId, rewardId), {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(updateRewardDto),
+  });
+};
+
+export const getRewardsControllerUpdateMutationKey = () => ['rewardsControllerUpdate'] as const;
+
+export const getRewardsControllerUpdateMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof rewardsControllerUpdate>>,
+    TError,
+    RewardsControllerUpdateMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof rewardsControllerUpdate>>,
+  TError,
+  RewardsControllerUpdateMutationVariables,
+  TContext
+> => {
+  const mutationKey = getRewardsControllerUpdateMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof rewardsControllerUpdate>>,
+    RewardsControllerUpdateMutationVariables
+  > = (props) => {
+    const { projectId, rewardId, data } = props ?? {};
+
+    return rewardsControllerUpdate(projectId, rewardId, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type RewardsControllerUpdateMutationResult = NonNullable<
+  Awaited<ReturnType<typeof rewardsControllerUpdate>>
+>;
+export type RewardsControllerUpdateMutationBody = UpdateRewardDto;
+export type RewardsControllerUpdateMutationError = ErrorType<ProblemDetails>;
+export type RewardsControllerUpdateMutationVariables = {
+  projectId: string;
+  rewardId: string;
+  data: UpdateRewardDto;
+};
+
+export const useRewardsControllerUpdate = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof rewardsControllerUpdate>>,
+      TError,
+      RewardsControllerUpdateMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof rewardsControllerUpdate>>,
+  TError,
+  RewardsControllerUpdateMutationVariables,
+  TContext
+> => {
+  return useMutation(getRewardsControllerUpdateMutationOptions(options), queryClient);
+};
+
+export const getRewardsControllerDeleteUrl = (projectId: string, rewardId: string) => {
+  return `/v1/projects/${projectId}/rewards/${rewardId}`;
+};
+
+export const rewardsControllerDelete = async (
+  projectId: string,
+  rewardId: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<void> => {
+  return apiFetch<void>(getRewardsControllerDeleteUrl(projectId, rewardId), {
+    ...options,
+    method: 'DELETE',
+  });
+};
+
+export const getRewardsControllerDeleteMutationKey = () => ['rewardsControllerDelete'] as const;
+
+export const getRewardsControllerDeleteMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof rewardsControllerDelete>>,
+    TError,
+    RewardsControllerDeleteMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof rewardsControllerDelete>>,
+  TError,
+  RewardsControllerDeleteMutationVariables,
+  TContext
+> => {
+  const mutationKey = getRewardsControllerDeleteMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof rewardsControllerDelete>>,
+    RewardsControllerDeleteMutationVariables
+  > = (props) => {
+    const { projectId, rewardId } = props ?? {};
+
+    return rewardsControllerDelete(projectId, rewardId, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type RewardsControllerDeleteMutationResult = NonNullable<
+  Awaited<ReturnType<typeof rewardsControllerDelete>>
+>;
+
+export type RewardsControllerDeleteMutationError = ErrorType<ProblemDetails>;
+export type RewardsControllerDeleteMutationVariables = { projectId: string; rewardId: string };
+
+export const useRewardsControllerDelete = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof rewardsControllerDelete>>,
+      TError,
+      RewardsControllerDeleteMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof rewardsControllerDelete>>,
+  TError,
+  RewardsControllerDeleteMutationVariables,
+  TContext
+> => {
+  return useMutation(getRewardsControllerDeleteMutationOptions(options), queryClient);
+};
+
+export const getUpdatesControllerPublishUrl = (projectId: string) => {
+  return `/v1/projects/${projectId}/updates`;
+};
+
+export const updatesControllerPublish = async (
+  projectId: string,
+  createUpdateDto: CreateUpdateDto,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<UpdateDtoOutput> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit['headers']>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(
+          h as Iterable<Iterable<string>>,
+          (entry) => Array.from(entry) as [string, string],
+        ),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+  return apiFetch<UpdateDtoOutput>(getUpdatesControllerPublishUrl(projectId), {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(createUpdateDto),
+  });
+};
+
+export const getUpdatesControllerPublishMutationKey = () => ['updatesControllerPublish'] as const;
+
+export const getUpdatesControllerPublishMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updatesControllerPublish>>,
+    TError,
+    UpdatesControllerPublishMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updatesControllerPublish>>,
+  TError,
+  UpdatesControllerPublishMutationVariables,
+  TContext
+> => {
+  const mutationKey = getUpdatesControllerPublishMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updatesControllerPublish>>,
+    UpdatesControllerPublishMutationVariables
+  > = (props) => {
+    const { projectId, data } = props ?? {};
+
+    return updatesControllerPublish(projectId, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UpdatesControllerPublishMutationResult = NonNullable<
+  Awaited<ReturnType<typeof updatesControllerPublish>>
+>;
+export type UpdatesControllerPublishMutationBody = CreateUpdateDto;
+export type UpdatesControllerPublishMutationError = ErrorType<ProblemDetails>;
+export type UpdatesControllerPublishMutationVariables = {
+  projectId: string;
+  data: CreateUpdateDto;
+};
+
+export const useUpdatesControllerPublish = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof updatesControllerPublish>>,
+      TError,
+      UpdatesControllerPublishMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof updatesControllerPublish>>,
+  TError,
+  UpdatesControllerPublishMutationVariables,
+  TContext
+> => {
+  return useMutation(getUpdatesControllerPublishMutationOptions(options), queryClient);
+};
+
+export const getUpdatesControllerListUrl = (
+  projectId: string,
+  params?: UpdatesControllerListParams,
+) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/v1/projects/${projectId}/updates?${stringifiedParams}`
+    : `/v1/projects/${projectId}/updates`;
+};
+
+export const updatesControllerList = async (
+  projectId: string,
+  params?: UpdatesControllerListParams,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<UpdatePageDtoOutput> => {
+  return apiFetch<UpdatePageDtoOutput>(getUpdatesControllerListUrl(projectId, params), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getUpdatesControllerListQueryKey = (
+  projectId: string,
+  params?: UpdatesControllerListParams,
+) => {
+  return [`/v1/projects/${projectId}/updates`, ...(params ? [params] : [])] as const;
+};
+
+export const getUpdatesControllerListQueryOptions = <
+  TData = Awaited<ReturnType<typeof updatesControllerList>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  params?: UpdatesControllerListParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof updatesControllerList>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getUpdatesControllerListQueryKey(projectId, params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof updatesControllerList>>> = ({ signal }) =>
+    updatesControllerList(projectId, params, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: projectId !== null && projectId !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<Awaited<ReturnType<typeof updatesControllerList>>, TError, TData> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+};
+
+export type UpdatesControllerListQueryResult = NonNullable<
+  Awaited<ReturnType<typeof updatesControllerList>>
+>;
+export type UpdatesControllerListQueryError = ErrorType<ProblemDetails>;
+
+export function useUpdatesControllerList<
+  TData = Awaited<ReturnType<typeof updatesControllerList>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  params: undefined | UpdatesControllerListParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof updatesControllerList>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof updatesControllerList>>,
+          TError,
+          Awaited<ReturnType<typeof updatesControllerList>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useUpdatesControllerList<
+  TData = Awaited<ReturnType<typeof updatesControllerList>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  params?: UpdatesControllerListParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof updatesControllerList>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof updatesControllerList>>,
+          TError,
+          Awaited<ReturnType<typeof updatesControllerList>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useUpdatesControllerList<
+  TData = Awaited<ReturnType<typeof updatesControllerList>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  params?: UpdatesControllerListParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof updatesControllerList>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useUpdatesControllerList<
+  TData = Awaited<ReturnType<typeof updatesControllerList>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  params?: UpdatesControllerListParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof updatesControllerList>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getUpdatesControllerListQueryOptions(projectId, params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getUpdatesControllerPublicListUrl = (
+  projectId: string,
+  params?: UpdatesControllerPublicListParams,
+) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/v1/public/projects/${projectId}/updates?${stringifiedParams}`
+    : `/v1/public/projects/${projectId}/updates`;
+};
+
+export const updatesControllerPublicList = async (
+  projectId: string,
+  params?: UpdatesControllerPublicListParams,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<UpdatePageDtoOutput> => {
+  return apiFetch<UpdatePageDtoOutput>(getUpdatesControllerPublicListUrl(projectId, params), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getUpdatesControllerPublicListQueryKey = (
+  projectId: string,
+  params?: UpdatesControllerPublicListParams,
+) => {
+  return [`/v1/public/projects/${projectId}/updates`, ...(params ? [params] : [])] as const;
+};
+
+export const getUpdatesControllerPublicListQueryOptions = <
+  TData = Awaited<ReturnType<typeof updatesControllerPublicList>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  params?: UpdatesControllerPublicListParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof updatesControllerPublicList>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getUpdatesControllerPublicListQueryKey(projectId, params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof updatesControllerPublicList>>> = ({
+    signal,
+  }) => updatesControllerPublicList(projectId, params, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: projectId !== null && projectId !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<Awaited<ReturnType<typeof updatesControllerPublicList>>, TError, TData> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+};
+
+export type UpdatesControllerPublicListQueryResult = NonNullable<
+  Awaited<ReturnType<typeof updatesControllerPublicList>>
+>;
+export type UpdatesControllerPublicListQueryError = ErrorType<ProblemDetails>;
+
+export function useUpdatesControllerPublicList<
+  TData = Awaited<ReturnType<typeof updatesControllerPublicList>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  params: undefined | UpdatesControllerPublicListParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof updatesControllerPublicList>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof updatesControllerPublicList>>,
+          TError,
+          Awaited<ReturnType<typeof updatesControllerPublicList>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useUpdatesControllerPublicList<
+  TData = Awaited<ReturnType<typeof updatesControllerPublicList>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  params?: UpdatesControllerPublicListParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof updatesControllerPublicList>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof updatesControllerPublicList>>,
+          TError,
+          Awaited<ReturnType<typeof updatesControllerPublicList>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useUpdatesControllerPublicList<
+  TData = Awaited<ReturnType<typeof updatesControllerPublicList>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  params?: UpdatesControllerPublicListParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof updatesControllerPublicList>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useUpdatesControllerPublicList<
+  TData = Awaited<ReturnType<typeof updatesControllerPublicList>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  params?: UpdatesControllerPublicListParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof updatesControllerPublicList>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getUpdatesControllerPublicListQueryOptions(projectId, params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getUpdatesControllerEditUrl = (projectId: string, updateId: string) => {
+  return `/v1/projects/${projectId}/updates/${updateId}`;
+};
+
+export const updatesControllerEdit = async (
+  projectId: string,
+  updateId: string,
+  editUpdateDto: EditUpdateDto,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<UpdateDtoOutput> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit['headers']>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(
+          h as Iterable<Iterable<string>>,
+          (entry) => Array.from(entry) as [string, string],
+        ),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+  return apiFetch<UpdateDtoOutput>(getUpdatesControllerEditUrl(projectId, updateId), {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(editUpdateDto),
+  });
+};
+
+export const getUpdatesControllerEditMutationKey = () => ['updatesControllerEdit'] as const;
+
+export const getUpdatesControllerEditMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updatesControllerEdit>>,
+    TError,
+    UpdatesControllerEditMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updatesControllerEdit>>,
+  TError,
+  UpdatesControllerEditMutationVariables,
+  TContext
+> => {
+  const mutationKey = getUpdatesControllerEditMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updatesControllerEdit>>,
+    UpdatesControllerEditMutationVariables
+  > = (props) => {
+    const { projectId, updateId, data } = props ?? {};
+
+    return updatesControllerEdit(projectId, updateId, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UpdatesControllerEditMutationResult = NonNullable<
+  Awaited<ReturnType<typeof updatesControllerEdit>>
+>;
+export type UpdatesControllerEditMutationBody = EditUpdateDto;
+export type UpdatesControllerEditMutationError = ErrorType<ProblemDetails>;
+export type UpdatesControllerEditMutationVariables = {
+  projectId: string;
+  updateId: string;
+  data: EditUpdateDto;
+};
+
+export const useUpdatesControllerEdit = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof updatesControllerEdit>>,
+      TError,
+      UpdatesControllerEditMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof updatesControllerEdit>>,
+  TError,
+  UpdatesControllerEditMutationVariables,
+  TContext
+> => {
+  return useMutation(getUpdatesControllerEditMutationOptions(options), queryClient);
+};
+
+export const getUpdatesControllerDeleteUrl = (projectId: string, updateId: string) => {
+  return `/v1/projects/${projectId}/updates/${updateId}`;
+};
+
+export const updatesControllerDelete = async (
+  projectId: string,
+  updateId: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<void> => {
+  return apiFetch<void>(getUpdatesControllerDeleteUrl(projectId, updateId), {
+    ...options,
+    method: 'DELETE',
+  });
+};
+
+export const getUpdatesControllerDeleteMutationKey = () => ['updatesControllerDelete'] as const;
+
+export const getUpdatesControllerDeleteMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updatesControllerDelete>>,
+    TError,
+    UpdatesControllerDeleteMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updatesControllerDelete>>,
+  TError,
+  UpdatesControllerDeleteMutationVariables,
+  TContext
+> => {
+  const mutationKey = getUpdatesControllerDeleteMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updatesControllerDelete>>,
+    UpdatesControllerDeleteMutationVariables
+  > = (props) => {
+    const { projectId, updateId } = props ?? {};
+
+    return updatesControllerDelete(projectId, updateId, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UpdatesControllerDeleteMutationResult = NonNullable<
+  Awaited<ReturnType<typeof updatesControllerDelete>>
+>;
+
+export type UpdatesControllerDeleteMutationError = ErrorType<ProblemDetails>;
+export type UpdatesControllerDeleteMutationVariables = { projectId: string; updateId: string };
+
+export const useUpdatesControllerDelete = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof updatesControllerDelete>>,
+      TError,
+      UpdatesControllerDeleteMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof updatesControllerDelete>>,
+  TError,
+  UpdatesControllerDeleteMutationVariables,
+  TContext
+> => {
+  return useMutation(getUpdatesControllerDeleteMutationOptions(options), queryClient);
+};
+
+export const getInterestsControllerExpressUrl = (projectId: string) => {
+  return `/v1/projects/${projectId}/interests`;
+};
+
+export const interestsControllerExpress = async (
+  projectId: string,
+  expressInterestDto: ExpressInterestDto,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<InterestDtoOutput> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit['headers']>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(
+          h as Iterable<Iterable<string>>,
+          (entry) => Array.from(entry) as [string, string],
+        ),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+  return apiFetch<InterestDtoOutput>(getInterestsControllerExpressUrl(projectId), {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(expressInterestDto),
+  });
+};
+
+export const getInterestsControllerExpressMutationKey = () =>
+  ['interestsControllerExpress'] as const;
+
+export const getInterestsControllerExpressMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof interestsControllerExpress>>,
+    TError,
+    InterestsControllerExpressMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof interestsControllerExpress>>,
+  TError,
+  InterestsControllerExpressMutationVariables,
+  TContext
+> => {
+  const mutationKey = getInterestsControllerExpressMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof interestsControllerExpress>>,
+    InterestsControllerExpressMutationVariables
+  > = (props) => {
+    const { projectId, data } = props ?? {};
+
+    return interestsControllerExpress(projectId, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type InterestsControllerExpressMutationResult = NonNullable<
+  Awaited<ReturnType<typeof interestsControllerExpress>>
+>;
+export type InterestsControllerExpressMutationBody = ExpressInterestDto;
+export type InterestsControllerExpressMutationError = ErrorType<ProblemDetails>;
+export type InterestsControllerExpressMutationVariables = {
+  projectId: string;
+  data: ExpressInterestDto;
+};
+
+export const useInterestsControllerExpress = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof interestsControllerExpress>>,
+      TError,
+      InterestsControllerExpressMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof interestsControllerExpress>>,
+  TError,
+  InterestsControllerExpressMutationVariables,
+  TContext
+> => {
+  return useMutation(getInterestsControllerExpressMutationOptions(options), queryClient);
+};
+
+export const getInterestsControllerListUrl = (
+  projectId: string,
+  params?: InterestsControllerListParams,
+) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/v1/projects/${projectId}/interests?${stringifiedParams}`
+    : `/v1/projects/${projectId}/interests`;
+};
+
+export const interestsControllerList = async (
+  projectId: string,
+  params?: InterestsControllerListParams,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<InterestPageDtoOutput> => {
+  return apiFetch<InterestPageDtoOutput>(getInterestsControllerListUrl(projectId, params), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getInterestsControllerListQueryKey = (
+  projectId: string,
+  params?: InterestsControllerListParams,
+) => {
+  return [`/v1/projects/${projectId}/interests`, ...(params ? [params] : [])] as const;
+};
+
+export const getInterestsControllerListQueryOptions = <
+  TData = Awaited<ReturnType<typeof interestsControllerList>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  params?: InterestsControllerListParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof interestsControllerList>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getInterestsControllerListQueryKey(projectId, params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof interestsControllerList>>> = ({
+    signal,
+  }) => interestsControllerList(projectId, params, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: projectId !== null && projectId !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<Awaited<ReturnType<typeof interestsControllerList>>, TError, TData> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+};
+
+export type InterestsControllerListQueryResult = NonNullable<
+  Awaited<ReturnType<typeof interestsControllerList>>
+>;
+export type InterestsControllerListQueryError = ErrorType<ProblemDetails>;
+
+export function useInterestsControllerList<
+  TData = Awaited<ReturnType<typeof interestsControllerList>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  params: undefined | InterestsControllerListParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof interestsControllerList>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof interestsControllerList>>,
+          TError,
+          Awaited<ReturnType<typeof interestsControllerList>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useInterestsControllerList<
+  TData = Awaited<ReturnType<typeof interestsControllerList>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  params?: InterestsControllerListParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof interestsControllerList>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof interestsControllerList>>,
+          TError,
+          Awaited<ReturnType<typeof interestsControllerList>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useInterestsControllerList<
+  TData = Awaited<ReturnType<typeof interestsControllerList>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  params?: InterestsControllerListParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof interestsControllerList>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useInterestsControllerList<
+  TData = Awaited<ReturnType<typeof interestsControllerList>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  params?: InterestsControllerListParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof interestsControllerList>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getInterestsControllerListQueryOptions(projectId, params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getProjectImpactControllerHistoryUrl = (projectId: string) => {
+  return `/v1/projects/${projectId}/impact-assessments`;
+};
+
+export const projectImpactControllerHistory = async (
+  projectId: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<AssessmentHistoryDtoOutput> => {
+  return apiFetch<AssessmentHistoryDtoOutput>(getProjectImpactControllerHistoryUrl(projectId), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getProjectImpactControllerHistoryQueryKey = (projectId: string) => {
+  return [`/v1/projects/${projectId}/impact-assessments`] as const;
+};
+
+export const getProjectImpactControllerHistoryQueryOptions = <
+  TData = Awaited<ReturnType<typeof projectImpactControllerHistory>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof projectImpactControllerHistory>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getProjectImpactControllerHistoryQueryKey(projectId);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof projectImpactControllerHistory>>> = ({
+    signal,
+  }) => projectImpactControllerHistory(projectId, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: projectId !== null && projectId !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof projectImpactControllerHistory>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ProjectImpactControllerHistoryQueryResult = NonNullable<
+  Awaited<ReturnType<typeof projectImpactControllerHistory>>
+>;
+export type ProjectImpactControllerHistoryQueryError = ErrorType<ProblemDetails>;
+
+export function useProjectImpactControllerHistory<
+  TData = Awaited<ReturnType<typeof projectImpactControllerHistory>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof projectImpactControllerHistory>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof projectImpactControllerHistory>>,
+          TError,
+          Awaited<ReturnType<typeof projectImpactControllerHistory>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useProjectImpactControllerHistory<
+  TData = Awaited<ReturnType<typeof projectImpactControllerHistory>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof projectImpactControllerHistory>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof projectImpactControllerHistory>>,
+          TError,
+          Awaited<ReturnType<typeof projectImpactControllerHistory>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useProjectImpactControllerHistory<
+  TData = Awaited<ReturnType<typeof projectImpactControllerHistory>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof projectImpactControllerHistory>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useProjectImpactControllerHistory<
+  TData = Awaited<ReturnType<typeof projectImpactControllerHistory>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof projectImpactControllerHistory>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getProjectImpactControllerHistoryQueryOptions(projectId, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getProjectImpactControllerSubmitUrl = (projectId: string) => {
+  return `/v1/projects/${projectId}/impact-assessments`;
+};
+
+export const projectImpactControllerSubmit = async (
+  projectId: string,
+  submitAssessmentDto: SubmitAssessmentDto,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<AssessmentDtoOutput> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit['headers']>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(
+          h as Iterable<Iterable<string>>,
+          (entry) => Array.from(entry) as [string, string],
+        ),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+  return apiFetch<AssessmentDtoOutput>(getProjectImpactControllerSubmitUrl(projectId), {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(submitAssessmentDto),
+  });
+};
+
+export const getProjectImpactControllerSubmitMutationKey = () =>
+  ['projectImpactControllerSubmit'] as const;
+
+export const getProjectImpactControllerSubmitMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof projectImpactControllerSubmit>>,
+    TError,
+    ProjectImpactControllerSubmitMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof projectImpactControllerSubmit>>,
+  TError,
+  ProjectImpactControllerSubmitMutationVariables,
+  TContext
+> => {
+  const mutationKey = getProjectImpactControllerSubmitMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof projectImpactControllerSubmit>>,
+    ProjectImpactControllerSubmitMutationVariables
+  > = (props) => {
+    const { projectId, data } = props ?? {};
+
+    return projectImpactControllerSubmit(projectId, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ProjectImpactControllerSubmitMutationResult = NonNullable<
+  Awaited<ReturnType<typeof projectImpactControllerSubmit>>
+>;
+export type ProjectImpactControllerSubmitMutationBody = SubmitAssessmentDto;
+export type ProjectImpactControllerSubmitMutationError = ErrorType<ProblemDetails>;
+export type ProjectImpactControllerSubmitMutationVariables = {
+  projectId: string;
+  data: SubmitAssessmentDto;
+};
+
+export const useProjectImpactControllerSubmit = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof projectImpactControllerSubmit>>,
+      TError,
+      ProjectImpactControllerSubmitMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof projectImpactControllerSubmit>>,
+  TError,
+  ProjectImpactControllerSubmitMutationVariables,
+  TContext
+> => {
+  return useMutation(getProjectImpactControllerSubmitMutationOptions(options), queryClient);
+};
+
+export const getProjectImpactControllerPrefillUrl = (projectId: string) => {
+  return `/v1/projects/${projectId}/impact-assessments/prefill`;
+};
+
+export const projectImpactControllerPrefill = async (
+  projectId: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<PrefillDtoOutput> => {
+  return apiFetch<PrefillDtoOutput>(getProjectImpactControllerPrefillUrl(projectId), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getProjectImpactControllerPrefillQueryKey = (projectId: string) => {
+  return [`/v1/projects/${projectId}/impact-assessments/prefill`] as const;
+};
+
+export const getProjectImpactControllerPrefillQueryOptions = <
+  TData = Awaited<ReturnType<typeof projectImpactControllerPrefill>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof projectImpactControllerPrefill>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getProjectImpactControllerPrefillQueryKey(projectId);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof projectImpactControllerPrefill>>> = ({
+    signal,
+  }) => projectImpactControllerPrefill(projectId, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: projectId !== null && projectId !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof projectImpactControllerPrefill>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ProjectImpactControllerPrefillQueryResult = NonNullable<
+  Awaited<ReturnType<typeof projectImpactControllerPrefill>>
+>;
+export type ProjectImpactControllerPrefillQueryError = ErrorType<ProblemDetails>;
+
+export function useProjectImpactControllerPrefill<
+  TData = Awaited<ReturnType<typeof projectImpactControllerPrefill>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof projectImpactControllerPrefill>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof projectImpactControllerPrefill>>,
+          TError,
+          Awaited<ReturnType<typeof projectImpactControllerPrefill>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useProjectImpactControllerPrefill<
+  TData = Awaited<ReturnType<typeof projectImpactControllerPrefill>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof projectImpactControllerPrefill>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof projectImpactControllerPrefill>>,
+          TError,
+          Awaited<ReturnType<typeof projectImpactControllerPrefill>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useProjectImpactControllerPrefill<
+  TData = Awaited<ReturnType<typeof projectImpactControllerPrefill>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof projectImpactControllerPrefill>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useProjectImpactControllerPrefill<
+  TData = Awaited<ReturnType<typeof projectImpactControllerPrefill>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  projectId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof projectImpactControllerPrefill>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getProjectImpactControllerPrefillQueryOptions(projectId, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
