@@ -1,4 +1,4 @@
-import type { Provider } from '@nestjs/common';
+import type { DynamicModule, Provider, Type } from '@nestjs/common';
 import { Test, type TestingModule } from '@nestjs/testing';
 import { ConfigModule } from '../../../src/platform/config';
 import { CoreModule } from '../../../src/platform/core/core.module';
@@ -14,6 +14,7 @@ import { useTestEnvironment } from './environment';
  */
 export async function createWorkerTestingModule(
   providers: Provider[] = [],
+  imports: (Type | DynamicModule)[] = [],
 ): Promise<TestingModule> {
   useTestEnvironment({ OUTBOX_POLL_INTERVAL_MS: '3600000' });
   const moduleRef = await Test.createTestingModule({
@@ -25,6 +26,7 @@ export async function createWorkerTestingModule(
       InboxModule,
       OutboxModule,
       OutboxRelayModule,
+      ...imports,
     ],
     providers,
   }).compile();

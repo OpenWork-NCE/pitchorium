@@ -1,6 +1,13 @@
 import { inject } from 'vitest';
 
-/** Environment shared by the integration tests; storage and mail never leave the process. */
+export const TEST_WEB_APP_URL = 'http://web.pitchorium.test';
+export const TEST_API_URL = 'http://api.pitchorium.test';
+export const TEST_LEGAL_VERSION = 'test-2026-10';
+
+/**
+ * Environment shared by the integration tests: real Postgres, Valkey and Mailpit; storage is a
+ * fake and OAuth providers are served by FakeOAuthProviders.
+ */
 export function useTestEnvironment(overrides: Record<string, string> = {}): void {
   Object.assign(process.env, {
     NODE_ENV: 'test',
@@ -16,8 +23,22 @@ export function useTestEnvironment(overrides: Record<string, string> = {}): void
     S3_PUBLIC_BASE_URL: 'http://storage.invalid/test-public',
     MAIL_TRANSPORT: 'smtp',
     MAIL_FROM: 'Pitchorium <test@pitchorium.invalid>',
-    SMTP_URL: 'smtp://mail.invalid:1025',
+    SMTP_URL: inject('mailpitSmtpUrl'),
     RATE_LIMIT_MAX: '1000',
+    WEB_APP_URL: TEST_WEB_APP_URL,
+    API_PUBLIC_URL: TEST_API_URL,
+    CORS_ORIGINS: TEST_WEB_APP_URL,
+    LEGAL_TERMS_VERSION: TEST_LEGAL_VERSION,
+    LEGAL_PRIVACY_VERSION: TEST_LEGAL_VERSION,
+    AUTH_SECRET: 'integration-tests-secret-with-at-least-32-chars',
+    AUTH_RATE_LIMIT_MAX: '1000',
+    AUTH_PWNED_PASSWORD_CHECK: 'false',
+    GOOGLE_CLIENT_ID: 'google-client',
+    GOOGLE_CLIENT_SECRET: 'google-secret',
+    LINKEDIN_CLIENT_ID: 'linkedin-client',
+    LINKEDIN_CLIENT_SECRET: 'linkedin-secret',
+    MICROSOFT_CLIENT_ID: 'microsoft-client',
+    MICROSOFT_CLIENT_SECRET: 'microsoft-secret',
     ...overrides,
   });
 }
