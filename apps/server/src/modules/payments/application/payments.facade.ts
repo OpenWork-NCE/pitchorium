@@ -22,6 +22,8 @@ export interface ContributionFacts {
   /** EUR equivalent given, net of refunds and lost disputes; 0 before success. */
   netEurMinor: bigint;
   succeededAt: Date | null;
+  /** The contributor accepted to be shown and did not give anonymously. */
+  named: boolean;
 }
 
 const facts = (row: ContributionRecord): ContributionFacts => ({
@@ -33,6 +35,7 @@ const facts = (row: ContributionRecord): ContributionFacts => ({
   status: row.status,
   netEurMinor: netEurMinor(row),
   succeededAt: row.succeededAt,
+  named: row.publicDisplay && !row.anonymous,
 });
 
 /**
@@ -92,6 +95,29 @@ export class PaymentsFacade implements OnModuleInit {
     limit: number,
   ): Promise<ContributionFacts[]> {
     return (await this.payments.allContributions(afterId, limit)).map(facts);
+  }
+
+  /** Members whose paid contributions to the project still count (notifications). */
+  contributorIds(projectId: string): Promise<string[]> {
+    return this.payments.contributorIdsOf(projectId);
+  }
+
+  /** Parties of an off-platform contribution (notifications). */
+  async offlineParties(id: string): Promise<{
+    projectId: string;
+    contributorId: string;
+    declaredBy: 'contributor' | 'holder';
+    declarerId: string;
+  } | null> {
+    const found = await this.payments.findOffline(id);
+    return found
+      ? {
+          projectId: found.projectId,
+          contributorId: found.contributorId,
+          declaredBy: found.declaredBy,
+          declarerId: found.declarerId,
+        }
+      : null;
   }
 
   /** Refund decided by the moderation (trust module), whatever remains. */
