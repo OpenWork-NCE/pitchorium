@@ -48,7 +48,7 @@ Les tables sont déclarées dans `packages/db/src/schemas/<module>.ts` avec le `
 
 ## Prérequis
 
-Une action refusée faute d'éléments complétés répond `403 ACCESS_PREREQUISITES_MISSING` avec `missing`, la liste complète des éléments (`legal_acceptance`, `email_verified`, `kyc_verified`, `two_factor`, `profile.entrepreneur_facet`, `profile.contributor_facet`). `GET /v1/me/prerequisites/{action}` donne la même liste sans tenter l'action ; pour une action réservée à un rôle porté sur une ressource, elle répond pour un membre qui détient ce rôle. Un module qui possède des éléments les fournit au module access par un `PrerequisiteProvider` enregistré au démarrage.
+Une action refusée faute d'éléments complétés répond `403 ACCESS_PREREQUISITES_MISSING` avec `missing`, la liste complète des éléments (`legal_acceptance`, `email_verified`, `kyc_verified`, `two_factor`, `profile.entrepreneur_facet`, `profile.contributor_facet`, `payout_account`). `GET /v1/me/prerequisites/{action}` donne la même liste sans tenter l'action ; pour une action réservée à un rôle porté sur une ressource, elle répond pour un membre qui détient ce rôle. Un module qui possède des éléments les fournit au module access par un `PrerequisiteProvider` enregistré au démarrage.
 
 ## Erreurs et codes
 

@@ -8,8 +8,8 @@ export interface AccessFacts {
   resource: AccessResource | null;
   suspended: boolean;
   kycVerified: boolean;
-  /** Profile elements (profile.*) the actor has not completed. */
-  missingProfileElements: readonly PrerequisiteElement[];
+  /** Elements owned by other modules (profile.*, payout_account) the actor has not completed. */
+  missingProvidedElements: readonly PrerequisiteElement[];
 }
 
 export type AccessDecision =
@@ -23,9 +23,14 @@ export function policyOf(action: Action): ActionPolicy {
   return ACTION_POLICIES[action];
 }
 
-/** Profile elements whose state the application layer must load for this action. */
-export function profileElementsRequiredBy(action: Action): PrerequisiteElement[] {
-  return (policyOf(action).requires ?? []).filter((element) => element.startsWith('profile.'));
+/** Elements whose state other modules provide: profiles (profile.*), payments (payout_account). */
+export function isProvidedElement(element: PrerequisiteElement): boolean {
+  return element.startsWith('profile.') || element === 'payout_account';
+}
+
+/** Provided elements whose state the application layer must load for this action. */
+export function providedElementsRequiredBy(action: Action): PrerequisiteElement[] {
+  return (policyOf(action).requires ?? []).filter(isProvidedElement);
 }
 
 export function requiresKyc(action: Action): boolean {
@@ -44,7 +49,8 @@ function isSatisfied(element: PrerequisiteElement, facts: AccessFacts, actor: Ac
       return actor.twoFactorEnabled;
     case 'profile.entrepreneur_facet':
     case 'profile.contributor_facet':
-      return !facts.missingProfileElements.includes(element);
+    case 'payout_account':
+      return !facts.missingProvidedElements.includes(element);
   }
 }
 

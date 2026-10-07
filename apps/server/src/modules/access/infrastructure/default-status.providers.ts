@@ -1,13 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { AccountStatusProvider, KycStatusProvider } from '../application/ports';
-
-/** Until the payments module implements KYC, nobody is KYC-verified (fail closed). */
-@Injectable()
-export class UnverifiedKycStatusProvider extends KycStatusProvider {
-  isVerified(): Promise<boolean> {
-    return Promise.resolve(false);
-  }
-}
+import { AccountStatusProvider } from '../application/ports';
 
 /** Until the trust module implements moderation, no account is suspended. */
 @Injectable()

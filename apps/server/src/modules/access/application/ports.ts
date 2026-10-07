@@ -15,9 +15,18 @@ export abstract class RoleRepository {
   abstract countHolders(role: AssignableRole): Promise<number>;
 }
 
-/** Port: KYC status of a project holder. The payments module provides the real adapter. */
+/**
+ * Port: KYC status of a project holder. The payments module registers the real adapter at
+ * startup (AccessFacade.registerKycStatusProvider), so that access depends on no module above
+ * it; without one, nobody is verified.
+ */
 export abstract class KycStatusProvider {
   abstract isVerified(userId: string): Promise<boolean>;
+}
+
+/** What a module registers to answer the KYC status of a holder. */
+export interface KycStatusSource {
+  isVerified(userId: string): Promise<boolean>;
 }
 
 /** Port: suspension decided by moderation. The trust module provides the real adapter. */
@@ -26,8 +35,8 @@ export abstract class AccountStatusProvider {
 }
 
 /**
- * Implemented by the module that owns some prerequisite elements (profiles owns profile.*),
- * so that access depends on no module above it.
+ * Implemented by the module that owns some prerequisite elements (profiles owns profile.*,
+ * payments owns payout_account), so that access depends on no module above it.
  */
 export interface PrerequisiteProvider {
   readonly elements: readonly PrerequisiteElement[];

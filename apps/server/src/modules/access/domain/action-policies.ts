@@ -105,4 +105,49 @@ export const ACTION_POLICIES: Readonly<Record<Action, ActionPolicy>> = {
   'content.comment.update': { ownership: 'self' },
   // The author of the comment, or the author of the publication it belongs to.
   'content.comment.delete': { resourceRoles: ['author', 'post_author'] },
+  // Payments (section 9). Quotes and the payment options are read by every member.
+  'payment.quote': {},
+  // The confirmation is sent by email: a verified email first.
+  'payment.contribute': { requires: ['email_verified'] },
+  // On behalf of an organization (section 10.7): its owners and admins.
+  'payment.contribute.organization': {
+    resourceRoles: ['owner', 'admin'],
+    requires: ['email_verified'],
+    sensitive: true,
+  },
+  // A resolver gives the contributor as owner of the contribution.
+  'payment.contribution.read': { ownership: 'self' },
+  'payment.contribution.cancel': { ownership: 'self' },
+  // Contributions of a project and their export (section 11.3): the owners of its team.
+  'payment.project.contributions.read': { resourceRoles: ['owner'] },
+  'payment.project.contributions.export': { resourceRoles: ['owner'], sensitive: true },
+  // What a holder completes before collected contributions open (section 9.5); answered by
+  // GET /v1/me/prerequisites/payment.collection.open, never required by a route.
+  'payment.collection.open': {
+    requires: ['email_verified', 'profile.entrepreneur_facet', 'kyc_verified', 'payout_account'],
+  },
+  'payment.offline.declare': { requires: ['email_verified'] },
+  'payment.offline.declare.team': { resourceRoles: ['owner'], requires: ['email_verified'] },
+  // The other party confirms or rejects: a resolver gives `contributor` or `holder`.
+  'payment.offline.respond': { resourceRoles: ['contributor', 'holder'] },
+  'payment.offline.validate': { roles: ['admin'], sensitive: true },
+  'payment.payout.configure': {
+    requires: ['email_verified', 'profile.entrepreneur_facet'],
+    sensitive: true,
+  },
+  'payment.kyc.submit': {
+    requires: ['email_verified', 'profile.entrepreneur_facet'],
+    sensitive: true,
+  },
+  'payment.kyc.review': { roles: ['admin'], sensitive: true },
+  'payment.refund': { roles: ['admin'], sensitive: true },
+  'payment.reconciliation.manage': { roles: ['admin'], sensitive: true },
+  // Engagement (section 9.4): own dashboard, the dashboard of an organization for its members.
+  'engagement.dashboard.read': {},
+  'engagement.organization.dashboard.read': { resourceRoles: ['owner', 'admin', 'member'] },
+  // A time entry reaches its beneficiary: a verified email first.
+  'engagement.time.declare': { requires: ['email_verified'] },
+  'engagement.time.read': {},
+  // A resolver gives `beneficiary` to the entrepreneur or the owners of the project concerned.
+  'engagement.time.respond': { resourceRoles: ['beneficiary'] },
 };

@@ -73,6 +73,28 @@ export const ACTIONS = [
   'content.comment.create',
   'content.comment.update',
   'content.comment.delete',
+  'payment.quote',
+  'payment.contribute',
+  'payment.contribute.organization',
+  'payment.contribution.read',
+  'payment.contribution.cancel',
+  'payment.project.contributions.read',
+  'payment.project.contributions.export',
+  'payment.collection.open',
+  'payment.offline.declare',
+  'payment.offline.declare.team',
+  'payment.offline.respond',
+  'payment.offline.validate',
+  'payment.payout.configure',
+  'payment.kyc.submit',
+  'payment.kyc.review',
+  'payment.refund',
+  'payment.reconciliation.manage',
+  'engagement.dashboard.read',
+  'engagement.organization.dashboard.read',
+  'engagement.time.declare',
+  'engagement.time.read',
+  'engagement.time.respond',
 ] as const;
 export const actionSchema = z.enum(ACTIONS);
 
@@ -84,6 +106,7 @@ export const PREREQUISITE_ELEMENTS = [
   'two_factor',
   'profile.entrepreneur_facet',
   'profile.contributor_facet',
+  'payout_account',
 ] as const;
 export const prerequisiteElementSchema = z.enum(PREREQUISITE_ELEMENTS);
 

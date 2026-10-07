@@ -7,10 +7,8 @@ import { AdminBootstrapService } from './application/admin-bootstrap.service';
 import { AccountStatusProvider, KycStatusProvider, RoleRepository } from './application/ports';
 import { PrerequisiteRegistry } from './application/prerequisite.registry';
 import { RoleService } from './application/role.service';
-import {
-  ActiveAccountStatusProvider,
-  UnverifiedKycStatusProvider,
-} from './infrastructure/default-status.providers';
+import { RegisteredKycStatusProvider } from './application/kyc-status.registry';
+import { ActiveAccountStatusProvider } from './infrastructure/default-status.providers';
 import { DrizzleRoleRepository } from './infrastructure/drizzle-role.repository';
 import { SessionHandshakeGuard } from './infrastructure/session-handshake.guard';
 import { AccessController } from './interface/access.controller';
@@ -18,7 +16,8 @@ import { AuthenticationGuard } from './interface/authentication.guard';
 
 const SHARED_PROVIDERS: Provider[] = [
   { provide: RoleRepository, useClass: DrizzleRoleRepository },
-  { provide: KycStatusProvider, useClass: UnverifiedKycStatusProvider },
+  RegisteredKycStatusProvider,
+  { provide: KycStatusProvider, useExisting: RegisteredKycStatusProvider },
   { provide: AccountStatusProvider, useClass: ActiveAccountStatusProvider },
   PrerequisiteRegistry,
   AccessService,

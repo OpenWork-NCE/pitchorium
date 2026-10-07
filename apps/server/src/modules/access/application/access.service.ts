@@ -13,7 +13,7 @@ import {
   type AccessDecision,
   decide,
   policyOf,
-  profileElementsRequiredBy,
+  providedElementsRequiredBy,
   requiresKyc,
 } from '../domain/access-policy';
 import type { AccessResource, Actor } from '../domain/actor';
@@ -62,15 +62,15 @@ export class AccessService {
 
   /** Loads only the facts the action policy needs, then decides. */
   async decide(actor: Actor, action: Action, resource: AccessResource): Promise<AccessDecision> {
-    const profileElements = profileElementsRequiredBy(action);
-    const [suspended, kycVerified, missingProfileElements] = await Promise.all([
+    const providedElements = providedElementsRequiredBy(action);
+    const [suspended, kycVerified, missingProvidedElements] = await Promise.all([
       this.accountStatus.isSuspended(actor.userId),
       requiresKyc(action) ? this.kyc.isVerified(actor.userId) : Promise.resolve(false),
-      profileElements.length > 0
-        ? this.prerequisites.missing(actor.userId, profileElements)
+      providedElements.length > 0
+        ? this.prerequisites.missing(actor.userId, providedElements)
         : Promise.resolve([]),
     ]);
-    return decide(action, { actor, resource, suspended, kycVerified, missingProfileElements });
+    return decide(action, { actor, resource, suspended, kycVerified, missingProvidedElements });
   }
 
   async can(actor: Actor, action: Action, resource: AccessResource): Promise<boolean> {

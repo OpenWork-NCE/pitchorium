@@ -35,7 +35,11 @@ function facts(scenario: Scenario): AccessFacts {
     resource: { type: 'user', id: SELF, ownerId: SELF },
     suspended: false,
     kycVerified: false,
-    missingProfileElements: ['profile.entrepreneur_facet', 'profile.contributor_facet'],
+    missingProvidedElements: [
+      'profile.entrepreneur_facet',
+      'profile.contributor_facet',
+      'payout_account',
+    ],
   };
   switch (scenario) {
     case 'anonymous':
@@ -45,7 +49,7 @@ function facts(scenario: Scenario): AccessFacts {
     case 'member':
       return base;
     case 'entrepreneur':
-      return { ...base, missingProfileElements: ['profile.contributor_facet'] };
+      return { ...base, missingProvidedElements: ['profile.contributor_facet', 'payout_account'] };
     case 'suspended':
       return { ...base, suspended: true };
     case 'adminWithout2fa':
@@ -143,6 +147,30 @@ const entrepreneursOnly: Record<Scenario, Expected> = {
   moderator: ['profile.entrepreneur_facet'],
 };
 
+/** Payout and KYC of a holder: an entrepreneur with a verified email. */
+const entrepreneursWithVerifiedEmail: Record<Scenario, Expected> = {
+  ...entrepreneursOnly,
+  newcomer: ['email_verified', 'legal_acceptance', 'profile.entrepreneur_facet'],
+};
+
+/** Collected contributions open once the holder is verified and paid out (section 9.5). */
+const holdersReadyToCollect: Record<Scenario, Expected> = {
+  anonymous: 'UNAUTHENTICATED',
+  newcomer: [
+    'email_verified',
+    'kyc_verified',
+    'legal_acceptance',
+    'payout_account',
+    'profile.entrepreneur_facet',
+  ],
+  member: ['kyc_verified', 'payout_account', 'profile.entrepreneur_facet'],
+  entrepreneur: ['kyc_verified', 'payout_account'],
+  suspended: 'SUSPENDED',
+  adminWithout2fa: ['kyc_verified', 'payout_account', 'profile.entrepreneur_facet'],
+  admin: ['kyc_verified', 'payout_account', 'profile.entrepreneur_facet'],
+  moderator: ['kyc_verified', 'payout_account', 'profile.entrepreneur_facet'],
+};
+
 /** The complete matrix: every registered action against every kind of actor. */
 const MATRIX: Record<Action, Record<Scenario, Expected>> = {
   'account.read': everyoneSignedIn,
@@ -204,6 +232,28 @@ const MATRIX: Record<Action, Record<Scenario, Expected>> = {
   'content.comment.create': membersWithVerifiedEmail,
   'content.comment.update': membersWithAcceptedTerms,
   'content.comment.delete': organizationRoleRequired,
+  'payment.quote': membersWithAcceptedTerms,
+  'payment.contribute': membersWithVerifiedEmail,
+  'payment.contribute.organization': organizationRoleRequired,
+  'payment.contribution.read': membersWithAcceptedTerms,
+  'payment.contribution.cancel': membersWithAcceptedTerms,
+  'payment.project.contributions.read': projectRoleRequired,
+  'payment.project.contributions.export': projectRoleRequired,
+  'payment.collection.open': holdersReadyToCollect,
+  'payment.offline.declare': membersWithVerifiedEmail,
+  'payment.offline.declare.team': projectRoleRequired,
+  'payment.offline.respond': organizationRoleRequired,
+  'payment.offline.validate': adminsWith2fa,
+  'payment.payout.configure': entrepreneursWithVerifiedEmail,
+  'payment.kyc.submit': entrepreneursWithVerifiedEmail,
+  'payment.kyc.review': adminsWith2fa,
+  'payment.refund': adminsWith2fa,
+  'payment.reconciliation.manage': adminsWith2fa,
+  'engagement.dashboard.read': membersWithAcceptedTerms,
+  'engagement.organization.dashboard.read': organizationRoleRequired,
+  'engagement.time.declare': membersWithVerifiedEmail,
+  'engagement.time.read': membersWithAcceptedTerms,
+  'engagement.time.respond': organizationRoleRequired,
 };
 
 function outcome(action: Action, scenario: Scenario): Expected {
@@ -300,6 +350,57 @@ describe('access policies', () => {
     });
     expect(allowed('organization.verification.request', ['owner'], 'suspended')).toMatchObject({
       code: 'ACCESS_ACCOUNT_SUSPENDED',
+    });
+  });
+
+  it('grants payment and engagement actions by the role held on the resource', () => {
+    const resource = (type: string, roles: string[]) => ({ type, id: 'r-1', ownerId: null, roles });
+    const allowed = (
+      action: Action,
+      type: string,
+      roles: string[],
+      scenario: Scenario = 'member',
+    ) => decide(action, { ...facts(scenario), resource: resource(type, roles) });
+
+    expect(allowed('payment.contribute.organization', 'organization', ['admin'])).toEqual({
+      allowed: true,
+    });
+    expect(allowed('payment.contribute.organization', 'organization', ['member'])).toMatchObject({
+      code: 'FORBIDDEN',
+    });
+    expect(allowed('payment.project.contributions.export', 'project', ['editor'])).toMatchObject({
+      code: 'FORBIDDEN',
+    });
+    expect(allowed('payment.project.contributions.read', 'project', ['owner'])).toEqual({
+      allowed: true,
+    });
+    expect(allowed('payment.offline.declare.team', 'project', ['owner'], 'newcomer')).toEqual({
+      allowed: false,
+      code: 'ACCESS_PREREQUISITES_MISSING',
+      missing: ['email_verified', 'legal_acceptance'],
+    });
+    expect(allowed('payment.offline.respond', 'offline_contribution', ['holder'])).toEqual({
+      allowed: true,
+    });
+    expect(allowed('engagement.time.respond', 'time_entry', ['beneficiary'])).toEqual({
+      allowed: true,
+    });
+    expect(allowed('engagement.organization.dashboard.read', 'organization', ['member'])).toEqual({
+      allowed: true,
+    });
+  });
+
+  it('opens collected contributions once KYC and payout account are complete', () => {
+    const ready = {
+      ...facts('entrepreneur'),
+      kycVerified: true,
+      missingProvidedElements: ['profile.contributor_facet' as const],
+    };
+    expect(decide('payment.collection.open', ready)).toEqual({ allowed: true });
+    expect(decide('payment.collection.open', { ...ready, kycVerified: false })).toEqual({
+      allowed: false,
+      code: 'ACCESS_PREREQUISITES_MISSING',
+      missing: ['kyc_verified'],
     });
   });
 });
