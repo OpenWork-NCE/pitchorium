@@ -41,6 +41,8 @@ export const mediaAssets = mediaSchema.table(
     source: text('source').notNull(),
     status: text('status').notNull(),
     visibility: text('visibility').notNull(),
+    /** Bucket the files must move to (usage following its resource); null when none is asked. */
+    targetVisibility: text('target_visibility'),
     declaredContentType: text('declared_content_type').notNull(),
     declaredSize: bigint('declared_size', { mode: 'number' }).notNull(),
     contentType: text('content_type'),

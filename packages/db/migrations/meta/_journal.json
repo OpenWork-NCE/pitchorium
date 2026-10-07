@@ -50,6 +50,13 @@
       "when": 1791389850176,
       "tag": "0006_organizations",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1791394101104,
+      "tag": "0007_media_target_visibility",
+      "breakpoints": true
     }
   ]
 }

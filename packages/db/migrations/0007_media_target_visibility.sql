@@ -1,0 +1,1 @@
+ALTER TABLE "media"."assets" ADD COLUMN "target_visibility" text;
