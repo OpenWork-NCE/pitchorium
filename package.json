@@ -20,7 +20,7 @@
     "db:generate": "pnpm --filter @pitchorium/db db:generate",
     "db:migrate": "pnpm --filter @pitchorium/db db:migrate",
     "db:seed": "pnpm --filter @pitchorium/db db:seed",
-    "db:seed:dev": "pnpm --filter @pitchorium/server db:seed:dev",
+    "db:seed:dev": "turbo run db:seed:dev --filter=@pitchorium/server",
     "db:check": "pnpm --filter @pitchorium/db db:check",
     "admin:create": "pnpm --filter @pitchorium/server admin:create",
     "i18n:check": "turbo run check:keys",

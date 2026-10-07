@@ -36,6 +36,11 @@
       "cache": false,
       "persistent": true
     },
+    "db:seed:dev": {
+      "dependsOn": ["^build"],
+      "cache": false,
+      "passThroughEnv": ["*"]
+    },
     "check:keys": {
       "dependsOn": ["^build"],
       "outputs": []
