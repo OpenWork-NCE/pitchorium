@@ -254,6 +254,17 @@ const MATRIX: Record<Action, Record<Scenario, Expected>> = {
   'engagement.time.declare': membersWithVerifiedEmail,
   'engagement.time.read': membersWithAcceptedTerms,
   'engagement.time.respond': organizationRoleRequired,
+  'messaging.read': membersWithAcceptedTerms,
+  'messaging.conversation.start': membersWithAcceptedTerms,
+  'messaging.conversation.participate': organizationRoleRequired,
+  'messaging.message.update': organizationRoleRequired,
+  'messaging.request.respond': organizationRoleRequired,
+  'messaging.settings.update': membersWithAcceptedTerms,
+  'messaging.introduction.propose': membersWithVerifiedEmail,
+  'messaging.introduction.respond': organizationRoleRequired,
+  'notifications.read': membersWithAcceptedTerms,
+  'notifications.manage': membersWithAcceptedTerms,
+  'notifications.preferences.update': membersWithAcceptedTerms,
 };
 
 function outcome(action: Action, scenario: Scenario): Expected {
@@ -388,6 +399,35 @@ describe('access policies', () => {
     expect(allowed('engagement.organization.dashboard.read', 'organization', ['member'])).toEqual({
       allowed: true,
     });
+  });
+
+  it('grants messaging actions by the role held on the conversation, message or introduction', () => {
+    const allowed = (
+      action: Action,
+      type: string,
+      roles: string[],
+      scenario: Scenario = 'member',
+    ) =>
+      decide(action, {
+        ...facts(scenario),
+        resource: { type, id: 'r-1', ownerId: null, roles },
+      });
+    expect(allowed('messaging.conversation.participate', 'conversation', ['participant'])).toEqual({
+      allowed: true,
+    });
+    expect(allowed('messaging.message.update', 'message', ['participant'])).toMatchObject({
+      code: 'FORBIDDEN',
+    });
+    expect(allowed('messaging.message.update', 'message', ['sender'])).toEqual({ allowed: true });
+    expect(allowed('messaging.request.respond', 'conversation', ['request_recipient'])).toEqual({
+      allowed: true,
+    });
+    expect(allowed('messaging.introduction.respond', 'introduction', ['introduced'])).toEqual({
+      allowed: true,
+    });
+    expect(
+      allowed('messaging.conversation.participate', 'conversation', ['participant'], 'suspended'),
+    ).toMatchObject({ code: 'ACCESS_ACCOUNT_SUSPENDED' });
   });
 
   it('opens collected contributions once KYC and payout account are complete', () => {

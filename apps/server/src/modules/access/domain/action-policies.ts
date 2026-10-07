@@ -150,4 +150,22 @@ export const ACTION_POLICIES: Readonly<Record<Action, ActionPolicy>> = {
   'engagement.time.read': {},
   // A resolver gives `beneficiary` to the entrepreneur or the owners of the project concerned.
   'engagement.time.respond': { resourceRoles: ['beneficiary'] },
+  // Messaging (§10.4). Writing out of network needs a verified email (§7.2): checked by the
+  // module, which knows whether the members are connected; connected members write freely.
+  'messaging.read': {},
+  'messaging.conversation.start': {},
+  // A resolver gives `participant` to an active participant the conversation shows to.
+  'messaging.conversation.participate': { resourceRoles: ['participant'] },
+  // A resolver gives `sender` to the author of the message.
+  'messaging.message.update': { resourceRoles: ['sender'] },
+  'messaging.request.respond': { resourceRoles: ['request_recipient'] },
+  'messaging.settings.update': {},
+  // An introduction reaches two other members: a verified email first.
+  'messaging.introduction.propose': { requires: ['email_verified'] },
+  // A resolver gives `introduced` to the two members introduced.
+  'messaging.introduction.respond': { resourceRoles: ['introduced'] },
+  // Notifications (§10.5): the member's own.
+  'notifications.read': {},
+  'notifications.manage': {},
+  'notifications.preferences.update': {},
 };

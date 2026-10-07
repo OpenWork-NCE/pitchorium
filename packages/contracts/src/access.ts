@@ -95,6 +95,17 @@ export const ACTIONS = [
   'engagement.time.declare',
   'engagement.time.read',
   'engagement.time.respond',
+  'messaging.read',
+  'messaging.conversation.start',
+  'messaging.conversation.participate',
+  'messaging.message.update',
+  'messaging.request.respond',
+  'messaging.settings.update',
+  'messaging.introduction.propose',
+  'messaging.introduction.respond',
+  'notifications.read',
+  'notifications.manage',
+  'notifications.preferences.update',
 ] as const;
 export const actionSchema = z.enum(ACTIONS);
 
