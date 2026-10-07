@@ -1242,6 +1242,7 @@ export type MediaUsagesDtoOutputItemsItemVisibility =
 export const MediaUsagesDtoOutputItemsItemVisibility = {
   public: 'public',
   private: 'private',
+  resource: 'resource',
 } as const;
 
 export type MediaUsagesDtoOutputItemsItem = {
@@ -1358,6 +1359,7 @@ export const UploadTicketDtoOutputMediaRejectionReason = {
   type_not_allowed: 'type_not_allowed',
   type_mismatch: 'type_mismatch',
   size_exceeded: 'size_exceeded',
+  size_mismatch: 'size_mismatch',
   malware_detected: 'malware_detected',
   image_unreadable: 'image_unreadable',
   image_too_small: 'image_too_small',
@@ -1479,6 +1481,7 @@ export const MediaAssetDtoOutputRejectionReason = {
   type_not_allowed: 'type_not_allowed',
   type_mismatch: 'type_mismatch',
   size_exceeded: 'size_exceeded',
+  size_mismatch: 'size_mismatch',
   malware_detected: 'malware_detected',
   image_unreadable: 'image_unreadable',
   image_too_small: 'image_too_small',
