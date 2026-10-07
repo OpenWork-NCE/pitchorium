@@ -10,7 +10,7 @@ Fil d'actualité (cahier des charges §10.3) : publications, repartages, mention
 - Fichiers (ADR 0026) : images dans le bucket public seulement pour une publication `public`, URL présignées sinon ; document toujours privé, lu par `GET /v1/media/{mediaId}/download-url` par qui peut voir la publication (`MediaReadAuthorizer` du type de ressource `post`).
 - Mentions `@identifiant` d'un membre ou `@slug` d'une organisation (membre d'abord en cas d'homonymie), 20 au plus, résolues en identifiants stables à l'écriture et affichées avec l'identifiant et le nom actuels ; un membre de part et d'autre d'un blocage est inconnu de l'auteur et de ses lecteurs (ADR 0029) : son jeton reste du texte et sa mention n'est pas affichée.
 - Langue déclarée par l'auteur (ISO 639-1), sinon détectée (`franc-min`, 10 caractères au moins, sans le wolof), sinon `undetermined` ; stockée pour la traduction à la demande.
-- Rattachement à un projet (`projectId`) validé par le module projects (`registerProjectLinkValidator`) ; jusque-là, tout projet est refusé (`CONTENT_PROJECT_NOT_FOUND`).
+- Rattachement à un projet (`projectId`) validé par le module projects (`registerProjectLinkValidator`) : seule l'équipe d'un projet publié y rattache une publication (`CONTENT_PROJECT_NOT_FOUND` sinon). La page du projet liste ses publications par la façade (`projectPosts`), selon ce que le lecteur peut voir.
 - Modification du texte, de la visibilité, de la langue (horodatage `editedAt` visible) ou de l'option de commentaires ; suppression logique par l'auteur, les fichiers sont détachés puis supprimés par le nettoyage des orphelins.
 - Repartage avec commentaire facultatif : le repartage d'un repartage vise l'original ; un repartage n'élargit jamais l'audience de l'original (`public` : toute visibilité ; `members` : `members` ou `connections` ; `connections` : par son auteur seulement). L'original invisible pour le lecteur donne `repostOf: null`.
 
@@ -29,7 +29,8 @@ Fil d'actualité (cahier des charges §10.3) : publications, repartages, mention
 
 - Fan-out à la lecture : publications et repartages des membres suivis (les connexions créent un suivi mutuel) et du lecteur, publications des organisations suivies, du plus récent au plus ancien, pagination par curseur ; filtres de visibilité, blocages, publications masquées et modération.
 - Complément éditorial : si le réseau produit moins de `CONTENT_FEED_EDITORIAL_THRESHOLD` publications (10, provisoire), le fil continue avec les publications mises en avant par un `moderator` ou un `admin` (`public` ou `members`, hors réseau du lecteur). Jamais de fil mondial anonyme.
-- Contrat versionné (`schemaVersion: 1`) et polymorphe : éléments `post`, `repost`, `featured` ; `project_update`, `project` et `suggestion` sont réservés (modules projects et discovery) et le client ignore un type inconnu.
+- Actualités des projets suivis : éléments `project_update`, fournis par le module projects (`registerProjectUpdatesFeedSource`) et fusionnés avec les publications du réseau, du plus récent au plus ancien.
+- Contrat versionné (`schemaVersion: 1`) et polymorphe : éléments `post`, `repost`, `featured`, `project_update` ; `project` et `suggestion` sont réservés (modules projects et discovery) et le client ignore un type inconnu.
 
 ## Statistiques (ADR 0034)
 
@@ -53,11 +54,11 @@ Chaque lecture d'une publication par un autre membre (fil ou page) ajoute le lec
 
 ## Schéma `content`
 
-`posts` (index partiels du fil par membre et par organisation, des mises en avant, des repartages, de l'image d'aperçu), `post_mentions`, `comments` (index des commentaires de premier niveau et des réponses), `reactions` (clé : cible et membre), `saved_posts`, `hidden_posts`, `post_daily_views`.
+`posts` (index partiels du fil par membre et par organisation, des mises en avant, des repartages, de l'image d'aperçu, des publications d'un projet), `post_mentions`, `comments` (index des commentaires de premier niveau et des réponses), `reactions` (clé : cible et membre), `saved_posts`, `hidden_posts`, `post_daily_views`.
 
 ## Façade publique (`index.ts`)
 
-`ContentFacade` : `setPostModerationStatus`, `setCommentModerationStatus`, `registerProjectLinkValidator` ; interface `ProjectLinkValidator` ; classes d'événements.
+`ContentFacade` : `setPostModerationStatus`, `setCommentModerationStatus`, `registerProjectLinkValidator`, `registerProjectUpdatesFeedSource`, `projectPosts` ; interfaces `ProjectLinkValidator`, `ProjectUpdatesFeedSource` ; classes d'événements.
 
 ## Événements émis
 
@@ -85,4 +86,4 @@ Un repartage émet `content.post.reposted.v1` (pas `content.post.created.v1`). D
 
 ## Dépendances
 
-identity (indirectement, par le garde d'access), profiles (cartes, page publique, identifiants des mentions), organizations (rôle de l'auteur, cartes, slugs des mentions), network (suivis, connexions, blocages), media (images, document, aperçu, autorisation de lecture), projects (rattachement, par enregistrement).
+identity (indirectement, par le garde d'access), profiles (cartes, page publique, identifiants des mentions), organizations (rôle de l'auteur, cartes, slugs des mentions), network (suivis, connexions, blocages), media (images, document, aperçu, autorisation de lecture), projects (rattachement et actualités du fil, par enregistrement : content ne dépend pas de projects).

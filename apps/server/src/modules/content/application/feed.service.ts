@@ -16,14 +16,21 @@ import {
 import { NetworkFacade } from '../../network';
 import { ORGANIZATION_FOLLOW_TARGET } from '../../organizations';
 import { dayOf } from '../domain/views';
-import { ContentRepository, type NetworkFeedQuery, PostViewCounter } from './ports';
+import { ContentRepository, type FeedEntry, type NetworkFeedQuery, PostViewCounter } from './ports';
 import { PostPresenter } from './post-presenter';
+import { ProjectLinkRegistry } from './project-link.registry';
 
 type Phase = 'network' | 'featured';
+type Entry = { id: string; type: 'post' | 'featured' | 'project_update' };
+
+/** Newest first, the id breaking ties, as the SQL keyset order. */
+const newestFirst = (a: FeedEntry, b: FeedEntry) =>
+  b.createdAt.getTime() - a.createdAt.getTime() || (a.id < b.id ? 1 : a.id > b.id ? -1 : 0);
 
 /**
  * Feed of a member (§10.3, ADR 0032): fan-out on read of the publications and reposts of the
- * followed members and organizations and of the member, newest first. When the network
+ * followed members and organizations and of the member, merged with the updates of the
+ * followed projects (projects module), newest first. When the network
  * produces fewer items than CONTENT_FEED_EDITORIAL_THRESHOLD, the feed goes on with editorial
  * highlights; there is no anonymous global feed.
  */
@@ -34,6 +41,7 @@ export class FeedService {
     private readonly content: ContentRepository,
     private readonly presenter: PostPresenter,
     private readonly network: NetworkFacade,
+    private readonly projects: ProjectLinkRegistry,
     private readonly views: PostViewCounter,
     private readonly clock: Clock,
   ) {}
@@ -60,15 +68,27 @@ export class FeedService {
     const small =
       cursor !== null
         ? cursor['small'] === '1'
-        : (await this.content.countNetworkFeed(query, threshold)) < threshold;
+        : (await this.content.countNetworkFeed(query, threshold)) +
+            (await this.projects.updateEntries(viewerId, null, threshold)).length <
+          threshold;
 
-    const entries: { id: string; type: FeedItem['type'] | 'featured' }[] = [];
+    const entries: Entry[] = [];
     let nextCursor: string | null = null;
     let featuredAfter: KeysetPosition | null = phase === 'featured' ? after : null;
     if (phase === 'network') {
-      const rows = await this.content.networkFeed(query, after, page.limit + 1);
+      const [posts, updates] = await Promise.all([
+        this.content.networkFeed(query, after, page.limit + 1),
+        this.projects.updateEntries(viewerId, after, page.limit + 1),
+      ]);
+      const updateIds = new Set(updates.map((update) => update.id));
+      const rows = [...posts, ...updates].sort(newestFirst);
       const shown = rows.slice(0, page.limit);
-      entries.push(...shown.map((row) => ({ id: row.id, type: 'post' as const })));
+      entries.push(
+        ...shown.map((row): Entry => ({
+          id: row.id,
+          type: updateIds.has(row.id) ? 'project_update' : 'post',
+        })),
+      );
       const last = shown.at(-1);
       if (rows.length > page.limit && last) {
         nextCursor = encodeKeyset(
@@ -93,15 +113,28 @@ export class FeedService {
     }
 
     const reader = await this.presenter.reader(viewerId);
-    const records = await this.content.findPosts(entries.map((entry) => entry.id));
-    const ordered = entries.flatMap((entry) => {
-      const record = records.find((post) => post.id === entry.id);
+    const postIds = entries.flatMap((entry) => (entry.type === 'project_update' ? [] : [entry.id]));
+    const records = await this.content.findPosts(postIds);
+    const ordered = postIds.flatMap((id) => {
+      const record = records.find((post) => post.id === id);
       return record ? [record] : [];
     });
-    const posts = new Map(
-      (await this.presenter.present(reader, ordered)).map((post) => [post.id, post]),
-    );
+    const [posts, updates] = await Promise.all([
+      this.presenter
+        .present(reader, ordered)
+        .then((views) => new Map(views.map((post) => [post.id, post]))),
+      this.projects.presentUpdates(
+        viewerId,
+        entries.flatMap((entry) => (entry.type === 'project_update' ? [entry.id] : [])),
+      ),
+    ]);
     const items = entries.flatMap((entry): FeedItem[] => {
+      if (entry.type === 'project_update') {
+        const update = updates.get(entry.id);
+        return update
+          ? [{ type: 'project_update', id: `project_update:${update.id}`, update }]
+          : [];
+      }
       const post = posts.get(entry.id);
       if (!post) return [];
       if (entry.type === 'featured') return [{ type: 'featured', id: `featured:${post.id}`, post }];
@@ -111,7 +144,9 @@ export class FeedService {
     });
     this.views.record(
       viewerId,
-      items.filter((item) => !item.post.viewerIsAuthor).map((item) => item.post.id),
+      items.flatMap((item) =>
+        item.type !== 'project_update' && !item.post.viewerIsAuthor ? [item.post.id] : [],
+      ),
       dayOf(this.clock.now()),
     );
     return { schemaVersion: FEED_SCHEMA_VERSION, items, nextCursor };

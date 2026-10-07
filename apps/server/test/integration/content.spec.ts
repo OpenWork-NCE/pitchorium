@@ -2,7 +2,7 @@ import { createServer, type Server } from 'node:http';
 import type { AddressInfo } from 'node:net';
 import type { NestExpressApplication } from '@nestjs/platform-express';
 import type { TestingModule } from '@nestjs/testing';
-import type { FeedPage, Post } from '@pitchorium/contracts';
+import type { FeedItem, FeedPage, Post } from '@pitchorium/contracts';
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AccessModule } from '../../src/modules/access';
 import { ContentModule } from '../../src/modules/content';
@@ -28,6 +28,8 @@ import { createMember, grantRoleWith2fa, type Member } from './support/members';
 import { createWorkerTestingModule } from './support/worker-testing-module';
 
 /** Publications, reposts, reactions, comments, blocks, feed and statistics (§10.3). */
+type PostFeedItem = Exclude<FeedItem, { type: 'project_update' }>;
+
 describe('content', () => {
   let app: NestExpressApplication;
   let worker: TestingModule;
@@ -62,8 +64,14 @@ describe('content', () => {
     await b.agent.post(`/v1/network/connection-requests/${sent.body.id}/accept`).expect(200);
   }
 
-  const feedOf = async (reader: Member) =>
-    (await reader.agent.get('/v1/feed').expect(200)).body as FeedPage;
+  /** The publications of the feed: no project exists in these tests. */
+  const feedOf = async (reader: Member) => {
+    const page = (await reader.agent.get('/v1/feed').expect(200)).body as FeedPage;
+    return {
+      ...page,
+      items: page.items.filter((item): item is PostFeedItem => item.type !== 'project_update'),
+    };
+  };
 
   const eventTypes = async (prefix: string) =>
     (

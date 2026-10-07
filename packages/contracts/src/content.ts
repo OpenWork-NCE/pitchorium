@@ -3,6 +3,7 @@ import { uuidV7Schema } from './ids.js';
 import { mediaVariantSchema } from './media.js';
 import { cursorPageSchema } from './pagination.js';
 import { languageCodeSchema, memberCardSchema } from './profiles.js';
+import { projectUpdateFeedEntrySchema } from './projects.js';
 
 /** Limits of a publication (§10.3). */
 export const POST_TEXT_MAX_LENGTH = 3000;
@@ -159,11 +160,12 @@ export const postSchema = z.object({
 });
 
 /**
- * Types of feed items. `post`, `repost` and `featured` exist; the others are reserved for the
- * projects and discovery modules: clients must ignore a type they do not know (ADR 0032).
+ * Types of feed items. `post`, `repost`, `featured` and `project_update` exist; the others are
+ * reserved for the projects and discovery modules: clients must ignore a type they do not know
+ * (ADR 0032).
  */
-export const FEED_ITEM_TYPES = ['post', 'repost', 'featured'] as const;
-export const RESERVED_FEED_ITEM_TYPES = ['project_update', 'project', 'suggestion'] as const;
+export const FEED_ITEM_TYPES = ['post', 'repost', 'featured', 'project_update'] as const;
+export const RESERVED_FEED_ITEM_TYPES = ['project', 'suggestion'] as const;
 export const FEED_SCHEMA_VERSION = 1;
 
 export const feedItemSchema = z.discriminatedUnion('type', [
@@ -171,6 +173,12 @@ export const feedItemSchema = z.discriminatedUnion('type', [
   z.object({ type: z.literal('repost'), id: z.string(), post: postSchema }),
   /** Editorial highlight completing a feed whose network produces too little. */
   z.object({ type: z.literal('featured'), id: z.string(), post: postSchema }),
+  /** Update of a project the reader follows (section 11.3). */
+  z.object({
+    type: z.literal('project_update'),
+    id: z.string(),
+    update: projectUpdateFeedEntrySchema,
+  }),
 ]);
 
 export const feedPageSchema = z.object({

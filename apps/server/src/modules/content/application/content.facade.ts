@@ -1,14 +1,24 @@
 import { Injectable, type OnModuleInit } from '@nestjs/common';
-import type { ContentModerationStatus } from '@pitchorium/contracts';
-import { DomainError } from '../../../platform/kernel';
+import type {
+  ContentModerationStatus,
+  CursorPage,
+  CursorPageQuery,
+  Post,
+} from '@pitchorium/contracts';
+import { decodeKeyset, DomainError, encodeKeyset } from '../../../platform/kernel';
 import { MediaFacade } from '../../media';
-import { ContentRepository, type ProjectLinkValidator } from './ports';
-import { PostPresenter } from './post-presenter';
+import {
+  ContentRepository,
+  type ProjectLinkValidator,
+  type ProjectUpdatesFeedSource,
+} from './ports';
+import { ANONYMOUS_READER, PostPresenter } from './post-presenter';
 import { POST_RESOURCE } from './posts.service';
 import { ProjectLinkRegistry } from './project-link.registry';
 
 /**
- * Public facade of the content module: moderation for trust, the project link for projects.
+ * Public facade of the content module: moderation for trust; the project link, the project
+ * updates of the feed and the publications of a project page for projects.
  * At startup it gives media the read rule of the private files of publications.
  */
 @Injectable()
@@ -51,5 +61,38 @@ export class ContentFacade implements OnModuleInit {
   /** Called at startup by the projects module. */
   registerProjectLinkValidator(validator: ProjectLinkValidator): void {
     this.projects.register(validator);
+  }
+
+  /** Called at startup by the projects module: `project_update` items of the feed. */
+  registerProjectUpdatesFeedSource(source: ProjectUpdatesFeedSource): void {
+    this.projects.registerUpdatesSource(source);
+  }
+
+  /**
+   * Publications attached to a project, newest first, as the reader may see them (anonymous
+   * reader: public publications only).
+   */
+  async projectPosts(
+    projectId: string,
+    viewerId: string | null,
+    query: CursorPageQuery,
+  ): Promise<CursorPage<Post>> {
+    const rows = await this.content.projectPosts(
+      projectId,
+      decodeKeyset(query.cursor),
+      query.limit + 1,
+    );
+    const page = rows.slice(0, query.limit);
+    const reader = viewerId ? await this.presenter.reader(viewerId) : ANONYMOUS_READER;
+    const records = await this.content.findPosts(page.map((row) => row.id));
+    const ordered = page.flatMap((row) => records.filter((record) => record.id === row.id));
+    const last = page.at(-1);
+    return {
+      items: await this.presenter.present(reader, ordered),
+      nextCursor:
+        rows.length > query.limit && last
+          ? encodeKeyset({ at: last.createdAt, key: last.id })
+          : null,
+    };
   }
 }

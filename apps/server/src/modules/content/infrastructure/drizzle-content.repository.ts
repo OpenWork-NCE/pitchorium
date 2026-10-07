@@ -275,6 +275,29 @@ export class DrizzleContentRepository extends ContentRepository {
     return sql.join(conditions, sql` and `);
   }
 
+  async projectPosts(
+    projectId: string,
+    after: KeysetPosition | null,
+    limit: number,
+  ): Promise<FeedEntry[]> {
+    const rows = await this.db
+      .select({ id: contentPosts.id, createdAt: contentPosts.createdAt })
+      .from(contentPosts)
+      .where(
+        and(
+          eq(contentPosts.projectId, projectId),
+          isNull(contentPosts.deletedAt),
+          eq(contentPosts.moderationStatus, 'visible'),
+          after
+            ? sql`(${contentPosts.createdAt}, ${contentPosts.id}) < (${after.at}, ${after.key}::uuid)`
+            : undefined,
+        ),
+      )
+      .orderBy(desc(contentPosts.createdAt), desc(contentPosts.id))
+      .limit(limit);
+    return rows;
+  }
+
   async repostCounts(postIds: readonly string[]): Promise<Map<string, number>> {
     if (postIds.length === 0) return new Map();
     const rows = await this.db

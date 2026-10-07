@@ -1,4 +1,4 @@
-import type { ReactionCounts, ReactionType } from '@pitchorium/contracts';
+import type { ProjectUpdateFeedEntry, ReactionCounts, ReactionType } from '@pitchorium/contracts';
 import type { KeysetPosition } from '../../../platform/kernel';
 import type { CommentRecord } from '../domain/comment';
 import type { ResolvedMention } from '../domain/mentions';
@@ -71,6 +71,13 @@ export abstract class ContentRepository {
     after: KeysetPosition | null,
     limit: number,
   ): Promise<{ id: string; featuredAt: Date }[]>;
+
+  /** Live publications attached to a project, newest first, after the keyset position. */
+  abstract projectPosts(
+    projectId: string,
+    after: KeysetPosition | null,
+    limit: number,
+  ): Promise<FeedEntry[]>;
 
   abstract repostCounts(postIds: readonly string[]): Promise<Map<string, number>>;
   abstract commentCounts(postIds: readonly string[]): Promise<Map<string, number>>;
@@ -158,4 +165,16 @@ export abstract class PostViewCounter {
  */
 export interface ProjectLinkValidator {
   canAttach(projectId: string, authorId: string): Promise<boolean>;
+}
+
+/**
+ * Updates of the projects a reader follows, provided by the projects module and merged into
+ * the network part of the feed (`project_update` items). Until it is registered, the feed has
+ * no project update.
+ */
+export interface ProjectUpdatesFeedSource {
+  /** Newest first, strictly before the keyset position, at most `limit`. */
+  entries(viewerId: string, after: KeysetPosition | null, limit: number): Promise<FeedEntry[]>;
+  /** Views of the updates the reader may see, by id. */
+  present(viewerId: string, ids: readonly string[]): Promise<Map<string, ProjectUpdateFeedEntry>>;
 }
