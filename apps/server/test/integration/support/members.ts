@@ -3,6 +3,7 @@ import request from 'supertest';
 import { expect } from 'vitest';
 import { query } from './database';
 import { TEST_LEGAL_VERSION, TEST_WEB_APP_URL } from './environment';
+import { totp } from './totp';
 
 export const PASSWORD = 'correct horse battery staple';
 
@@ -67,4 +68,20 @@ export async function createMember(
   ]);
   if (!user) throw new Error(`User ${email} not created`);
   return { agent, email, userId: user.id };
+}
+
+/** Grants a platform role to a member, who then enables two-factor authentication. */
+export async function grantRoleWith2fa(member: Member, role: 'moderator' | 'admin'): Promise<void> {
+  await query(
+    `INSERT INTO access.role_assignments (user_id, role, granted_at) VALUES ($1, $2, now())`,
+    [member.userId, role],
+  );
+  const enabled = await member.agent
+    .post('/v1/auth/two-factor/enable')
+    .send({ password: PASSWORD })
+    .expect(200);
+  await member.agent
+    .post('/v1/auth/two-factor/verify-totp')
+    .send({ code: totp(enabled.body.totpURI as string) })
+    .expect(200);
 }

@@ -16,6 +16,8 @@ const BUSINESS_TABLES = [
   'network.blocks',
   'network.settings',
   'network.profile_views',
+  'content.posts',
+  'content.reactions',
 ];
 
 export async function truncatePlatformTables(): Promise<void> {
