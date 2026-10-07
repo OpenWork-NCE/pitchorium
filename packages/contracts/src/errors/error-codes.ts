@@ -101,6 +101,27 @@ export const errorCodes = {
     status: 422,
     title: 'Unknown verification criterion',
   },
+  NETWORK_TARGET_NOT_FOUND: { status: 404, title: 'Follow target not found' },
+  NETWORK_MEMBER_NOT_FOUND: { status: 404, title: 'Member not found' },
+  NETWORK_SELF_RELATION: { status: 422, title: 'A member cannot relate to themselves' },
+  NETWORK_ALREADY_CONNECTED: { status: 409, title: 'Members are already connected' },
+  NETWORK_REQUEST_ALREADY_PENDING: {
+    status: 409,
+    title: 'A connection request is already pending between these members',
+  },
+  NETWORK_REQUEST_COOLDOWN: {
+    status: 409,
+    title: 'A new request to this member is not allowed yet after a decline',
+  },
+  NETWORK_WEEKLY_REQUEST_LIMIT: {
+    status: 429,
+    title: 'Weekly limit of connection requests reached',
+  },
+  NETWORK_REQUEST_NOT_FOUND: { status: 404, title: 'Connection request not found' },
+  NETWORK_REQUEST_NOT_PENDING: { status: 409, title: 'Connection request is no longer pending' },
+  NETWORK_NOT_CONNECTED: { status: 404, title: 'Members are not connected' },
+  NETWORK_MEMBER_BLOCKED: { status: 409, title: 'You blocked this member' },
+  NETWORK_LIST_HIDDEN: { status: 403, title: 'This network list is not visible to you' },
   INTERNAL_ERROR: { status: 500, title: 'Internal error' },
   SERVICE_UNAVAILABLE: { status: 503, title: 'Service unavailable' },
 } as const satisfies Record<string, ErrorCodeDefinition>;

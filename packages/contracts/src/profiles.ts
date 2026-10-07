@@ -301,6 +301,14 @@ export const ownProfileSchema = z.object({
   updatedAt: z.iso.datetime(),
 });
 
+/** How a member appears in lists of other modules (network, content): never their user id. */
+export const memberCardSchema = z.object({
+  handle: handleSchema,
+  displayName: z.string(),
+  headline: z.string().nullable(),
+  avatarUrl: z.string().nullable(),
+});
+
 export const profileSummarySchema = z.object({
   handle: handleSchema,
   displayName: z.string(),
@@ -312,6 +320,7 @@ export const profileSummarySchema = z.object({
 });
 
 export type Intention = z.infer<typeof intentionSchema>;
+export type MemberCard = z.infer<typeof memberCardSchema>;
 export type ContributorHat = z.infer<typeof contributorHatSchema>;
 export type StructureType = z.infer<typeof structureTypeSchema>;
 export type FundingInstrument = z.infer<typeof fundingInstrumentSchema>;
