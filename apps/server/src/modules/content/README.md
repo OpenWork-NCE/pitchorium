@@ -8,7 +8,7 @@ Fil d'actualité (cahier des charges §10.3) : publications, repartages, mention
 - Visibilité `public`, `members` (défaut) ou `connections`. `public` exige la page publique de l'auteur ; si l'auteur la désactive, ses publications publiques sont lues comme `members` immédiatement, puis réécrites `members` par le worker (handler de `profiles.profile.visibility-changed.v1`) et leurs fichiers rendus privés. Réactiver la page ne rétablit rien.
 - Publication au nom d'une organisation par un `owner` ou un `admin` (`organizationId`) : `public` ou `members` ; elle apparaît dans le fil des abonnés de l'organisation.
 - Fichiers (ADR 0026) : images dans le bucket public seulement pour une publication `public`, URL présignées sinon ; document toujours privé, lu par `GET /v1/media/{mediaId}/download-url` par qui peut voir la publication (`MediaReadAuthorizer` du type de ressource `post`).
-- Mentions `@identifiant` d'un membre ou `@slug` d'une organisation (membre d'abord en cas d'homonymie), 20 au plus, résolues en identifiants stables à l'écriture et affichées avec l'identifiant et le nom actuels ; mentionner un membre de part et d'autre d'un blocage est refusé (`CONTENT_MENTION_NOT_ALLOWED`).
+- Mentions `@identifiant` d'un membre ou `@slug` d'une organisation (membre d'abord en cas d'homonymie), 20 au plus, résolues en identifiants stables à l'écriture et affichées avec l'identifiant et le nom actuels ; un membre de part et d'autre d'un blocage est inconnu de l'auteur et de ses lecteurs (ADR 0029) : son jeton reste du texte et sa mention n'est pas affichée.
 - Langue déclarée par l'auteur (ISO 639-1), sinon détectée (`franc-min`, 10 caractères au moins, sans le wolof), sinon `undetermined` ; stockée pour la traduction à la demande.
 - Rattachement à un projet (`projectId`) validé par le module projects (`registerProjectLinkValidator`) ; jusque-là, tout projet est refusé (`CONTENT_PROJECT_NOT_FOUND`).
 - Modification du texte, de la visibilité, de la langue (horodatage `editedAt` visible) ou de l'option de commentaires ; suppression logique par l'auteur, les fichiers sont détachés puis supprimés par le nettoyage des orphelins.
@@ -23,7 +23,7 @@ Fil d'actualité (cahier des charges §10.3) : publications, repartages, mention
 - Réactions `like`, `bravo`, `insightful`, `support` (J'aime, Bravo, Pertinent, Soutien) sur les publications et les commentaires, une par membre et par cible, modifiable ; compteurs par type agrégés à la lecture.
 - Commentaires de 1 250 caractères (provisoire) et réponses sur un seul niveau (`CONTENT_REPLY_DEPTH` pour une réponse à une réponse) ; email vérifié exigé ; modification par l'auteur, suppression par l'auteur ou par l'auteur de la publication ; l'auteur peut désactiver les commentaires.
 - Enregistrer une publication (liste paginée `GET /v1/me/saved-posts`), la masquer de son propre fil.
-- Blocage (ADR 0029) : un membre bloqué de part et d'autre ne voit ni les publications ni les commentaires de l'autre, et ne peut ni commenter, ni réagir, ni mentionner (404 comme pour une publication inconnue).
+- Blocage (ADR 0029) : un membre bloqué de part et d'autre ne voit ni les publications ni les commentaires de l'autre, et ne peut ni commenter, ni réagir (404 comme pour une publication inconnue), ni mentionner l'autre (texte simple).
 
 ## Fil (ADR 0032)
 

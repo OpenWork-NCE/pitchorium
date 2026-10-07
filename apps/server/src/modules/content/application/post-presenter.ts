@@ -88,10 +88,13 @@ export class PostPresenter {
     const mentions = await this.content.mentionsOf(all.map((post) => post.id));
     const mentioned = [...mentions.values()].flat();
     const [cards, organizationCards] = await Promise.all([
-      this.profiles.memberCards([
-        ...all.map((post) => post.authorId),
-        ...mentioned.filter((m) => m.targetType === 'member').map((m) => m.targetId),
-      ]),
+      this.profiles.memberCards(
+        [
+          ...all.map((post) => post.authorId),
+          ...mentioned.filter((m) => m.targetType === 'member').map((m) => m.targetId),
+        ],
+        reader.viewerId,
+      ),
       this.organizations.cards([
         ...all.flatMap((post) => (post.organizationId ? [post.organizationId] : [])),
         ...mentioned.filter((m) => m.targetType === 'organization').map((m) => m.targetId),
@@ -209,7 +212,10 @@ export class PostPresenter {
 
   private async visibleSubset(reader: Reader, posts: readonly PostRecord[]): Promise<Set<string>> {
     const [cards, organizationCards] = await Promise.all([
-      this.profiles.memberCards(posts.map((post) => post.authorId)),
+      this.profiles.memberCards(
+        posts.map((post) => post.authorId),
+        reader.viewerId,
+      ),
       this.organizations.cards(
         posts.flatMap((post) => (post.organizationId ? [post.organizationId] : [])),
       ),

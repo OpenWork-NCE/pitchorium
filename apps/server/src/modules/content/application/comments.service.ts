@@ -170,7 +170,10 @@ export class CommentsService {
     const ids = comments.map((comment) => comment.id);
     const viewerId = reader.viewerId;
     const [cards, reactions, viewerReactions, replies] = await Promise.all([
-      this.profiles.memberCards(comments.map((comment) => comment.authorId)),
+      this.profiles.memberCards(
+        comments.map((comment) => comment.authorId),
+        reader.viewerId,
+      ),
       this.content.reactionCounts('comment', ids),
       viewerId
         ? this.content.viewerReactions('comment', ids, viewerId)

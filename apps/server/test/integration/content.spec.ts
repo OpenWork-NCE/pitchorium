@@ -371,13 +371,21 @@ describe('content', () => {
     await kofi.agent.put(`/v1/posts/${post.id}/reaction`).send({ type: 'like' }).expect(404);
     const comments = await ama.agent.get(`/v1/posts/${post.id}/comments`).expect(200);
     expect(comments.body.items).toEqual([]);
+    // A blocked member is unknown to the author, like a handle nobody holds: plain text.
     const mention = await ama.agent
       .post('/v1/posts')
       .set('Idempotency-Key', 'mention-blocked')
       .send({ text: 'Merci @kofi-mensah' })
-      .expect(422);
-    expect(mention.body.code).toBe('CONTENT_MENTION_NOT_ALLOWED');
-    expect((await feedOf(awa)).items.map((item) => item.post.id)).toEqual([post.id]);
+      .expect(201);
+    expect(mention.body.mentions).toEqual([]);
+    // A third member mentioning Kofi: Ama does not see the mention, Awa does.
+    await awa.agent.put('/v1/network/follows/member/kofi-mensah').expect(200);
+    const third = await publish(awa, { text: 'Avec @kofi-mensah', visibility: 'members' });
+    const seenByAma = await ama.agent.get(`/v1/posts/${third.id}`).expect(200);
+    expect(seenByAma.body.mentions).toEqual([]);
+    const seenByAwa = await awa.agent.get(`/v1/posts/${third.id}`).expect(200);
+    expect(seenByAwa.body.mentions).toEqual([expect.objectContaining({ key: 'kofi-mensah' })]);
+    expect((await feedOf(awa)).items.map((item) => item.post.id)).toContain(post.id);
   });
 
   it('completes the feed of a member whose network produces too little with highlights', async () => {

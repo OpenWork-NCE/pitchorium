@@ -433,11 +433,14 @@ export class PostsService {
     return { kind: 'member', publicPageEnabled: visibility?.publicPageEnabled ?? false };
   }
 
-  /** Mentions resolved to stable identifiers; a member on either side of a block is refused. */
+  /**
+   * Mentions resolved to stable identifiers. A member on either side of a block is unknown to
+   * the author, like a handle nobody holds (ADR 0029): the token stays plain text.
+   */
   private async mentions(userId: string, text: string | null): Promise<ResolvedMention[]> {
     const keys = extractMentionKeys(text);
     if (keys.length === 0) return [];
-    const members = await this.profiles.userIdsByHandles(keys);
+    const members = await this.profiles.userIdsByHandles(keys, userId);
     const unresolved = keys.filter((key) => !members.has(key));
     const organizations = await this.organizations.idsBySlugs(unresolved);
     const resolved = resolveMentions(keys, members, organizations);
