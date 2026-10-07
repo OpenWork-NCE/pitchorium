@@ -2,9 +2,11 @@ import type { NestExpressApplication } from '@nestjs/platform-express';
 import type { TestingModule } from '@nestjs/testing';
 import sharp from 'sharp';
 import type { StartedTestContainer } from 'testcontainers';
-import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { MediaFacade, MediaModule } from '../../src/modules/media';
 import { MediaMaintenanceService } from '../../src/modules/media/application/media-maintenance.service';
+import { MediaProcessingService } from '../../src/modules/media/application/media-processing.service';
+import { MalwareScanner } from '../../src/modules/media/application/ports';
 import { OutboxRelayService } from '../../src/platform/outbox';
 import { ObjectStorage, StorageModule } from '../../src/platform/storage';
 import { createApiTestApp } from './support/api-app';
@@ -29,7 +31,11 @@ describe('media', () => {
     clamav = await startClamAv();
     process.env['CLAMAV_HOST'] = clamav.getHost();
     process.env['CLAMAV_PORT'] = String(clamav.getMappedPort(3310));
-    ({ app } = await createApiTestApp([], { MEDIA_QUOTA_MAX_FILES: '4' }, { storage: 'minio' }));
+    ({ app } = await createApiTestApp(
+      [],
+      { MEDIA_QUOTA_MAX_FILES: '4', MEDIA_UPLOAD_REQUESTS_PER_HOUR: '6' },
+      { storage: 'minio' },
+    ));
     worker = await createWorkerTestingModule([], [StorageModule, MediaModule.forWorker()]);
   }, 300_000);
 
@@ -177,6 +183,50 @@ describe('media', () => {
       .send({ usage: 'post_image', contentType: 'image/png', size: 1000 })
       .expect(422);
     expect(refused.body.code).toBe('MEDIA_QUOTA_EXCEEDED');
+  });
+
+  it('limits the upload requests of each member per hour', async () => {
+    // Deleting each pending upload keeps the quota free: only the hourly limit applies.
+    for (let index = 0; index < 6; index += 1) {
+      const ticket = await requestUpload(member.agent, 'post_image', 'image/png', 1000);
+      await member.agent.delete(`/v1/media/${ticket.media.id}`).expect(204);
+    }
+    const refused = await member.agent
+      .post('/v1/media/uploads')
+      .set('Idempotency-Key', 'hourly-limit')
+      .send({ usage: 'post_image', contentType: 'image/png', size: 1000 })
+      .expect(429);
+    expect(refused.body.code).toBe('RATE_LIMITED');
+
+    const other = await createMember(app, 'other-uploader@example.com');
+    await requestUpload(other.agent, 'post_image', 'image/png', 1000);
+  });
+
+  it('retries a failing processing, then rejects it with processing_failed on the last attempt', async () => {
+    const ticket = await requestUpload(
+      member.agent,
+      'post_image',
+      'image/png',
+      (await png(400, 400)).length,
+    );
+    expect((await putToStorage(ticket, await png(400, 400))).status).toBe(200);
+    await member.agent.post(`/v1/media/${ticket.media.id}/confirm`).expect(200);
+    vi.spyOn(worker.get(MalwareScanner), 'scan').mockRejectedValue(new Error('clamd is down'));
+    const processing = worker.get(MediaProcessingService);
+
+    await expect(processing.process(ticket.media.id, false)).rejects.toThrow('clamd is down');
+    expect((await member.agent.get(`/v1/media/${ticket.media.id}`)).body.status).toBe('processing');
+
+    await processing.process(ticket.media.id, true);
+    const media = (await member.agent.get(`/v1/media/${ticket.media.id}`).expect(200)).body;
+    expect(media).toMatchObject({ status: 'rejected', rejectionReason: 'processing_failed' });
+    const [rejected] = await query<{ payload: Record<string, unknown> }>(
+      `SELECT payload FROM platform.outbox_events
+       WHERE event_type = 'media.asset.rejected.v1' AND aggregate_id = $1`,
+      [ticket.media.id],
+    );
+    expect(rejected?.payload).toMatchObject({ reason: 'processing_failed' });
+    vi.restoreAllMocks();
   });
 
   it('deletes orphans and owner deletions logically, then purges their files', async () => {
