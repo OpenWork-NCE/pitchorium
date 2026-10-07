@@ -53,7 +53,7 @@ flowchart LR
   worker -.-> sentry
 ```
 
-Redis sert au rate limiting, à l'adaptateur Socket.IO et à BullMQ. Les traces et Sentry ne sont actifs que si `OTEL_EXPORTER_OTLP_ENDPOINT` ou `SENTRY_DSN` sont définis.
+Redis sert au rate limiting, à l'adaptateur Socket.IO et à BullMQ. Les traces, les métriques (port `Metrics` de `platform/observability`, compteurs OpenTelemetry exportés en OTLP) et Sentry ne sont actifs que si `OTEL_EXPORTER_OTLP_ENDPOINT` ou `SENTRY_DSN` sont définis.
 
 ## Flux d'une écriture avec outbox
 

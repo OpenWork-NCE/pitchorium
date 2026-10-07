@@ -10,9 +10,10 @@ import * as Sentry from '@sentry/node';
 let sdk: NodeSDK | undefined;
 
 /**
- * Must run before any instrumented library is loaded, hence the instrument-*.ts files imported
- * first by the entry points. Reads the raw environment because configuration validation has
- * not run yet; the same variables are validated afterwards.
+ * Traces and metrics (OTLP exporters by default, see OTEL_METRICS_EXPORTER) are enabled with
+ * OTEL_EXPORTER_OTLP_ENDPOINT. Must run before any instrumented library is loaded, hence the
+ * instrument-*.ts files imported first by the entry points. Reads the raw environment because
+ * configuration validation has not run yet; the same variables are validated afterwards.
  */
 export function startTelemetry(serviceName: string): void {
   const env = process.env;

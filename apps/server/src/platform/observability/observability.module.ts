@@ -3,6 +3,7 @@ import { LoggerModule } from 'nestjs-pino';
 import { type CommonConfig, COMMON_CONFIG } from '../config';
 import { resolveRequestId } from '../http/request-id';
 import { ErrorReporter, NoopErrorReporter, SentryErrorReporter } from './error-reporter';
+import { Metrics, OpenTelemetryMetrics } from './metrics';
 import { shutdownTelemetry } from './telemetry';
 
 @Global()
@@ -30,8 +31,9 @@ import { shutdownTelemetry } from './telemetry';
       useFactory: (config: CommonConfig): ErrorReporter =>
         config.sentry.dsn ? new SentryErrorReporter() : new NoopErrorReporter(),
     },
+    { provide: Metrics, useClass: OpenTelemetryMetrics },
   ],
-  exports: [ErrorReporter],
+  exports: [ErrorReporter, Metrics],
 })
 export class ObservabilityModule implements OnApplicationShutdown {
   async onApplicationShutdown(): Promise<void> {
