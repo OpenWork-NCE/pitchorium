@@ -27,6 +27,11 @@
     "infra:down": "docker compose -f infra/docker/compose.yaml down"
   },
   "devDependencies": {
+    "@pitchorium/config": "workspace:*",
+    "eslint": "10.12.0",
+    "prettier": "3.9.9",
     "turbo": "2.11.7"
-  }
+  },
+  "type": "module",
+  "prettier": "@pitchorium/config/prettier"
 }

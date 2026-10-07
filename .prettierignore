@@ -1,0 +1,7 @@
+pnpm-lock.yaml
+dist
+coverage
+docs/product/*.pdf
+packages/api-client/src/generated
+packages/db/migrations/meta
+apps/server/openapi/openapi.json

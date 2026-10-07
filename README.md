@@ -23,20 +23,20 @@ pnpm dev
 
 ## Scripts
 
-| Script | Rôle |
-| --- | --- |
-| `pnpm dev` | Lance l'api et le worker en mode watch |
-| `pnpm dev:api` / `pnpm dev:worker` | Lance un seul des deux processus |
-| `pnpm build` | Compile tous les packages et le serveur |
-| `pnpm lint` | ESLint, dont les règles de frontières entre modules |
-| `pnpm typecheck` | Vérification TypeScript sans émission |
-| `pnpm test` | Tests unitaires et tests HTTP sans dépendance externe |
-| `pnpm test:integration` | Tests d'intégration (Testcontainers, Docker requis) |
-| `pnpm format` / `pnpm format:check` | Prettier en écriture ou en vérification |
-| `pnpm db:generate` | Génère une migration Drizzle à partir des schémas |
-| `pnpm db:migrate` | Applique les migrations sur `DATABASE_URL` |
-| `pnpm db:seed` | Seed idempotent (feature flags) |
-| `pnpm db:check` | Vérifie la cohérence des migrations |
-| `pnpm openapi:generate` | Exporte `apps/server/openapi/openapi.json` sans démarrer de serveur |
-| `pnpm api-client:generate` | Régénère le client Orval à partir de l'OpenAPI |
-| `pnpm infra:up` / `pnpm infra:down` | Démarre ou arrête l'infrastructure locale |
+| Script                              | Rôle                                                                |
+| ----------------------------------- | ------------------------------------------------------------------- |
+| `pnpm dev`                          | Lance l'api et le worker en mode watch                              |
+| `pnpm dev:api` / `pnpm dev:worker`  | Lance un seul des deux processus                                    |
+| `pnpm build`                        | Compile tous les packages et le serveur                             |
+| `pnpm lint`                         | ESLint, dont les règles de frontières entre modules                 |
+| `pnpm typecheck`                    | Vérification TypeScript sans émission                               |
+| `pnpm test`                         | Tests unitaires et tests HTTP sans dépendance externe               |
+| `pnpm test:integration`             | Tests d'intégration (Testcontainers, Docker requis)                 |
+| `pnpm format` / `pnpm format:check` | Prettier en écriture ou en vérification                             |
+| `pnpm db:generate`                  | Génère une migration Drizzle à partir des schémas                   |
+| `pnpm db:migrate`                   | Applique les migrations sur `DATABASE_URL`                          |
+| `pnpm db:seed`                      | Seed idempotent (feature flags)                                     |
+| `pnpm db:check`                     | Vérifie la cohérence des migrations                                 |
+| `pnpm openapi:generate`             | Exporte `apps/server/openapi/openapi.json` sans démarrer de serveur |
+| `pnpm api-client:generate`          | Régénère le client Orval à partir de l'OpenAPI                      |
+| `pnpm infra:up` / `pnpm infra:down` | Démarre ou arrête l'infrastructure locale                           |
