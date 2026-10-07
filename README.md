@@ -60,6 +60,7 @@ pnpm dev
 - [Conventions](docs/architecture/conventions.md)
 - [Stockage objet et configuration Cloudflare R2](docs/architecture/storage.md)
 - [Graphe social et fil d'actualité](docs/architecture/social-graph-and-feed.md)
+- [Projets : cycle de vie et flux du financement](docs/architecture/projects-and-funding.md)
 - [Décisions d'architecture (ADR)](docs/adr/README.md)
 - [Questions ouvertes](docs/open-questions.md)
 - [Infrastructure locale](infra/docker/README.md), [serveur](apps/server/README.md), [base de données](packages/db/README.md), [i18n](packages/i18n/README.md), [emails](packages/emails/README.md), [client d'API](packages/api-client/README.md)

@@ -39,3 +39,9 @@ Un fichier par décision, numéroté, au format Contexte / Décision / Conséque
 | [0033](0033-link-previews-and-ssrf.md)                   | Aperçus de liens et protection anti-SSRF                     |
 | [0034](0034-post-statistics-hyperloglog.md)              | Statistiques de visibilité par HyperLogLog                   |
 | [0036](0036-versioned-impact-methodology.md)             | Méthodologie d'impact versionnée                             |
+| [0037](0037-campaign-label-currency.md)                  | Devise de libellé des campagnes                              |
+| [0038](0038-tiers-and-flexible-funding.md)               | Paliers cumulatifs et financement flexible                   |
+| [0039](0039-amounts-locked-after-contribution.md)        | Verrouillage des montants après la première contribution     |
+| [0040](0040-public-display-consent.md)                   | Consentement d'affichage public du porteur et de l'équipe    |
+| [0041](0041-reward-reservations.md)                      | Réservation des contreparties                                |
+| [0042](0042-embedded-video.md)                           | Vidéo intégrée des projets                                   |

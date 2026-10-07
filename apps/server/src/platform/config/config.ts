@@ -97,6 +97,8 @@ export interface WorkerConfig extends CommonConfig {
   /** Fixed interval replacing the cron pattern of every scheduled task (tests only). */
   scheduledTasks: { everyMs: number | undefined };
   content: { linkPreview: { timeoutMs: number; maxBytes: number } };
+  /** Delay before the end of a campaign that triggers « fin de campagne proche » (provisional). */
+  projects: { endingSoonMs: number };
   /** Purge of the CDN in front of the public bucket (ADR 0026). */
   cdn:
     | { provider: 'none' }
@@ -242,6 +244,7 @@ export function parseWorkerConfig(rawEnv: RawEnv): WorkerConfig {
         maxBytes: env.CONTENT_LINK_PREVIEW_MAX_BYTES,
       },
     },
+    projects: { endingSoonMs: env.PROJECTS_ENDING_SOON_HOURS * 3_600_000 },
     cdn:
       env.CDN_PURGE_PROVIDER === 'cloudflare'
         ? {

@@ -9,7 +9,7 @@ On suit un membre ou une organisation (§10.2), et bientôt un projet (§10.5 «
 ## Décision
 
 - Une seule table `network.follows` : abonné, `target_type` (texte), `target_id` (UUID), origine, date. Clé primaire sur les trois premiers.
-- Registre de types (`FollowTargetRegistry`) : chaque module propriétaire enregistre au démarrage un `FollowTargetType` par la façade de network (`registerFollowTargetType`) : `resolve(clé publique)` valide la cible par sa propre façade, `describe(ids)` donne le nom, le sous-titre et l'image. network enregistre `member`, organizations enregistre `organization`, projects enregistrera `project`.
+- Registre de types (`FollowTargetRegistry`) : chaque module propriétaire enregistre au démarrage un `FollowTargetType` par la façade de network (`registerFollowTargetType`) : `resolve(clé publique)` valide la cible par sa propre façade, `describe(ids)` donne le nom, le sous-titre et l'image. network enregistre `member`, organizations enregistre `organization`, projects enregistre `project`.
 - L'API adresse une cible par `{targetType}/{targetKey}` (identifiant public d'un membre, identifiant d'une organisation) ; un type non enregistré répond 404 comme une cible inconnue. Le type est une chaîne contrôlée par un motif dans le contrat, pas une énumération : un nouveau type ne casse pas le client généré.
 - Les règles propres aux membres (soi-même, blocages) sont appliquées par network pour le type `member`.
 

@@ -30,7 +30,7 @@ Pages organisation (cahier des charges §5, §10.7, §13) : fondations, entrepri
 
 - `GET /v1/public/organizations/{slug}` : sans compte, `Cache-Control: public, max-age=60` ; seuls les membres dont la page publique de profil est activée sont listés.
 - `GET /v1/organizations/by-slug/{slug}` : membres connectés ; tous les membres, avec le rôle du lecteur (`viewerRole`).
-- Projets portés et soutenus : `projects.carried` et `projects.supported`, fournis par les modules projects et payments via `registerProjectsProvider` ; vides tant qu'aucun fournisseur n'est enregistré.
+- Projets portés et soutenus : `projects.carried` et `projects.supported`, fournis par les modules projects et payments via `registerProjectsProvider` ; le module projects donne les projets publiés et visibles portés par l'organisation, les projets soutenus restent vides jusqu'au module payments.
 
 ## Routes
 

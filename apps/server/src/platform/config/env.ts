@@ -105,6 +105,7 @@ const workerEnvSchema = commonEnvSchema.extend({
   SCHEDULED_TASKS_EVERY_MS: z.coerce.number().int().min(100).optional(),
   CONTENT_LINK_PREVIEW_TIMEOUT_MS: z.coerce.number().int().positive().default(5000),
   CONTENT_LINK_PREVIEW_MAX_BYTES: z.coerce.number().int().positive().default(1_048_576),
+  PROJECTS_ENDING_SOON_HOURS: z.coerce.number().int().min(1).max(2160).default(72),
   CDN_PURGE_PROVIDER: z.enum(['none', 'cloudflare']).default('none'),
   CLOUDFLARE_ZONE_ID: z
     .string()

@@ -36,6 +36,16 @@ Informations nécessaires au développement et absentes du cahier des charges (d
 42. Le seuil du complément éditorial du fil (provisoirement 10 publications du réseau, `CONTENT_FEED_EDITORIAL_THRESHOLD`) et la composition de l'équipe éditoriale qui met en avant (aujourd'hui les rôles `moderator` et `admin` avec double authentification ; voir aussi la question 6).
 43. La longueur maximale d'un commentaire (provisoirement 1 250 caractères) et le nombre maximal de mentions par publication (provisoirement 20).
 
+## Projets
+
+44. L'interprétation des « paliers indépendants » (§2.1) : provisoirement des seuils cumulatifs strictement croissants dont le dernier est l'objectif, chaque palier débloqué dès que le collecté atteint son seuil (ADR 0038).
+45. Le financement flexible : provisoirement, à l'échéance, les paliers atteints restent acquis et rien n'est remboursé automatiquement, que l'objectif soit atteint ou non (voir aussi la question 12) ; un retour de `funded` à `funding` a lieu si une annulation repasse sous l'objectif avant l'échéance.
+46. La prolongation d'une campagne : aucune aujourd'hui, la date de fin est fixée à la publication.
+47. Le dépassement de l'objectif : accepté sans plafond, le projet reste ouvert jusqu'à sa date de fin.
+48. Le délai de l'événement « fin de campagne proche » (provisoirement 72 heures, `PROJECTS_ENDING_SOON_HOURS`).
+49. Les limites des champs d'un projet (titre 120, résumé 300, description 20 000, zone d'impact 200, 10 pays, galerie de 20 images, 10 documents, actualité de 5 000 caractères avec 6 images, message d'intérêt de 2 000 caractères avec 3 PDF) et le sous-ensemble Markdown de la description (`apps/server/src/modules/projects/README.md`).
+50. La durée de validité d'une réservation de contrepartie non confirmée, à fixer avec le module payments selon le délai de paiement des prestataires.
+
 ## Organisations
 
 36. Les critères de vérification d'une organisation (pièces exigées par type de structure et par pays, contrôles du modérateur) et le processus de validation : le flux est en place avec une liste de critères configurable (`ORGANIZATIONS_VERIFICATION_CRITERIA`), vide par défaut (§13, §14).
@@ -44,7 +54,7 @@ Informations nécessaires au développement et absentes du cahier des charges (d
 
 ## Paiements
 
-7. La devise de libellé d'une campagne (EUR uniquement, devise du porteur, ou au choix) ; l'objectif est exprimé en euros au §11.1.
+7. La devise de libellé d'une campagne (EUR uniquement, devise du porteur, ou au choix) ; l'objectif est exprimé en euros au §11.1. Provisoirement l'euro, la devise étant stockée avec chaque montant (ADR 0037).
 8. La gestion du change : qui le porte, à quel taux, à quel moment, et son affichage au contributeur et au porteur.
 9. La couverture pays et devises de Flutterwave et de Stripe Connect à retenir : pays des porteurs, pays des contributeurs, moyens de paiement par pays.
 10. Le choix final du prestataire d'encaissement (option A ou B du §15) et le recours éventuel à Mangopay ou Lemonway pour le séquestre.
