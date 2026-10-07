@@ -114,6 +114,20 @@ export const ActionPrerequisitesDtoOutputAction = {
   accessrolesread: 'access.roles.read',
   accessrolesmanage: 'access.roles.manage',
   projectpublish: 'project.publish',
+  mediaupload: 'media.upload',
+  mediaread: 'media.read',
+  mediadelete: 'media.delete',
+  organizationread: 'organization.read',
+  organizationcreate: 'organization.create',
+  organizationupdate: 'organization.update',
+  organizationdelete: 'organization.delete',
+  organizationmemberinvite: 'organization.member.invite',
+  organizationmembermanage: 'organization.member.manage',
+  organizationmemberleave: 'organization.member.leave',
+  organizationownershiptransfer: 'organization.ownership.transfer',
+  organizationinvitationrespond: 'organization.invitation.respond',
+  organizationverificationrequest: 'organization.verification.request',
+  organizationverificationreview: 'organization.verification.review',
 } as const;
 
 export type ActionPrerequisitesDtoOutputCode =
@@ -148,6 +162,30 @@ export const ActionPrerequisitesDtoOutputCode = {
   PROFILES_CONTRIBUTOR_HAT_REQUIRED: 'PROFILES_CONTRIBUTOR_HAT_REQUIRED',
   PROFILES_TICKET_RANGE_INVALID: 'PROFILES_TICKET_RANGE_INVALID',
   PROFILES_UNKNOWN_REFERENCE: 'PROFILES_UNKNOWN_REFERENCE',
+  MEDIA_NOT_FOUND: 'MEDIA_NOT_FOUND',
+  MEDIA_TYPE_NOT_ALLOWED: 'MEDIA_TYPE_NOT_ALLOWED',
+  MEDIA_TOO_LARGE: 'MEDIA_TOO_LARGE',
+  MEDIA_QUOTA_EXCEEDED: 'MEDIA_QUOTA_EXCEEDED',
+  MEDIA_UPLOAD_MISSING: 'MEDIA_UPLOAD_MISSING',
+  MEDIA_INVALID_STATE: 'MEDIA_INVALID_STATE',
+  MEDIA_NOT_READY: 'MEDIA_NOT_READY',
+  MEDIA_USAGE_MISMATCH: 'MEDIA_USAGE_MISMATCH',
+  MEDIA_LIMIT_REACHED: 'MEDIA_LIMIT_REACHED',
+  MEDIA_ATTACHED: 'MEDIA_ATTACHED',
+  PROFILES_ORGANIZATION_NOT_ALLOWED: 'PROFILES_ORGANIZATION_NOT_ALLOWED',
+  ORGANIZATIONS_NOT_FOUND: 'ORGANIZATIONS_NOT_FOUND',
+  ORGANIZATIONS_SLUG_TAKEN: 'ORGANIZATIONS_SLUG_TAKEN',
+  ORGANIZATIONS_SLUG_RESERVED: 'ORGANIZATIONS_SLUG_RESERVED',
+  ORGANIZATIONS_CREATION_LIMIT_REACHED: 'ORGANIZATIONS_CREATION_LIMIT_REACHED',
+  ORGANIZATIONS_MEMBER_NOT_FOUND: 'ORGANIZATIONS_MEMBER_NOT_FOUND',
+  ORGANIZATIONS_ALREADY_MEMBER: 'ORGANIZATIONS_ALREADY_MEMBER',
+  ORGANIZATIONS_LAST_OWNER: 'ORGANIZATIONS_LAST_OWNER',
+  ORGANIZATIONS_ROLE_CHANGE_FORBIDDEN: 'ORGANIZATIONS_ROLE_CHANGE_FORBIDDEN',
+  ORGANIZATIONS_INVITATION_INVALID: 'ORGANIZATIONS_INVITATION_INVALID',
+  ORGANIZATIONS_INVITATION_EMAIL_MISMATCH: 'ORGANIZATIONS_INVITATION_EMAIL_MISMATCH',
+  ORGANIZATIONS_VERIFICATION_INVALID_STATE: 'ORGANIZATIONS_VERIFICATION_INVALID_STATE',
+  ORGANIZATIONS_VERIFICATION_REQUEST_NOT_FOUND: 'ORGANIZATIONS_VERIFICATION_REQUEST_NOT_FOUND',
+  ORGANIZATIONS_VERIFICATION_CRITERION_UNKNOWN: 'ORGANIZATIONS_VERIFICATION_CRITERION_UNKNOWN',
   INTERNAL_ERROR: 'INTERNAL_ERROR',
   SERVICE_UNAVAILABLE: 'SERVICE_UNAVAILABLE',
 } as const;
@@ -471,6 +509,7 @@ export type OwnProfileDtoOutputContributor = {
   hats: OwnProfileDtoOutputContributorHatsItem[];
   structureType: OwnProfileDtoOutputContributorStructureType;
   organizationName: string | null;
+  organizationId: string | null;
   /**
    * @maxItems 300
    * @items.pattern ^[A-Z]{2}$
@@ -488,6 +527,13 @@ export type OwnProfileDtoOutputContributor = {
   patronageTypes: OwnProfileDtoOutputContributorPatronageTypesItem[];
   mentoringAvailable: boolean;
   openToExpertMissions: boolean;
+} | null;
+
+export type OwnProfileDtoOutputContributorOrganization = {
+  id: string;
+  slug: string;
+  name: string;
+  verified: boolean;
 } | null;
 
 export type OwnProfileDtoOutputIntention =
@@ -581,10 +627,12 @@ export interface OwnProfileDtoOutput {
   links: OwnProfileDtoOutputLinks;
   avatarUrl: string[];
   avatarMediaId: string[];
+  coverUrl: string[];
   coverMediaId: string[];
   facets: OwnProfileDtoOutputFacets;
   entrepreneur: OwnProfileDtoOutputEntrepreneur;
   contributor: OwnProfileDtoOutputContributor;
+  contributorOrganization: OwnProfileDtoOutputContributorOrganization;
   userId: string;
   intention: OwnProfileDtoOutputIntention;
   visibility: OwnProfileDtoOutputVisibility;
@@ -668,6 +716,11 @@ export interface UpdateVisibilityDto {
   entrepreneurDetails?: UpdateVisibilityDtoEntrepreneurDetails;
   contributorDetails?: UpdateVisibilityDtoContributorDetails;
   networkLists?: UpdateVisibilityDtoNetworkLists;
+}
+
+export interface AttachMediaDto {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  mediaId: string;
 }
 
 export type CreateEntrepreneurFacetDtoNeedsItem =
@@ -823,6 +876,7 @@ export interface CreateContributorFacetDto {
   hats: CreateContributorFacetDtoHatsItem[];
   structureType: CreateContributorFacetDtoStructureType;
   organizationName?: string | null;
+  organizationId?: string | null;
   /**
    * @maxItems 300
    * @items.pattern ^[A-Z]{2}$
@@ -903,6 +957,7 @@ export interface UpdateContributorFacetDto {
   hats?: UpdateContributorFacetDtoHatsItem[];
   structureType?: UpdateContributorFacetDtoStructureType;
   organizationName?: string | null;
+  organizationId?: string | null;
   /**
    * @maxItems 300
    * @items.pattern ^[A-Z]{2}$
@@ -1039,6 +1094,7 @@ export type ProfileViewDtoOutputContributor = {
   hats: ProfileViewDtoOutputContributorHatsItem[];
   structureType: ProfileViewDtoOutputContributorStructureType;
   organizationName: string | null;
+  organizationId: string | null;
   /**
    * @maxItems 300
    * @items.pattern ^[A-Z]{2}$
@@ -1058,6 +1114,13 @@ export type ProfileViewDtoOutputContributor = {
   openToExpertMissions: boolean;
 } | null;
 
+export type ProfileViewDtoOutputContributorOrganization = {
+  id: string;
+  slug: string;
+  name: string;
+  verified: boolean;
+} | null;
+
 export interface ProfileViewDtoOutput {
   /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
   handle: string;
@@ -1070,10 +1133,12 @@ export interface ProfileViewDtoOutput {
   links: ProfileViewDtoOutputLinks;
   avatarUrl: string[];
   avatarMediaId: string[];
+  coverUrl: string[];
   coverMediaId: string[];
   facets: ProfileViewDtoOutputFacets;
   entrepreneur: ProfileViewDtoOutputEntrepreneur;
   contributor: ProfileViewDtoOutputContributor;
+  contributorOrganization: ProfileViewDtoOutputContributorOrganization;
 }
 
 export type ReferenceDataDtoOutputCountriesItem = {
@@ -1145,6 +1210,827 @@ export interface ReferenceDataDtoOutput {
   entrepreneurNeeds: ReferenceDataDtoOutputEntrepreneurNeedsItem[];
 }
 
+export type MediaUsagesDtoOutputItemsItemUsage =
+  (typeof MediaUsagesDtoOutputItemsItemUsage)[keyof typeof MediaUsagesDtoOutputItemsItemUsage];
+
+export const MediaUsagesDtoOutputItemsItemUsage = {
+  avatar: 'avatar',
+  profile_cover: 'profile_cover',
+  organization_logo: 'organization_logo',
+  organization_cover: 'organization_cover',
+  post_image: 'post_image',
+  post_document: 'post_document',
+  project_gallery: 'project_gallery',
+  project_document: 'project_document',
+  message_attachment: 'message_attachment',
+  verification_document: 'verification_document',
+} as const;
+
+export type MediaUsagesDtoOutputItemsItemContentTypesItem =
+  (typeof MediaUsagesDtoOutputItemsItemContentTypesItem)[keyof typeof MediaUsagesDtoOutputItemsItemContentTypesItem];
+
+export const MediaUsagesDtoOutputItemsItemContentTypesItem = {
+  'image/jpeg': 'image/jpeg',
+  'image/png': 'image/png',
+  'image/webp': 'image/webp',
+  'application/pdf': 'application/pdf',
+} as const;
+
+export type MediaUsagesDtoOutputItemsItemVisibility =
+  (typeof MediaUsagesDtoOutputItemsItemVisibility)[keyof typeof MediaUsagesDtoOutputItemsItemVisibility];
+
+export const MediaUsagesDtoOutputItemsItemVisibility = {
+  public: 'public',
+  private: 'private',
+} as const;
+
+export type MediaUsagesDtoOutputItemsItem = {
+  usage: MediaUsagesDtoOutputItemsItemUsage;
+  contentTypes: MediaUsagesDtoOutputItemsItemContentTypesItem[];
+  /**
+   * @maximum 9007199254740991
+   * @exclusiveMinimum 0
+   */
+  maxBytes: number;
+  minWidth: number | null;
+  minHeight: number | null;
+  maxWidth: number | null;
+  maxHeight: number | null;
+  maxPages: number | null;
+  /**
+   * @maximum 9007199254740991
+   * @exclusiveMinimum 0
+   */
+  maxPerResource: number;
+  visibility: MediaUsagesDtoOutputItemsItemVisibility;
+};
+
+export interface MediaUsagesDtoOutput {
+  items: MediaUsagesDtoOutputItemsItem[];
+}
+
+export type CreateUploadDtoUsage = (typeof CreateUploadDtoUsage)[keyof typeof CreateUploadDtoUsage];
+
+export const CreateUploadDtoUsage = {
+  avatar: 'avatar',
+  profile_cover: 'profile_cover',
+  organization_logo: 'organization_logo',
+  organization_cover: 'organization_cover',
+  post_image: 'post_image',
+  post_document: 'post_document',
+  project_gallery: 'project_gallery',
+  project_document: 'project_document',
+  message_attachment: 'message_attachment',
+  verification_document: 'verification_document',
+} as const;
+
+export type CreateUploadDtoContentType =
+  (typeof CreateUploadDtoContentType)[keyof typeof CreateUploadDtoContentType];
+
+export const CreateUploadDtoContentType = {
+  'image/jpeg': 'image/jpeg',
+  'image/png': 'image/png',
+  'image/webp': 'image/webp',
+  'application/pdf': 'application/pdf',
+} as const;
+
+export interface CreateUploadDto {
+  usage: CreateUploadDtoUsage;
+  contentType: CreateUploadDtoContentType;
+  /**
+   * @maximum 9007199254740991
+   * @exclusiveMinimum 0
+   */
+  size: number;
+}
+
+export type UploadTicketDtoOutputMediaUsage =
+  (typeof UploadTicketDtoOutputMediaUsage)[keyof typeof UploadTicketDtoOutputMediaUsage];
+
+export const UploadTicketDtoOutputMediaUsage = {
+  avatar: 'avatar',
+  profile_cover: 'profile_cover',
+  organization_logo: 'organization_logo',
+  organization_cover: 'organization_cover',
+  post_image: 'post_image',
+  post_document: 'post_document',
+  project_gallery: 'project_gallery',
+  project_document: 'project_document',
+  message_attachment: 'message_attachment',
+  verification_document: 'verification_document',
+} as const;
+
+export type UploadTicketDtoOutputMediaStatus =
+  (typeof UploadTicketDtoOutputMediaStatus)[keyof typeof UploadTicketDtoOutputMediaStatus];
+
+export const UploadTicketDtoOutputMediaStatus = {
+  pending: 'pending',
+  processing: 'processing',
+  ready: 'ready',
+  rejected: 'rejected',
+  deleted: 'deleted',
+} as const;
+
+export type UploadTicketDtoOutputMediaVisibility =
+  (typeof UploadTicketDtoOutputMediaVisibility)[keyof typeof UploadTicketDtoOutputMediaVisibility];
+
+export const UploadTicketDtoOutputMediaVisibility = {
+  public: 'public',
+  private: 'private',
+} as const;
+
+export type UploadTicketDtoOutputMediaContentType =
+  (typeof UploadTicketDtoOutputMediaContentType)[keyof typeof UploadTicketDtoOutputMediaContentType];
+
+export const UploadTicketDtoOutputMediaContentType = {
+  'image/jpeg': 'image/jpeg',
+  'image/png': 'image/png',
+  'image/webp': 'image/webp',
+  'application/pdf': 'application/pdf',
+} as const;
+
+export type UploadTicketDtoOutputMediaRejectionReason =
+  | (typeof UploadTicketDtoOutputMediaRejectionReason)[keyof typeof UploadTicketDtoOutputMediaRejectionReason]
+  | null;
+
+export const UploadTicketDtoOutputMediaRejectionReason = {
+  upload_missing: 'upload_missing',
+  type_not_allowed: 'type_not_allowed',
+  type_mismatch: 'type_mismatch',
+  size_exceeded: 'size_exceeded',
+  malware_detected: 'malware_detected',
+  image_unreadable: 'image_unreadable',
+  image_too_small: 'image_too_small',
+  image_too_large: 'image_too_large',
+  pdf_unreadable: 'pdf_unreadable',
+  pdf_too_many_pages: 'pdf_too_many_pages',
+  import_failed: 'import_failed',
+  processing_failed: 'processing_failed',
+} as const;
+
+export type UploadTicketDtoOutputMediaVariants = {
+  [key: string]: {
+    /**
+     * @minimum -9007199254740991
+     * @maximum 9007199254740991
+     */
+    width: number;
+    /**
+     * @minimum -9007199254740991
+     * @maximum 9007199254740991
+     */
+    height: number;
+    /** @nullable */
+    webp: string | null;
+    /** @nullable */
+    avif: string | null;
+  };
+};
+
+export type UploadTicketDtoOutputMedia = {
+  id: string;
+  usage: UploadTicketDtoOutputMediaUsage;
+  status: UploadTicketDtoOutputMediaStatus;
+  visibility: UploadTicketDtoOutputMediaVisibility;
+  contentType: UploadTicketDtoOutputMediaContentType;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  size: number;
+  width: number | null;
+  height: number | null;
+  pageCount: number | null;
+  rejectionReason: UploadTicketDtoOutputMediaRejectionReason;
+  variants: UploadTicketDtoOutputMediaVariants;
+  /** @nullable */
+  fileUrl: string | null;
+  attached: boolean;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+};
+
+export type UploadTicketDtoOutputUploadHeaders = { [key: string]: string };
+
+export type UploadTicketDtoOutputUpload = {
+  method: 'PUT';
+  url: string;
+  headers: UploadTicketDtoOutputUploadHeaders;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  expiresAt: string;
+};
+
+export interface UploadTicketDtoOutput {
+  media: UploadTicketDtoOutputMedia;
+  upload: UploadTicketDtoOutputUpload;
+}
+
+export type MediaAssetDtoOutputUsage =
+  (typeof MediaAssetDtoOutputUsage)[keyof typeof MediaAssetDtoOutputUsage];
+
+export const MediaAssetDtoOutputUsage = {
+  avatar: 'avatar',
+  profile_cover: 'profile_cover',
+  organization_logo: 'organization_logo',
+  organization_cover: 'organization_cover',
+  post_image: 'post_image',
+  post_document: 'post_document',
+  project_gallery: 'project_gallery',
+  project_document: 'project_document',
+  message_attachment: 'message_attachment',
+  verification_document: 'verification_document',
+} as const;
+
+export type MediaAssetDtoOutputStatus =
+  (typeof MediaAssetDtoOutputStatus)[keyof typeof MediaAssetDtoOutputStatus];
+
+export const MediaAssetDtoOutputStatus = {
+  pending: 'pending',
+  processing: 'processing',
+  ready: 'ready',
+  rejected: 'rejected',
+  deleted: 'deleted',
+} as const;
+
+export type MediaAssetDtoOutputVisibility =
+  (typeof MediaAssetDtoOutputVisibility)[keyof typeof MediaAssetDtoOutputVisibility];
+
+export const MediaAssetDtoOutputVisibility = {
+  public: 'public',
+  private: 'private',
+} as const;
+
+export type MediaAssetDtoOutputContentType =
+  (typeof MediaAssetDtoOutputContentType)[keyof typeof MediaAssetDtoOutputContentType];
+
+export const MediaAssetDtoOutputContentType = {
+  'image/jpeg': 'image/jpeg',
+  'image/png': 'image/png',
+  'image/webp': 'image/webp',
+  'application/pdf': 'application/pdf',
+} as const;
+
+export type MediaAssetDtoOutputRejectionReason =
+  | (typeof MediaAssetDtoOutputRejectionReason)[keyof typeof MediaAssetDtoOutputRejectionReason]
+  | null;
+
+export const MediaAssetDtoOutputRejectionReason = {
+  upload_missing: 'upload_missing',
+  type_not_allowed: 'type_not_allowed',
+  type_mismatch: 'type_mismatch',
+  size_exceeded: 'size_exceeded',
+  malware_detected: 'malware_detected',
+  image_unreadable: 'image_unreadable',
+  image_too_small: 'image_too_small',
+  image_too_large: 'image_too_large',
+  pdf_unreadable: 'pdf_unreadable',
+  pdf_too_many_pages: 'pdf_too_many_pages',
+  import_failed: 'import_failed',
+  processing_failed: 'processing_failed',
+} as const;
+
+export type MediaAssetDtoOutputVariants = {
+  [key: string]: {
+    /**
+     * @minimum -9007199254740991
+     * @maximum 9007199254740991
+     */
+    width: number;
+    /**
+     * @minimum -9007199254740991
+     * @maximum 9007199254740991
+     */
+    height: number;
+    /** @nullable */
+    webp: string | null;
+    /** @nullable */
+    avif: string | null;
+  };
+};
+
+export interface MediaAssetDtoOutput {
+  id: string;
+  usage: MediaAssetDtoOutputUsage;
+  status: MediaAssetDtoOutputStatus;
+  visibility: MediaAssetDtoOutputVisibility;
+  contentType: MediaAssetDtoOutputContentType;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  size: number;
+  width: number | null;
+  height: number | null;
+  pageCount: number | null;
+  rejectionReason: MediaAssetDtoOutputRejectionReason;
+  variants: MediaAssetDtoOutputVariants;
+  fileUrl: string[];
+  attached: boolean;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+}
+
+export interface MediaDownloadDtoOutput {
+  url: string;
+  expiresAt: string | null;
+}
+
+export type CreateOrganizationDtoStructureType =
+  (typeof CreateOrganizationDtoStructureType)[keyof typeof CreateOrganizationDtoStructureType];
+
+export const CreateOrganizationDtoStructureType = {
+  individual: 'individual',
+  company: 'company',
+  ngo_association: 'ngo_association',
+  foundation: 'foundation',
+  institution: 'institution',
+  international_organization: 'international_organization',
+  cooperative: 'cooperative',
+} as const;
+
+export interface CreateOrganizationDto {
+  /**
+   * @minLength 2
+   * @maxLength 160
+   */
+  name: string;
+  structureType: CreateOrganizationDtoStructureType;
+  /**
+   * @minItems 1
+   * @maxItems 60
+   * @items.pattern ^[A-Z]{2}$
+   */
+  countryCodes: string[];
+  description?: string | null;
+  /**
+   * @minItems 0
+   * @maxItems 21
+   * @items.pattern ^[a-z0-9_]{1,48}$
+   */
+  sectorCodes?: string[];
+  websiteUrl?: string | null;
+  foundedYear?: number | null;
+}
+
+export type OrganizationDtoOutputStructureType =
+  (typeof OrganizationDtoOutputStructureType)[keyof typeof OrganizationDtoOutputStructureType];
+
+export const OrganizationDtoOutputStructureType = {
+  individual: 'individual',
+  company: 'company',
+  ngo_association: 'ngo_association',
+  foundation: 'foundation',
+  institution: 'institution',
+  international_organization: 'international_organization',
+  cooperative: 'cooperative',
+} as const;
+
+export type OrganizationDtoOutputVerificationStatus =
+  (typeof OrganizationDtoOutputVerificationStatus)[keyof typeof OrganizationDtoOutputVerificationStatus];
+
+export const OrganizationDtoOutputVerificationStatus = {
+  unverified: 'unverified',
+  pending: 'pending',
+  verified: 'verified',
+  rejected: 'rejected',
+  revoked: 'revoked',
+} as const;
+
+export type OrganizationDtoOutputVerification = {
+  status: OrganizationDtoOutputVerificationStatus;
+  verified: boolean;
+  verifiedAt: string | null;
+};
+
+export type OrganizationDtoOutputMembersItemRole =
+  (typeof OrganizationDtoOutputMembersItemRole)[keyof typeof OrganizationDtoOutputMembersItemRole];
+
+export const OrganizationDtoOutputMembersItemRole = {
+  owner: 'owner',
+  admin: 'admin',
+  member: 'member',
+} as const;
+
+export type OrganizationDtoOutputMembersItem = {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  displayName: string;
+  /** @nullable */
+  headline: string | null;
+  /** @nullable */
+  avatarUrl: string | null;
+  role: OrganizationDtoOutputMembersItemRole;
+};
+
+export type OrganizationDtoOutputProjectsCarriedItem = {
+  projectId: string;
+  slug: string;
+  title: string;
+};
+
+export type OrganizationDtoOutputProjectsSupportedItem = {
+  projectId: string;
+  slug: string;
+  title: string;
+};
+
+export type OrganizationDtoOutputProjects = {
+  carried: OrganizationDtoOutputProjectsCarriedItem[];
+  supported: OrganizationDtoOutputProjectsSupportedItem[];
+};
+
+export type OrganizationDtoOutputViewerRole =
+  (typeof OrganizationDtoOutputViewerRole)[keyof typeof OrganizationDtoOutputViewerRole] | null;
+
+export const OrganizationDtoOutputViewerRole = {
+  owner: 'owner',
+  admin: 'admin',
+  member: 'member',
+} as const;
+
+export interface OrganizationDtoOutput {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,59}$ */
+  slug: string;
+  name: string;
+  structureType: OrganizationDtoOutputStructureType;
+  description: string[];
+  /** @items.pattern ^[A-Z]{2}$ */
+  countryCodes: string[];
+  sectorCodes: string[];
+  websiteUrl: string[];
+  foundedYear: number | null;
+  logoUrl: string[];
+  logoMediaId: string[];
+  coverUrl: string[];
+  coverMediaId: string[];
+  verification: OrganizationDtoOutputVerification;
+  members: OrganizationDtoOutputMembersItem[];
+  projects: OrganizationDtoOutputProjects;
+  viewerRole: OrganizationDtoOutputViewerRole;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+}
+
+export type MyOrganizationsDtoOutputItemsItemRole =
+  (typeof MyOrganizationsDtoOutputItemsItemRole)[keyof typeof MyOrganizationsDtoOutputItemsItemRole];
+
+export const MyOrganizationsDtoOutputItemsItemRole = {
+  owner: 'owner',
+  admin: 'admin',
+  member: 'member',
+} as const;
+
+export type MyOrganizationsDtoOutputItemsItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,59}$ */
+  slug: string;
+  name: string;
+  /** @nullable */
+  logoUrl: string | null;
+  verified: boolean;
+  role: MyOrganizationsDtoOutputItemsItemRole;
+};
+
+export interface MyOrganizationsDtoOutput {
+  items: MyOrganizationsDtoOutputItemsItem[];
+}
+
+export type UpdateOrganizationDtoStructureType =
+  (typeof UpdateOrganizationDtoStructureType)[keyof typeof UpdateOrganizationDtoStructureType];
+
+export const UpdateOrganizationDtoStructureType = {
+  individual: 'individual',
+  company: 'company',
+  ngo_association: 'ngo_association',
+  foundation: 'foundation',
+  institution: 'institution',
+  international_organization: 'international_organization',
+  cooperative: 'cooperative',
+} as const;
+
+export interface UpdateOrganizationDto {
+  /**
+   * @minLength 2
+   * @maxLength 160
+   */
+  name?: string;
+  structureType?: UpdateOrganizationDtoStructureType;
+  description?: string | null;
+  /**
+   * @minItems 1
+   * @maxItems 60
+   * @items.pattern ^[A-Z]{2}$
+   */
+  countryCodes?: string[];
+  /**
+   * @minItems 0
+   * @maxItems 21
+   * @items.pattern ^[a-z0-9_]{1,48}$
+   */
+  sectorCodes?: string[];
+  websiteUrl?: string | null;
+  foundedYear?: number | null;
+}
+
+export interface ChangeSlugDto {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,59}$ */
+  slug: string;
+}
+
+export type ChangeRoleDtoRole = (typeof ChangeRoleDtoRole)[keyof typeof ChangeRoleDtoRole];
+
+export const ChangeRoleDtoRole = {
+  owner: 'owner',
+  admin: 'admin',
+  member: 'member',
+} as const;
+
+export interface ChangeRoleDto {
+  role: ChangeRoleDtoRole;
+}
+
+export interface TransferOwnershipDto {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  userId: string;
+}
+
+export type CreateInvitationDtoRole =
+  (typeof CreateInvitationDtoRole)[keyof typeof CreateInvitationDtoRole];
+
+export const CreateInvitationDtoRole = {
+  admin: 'admin',
+  member: 'member',
+} as const;
+
+export interface CreateInvitationDto {
+  /**
+   * @maxLength 254
+   * @pattern ^(?:[A-Za-z0-9_'+\-]+\.)*[A-Za-z0-9_'+\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\-]*\.)+[A-Za-z]{2,}$
+   */
+  email: string;
+  role: CreateInvitationDtoRole;
+}
+
+export type InvitationDtoOutputRole =
+  (typeof InvitationDtoOutputRole)[keyof typeof InvitationDtoOutputRole];
+
+export const InvitationDtoOutputRole = {
+  admin: 'admin',
+  member: 'member',
+} as const;
+
+export type InvitationDtoOutputStatus =
+  (typeof InvitationDtoOutputStatus)[keyof typeof InvitationDtoOutputStatus];
+
+export const InvitationDtoOutputStatus = {
+  pending: 'pending',
+  accepted: 'accepted',
+  declined: 'declined',
+  revoked: 'revoked',
+  expired: 'expired',
+} as const;
+
+export interface InvitationDtoOutput {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  organizationId: string;
+  email: string;
+  role: InvitationDtoOutputRole;
+  status: InvitationDtoOutputStatus;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  expiresAt: string;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+}
+
+export type InvitationsDtoOutputItemsItemRole =
+  (typeof InvitationsDtoOutputItemsItemRole)[keyof typeof InvitationsDtoOutputItemsItemRole];
+
+export const InvitationsDtoOutputItemsItemRole = {
+  admin: 'admin',
+  member: 'member',
+} as const;
+
+export type InvitationsDtoOutputItemsItemStatus =
+  (typeof InvitationsDtoOutputItemsItemStatus)[keyof typeof InvitationsDtoOutputItemsItemStatus];
+
+export const InvitationsDtoOutputItemsItemStatus = {
+  pending: 'pending',
+  accepted: 'accepted',
+  declined: 'declined',
+  revoked: 'revoked',
+  expired: 'expired',
+} as const;
+
+export type InvitationsDtoOutputItemsItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  organizationId: string;
+  email: string;
+  role: InvitationsDtoOutputItemsItemRole;
+  status: InvitationsDtoOutputItemsItemStatus;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  expiresAt: string;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+};
+
+export interface InvitationsDtoOutput {
+  items: InvitationsDtoOutputItemsItem[];
+}
+
+export interface InvitationTokenDto {
+  /** @pattern ^[A-Za-z0-9_-]{43}$ */
+  token: string;
+}
+
+export type MyOrganizationDtoOutputRole =
+  (typeof MyOrganizationDtoOutputRole)[keyof typeof MyOrganizationDtoOutputRole];
+
+export const MyOrganizationDtoOutputRole = {
+  owner: 'owner',
+  admin: 'admin',
+  member: 'member',
+} as const;
+
+export interface MyOrganizationDtoOutput {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,59}$ */
+  slug: string;
+  name: string;
+  logoUrl: string[];
+  verified: boolean;
+  role: MyOrganizationDtoOutputRole;
+}
+
+export interface CreateVerificationRequestDto {
+  /**
+   * @minLength 20
+   * @maxLength 2600
+   */
+  declaration: string;
+  certified: true;
+  /**
+   * @minItems 1
+   * @maxItems 10
+   * @items.pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$
+   */
+  documentMediaIds: string[];
+}
+
+export type VerificationRequestDtoOutputOrganizationVerificationStatus =
+  (typeof VerificationRequestDtoOutputOrganizationVerificationStatus)[keyof typeof VerificationRequestDtoOutputOrganizationVerificationStatus];
+
+export const VerificationRequestDtoOutputOrganizationVerificationStatus = {
+  unverified: 'unverified',
+  pending: 'pending',
+  verified: 'verified',
+  rejected: 'rejected',
+  revoked: 'revoked',
+} as const;
+
+export type VerificationRequestDtoOutputOrganization = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,59}$ */
+  slug: string;
+  name: string;
+  /** @nullable */
+  websiteUrl: string | null;
+  verificationStatus: VerificationRequestDtoOutputOrganizationVerificationStatus;
+};
+
+export type VerificationRequestDtoOutputSignals = {
+  /** @nullable */
+  websiteDomain: string | null;
+  memberEmailOnWebsiteDomain: boolean;
+};
+
+export type VerificationRequestDtoOutputStatus =
+  (typeof VerificationRequestDtoOutputStatus)[keyof typeof VerificationRequestDtoOutputStatus];
+
+export const VerificationRequestDtoOutputStatus = {
+  pending: 'pending',
+  approved: 'approved',
+  rejected: 'rejected',
+} as const;
+
+export interface VerificationRequestDtoOutput {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  organization: VerificationRequestDtoOutputOrganization;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  requestedBy: string;
+  declaration: string;
+  /** @items.pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  documentMediaIds: string[];
+  signals: VerificationRequestDtoOutputSignals;
+  status: VerificationRequestDtoOutputStatus;
+  criteriaMet: string[];
+  decisionReason: string[];
+  decidedBy: string | null;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+  decidedAt: string | null;
+}
+
+export type VerificationQueueDtoOutputItemsItemOrganizationVerificationStatus =
+  (typeof VerificationQueueDtoOutputItemsItemOrganizationVerificationStatus)[keyof typeof VerificationQueueDtoOutputItemsItemOrganizationVerificationStatus];
+
+export const VerificationQueueDtoOutputItemsItemOrganizationVerificationStatus = {
+  unverified: 'unverified',
+  pending: 'pending',
+  verified: 'verified',
+  rejected: 'rejected',
+  revoked: 'revoked',
+} as const;
+
+export type VerificationQueueDtoOutputItemsItemOrganization = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,59}$ */
+  slug: string;
+  name: string;
+  /** @nullable */
+  websiteUrl: string | null;
+  verificationStatus: VerificationQueueDtoOutputItemsItemOrganizationVerificationStatus;
+};
+
+export type VerificationQueueDtoOutputItemsItemSignals = {
+  /** @nullable */
+  websiteDomain: string | null;
+  memberEmailOnWebsiteDomain: boolean;
+};
+
+export type VerificationQueueDtoOutputItemsItemStatus =
+  (typeof VerificationQueueDtoOutputItemsItemStatus)[keyof typeof VerificationQueueDtoOutputItemsItemStatus];
+
+export const VerificationQueueDtoOutputItemsItemStatus = {
+  pending: 'pending',
+  approved: 'approved',
+  rejected: 'rejected',
+} as const;
+
+export type VerificationQueueDtoOutputItemsItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  organization: VerificationQueueDtoOutputItemsItemOrganization;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  requestedBy: string;
+  declaration: string;
+  /** @items.pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  documentMediaIds: string[];
+  signals: VerificationQueueDtoOutputItemsItemSignals;
+  status: VerificationQueueDtoOutputItemsItemStatus;
+  criteriaMet: string[];
+  /** @nullable */
+  decisionReason: string | null;
+  decidedBy: string | null;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+  decidedAt: string | null;
+};
+
+export interface VerificationQueueDtoOutput {
+  items: VerificationQueueDtoOutputItemsItem[];
+  criteria: string[];
+}
+
+export type DecisionDtoDecision = (typeof DecisionDtoDecision)[keyof typeof DecisionDtoDecision];
+
+export const DecisionDtoDecision = {
+  approved: 'approved',
+  rejected: 'rejected',
+} as const;
+
+export interface DecisionDto {
+  decision: DecisionDtoDecision;
+  /**
+   * @minLength 10
+   * @maxLength 2000
+   */
+  reason: string;
+  /**
+   * @maxItems 50
+   * @items.pattern ^[a-z0-9_]{1,48}$
+   */
+  criteriaMet?: string[];
+}
+
+export interface RevocationDto {
+  /**
+   * @minLength 10
+   * @maxLength 2000
+   */
+  reason: string;
+}
+
 export type ProblemDetailsCode = (typeof ProblemDetailsCode)[keyof typeof ProblemDetailsCode];
 
 export const ProblemDetailsCode = {
@@ -1176,6 +2062,30 @@ export const ProblemDetailsCode = {
   PROFILES_CONTRIBUTOR_HAT_REQUIRED: 'PROFILES_CONTRIBUTOR_HAT_REQUIRED',
   PROFILES_TICKET_RANGE_INVALID: 'PROFILES_TICKET_RANGE_INVALID',
   PROFILES_UNKNOWN_REFERENCE: 'PROFILES_UNKNOWN_REFERENCE',
+  MEDIA_NOT_FOUND: 'MEDIA_NOT_FOUND',
+  MEDIA_TYPE_NOT_ALLOWED: 'MEDIA_TYPE_NOT_ALLOWED',
+  MEDIA_TOO_LARGE: 'MEDIA_TOO_LARGE',
+  MEDIA_QUOTA_EXCEEDED: 'MEDIA_QUOTA_EXCEEDED',
+  MEDIA_UPLOAD_MISSING: 'MEDIA_UPLOAD_MISSING',
+  MEDIA_INVALID_STATE: 'MEDIA_INVALID_STATE',
+  MEDIA_NOT_READY: 'MEDIA_NOT_READY',
+  MEDIA_USAGE_MISMATCH: 'MEDIA_USAGE_MISMATCH',
+  MEDIA_LIMIT_REACHED: 'MEDIA_LIMIT_REACHED',
+  MEDIA_ATTACHED: 'MEDIA_ATTACHED',
+  PROFILES_ORGANIZATION_NOT_ALLOWED: 'PROFILES_ORGANIZATION_NOT_ALLOWED',
+  ORGANIZATIONS_NOT_FOUND: 'ORGANIZATIONS_NOT_FOUND',
+  ORGANIZATIONS_SLUG_TAKEN: 'ORGANIZATIONS_SLUG_TAKEN',
+  ORGANIZATIONS_SLUG_RESERVED: 'ORGANIZATIONS_SLUG_RESERVED',
+  ORGANIZATIONS_CREATION_LIMIT_REACHED: 'ORGANIZATIONS_CREATION_LIMIT_REACHED',
+  ORGANIZATIONS_MEMBER_NOT_FOUND: 'ORGANIZATIONS_MEMBER_NOT_FOUND',
+  ORGANIZATIONS_ALREADY_MEMBER: 'ORGANIZATIONS_ALREADY_MEMBER',
+  ORGANIZATIONS_LAST_OWNER: 'ORGANIZATIONS_LAST_OWNER',
+  ORGANIZATIONS_ROLE_CHANGE_FORBIDDEN: 'ORGANIZATIONS_ROLE_CHANGE_FORBIDDEN',
+  ORGANIZATIONS_INVITATION_INVALID: 'ORGANIZATIONS_INVITATION_INVALID',
+  ORGANIZATIONS_INVITATION_EMAIL_MISMATCH: 'ORGANIZATIONS_INVITATION_EMAIL_MISMATCH',
+  ORGANIZATIONS_VERIFICATION_INVALID_STATE: 'ORGANIZATIONS_VERIFICATION_INVALID_STATE',
+  ORGANIZATIONS_VERIFICATION_REQUEST_NOT_FOUND: 'ORGANIZATIONS_VERIFICATION_REQUEST_NOT_FOUND',
+  ORGANIZATIONS_VERIFICATION_CRITERION_UNKNOWN: 'ORGANIZATIONS_VERIFICATION_CRITERION_UNKNOWN',
   INTERNAL_ERROR: 'INTERNAL_ERROR',
   SERVICE_UNAVAILABLE: 'SERVICE_UNAVAILABLE',
 } as const;
@@ -1200,3 +2110,23 @@ export interface ProblemDetails {
   errors?: ProblemDetailsErrorsItem[];
   missing?: string[];
 }
+
+export type MediaControllerDownloadParams = {
+  /**
+   * @pattern ^[a-z]{1,20}$
+   */
+  variant?: string;
+};
+
+export type VerificationControllerQueueParams = {
+  status?: VerificationControllerQueueStatus;
+};
+
+export type VerificationControllerQueueStatus =
+  (typeof VerificationControllerQueueStatus)[keyof typeof VerificationControllerQueueStatus];
+
+export const VerificationControllerQueueStatus = {
+  pending: 'pending',
+  approved: 'approved',
+  rejected: 'rejected',
+} as const;
