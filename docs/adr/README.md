@@ -38,3 +38,4 @@ Un fichier par décision, numéroté, au format Contexte / Décision / Conséque
 | [0032](0032-feed-strategy.md)                            | Stratégie du fil                                             |
 | [0033](0033-link-previews-and-ssrf.md)                   | Aperçus de liens et protection anti-SSRF                     |
 | [0034](0034-post-statistics-hyperloglog.md)              | Statistiques de visibilité par HyperLogLog                   |
+| [0036](0036-versioned-impact-methodology.md)             | Méthodologie d'impact versionnée                             |

@@ -4,9 +4,9 @@ Informations nécessaires au développement et absentes du cahier des charges (d
 
 ## Impact
 
-1. Les 12 critères du score d'impact : intitulés, définitions, échelles de réponse (§2.1, §12).
-2. Les pondérations des critères et le calcul du score sur 100.
-3. Les seuils des paliers émergent, modéré et fort (le document cite seulement les filtres 40+ et 70+).
+1. Les 12 critères du score d'impact : intitulés, définitions, échelles de réponse (§2.1, §12). Le module impact les accueille comme une version de méthodologie créée et publiée par un administrateur (ADR 0036) ; aucune n'est livrée, les données de développement publient une méthodologie fictive « DEMO ».
+2. Les pondérations des critères et le calcul du score sur 100. Calcul provisoire : moyenne pondérée des réponses rapportées au maximum de leur échelle, arrondie au plus proche (`apps/server/src/modules/impact/domain/scoring.ts`).
+3. Les seuils des paliers émergent, modéré et fort (le document cite seulement les filtres 40+ et 70+). Provisoirement déduits de ces filtres : `emerging` en dessous de 40, `moderate` de 40 à 69, `strong` à partir de 70.
 
 ## Matching et découverte
 
