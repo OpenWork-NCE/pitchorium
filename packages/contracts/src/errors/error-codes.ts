@@ -122,6 +122,36 @@ export const errorCodes = {
   NETWORK_NOT_CONNECTED: { status: 404, title: 'Members are not connected' },
   NETWORK_MEMBER_BLOCKED: { status: 409, title: 'You blocked this member' },
   NETWORK_LIST_HIDDEN: { status: 403, title: 'This network list is not visible to you' },
+  CONTENT_POST_NOT_FOUND: { status: 404, title: 'Publication not found' },
+  CONTENT_COMMENT_NOT_FOUND: { status: 404, title: 'Comment not found' },
+  CONTENT_POST_EMPTY: {
+    status: 422,
+    title: 'A publication needs a text, images, a document or a link',
+  },
+  CONTENT_MEDIA_COMBINATION: {
+    status: 422,
+    title: 'A publication holds up to nine images or one document, not both',
+  },
+  CONTENT_PUBLIC_VISIBILITY_NOT_ALLOWED: {
+    status: 422,
+    title: 'A public publication needs the public page of the author',
+  },
+  CONTENT_VISIBILITY_NOT_ALLOWED: {
+    status: 422,
+    title: 'This visibility is not available for this author',
+  },
+  CONTENT_REPOST_NOT_ALLOWED: {
+    status: 422,
+    title: 'This publication cannot be reposted outside of its audience',
+  },
+  CONTENT_PROJECT_NOT_FOUND: { status: 422, title: 'Project not found' },
+  CONTENT_MENTION_NOT_ALLOWED: { status: 422, title: 'This member cannot be mentioned' },
+  CONTENT_COMMENTS_DISABLED: { status: 409, title: 'Comments are disabled on this publication' },
+  CONTENT_REPLY_DEPTH: { status: 422, title: 'Replies are only possible to top-level comments' },
+  CONTENT_ORGANIZATION_ROLE_REQUIRED: {
+    status: 403,
+    title: 'Only owners and admins publish as the organization',
+  },
   INTERNAL_ERROR: { status: 500, title: 'Internal error' },
   SERVICE_UNAVAILABLE: { status: 503, title: 'Service unavailable' },
 } as const satisfies Record<string, ErrorCodeDefinition>;
