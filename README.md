@@ -39,7 +39,7 @@ pnpm dev
 | `pnpm format` / `pnpm format:check` | Prettier en écriture ou en vérification                             |
 | `pnpm db:generate`                  | Génère une migration Drizzle à partir des schémas                   |
 | `pnpm db:migrate`                   | Applique les migrations sur `DATABASE_URL`                          |
-| `pnpm db:seed`                      | Seed idempotent (feature flags)                                     |
+| `pnpm db:seed`                      | Seed idempotent (feature flags, données de référence)               |
 | `pnpm db:check`                     | Vérifie la cohérence des migrations                                 |
 | `pnpm admin:create --email <email>` | Attribue le rôle admin à un compte existant (idempotent)            |
 | `pnpm i18n:check`                   | Vérifie l'alignement des clés de traduction sur le français         |

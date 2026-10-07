@@ -52,3 +52,6 @@ export async function seedFeatureFlags(db: Database, now: Date = new Date()): Pr
       set: { description: sql`excluded.description` },
     });
 }
+
+export { COUNTRY_SEEDS } from './seeds/countries.js';
+export { SECTOR_SEEDS, seedReferenceData, STAGE_SEEDS } from './seeds/reference-data.js';
