@@ -13,6 +13,11 @@ export interface PresignedDownloadRequest {
   visibility: BucketVisibility;
   key: string;
   expiresInSeconds?: number;
+  /**
+   * Signing time, now by default. A time rounded to a window gives the same URL for every
+   * request of the window, so that browsers can cache the file.
+   */
+  signedAt?: Date;
 }
 
 export interface PresignedUrl {
@@ -33,6 +38,15 @@ export interface PutObjectRequest {
   body: Buffer;
   contentType: string;
   cacheControl?: string;
+}
+
+export interface CopyObjectRequest {
+  from: BucketVisibility;
+  to: BucketVisibility;
+  key: string;
+  /** Metadata of the copy, replacing the source's. */
+  contentType: string;
+  cacheControl: string;
 }
 
 export class ObjectTooLargeError extends Error {
@@ -63,6 +77,8 @@ export abstract class ObjectStorage {
     maxBytes: number,
   ): Promise<Buffer | null>;
   abstract putObject(request: PutObjectRequest): Promise<void>;
+  /** Copies an object to the same key of another bucket, server side. */
+  abstract copyObject(request: CopyObjectRequest): Promise<void>;
   /** Deleting a missing object is not an error. */
   abstract deleteObjects(visibility: BucketVisibility, keys: readonly string[]): Promise<void>;
   /** Throws when a bucket is not reachable. */

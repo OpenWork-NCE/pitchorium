@@ -1,5 +1,6 @@
 import {
   type BucketVisibility,
+  type CopyObjectRequest,
   ObjectStorage,
   ObjectTooLargeError,
   type PresignedUrl,
@@ -52,6 +53,16 @@ export class FakeObjectStorage extends ObjectStorage {
   putObject(request: PutObjectRequest): Promise<void> {
     this.objects.set(`${request.visibility}/${request.key}`, {
       body: request.body,
+      contentType: request.contentType,
+    });
+    return Promise.resolve();
+  }
+
+  copyObject(request: CopyObjectRequest): Promise<void> {
+    const object = this.objects.get(`${request.from}/${request.key}`);
+    if (!object) return Promise.reject(new Error(`No object ${request.key}`));
+    this.objects.set(`${request.to}/${request.key}`, {
+      body: object.body,
       contentType: request.contentType,
     });
     return Promise.resolve();

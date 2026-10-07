@@ -1,4 +1,5 @@
 import {
+  CopyObjectCommand,
   DeleteObjectCommand,
   GetObjectCommand,
   HeadBucketCommand,
@@ -13,6 +14,7 @@ import type { CommonConfig } from '../config';
 import type { Clock } from '../kernel';
 import {
   type BucketVisibility,
+  type CopyObjectRequest,
   ObjectStorage,
   ObjectTooLargeError,
   type PresignedDownloadRequest,
@@ -79,10 +81,11 @@ export class S3ObjectStorage extends ObjectStorage {
       Bucket: this.bucket(request.visibility),
       Key: request.key,
     });
+    const signingDate = request.signedAt ?? this.clock.now();
     return {
-      url: await getSignedUrl(this.client, command, { expiresIn }),
+      url: await getSignedUrl(this.client, command, { expiresIn, signingDate }),
       method: 'GET',
-      expiresAt: this.expiresAt(expiresIn),
+      expiresAt: new Date(signingDate.getTime() + expiresIn * 1000),
       headers: {},
     };
   }
@@ -140,6 +143,21 @@ export class S3ObjectStorage extends ObjectStorage {
         Bucket: this.bucket(request.visibility),
         Key: request.key,
         Body: request.body,
+        ContentType: request.contentType,
+        CacheControl: request.cacheControl,
+      }),
+    );
+  }
+
+  /** CopyObject across buckets of the account, with replaced metadata (supported by R2). */
+  async copyObject(request: CopyObjectRequest): Promise<void> {
+    const source = `${this.bucket(request.from)}/${request.key}`;
+    await this.client.send(
+      new CopyObjectCommand({
+        Bucket: this.bucket(request.to),
+        Key: request.key,
+        CopySource: source.split('/').map(encodeURIComponent).join('/'),
+        MetadataDirective: 'REPLACE',
         ContentType: request.contentType,
         CacheControl: request.cacheControl,
       }),
