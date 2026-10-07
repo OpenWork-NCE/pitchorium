@@ -3,7 +3,8 @@
 Templates d'emails React Email, rendus en HTML et en texte brut. Les textes viennent des catalogues `@pitchorium/i18n` (namespace `emails`) ; aucun texte n'est écrit en dur dans un template.
 
 - `src/components/layout.tsx` : mise en page commune, couleurs neutres (`src/theme.ts`).
-- `src/templates/` : un fichier par email, exporté par défaut avec des `PreviewProps` pour l'aperçu.
+- `src/templates/` : un fichier par email, exporté par défaut avec des `PreviewProps` pour l'aperçu : vérification d'email, lien magique, réinitialisation du mot de passe, nouvelle connexion, changement de méthode de connexion, email de test.
+- `src/components/blocks.tsx` : titre, paragraphe, note et bouton d'action suivi de l'URL en clair.
 - `src/index.ts` : une fonction `render<Nom>Email(props)` par template, qui renvoie `{ subject, html, text }`.
 
 `pnpm --filter @pitchorium/emails preview` lance l'aperçu sur http://localhost:3030.

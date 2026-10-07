@@ -7,5 +7,61 @@
     "preview": "La chaîne d'envoi d'emails fonctionne.",
     "heading": "Email de test",
     "body": "Cet email a été envoyé le {{sentAt}} pour vérifier la chaîne d'envoi."
+  },
+  "providers": {
+    "credential": "le mot de passe",
+    "google": "Google",
+    "linkedin": "LinkedIn",
+    "microsoft": "Microsoft"
+  },
+  "emailVerification": {
+    "subject": "Confirmez votre adresse email",
+    "preview": "Confirmez votre adresse email pour finaliser votre compte Pitchorium.",
+    "heading": "Bonjour {{name}},",
+    "body": "Confirmez votre adresse email pour pouvoir publier un projet, contribuer et écrire aux membres hors de votre réseau.",
+    "action": "Confirmer mon adresse email",
+    "expiry": "Ce lien expire dans {{hours}} heures.",
+    "ignore": "Si vous n'avez pas créé de compte Pitchorium, ignorez cet email."
+  },
+  "magicLink": {
+    "subject": "Votre lien de connexion Pitchorium",
+    "preview": "Connectez-vous à Pitchorium en un clic.",
+    "heading": "Connexion à Pitchorium",
+    "body": "Cliquez sur le bouton ci-dessous pour vous connecter. Ce lien ne fonctionne qu'une seule fois.",
+    "action": "Me connecter",
+    "expiry": "Ce lien expire dans {{minutes}} minutes.",
+    "ignore": "Si vous n'avez pas demandé ce lien, ignorez cet email : votre compte reste protégé."
+  },
+  "passwordReset": {
+    "subject": "Réinitialisation de votre mot de passe",
+    "preview": "Choisissez un nouveau mot de passe pour votre compte Pitchorium.",
+    "heading": "Bonjour {{name}},",
+    "body": "Une réinitialisation du mot de passe de votre compte a été demandée. Le lien ci-dessous ne fonctionne qu'une seule fois. Toutes vos sessions seront fermées après le changement.",
+    "action": "Choisir un nouveau mot de passe",
+    "expiry": "Ce lien expire dans {{minutes}} minutes.",
+    "ignore": "Si vous n'êtes pas à l'origine de cette demande, ignorez cet email : votre mot de passe reste inchangé."
+  },
+  "newSignIn": {
+    "subject": "Nouvelle connexion à votre compte",
+    "preview": "Une nouvelle connexion à votre compte Pitchorium a eu lieu.",
+    "heading": "Bonjour {{name}},",
+    "body": "Une connexion à votre compte a eu lieu le {{signedInAt}} (UTC) depuis l'appareil suivant : {{device}}.",
+    "notYou": "Si ce n'était pas vous, fermez vos sessions et changez votre mot de passe sans attendre.",
+    "action": "Vérifier la sécurité de mon compte",
+    "reason": "Vous recevez cet email à chaque connexion depuis un nouvel appareil."
+  },
+  "signInMethodChanged": {
+    "subject": "Vos méthodes de connexion ont changé",
+    "preview": "Une méthode de connexion de votre compte Pitchorium a été modifiée.",
+    "heading": "Bonjour {{name}},",
+    "changes": {
+      "linked": "{{method}} a été ajouté à vos méthodes de connexion le {{changedAt}} (UTC).",
+      "unlinked": "{{method}} a été retiré de vos méthodes de connexion le {{changedAt}} (UTC).",
+      "password_changed": "Votre mot de passe a été modifié le {{changedAt}} (UTC).",
+      "password_reset": "Votre mot de passe a été réinitialisé le {{changedAt}} (UTC). Toutes vos sessions ont été fermées."
+    },
+    "notYou": "Si vous n'êtes pas à l'origine de ce changement, sécurisez votre compte sans attendre.",
+    "action": "Vérifier la sécurité de mon compte",
+    "reason": "Vous recevez cet email à chaque changement de méthode de connexion."
   }
 }

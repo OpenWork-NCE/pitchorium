@@ -7,5 +7,61 @@
     "preview": "The email delivery pipeline works.",
     "heading": "Test email",
     "body": "This email was sent on {{sentAt}} to check the delivery pipeline."
+  },
+  "providers": {
+    "credential": "your password",
+    "google": "Google",
+    "linkedin": "LinkedIn",
+    "microsoft": "Microsoft"
+  },
+  "emailVerification": {
+    "subject": "Confirm your email address",
+    "preview": "Confirm your email address to complete your Pitchorium account.",
+    "heading": "Hello {{name}},",
+    "body": "Confirm your email address to publish a project, contribute and write to members outside your network.",
+    "action": "Confirm my email address",
+    "expiry": "This link expires in {{hours}} hours.",
+    "ignore": "If you did not create a Pitchorium account, you can ignore this email."
+  },
+  "magicLink": {
+    "subject": "Your Pitchorium sign-in link",
+    "preview": "Sign in to Pitchorium in one click.",
+    "heading": "Sign in to Pitchorium",
+    "body": "Click the button below to sign in. This link works only once.",
+    "action": "Sign me in",
+    "expiry": "This link expires in {{minutes}} minutes.",
+    "ignore": "If you did not request this link, you can ignore this email: your account remains protected."
+  },
+  "passwordReset": {
+    "subject": "Reset your password",
+    "preview": "Choose a new password for your Pitchorium account.",
+    "heading": "Hello {{name}},",
+    "body": "A password reset was requested for your account. The link below works only once. All your sessions will be signed out after the change.",
+    "action": "Choose a new password",
+    "expiry": "This link expires in {{minutes}} minutes.",
+    "ignore": "If you did not request this, you can ignore this email: your password stays unchanged."
+  },
+  "newSignIn": {
+    "subject": "New sign-in to your account",
+    "preview": "Your Pitchorium account was signed in to.",
+    "heading": "Hello {{name}},",
+    "body": "Your account was signed in to on {{signedInAt}} (UTC) from the following device: {{device}}.",
+    "notYou": "If this was not you, sign out your sessions and change your password right away.",
+    "action": "Review my account security",
+    "reason": "You receive this email for every sign-in from a new device."
+  },
+  "signInMethodChanged": {
+    "subject": "Your sign-in methods changed",
+    "preview": "A sign-in method of your Pitchorium account was changed.",
+    "heading": "Hello {{name}},",
+    "changes": {
+      "linked": "{{method}} was added to your sign-in methods on {{changedAt}} (UTC).",
+      "unlinked": "{{method}} was removed from your sign-in methods on {{changedAt}} (UTC).",
+      "password_changed": "Your password was changed on {{changedAt}} (UTC).",
+      "password_reset": "Your password was reset on {{changedAt}} (UTC). All your sessions were signed out."
+    },
+    "notYou": "If you did not make this change, secure your account right away.",
+    "action": "Review my account security",
+    "reason": "You receive this email for every change of your sign-in methods."
   }
 }

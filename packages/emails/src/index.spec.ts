@@ -1,25 +1,122 @@
 import { describe, expect, it } from 'vitest';
-import { renderTechnicalTestEmail } from './index.js';
+import {
+  type RenderedEmail,
+  renderEmailVerificationEmail,
+  renderMagicLinkEmail,
+  renderNewSignInEmail,
+  renderPasswordResetEmail,
+  renderSignInMethodChangedEmail,
+  renderTechnicalTestEmail,
+} from './index.js';
 
-describe('renderTechnicalTestEmail', () => {
-  it.each([
-    ['fr', 'Email de test Pitchorium', 'Email de test'],
-    ['en', 'Pitchorium test email', 'Test email'],
-  ] as const)('renders the %s version as html and plain text', async (locale, subject, heading) => {
-    const sentAt = '2026-10-07T10:00:00.000Z';
+type Locale = 'fr' | 'en';
 
-    const email = await renderTechnicalTestEmail({ locale, sentAt });
+interface TemplateCase {
+  name: string;
+  render: (locale: Locale) => Promise<RenderedEmail>;
+  /** Expected subject per locale, and a value that must appear in the body. */
+  subjects: Record<Locale, string>;
+  mustContain: string;
+}
 
-    expect(email.subject).toBe(subject);
-    expect(email.html).toContain(`lang="${locale}"`);
-    expect(email.html).toContain(heading);
-    expect(email.text).toContain(sentAt);
-    expect(email.html).not.toContain('{{');
+const url = 'https://app.pitchorium.test/action?token=abc';
+
+/** A missing key renders as the key itself; an unresolved parameter keeps its braces. */
+const MISSING_TRANSLATION =
+  /\{\{|\b(?:layout|providers|emailVerification|magicLink|passwordReset|newSignIn|signInMethodChanged|technicalTest)\./;
+
+const cases: TemplateCase[] = [
+  {
+    name: 'technical test',
+    render: (locale) => renderTechnicalTestEmail({ locale, sentAt: '2026-10-07T10:00:00.000Z' }),
+    subjects: { fr: 'Email de test Pitchorium', en: 'Pitchorium test email' },
+    mustContain: '2026-10-07T10:00:00.000Z',
+  },
+  {
+    name: 'email verification',
+    render: (locale) =>
+      renderEmailVerificationEmail({ locale, name: 'Amina', url, expiresInHours: 24 }),
+    subjects: { fr: 'Confirmez votre adresse email', en: 'Confirm your email address' },
+    mustContain: url,
+  },
+  {
+    name: 'magic link',
+    render: (locale) => renderMagicLinkEmail({ locale, url, expiresInMinutes: 15 }),
+    subjects: { fr: 'Votre lien de connexion Pitchorium', en: 'Your Pitchorium sign-in link' },
+    mustContain: url,
+  },
+  {
+    name: 'password reset',
+    render: (locale) =>
+      renderPasswordResetEmail({ locale, name: 'Amina', url, expiresInMinutes: 30 }),
+    subjects: { fr: 'Réinitialisation de votre mot de passe', en: 'Reset your password' },
+    mustContain: url,
+  },
+  {
+    name: 'new sign-in',
+    render: (locale) =>
+      renderNewSignInEmail({
+        locale,
+        name: 'Amina',
+        signedInAt: '2026-10-07 10:00',
+        device: 'Firefox on Linux',
+        securityUrl: url,
+      }),
+    subjects: { fr: 'Nouvelle connexion à votre compte', en: 'New sign-in to your account' },
+    mustContain: 'Firefox on Linux',
+  },
+  {
+    name: 'sign-in method changed',
+    render: (locale) =>
+      renderSignInMethodChangedEmail({
+        locale,
+        name: 'Amina',
+        change: 'linked',
+        provider: 'linkedin',
+        changedAt: '2026-10-07 10:00',
+        securityUrl: url,
+      }),
+    subjects: { fr: 'Vos méthodes de connexion ont changé', en: 'Your sign-in methods changed' },
+    mustContain: 'LinkedIn',
+  },
+];
+
+describe('email templates', () => {
+  describe.each(cases)('$name', ({ render, subjects, mustContain }) => {
+    it.each(['fr', 'en'] as const)('renders %s as html and plain text', async (locale) => {
+      const email = await render(locale);
+
+      expect(email.subject).toBe(subjects[locale]);
+      expect(email.html).toContain(`lang="${locale}"`);
+      expect(email.html).toContain(mustContain.replaceAll('&', '&amp;'));
+      expect(email.text).toContain(mustContain);
+      // No missing key (rendered as the key itself) and no unresolved parameter.
+      expect(email.text).not.toMatch(MISSING_TRANSLATION);
+    });
   });
 
   it('falls back to French for a locale without translations', async () => {
     const email = await renderTechnicalTestEmail({ locale: 'wo', sentAt: 'x' });
 
     expect(email.subject).toBe('Email de test Pitchorium');
+  });
+
+  it('names each change of sign-in method', async () => {
+    const changes = ['linked', 'unlinked', 'password_changed', 'password_reset'] as const;
+    const texts = await Promise.all(
+      changes.map((change) =>
+        renderSignInMethodChangedEmail({
+          locale: 'en',
+          name: 'Amina',
+          change,
+          provider: 'google',
+          changedAt: '2026-10-07 10:00',
+          securityUrl: url,
+        }).then((email) => email.text),
+      ),
+    );
+
+    expect(new Set(texts).size).toBe(changes.length);
+    expect(texts[2]).toContain('Your password was changed');
   });
 });
