@@ -38,6 +38,7 @@ Un fichier par décision, numéroté, au format Contexte / Décision / Conséque
 | [0032](0032-feed-strategy.md)                            | Stratégie du fil                                             |
 | [0033](0033-link-previews-and-ssrf.md)                   | Aperçus de liens et protection anti-SSRF                     |
 | [0034](0034-post-statistics-hyperloglog.md)              | Statistiques de visibilité par HyperLogLog                   |
+| [0035](0035-development-data-through-services.md)        | Données de développement par les services                    |
 | [0036](0036-versioned-impact-methodology.md)             | Méthodologie d'impact versionnée                             |
 | [0037](0037-campaign-label-currency.md)                  | Devise de libellé des campagnes                              |
 | [0038](0038-tiers-and-flexible-funding.md)               | Paliers cumulatifs et financement flexible                   |

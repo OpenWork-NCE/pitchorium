@@ -97,7 +97,7 @@ interface PendingImage {
 /**
  * Demonstration members, organizations, network and publications (`pnpm db:seed:dev`), written
  * directly in the tables of each module: the script is a development tool, outside the module
- * boundaries. Images are uploaded to the quarantine with `media.asset.uploaded.v1`: the worker
+ * boundaries. Data added since then goes through the module services (ADR 0035). Images are uploaded to the quarantine with `media.asset.uploaded.v1`: the worker
  * processes them like real uploads when it runs. Idempotent: existing rows are kept.
  */
 export async function seedDevData(options: DevSeedOptions): Promise<DevSeedResult> {
