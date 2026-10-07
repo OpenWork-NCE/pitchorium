@@ -12,5 +12,21 @@
   "IDEMPOTENCY_KEY_REUSED": "This idempotency key was already used for another request.",
   "RATE_LIMITED": "Too many requests. Please try again shortly.",
   "INTERNAL_ERROR": "An unexpected error occurred.",
-  "SERVICE_UNAVAILABLE": "The service is temporarily unavailable."
+  "SERVICE_UNAVAILABLE": "The service is temporarily unavailable.",
+  "IDENTITY_USER_NOT_FOUND": "This account cannot be found.",
+  "IDENTITY_LEGAL_VERSION_OUTDATED": "The terms were updated. Reload the page to accept the current version.",
+  "IDENTITY_LOCALE_NOT_ACTIVE": "This language is not available yet.",
+  "ACCESS_ORIGIN_NOT_ALLOWED": "This request comes from an origin that is not allowed.",
+  "ACCESS_PREREQUISITES_MISSING": "Complete the requested items to continue.",
+  "ACCESS_ACCOUNT_SUSPENDED": "Your account is suspended.",
+  "ACCESS_LAST_ADMIN": "The last administrator cannot be removed.",
+  "PROFILES_PROFILE_NOT_FOUND": "This profile cannot be found.",
+  "PROFILES_FACET_NOT_FOUND": "This profile section does not exist.",
+  "PROFILES_FACET_ALREADY_EXISTS": "This profile section already exists.",
+  "PROFILES_HANDLE_TAKEN": "This handle is already taken.",
+  "PROFILES_HANDLE_RESERVED": "This handle is reserved.",
+  "PROFILES_COMPANY_COUNTRY_NOT_ELIGIBLE": "The company country must be in Africa or the Caribbean.",
+  "PROFILES_CONTRIBUTOR_HAT_REQUIRED": "Choose at least one contributor hat.",
+  "PROFILES_TICKET_RANGE_INVALID": "The minimum ticket must be lower than or equal to the maximum ticket.",
+  "PROFILES_UNKNOWN_REFERENCE": "A selected value does not exist in the reference lists."
 }

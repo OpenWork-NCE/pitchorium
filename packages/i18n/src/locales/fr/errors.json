@@ -12,5 +12,21 @@
   "IDEMPOTENCY_KEY_REUSED": "Cette clé d'idempotence a déjà servi pour une autre requête.",
   "RATE_LIMITED": "Trop de requêtes. Réessayez dans quelques instants.",
   "INTERNAL_ERROR": "Une erreur inattendue est survenue.",
-  "SERVICE_UNAVAILABLE": "Le service est momentanément indisponible."
+  "SERVICE_UNAVAILABLE": "Le service est momentanément indisponible.",
+  "IDENTITY_USER_NOT_FOUND": "Ce compte est introuvable.",
+  "IDENTITY_LEGAL_VERSION_OUTDATED": "Les conditions ont été mises à jour. Rechargez la page pour accepter la version en vigueur.",
+  "IDENTITY_LOCALE_NOT_ACTIVE": "Cette langue n'est pas encore disponible.",
+  "ACCESS_ORIGIN_NOT_ALLOWED": "Cette requête provient d'une origine non autorisée.",
+  "ACCESS_PREREQUISITES_MISSING": "Complétez les éléments demandés pour poursuivre.",
+  "ACCESS_ACCOUNT_SUSPENDED": "Votre compte est suspendu.",
+  "ACCESS_LAST_ADMIN": "Le dernier administrateur ne peut pas être retiré.",
+  "PROFILES_PROFILE_NOT_FOUND": "Ce profil est introuvable.",
+  "PROFILES_FACET_NOT_FOUND": "Ce volet du profil n'existe pas.",
+  "PROFILES_FACET_ALREADY_EXISTS": "Ce volet du profil existe déjà.",
+  "PROFILES_HANDLE_TAKEN": "Cet identifiant est déjà utilisé.",
+  "PROFILES_HANDLE_RESERVED": "Cet identifiant est réservé.",
+  "PROFILES_COMPANY_COUNTRY_NOT_ELIGIBLE": "Le pays de l'entreprise doit se situer en Afrique ou dans les Caraïbes.",
+  "PROFILES_CONTRIBUTOR_HAT_REQUIRED": "Choisissez au moins une casquette de contributeur.",
+  "PROFILES_TICKET_RANGE_INVALID": "Le ticket minimum doit être inférieur ou égal au ticket maximum.",
+  "PROFILES_UNKNOWN_REFERENCE": "Une valeur choisie n'existe pas dans les listes de référence."
 }

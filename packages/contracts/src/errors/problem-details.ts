@@ -22,6 +22,8 @@ export const problemDetailsSchema = z.object({
   code: errorCodeSchema,
   requestId: z.string().optional(),
   errors: z.array(validationIssueSchema).optional(),
+  /** Elements to complete before retrying, with ACCESS_PREREQUISITES_MISSING. */
+  missing: z.array(z.string()).optional(),
 });
 
 export type ValidationIssue = z.infer<typeof validationIssueSchema>;

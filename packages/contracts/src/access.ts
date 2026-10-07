@@ -1,0 +1,74 @@
+import { z } from 'zod';
+import { errorCodeSchema } from './errors/error-codes.js';
+import { uuidV7Schema } from './ids.js';
+
+export const ROLES = ['member', 'moderator', 'admin'] as const;
+export const roleSchema = z.enum(ROLES);
+
+/** `member` is implicit for every account and never stored. */
+export const ASSIGNABLE_ROLES = ['moderator', 'admin'] as const;
+export const assignableRoleSchema = z.enum(ASSIGNABLE_ROLES);
+
+/**
+ * Central registry of action names. Policies live in the access module; modules add their
+ * actions here when they are implemented.
+ */
+export const ACTIONS = [
+  'account.read',
+  'account.preferences.update',
+  'account.legal.accept',
+  'profile.read',
+  'profile.update',
+  'access.roles.read',
+  'access.roles.manage',
+  'project.publish',
+] as const;
+export const actionSchema = z.enum(ACTIONS);
+
+/** What a user may have to complete before an action is allowed. */
+export const PREREQUISITE_ELEMENTS = [
+  'legal_acceptance',
+  'email_verified',
+  'kyc_verified',
+  'two_factor',
+  'profile.entrepreneur_facet',
+  'profile.contributor_facet',
+] as const;
+export const prerequisiteElementSchema = z.enum(PREREQUISITE_ELEMENTS);
+
+export const trustLevelsSchema = z.object({
+  emailVerified: z.boolean(),
+  kycVerified: z.boolean(),
+  suspended: z.boolean(),
+});
+
+export const actionPrerequisitesSchema = z.object({
+  action: actionSchema,
+  allowed: z.boolean(),
+  /** Error code the action would fail with, null when allowed. */
+  code: errorCodeSchema.nullable(),
+  missing: z.array(prerequisiteElementSchema),
+});
+
+export const roleAssignmentSchema = z.object({
+  role: assignableRoleSchema,
+  grantedAt: z.iso.datetime(),
+  /** Null when granted by the command line. */
+  grantedBy: uuidV7Schema.nullable(),
+});
+
+export const userRolesSchema = z.object({
+  userId: uuidV7Schema,
+  assignments: z.array(roleAssignmentSchema),
+});
+
+export const grantRoleRequestSchema = z.object({ role: assignableRoleSchema });
+
+export type Role = z.infer<typeof roleSchema>;
+export type AssignableRole = z.infer<typeof assignableRoleSchema>;
+export type Action = z.infer<typeof actionSchema>;
+export type PrerequisiteElement = z.infer<typeof prerequisiteElementSchema>;
+export type TrustLevels = z.infer<typeof trustLevelsSchema>;
+export type ActionPrerequisites = z.infer<typeof actionPrerequisitesSchema>;
+export type RoleAssignment = z.infer<typeof roleAssignmentSchema>;
+export type UserRoles = z.infer<typeof userRolesSchema>;
