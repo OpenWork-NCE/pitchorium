@@ -1,6 +1,7 @@
 import { type DynamicModule, Module, type Provider } from '@nestjs/common';
 import { ConversationAccess } from './application/conversation-access';
 import { ConversationsService } from './application/conversations.service';
+import { IntroductionsService } from './application/introductions.service';
 import { MessagingEventsRecorder } from './application/messaging-events.recorder';
 import { MessagingPresenter } from './application/messaging-presenter';
 import { MessagingRealtime } from './application/messaging-realtime';
@@ -9,6 +10,7 @@ import { MessagingRepository } from './application/ports';
 import { DrizzleMessagingRepository } from './infrastructure/drizzle-messaging.repository';
 import {
   ConversationResolver,
+  IntroductionResolver,
   MessageResolver,
   MessagingController,
   RequestResolver,
@@ -38,10 +40,12 @@ export class MessagingModule {
         MessagingPresenter,
         MessagingRealtime,
         ConversationsService,
+        IntroductionsService,
         MessagingGateway,
         ConversationResolver,
         MessageResolver,
         RequestResolver,
+        IntroductionResolver,
       ],
       exports: [MessagingFacade],
     };

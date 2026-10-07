@@ -20,7 +20,12 @@ import {
   conversationPageSchema,
   conversationSchema,
   type CursorPage,
+  cursorPageQuerySchema,
   editMessageRequestSchema,
+  type Introduction,
+  introductionIdParamsSchema,
+  introductionPageSchema,
+  introductionSchema,
   type Message,
   messageIdParamsSchema,
   messageListQuerySchema,
@@ -29,6 +34,7 @@ import {
   messageSchema,
   type MessagingSettings,
   messagingSettingsSchema,
+  proposeIntroductionRequestSchema,
   readConversationRequestSchema,
   sendMessageRequestSchema,
   startConversationRequestSchema,
@@ -48,7 +54,9 @@ import {
 import { Idempotent } from '../../../platform/idempotency';
 import { ConversationAccess } from '../application/conversation-access';
 import { ConversationsService } from '../application/conversations.service';
+import { IntroductionsService } from '../application/introductions.service';
 import { MessagingRepository } from '../application/ports';
+import { roleIn } from '../domain/introduction';
 
 class ConversationDto extends createZodDto(conversationSchema) {}
 class ConversationPageDto extends createZodDto(conversationPageSchema) {}
@@ -65,6 +73,11 @@ class ReadConversationDto extends createZodDto(readConversationRequestSchema) {}
 class ReadResultDto extends createZodDto(z.object({ sequence: z.number().int() })) {}
 class UpdateConversationDto extends createZodDto(updateConversationRequestSchema) {}
 class MessagingSettingsDto extends createZodDto(messagingSettingsSchema) {}
+class ProposeIntroductionDto extends createZodDto(proposeIntroductionRequestSchema) {}
+class IntroductionDto extends createZodDto(introductionSchema) {}
+class IntroductionPageDto extends createZodDto(introductionPageSchema) {}
+class IntroductionIdParamsDto extends createZodDto(introductionIdParamsSchema) {}
+class CursorPageQueryDto extends createZodDto(cursorPageQuerySchema) {}
 
 const idParam = (request: Request, name: string): string | null => {
   const parsed = uuidV7Schema.safeParse(request.params[name]);
@@ -123,11 +136,34 @@ export class RequestResolver implements ResourceResolver {
   }
 }
 
-/** Messaging (§10.4): conversations, messages, requests and settings. */
+/** An introduction: `introduced` for the two members introduced; 404 for anyone else. */
+@Injectable()
+export class IntroductionResolver implements ResourceResolver {
+  constructor(private readonly messaging: MessagingRepository) {}
+
+  async resolve(request: Request, principal: Principal): Promise<ProtectedResource | null> {
+    const id = idParam(request, 'introductionId');
+    if (!id) return null;
+    const introduction = await this.messaging.findIntroduction(id);
+    const role = introduction ? roleIn(introduction, principal.userId) : null;
+    if (!role) return null;
+    return {
+      type: 'introduction',
+      id,
+      ownerId: introduction?.introducerId ?? null,
+      roles: role === 'introducer' ? [] : ['introduced'],
+    };
+  }
+}
+
+/** Messaging (§10.4): conversations, messages, requests, settings and introductions. */
 @ApiTags('messaging')
 @Controller()
 export class MessagingController {
-  constructor(private readonly conversations: ConversationsService) {}
+  constructor(
+    private readonly conversations: ConversationsService,
+    private readonly introductions: IntroductionsService,
+  ) {}
 
   @Get('messaging/conversations')
   @RequireAction('messaging.read')
@@ -295,5 +331,64 @@ export class MessagingController {
     @Body() body: MessagingSettingsDto,
   ): Promise<MessagingSettings> {
     return this.conversations.updateSettings(principal.userId, body);
+  }
+
+  @Post('messaging/introductions')
+  @RequireAction('messaging.introduction.propose')
+  @Idempotent()
+  @ZodSerializerDto(IntroductionDto)
+  @ApiCreatedResponse({ type: IntroductionDto.Output })
+  propose(
+    @CurrentPrincipal() principal: Principal,
+    @Body() body: ProposeIntroductionDto,
+  ): Promise<Introduction> {
+    return this.introductions.propose(principal.userId, body);
+  }
+
+  /** Introductions the member proposed or received, newest first. */
+  @Get('messaging/introductions')
+  @RequireAction('messaging.read')
+  @ZodSerializerDto(IntroductionPageDto)
+  @ApiOkResponse({ type: IntroductionPageDto.Output })
+  listIntroductions(
+    @CurrentPrincipal() principal: Principal,
+    @Query() query: CursorPageQueryDto,
+  ): Promise<CursorPage<Introduction>> {
+    return this.introductions.list(principal.userId, query);
+  }
+
+  @Get('messaging/introductions/:introductionId')
+  @RequireAction('messaging.read')
+  @ZodSerializerDto(IntroductionDto)
+  @ApiOkResponse({ type: IntroductionDto.Output })
+  introduction(
+    @CurrentPrincipal() principal: Principal,
+    @Param() params: IntroductionIdParamsDto,
+  ): Promise<Introduction> {
+    return this.introductions.get(principal.userId, params.introductionId);
+  }
+
+  @Post('messaging/introductions/:introductionId/accept')
+  @RequireAction('messaging.introduction.respond', { resource: IntroductionResolver })
+  @HttpCode(HttpStatus.OK)
+  @ZodSerializerDto(IntroductionDto)
+  @ApiOkResponse({ type: IntroductionDto.Output })
+  acceptIntroduction(
+    @CurrentPrincipal() principal: Principal,
+    @Param() params: IntroductionIdParamsDto,
+  ): Promise<Introduction> {
+    return this.introductions.respond(principal.userId, params.introductionId, true);
+  }
+
+  @Post('messaging/introductions/:introductionId/decline')
+  @RequireAction('messaging.introduction.respond', { resource: IntroductionResolver })
+  @HttpCode(HttpStatus.OK)
+  @ZodSerializerDto(IntroductionDto)
+  @ApiOkResponse({ type: IntroductionDto.Output })
+  declineIntroduction(
+    @CurrentPrincipal() principal: Principal,
+    @Param() params: IntroductionIdParamsDto,
+  ): Promise<Introduction> {
+    return this.introductions.respond(principal.userId, params.introductionId, false);
   }
 }

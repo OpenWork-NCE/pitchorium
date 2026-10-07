@@ -32,6 +32,10 @@ Messagerie (cahier des charges §10.4, avec §7.2 et §10.3) : conversations 1:1
 - `PATCH /v1/messaging/conversations/{id}` : `archived`, `muted`, `unread` (marquer comme non lu) ; un nouveau message ramène une conversation archivée dans la boîte de réception.
 - Compteurs (`MessagingFacade.unreadSummary`, `pendingRequests`, `introductionsAwaiting`) servis par l'endpoint unifié du module notifications.
 
+## Introductions à trois (ADR 0058)
+
+A, connecté à B et à C, propose une introduction avec une note (1 000 caractères, provisoire). B et C acceptent ou refusent chacun, une seule fois ; un refus clôt l'introduction (`declined`) ; deux acceptations la concluent : une conversation de groupe A, B, C s'ouvre avec la note de A comme premier message (`kind: introduction`). A peut ensuite quitter la conversation. Refus : membres non distincts ou A non connecté aux deux (`MESSAGING_INTRODUCTION_INVALID`, `MESSAGING_INTRODUCTION_NOT_CONNECTED`), B et C séparés par un blocage, même introduction déjà en attente (`MESSAGING_INTRODUCTION_PENDING`).
+
 ## Temps réel (ADR 0056)
 
 Persistance avant toute diffusion ; diffusion après la validation de la transaction vers les rooms `user:<id>` de chaque participant, sur tous ses appareils (adaptateur Redis) ; synchronisation après reconnexion par la dernière séquence connue ; indicateur de saisie relayé sans persistance ; accusés de lecture diffusés. Les envois par socket suivent les mêmes règles que les routes HTTP (participation, blocages, conditions acceptées).
@@ -43,6 +47,7 @@ Persistance avant toute diffusion ; diffusion après la validation de la transac
 - `PATCH|DELETE /v1/messaging/conversations/{conversationId}/messages/{messageId}` (`messaging.message.update`, rôle `sender`)
 - `POST /v1/messaging/conversations/{conversationId}/accept`, `POST .../decline` (`messaging.request.respond`, rôle `request_recipient`)
 - `GET /v1/me/messaging/settings` (`messaging.read`), `PUT /v1/me/messaging/settings` (`messaging.settings.update`)
+- `POST /v1/messaging/introductions` (`messaging.introduction.propose`, email vérifié, `Idempotency-Key`), `GET /v1/messaging/introductions`, `GET /v1/messaging/introductions/{introductionId}` (`messaging.read`), `POST .../accept`, `POST .../decline` (`messaging.introduction.respond`, rôle `introduced`)
 
 ## Schéma `messaging`
 
