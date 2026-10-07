@@ -28,6 +28,24 @@ export interface CommonConfig {
   /** Versions in force of the terms of service and the privacy policy. */
   legal: { termsVersion: string; privacyVersion: string };
   network: { profileViewsRetentionDays: number };
+  payments: PaymentsConfig;
+}
+
+export interface PaymentsConfig {
+  mode: 'simulated' | 'live';
+  stripe: { secretKey: string; webhookSecret: string; apiBaseUrl: string } | undefined;
+  flutterwave: { secretKey: string; webhookSecretHash: string; apiBaseUrl: string } | undefined;
+  simulated: { webhookSecret: string };
+  commission: { rateBps: number; version: string };
+  sessionTtlMs: number;
+  /** Bounds of a contribution on its EUR equivalent, in cents. */
+  minEurMinor: bigint;
+  maxEurMinor: bigint;
+  contributionsPerHour: number;
+  sessionsPerMethodPerHour: number;
+  /** Above this EUR equivalent, a contribution requires two-factor authentication. */
+  enhancedVerificationEurMinor: bigint;
+  anonymousDonations: boolean;
 }
 
 export interface OAuthClientConfig {
@@ -99,6 +117,8 @@ export interface WorkerConfig extends CommonConfig {
   content: { linkPreview: { timeoutMs: number; maxBytes: number } };
   /** Delay before the end of a campaign that triggers « fin de campagne proche » (provisional). */
   projects: { endingSoonMs: number };
+  /** Days of provider transactions compared with the ledger by the daily reconciliation. */
+  reconciliation: { lookbackMs: number };
   /** Purge of the CDN in front of the public bucket (ADR 0026). */
   cdn:
     | { provider: 'none' }
@@ -155,6 +175,37 @@ function toCommonConfig(env: CommonEnv): CommonConfig {
     webAppUrl: withoutTrailingSlash(env.WEB_APP_URL),
     legal: { termsVersion: env.LEGAL_TERMS_VERSION, privacyVersion: env.LEGAL_PRIVACY_VERSION },
     network: { profileViewsRetentionDays: env.NETWORK_PROFILE_VIEWS_RETENTION_DAYS },
+    payments: {
+      mode: env.PAYMENTS_MODE,
+      stripe:
+        env.STRIPE_SECRET_KEY && env.STRIPE_WEBHOOK_SECRET
+          ? {
+              secretKey: env.STRIPE_SECRET_KEY,
+              webhookSecret: env.STRIPE_WEBHOOK_SECRET,
+              apiBaseUrl: withoutTrailingSlash(env.STRIPE_API_BASE_URL),
+            }
+          : undefined,
+      flutterwave:
+        env.FLUTTERWAVE_SECRET_KEY && env.FLUTTERWAVE_WEBHOOK_SECRET_HASH
+          ? {
+              secretKey: env.FLUTTERWAVE_SECRET_KEY,
+              webhookSecretHash: env.FLUTTERWAVE_WEBHOOK_SECRET_HASH,
+              apiBaseUrl: withoutTrailingSlash(env.FLUTTERWAVE_API_BASE_URL),
+            }
+          : undefined,
+      simulated: { webhookSecret: env.PAYMENTS_SIMULATED_WEBHOOK_SECRET },
+      commission: {
+        rateBps: env.PAYMENTS_COMMISSION_RATE_BPS,
+        version: env.PAYMENTS_COMMISSION_VERSION,
+      },
+      sessionTtlMs: env.PAYMENTS_SESSION_TTL_MINUTES * 60_000,
+      minEurMinor: BigInt(env.PAYMENTS_MIN_EUR_MINOR),
+      maxEurMinor: BigInt(env.PAYMENTS_MAX_EUR_MINOR),
+      contributionsPerHour: env.PAYMENTS_CONTRIBUTIONS_PER_HOUR,
+      sessionsPerMethodPerHour: env.PAYMENTS_SESSIONS_PER_METHOD_PER_HOUR,
+      enhancedVerificationEurMinor: BigInt(env.PAYMENTS_ENHANCED_VERIFICATION_EUR_MINOR),
+      anonymousDonations: env.PAYMENTS_ANONYMOUS_DONATIONS,
+    },
   };
 }
 
@@ -245,6 +296,7 @@ export function parseWorkerConfig(rawEnv: RawEnv): WorkerConfig {
       },
     },
     projects: { endingSoonMs: env.PROJECTS_ENDING_SOON_HOURS * 3_600_000 },
+    reconciliation: { lookbackMs: env.PAYMENTS_RECONCILIATION_LOOKBACK_DAYS * 86_400_000 },
     cdn:
       env.CDN_PURGE_PROVIDER === 'cloudflare'
         ? {

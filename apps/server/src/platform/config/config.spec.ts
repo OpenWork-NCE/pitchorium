@@ -48,16 +48,25 @@ describe('configuration', () => {
     expect(config.otel.enabled).toBe(false);
   });
 
+  /** Production refuses the simulated payment provider. */
+  const livePayments = {
+    PAYMENTS_MODE: 'live',
+    STRIPE_SECRET_KEY: 'sk_test_x',
+    STRIPE_WEBHOOK_SECRET: 'whsec_x',
+  };
+
   it('disables Swagger in production and reads worker settings', () => {
-    expect(parseApiConfig({ ...baseEnv, NODE_ENV: 'production' }).http.swaggerEnabled).toBe(false);
+    expect(
+      parseApiConfig({ ...baseEnv, ...livePayments, NODE_ENV: 'production' }).http.swaggerEnabled,
+    ).toBe(false);
     expect(parseWorkerConfig({ ...baseEnv, OUTBOX_BATCH_SIZE: '50' }).outbox.batchSize).toBe(50);
   });
 
   it('requires a CDN purge provider in production, and its credentials', () => {
     expect(parseWorkerConfig(baseEnv).cdn).toEqual({ provider: 'none' });
-    expect(issuesOf(() => parseWorkerConfig({ ...baseEnv, NODE_ENV: 'production' }))).toEqual([
-      'CDN_PURGE_PROVIDER: A CDN purge provider is required in production',
-    ]);
+    expect(
+      issuesOf(() => parseWorkerConfig({ ...baseEnv, ...livePayments, NODE_ENV: 'production' })),
+    ).toEqual(['CDN_PURGE_PROVIDER: A CDN purge provider is required in production']);
     expect(
       issuesOf(() => parseWorkerConfig({ ...baseEnv, CDN_PURGE_PROVIDER: 'cloudflare' })).map(
         (issue) => issue.split(':')[0],
@@ -67,12 +76,38 @@ describe('configuration', () => {
     expect(
       parseWorkerConfig({
         ...baseEnv,
+        ...livePayments,
         NODE_ENV: 'production',
         CDN_PURGE_PROVIDER: 'cloudflare',
         CLOUDFLARE_ZONE_ID: zoneId,
         CLOUDFLARE_API_TOKEN: 'token',
       }).cdn,
     ).toEqual({ provider: 'cloudflare', cloudflare: { zoneId, apiToken: 'token' } });
+  });
+
+  it('refuses the simulated payment provider in production and incomplete credentials', () => {
+    expect(parseApiConfig(baseEnv).payments).toMatchObject({
+      mode: 'simulated',
+      stripe: undefined,
+      commission: { rateBps: 500 },
+      minEurMinor: 100n,
+    });
+    expect(issuesOf(() => parseApiConfig({ ...baseEnv, NODE_ENV: 'production' }))).toEqual([
+      'PAYMENTS_MODE: The simulated payment provider is refused in production',
+    ]);
+    expect(issuesOf(() => parseApiConfig({ ...baseEnv, PAYMENTS_MODE: 'live' }))).toEqual([
+      'PAYMENTS_MODE: PAYMENTS_MODE=live requires the Stripe or Flutterwave credentials',
+    ]);
+    expect(
+      issuesOf(() => parseApiConfig({ ...baseEnv, FLUTTERWAVE_SECRET_KEY: 'FLWSECK_TEST-x' })),
+    ).toEqual([
+      'FLUTTERWAVE_WEBHOOK_SECRET_HASH: Set both FLUTTERWAVE_SECRET_KEY and FLUTTERWAVE_WEBHOOK_SECRET_HASH, or neither',
+    ]);
+    expect(parseApiConfig({ ...baseEnv, ...livePayments }).payments.stripe).toEqual({
+      secretKey: 'sk_test_x',
+      webhookSecret: 'whsec_x',
+      apiBaseUrl: 'https://api.stripe.com',
+    });
   });
 
   it('treats empty values as unset', () => {

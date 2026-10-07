@@ -42,6 +42,30 @@ const commonEnvSchema = z.object({
   LEGAL_TERMS_VERSION: z.string().regex(/^[A-Za-z0-9._-]{1,64}$/),
   LEGAL_PRIVACY_VERSION: z.string().regex(/^[A-Za-z0-9._-]{1,64}$/),
   NETWORK_PROFILE_VIEWS_RETENTION_DAYS: z.coerce.number().int().min(1).max(3650).default(90),
+  // Payments (section 9): providers, commission and limits (docs/architecture/payments.md).
+  PAYMENTS_MODE: z.enum(['simulated', 'live']).default('simulated'),
+  STRIPE_SECRET_KEY: z.string().min(1).optional(),
+  STRIPE_WEBHOOK_SECRET: z.string().min(1).optional(),
+  STRIPE_API_BASE_URL: z.url().default('https://api.stripe.com'),
+  FLUTTERWAVE_SECRET_KEY: z.string().min(1).optional(),
+  FLUTTERWAVE_WEBHOOK_SECRET_HASH: z.string().min(1).optional(),
+  FLUTTERWAVE_API_BASE_URL: z.url().default('https://api.flutterwave.com'),
+  PAYMENTS_SIMULATED_WEBHOOK_SECRET: z
+    .string()
+    .min(16)
+    .default('simulated-webhook-secret-for-development-only'),
+  PAYMENTS_COMMISSION_RATE_BPS: z.coerce.number().int().min(0).max(10_000).default(500),
+  PAYMENTS_COMMISSION_VERSION: z
+    .string()
+    .regex(/^[A-Za-z0-9._-]{1,32}$/)
+    .default('2026-10'),
+  PAYMENTS_SESSION_TTL_MINUTES: z.coerce.number().int().min(30).max(1440).default(60),
+  PAYMENTS_MIN_EUR_MINOR: z.coerce.number().int().min(1).default(100),
+  PAYMENTS_MAX_EUR_MINOR: z.coerce.number().int().min(1).default(1_000_000),
+  PAYMENTS_CONTRIBUTIONS_PER_HOUR: z.coerce.number().int().min(1).default(10),
+  PAYMENTS_SESSIONS_PER_METHOD_PER_HOUR: z.coerce.number().int().min(1).default(5),
+  PAYMENTS_ENHANCED_VERIFICATION_EUR_MINOR: z.coerce.number().int().min(1).default(100_000),
+  PAYMENTS_ANONYMOUS_DONATIONS: booleanFromString.default(false),
 });
 
 const apiEnvSchema = commonEnvSchema.extend({
@@ -106,6 +130,7 @@ const workerEnvSchema = commonEnvSchema.extend({
   CONTENT_LINK_PREVIEW_TIMEOUT_MS: z.coerce.number().int().positive().default(5000),
   CONTENT_LINK_PREVIEW_MAX_BYTES: z.coerce.number().int().positive().default(1_048_576),
   PROJECTS_ENDING_SOON_HOURS: z.coerce.number().int().min(1).max(2160).default(72),
+  PAYMENTS_RECONCILIATION_LOOKBACK_DAYS: z.coerce.number().int().min(1).max(90).default(3),
   CDN_PURGE_PROVIDER: z.enum(['none', 'cloudflare']).default('none'),
   CLOUDFLARE_ZONE_ID: z
     .string()
@@ -127,6 +152,51 @@ function requireMailCredentials(env: z.infer<typeof commonEnvSchema>, ctx: z.Ref
       code: 'custom',
       path: ['RESEND_API_KEY'],
       message: 'Required when MAIL_TRANSPORT=resend',
+    });
+  }
+}
+
+/**
+ * A provider is enabled with its secret key and its webhook secret; the simulated provider is
+ * refused in production (ADR 0052), where at least one live provider is required.
+ */
+function requirePaymentProviders(env: z.infer<typeof commonEnvSchema>, ctx: z.RefinementCtx): void {
+  const pairs = [
+    ['STRIPE_SECRET_KEY', 'STRIPE_WEBHOOK_SECRET'],
+    ['FLUTTERWAVE_SECRET_KEY', 'FLUTTERWAVE_WEBHOOK_SECRET_HASH'],
+  ] as const;
+  for (const [key, secret] of pairs) {
+    if ((env[key] === undefined) !== (env[secret] === undefined)) {
+      ctx.addIssue({
+        code: 'custom',
+        path: [env[key] === undefined ? key : secret],
+        message: `Set both ${key} and ${secret}, or neither`,
+      });
+    }
+  }
+  if (env.NODE_ENV === 'production' && env.PAYMENTS_MODE === 'simulated') {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['PAYMENTS_MODE'],
+      message: 'The simulated payment provider is refused in production',
+    });
+  }
+  if (
+    env.PAYMENTS_MODE === 'live' &&
+    env.STRIPE_SECRET_KEY === undefined &&
+    env.FLUTTERWAVE_SECRET_KEY === undefined
+  ) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['PAYMENTS_MODE'],
+      message: 'PAYMENTS_MODE=live requires the Stripe or Flutterwave credentials',
+    });
+  }
+  if (env.PAYMENTS_MIN_EUR_MINOR > env.PAYMENTS_MAX_EUR_MINOR) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['PAYMENTS_MIN_EUR_MINOR'],
+      message: 'Must not exceed PAYMENTS_MAX_EUR_MINOR',
     });
   }
 }
@@ -153,6 +223,7 @@ function requireCompleteOAuthCredentials(
 
 export const apiEnv = apiEnvSchema
   .superRefine(requireMailCredentials)
+  .superRefine(requirePaymentProviders)
   .superRefine(requireCompleteOAuthCredentials);
 /** The interval override replaces every cron pattern: tests and local debugging only. */
 function refuseScheduleOverrideInProduction(
@@ -194,6 +265,7 @@ function requireCdnPurge(env: z.infer<typeof workerEnvSchema>, ctx: z.Refinement
 
 export const workerEnv = workerEnvSchema
   .superRefine(requireMailCredentials)
+  .superRefine(requirePaymentProviders)
   .superRefine(refuseScheduleOverrideInProduction)
   .superRefine(requireCdnPurge);
 
