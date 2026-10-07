@@ -18,6 +18,7 @@ src/
     database/        provider Drizzle, TransactionManager (transaction courante via AsyncLocalStorage)
     outbox/ inbox/ idempotency/ queue/ maintenance/
     realtime/ storage/ mailer/ feature-flags/ audit/
+    outbound/        client HTTP sortant protégé contre le SSRF (aperçus de liens, imports d'images)
     http/ observability/ health/ openapi/
   modules/           un dossier par module métier (domain, application, infrastructure, interface)
 test/
