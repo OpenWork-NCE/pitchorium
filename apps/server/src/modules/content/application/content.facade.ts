@@ -75,6 +75,12 @@ export class ContentFacade implements OnModuleInit {
     return post && !post.deletedAt ? post.authorId : null;
   }
 
+  /** Publication of a live comment, null when unknown or deleted (reactions to a comment). */
+  async commentPostId(commentId: string): Promise<string | null> {
+    const comment = await this.content.findComment(commentId);
+    return comment && !comment.deletedAt ? comment.postId : null;
+  }
+
   /** Called at startup by the projects module. */
   registerProjectLinkValidator(validator: ProjectLinkValidator): void {
     this.projects.register(validator);
