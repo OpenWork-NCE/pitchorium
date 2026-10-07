@@ -1,18 +1,55 @@
 import { Injectable, type OnModuleInit } from '@nestjs/common';
-import { type ProjectModerationStatus, uuidV7Schema } from '@pitchorium/contracts';
-import { DomainError, type Money } from '../../../platform/kernel';
+import {
+  type FundingInstrument,
+  type ProjectModerationStatus,
+  type ProjectStatus,
+  type ProjectTeamRole,
+  type RewardInstrument,
+  uuidV7Schema,
+} from '@pitchorium/contracts';
+import { DomainError, Money } from '../../../platform/kernel';
 import { ContentFacade } from '../../content';
 import { MediaFacade, type MediaResourceRef } from '../../media';
 import { NetworkFacade } from '../../network';
 import { OrganizationsFacade } from '../../organizations';
-import type { ReservationStatus } from '../domain/rewards';
-import { FundingService, type FundingSnapshot } from './funding.service';
+import { isOpen } from '../domain/project';
+import { available, type ReservationStatus } from '../domain/rewards';
+import { type FundingReversal, FundingService, type FundingSnapshot } from './funding.service';
 import { PROJECT_INTEREST_RESOURCE } from './interests.service';
 import { PROJECT_FOLLOW_TARGET, isShowable, ProjectReadsService } from './project-reads.service';
 import { PROJECT_RESOURCE, ProjectsService } from './projects.service';
 import { ProjectRepository } from './ports';
 import { RewardsService } from './rewards.service';
 import { PROJECT_UPDATE_RESOURCE, visibilityOf } from './updates.service';
+
+/** What the payments module needs to know of a project before and after a contribution. */
+export interface FundableProject {
+  id: string;
+  slug: string;
+  title: string;
+  /** Displayed holder: the payout account and the KYC are theirs. */
+  ownerId: string;
+  organizationId: string | null;
+  status: ProjectStatus;
+  /** Label currency of the project (EUR, ADR 0037). */
+  currency: string;
+  instruments: FundingInstrument[];
+  /** Published, not closed, live and visible: contributions are accepted. */
+  open: boolean;
+  /** Published, live and visible: the project shows to members. */
+  showable: boolean;
+  endsAt: Date | null;
+}
+
+export interface FundableReward {
+  id: string;
+  projectId: string;
+  title: string;
+  minAmount: Money;
+  instruments: RewardInstrument[];
+  /** Units left, null when unlimited. */
+  available: number | null;
+}
 
 /**
  * Public facade of the projects module: collected amounts and reward reservations for the
@@ -96,9 +133,66 @@ export class ProjectsFacade implements OnModuleInit {
     return this.funding.applyFunding(contributionId, projectId, amount);
   }
 
-  /** Reverses an applied contribution (refund, chargeback), once. */
-  reverseFunding(contributionId: string): Promise<FundingSnapshot> {
-    return this.funding.reverseFunding(contributionId);
+  /**
+   * Reverses all of an applied contribution, or the part given by a reversal (partial refund,
+   * lost dispute), once per reversal.
+   */
+  reverseFunding(contributionId: string, reversal?: FundingReversal): Promise<FundingSnapshot> {
+    return this.funding.reverseFunding(contributionId, reversal);
+  }
+
+  /** Collected amount of a live project, null when unknown or deleted. */
+  fundingSnapshot(projectId: string): Promise<FundingSnapshot | null> {
+    return this.funding.snapshotOf(projectId);
+  }
+
+  async fundable(projectId: string): Promise<FundableProject | null> {
+    return (await this.fundables([projectId])).get(projectId) ?? null;
+  }
+
+  /** Live projects by id (deleted ones are absent). */
+  async fundables(projectIds: readonly string[]): Promise<Map<string, FundableProject>> {
+    const projects = (await this.projects.findProjects(projectIds)).filter(
+      (project) => !project.deletedAt,
+    );
+    return new Map(
+      projects.map((project) => [
+        project.id,
+        {
+          id: project.id,
+          slug: project.slug,
+          title: project.title,
+          ownerId: project.ownerId,
+          organizationId: project.organizationId,
+          status: project.status,
+          currency: project.currency,
+          instruments: project.instruments,
+          open: isOpen(project) && isShowable(project),
+          showable: isShowable(project),
+          endsAt: project.endsAt,
+        },
+      ]),
+    );
+  }
+
+  async reward(rewardId: string): Promise<FundableReward | null> {
+    const reward = await this.projects.findReward(rewardId);
+    if (!reward) return null;
+    const project = await this.projects.findProject(reward.projectId);
+    if (!project || project.deletedAt) return null;
+    return {
+      id: reward.id,
+      projectId: reward.projectId,
+      title: reward.title,
+      minAmount: Money.of(reward.minAmountMinor, project.currency),
+      instruments: reward.instruments,
+      available: available(reward),
+    };
+  }
+
+  /** Active role of a member in the team of a project, null otherwise. */
+  teamRoleOf(projectId: string, userId: string): Promise<ProjectTeamRole | null> {
+    return this.reads.teamRoleOf(projectId, userId);
   }
 
   reserve(rewardId: string, contributionId: string): Promise<ReservationStatus> {

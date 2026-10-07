@@ -8,6 +8,12 @@ import { ProjectFunded, ProjectUpdated, TierUnlocked } from '../domain/project-e
 import { ProjectEventsRecorder } from './project-events.recorder';
 import { ProjectRepository } from './ports';
 
+export interface FundingReversal {
+  /** Identifier of the refund or dispute in the payments module. */
+  reversalId: string;
+  amount: Money;
+}
+
 export interface FundingSnapshot {
   projectId: string;
   status: ProjectStatus;
@@ -17,8 +23,8 @@ export interface FundingSnapshot {
 
 /**
  * Collected amounts, for the payments module (ADR 0038, ADR 0039): a paid contribution is
- * applied once and reversed once, idempotently by its identifier, under a lock of the project
- * row. Applying updates the total, unlocks the reached tiers, and makes the project funded
+ * applied once by its identifier and reversed in one or several parts, each once by its own
+ * identifier, under a lock of the project row. Applying updates the total, unlocks the reached tiers, and makes the project funded
  * when the goal is reached; the first one locks the amounts.
  */
 @Injectable()
@@ -61,24 +67,67 @@ export class FundingService {
         amountMinor: amount.amountMinor,
         currency: amount.currency,
         appliedAt: now,
+        reversedMinor: 0n,
         reversedAt: null,
       });
       return this.change(project, amount.amountMinor, 1, now);
     });
   }
 
-  reverseFunding(contributionId: string): Promise<FundingSnapshot> {
+  /**
+   * Reverses all or part of an applied contribution (partial refund, lost dispute), once per
+   * reversal identifier. Without a reversal, the remaining amount is reversed under the
+   * identifier of the contribution. The contribution stops counting when fully reversed.
+   */
+  reverseFunding(contributionId: string, reversal?: FundingReversal): Promise<FundingSnapshot> {
     return this.transactions.run(async () => {
-      const entry = await this.projects.findFundingEntry(contributionId);
-      if (!entry) {
+      const found = await this.projects.findFundingEntry(contributionId);
+      if (!found) {
         throw new DomainError('PROJECTS_CONTRIBUTION_NOT_FOUND', 'Contribution not found');
       }
-      const project = await this.lockProject(entry.projectId);
-      if (entry.reversedAt) return snapshot(project);
+      const project = await this.lockProject(found.projectId);
+      // Read again under the lock of the project: a concurrent reversal may have won.
+      const entry = (await this.projects.findFundingEntry(contributionId)) ?? found;
+      const reversalId = reversal?.reversalId ?? contributionId;
+      const remaining = entry.amountMinor - entry.reversedMinor;
+      const amountMinor = reversal?.amount.amountMinor ?? remaining;
+      const existing = await this.projects.findFundingReversal(reversalId);
+      if (existing) {
+        const same =
+          existing.contributionId === contributionId &&
+          (!reversal || existing.amountMinor === reversal.amount.amountMinor);
+        if (!same) {
+          throw new DomainError(
+            'PROJECTS_CONTRIBUTION_CONFLICT',
+            'The reversal was already applied with other values',
+          );
+        }
+        return snapshot(project);
+      }
+      if (!reversal && remaining === 0n) return snapshot(project);
+      if (reversal && reversal.amount.currency !== entry.currency) {
+        throw new DomainError('PROJECTS_CURRENCY_NOT_SUPPORTED', 'Reversal in another currency');
+      }
+      if (amountMinor <= 0n || amountMinor > remaining) {
+        throw new DomainError(
+          'PROJECTS_REVERSAL_INVALID',
+          'A reversal is positive and at most the amount not yet reversed',
+        );
+      }
       const now = this.clock.now();
-      await this.projects.markFundingReversed(contributionId, now);
-      return this.change(project, -entry.amountMinor, -1, now);
+      const fullyReversed = amountMinor === remaining;
+      await this.projects.insertFundingReversal(
+        { reversalId, contributionId, amountMinor, currency: entry.currency, reversedAt: now },
+        fullyReversed,
+      );
+      return this.change(project, -amountMinor, fullyReversed ? -1 : 0, now);
     });
+  }
+
+  /** Collected amount and number of contributions of a project, for the payments module. */
+  async snapshotOf(projectId: string): Promise<FundingSnapshot | null> {
+    const project = await this.projects.findProject(projectId);
+    return project && !project.deletedAt ? snapshot(project) : null;
   }
 
   private async change(

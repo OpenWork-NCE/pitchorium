@@ -112,6 +112,7 @@
   "PROJECTS_NOT_OPEN": "The project is not published.",
   "PROJECTS_CONTRIBUTION_CONFLICT": "This contribution was already recorded with other values.",
   "PROJECTS_CONTRIBUTION_NOT_FOUND": "Contribution not found.",
+  "PROJECTS_REVERSAL_INVALID": "This amount exceeds the part of the contribution not yet reversed.",
   "auth": {
     "USER_NOT_FOUND": "This account could not be found.",
     "FAILED_TO_CREATE_USER": "The account could not be created. Please try again.",

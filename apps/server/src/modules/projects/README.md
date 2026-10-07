@@ -16,7 +16,7 @@ Projets et campagnes (cahier des charges §11, avec §9.1, §9.3, §10.2, §10.3
 - Durée de 30 à 90 jours, date de fin calculée à la publication, sans prolongation.
 - Financement flexible : à l'échéance, les paliers atteints restent acquis, sans remboursement automatique ; l'objectif peut être dépassé, le projet reste ouvert jusqu'à sa date de fin.
 - Verrouillage : après la première contribution payée, l'objectif, les seuils et les montants minimums des contreparties sont verrouillés (`PROJECTS_FUNDING_LOCKED`) ; les textes restent modifiables et toute modification d'un projet publié est auditée (`projects.project-updated`).
-- Montants collectés : `ProjectsFacade.applyFunding(contributionId, projectId, Money)` et `reverseFunding(contributionId)`, idempotentes par contribution (`PROJECTS_CONTRIBUTION_CONFLICT` pour la même contribution avec d'autres valeurs), sous verrou de la ligne du projet : total, nombre de contributions, paliers débloqués, passage à `funded`, et retour à `funding` si une annulation repasse sous l'objectif avant l'échéance. Jusqu'au module payments, seuls les tests et `pnpm db:seed:dev` les appellent.
+- Montants collectés : `ProjectsFacade.applyFunding(contributionId, projectId, Money)`, idempotente par contribution (`PROJECTS_CONTRIBUTION_CONFLICT` pour la même contribution avec d'autres valeurs), et `reverseFunding(contributionId, { reversalId, amount }?)`, qui annule tout ou partie d'une contribution appliquée (remboursement partiel ou total, litige perdu), une fois par identifiant d'annulation (`funding_reversals`), sans dépasser la part non encore annulée (`PROJECTS_REVERSAL_INVALID`) ; sans annulation précisée, le reste est annulé sous l'identifiant de la contribution. Sous verrou de la ligne du projet : total, nombre de contributions (une contribution cesse de compter quand elle est entièrement annulée), paliers débloqués, passage à `funded`, et retour à `funding` si une annulation repasse sous l'objectif avant l'échéance. Le module payments les appelle.
 
 ## Contreparties (ADR 0041)
 
@@ -67,11 +67,11 @@ Les routes `:projectId` passent par `ProjectResolver` : un projet supprimé, ou 
 
 ## Schéma `projects`
 
-`projects` (index de la vitrine et des projets ouverts par date de fin), `slug_history`, `team_members`, `tiers`, `rewards`, `reward_reservations`, `funding_entries`, `updates`, `interests`.
+`projects` (index de la vitrine et des projets ouverts par date de fin), `slug_history`, `team_members`, `tiers`, `rewards`, `reward_reservations`, `funding_entries` (montant appliqué et part annulée), `funding_reversals`, `updates`, `interests`.
 
 ## Façade publique (`index.ts`)
 
-`ProjectsFacade` : `applyFunding`, `reverseFunding`, `reserve`, `confirm`, `release`, `setModerationStatus`, `setUpdateModerationStatus` ; `PROJECT_FOLLOW_TARGET` ; types `FundingSnapshot`, `ReservationStatus` ; classes d'événements. Au démarrage, la façade enregistre : le type de cible de suivi `project` (network), le validateur de rattachement des publications et la source d'actualités du fil (content), les projets portés (organizations ; les projets soutenus viendront du module payments), et les règles de lecture des fichiers privés de `project`, `project_update` et `project_interest` (media).
+`ProjectsFacade` : `applyFunding`, `reverseFunding`, `fundingSnapshot`, `fundable` et `fundables` (statut, porteur, instruments, ouverture aux contributions), `reward` (montant minimum, instruments, unités restantes), `teamRoleOf`, `reserve`, `confirm`, `release`, `setModerationStatus`, `setUpdateModerationStatus` ; `PROJECT_FOLLOW_TARGET` ; types `FundableProject`, `FundableReward`, `FundingReversal`, `FundingSnapshot`, `ReservationStatus` ; classes d'événements. Au démarrage, la façade enregistre : le type de cible de suivi `project` (network), le validateur de rattachement des publications et la source d'actualités du fil (content), les projets portés (organizations ; les projets soutenus viendront du module payments), et les règles de lecture des fichiers privés de `project`, `project_update` et `project_interest` (media).
 
 ## Événements émis
 

@@ -1,6 +1,10 @@
 /** Public facade of the projects module: the only file other modules may import. */
-export { ProjectsFacade } from './application/projects.facade';
-export type { FundingSnapshot } from './application/funding.service';
+export {
+  type FundableProject,
+  type FundableReward,
+  ProjectsFacade,
+} from './application/projects.facade';
+export type { FundingReversal, FundingSnapshot } from './application/funding.service';
 export { PROJECT_FOLLOW_TARGET } from './application/project-reads.service';
 export type { ReservationStatus } from './domain/rewards';
 export {

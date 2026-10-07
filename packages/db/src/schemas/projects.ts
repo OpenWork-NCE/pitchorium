@@ -186,9 +186,29 @@ export const projectsFundingEntries = projectsSchema.table(
     amountMinor: minorUnits('amount_minor').notNull(),
     currency: text('currency').notNull(),
     appliedAt: timestamptz('applied_at').notNull(),
+    /** Sum of the reversals (partial refunds, lost disputes), at most `amount_minor`. */
+    reversedMinor: minorUnits('reversed_minor')
+      .notNull()
+      .default(sql`0`),
+    /** Set when the whole amount is reversed. */
     reversedAt: timestamptz('reversed_at'),
   },
   (table) => [index('funding_entries_project_id_idx').on(table.projectId)],
+);
+
+/** Reversals of an applied contribution, once each by its identifier (refund, dispute). */
+export const projectsFundingReversals = projectsSchema.table(
+  'funding_reversals',
+  {
+    reversalId: uuid('reversal_id').primaryKey(),
+    contributionId: uuid('contribution_id')
+      .notNull()
+      .references(() => projectsFundingEntries.contributionId, { onDelete: 'cascade' }),
+    amountMinor: minorUnits('amount_minor').notNull(),
+    currency: text('currency').notNull(),
+    reversedAt: timestamptz('reversed_at').notNull(),
+  },
+  (table) => [index('funding_reversals_contribution_id_idx').on(table.contributionId)],
 );
 
 /** Campaign updates (§11.3), shown in the feed of the followers of the project. */

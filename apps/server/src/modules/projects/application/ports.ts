@@ -104,7 +104,12 @@ export abstract class ProjectRepository {
 
   abstract findFundingEntry(contributionId: string): Promise<FundingEntryRecord | null>;
   abstract insertFundingEntry(entry: FundingEntryRecord): Promise<void>;
-  abstract markFundingReversed(contributionId: string, at: Date): Promise<void>;
+  abstract findFundingReversal(reversalId: string): Promise<FundingReversalRecord | null>;
+  /** Records a reversal and adds it to the reversed amount of its entry. */
+  abstract insertFundingReversal(
+    reversal: FundingReversalRecord,
+    fullyReversed: boolean,
+  ): Promise<void>;
 
   abstract insertUpdate(update: UpdateRecord): Promise<void>;
   abstract findUpdate(id: string): Promise<UpdateRecord | null>;
@@ -139,5 +144,14 @@ export interface FundingEntryRecord {
   amountMinor: bigint;
   currency: string;
   appliedAt: Date;
+  reversedMinor: bigint;
   reversedAt: Date | null;
+}
+
+export interface FundingReversalRecord {
+  reversalId: string;
+  contributionId: string;
+  amountMinor: bigint;
+  currency: string;
+  reversedAt: Date;
 }

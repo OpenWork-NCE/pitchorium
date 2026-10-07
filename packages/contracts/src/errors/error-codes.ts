@@ -238,6 +238,10 @@ export const errorCodes = {
     title: 'The contribution was already applied with other values',
   },
   PROJECTS_CONTRIBUTION_NOT_FOUND: { status: 404, title: 'Contribution not found' },
+  PROJECTS_REVERSAL_INVALID: {
+    status: 409,
+    title: 'The reversal exceeds the amount of the contribution not yet reversed',
+  },
   INTERNAL_ERROR: { status: 500, title: 'Internal error' },
   SERVICE_UNAVAILABLE: { status: 503, title: 'Service unavailable' },
 } as const satisfies Record<string, ErrorCodeDefinition>;

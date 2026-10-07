@@ -26,6 +26,7 @@ import {
 } from '@pitchorium/db/orm';
 import {
   projectsFundingEntries,
+  projectsFundingReversals,
   projectsInterests,
   projectsProjects,
   projectsRewardReservations,
@@ -39,6 +40,7 @@ import { TransactionManager } from '../../../platform/database';
 import type { KeysetPosition } from '../../../platform/kernel';
 import {
   type FundingEntryRecord,
+  type FundingReversalRecord,
   type ProjectPatch,
   ProjectRepository,
   type RewardPatch,
@@ -482,11 +484,26 @@ export class DrizzleProjectsRepository extends ProjectRepository {
     await this.db.insert(projectsFundingEntries).values(entry);
   }
 
-  async markFundingReversed(contributionId: string, at: Date): Promise<void> {
+  async findFundingReversal(reversalId: string): Promise<FundingReversalRecord | null> {
+    const [row] = await this.db
+      .select()
+      .from(projectsFundingReversals)
+      .where(eq(projectsFundingReversals.reversalId, reversalId));
+    return row ?? null;
+  }
+
+  async insertFundingReversal(
+    reversal: FundingReversalRecord,
+    fullyReversed: boolean,
+  ): Promise<void> {
+    await this.db.insert(projectsFundingReversals).values(reversal);
     await this.db
       .update(projectsFundingEntries)
-      .set({ reversedAt: at })
-      .where(eq(projectsFundingEntries.contributionId, contributionId));
+      .set({
+        reversedMinor: sql`${projectsFundingEntries.reversedMinor} + ${reversal.amountMinor}`,
+        ...(fullyReversed ? { reversedAt: reversal.reversedAt } : {}),
+      })
+      .where(eq(projectsFundingEntries.contributionId, reversal.contributionId));
   }
 
   async insertUpdate(update: UpdateRecord): Promise<void> {
