@@ -37,6 +37,1114 @@ export interface HealthResponseDtoOutput {
   checks: HealthResponseDtoOutputChecks;
 }
 
+export interface LegalVersionsDtoOutput {
+  termsVersion: string;
+  privacyVersion: string;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  minimumAge: number;
+}
+
+export interface LegalAcceptanceRequestDto {
+  /** @pattern ^[A-Za-z0-9._-]{1,64}$ */
+  termsVersion: string;
+  /** @pattern ^[A-Za-z0-9._-]{1,64}$ */
+  privacyVersion: string;
+  adultDeclaration: true;
+}
+
+export type LegalStatusDtoOutputCurrent = {
+  termsVersion: string;
+  privacyVersion: string;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  minimumAge: number;
+};
+
+export interface LegalStatusDtoOutput {
+  upToDate: boolean;
+  acceptedTermsVersion: string[];
+  acceptedPrivacyVersion: string[];
+  adultDeclaredAt: string | null;
+  current: LegalStatusDtoOutputCurrent;
+}
+
+export type PreferencesDtoLocale = (typeof PreferencesDtoLocale)[keyof typeof PreferencesDtoLocale];
+
+export const PreferencesDtoLocale = {
+  fr: 'fr',
+  en: 'en',
+  sw: 'sw',
+  wo: 'wo',
+  ln: 'ln',
+} as const;
+
+export interface PreferencesDto {
+  locale: PreferencesDtoLocale;
+}
+
+export type PreferencesDtoOutputLocale =
+  (typeof PreferencesDtoOutputLocale)[keyof typeof PreferencesDtoOutputLocale];
+
+export const PreferencesDtoOutputLocale = {
+  fr: 'fr',
+  en: 'en',
+  sw: 'sw',
+  wo: 'wo',
+  ln: 'ln',
+} as const;
+
+export interface PreferencesDtoOutput {
+  locale: PreferencesDtoOutputLocale;
+}
+
+export type ActionPrerequisitesDtoOutputAction =
+  (typeof ActionPrerequisitesDtoOutputAction)[keyof typeof ActionPrerequisitesDtoOutputAction];
+
+export const ActionPrerequisitesDtoOutputAction = {
+  accountread: 'account.read',
+  accountpreferencesupdate: 'account.preferences.update',
+  accountlegalaccept: 'account.legal.accept',
+  profileread: 'profile.read',
+  profileupdate: 'profile.update',
+  accessrolesread: 'access.roles.read',
+  accessrolesmanage: 'access.roles.manage',
+  projectpublish: 'project.publish',
+} as const;
+
+export type ActionPrerequisitesDtoOutputCode =
+  (typeof ActionPrerequisitesDtoOutputCode)[keyof typeof ActionPrerequisitesDtoOutputCode] | null;
+
+export const ActionPrerequisitesDtoOutputCode = {
+  BAD_REQUEST: 'BAD_REQUEST',
+  VALIDATION_FAILED: 'VALIDATION_FAILED',
+  IDEMPOTENCY_KEY_MISSING: 'IDEMPOTENCY_KEY_MISSING',
+  UNAUTHENTICATED: 'UNAUTHENTICATED',
+  FORBIDDEN: 'FORBIDDEN',
+  NOT_FOUND: 'NOT_FOUND',
+  CONFLICT: 'CONFLICT',
+  IDEMPOTENCY_REQUEST_IN_PROGRESS: 'IDEMPOTENCY_REQUEST_IN_PROGRESS',
+  PAYLOAD_TOO_LARGE: 'PAYLOAD_TOO_LARGE',
+  UNSUPPORTED_MEDIA_TYPE: 'UNSUPPORTED_MEDIA_TYPE',
+  IDEMPOTENCY_KEY_REUSED: 'IDEMPOTENCY_KEY_REUSED',
+  RATE_LIMITED: 'RATE_LIMITED',
+  IDENTITY_USER_NOT_FOUND: 'IDENTITY_USER_NOT_FOUND',
+  IDENTITY_LEGAL_VERSION_OUTDATED: 'IDENTITY_LEGAL_VERSION_OUTDATED',
+  IDENTITY_LOCALE_NOT_ACTIVE: 'IDENTITY_LOCALE_NOT_ACTIVE',
+  ACCESS_ORIGIN_NOT_ALLOWED: 'ACCESS_ORIGIN_NOT_ALLOWED',
+  ACCESS_PREREQUISITES_MISSING: 'ACCESS_PREREQUISITES_MISSING',
+  ACCESS_ACCOUNT_SUSPENDED: 'ACCESS_ACCOUNT_SUSPENDED',
+  ACCESS_LAST_ADMIN: 'ACCESS_LAST_ADMIN',
+  PROFILES_PROFILE_NOT_FOUND: 'PROFILES_PROFILE_NOT_FOUND',
+  PROFILES_FACET_NOT_FOUND: 'PROFILES_FACET_NOT_FOUND',
+  PROFILES_FACET_ALREADY_EXISTS: 'PROFILES_FACET_ALREADY_EXISTS',
+  PROFILES_HANDLE_TAKEN: 'PROFILES_HANDLE_TAKEN',
+  PROFILES_HANDLE_RESERVED: 'PROFILES_HANDLE_RESERVED',
+  PROFILES_COMPANY_COUNTRY_NOT_ELIGIBLE: 'PROFILES_COMPANY_COUNTRY_NOT_ELIGIBLE',
+  PROFILES_CONTRIBUTOR_HAT_REQUIRED: 'PROFILES_CONTRIBUTOR_HAT_REQUIRED',
+  PROFILES_TICKET_RANGE_INVALID: 'PROFILES_TICKET_RANGE_INVALID',
+  PROFILES_UNKNOWN_REFERENCE: 'PROFILES_UNKNOWN_REFERENCE',
+  INTERNAL_ERROR: 'INTERNAL_ERROR',
+  SERVICE_UNAVAILABLE: 'SERVICE_UNAVAILABLE',
+} as const;
+
+export type ActionPrerequisitesDtoOutputMissingItem =
+  (typeof ActionPrerequisitesDtoOutputMissingItem)[keyof typeof ActionPrerequisitesDtoOutputMissingItem];
+
+export const ActionPrerequisitesDtoOutputMissingItem = {
+  legal_acceptance: 'legal_acceptance',
+  email_verified: 'email_verified',
+  kyc_verified: 'kyc_verified',
+  two_factor: 'two_factor',
+  profileentrepreneur_facet: 'profile.entrepreneur_facet',
+  profilecontributor_facet: 'profile.contributor_facet',
+} as const;
+
+export interface ActionPrerequisitesDtoOutput {
+  action: ActionPrerequisitesDtoOutputAction;
+  allowed: boolean;
+  code: ActionPrerequisitesDtoOutputCode;
+  missing: ActionPrerequisitesDtoOutputMissingItem[];
+}
+
+export type UserRolesDtoOutputAssignmentsItemRole =
+  (typeof UserRolesDtoOutputAssignmentsItemRole)[keyof typeof UserRolesDtoOutputAssignmentsItemRole];
+
+export const UserRolesDtoOutputAssignmentsItemRole = {
+  moderator: 'moderator',
+  admin: 'admin',
+} as const;
+
+export type UserRolesDtoOutputAssignmentsItem = {
+  role: UserRolesDtoOutputAssignmentsItemRole;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  grantedAt: string;
+  grantedBy: string | null;
+};
+
+export interface UserRolesDtoOutput {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  userId: string;
+  assignments: UserRolesDtoOutputAssignmentsItem[];
+}
+
+export type GrantRoleRequestDtoRole =
+  (typeof GrantRoleRequestDtoRole)[keyof typeof GrantRoleRequestDtoRole];
+
+export const GrantRoleRequestDtoRole = {
+  moderator: 'moderator',
+  admin: 'admin',
+} as const;
+
+export interface GrantRoleRequestDto {
+  role: GrantRoleRequestDtoRole;
+}
+
+export type CurrentUserDtoOutputUser = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  /** @pattern ^(?:[A-Za-z0-9_'+\-]+\.)*[A-Za-z0-9_'+\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\-]*\.)+[A-Za-z]{2,}$ */
+  email: string;
+  emailVerified: boolean;
+  name: string;
+  /** @nullable */
+  image: string | null;
+  twoFactorEnabled: boolean;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+};
+
+export type CurrentUserDtoOutputPreferencesLocale =
+  (typeof CurrentUserDtoOutputPreferencesLocale)[keyof typeof CurrentUserDtoOutputPreferencesLocale];
+
+export const CurrentUserDtoOutputPreferencesLocale = {
+  fr: 'fr',
+  en: 'en',
+  sw: 'sw',
+  wo: 'wo',
+  ln: 'ln',
+} as const;
+
+export type CurrentUserDtoOutputPreferences = {
+  locale: CurrentUserDtoOutputPreferencesLocale;
+};
+
+export type CurrentUserDtoOutputActiveLocalesItem =
+  (typeof CurrentUserDtoOutputActiveLocalesItem)[keyof typeof CurrentUserDtoOutputActiveLocalesItem];
+
+export const CurrentUserDtoOutputActiveLocalesItem = {
+  fr: 'fr',
+  en: 'en',
+  sw: 'sw',
+  wo: 'wo',
+  ln: 'ln',
+} as const;
+
+export type CurrentUserDtoOutputLegalCurrent = {
+  termsVersion: string;
+  privacyVersion: string;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  minimumAge: number;
+};
+
+export type CurrentUserDtoOutputLegal = {
+  upToDate: boolean;
+  /** @nullable */
+  acceptedTermsVersion: string | null;
+  /** @nullable */
+  acceptedPrivacyVersion: string | null;
+  adultDeclaredAt: string | null;
+  current: CurrentUserDtoOutputLegalCurrent;
+};
+
+export type CurrentUserDtoOutputRolesItem =
+  (typeof CurrentUserDtoOutputRolesItem)[keyof typeof CurrentUserDtoOutputRolesItem];
+
+export const CurrentUserDtoOutputRolesItem = {
+  member: 'member',
+  moderator: 'moderator',
+  admin: 'admin',
+} as const;
+
+export type CurrentUserDtoOutputTrust = {
+  emailVerified: boolean;
+  kycVerified: boolean;
+  suspended: boolean;
+};
+
+export type CurrentUserDtoOutputProfileIntention =
+  | (typeof CurrentUserDtoOutputProfileIntention)[keyof typeof CurrentUserDtoOutputProfileIntention]
+  | null;
+
+export const CurrentUserDtoOutputProfileIntention = {
+  carry_project: 'carry_project',
+  support_projects: 'support_projects',
+  both_or_exploring: 'both_or_exploring',
+} as const;
+
+export type CurrentUserDtoOutputProfileFacets = {
+  entrepreneur: boolean;
+  contributor: boolean;
+};
+
+export type CurrentUserDtoOutputProfile = {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  displayName: string;
+  /** @nullable */
+  headline: string | null;
+  /** @nullable */
+  avatarUrl: string | null;
+  intention: CurrentUserDtoOutputProfileIntention;
+  facets: CurrentUserDtoOutputProfileFacets;
+  publicPageEnabled: boolean;
+};
+
+export type CurrentUserDtoOutputProfileStrengthLevel =
+  (typeof CurrentUserDtoOutputProfileStrengthLevel)[keyof typeof CurrentUserDtoOutputProfileStrengthLevel];
+
+export const CurrentUserDtoOutputProfileStrengthLevel = {
+  beginner: 'beginner',
+  intermediate: 'intermediate',
+  advanced: 'advanced',
+  complete: 'complete',
+} as const;
+
+export type CurrentUserDtoOutputProfileStrengthMissingItem =
+  (typeof CurrentUserDtoOutputProfileStrengthMissingItem)[keyof typeof CurrentUserDtoOutputProfileStrengthMissingItem];
+
+export const CurrentUserDtoOutputProfileStrengthMissingItem = {
+  avatar: 'avatar',
+  display_name: 'display_name',
+  headline: 'headline',
+  location: 'location',
+  bio: 'bio',
+  languages: 'languages',
+  links: 'links',
+  cover: 'cover',
+  intention: 'intention',
+  facet: 'facet',
+} as const;
+
+export type CurrentUserDtoOutputProfileStrength = {
+  level: CurrentUserDtoOutputProfileStrengthLevel;
+  /**
+   * @minimum 0
+   * @maximum 100
+   */
+  percent: number;
+  missing: CurrentUserDtoOutputProfileStrengthMissingItem[];
+};
+
+export interface CurrentUserDtoOutput {
+  user: CurrentUserDtoOutputUser;
+  preferences: CurrentUserDtoOutputPreferences;
+  activeLocales: CurrentUserDtoOutputActiveLocalesItem[];
+  legal: CurrentUserDtoOutputLegal;
+  roles: CurrentUserDtoOutputRolesItem[];
+  trust: CurrentUserDtoOutputTrust;
+  profile: CurrentUserDtoOutputProfile;
+  profileStrength: CurrentUserDtoOutputProfileStrength;
+}
+
+export type OwnProfileDtoOutputLinks = {
+  website: string | null;
+  linkedin: string | null;
+};
+
+export type OwnProfileDtoOutputFacets = {
+  entrepreneur: boolean;
+  contributor: boolean;
+};
+
+export type OwnProfileDtoOutputEntrepreneurNeedsItem =
+  (typeof OwnProfileDtoOutputEntrepreneurNeedsItem)[keyof typeof OwnProfileDtoOutputEntrepreneurNeedsItem];
+
+export const OwnProfileDtoOutputEntrepreneurNeedsItem = {
+  funding: 'funding',
+  donation: 'donation',
+  mentoring: 'mentoring',
+  expertise: 'expertise',
+  business_partnership: 'business_partnership',
+  recruitment: 'recruitment',
+} as const;
+
+export type OwnProfileDtoOutputEntrepreneurFundingTarget = {
+  /** @pattern ^[1-9]\d{0,17}$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+} | null;
+
+export type OwnProfileDtoOutputEntrepreneur = {
+  /**
+   * @minLength 1
+   * @maxLength 120
+   */
+  companyName: string;
+  /** @pattern ^[a-z0-9_]{1,48}$ */
+  sectorCode: string;
+  /** @pattern ^[a-z0-9_]{1,48}$ */
+  stageCode: string;
+  /** @pattern ^[A-Z]{2}$ */
+  companyCountryCode: string;
+  companyCity: string | null;
+  teamSize: number | null;
+  foundedYear: number | null;
+  pitch: string | null;
+  /** @maxItems 6 */
+  needs: OwnProfileDtoOutputEntrepreneurNeedsItem[];
+  /**
+   * @maxItems 20
+   * @items.minLength 1
+   * @items.maxLength 80
+   */
+  soughtExpertise: string[];
+  fundingTarget: OwnProfileDtoOutputEntrepreneurFundingTarget;
+} | null;
+
+export type OwnProfileDtoOutputContributorHatsItem =
+  (typeof OwnProfileDtoOutputContributorHatsItem)[keyof typeof OwnProfileDtoOutputContributorHatsItem];
+
+export const OwnProfileDtoOutputContributorHatsItem = {
+  investor: 'investor',
+  patron_donor: 'patron_donor',
+  mentor: 'mentor',
+  expert: 'expert',
+  business_partner: 'business_partner',
+  recruiter: 'recruiter',
+} as const;
+
+export type OwnProfileDtoOutputContributorStructureType =
+  (typeof OwnProfileDtoOutputContributorStructureType)[keyof typeof OwnProfileDtoOutputContributorStructureType];
+
+export const OwnProfileDtoOutputContributorStructureType = {
+  individual: 'individual',
+  company: 'company',
+  ngo_association: 'ngo_association',
+  foundation: 'foundation',
+  institution: 'institution',
+  international_organization: 'international_organization',
+  cooperative: 'cooperative',
+} as const;
+
+export type OwnProfileDtoOutputContributorTicket = {
+  /** @pattern ^(0|[1-9]\d{0,17})$ */
+  minAmountMinor: string;
+  /** @pattern ^[1-9]\d{0,17}$ */
+  maxAmountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+} | null;
+
+export type OwnProfileDtoOutputContributorAcceptedInstrumentsItem =
+  (typeof OwnProfileDtoOutputContributorAcceptedInstrumentsItem)[keyof typeof OwnProfileDtoOutputContributorAcceptedInstrumentsItem];
+
+export const OwnProfileDtoOutputContributorAcceptedInstrumentsItem = {
+  donation: 'donation',
+  reward_crowdfunding: 'reward_crowdfunding',
+  love_money: 'love_money',
+  grant: 'grant',
+  honor_loan: 'honor_loan',
+  equity: 'equity',
+  convertible_bonds: 'convertible_bonds',
+} as const;
+
+export type OwnProfileDtoOutputContributorPatronageTypesItem =
+  (typeof OwnProfileDtoOutputContributorPatronageTypesItem)[keyof typeof OwnProfileDtoOutputContributorPatronageTypesItem];
+
+export const OwnProfileDtoOutputContributorPatronageTypesItem = {
+  financial: 'financial',
+  in_kind: 'in_kind',
+  skills: 'skills',
+} as const;
+
+export type OwnProfileDtoOutputContributor = {
+  /** @maxItems 6 */
+  hats: OwnProfileDtoOutputContributorHatsItem[];
+  structureType: OwnProfileDtoOutputContributorStructureType;
+  organizationName: string | null;
+  /**
+   * @maxItems 300
+   * @items.pattern ^[A-Z]{2}$
+   */
+  interventionCountryCodes: string[];
+  /**
+   * @maxItems 50
+   * @items.pattern ^[a-z0-9_]{1,48}$
+   */
+  sectorCodes: string[];
+  ticket: OwnProfileDtoOutputContributorTicket;
+  /** @maxItems 7 */
+  acceptedInstruments: OwnProfileDtoOutputContributorAcceptedInstrumentsItem[];
+  /** @maxItems 3 */
+  patronageTypes: OwnProfileDtoOutputContributorPatronageTypesItem[];
+  mentoringAvailable: boolean;
+  openToExpertMissions: boolean;
+} | null;
+
+export type OwnProfileDtoOutputIntention =
+  (typeof OwnProfileDtoOutputIntention)[keyof typeof OwnProfileDtoOutputIntention] | null;
+
+export const OwnProfileDtoOutputIntention = {
+  carry_project: 'carry_project',
+  support_projects: 'support_projects',
+  both_or_exploring: 'both_or_exploring',
+} as const;
+
+export type OwnProfileDtoOutputVisibilityEntrepreneurDetails =
+  (typeof OwnProfileDtoOutputVisibilityEntrepreneurDetails)[keyof typeof OwnProfileDtoOutputVisibilityEntrepreneurDetails];
+
+export const OwnProfileDtoOutputVisibilityEntrepreneurDetails = {
+  public: 'public',
+  members: 'members',
+  private: 'private',
+} as const;
+
+export type OwnProfileDtoOutputVisibilityContributorDetails =
+  (typeof OwnProfileDtoOutputVisibilityContributorDetails)[keyof typeof OwnProfileDtoOutputVisibilityContributorDetails];
+
+export const OwnProfileDtoOutputVisibilityContributorDetails = {
+  public: 'public',
+  members: 'members',
+  private: 'private',
+} as const;
+
+export type OwnProfileDtoOutputVisibilityNetworkLists =
+  (typeof OwnProfileDtoOutputVisibilityNetworkLists)[keyof typeof OwnProfileDtoOutputVisibilityNetworkLists];
+
+export const OwnProfileDtoOutputVisibilityNetworkLists = {
+  public: 'public',
+  members: 'members',
+  private: 'private',
+} as const;
+
+export type OwnProfileDtoOutputVisibility = {
+  publicPageEnabled: boolean;
+  entrepreneurDetails: OwnProfileDtoOutputVisibilityEntrepreneurDetails;
+  contributorDetails: OwnProfileDtoOutputVisibilityContributorDetails;
+  networkLists: OwnProfileDtoOutputVisibilityNetworkLists;
+};
+
+export type OwnProfileDtoOutputStrengthLevel =
+  (typeof OwnProfileDtoOutputStrengthLevel)[keyof typeof OwnProfileDtoOutputStrengthLevel];
+
+export const OwnProfileDtoOutputStrengthLevel = {
+  beginner: 'beginner',
+  intermediate: 'intermediate',
+  advanced: 'advanced',
+  complete: 'complete',
+} as const;
+
+export type OwnProfileDtoOutputStrengthMissingItem =
+  (typeof OwnProfileDtoOutputStrengthMissingItem)[keyof typeof OwnProfileDtoOutputStrengthMissingItem];
+
+export const OwnProfileDtoOutputStrengthMissingItem = {
+  avatar: 'avatar',
+  display_name: 'display_name',
+  headline: 'headline',
+  location: 'location',
+  bio: 'bio',
+  languages: 'languages',
+  links: 'links',
+  cover: 'cover',
+  intention: 'intention',
+  facet: 'facet',
+} as const;
+
+export type OwnProfileDtoOutputStrength = {
+  level: OwnProfileDtoOutputStrengthLevel;
+  /**
+   * @minimum 0
+   * @maximum 100
+   */
+  percent: number;
+  missing: OwnProfileDtoOutputStrengthMissingItem[];
+};
+
+export interface OwnProfileDtoOutput {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  displayName: string;
+  headline: string[];
+  bio: string[];
+  countryCode: string | null;
+  city: string[];
+  languages: string[];
+  links: OwnProfileDtoOutputLinks;
+  avatarUrl: string[];
+  avatarMediaId: string[];
+  coverMediaId: string[];
+  facets: OwnProfileDtoOutputFacets;
+  entrepreneur: OwnProfileDtoOutputEntrepreneur;
+  contributor: OwnProfileDtoOutputContributor;
+  userId: string;
+  intention: OwnProfileDtoOutputIntention;
+  visibility: OwnProfileDtoOutputVisibility;
+  strength: OwnProfileDtoOutputStrength;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  updatedAt: string;
+}
+
+export type UpdateBaseProfileDtoLinks = {
+  website: string | null;
+  linkedin: string | null;
+};
+
+export interface UpdateBaseProfileDto {
+  /**
+   * @minLength 1
+   * @maxLength 100
+   */
+  displayName?: string;
+  headline?: string | null;
+  bio?: string | null;
+  countryCode?: string | null;
+  city?: string | null;
+  /**
+   * @maxItems 20
+   * @items.pattern ^[a-z]{2}$
+   */
+  languages?: string[];
+  links?: UpdateBaseProfileDtoLinks;
+}
+
+export type SetIntentionDtoIntention =
+  (typeof SetIntentionDtoIntention)[keyof typeof SetIntentionDtoIntention] | null;
+
+export const SetIntentionDtoIntention = {
+  carry_project: 'carry_project',
+  support_projects: 'support_projects',
+  both_or_exploring: 'both_or_exploring',
+} as const;
+
+export interface SetIntentionDto {
+  intention: SetIntentionDtoIntention;
+}
+
+export interface ChangeHandleDto {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+}
+
+export type UpdateVisibilityDtoEntrepreneurDetails =
+  (typeof UpdateVisibilityDtoEntrepreneurDetails)[keyof typeof UpdateVisibilityDtoEntrepreneurDetails];
+
+export const UpdateVisibilityDtoEntrepreneurDetails = {
+  public: 'public',
+  members: 'members',
+  private: 'private',
+} as const;
+
+export type UpdateVisibilityDtoContributorDetails =
+  (typeof UpdateVisibilityDtoContributorDetails)[keyof typeof UpdateVisibilityDtoContributorDetails];
+
+export const UpdateVisibilityDtoContributorDetails = {
+  public: 'public',
+  members: 'members',
+  private: 'private',
+} as const;
+
+export type UpdateVisibilityDtoNetworkLists =
+  (typeof UpdateVisibilityDtoNetworkLists)[keyof typeof UpdateVisibilityDtoNetworkLists];
+
+export const UpdateVisibilityDtoNetworkLists = {
+  public: 'public',
+  members: 'members',
+  private: 'private',
+} as const;
+
+export interface UpdateVisibilityDto {
+  publicPageEnabled?: boolean;
+  entrepreneurDetails?: UpdateVisibilityDtoEntrepreneurDetails;
+  contributorDetails?: UpdateVisibilityDtoContributorDetails;
+  networkLists?: UpdateVisibilityDtoNetworkLists;
+}
+
+export type CreateEntrepreneurFacetDtoNeedsItem =
+  (typeof CreateEntrepreneurFacetDtoNeedsItem)[keyof typeof CreateEntrepreneurFacetDtoNeedsItem];
+
+export const CreateEntrepreneurFacetDtoNeedsItem = {
+  funding: 'funding',
+  donation: 'donation',
+  mentoring: 'mentoring',
+  expertise: 'expertise',
+  business_partnership: 'business_partnership',
+  recruitment: 'recruitment',
+} as const;
+
+export type CreateEntrepreneurFacetDtoFundingTarget = {
+  /** @pattern ^[1-9]\d{0,17}$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+} | null;
+
+export interface CreateEntrepreneurFacetDto {
+  /**
+   * @minLength 1
+   * @maxLength 120
+   */
+  companyName: string;
+  /** @pattern ^[a-z0-9_]{1,48}$ */
+  sectorCode: string;
+  /** @pattern ^[a-z0-9_]{1,48}$ */
+  stageCode: string;
+  /** @pattern ^[A-Z]{2}$ */
+  companyCountryCode: string;
+  companyCity?: string | null;
+  teamSize?: number | null;
+  foundedYear?: number | null;
+  pitch?: string | null;
+  /** @maxItems 6 */
+  needs?: CreateEntrepreneurFacetDtoNeedsItem[];
+  /**
+   * @maxItems 20
+   * @items.minLength 1
+   * @items.maxLength 80
+   */
+  soughtExpertise?: string[];
+  fundingTarget?: CreateEntrepreneurFacetDtoFundingTarget;
+}
+
+export type UpdateEntrepreneurFacetDtoNeedsItem =
+  (typeof UpdateEntrepreneurFacetDtoNeedsItem)[keyof typeof UpdateEntrepreneurFacetDtoNeedsItem];
+
+export const UpdateEntrepreneurFacetDtoNeedsItem = {
+  funding: 'funding',
+  donation: 'donation',
+  mentoring: 'mentoring',
+  expertise: 'expertise',
+  business_partnership: 'business_partnership',
+  recruitment: 'recruitment',
+} as const;
+
+export type UpdateEntrepreneurFacetDtoFundingTarget = {
+  /** @pattern ^[1-9]\d{0,17}$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+} | null;
+
+export interface UpdateEntrepreneurFacetDto {
+  /**
+   * @minLength 1
+   * @maxLength 120
+   */
+  companyName?: string;
+  /** @pattern ^[a-z0-9_]{1,48}$ */
+  sectorCode?: string;
+  /** @pattern ^[a-z0-9_]{1,48}$ */
+  stageCode?: string;
+  /** @pattern ^[A-Z]{2}$ */
+  companyCountryCode?: string;
+  companyCity?: string | null;
+  teamSize?: number | null;
+  foundedYear?: number | null;
+  pitch?: string | null;
+  /** @maxItems 6 */
+  needs?: UpdateEntrepreneurFacetDtoNeedsItem[];
+  /**
+   * @maxItems 20
+   * @items.minLength 1
+   * @items.maxLength 80
+   */
+  soughtExpertise?: string[];
+  fundingTarget?: UpdateEntrepreneurFacetDtoFundingTarget;
+}
+
+export type CreateContributorFacetDtoHatsItem =
+  (typeof CreateContributorFacetDtoHatsItem)[keyof typeof CreateContributorFacetDtoHatsItem];
+
+export const CreateContributorFacetDtoHatsItem = {
+  investor: 'investor',
+  patron_donor: 'patron_donor',
+  mentor: 'mentor',
+  expert: 'expert',
+  business_partner: 'business_partner',
+  recruiter: 'recruiter',
+} as const;
+
+export type CreateContributorFacetDtoStructureType =
+  (typeof CreateContributorFacetDtoStructureType)[keyof typeof CreateContributorFacetDtoStructureType];
+
+export const CreateContributorFacetDtoStructureType = {
+  individual: 'individual',
+  company: 'company',
+  ngo_association: 'ngo_association',
+  foundation: 'foundation',
+  institution: 'institution',
+  international_organization: 'international_organization',
+  cooperative: 'cooperative',
+} as const;
+
+export type CreateContributorFacetDtoTicket = {
+  /** @pattern ^(0|[1-9]\d{0,17})$ */
+  minAmountMinor: string;
+  /** @pattern ^[1-9]\d{0,17}$ */
+  maxAmountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+} | null;
+
+export type CreateContributorFacetDtoAcceptedInstrumentsItem =
+  (typeof CreateContributorFacetDtoAcceptedInstrumentsItem)[keyof typeof CreateContributorFacetDtoAcceptedInstrumentsItem];
+
+export const CreateContributorFacetDtoAcceptedInstrumentsItem = {
+  donation: 'donation',
+  reward_crowdfunding: 'reward_crowdfunding',
+  love_money: 'love_money',
+  grant: 'grant',
+  honor_loan: 'honor_loan',
+  equity: 'equity',
+  convertible_bonds: 'convertible_bonds',
+} as const;
+
+export type CreateContributorFacetDtoPatronageTypesItem =
+  (typeof CreateContributorFacetDtoPatronageTypesItem)[keyof typeof CreateContributorFacetDtoPatronageTypesItem];
+
+export const CreateContributorFacetDtoPatronageTypesItem = {
+  financial: 'financial',
+  in_kind: 'in_kind',
+  skills: 'skills',
+} as const;
+
+export interface CreateContributorFacetDto {
+  /** @maxItems 6 */
+  hats: CreateContributorFacetDtoHatsItem[];
+  structureType: CreateContributorFacetDtoStructureType;
+  organizationName?: string | null;
+  /**
+   * @maxItems 300
+   * @items.pattern ^[A-Z]{2}$
+   */
+  interventionCountryCodes?: string[];
+  /**
+   * @maxItems 50
+   * @items.pattern ^[a-z0-9_]{1,48}$
+   */
+  sectorCodes?: string[];
+  ticket?: CreateContributorFacetDtoTicket;
+  /** @maxItems 7 */
+  acceptedInstruments?: CreateContributorFacetDtoAcceptedInstrumentsItem[];
+  /** @maxItems 3 */
+  patronageTypes?: CreateContributorFacetDtoPatronageTypesItem[];
+  mentoringAvailable?: boolean;
+  openToExpertMissions?: boolean;
+}
+
+export type UpdateContributorFacetDtoHatsItem =
+  (typeof UpdateContributorFacetDtoHatsItem)[keyof typeof UpdateContributorFacetDtoHatsItem];
+
+export const UpdateContributorFacetDtoHatsItem = {
+  investor: 'investor',
+  patron_donor: 'patron_donor',
+  mentor: 'mentor',
+  expert: 'expert',
+  business_partner: 'business_partner',
+  recruiter: 'recruiter',
+} as const;
+
+export type UpdateContributorFacetDtoStructureType =
+  (typeof UpdateContributorFacetDtoStructureType)[keyof typeof UpdateContributorFacetDtoStructureType];
+
+export const UpdateContributorFacetDtoStructureType = {
+  individual: 'individual',
+  company: 'company',
+  ngo_association: 'ngo_association',
+  foundation: 'foundation',
+  institution: 'institution',
+  international_organization: 'international_organization',
+  cooperative: 'cooperative',
+} as const;
+
+export type UpdateContributorFacetDtoTicket = {
+  /** @pattern ^(0|[1-9]\d{0,17})$ */
+  minAmountMinor: string;
+  /** @pattern ^[1-9]\d{0,17}$ */
+  maxAmountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+} | null;
+
+export type UpdateContributorFacetDtoAcceptedInstrumentsItem =
+  (typeof UpdateContributorFacetDtoAcceptedInstrumentsItem)[keyof typeof UpdateContributorFacetDtoAcceptedInstrumentsItem];
+
+export const UpdateContributorFacetDtoAcceptedInstrumentsItem = {
+  donation: 'donation',
+  reward_crowdfunding: 'reward_crowdfunding',
+  love_money: 'love_money',
+  grant: 'grant',
+  honor_loan: 'honor_loan',
+  equity: 'equity',
+  convertible_bonds: 'convertible_bonds',
+} as const;
+
+export type UpdateContributorFacetDtoPatronageTypesItem =
+  (typeof UpdateContributorFacetDtoPatronageTypesItem)[keyof typeof UpdateContributorFacetDtoPatronageTypesItem];
+
+export const UpdateContributorFacetDtoPatronageTypesItem = {
+  financial: 'financial',
+  in_kind: 'in_kind',
+  skills: 'skills',
+} as const;
+
+export interface UpdateContributorFacetDto {
+  /** @maxItems 6 */
+  hats?: UpdateContributorFacetDtoHatsItem[];
+  structureType?: UpdateContributorFacetDtoStructureType;
+  organizationName?: string | null;
+  /**
+   * @maxItems 300
+   * @items.pattern ^[A-Z]{2}$
+   */
+  interventionCountryCodes?: string[];
+  /**
+   * @maxItems 50
+   * @items.pattern ^[a-z0-9_]{1,48}$
+   */
+  sectorCodes?: string[];
+  ticket?: UpdateContributorFacetDtoTicket;
+  /** @maxItems 7 */
+  acceptedInstruments?: UpdateContributorFacetDtoAcceptedInstrumentsItem[];
+  /** @maxItems 3 */
+  patronageTypes?: UpdateContributorFacetDtoPatronageTypesItem[];
+  mentoringAvailable?: boolean;
+  openToExpertMissions?: boolean;
+}
+
+export type ProfileViewDtoOutputLinks = {
+  website: string | null;
+  linkedin: string | null;
+};
+
+export type ProfileViewDtoOutputFacets = {
+  entrepreneur: boolean;
+  contributor: boolean;
+};
+
+export type ProfileViewDtoOutputEntrepreneurNeedsItem =
+  (typeof ProfileViewDtoOutputEntrepreneurNeedsItem)[keyof typeof ProfileViewDtoOutputEntrepreneurNeedsItem];
+
+export const ProfileViewDtoOutputEntrepreneurNeedsItem = {
+  funding: 'funding',
+  donation: 'donation',
+  mentoring: 'mentoring',
+  expertise: 'expertise',
+  business_partnership: 'business_partnership',
+  recruitment: 'recruitment',
+} as const;
+
+export type ProfileViewDtoOutputEntrepreneurFundingTarget = {
+  /** @pattern ^[1-9]\d{0,17}$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+} | null;
+
+export type ProfileViewDtoOutputEntrepreneur = {
+  /**
+   * @minLength 1
+   * @maxLength 120
+   */
+  companyName: string;
+  /** @pattern ^[a-z0-9_]{1,48}$ */
+  sectorCode: string;
+  /** @pattern ^[a-z0-9_]{1,48}$ */
+  stageCode: string;
+  /** @pattern ^[A-Z]{2}$ */
+  companyCountryCode: string;
+  companyCity: string | null;
+  teamSize: number | null;
+  foundedYear: number | null;
+  pitch: string | null;
+  /** @maxItems 6 */
+  needs: ProfileViewDtoOutputEntrepreneurNeedsItem[];
+  /**
+   * @maxItems 20
+   * @items.minLength 1
+   * @items.maxLength 80
+   */
+  soughtExpertise: string[];
+  fundingTarget: ProfileViewDtoOutputEntrepreneurFundingTarget;
+} | null;
+
+export type ProfileViewDtoOutputContributorHatsItem =
+  (typeof ProfileViewDtoOutputContributorHatsItem)[keyof typeof ProfileViewDtoOutputContributorHatsItem];
+
+export const ProfileViewDtoOutputContributorHatsItem = {
+  investor: 'investor',
+  patron_donor: 'patron_donor',
+  mentor: 'mentor',
+  expert: 'expert',
+  business_partner: 'business_partner',
+  recruiter: 'recruiter',
+} as const;
+
+export type ProfileViewDtoOutputContributorStructureType =
+  (typeof ProfileViewDtoOutputContributorStructureType)[keyof typeof ProfileViewDtoOutputContributorStructureType];
+
+export const ProfileViewDtoOutputContributorStructureType = {
+  individual: 'individual',
+  company: 'company',
+  ngo_association: 'ngo_association',
+  foundation: 'foundation',
+  institution: 'institution',
+  international_organization: 'international_organization',
+  cooperative: 'cooperative',
+} as const;
+
+export type ProfileViewDtoOutputContributorTicket = {
+  /** @pattern ^(0|[1-9]\d{0,17})$ */
+  minAmountMinor: string;
+  /** @pattern ^[1-9]\d{0,17}$ */
+  maxAmountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+} | null;
+
+export type ProfileViewDtoOutputContributorAcceptedInstrumentsItem =
+  (typeof ProfileViewDtoOutputContributorAcceptedInstrumentsItem)[keyof typeof ProfileViewDtoOutputContributorAcceptedInstrumentsItem];
+
+export const ProfileViewDtoOutputContributorAcceptedInstrumentsItem = {
+  donation: 'donation',
+  reward_crowdfunding: 'reward_crowdfunding',
+  love_money: 'love_money',
+  grant: 'grant',
+  honor_loan: 'honor_loan',
+  equity: 'equity',
+  convertible_bonds: 'convertible_bonds',
+} as const;
+
+export type ProfileViewDtoOutputContributorPatronageTypesItem =
+  (typeof ProfileViewDtoOutputContributorPatronageTypesItem)[keyof typeof ProfileViewDtoOutputContributorPatronageTypesItem];
+
+export const ProfileViewDtoOutputContributorPatronageTypesItem = {
+  financial: 'financial',
+  in_kind: 'in_kind',
+  skills: 'skills',
+} as const;
+
+export type ProfileViewDtoOutputContributor = {
+  /** @maxItems 6 */
+  hats: ProfileViewDtoOutputContributorHatsItem[];
+  structureType: ProfileViewDtoOutputContributorStructureType;
+  organizationName: string | null;
+  /**
+   * @maxItems 300
+   * @items.pattern ^[A-Z]{2}$
+   */
+  interventionCountryCodes: string[];
+  /**
+   * @maxItems 50
+   * @items.pattern ^[a-z0-9_]{1,48}$
+   */
+  sectorCodes: string[];
+  ticket: ProfileViewDtoOutputContributorTicket;
+  /** @maxItems 7 */
+  acceptedInstruments: ProfileViewDtoOutputContributorAcceptedInstrumentsItem[];
+  /** @maxItems 3 */
+  patronageTypes: ProfileViewDtoOutputContributorPatronageTypesItem[];
+  mentoringAvailable: boolean;
+  openToExpertMissions: boolean;
+} | null;
+
+export interface ProfileViewDtoOutput {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  displayName: string;
+  headline: string[];
+  bio: string[];
+  countryCode: string | null;
+  city: string[];
+  languages: string[];
+  links: ProfileViewDtoOutputLinks;
+  avatarUrl: string[];
+  avatarMediaId: string[];
+  coverMediaId: string[];
+  facets: ProfileViewDtoOutputFacets;
+  entrepreneur: ProfileViewDtoOutputEntrepreneur;
+  contributor: ProfileViewDtoOutputContributor;
+}
+
+export type ReferenceDataDtoOutputCountriesItem = {
+  /** @pattern ^[A-Z]{2}$ */
+  code: string;
+  labelKey: string;
+  /** @nullable */
+  m49Region: string | null;
+  /** @nullable */
+  m49SubRegion: string | null;
+  /** @nullable */
+  m49IntermediateRegion: string | null;
+  eligibleForCompany: boolean;
+};
+
+export type ReferenceDataDtoOutputSectorsItem = {
+  /** @pattern ^[a-z0-9_]{1,48}$ */
+  code: string;
+  labelKey: string;
+  isicSection: string;
+};
+
+export type ReferenceDataDtoOutputStagesItem = {
+  /** @pattern ^[a-z0-9_]{1,48}$ */
+  code: string;
+  labelKey: string;
+};
+
+export type ReferenceDataDtoOutputIntentionsItem = {
+  code: string;
+  labelKey: string;
+};
+
+export type ReferenceDataDtoOutputContributorHatsItem = {
+  code: string;
+  labelKey: string;
+};
+
+export type ReferenceDataDtoOutputStructureTypesItem = {
+  code: string;
+  labelKey: string;
+};
+
+export type ReferenceDataDtoOutputFundingInstrumentsItem = {
+  code: string;
+  labelKey: string;
+};
+
+export type ReferenceDataDtoOutputPatronageTypesItem = {
+  code: string;
+  labelKey: string;
+};
+
+export type ReferenceDataDtoOutputEntrepreneurNeedsItem = {
+  code: string;
+  labelKey: string;
+  matchingHats: string[];
+};
+
+export interface ReferenceDataDtoOutput {
+  countries: ReferenceDataDtoOutputCountriesItem[];
+  sectors: ReferenceDataDtoOutputSectorsItem[];
+  stages: ReferenceDataDtoOutputStagesItem[];
+  intentions: ReferenceDataDtoOutputIntentionsItem[];
+  contributorHats: ReferenceDataDtoOutputContributorHatsItem[];
+  structureTypes: ReferenceDataDtoOutputStructureTypesItem[];
+  fundingInstruments: ReferenceDataDtoOutputFundingInstrumentsItem[];
+  patronageTypes: ReferenceDataDtoOutputPatronageTypesItem[];
+  entrepreneurNeeds: ReferenceDataDtoOutputEntrepreneurNeedsItem[];
+}
+
 export type ProblemDetailsCode = (typeof ProblemDetailsCode)[keyof typeof ProblemDetailsCode];
 
 export const ProblemDetailsCode = {
@@ -52,6 +1160,22 @@ export const ProblemDetailsCode = {
   UNSUPPORTED_MEDIA_TYPE: 'UNSUPPORTED_MEDIA_TYPE',
   IDEMPOTENCY_KEY_REUSED: 'IDEMPOTENCY_KEY_REUSED',
   RATE_LIMITED: 'RATE_LIMITED',
+  IDENTITY_USER_NOT_FOUND: 'IDENTITY_USER_NOT_FOUND',
+  IDENTITY_LEGAL_VERSION_OUTDATED: 'IDENTITY_LEGAL_VERSION_OUTDATED',
+  IDENTITY_LOCALE_NOT_ACTIVE: 'IDENTITY_LOCALE_NOT_ACTIVE',
+  ACCESS_ORIGIN_NOT_ALLOWED: 'ACCESS_ORIGIN_NOT_ALLOWED',
+  ACCESS_PREREQUISITES_MISSING: 'ACCESS_PREREQUISITES_MISSING',
+  ACCESS_ACCOUNT_SUSPENDED: 'ACCESS_ACCOUNT_SUSPENDED',
+  ACCESS_LAST_ADMIN: 'ACCESS_LAST_ADMIN',
+  PROFILES_PROFILE_NOT_FOUND: 'PROFILES_PROFILE_NOT_FOUND',
+  PROFILES_FACET_NOT_FOUND: 'PROFILES_FACET_NOT_FOUND',
+  PROFILES_FACET_ALREADY_EXISTS: 'PROFILES_FACET_ALREADY_EXISTS',
+  PROFILES_HANDLE_TAKEN: 'PROFILES_HANDLE_TAKEN',
+  PROFILES_HANDLE_RESERVED: 'PROFILES_HANDLE_RESERVED',
+  PROFILES_COMPANY_COUNTRY_NOT_ELIGIBLE: 'PROFILES_COMPANY_COUNTRY_NOT_ELIGIBLE',
+  PROFILES_CONTRIBUTOR_HAT_REQUIRED: 'PROFILES_CONTRIBUTOR_HAT_REQUIRED',
+  PROFILES_TICKET_RANGE_INVALID: 'PROFILES_TICKET_RANGE_INVALID',
+  PROFILES_UNKNOWN_REFERENCE: 'PROFILES_UNKNOWN_REFERENCE',
   INTERNAL_ERROR: 'INTERNAL_ERROR',
   SERVICE_UNAVAILABLE: 'SERVICE_UNAVAILABLE',
 } as const;
@@ -74,4 +1198,5 @@ export interface ProblemDetails {
   code: ProblemDetailsCode;
   requestId?: string;
   errors?: ProblemDetailsErrorsItem[];
+  missing?: string[];
 }
