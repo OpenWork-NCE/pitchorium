@@ -22,7 +22,6 @@ import { AdminModule } from './modules/admin';
 
 /** Modules wired the same way in both processes. */
 const COMMON_MODULES: Type[] = [
-  MessagingModule,
   NotificationsModule,
   DiscoveryModule,
   EventsModule,
@@ -49,6 +48,7 @@ export const API_BUSINESS_MODULES: (Type | DynamicModule)[] = [
   ProjectsModule.forApi(),
   PaymentsModule.forApi(),
   EngagementModule.forApi(),
+  MessagingModule.forApi(),
   ...COMMON_MODULES,
 ];
 
@@ -64,5 +64,6 @@ export const WORKER_BUSINESS_MODULES: (Type | DynamicModule)[] = [
   ProjectsModule.forWorker(),
   PaymentsModule.forWorker(),
   EngagementModule.forWorker(),
+  MessagingModule.forWorker(),
   ...COMMON_MODULES,
 ];
