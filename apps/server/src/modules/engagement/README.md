@@ -34,8 +34,8 @@ Tableau de bord d'impact et journal du temps partagé (cahier des charges §6.3,
 | Type                                 | Payload                                                           |
 | ------------------------------------ | ----------------------------------------------------------------- |
 | `engagement.time-entry.declared.v1`  | `contributorId`, `projectId`, `entrepreneurId`, `kind`, `minutes` |
-| `engagement.time-entry.confirmed.v1` | `by`, `minutes`                                                   |
-| `engagement.time-entry.disputed.v1`  | `by`                                                              |
+| `engagement.time-entry.confirmed.v1` | `by`, `minutes`, `contributorId`                                  |
+| `engagement.time-entry.disputed.v1`  | `by`, `contributorId`                                             |
 
 ## Événements consommés
 

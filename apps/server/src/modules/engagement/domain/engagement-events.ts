@@ -19,7 +19,11 @@ export class TimeEntryDeclared extends TimeEntryEvent<{
   }
 }
 
-export class TimeEntryConfirmed extends TimeEntryEvent<{ by: string; minutes: number }> {
+export class TimeEntryConfirmed extends TimeEntryEvent<{
+  by: string;
+  minutes: number;
+  contributorId: string;
+}> {
   static readonly TYPE = 'engagement.time-entry.confirmed.v1';
   readonly type = TimeEntryConfirmed.TYPE;
   constructor(props: DomainEventProps<TimeEntryConfirmed['payload']>) {
@@ -27,7 +31,7 @@ export class TimeEntryConfirmed extends TimeEntryEvent<{ by: string; minutes: nu
   }
 }
 
-export class TimeEntryDisputed extends TimeEntryEvent<{ by: string }> {
+export class TimeEntryDisputed extends TimeEntryEvent<{ by: string; contributorId: string }> {
   static readonly TYPE = 'engagement.time-entry.disputed.v1';
   readonly type = TimeEntryDisputed.TYPE;
   constructor(props: DomainEventProps<TimeEntryDisputed['payload']>) {

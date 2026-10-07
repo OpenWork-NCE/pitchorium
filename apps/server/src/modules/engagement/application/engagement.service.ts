@@ -218,8 +218,18 @@ export class EngagementService {
       const base = { id: this.ids.next(), aggregateId: id, occurredAt: now };
       await this.record(
         answer === 'confirmed'
-          ? new TimeEntryConfirmed({ ...base, payload: { by: userId, minutes: current.minutes } })
-          : new TimeEntryDisputed({ ...base, payload: { by: userId } }),
+          ? new TimeEntryConfirmed({
+              ...base,
+              payload: {
+                by: userId,
+                minutes: current.minutes,
+                contributorId: current.contributorId,
+              },
+            })
+          : new TimeEntryDisputed({
+              ...base,
+              payload: { by: userId, contributorId: current.contributorId },
+            }),
       );
       return { ...current, ...patch };
     });
