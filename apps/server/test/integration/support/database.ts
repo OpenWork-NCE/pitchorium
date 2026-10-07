@@ -5,6 +5,7 @@ const PLATFORM_TABLES = ['outbox_events', 'inbox_messages', 'idempotency_keys', 
 
 /** Business data written by the tests; reference data and feature flags are seeded once. */
 const BUSINESS_TABLES = [
+  'organizations.organizations',
   'identity.users',
   'access.role_assignments',
   'profiles.profiles',
