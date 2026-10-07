@@ -8,6 +8,8 @@ import type {
 import type { CountryRegions } from '../domain/facet-rules';
 import type { BaseProfile, Profile } from '../domain/profile';
 
+export type ProfileImageSlot = 'avatar' | 'cover';
+
 export interface BaseProfilePatch {
   displayName?: string;
   headline?: string | null;
@@ -29,6 +31,12 @@ export abstract class ProfileRepository {
   abstract updateBase(userId: string, patch: BaseProfilePatch, now: Date): Promise<void>;
   abstract setIntention(userId: string, intention: Intention | null, now: Date): Promise<void>;
   abstract setVisibility(userId: string, visibility: ProfileVisibility, now: Date): Promise<void>;
+  abstract setImage(
+    userId: string,
+    slot: ProfileImageSlot,
+    mediaId: string | null,
+    now: Date,
+  ): Promise<void>;
   abstract changeHandle(userId: string, previous: string, next: string, now: Date): Promise<void>;
   abstract saveEntrepreneurFacet(
     userId: string,

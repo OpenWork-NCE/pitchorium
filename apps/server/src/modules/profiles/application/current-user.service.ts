@@ -5,6 +5,7 @@ import { AccessFacade } from '../../access';
 import { IdentityFacade } from '../../identity';
 import { profileStrength } from '../domain/profile-strength';
 import { profileSummary } from '../domain/profile-views';
+import { ProfileImagesService } from './profile-images.service';
 import { ProfilesService } from './profiles.service';
 
 /** GET /v1/me: identity, access and profile of the signed-in member in one answer. */
@@ -14,6 +15,7 @@ export class CurrentUserService {
     private readonly identity: IdentityFacade,
     private readonly access: AccessFacade,
     private readonly profiles: ProfilesService,
+    private readonly images: ProfileImagesService,
   ) {}
 
   async get(userId: string): Promise<CurrentUser> {
@@ -40,7 +42,7 @@ export class CurrentUserService {
       legal: this.identity.legalStatus(user),
       roles,
       trust,
-      profile: profileSummary(profile),
+      profile: profileSummary(profile, await this.images.resolve(profile)),
       profileStrength: profileStrength(profile),
     };
   }

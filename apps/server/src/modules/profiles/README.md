@@ -4,7 +4,9 @@ Profils personne (cahier des charges §5, §7.2, §10.1) : profil de base, volet
 
 ## Responsabilité
 
-- Profil de base créé à l'inscription (handler de `identity.user.registered.v1`, et à la demande si le worker n'est pas encore passé) avec le nom et la photo du compte : nom affiché, titre (220 caractères), présentation (2 600), pays ISO 3166-1 et ville, langues ISO 639-1, liens https (site, LinkedIn), photo (URL du fournisseur OAuth et `avatar_media_id`), couverture (`cover_media_id`). Les médias seront téléversés par le module media.
+- Profil de base créé à l'inscription (handler de `identity.user.registered.v1`, et à la demande si le worker n'est pas encore passé) avec le nom et la photo du compte : nom affiché, titre (220 caractères), présentation (2 600), pays ISO 3166-1 et ville, langues ISO 639-1, liens https (site, LinkedIn), photo (`avatar_media_id`, et l'URL du fournisseur OAuth en repli), couverture (`cover_media_id`).
+- Photo et couverture passent par le module media : le membre téléverse le fichier (usages `avatar`, `profile_cover`), puis l'attache au profil ; l'ancien fichier est détaché, puis supprimé par le nettoyage des orphelins. Les vues donnent `avatarUrl` et `coverUrl` (plus grande variante WebP) ; un fichier non prêt ou retiré par la modération retombe sur la photo du fournisseur.
+- Import de la photo du fournisseur : à la création du profil (`profiles.profile.created.v1`), la photo OAuth est confiée au module media (`requestImport`), téléchargée par le worker depuis une liste fermée d'hôtes et traitée comme un téléversement ; une fois prête (`media.asset.ready.v1`), elle devient la photo du profil, sauf si le membre en a choisi une entre-temps. En cas d'échec, l'URL du fournisseur reste affichée.
 - Intention (`carry_project`, `support_projects`, `both_or_exploring`) : facultative, modifiable, effaçable, sans effet sur les droits.
 - Volet entrepreneur (minimal : entreprise, secteur, stade, pays de l'entreprise) : le pays de l'entreprise doit être en Afrique (M49 002) ou dans les Caraïbes (M49 029), la personne peut résider ailleurs ; besoins, expertises recherchées (texte libre), financement visé (`Money`).
 - Volet contributeur (minimal : au moins une casquette et le type de structure) : organisation en texte libre, pays d'intervention, secteurs, ticket (fourchette en unités mineures, même devise, min ≤ max), instruments, types de mécénat, mentorat, missions d'expertise. Les deux volets peuvent coexister.
@@ -19,6 +21,7 @@ Profils personne (cahier des charges §5, §7.2, §10.1) : profil de base, volet
 
 - `GET /v1/me` : utilisateur courant (identité, résumé du profil, rôles, niveaux de confiance, force du profil, locales actives, statut des conditions).
 - `GET /v1/me/profile`, `PATCH /v1/me/profile`, `PUT /v1/me/intention`, `PUT /v1/me/profile/handle`, `PATCH /v1/me/profile/visibility`.
+- `PUT|DELETE /v1/me/profile/avatar` et `/v1/me/profile/cover` (`{ mediaId }` d'un fichier prêt du membre).
 - `POST|PATCH|DELETE /v1/me/profile/entrepreneur-facet` et `/v1/me/profile/contributor-facet` (`Idempotency-Key` sur `POST`).
 - `GET /v1/profiles/{handle}` (membre), `GET /v1/public/profiles/{handle}` (sans compte, `Cache-Control: public, max-age=60`, 404 si la page publique est désactivée).
 - `GET /v1/reference-data` (public, `Cache-Control: public, max-age=3600`).
@@ -33,20 +36,22 @@ Profils personne (cahier des charges §5, §7.2, §10.1) : profil de base, volet
 
 ## Événements émis
 
-| Type                                             | Payload                                    |
-| ------------------------------------------------ | ------------------------------------------ |
-| `profiles.profile.created.v1`                    | `handle`                                   |
-| `profiles.profile.updated.v1`                    | `fields` (noms des champs modifiés)        |
-| `profiles.profile.intention-set.v1`              | `intention` (ou `null`)                    |
-| `profiles.profile.entrepreneur-facet-updated.v1` | `change` (`created`, `updated`, `deleted`) |
-| `profiles.profile.contributor-facet-updated.v1`  | `change` (`created`, `updated`, `deleted`) |
-| `profiles.profile.handle-changed.v1`             | `previous`, `current`                      |
-| `profiles.profile.visibility-changed.v1`         | les quatre réglages de visibilité          |
+| Type                                             | Payload                                                       |
+| ------------------------------------------------ | ------------------------------------------------------------- |
+| `profiles.profile.created.v1`                    | `handle`                                                      |
+| `profiles.profile.updated.v1`                    | `fields` (noms des champs modifiés, dont `avatar` et `cover`) |
+| `profiles.profile.intention-set.v1`              | `intention` (ou `null`)                                       |
+| `profiles.profile.entrepreneur-facet-updated.v1` | `change` (`created`, `updated`, `deleted`)                    |
+| `profiles.profile.contributor-facet-updated.v1`  | `change` (`created`, `updated`, `deleted`)                    |
+| `profiles.profile.handle-changed.v1`             | `previous`, `current`                                         |
+| `profiles.profile.visibility-changed.v1`         | les quatre réglages de visibilité                             |
 
 ## Événements consommés
 
-`identity.user.registered.v1` : création idempotente du profil de base (handler `profiles.create-base-profile`).
+- `identity.user.registered.v1` : création idempotente du profil de base (handler `profiles.create-base-profile`).
+- `profiles.profile.created.v1` : demande d'import de la photo du fournisseur (handler `profiles.import-provider-photo`).
+- `media.asset.ready.v1` (source `import`, usage `avatar`) : la photo importée devient la photo du profil (handler `profiles.use-imported-avatar`).
 
 ## Dépendances
 
-identity (nom, photo, locale), access (rôles, niveaux de confiance, enregistrement des prérequis), media (à venir).
+identity (nom, photo, locale), access (rôles, niveaux de confiance, enregistrement des prérequis), media (photo, couverture, import).

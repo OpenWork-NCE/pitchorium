@@ -21,7 +21,11 @@ import {
 } from '@pitchorium/db/schemas/profiles';
 import { TransactionManager } from '../../../platform/database';
 import type { BaseProfile, Profile } from '../domain/profile';
-import { type BaseProfilePatch, ProfileRepository } from '../application/ports';
+import {
+  type BaseProfilePatch,
+  type ProfileImageSlot,
+  ProfileRepository,
+} from '../application/ports';
 
 type ProfileRow = typeof profilesProfiles.$inferSelect;
 type EntrepreneurRow = typeof profilesEntrepreneurFacets.$inferSelect;
@@ -215,6 +219,22 @@ export class DrizzleProfileRepository extends ProfileRepository {
         networkListsVisibility: visibility.networkLists,
         updatedAt: now,
       })
+      .where(eq(profilesProfiles.userId, userId));
+  }
+
+  async setImage(
+    userId: string,
+    slot: ProfileImageSlot,
+    mediaId: string | null,
+    now: Date,
+  ): Promise<void> {
+    await this.db
+      .update(profilesProfiles)
+      .set(
+        slot === 'avatar'
+          ? { avatarMediaId: mediaId, updatedAt: now }
+          : { coverMediaId: mediaId, updatedAt: now },
+      )
       .where(eq(profilesProfiles.userId, userId));
   }
 

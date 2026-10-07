@@ -1,6 +1,7 @@
 import { type DynamicModule, Module, type Provider } from '@nestjs/common';
 import { CurrentUserService } from './application/current-user.service';
 import { ProfileEventsRecorder } from './application/profile-events.recorder';
+import { ProfileImagesService } from './application/profile-images.service';
 import { ProfilePrerequisitesProvider } from './application/profile-prerequisites.provider';
 import { ProfileReadsService } from './application/profile-reads.service';
 import { ProfilesService } from './application/profiles.service';
@@ -10,6 +11,10 @@ import { DrizzleProfileRepository } from './infrastructure/drizzle-profile.repos
 import { DrizzleReferenceDataRepository } from './infrastructure/drizzle-reference-data.repository';
 import { MeController } from './interface/me.controller';
 import { ProfilesController } from './interface/profiles.controller';
+import {
+  ImportedAvatarHandler,
+  ProviderPhotoImportHandler,
+} from './interface/profile-photos.handler';
 import { UserRegisteredHandler } from './interface/user-registered.handler';
 
 const SHARED_PROVIDERS: Provider[] = [
@@ -28,14 +33,24 @@ export class ProfilesModule {
     return {
       module: ProfilesModule,
       controllers: [MeController, ProfilesController],
-      providers: [...SHARED_PROVIDERS, ProfileReadsService, CurrentUserService],
+      providers: [
+        ...SHARED_PROVIDERS,
+        ProfileImagesService,
+        ProfileReadsService,
+        CurrentUserService,
+      ],
     };
   }
 
   static forWorker(): DynamicModule {
     return {
       module: ProfilesModule,
-      providers: [...SHARED_PROVIDERS, UserRegisteredHandler],
+      providers: [
+        ...SHARED_PROVIDERS,
+        UserRegisteredHandler,
+        ProviderPhotoImportHandler,
+        ImportedAvatarHandler,
+      ],
     };
   }
 }

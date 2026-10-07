@@ -14,6 +14,7 @@ import type {
 import { TransactionManager } from '../../../platform/database';
 import { Clock, DomainError } from '../../../platform/kernel';
 import { IdentityFacade } from '../../identity';
+import { MediaFacade } from '../../media';
 import { assertContributorFacet, assertEligibleCompanyCountry } from '../domain/facet-rules';
 import { assertHandleAllowed, handleBaseFromName, handleWithSuffix } from '../domain/handle';
 import { DEFAULT_VISIBILITY, type Profile } from '../domain/profile';
@@ -27,7 +28,7 @@ import {
   VisibilityChanged,
 } from '../domain/profile-events';
 import { ProfileEventsRecorder } from './profile-events.recorder';
-import { ProfileRepository } from './ports';
+import { type ProfileImageSlot, ProfileRepository } from './ports';
 import { ReferenceDataService } from './reference-data.service';
 
 const SEQUENTIAL_SUFFIXES = 8;
@@ -51,6 +52,7 @@ export class ProfilesService {
     private readonly profiles: ProfileRepository,
     private readonly reference: ReferenceDataService,
     private readonly identity: IdentityFacade,
+    private readonly media: MediaFacade,
     private readonly events: ProfileEventsRecorder,
     private readonly transactions: TransactionManager,
     private readonly clock: Clock,
@@ -141,6 +143,68 @@ export class ProfilesService {
     await this.transactions.run(async () => {
       await this.profiles.setVisibility(userId, visibility, this.clock.now());
       await this.events.record(VisibilityChanged, userId, visibility);
+    });
+  }
+
+  /**
+   * Shows an uploaded file as photo or cover: the media is attached to the profile, the
+   * previous one is detached (deleted later by the media orphan cleanup).
+   */
+  async setImage(userId: string, slot: ProfileImageSlot, mediaId: string): Promise<void> {
+    const profile = await this.ensureProfile(userId);
+    const current = slot === 'avatar' ? profile.base.avatarMediaId : profile.base.coverMediaId;
+    if (current === mediaId) return;
+    await this.transactions.run(async () => {
+      if (current) await this.media.detach(current);
+      await this.media.attach({
+        mediaId,
+        ownerId: userId,
+        usage: slot === 'avatar' ? 'avatar' : 'profile_cover',
+        resource: { type: 'profile', id: userId },
+      });
+      await this.profiles.setImage(userId, slot, mediaId, this.clock.now());
+      await this.events.record(ProfileUpdated, userId, { fields: [slot] });
+    });
+  }
+
+  async removeImage(userId: string, slot: ProfileImageSlot): Promise<void> {
+    const profile = await this.ensureProfile(userId);
+    const current = slot === 'avatar' ? profile.base.avatarMediaId : profile.base.coverMediaId;
+    if (!current) return;
+    await this.transactions.run(async () => {
+      await this.media.detach(current);
+      await this.profiles.setImage(userId, slot, null, this.clock.now());
+      await this.events.record(ProfileUpdated, userId, { fields: [slot] });
+    });
+  }
+
+  /** Imports the provider photo of a new profile through the media pipeline (worker). */
+  async importProviderPhoto(userId: string): Promise<void> {
+    const profile = await this.profiles.findByUserId(userId);
+    if (!profile?.base.avatarUrl || profile.base.avatarMediaId) return;
+    await this.media.requestImport({
+      ownerId: userId,
+      usage: 'avatar',
+      url: profile.base.avatarUrl,
+    });
+  }
+
+  /**
+   * Shows an imported provider photo once processed, unless the member chose a photo in the
+   * meantime. A failed import leaves the provider URL displayed.
+   */
+  async useImportedAvatar(userId: string, mediaId: string): Promise<void> {
+    await this.transactions.run(async () => {
+      const profile = await this.profiles.findByUserId(userId);
+      if (!profile || profile.base.avatarMediaId) return;
+      await this.media.attach({
+        mediaId,
+        ownerId: userId,
+        usage: 'avatar',
+        resource: { type: 'profile', id: userId },
+      });
+      await this.profiles.setImage(userId, 'avatar', mediaId, this.clock.now());
+      await this.events.record(ProfileUpdated, userId, { fields: ['avatar'] });
     });
   }
 

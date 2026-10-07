@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common';
 import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import {
+  attachMediaRequestSchema,
   changeHandleRequestSchema,
   createContributorFacetRequestSchema,
   createEntrepreneurFacetRequestSchema,
@@ -41,6 +42,7 @@ class CreateEntrepreneurFacetDto extends createZodDto(createEntrepreneurFacetReq
 class UpdateEntrepreneurFacetDto extends createZodDto(updateEntrepreneurFacetRequestSchema) {}
 class CreateContributorFacetDto extends createZodDto(createContributorFacetRequestSchema) {}
 class UpdateContributorFacetDto extends createZodDto(updateContributorFacetRequestSchema) {}
+class AttachMediaDto extends createZodDto(attachMediaRequestSchema) {}
 
 /** The signed-in member's own account and profile. Writes answer the updated profile. */
 @ApiTags('me')
@@ -113,6 +115,52 @@ export class MeController {
     @Body() body: UpdateVisibilityDto,
   ): Promise<OwnProfile> {
     await this.profiles.updateVisibility(principal.userId, body);
+    return this.reads.own(principal.userId);
+  }
+
+  /** Photo uploaded through /v1/media (usage avatar), once ready. */
+  @Put('profile/avatar')
+  @RequireAction('profile.update')
+  @ZodSerializerDto(OwnProfileDto)
+  @ApiOkResponse({ type: OwnProfileDto.Output })
+  async setAvatar(
+    @CurrentPrincipal() principal: Principal,
+    @Body() body: AttachMediaDto,
+  ): Promise<OwnProfile> {
+    await this.profiles.setImage(principal.userId, 'avatar', body.mediaId);
+    return this.reads.own(principal.userId);
+  }
+
+  @Delete('profile/avatar')
+  @RequireAction('profile.update')
+  @HttpCode(HttpStatus.OK)
+  @ZodSerializerDto(OwnProfileDto)
+  @ApiOkResponse({ type: OwnProfileDto.Output })
+  async removeAvatar(@CurrentPrincipal() principal: Principal): Promise<OwnProfile> {
+    await this.profiles.removeImage(principal.userId, 'avatar');
+    return this.reads.own(principal.userId);
+  }
+
+  /** Cover uploaded through /v1/media (usage profile_cover), once ready. */
+  @Put('profile/cover')
+  @RequireAction('profile.update')
+  @ZodSerializerDto(OwnProfileDto)
+  @ApiOkResponse({ type: OwnProfileDto.Output })
+  async setCover(
+    @CurrentPrincipal() principal: Principal,
+    @Body() body: AttachMediaDto,
+  ): Promise<OwnProfile> {
+    await this.profiles.setImage(principal.userId, 'cover', body.mediaId);
+    return this.reads.own(principal.userId);
+  }
+
+  @Delete('profile/cover')
+  @RequireAction('profile.update')
+  @HttpCode(HttpStatus.OK)
+  @ZodSerializerDto(OwnProfileDto)
+  @ApiOkResponse({ type: OwnProfileDto.Output })
+  async removeCover(@CurrentPrincipal() principal: Principal): Promise<OwnProfile> {
+    await this.profiles.removeImage(principal.userId, 'cover');
     return this.reads.own(principal.userId);
   }
 
