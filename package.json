@@ -1,0 +1,32 @@
+{
+  "name": "pitchorium",
+  "private": true,
+  "packageManager": "pnpm@12.9.1",
+  "engines": {
+    "node": ">=24.0.0 <25.0.0",
+    "pnpm": "12.9.1"
+  },
+  "scripts": {
+    "dev": "turbo run dev:api dev:worker",
+    "dev:api": "turbo run dev:api",
+    "dev:worker": "turbo run dev:worker",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "test:integration": "turbo run test:integration",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "db:generate": "pnpm --filter @pitchorium/db db:generate",
+    "db:migrate": "pnpm --filter @pitchorium/db db:migrate",
+    "db:seed": "pnpm --filter @pitchorium/db db:seed",
+    "db:check": "pnpm --filter @pitchorium/db db:check",
+    "openapi:generate": "turbo run openapi:generate",
+    "api-client:generate": "turbo run api-client:generate",
+    "infra:up": "docker compose -f infra/docker/compose.yaml up -d --wait",
+    "infra:down": "docker compose -f infra/docker/compose.yaml down"
+  },
+  "devDependencies": {
+    "turbo": "2.11.7"
+  }
+}

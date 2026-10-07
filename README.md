@@ -1,0 +1,42 @@
+# Pitchorium
+
+Plateforme professionnelle de réseau et de financement à impact entre l'Afrique, les Caraïbes et la diaspora européenne.
+Ce dépôt est un monorepo pnpm et Turborepo : un serveur NestJS (api et worker) et des packages partagés.
+Le frontend (`apps/web`) fera l'objet d'une étape ultérieure.
+
+## Prérequis
+
+- Node.js 24 (voir `.nvmrc`)
+- pnpm 12.9.1 (`corepack enable` active la version déclarée dans `packageManager`)
+- Docker avec Docker Compose v2
+
+## Démarrage local
+
+```sh
+pnpm install
+cp apps/server/.env.example apps/server/.env
+pnpm infra:up
+pnpm db:migrate
+pnpm db:seed
+pnpm dev
+```
+
+## Scripts
+
+| Script | Rôle |
+| --- | --- |
+| `pnpm dev` | Lance l'api et le worker en mode watch |
+| `pnpm dev:api` / `pnpm dev:worker` | Lance un seul des deux processus |
+| `pnpm build` | Compile tous les packages et le serveur |
+| `pnpm lint` | ESLint, dont les règles de frontières entre modules |
+| `pnpm typecheck` | Vérification TypeScript sans émission |
+| `pnpm test` | Tests unitaires et tests HTTP sans dépendance externe |
+| `pnpm test:integration` | Tests d'intégration (Testcontainers, Docker requis) |
+| `pnpm format` / `pnpm format:check` | Prettier en écriture ou en vérification |
+| `pnpm db:generate` | Génère une migration Drizzle à partir des schémas |
+| `pnpm db:migrate` | Applique les migrations sur `DATABASE_URL` |
+| `pnpm db:seed` | Seed idempotent (feature flags) |
+| `pnpm db:check` | Vérifie la cohérence des migrations |
+| `pnpm openapi:generate` | Exporte `apps/server/openapi/openapi.json` sans démarrer de serveur |
+| `pnpm api-client:generate` | Régénère le client Orval à partir de l'OpenAPI |
+| `pnpm infra:up` / `pnpm infra:down` | Démarre ou arrête l'infrastructure locale |
