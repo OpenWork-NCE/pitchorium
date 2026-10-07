@@ -1,5 +1,5 @@
 import {
-  DeleteObjectsCommand,
+  DeleteObjectCommand,
   GetObjectCommand,
   HeadBucketCommand,
   HeadObjectCommand,
@@ -23,7 +23,8 @@ import {
 } from './object-storage';
 
 const DEFAULT_EXPIRY_SECONDS = 900;
-const DELETE_BATCH_SIZE = 1000;
+/** Parallel single-object deletions (see deleteObjects). */
+const DELETE_CONCURRENCY = 8;
 
 const isMissing = (error: unknown) =>
   error instanceof NoSuchKey ||
@@ -77,7 +78,6 @@ export class S3ObjectStorage extends ObjectStorage {
     const command = new GetObjectCommand({
       Bucket: this.bucket(request.visibility),
       Key: request.key,
-      ResponseContentDisposition: request.contentDisposition,
     });
     return {
       url: await getSignedUrl(this.client, command, { expiresIn }),
@@ -146,19 +146,19 @@ export class S3ObjectStorage extends ObjectStorage {
     );
   }
 
+  /**
+   * One DeleteObject per key rather than DeleteObjects: the SDK forces a CRC32 checksum header
+   * on DeleteObjects, which R2 does not document as accepted; DeleteObject needs no checksum and
+   * answers 204 for a missing key.
+   */
   async deleteObjects(visibility: BucketVisibility, keys: readonly string[]): Promise<void> {
-    for (let start = 0; start < keys.length; start += DELETE_BATCH_SIZE) {
-      const batch = keys.slice(start, start + DELETE_BATCH_SIZE);
-      const result = await this.client.send(
-        new DeleteObjectsCommand({
-          Bucket: this.bucket(visibility),
-          Delete: { Objects: batch.map((key) => ({ Key: key })), Quiet: true },
-        }),
+    const bucket = this.bucket(visibility);
+    for (let start = 0; start < keys.length; start += DELETE_CONCURRENCY) {
+      await Promise.all(
+        keys
+          .slice(start, start + DELETE_CONCURRENCY)
+          .map((key) => this.client.send(new DeleteObjectCommand({ Bucket: bucket, Key: key }))),
       );
-      const failed = (result.Errors ?? []).filter((error) => error.Code !== 'NoSuchKey');
-      if (failed.length > 0) {
-        throw new Error(`Failed to delete ${failed.length} objects: ${failed[0]?.Code ?? ''}`);
-      }
     }
   }
 

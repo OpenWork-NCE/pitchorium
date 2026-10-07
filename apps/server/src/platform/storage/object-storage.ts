@@ -13,8 +13,6 @@ export interface PresignedDownloadRequest {
   visibility: BucketVisibility;
   key: string;
   expiresInSeconds?: number;
-  /** Content-Disposition sent with the object, for example `attachment; filename="pitch.pdf"`. */
-  contentDisposition?: string;
 }
 
 export interface PresignedUrl {
@@ -44,7 +42,10 @@ export class ObjectTooLargeError extends Error {
   }
 }
 
-/** Port for S3-compatible object storage (MinIO locally, Cloudflare R2 in production). */
+/**
+ * Port for S3-compatible object storage (MinIO locally, Cloudflare R2 in production). Only
+ * operations documented as supported by R2 are used (docs/architecture/storage.md).
+ */
 export abstract class ObjectStorage {
   abstract createUploadUrl(request: PresignedUploadRequest): Promise<PresignedUrl>;
   abstract createDownloadUrl(request: PresignedDownloadRequest): Promise<PresignedUrl>;
