@@ -222,7 +222,10 @@ export const entrepreneurFacetSchema = z.object(entrepreneurFacetFields);
 const contributorFacetFields = {
   hats: uniqueArray(contributorHatSchema, CONTRIBUTOR_HATS.length),
   structureType: structureTypeSchema,
+  /** Free text, for an organization absent from the platform. */
   organizationName: z.string().trim().min(1).max(160).nullable(),
+  /** Organization of the platform the member belongs to. */
+  organizationId: z.uuidv7().nullable(),
   interventionCountryCodes: uniqueArray(countryCodeSchema, 300),
   sectorCodes: uniqueArray(referenceCodeSchema, 50),
   ticket: ticketRangeSchema.nullable(),
@@ -237,6 +240,7 @@ export const createContributorFacetRequestSchema = z.object({
   hats: contributorFacetFields.hats,
   structureType: contributorFacetFields.structureType,
   organizationName: contributorFacetFields.organizationName.optional(),
+  organizationId: contributorFacetFields.organizationId.optional(),
   interventionCountryCodes: contributorFacetFields.interventionCountryCodes.optional(),
   sectorCodes: contributorFacetFields.sectorCodes.optional(),
   ticket: contributorFacetFields.ticket.optional(),
@@ -277,6 +281,10 @@ const profileBaseViewFields = {
   /** Null when absent or hidden from the reader. */
   entrepreneur: entrepreneurFacetSchema.nullable(),
   contributor: contributorFacetSchema.nullable(),
+  /** Organization linked to the contributor facet, when its details are visible. */
+  contributorOrganization: z
+    .object({ id: z.string(), slug: z.string(), name: z.string(), verified: z.boolean() })
+    .nullable(),
 };
 
 /** Profile as seen by another member or by an anonymous visitor (privacy applied). */

@@ -25,6 +25,17 @@ export const ACTIONS = [
   'media.upload',
   'media.read',
   'media.delete',
+  'organization.read',
+  'organization.create',
+  'organization.update',
+  'organization.delete',
+  'organization.member.invite',
+  'organization.member.manage',
+  'organization.member.leave',
+  'organization.ownership.transfer',
+  'organization.invitation.respond',
+  'organization.verification.request',
+  'organization.verification.review',
 ] as const;
 export const actionSchema = z.enum(ACTIONS);
 

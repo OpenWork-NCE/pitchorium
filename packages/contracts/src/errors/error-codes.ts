@@ -63,6 +63,44 @@ export const errorCodes = {
   MEDIA_USAGE_MISMATCH: { status: 422, title: 'Media was uploaded for another usage' },
   MEDIA_LIMIT_REACHED: { status: 409, title: 'Maximum number of files reached for this resource' },
   MEDIA_ATTACHED: { status: 409, title: 'Media is attached to a resource' },
+  PROFILES_ORGANIZATION_NOT_ALLOWED: {
+    status: 422,
+    title: 'Only an organization of which the member is a member can be linked',
+  },
+  ORGANIZATIONS_NOT_FOUND: { status: 404, title: 'Organization not found' },
+  ORGANIZATIONS_SLUG_TAKEN: { status: 409, title: 'Organization slug is already taken' },
+  ORGANIZATIONS_SLUG_RESERVED: { status: 409, title: 'Organization slug is reserved' },
+  ORGANIZATIONS_CREATION_LIMIT_REACHED: {
+    status: 422,
+    title: 'Maximum number of created organizations reached',
+  },
+  ORGANIZATIONS_MEMBER_NOT_FOUND: { status: 404, title: 'Organization member not found' },
+  ORGANIZATIONS_ALREADY_MEMBER: { status: 409, title: 'Already a member of the organization' },
+  ORGANIZATIONS_LAST_OWNER: { status: 409, title: 'An organization keeps at least one owner' },
+  ORGANIZATIONS_ROLE_CHANGE_FORBIDDEN: {
+    status: 403,
+    title: 'Role change not allowed for this member',
+  },
+  ORGANIZATIONS_INVITATION_INVALID: {
+    status: 410,
+    title: 'Invitation is invalid, expired or already used',
+  },
+  ORGANIZATIONS_INVITATION_EMAIL_MISMATCH: {
+    status: 403,
+    title: 'Invitation was sent to another email address',
+  },
+  ORGANIZATIONS_VERIFICATION_INVALID_STATE: {
+    status: 409,
+    title: 'Verification step not allowed in the current status',
+  },
+  ORGANIZATIONS_VERIFICATION_REQUEST_NOT_FOUND: {
+    status: 404,
+    title: 'Verification request not found',
+  },
+  ORGANIZATIONS_VERIFICATION_CRITERION_UNKNOWN: {
+    status: 422,
+    title: 'Unknown verification criterion',
+  },
   INTERNAL_ERROR: { status: 500, title: 'Internal error' },
   SERVICE_UNAVAILABLE: { status: 503, title: 'Service unavailable' },
 } as const satisfies Record<string, ErrorCodeDefinition>;
