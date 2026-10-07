@@ -115,6 +115,8 @@ export const profilesContributorFacets = profilesSchema.table(
     hats: text('hats').array().notNull(),
     structureType: text('structure_type').notNull(),
     organizationName: text('organization_name'),
+    /** Organization of the organizations module (no cross-module FK). */
+    organizationId: uuid('organization_id'),
     interventionCountryCodes: text('intervention_country_codes').array().notNull(),
     sectorCodes: text('sector_codes').array().notNull(),
     ticketMinMinor: bigint('ticket_min_minor', { mode: 'bigint' }),
