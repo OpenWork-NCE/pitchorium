@@ -97,6 +97,10 @@ export interface WorkerConfig extends CommonConfig {
   /** Fixed interval replacing the cron pattern of every scheduled task (tests only). */
   scheduledTasks: { everyMs: number | undefined };
   content: { linkPreview: { timeoutMs: number; maxBytes: number } };
+  /** Purge of the CDN in front of the public bucket (ADR 0026). */
+  cdn:
+    | { provider: 'none' }
+    | { provider: 'cloudflare'; cloudflare: { zoneId: string; apiToken: string } };
 }
 
 export class ConfigValidationError extends Error {
@@ -238,6 +242,16 @@ export function parseWorkerConfig(rawEnv: RawEnv): WorkerConfig {
         maxBytes: env.CONTENT_LINK_PREVIEW_MAX_BYTES,
       },
     },
+    cdn:
+      env.CDN_PURGE_PROVIDER === 'cloudflare'
+        ? {
+            provider: 'cloudflare',
+            cloudflare: {
+              zoneId: env.CLOUDFLARE_ZONE_ID ?? '',
+              apiToken: env.CLOUDFLARE_API_TOKEN ?? '',
+            },
+          }
+        : { provider: 'none' },
   };
 }
 

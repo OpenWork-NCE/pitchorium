@@ -16,7 +16,7 @@ import { OutboxModule, OutboxRelayModule } from './outbox';
 import { QueueModule } from './queue';
 import { RealtimeModule } from './realtime';
 import { RedisModule } from './redis';
-import { StorageModule } from './storage';
+import { CdnModule, StorageModule } from './storage';
 
 /** Global technical services shared by the api and the worker. */
 const SHARED_MODULES = [
@@ -56,6 +56,7 @@ export class PlatformModule {
       imports: [
         ConfigModule.forWorker(),
         ...SHARED_MODULES,
+        CdnModule,
         QueueModule,
         OutboxRelayModule,
         MaintenanceModule,

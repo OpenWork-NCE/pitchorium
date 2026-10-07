@@ -53,6 +53,28 @@ describe('configuration', () => {
     expect(parseWorkerConfig({ ...baseEnv, OUTBOX_BATCH_SIZE: '50' }).outbox.batchSize).toBe(50);
   });
 
+  it('requires a CDN purge provider in production, and its credentials', () => {
+    expect(parseWorkerConfig(baseEnv).cdn).toEqual({ provider: 'none' });
+    expect(issuesOf(() => parseWorkerConfig({ ...baseEnv, NODE_ENV: 'production' }))).toEqual([
+      'CDN_PURGE_PROVIDER: A CDN purge provider is required in production',
+    ]);
+    expect(
+      issuesOf(() => parseWorkerConfig({ ...baseEnv, CDN_PURGE_PROVIDER: 'cloudflare' })).map(
+        (issue) => issue.split(':')[0],
+      ),
+    ).toEqual(['CLOUDFLARE_ZONE_ID', 'CLOUDFLARE_API_TOKEN']);
+    const zoneId = 'a'.repeat(32);
+    expect(
+      parseWorkerConfig({
+        ...baseEnv,
+        NODE_ENV: 'production',
+        CDN_PURGE_PROVIDER: 'cloudflare',
+        CLOUDFLARE_ZONE_ID: zoneId,
+        CLOUDFLARE_API_TOKEN: 'token',
+      }).cdn,
+    ).toEqual({ provider: 'cloudflare', cloudflare: { zoneId, apiToken: 'token' } });
+  });
+
   it('treats empty values as unset', () => {
     const config = parseApiConfig({ ...baseEnv, SENTRY_DSN: '', API_PORT: '' });
     expect(config.sentry.dsn).toBeUndefined();

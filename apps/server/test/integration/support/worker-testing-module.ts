@@ -7,6 +7,7 @@ import { InboxModule } from '../../../src/platform/inbox';
 import { OutboundModule } from '../../../src/platform/outbound';
 import { OutboxModule, OutboxRelayModule, OutboxRelayService } from '../../../src/platform/outbox';
 import { RedisModule } from '../../../src/platform/redis';
+import { CdnModule } from '../../../src/platform/storage';
 import { truncateAllTables } from './database';
 import { useTestEnvironment } from './environment';
 
@@ -35,6 +36,7 @@ export async function createWorkerTestingModule(
         OutboxModule,
         OutboxRelayModule,
         OutboundModule,
+        CdnModule,
         ...imports,
       ],
       providers,

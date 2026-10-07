@@ -36,6 +36,18 @@ Vérifié le 2026-10-07 dans la documentation officielle de R2 ([API S3](https:/
 | `S3_BUCKET_PUBLIC`, `S3_BUCKET_PRIVATE`    | Noms des deux buckets                                                                                                     |
 | `S3_PUBLIC_BASE_URL`                       | `https://media.<domaine>` (domaine personnalisé du bucket public)                                                         |
 
+### Purge du CDN
+
+Le domaine personnalisé du bucket public est servi par le cache de Cloudflare. Les fichiers publics sont mis en cache un an (`public, max-age=31536000, immutable`, clés dérivées de l'empreinte du contenu) ; un fichier qui quitte le bucket public est purgé par le worker (job `purge-cdn`, ADR 0026), par l'API de purge par URL ([Purge Cached Content](https://developers.cloudflare.com/api/resources/cache/methods/purge/), vérifié le 2026-10-08 : `POST /zones/{zone_id}/purge_cache` avec `files`, 100 URL par requête sur les offres Free, Pro et Business).
+
+| Variable               | Valeur de production                                                                                                               |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `CDN_PURGE_PROVIDER`   | `cloudflare` (obligatoire en production)                                                                                           |
+| `CLOUDFLARE_ZONE_ID`   | Identifiant de la zone du domaine personnalisé du bucket public                                                                    |
+| `CLOUDFLARE_API_TOKEN` | Jeton d'API dédié au worker, permission « Zone > Cache Purge > Purge » sur cette seule zone, aucune autre permission ni autre zone |
+
+Une réponse `success: true` signifie que Cloudflare a accepté la purge ; la confirmation se lit dans l'en-tête `CF-Cache-Status: MISS` d'une URL purgée.
+
 ### CORS
 
 Bucket privé : le navigateur y envoie le fichier par `PUT` présigné et lit les fichiers privés par `GET` présigné.
@@ -73,4 +85,4 @@ Sur le bucket privé, une règle qui supprime les objets du préfixe `quarantine
 
 ## Non vérifié
 
-Aucun test ne s'exécute contre un vrai compte R2 (aucun compte n'est disponible) : la compatibilité repose sur la documentation ci-dessus et sur les tests d'intégration contre MinIO. À vérifier lors de la mise en production : un `PUT` présigné d'une taille différente de la taille signée doit être refusé par R2 ; à défaut, le contrôle `size_mismatch` du worker s'applique.
+Aucun test ne s'exécute contre un vrai compte R2 ni contre l'API de Cloudflare (aucun compte n'est disponible ; la purge est vérifiée avec un adaptateur espion et l'adaptateur Cloudflare avec un `fetch` simulé) : la compatibilité repose sur la documentation ci-dessus et sur les tests d'intégration contre MinIO. À vérifier lors de la mise en production : un `PUT` présigné d'une taille différente de la taille signée doit être refusé par R2 ; à défaut, le contrôle `size_mismatch` du worker s'applique.

@@ -105,6 +105,12 @@ const workerEnvSchema = commonEnvSchema.extend({
   SCHEDULED_TASKS_EVERY_MS: z.coerce.number().int().min(100).optional(),
   CONTENT_LINK_PREVIEW_TIMEOUT_MS: z.coerce.number().int().positive().default(5000),
   CONTENT_LINK_PREVIEW_MAX_BYTES: z.coerce.number().int().positive().default(1_048_576),
+  CDN_PURGE_PROVIDER: z.enum(['none', 'cloudflare']).default('none'),
+  CLOUDFLARE_ZONE_ID: z
+    .string()
+    .regex(/^[a-f0-9]{32}$/)
+    .optional(),
+  CLOUDFLARE_API_TOKEN: z.string().min(1).optional(),
 });
 
 function requireMailCredentials(env: z.infer<typeof commonEnvSchema>, ctx: z.RefinementCtx): void {
@@ -161,9 +167,34 @@ function refuseScheduleOverrideInProduction(
   }
 }
 
+/**
+ * Public files are cached for a year by the CDN (ADR 0026): in production, a file that becomes
+ * private must be purged, so a purge provider is required.
+ */
+function requireCdnPurge(env: z.infer<typeof workerEnvSchema>, ctx: z.RefinementCtx): void {
+  if (env.CDN_PURGE_PROVIDER === 'cloudflare') {
+    for (const name of ['CLOUDFLARE_ZONE_ID', 'CLOUDFLARE_API_TOKEN'] as const) {
+      if (env[name] === undefined) {
+        ctx.addIssue({
+          code: 'custom',
+          path: [name],
+          message: 'Required when CDN_PURGE_PROVIDER=cloudflare',
+        });
+      }
+    }
+  } else if (env.NODE_ENV === 'production') {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['CDN_PURGE_PROVIDER'],
+      message: 'A CDN purge provider is required in production',
+    });
+  }
+}
+
 export const workerEnv = workerEnvSchema
   .superRefine(requireMailCredentials)
-  .superRefine(refuseScheduleOverrideInProduction);
+  .superRefine(refuseScheduleOverrideInProduction)
+  .superRefine(requireCdnPurge);
 
 export type CommonEnv = z.infer<typeof commonEnvSchema>;
 export type ApiEnv = z.infer<typeof apiEnvSchema>;
