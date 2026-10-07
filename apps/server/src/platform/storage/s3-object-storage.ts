@@ -1,6 +1,10 @@
 import {
+  DeleteObjectsCommand,
   GetObjectCommand,
   HeadBucketCommand,
+  HeadObjectCommand,
+  NoSuchKey,
+  NotFound,
   PutObjectCommand,
   S3Client,
 } from '@aws-sdk/client-s3';
@@ -10,12 +14,21 @@ import type { Clock } from '../kernel';
 import {
   type BucketVisibility,
   ObjectStorage,
+  ObjectTooLargeError,
   type PresignedDownloadRequest,
   type PresignedUploadRequest,
   type PresignedUrl,
+  type PutObjectRequest,
+  type StoredObject,
 } from './object-storage';
 
 const DEFAULT_EXPIRY_SECONDS = 900;
+const DELETE_BATCH_SIZE = 1000;
+
+const isMissing = (error: unknown) =>
+  error instanceof NoSuchKey ||
+  error instanceof NotFound ||
+  (error instanceof Error && error.name === 'NotFound');
 
 export class S3ObjectStorage extends ObjectStorage {
   private readonly client: S3Client;
@@ -30,6 +43,10 @@ export class S3ObjectStorage extends ObjectStorage {
       region: config.region,
       forcePathStyle: config.forcePathStyle,
       credentials: { accessKeyId: config.accessKeyId, secretAccessKey: config.secretAccessKey },
+      // Presigned uploads come from browsers, which do not compute S3 checksums; MinIO and R2
+      // do not need them either.
+      requestChecksumCalculation: 'WHEN_REQUIRED',
+      responseChecksumValidation: 'WHEN_REQUIRED',
     });
   }
 
@@ -39,12 +56,19 @@ export class S3ObjectStorage extends ObjectStorage {
       Bucket: this.bucket(request.visibility),
       Key: request.key,
       ContentType: request.contentType,
+      ContentLength: request.contentLength,
     });
+    const headers: Record<string, string> = { 'Content-Type': request.contentType };
+    const signableHeaders = new Set(['content-type']);
+    if (request.contentLength !== undefined) {
+      headers['Content-Length'] = String(request.contentLength);
+      signableHeaders.add('content-length');
+    }
     return {
-      url: await getSignedUrl(this.client, command, { expiresIn }),
+      url: await getSignedUrl(this.client, command, { expiresIn, signableHeaders }),
       method: 'PUT',
       expiresAt: this.expiresAt(expiresIn),
-      headers: { 'Content-Type': request.contentType },
+      headers,
     };
   }
 
@@ -53,6 +77,7 @@ export class S3ObjectStorage extends ObjectStorage {
     const command = new GetObjectCommand({
       Bucket: this.bucket(request.visibility),
       Key: request.key,
+      ResponseContentDisposition: request.contentDisposition,
     });
     return {
       url: await getSignedUrl(this.client, command, { expiresIn }),
@@ -64,6 +89,77 @@ export class S3ObjectStorage extends ObjectStorage {
 
   publicUrl(key: string): string {
     return `${this.config.publicBaseUrl}/${key.split('/').map(encodeURIComponent).join('/')}`;
+  }
+
+  async headObject(visibility: BucketVisibility, key: string): Promise<StoredObject | null> {
+    try {
+      const head = await this.client.send(
+        new HeadObjectCommand({ Bucket: this.bucket(visibility), Key: key }),
+      );
+      return { size: head.ContentLength ?? 0, contentType: head.ContentType };
+    } catch (error) {
+      if (isMissing(error)) return null;
+      throw error;
+    }
+  }
+
+  async getObject(
+    visibility: BucketVisibility,
+    key: string,
+    maxBytes: number,
+  ): Promise<Buffer | null> {
+    let body: AsyncIterable<Uint8Array> | undefined;
+    try {
+      const response = await this.client.send(
+        new GetObjectCommand({ Bucket: this.bucket(visibility), Key: key }),
+      );
+      if ((response.ContentLength ?? 0) > maxBytes) {
+        response.Body?.transformToWebStream()
+          .cancel()
+          .catch(() => undefined);
+        throw new ObjectTooLargeError(maxBytes);
+      }
+      body = response.Body as AsyncIterable<Uint8Array> | undefined;
+    } catch (error) {
+      if (isMissing(error)) return null;
+      throw error;
+    }
+    const chunks: Uint8Array[] = [];
+    let size = 0;
+    for await (const chunk of body ?? []) {
+      size += chunk.length;
+      if (size > maxBytes) throw new ObjectTooLargeError(maxBytes);
+      chunks.push(chunk);
+    }
+    return Buffer.concat(chunks);
+  }
+
+  async putObject(request: PutObjectRequest): Promise<void> {
+    await this.client.send(
+      new PutObjectCommand({
+        Bucket: this.bucket(request.visibility),
+        Key: request.key,
+        Body: request.body,
+        ContentType: request.contentType,
+        CacheControl: request.cacheControl,
+      }),
+    );
+  }
+
+  async deleteObjects(visibility: BucketVisibility, keys: readonly string[]): Promise<void> {
+    for (let start = 0; start < keys.length; start += DELETE_BATCH_SIZE) {
+      const batch = keys.slice(start, start + DELETE_BATCH_SIZE);
+      const result = await this.client.send(
+        new DeleteObjectsCommand({
+          Bucket: this.bucket(visibility),
+          Delete: { Objects: batch.map((key) => ({ Key: key })), Quiet: true },
+        }),
+      );
+      const failed = (result.Errors ?? []).filter((error) => error.Code !== 'NoSuchKey');
+      if (failed.length > 0) {
+        throw new Error(`Failed to delete ${failed.length} objects: ${failed[0]?.Code ?? ''}`);
+      }
+    }
   }
 
   async checkHealth(): Promise<void> {
