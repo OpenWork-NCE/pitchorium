@@ -14,7 +14,7 @@ import { ObservabilityModule } from './observability';
 import { OutboundModule } from './outbound';
 import { OutboxModule, OutboxRelayModule } from './outbox';
 import { QueueModule } from './queue';
-import { RealtimeModule } from './realtime';
+import { RealtimeModule, RealtimePublisherModule } from './realtime';
 import { RedisModule } from './redis';
 import { CdnModule, StorageModule } from './storage';
 
@@ -32,6 +32,7 @@ const SHARED_MODULES = [
   FeatureFlagsModule,
   AuditModule,
   OutboundModule,
+  RealtimePublisherModule,
 ];
 
 @Module({})

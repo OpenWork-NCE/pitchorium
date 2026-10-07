@@ -1,16 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import type { Socket } from 'socket.io';
 import { TrustedOrigins } from '../../../platform/http';
-import { RealtimeHandshakeGuard, SYSTEM_NAMESPACE } from '../../../platform/realtime';
+import {
+  RealtimeHandshakeGuard,
+  type SocketPrincipal,
+  SYSTEM_NAMESPACE,
+} from '../../../platform/realtime';
 import { SessionAuthenticator } from '../../identity';
 
 /** Namespaces open to anonymous connections; every other namespace is for members. */
 const PUBLIC_NAMESPACES: ReadonlySet<string> = new Set([SYSTEM_NAMESPACE]);
-
-export interface SocketPrincipal {
-  userId: string;
-  sessionId: string;
-}
 
 /**
  * Socket.IO handshake authentication: the session cookie must be valid and the Origin trusted
