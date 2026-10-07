@@ -323,5 +323,16 @@
     "expertise": "Expertise",
     "business_partnership": "Business partnership",
     "recruitment": "Recruitment"
+  },
+  "reactionTypes": {
+    "like": "Like",
+    "bravo": "Bravo",
+    "insightful": "Insightful",
+    "support": "Support"
+  },
+  "postVisibilities": {
+    "public": "Public",
+    "members": "Members",
+    "connections": "Connections"
   }
 }
