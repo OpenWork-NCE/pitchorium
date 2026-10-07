@@ -119,6 +119,7 @@ Conventional Commits en anglais, scope obligatoire : `type(scope): description`.
 - Types : `feat`, `fix`, `refactor`, `perf`, `test`, `docs`, `build`, `ci`, `chore`.
 - Scopes : `repo`, `config`, `infra`, `db`, `contracts`, `api-client`, `i18n`, `emails`, `platform`, `server`, `ci`, `docs` et un scope par module métier (`identity`, `projects`...).
 - Un commit correspond à une intention. Vérifié par commitlint (hook `commit-msg` et CI).
+- Chaque commit compile et passe le typecheck seul : un commit qui dépend d'un autre vient après lui, jamais avant (vérification : `pnpm build && pnpm typecheck` sur chaque commit, par exemple avec `git rebase --exec`).
 
 ## Documentation
 

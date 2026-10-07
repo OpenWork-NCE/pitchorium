@@ -9,7 +9,7 @@ Pitchorium est un réseau professionnel et une plateforme de financement à impa
 ## Règles absolues
 
 1. Jamais de caractère U+2500 à U+257F ni de séparation décorative (code, commentaires, documentation, sorties de scripts).
-2. Commits atomiques Conventional Commits, en anglais, avec un scope autorisé par `commitlint.config.js`.
+2. Commits atomiques Conventional Commits, en anglais, avec un scope autorisé par `commitlint.config.js` ; chaque commit compile et passe le typecheck seul (`pnpm build && pnpm typecheck` sur ce commit).
 3. Documentation précise, concise, mise à jour dans le même commit que le code concerné.
 4. Code, identifiants, commentaires et commits en anglais ; documentation en français.
 5. Aucun secret dans le dépôt ; aucune donnée métier inventée : tout manque va dans `docs/open-questions.md`.
