@@ -11,6 +11,9 @@ import {
   type DevSeedResult,
   seedDevData,
 } from '../../scripts/dev-seed/seed-dev-data';
+import { createSeedContext, seedDevProjects } from '../../scripts/dev-seed/seed-dev-projects';
+import { MethodologiesService } from '../../src/modules/impact/application/methodologies.service';
+import { FixedClock } from '../../src/platform/kernel';
 import { createApiTestApp } from './support/api-app';
 import { query, truncateAllTables } from './support/database';
 import { TEST_LEGAL_VERSION } from './support/environment';
@@ -26,6 +29,11 @@ const COUNTED_TABLES = [
   'content.posts',
   'content.comments',
   'content.reactions',
+  'impact.methodologies',
+  'impact.assessments',
+  'projects.projects',
+  'projects.updates',
+  'projects.funding_entries',
   'platform.outbox_events',
 ];
 
@@ -81,6 +89,62 @@ describe('development data', () => {
     } satisfies DevSeedResult);
     expect(await counts()).toEqual(before);
 
+    // Projects, impact and their links go through the services and facades (ADR 0035).
+    const clock = new FixedClock(new Date());
+    const context = await createSeedContext(clock);
+    try {
+      expect(await seedDevProjects(context, clock)).toEqual({
+        methodologies: 1,
+        assessments: 7,
+        projects: 8,
+        contributions: 11,
+        follows: 8,
+        posts: 2,
+      });
+      const statuses = await query<{ status: string; count: string }>(
+        'SELECT status, count(*) FROM projects.projects GROUP BY status ORDER BY status',
+      );
+      expect(statuses.map((row) => [row.status, Number(row.count)])).toEqual([
+        ['closed', 2],
+        ['draft', 2],
+        ['funded', 1],
+        ['funding', 3],
+      ]);
+      const events = await query<{ event_type: string }>(
+        `SELECT DISTINCT event_type FROM platform.outbox_events
+         WHERE event_type LIKE 'projects.%' OR event_type LIKE 'impact.%' ORDER BY event_type`,
+      );
+      expect(events.map((event) => event.event_type)).toEqual(
+        expect.arrayContaining([
+          'impact.methodology.published.v1',
+          'projects.project.closed.v1',
+          'projects.project.ending-soon.v1',
+          'projects.project.funded.v1',
+          'projects.tier.unlocked.v1',
+          'projects.update.published.v1',
+        ]),
+      );
+      const withProjects = await counts();
+      expect(await seedDevProjects(context, clock)).toEqual({
+        methodologies: 0,
+        assessments: 0,
+        projects: 0,
+        contributions: 0,
+        follows: 0,
+        posts: 0,
+      });
+      expect(await counts()).toEqual(withProjects);
+      // ensureDemo is idempotent: it returns the existing DEMO version.
+      await expect(
+        context.get(MethodologiesService, { strict: false }).ensureDemo({
+          name: 'x',
+          criteria: [],
+        }),
+      ).resolves.toMatchObject({ demo: true });
+    } finally {
+      await context.close();
+    }
+
     // Each image waits in the quarantine for the worker, announced by its event.
     const [asset] = await query<{ id: string; declared_size: number }>(
       `SELECT id, declared_size FROM media.assets WHERE status = 'processing' LIMIT 1`,
@@ -105,6 +169,16 @@ describe('development data', () => {
       .get('/v1/network/members/kofi-mensah/relationship')
       .expect(200);
     expect(relationship.body).toMatchObject({ degree: 'first', connection: 'connected' });
+    const showcase = await agent.get('/v1/projects').expect(200);
+    expect(showcase.body.items.length).toBe(6);
+    const mine = await agent.get('/v1/me/projects').expect(200);
+    expect(mine.body.items[0]).toMatchObject({
+      role: 'owner',
+      project: {
+        impact: { selfDeclared: true },
+        organization: { slug: 'reseau-femmes-entrepreneures-sahel' },
+      },
+    });
   });
 
   it('refuses to run in production', () => {
