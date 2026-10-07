@@ -113,6 +113,13 @@
       "when": 1791413672144,
       "tag": "0015_messaging_and_notifications",
       "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1791415644604,
+      "tag": "0016_notifications_channels",
+      "breakpoints": true
     }
   ]
 }

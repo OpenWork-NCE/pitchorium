@@ -41,6 +41,10 @@ export const notificationsNotifications = notificationsSchema.table(
     data: jsonb('data').$type<Record<string, string | number | boolean | null>>().notNull(),
     windowEndsAt: timestamptz('window_ends_at').notNull(),
     readAt: timestamptz('read_at'),
+    /** Shown in the app (in-app channel of the type for the member). */
+    inApp: boolean('in_app').notNull().default(true),
+    /** Email channel when created: `off`, `immediate` or `digest` (ADR 0060). */
+    emailMode: text('email_mode').notNull().default('off'),
     /** Sent by email (immediately or in a digest); null when not yet or never. */
     emailedAt: timestamptz('emailed_at'),
     /** Waits for a digest: email channel on, digest chosen. */
@@ -49,13 +53,18 @@ export const notificationsNotifications = notificationsSchema.table(
     updatedAt: timestamptz('updated_at').notNull(),
   },
   (table) => [
-    index('notifications_recipient_idx').on(table.recipientId, table.updatedAt, table.id),
+    index('notifications_recipient_idx')
+      .on(table.recipientId, table.updatedAt, table.id)
+      .where(sql`${table.inApp}`),
     index('notifications_open_group_idx')
       .on(table.recipientId, table.groupKey, table.windowEndsAt)
       .where(sql`${table.readAt} is null`),
     index('notifications_unread_idx')
       .on(table.recipientId)
-      .where(sql`${table.readAt} is null`),
+      .where(sql`${table.readAt} is null and ${table.inApp}`),
+    index('notifications_low_priority_idx')
+      .on(table.recipientId, table.createdAt)
+      .where(sql`${table.priority} = 'low'`),
     index('notifications_digest_idx')
       .on(table.recipientId, table.createdAt)
       .where(sql`${table.digestPending}`),
