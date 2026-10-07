@@ -22,6 +22,8 @@ export function serverBoundaries({ rootDir }) {
       settings: {
         'boundaries/root-path': rootDir,
         'boundaries/include': ['src/**/*.ts'],
+        // Unit tests sit next to the code they test (domain/ included) and import vitest.
+        'boundaries/ignore': ['src/**/*.spec.ts'],
         'boundaries/elements': [
           { type: 'platform-kernel', pattern: 'src/platform/kernel', partialMatch: false },
           { type: 'platform', pattern: 'src/platform', partialMatch: false },
