@@ -72,6 +72,18 @@ const apiEnvSchema = commonEnvSchema.extend({
   MEDIA_QUOTA_MAX_FILES: z.coerce.number().int().positive().default(500),
   MEDIA_QUOTA_MAX_BYTES: z.coerce.number().int().positive().default(1_073_741_824),
   MEDIA_UPLOAD_REQUESTS_PER_HOUR: z.coerce.number().int().positive().default(60),
+  ORGANIZATIONS_MAX_CREATED_PER_USER: z.coerce.number().int().positive().default(5),
+  ORGANIZATIONS_INVITATION_TTL_DAYS: z.coerce.number().int().min(1).max(90).default(7),
+  ORGANIZATIONS_VERIFICATION_CRITERIA: z
+    .string()
+    .default('')
+    .transform((value) =>
+      value
+        .split(',')
+        .map((entry) => entry.trim())
+        .filter(Boolean),
+    )
+    .pipe(z.array(z.string().regex(/^[a-z0-9_]{1,48}$/))),
 });
 
 const workerEnvSchema = commonEnvSchema.extend({

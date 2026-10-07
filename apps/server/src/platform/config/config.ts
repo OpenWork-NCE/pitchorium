@@ -52,6 +52,12 @@ export interface ApiConfig extends CommonConfig {
     quota: { maxFiles: number; maxBytes: number };
     uploadRequestsPerHour: number;
   };
+  organizations: {
+    maxCreatedPerUser: number;
+    invitationTtlMs: number;
+    /** Criteria a verification decision may tick; their list is an open question. */
+    verificationCriteria: string[];
+  };
   auth: {
     secret: string;
     /** Origins allowed to send cookie-authenticated writes (CSRF protection). */
@@ -159,6 +165,11 @@ export function parseApiConfig(rawEnv: RawEnv): ApiConfig {
       downloadUrlTtlSeconds: env.MEDIA_DOWNLOAD_URL_TTL_SECONDS,
       quota: { maxFiles: env.MEDIA_QUOTA_MAX_FILES, maxBytes: env.MEDIA_QUOTA_MAX_BYTES },
       uploadRequestsPerHour: env.MEDIA_UPLOAD_REQUESTS_PER_HOUR,
+    },
+    organizations: {
+      maxCreatedPerUser: env.ORGANIZATIONS_MAX_CREATED_PER_USER,
+      invitationTtlMs: env.ORGANIZATIONS_INVITATION_TTL_DAYS * 86_400_000,
+      verificationCriteria: env.ORGANIZATIONS_VERIFICATION_CRITERIA,
     },
     auth: {
       secret: env.AUTH_SECRET,

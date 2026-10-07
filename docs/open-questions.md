@@ -26,6 +26,12 @@ Informations nécessaires au développement et absentes du cahier des charges (d
 34. Les quotas par membre (provisoirement 500 fichiers, 1 Gio et 60 demandes de téléversement par heure) et le délai de suppression des fichiers non attachés (provisoirement 24 heures).
 35. La visibilité des documents de publication et de projet (PDF de pitch, one-pager) : privés par défaut, lus par URL présignée ; à rendre publics si le produit le souhaite pour les projets publiés.
 
+## Organisations
+
+36. Les critères de vérification d'une organisation (pièces exigées par type de structure et par pays, contrôles du modérateur) et le processus de validation : le flux est en place avec une liste de critères configurable (`ORGANIZATIONS_VERIFICATION_CRITERIA`), vide par défaut (§13, §14).
+37. Le nombre maximal d'organisations créées par membre (provisoirement 5) et la durée de validité d'une invitation (provisoirement 7 jours).
+38. La composition de l'équipe qui relit les demandes de vérification (rôle `moderator` ou `admin` aujourd'hui).
+
 ## Paiements
 
 7. La devise de libellé d'une campagne (EUR uniquement, devise du porteur, ou au choix) ; l'objectif est exprimé en euros au §11.1.
