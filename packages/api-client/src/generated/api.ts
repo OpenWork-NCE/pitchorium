@@ -24,17 +24,36 @@ import type {
 import type {
   ActionPrerequisitesDtoOutput,
   AttachMediaDto,
+  BlockPageDtoOutput,
+  BlocksControllerListParams,
   ChangeHandleDto,
   ChangeRoleDto,
   ChangeSlugDto,
+  CommentDtoOutput,
+  CommentPageDtoOutput,
+  CommentsControllerListParams,
+  CommentsControllerRepliesParams,
+  ConnectionPageDtoOutput,
+  ConnectionRequestDtoOutput,
+  ConnectionRequestPageDtoOutput,
+  ConnectionsControllerListParams,
+  CreateCommentDto,
+  CreateConnectionRequestDto,
   CreateContributorFacetDto,
   CreateEntrepreneurFacetDto,
   CreateInvitationDto,
   CreateOrganizationDto,
+  CreatePostDto,
+  CreateRepostDto,
   CreateUploadDto,
   CreateVerificationRequestDto,
   CurrentUserDtoOutput,
   DecisionDto,
+  FeedPageDtoOutput,
+  FollowDtoOutput,
+  FollowPageDtoOutput,
+  FollowerPageDtoOutput,
+  FollowsControllerFollowersParams,
   GrantRoleRequestDto,
   HealthResponseDtoOutput,
   InvitationDtoOutput,
@@ -47,22 +66,43 @@ import type {
   MediaControllerDownloadParams,
   MediaDownloadDtoOutput,
   MediaUsagesDtoOutput,
+  MemberNetworkControllerConnectionsParams,
+  MemberNetworkControllerFollowersParams,
+  MemberNetworkControllerFollowingParams,
+  MemberNetworkControllerPublicConnectionsParams,
+  MemberNetworkControllerPublicFollowersParams,
+  MemberNetworkControllerPublicFollowingParams,
   MyOrganizationDtoOutput,
   MyOrganizationsDtoOutput,
+  NetworkSettingsDtoOutput,
   OrganizationDtoOutput,
   OwnProfileDtoOutput,
+  PostDtoOutput,
+  PostStatsDtoOutput,
+  PostsControllerReadParams,
+  PostsControllerSavedParams,
   PreferencesDto,
   PreferencesDtoOutput,
   ProblemDetails,
   ProfileViewDtoOutput,
+  ProfileViewsControllerVisitsParams,
+  ProfileViewsSummaryDtoOutput,
+  ProfileVisitPageDtoOutput,
+  ReactionSummaryDtoOutput,
   ReferenceDataDtoOutput,
+  RelationshipDtoOutput,
   RevocationDto,
+  SavedPostPageDtoOutput,
   SetIntentionDto,
+  SetReactionDto,
   TransferOwnershipDto,
   UpdateBaseProfileDto,
+  UpdateCommentDto,
   UpdateContributorFacetDto,
   UpdateEntrepreneurFacetDto,
+  UpdateNetworkSettingsDto,
   UpdateOrganizationDto,
+  UpdatePostDto,
   UpdateVisibilityDto,
   UploadTicketDtoOutput,
   UserRolesDtoOutput,
@@ -674,7 +714,29 @@ export const getAccessControllerPrerequisitesUrl = (
     | 'organization.ownership.transfer'
     | 'organization.invitation.respond'
     | 'organization.verification.request'
-    | 'organization.verification.review',
+    | 'organization.verification.review'
+    | 'network.read'
+    | 'network.follow'
+    | 'network.connection.request'
+    | 'network.connection.respond'
+    | 'network.connection.remove'
+    | 'network.block'
+    | 'network.settings.update'
+    | 'network.profile-views.read'
+    | 'content.feed.read'
+    | 'content.post.read'
+    | 'content.post.create'
+    | 'content.post.update'
+    | 'content.post.delete'
+    | 'content.post.repost'
+    | 'content.post.save'
+    | 'content.post.hide'
+    | 'content.post.feature'
+    | 'content.post.stats.read'
+    | 'content.reaction.set'
+    | 'content.comment.create'
+    | 'content.comment.update'
+    | 'content.comment.delete',
 ) => {
   return `/v1/me/prerequisites/${action}`;
 };
@@ -702,7 +764,29 @@ export const accessControllerPrerequisites = async (
     | 'organization.ownership.transfer'
     | 'organization.invitation.respond'
     | 'organization.verification.request'
-    | 'organization.verification.review',
+    | 'organization.verification.review'
+    | 'network.read'
+    | 'network.follow'
+    | 'network.connection.request'
+    | 'network.connection.respond'
+    | 'network.connection.remove'
+    | 'network.block'
+    | 'network.settings.update'
+    | 'network.profile-views.read'
+    | 'content.feed.read'
+    | 'content.post.read'
+    | 'content.post.create'
+    | 'content.post.update'
+    | 'content.post.delete'
+    | 'content.post.repost'
+    | 'content.post.save'
+    | 'content.post.hide'
+    | 'content.post.feature'
+    | 'content.post.stats.read'
+    | 'content.reaction.set'
+    | 'content.comment.create'
+    | 'content.comment.update'
+    | 'content.comment.delete',
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<ActionPrerequisitesDtoOutput> => {
   return apiFetch<ActionPrerequisitesDtoOutput>(getAccessControllerPrerequisitesUrl(action), {
@@ -734,7 +818,29 @@ export const getAccessControllerPrerequisitesQueryKey = (
     | 'organization.ownership.transfer'
     | 'organization.invitation.respond'
     | 'organization.verification.request'
-    | 'organization.verification.review',
+    | 'organization.verification.review'
+    | 'network.read'
+    | 'network.follow'
+    | 'network.connection.request'
+    | 'network.connection.respond'
+    | 'network.connection.remove'
+    | 'network.block'
+    | 'network.settings.update'
+    | 'network.profile-views.read'
+    | 'content.feed.read'
+    | 'content.post.read'
+    | 'content.post.create'
+    | 'content.post.update'
+    | 'content.post.delete'
+    | 'content.post.repost'
+    | 'content.post.save'
+    | 'content.post.hide'
+    | 'content.post.feature'
+    | 'content.post.stats.read'
+    | 'content.reaction.set'
+    | 'content.comment.create'
+    | 'content.comment.update'
+    | 'content.comment.delete',
 ) => {
   return [`/v1/me/prerequisites/${action}`] as const;
 };
@@ -765,7 +871,29 @@ export const getAccessControllerPrerequisitesQueryOptions = <
     | 'organization.ownership.transfer'
     | 'organization.invitation.respond'
     | 'organization.verification.request'
-    | 'organization.verification.review',
+    | 'organization.verification.review'
+    | 'network.read'
+    | 'network.follow'
+    | 'network.connection.request'
+    | 'network.connection.respond'
+    | 'network.connection.remove'
+    | 'network.block'
+    | 'network.settings.update'
+    | 'network.profile-views.read'
+    | 'content.feed.read'
+    | 'content.post.read'
+    | 'content.post.create'
+    | 'content.post.update'
+    | 'content.post.delete'
+    | 'content.post.repost'
+    | 'content.post.save'
+    | 'content.post.hide'
+    | 'content.post.feature'
+    | 'content.post.stats.read'
+    | 'content.reaction.set'
+    | 'content.comment.create'
+    | 'content.comment.update'
+    | 'content.comment.delete',
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof accessControllerPrerequisites>>, TError, TData>
@@ -822,7 +950,29 @@ export function useAccessControllerPrerequisites<
     | 'organization.ownership.transfer'
     | 'organization.invitation.respond'
     | 'organization.verification.request'
-    | 'organization.verification.review',
+    | 'organization.verification.review'
+    | 'network.read'
+    | 'network.follow'
+    | 'network.connection.request'
+    | 'network.connection.respond'
+    | 'network.connection.remove'
+    | 'network.block'
+    | 'network.settings.update'
+    | 'network.profile-views.read'
+    | 'content.feed.read'
+    | 'content.post.read'
+    | 'content.post.create'
+    | 'content.post.update'
+    | 'content.post.delete'
+    | 'content.post.repost'
+    | 'content.post.save'
+    | 'content.post.hide'
+    | 'content.post.feature'
+    | 'content.post.stats.read'
+    | 'content.reaction.set'
+    | 'content.comment.create'
+    | 'content.comment.update'
+    | 'content.comment.delete',
   options: {
     query: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof accessControllerPrerequisites>>, TError, TData>
@@ -865,7 +1015,29 @@ export function useAccessControllerPrerequisites<
     | 'organization.ownership.transfer'
     | 'organization.invitation.respond'
     | 'organization.verification.request'
-    | 'organization.verification.review',
+    | 'organization.verification.review'
+    | 'network.read'
+    | 'network.follow'
+    | 'network.connection.request'
+    | 'network.connection.respond'
+    | 'network.connection.remove'
+    | 'network.block'
+    | 'network.settings.update'
+    | 'network.profile-views.read'
+    | 'content.feed.read'
+    | 'content.post.read'
+    | 'content.post.create'
+    | 'content.post.update'
+    | 'content.post.delete'
+    | 'content.post.repost'
+    | 'content.post.save'
+    | 'content.post.hide'
+    | 'content.post.feature'
+    | 'content.post.stats.read'
+    | 'content.reaction.set'
+    | 'content.comment.create'
+    | 'content.comment.update'
+    | 'content.comment.delete',
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof accessControllerPrerequisites>>, TError, TData>
@@ -908,7 +1080,29 @@ export function useAccessControllerPrerequisites<
     | 'organization.ownership.transfer'
     | 'organization.invitation.respond'
     | 'organization.verification.request'
-    | 'organization.verification.review',
+    | 'organization.verification.review'
+    | 'network.read'
+    | 'network.follow'
+    | 'network.connection.request'
+    | 'network.connection.respond'
+    | 'network.connection.remove'
+    | 'network.block'
+    | 'network.settings.update'
+    | 'network.profile-views.read'
+    | 'content.feed.read'
+    | 'content.post.read'
+    | 'content.post.create'
+    | 'content.post.update'
+    | 'content.post.delete'
+    | 'content.post.repost'
+    | 'content.post.save'
+    | 'content.post.hide'
+    | 'content.post.feature'
+    | 'content.post.stats.read'
+    | 'content.reaction.set'
+    | 'content.comment.create'
+    | 'content.comment.update'
+    | 'content.comment.delete',
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof accessControllerPrerequisites>>, TError, TData>
@@ -944,7 +1138,29 @@ export function useAccessControllerPrerequisites<
     | 'organization.ownership.transfer'
     | 'organization.invitation.respond'
     | 'organization.verification.request'
-    | 'organization.verification.review',
+    | 'organization.verification.review'
+    | 'network.read'
+    | 'network.follow'
+    | 'network.connection.request'
+    | 'network.connection.respond'
+    | 'network.connection.remove'
+    | 'network.block'
+    | 'network.settings.update'
+    | 'network.profile-views.read'
+    | 'content.feed.read'
+    | 'content.post.read'
+    | 'content.post.create'
+    | 'content.post.update'
+    | 'content.post.delete'
+    | 'content.post.repost'
+    | 'content.post.save'
+    | 'content.post.hide'
+    | 'content.post.feature'
+    | 'content.post.stats.read'
+    | 'content.reaction.set'
+    | 'content.comment.create'
+    | 'content.comment.update'
+    | 'content.comment.delete',
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof accessControllerPrerequisites>>, TError, TData>
@@ -6573,4 +6789,5366 @@ export const useVerificationControllerRevoke = <
   TContext
 > => {
   return useMutation(getVerificationControllerRevokeMutationOptions(options), queryClient);
+};
+
+export const getFollowsControllerFollowUrl = (targetType: string, targetKey: string) => {
+  return `/v1/network/follows/${targetType}/${targetKey}`;
+};
+
+export const followsControllerFollow = async (
+  targetType: string,
+  targetKey: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<FollowDtoOutput> => {
+  return apiFetch<FollowDtoOutput>(getFollowsControllerFollowUrl(targetType, targetKey), {
+    ...options,
+    method: 'PUT',
+  });
+};
+
+export const getFollowsControllerFollowMutationKey = () => ['followsControllerFollow'] as const;
+
+export const getFollowsControllerFollowMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof followsControllerFollow>>,
+    TError,
+    FollowsControllerFollowMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof followsControllerFollow>>,
+  TError,
+  FollowsControllerFollowMutationVariables,
+  TContext
+> => {
+  const mutationKey = getFollowsControllerFollowMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof followsControllerFollow>>,
+    FollowsControllerFollowMutationVariables
+  > = (props) => {
+    const { targetType, targetKey } = props ?? {};
+
+    return followsControllerFollow(targetType, targetKey, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type FollowsControllerFollowMutationResult = NonNullable<
+  Awaited<ReturnType<typeof followsControllerFollow>>
+>;
+
+export type FollowsControllerFollowMutationError = ErrorType<ProblemDetails>;
+export type FollowsControllerFollowMutationVariables = { targetType: string; targetKey: string };
+
+export const useFollowsControllerFollow = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof followsControllerFollow>>,
+      TError,
+      FollowsControllerFollowMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof followsControllerFollow>>,
+  TError,
+  FollowsControllerFollowMutationVariables,
+  TContext
+> => {
+  return useMutation(getFollowsControllerFollowMutationOptions(options), queryClient);
+};
+
+export const getFollowsControllerUnfollowUrl = (targetType: string, targetKey: string) => {
+  return `/v1/network/follows/${targetType}/${targetKey}`;
+};
+
+export const followsControllerUnfollow = async (
+  targetType: string,
+  targetKey: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<void> => {
+  return apiFetch<void>(getFollowsControllerUnfollowUrl(targetType, targetKey), {
+    ...options,
+    method: 'DELETE',
+  });
+};
+
+export const getFollowsControllerUnfollowMutationKey = () => ['followsControllerUnfollow'] as const;
+
+export const getFollowsControllerUnfollowMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof followsControllerUnfollow>>,
+    TError,
+    FollowsControllerUnfollowMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof followsControllerUnfollow>>,
+  TError,
+  FollowsControllerUnfollowMutationVariables,
+  TContext
+> => {
+  const mutationKey = getFollowsControllerUnfollowMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof followsControllerUnfollow>>,
+    FollowsControllerUnfollowMutationVariables
+  > = (props) => {
+    const { targetType, targetKey } = props ?? {};
+
+    return followsControllerUnfollow(targetType, targetKey, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type FollowsControllerUnfollowMutationResult = NonNullable<
+  Awaited<ReturnType<typeof followsControllerUnfollow>>
+>;
+
+export type FollowsControllerUnfollowMutationError = ErrorType<ProblemDetails>;
+export type FollowsControllerUnfollowMutationVariables = { targetType: string; targetKey: string };
+
+export const useFollowsControllerUnfollow = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof followsControllerUnfollow>>,
+      TError,
+      FollowsControllerUnfollowMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof followsControllerUnfollow>>,
+  TError,
+  FollowsControllerUnfollowMutationVariables,
+  TContext
+> => {
+  return useMutation(getFollowsControllerUnfollowMutationOptions(options), queryClient);
+};
+
+export const getFollowsControllerFollowersUrl = (
+  targetType: string,
+  targetKey: string,
+  params?: FollowsControllerFollowersParams,
+) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/v1/network/follows/${targetType}/${targetKey}/followers?${stringifiedParams}`
+    : `/v1/network/follows/${targetType}/${targetKey}/followers`;
+};
+
+export const followsControllerFollowers = async (
+  targetType: string,
+  targetKey: string,
+  params?: FollowsControllerFollowersParams,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<FollowerPageDtoOutput> => {
+  return apiFetch<FollowerPageDtoOutput>(
+    getFollowsControllerFollowersUrl(targetType, targetKey, params),
+    {
+      ...options,
+      method: 'GET',
+    },
+  );
+};
+
+export const getFollowsControllerFollowersQueryKey = (
+  targetType: string,
+  targetKey: string,
+  params?: FollowsControllerFollowersParams,
+) => {
+  return [
+    `/v1/network/follows/${targetType}/${targetKey}/followers`,
+    ...(params ? [params] : []),
+  ] as const;
+};
+
+export const getFollowsControllerFollowersQueryOptions = <
+  TData = Awaited<ReturnType<typeof followsControllerFollowers>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  targetType: string,
+  targetKey: string,
+  params?: FollowsControllerFollowersParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof followsControllerFollowers>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getFollowsControllerFollowersQueryKey(targetType, targetKey, params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof followsControllerFollowers>>> = ({
+    signal,
+  }) => followsControllerFollowers(targetType, targetKey, params, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled:
+      targetType !== null &&
+      targetType !== undefined &&
+      targetKey !== null &&
+      targetKey !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<Awaited<ReturnType<typeof followsControllerFollowers>>, TError, TData> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+};
+
+export type FollowsControllerFollowersQueryResult = NonNullable<
+  Awaited<ReturnType<typeof followsControllerFollowers>>
+>;
+export type FollowsControllerFollowersQueryError = ErrorType<ProblemDetails>;
+
+export function useFollowsControllerFollowers<
+  TData = Awaited<ReturnType<typeof followsControllerFollowers>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  targetType: string,
+  targetKey: string,
+  params: undefined | FollowsControllerFollowersParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof followsControllerFollowers>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof followsControllerFollowers>>,
+          TError,
+          Awaited<ReturnType<typeof followsControllerFollowers>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useFollowsControllerFollowers<
+  TData = Awaited<ReturnType<typeof followsControllerFollowers>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  targetType: string,
+  targetKey: string,
+  params?: FollowsControllerFollowersParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof followsControllerFollowers>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof followsControllerFollowers>>,
+          TError,
+          Awaited<ReturnType<typeof followsControllerFollowers>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useFollowsControllerFollowers<
+  TData = Awaited<ReturnType<typeof followsControllerFollowers>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  targetType: string,
+  targetKey: string,
+  params?: FollowsControllerFollowersParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof followsControllerFollowers>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useFollowsControllerFollowers<
+  TData = Awaited<ReturnType<typeof followsControllerFollowers>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  targetType: string,
+  targetKey: string,
+  params?: FollowsControllerFollowersParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof followsControllerFollowers>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getFollowsControllerFollowersQueryOptions(
+    targetType,
+    targetKey,
+    params,
+    options,
+  );
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getConnectionsControllerRequestUrl = () => {
+  return `/v1/network/connection-requests`;
+};
+
+export const connectionsControllerRequest = async (
+  createConnectionRequestDto: CreateConnectionRequestDto,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<ConnectionRequestDtoOutput> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit['headers']>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(
+          h as Iterable<Iterable<string>>,
+          (entry) => Array.from(entry) as [string, string],
+        ),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+  return apiFetch<ConnectionRequestDtoOutput>(getConnectionsControllerRequestUrl(), {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(createConnectionRequestDto),
+  });
+};
+
+export const getConnectionsControllerRequestMutationKey = () =>
+  ['connectionsControllerRequest'] as const;
+
+export const getConnectionsControllerRequestMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof connectionsControllerRequest>>,
+    TError,
+    ConnectionsControllerRequestMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof connectionsControllerRequest>>,
+  TError,
+  ConnectionsControllerRequestMutationVariables,
+  TContext
+> => {
+  const mutationKey = getConnectionsControllerRequestMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof connectionsControllerRequest>>,
+    ConnectionsControllerRequestMutationVariables
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return connectionsControllerRequest(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ConnectionsControllerRequestMutationResult = NonNullable<
+  Awaited<ReturnType<typeof connectionsControllerRequest>>
+>;
+export type ConnectionsControllerRequestMutationBody = CreateConnectionRequestDto;
+export type ConnectionsControllerRequestMutationError = ErrorType<ProblemDetails>;
+export type ConnectionsControllerRequestMutationVariables = { data: CreateConnectionRequestDto };
+
+export const useConnectionsControllerRequest = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof connectionsControllerRequest>>,
+      TError,
+      ConnectionsControllerRequestMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof connectionsControllerRequest>>,
+  TError,
+  ConnectionsControllerRequestMutationVariables,
+  TContext
+> => {
+  return useMutation(getConnectionsControllerRequestMutationOptions(options), queryClient);
+};
+
+export const getConnectionsControllerListUrl = (params?: ConnectionsControllerListParams) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/v1/me/network/connection-requests?${stringifiedParams}`
+    : `/v1/me/network/connection-requests`;
+};
+
+export const connectionsControllerList = async (
+  params?: ConnectionsControllerListParams,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<ConnectionRequestPageDtoOutput> => {
+  return apiFetch<ConnectionRequestPageDtoOutput>(getConnectionsControllerListUrl(params), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getConnectionsControllerListQueryKey = (params?: ConnectionsControllerListParams) => {
+  return [`/v1/me/network/connection-requests`, ...(params ? [params] : [])] as const;
+};
+
+export const getConnectionsControllerListQueryOptions = <
+  TData = Awaited<ReturnType<typeof connectionsControllerList>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: ConnectionsControllerListParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof connectionsControllerList>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getConnectionsControllerListQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof connectionsControllerList>>> = ({
+    signal,
+  }) => connectionsControllerList(params, { signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof connectionsControllerList>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ConnectionsControllerListQueryResult = NonNullable<
+  Awaited<ReturnType<typeof connectionsControllerList>>
+>;
+export type ConnectionsControllerListQueryError = ErrorType<ProblemDetails>;
+
+export function useConnectionsControllerList<
+  TData = Awaited<ReturnType<typeof connectionsControllerList>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params: undefined | ConnectionsControllerListParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof connectionsControllerList>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof connectionsControllerList>>,
+          TError,
+          Awaited<ReturnType<typeof connectionsControllerList>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useConnectionsControllerList<
+  TData = Awaited<ReturnType<typeof connectionsControllerList>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: ConnectionsControllerListParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof connectionsControllerList>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof connectionsControllerList>>,
+          TError,
+          Awaited<ReturnType<typeof connectionsControllerList>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useConnectionsControllerList<
+  TData = Awaited<ReturnType<typeof connectionsControllerList>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: ConnectionsControllerListParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof connectionsControllerList>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useConnectionsControllerList<
+  TData = Awaited<ReturnType<typeof connectionsControllerList>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: ConnectionsControllerListParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof connectionsControllerList>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getConnectionsControllerListQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getConnectionsControllerAcceptUrl = (requestId: string) => {
+  return `/v1/network/connection-requests/${requestId}/accept`;
+};
+
+export const connectionsControllerAccept = async (
+  requestId: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<ConnectionRequestDtoOutput> => {
+  return apiFetch<ConnectionRequestDtoOutput>(getConnectionsControllerAcceptUrl(requestId), {
+    ...options,
+    method: 'POST',
+  });
+};
+
+export const getConnectionsControllerAcceptMutationKey = () =>
+  ['connectionsControllerAccept'] as const;
+
+export const getConnectionsControllerAcceptMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof connectionsControllerAccept>>,
+    TError,
+    ConnectionsControllerAcceptMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof connectionsControllerAccept>>,
+  TError,
+  ConnectionsControllerAcceptMutationVariables,
+  TContext
+> => {
+  const mutationKey = getConnectionsControllerAcceptMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof connectionsControllerAccept>>,
+    ConnectionsControllerAcceptMutationVariables
+  > = (props) => {
+    const { requestId } = props ?? {};
+
+    return connectionsControllerAccept(requestId, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ConnectionsControllerAcceptMutationResult = NonNullable<
+  Awaited<ReturnType<typeof connectionsControllerAccept>>
+>;
+
+export type ConnectionsControllerAcceptMutationError = ErrorType<ProblemDetails>;
+export type ConnectionsControllerAcceptMutationVariables = { requestId: string };
+
+export const useConnectionsControllerAccept = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof connectionsControllerAccept>>,
+      TError,
+      ConnectionsControllerAcceptMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof connectionsControllerAccept>>,
+  TError,
+  ConnectionsControllerAcceptMutationVariables,
+  TContext
+> => {
+  return useMutation(getConnectionsControllerAcceptMutationOptions(options), queryClient);
+};
+
+export const getConnectionsControllerDeclineUrl = (requestId: string) => {
+  return `/v1/network/connection-requests/${requestId}/decline`;
+};
+
+export const connectionsControllerDecline = async (
+  requestId: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<void> => {
+  return apiFetch<void>(getConnectionsControllerDeclineUrl(requestId), {
+    ...options,
+    method: 'POST',
+  });
+};
+
+export const getConnectionsControllerDeclineMutationKey = () =>
+  ['connectionsControllerDecline'] as const;
+
+export const getConnectionsControllerDeclineMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof connectionsControllerDecline>>,
+    TError,
+    ConnectionsControllerDeclineMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof connectionsControllerDecline>>,
+  TError,
+  ConnectionsControllerDeclineMutationVariables,
+  TContext
+> => {
+  const mutationKey = getConnectionsControllerDeclineMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof connectionsControllerDecline>>,
+    ConnectionsControllerDeclineMutationVariables
+  > = (props) => {
+    const { requestId } = props ?? {};
+
+    return connectionsControllerDecline(requestId, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ConnectionsControllerDeclineMutationResult = NonNullable<
+  Awaited<ReturnType<typeof connectionsControllerDecline>>
+>;
+
+export type ConnectionsControllerDeclineMutationError = ErrorType<ProblemDetails>;
+export type ConnectionsControllerDeclineMutationVariables = { requestId: string };
+
+export const useConnectionsControllerDecline = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof connectionsControllerDecline>>,
+      TError,
+      ConnectionsControllerDeclineMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof connectionsControllerDecline>>,
+  TError,
+  ConnectionsControllerDeclineMutationVariables,
+  TContext
+> => {
+  return useMutation(getConnectionsControllerDeclineMutationOptions(options), queryClient);
+};
+
+export const getConnectionsControllerWithdrawUrl = (requestId: string) => {
+  return `/v1/network/connection-requests/${requestId}`;
+};
+
+export const connectionsControllerWithdraw = async (
+  requestId: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<void> => {
+  return apiFetch<void>(getConnectionsControllerWithdrawUrl(requestId), {
+    ...options,
+    method: 'DELETE',
+  });
+};
+
+export const getConnectionsControllerWithdrawMutationKey = () =>
+  ['connectionsControllerWithdraw'] as const;
+
+export const getConnectionsControllerWithdrawMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof connectionsControllerWithdraw>>,
+    TError,
+    ConnectionsControllerWithdrawMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof connectionsControllerWithdraw>>,
+  TError,
+  ConnectionsControllerWithdrawMutationVariables,
+  TContext
+> => {
+  const mutationKey = getConnectionsControllerWithdrawMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof connectionsControllerWithdraw>>,
+    ConnectionsControllerWithdrawMutationVariables
+  > = (props) => {
+    const { requestId } = props ?? {};
+
+    return connectionsControllerWithdraw(requestId, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ConnectionsControllerWithdrawMutationResult = NonNullable<
+  Awaited<ReturnType<typeof connectionsControllerWithdraw>>
+>;
+
+export type ConnectionsControllerWithdrawMutationError = ErrorType<ProblemDetails>;
+export type ConnectionsControllerWithdrawMutationVariables = { requestId: string };
+
+export const useConnectionsControllerWithdraw = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof connectionsControllerWithdraw>>,
+      TError,
+      ConnectionsControllerWithdrawMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof connectionsControllerWithdraw>>,
+  TError,
+  ConnectionsControllerWithdrawMutationVariables,
+  TContext
+> => {
+  return useMutation(getConnectionsControllerWithdrawMutationOptions(options), queryClient);
+};
+
+export const getConnectionsControllerRemoveUrl = (handle: string) => {
+  return `/v1/network/connections/${handle}`;
+};
+
+export const connectionsControllerRemove = async (
+  handle: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<void> => {
+  return apiFetch<void>(getConnectionsControllerRemoveUrl(handle), {
+    ...options,
+    method: 'DELETE',
+  });
+};
+
+export const getConnectionsControllerRemoveMutationKey = () =>
+  ['connectionsControllerRemove'] as const;
+
+export const getConnectionsControllerRemoveMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof connectionsControllerRemove>>,
+    TError,
+    ConnectionsControllerRemoveMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof connectionsControllerRemove>>,
+  TError,
+  ConnectionsControllerRemoveMutationVariables,
+  TContext
+> => {
+  const mutationKey = getConnectionsControllerRemoveMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof connectionsControllerRemove>>,
+    ConnectionsControllerRemoveMutationVariables
+  > = (props) => {
+    const { handle } = props ?? {};
+
+    return connectionsControllerRemove(handle, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ConnectionsControllerRemoveMutationResult = NonNullable<
+  Awaited<ReturnType<typeof connectionsControllerRemove>>
+>;
+
+export type ConnectionsControllerRemoveMutationError = ErrorType<ProblemDetails>;
+export type ConnectionsControllerRemoveMutationVariables = { handle: string };
+
+export const useConnectionsControllerRemove = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof connectionsControllerRemove>>,
+      TError,
+      ConnectionsControllerRemoveMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof connectionsControllerRemove>>,
+  TError,
+  ConnectionsControllerRemoveMutationVariables,
+  TContext
+> => {
+  return useMutation(getConnectionsControllerRemoveMutationOptions(options), queryClient);
+};
+
+export const getBlocksControllerBlockUrl = (handle: string) => {
+  return `/v1/network/blocks/${handle}`;
+};
+
+export const blocksControllerBlock = async (
+  handle: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<void> => {
+  return apiFetch<void>(getBlocksControllerBlockUrl(handle), {
+    ...options,
+    method: 'PUT',
+  });
+};
+
+export const getBlocksControllerBlockMutationKey = () => ['blocksControllerBlock'] as const;
+
+export const getBlocksControllerBlockMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof blocksControllerBlock>>,
+    TError,
+    BlocksControllerBlockMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof blocksControllerBlock>>,
+  TError,
+  BlocksControllerBlockMutationVariables,
+  TContext
+> => {
+  const mutationKey = getBlocksControllerBlockMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof blocksControllerBlock>>,
+    BlocksControllerBlockMutationVariables
+  > = (props) => {
+    const { handle } = props ?? {};
+
+    return blocksControllerBlock(handle, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type BlocksControllerBlockMutationResult = NonNullable<
+  Awaited<ReturnType<typeof blocksControllerBlock>>
+>;
+
+export type BlocksControllerBlockMutationError = ErrorType<ProblemDetails>;
+export type BlocksControllerBlockMutationVariables = { handle: string };
+
+export const useBlocksControllerBlock = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof blocksControllerBlock>>,
+      TError,
+      BlocksControllerBlockMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof blocksControllerBlock>>,
+  TError,
+  BlocksControllerBlockMutationVariables,
+  TContext
+> => {
+  return useMutation(getBlocksControllerBlockMutationOptions(options), queryClient);
+};
+
+export const getBlocksControllerUnblockUrl = (handle: string) => {
+  return `/v1/network/blocks/${handle}`;
+};
+
+export const blocksControllerUnblock = async (
+  handle: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<void> => {
+  return apiFetch<void>(getBlocksControllerUnblockUrl(handle), {
+    ...options,
+    method: 'DELETE',
+  });
+};
+
+export const getBlocksControllerUnblockMutationKey = () => ['blocksControllerUnblock'] as const;
+
+export const getBlocksControllerUnblockMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof blocksControllerUnblock>>,
+    TError,
+    BlocksControllerUnblockMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof blocksControllerUnblock>>,
+  TError,
+  BlocksControllerUnblockMutationVariables,
+  TContext
+> => {
+  const mutationKey = getBlocksControllerUnblockMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof blocksControllerUnblock>>,
+    BlocksControllerUnblockMutationVariables
+  > = (props) => {
+    const { handle } = props ?? {};
+
+    return blocksControllerUnblock(handle, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type BlocksControllerUnblockMutationResult = NonNullable<
+  Awaited<ReturnType<typeof blocksControllerUnblock>>
+>;
+
+export type BlocksControllerUnblockMutationError = ErrorType<ProblemDetails>;
+export type BlocksControllerUnblockMutationVariables = { handle: string };
+
+export const useBlocksControllerUnblock = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof blocksControllerUnblock>>,
+      TError,
+      BlocksControllerUnblockMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof blocksControllerUnblock>>,
+  TError,
+  BlocksControllerUnblockMutationVariables,
+  TContext
+> => {
+  return useMutation(getBlocksControllerUnblockMutationOptions(options), queryClient);
+};
+
+export const getBlocksControllerListUrl = (params?: BlocksControllerListParams) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/v1/me/network/blocks?${stringifiedParams}`
+    : `/v1/me/network/blocks`;
+};
+
+export const blocksControllerList = async (
+  params?: BlocksControllerListParams,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<BlockPageDtoOutput> => {
+  return apiFetch<BlockPageDtoOutput>(getBlocksControllerListUrl(params), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getBlocksControllerListQueryKey = (params?: BlocksControllerListParams) => {
+  return [`/v1/me/network/blocks`, ...(params ? [params] : [])] as const;
+};
+
+export const getBlocksControllerListQueryOptions = <
+  TData = Awaited<ReturnType<typeof blocksControllerList>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: BlocksControllerListParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof blocksControllerList>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getBlocksControllerListQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof blocksControllerList>>> = ({ signal }) =>
+    blocksControllerList(params, { signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof blocksControllerList>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type BlocksControllerListQueryResult = NonNullable<
+  Awaited<ReturnType<typeof blocksControllerList>>
+>;
+export type BlocksControllerListQueryError = ErrorType<ProblemDetails>;
+
+export function useBlocksControllerList<
+  TData = Awaited<ReturnType<typeof blocksControllerList>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params: undefined | BlocksControllerListParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof blocksControllerList>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof blocksControllerList>>,
+          TError,
+          Awaited<ReturnType<typeof blocksControllerList>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useBlocksControllerList<
+  TData = Awaited<ReturnType<typeof blocksControllerList>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: BlocksControllerListParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof blocksControllerList>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof blocksControllerList>>,
+          TError,
+          Awaited<ReturnType<typeof blocksControllerList>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useBlocksControllerList<
+  TData = Awaited<ReturnType<typeof blocksControllerList>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: BlocksControllerListParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof blocksControllerList>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useBlocksControllerList<
+  TData = Awaited<ReturnType<typeof blocksControllerList>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: BlocksControllerListParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof blocksControllerList>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getBlocksControllerListQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getMemberNetworkControllerFollowersUrl = (
+  handle: string,
+  params?: MemberNetworkControllerFollowersParams,
+) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/v1/network/members/${handle}/followers?${stringifiedParams}`
+    : `/v1/network/members/${handle}/followers`;
+};
+
+export const memberNetworkControllerFollowers = async (
+  handle: string,
+  params?: MemberNetworkControllerFollowersParams,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<FollowerPageDtoOutput> => {
+  return apiFetch<FollowerPageDtoOutput>(getMemberNetworkControllerFollowersUrl(handle, params), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getMemberNetworkControllerFollowersQueryKey = (
+  handle: string,
+  params?: MemberNetworkControllerFollowersParams,
+) => {
+  return [`/v1/network/members/${handle}/followers`, ...(params ? [params] : [])] as const;
+};
+
+export const getMemberNetworkControllerFollowersQueryOptions = <
+  TData = Awaited<ReturnType<typeof memberNetworkControllerFollowers>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  handle: string,
+  params?: MemberNetworkControllerFollowersParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof memberNetworkControllerFollowers>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getMemberNetworkControllerFollowersQueryKey(handle, params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof memberNetworkControllerFollowers>>> = ({
+    signal,
+  }) => memberNetworkControllerFollowers(handle, params, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: handle !== null && handle !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof memberNetworkControllerFollowers>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type MemberNetworkControllerFollowersQueryResult = NonNullable<
+  Awaited<ReturnType<typeof memberNetworkControllerFollowers>>
+>;
+export type MemberNetworkControllerFollowersQueryError = ErrorType<ProblemDetails>;
+
+export function useMemberNetworkControllerFollowers<
+  TData = Awaited<ReturnType<typeof memberNetworkControllerFollowers>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  handle: string,
+  params: undefined | MemberNetworkControllerFollowersParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof memberNetworkControllerFollowers>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof memberNetworkControllerFollowers>>,
+          TError,
+          Awaited<ReturnType<typeof memberNetworkControllerFollowers>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useMemberNetworkControllerFollowers<
+  TData = Awaited<ReturnType<typeof memberNetworkControllerFollowers>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  handle: string,
+  params?: MemberNetworkControllerFollowersParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof memberNetworkControllerFollowers>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof memberNetworkControllerFollowers>>,
+          TError,
+          Awaited<ReturnType<typeof memberNetworkControllerFollowers>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useMemberNetworkControllerFollowers<
+  TData = Awaited<ReturnType<typeof memberNetworkControllerFollowers>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  handle: string,
+  params?: MemberNetworkControllerFollowersParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof memberNetworkControllerFollowers>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useMemberNetworkControllerFollowers<
+  TData = Awaited<ReturnType<typeof memberNetworkControllerFollowers>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  handle: string,
+  params?: MemberNetworkControllerFollowersParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof memberNetworkControllerFollowers>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getMemberNetworkControllerFollowersQueryOptions(handle, params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getMemberNetworkControllerFollowingUrl = (
+  handle: string,
+  params?: MemberNetworkControllerFollowingParams,
+) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/v1/network/members/${handle}/following?${stringifiedParams}`
+    : `/v1/network/members/${handle}/following`;
+};
+
+export const memberNetworkControllerFollowing = async (
+  handle: string,
+  params?: MemberNetworkControllerFollowingParams,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<FollowPageDtoOutput> => {
+  return apiFetch<FollowPageDtoOutput>(getMemberNetworkControllerFollowingUrl(handle, params), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getMemberNetworkControllerFollowingQueryKey = (
+  handle: string,
+  params?: MemberNetworkControllerFollowingParams,
+) => {
+  return [`/v1/network/members/${handle}/following`, ...(params ? [params] : [])] as const;
+};
+
+export const getMemberNetworkControllerFollowingQueryOptions = <
+  TData = Awaited<ReturnType<typeof memberNetworkControllerFollowing>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  handle: string,
+  params?: MemberNetworkControllerFollowingParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof memberNetworkControllerFollowing>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getMemberNetworkControllerFollowingQueryKey(handle, params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof memberNetworkControllerFollowing>>> = ({
+    signal,
+  }) => memberNetworkControllerFollowing(handle, params, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: handle !== null && handle !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof memberNetworkControllerFollowing>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type MemberNetworkControllerFollowingQueryResult = NonNullable<
+  Awaited<ReturnType<typeof memberNetworkControllerFollowing>>
+>;
+export type MemberNetworkControllerFollowingQueryError = ErrorType<ProblemDetails>;
+
+export function useMemberNetworkControllerFollowing<
+  TData = Awaited<ReturnType<typeof memberNetworkControllerFollowing>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  handle: string,
+  params: undefined | MemberNetworkControllerFollowingParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof memberNetworkControllerFollowing>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof memberNetworkControllerFollowing>>,
+          TError,
+          Awaited<ReturnType<typeof memberNetworkControllerFollowing>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useMemberNetworkControllerFollowing<
+  TData = Awaited<ReturnType<typeof memberNetworkControllerFollowing>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  handle: string,
+  params?: MemberNetworkControllerFollowingParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof memberNetworkControllerFollowing>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof memberNetworkControllerFollowing>>,
+          TError,
+          Awaited<ReturnType<typeof memberNetworkControllerFollowing>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useMemberNetworkControllerFollowing<
+  TData = Awaited<ReturnType<typeof memberNetworkControllerFollowing>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  handle: string,
+  params?: MemberNetworkControllerFollowingParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof memberNetworkControllerFollowing>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useMemberNetworkControllerFollowing<
+  TData = Awaited<ReturnType<typeof memberNetworkControllerFollowing>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  handle: string,
+  params?: MemberNetworkControllerFollowingParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof memberNetworkControllerFollowing>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getMemberNetworkControllerFollowingQueryOptions(handle, params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getMemberNetworkControllerConnectionsUrl = (
+  handle: string,
+  params?: MemberNetworkControllerConnectionsParams,
+) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/v1/network/members/${handle}/connections?${stringifiedParams}`
+    : `/v1/network/members/${handle}/connections`;
+};
+
+export const memberNetworkControllerConnections = async (
+  handle: string,
+  params?: MemberNetworkControllerConnectionsParams,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<ConnectionPageDtoOutput> => {
+  return apiFetch<ConnectionPageDtoOutput>(
+    getMemberNetworkControllerConnectionsUrl(handle, params),
+    {
+      ...options,
+      method: 'GET',
+    },
+  );
+};
+
+export const getMemberNetworkControllerConnectionsQueryKey = (
+  handle: string,
+  params?: MemberNetworkControllerConnectionsParams,
+) => {
+  return [`/v1/network/members/${handle}/connections`, ...(params ? [params] : [])] as const;
+};
+
+export const getMemberNetworkControllerConnectionsQueryOptions = <
+  TData = Awaited<ReturnType<typeof memberNetworkControllerConnections>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  handle: string,
+  params?: MemberNetworkControllerConnectionsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof memberNetworkControllerConnections>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getMemberNetworkControllerConnectionsQueryKey(handle, params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof memberNetworkControllerConnections>>> = ({
+    signal,
+  }) => memberNetworkControllerConnections(handle, params, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: handle !== null && handle !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof memberNetworkControllerConnections>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type MemberNetworkControllerConnectionsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof memberNetworkControllerConnections>>
+>;
+export type MemberNetworkControllerConnectionsQueryError = ErrorType<ProblemDetails>;
+
+export function useMemberNetworkControllerConnections<
+  TData = Awaited<ReturnType<typeof memberNetworkControllerConnections>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  handle: string,
+  params: undefined | MemberNetworkControllerConnectionsParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof memberNetworkControllerConnections>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof memberNetworkControllerConnections>>,
+          TError,
+          Awaited<ReturnType<typeof memberNetworkControllerConnections>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useMemberNetworkControllerConnections<
+  TData = Awaited<ReturnType<typeof memberNetworkControllerConnections>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  handle: string,
+  params?: MemberNetworkControllerConnectionsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof memberNetworkControllerConnections>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof memberNetworkControllerConnections>>,
+          TError,
+          Awaited<ReturnType<typeof memberNetworkControllerConnections>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useMemberNetworkControllerConnections<
+  TData = Awaited<ReturnType<typeof memberNetworkControllerConnections>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  handle: string,
+  params?: MemberNetworkControllerConnectionsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof memberNetworkControllerConnections>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useMemberNetworkControllerConnections<
+  TData = Awaited<ReturnType<typeof memberNetworkControllerConnections>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  handle: string,
+  params?: MemberNetworkControllerConnectionsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof memberNetworkControllerConnections>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getMemberNetworkControllerConnectionsQueryOptions(handle, params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getMemberNetworkControllerRelationshipUrl = (handle: string) => {
+  return `/v1/network/members/${handle}/relationship`;
+};
+
+export const memberNetworkControllerRelationship = async (
+  handle: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<RelationshipDtoOutput> => {
+  return apiFetch<RelationshipDtoOutput>(getMemberNetworkControllerRelationshipUrl(handle), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getMemberNetworkControllerRelationshipQueryKey = (handle: string) => {
+  return [`/v1/network/members/${handle}/relationship`] as const;
+};
+
+export const getMemberNetworkControllerRelationshipQueryOptions = <
+  TData = Awaited<ReturnType<typeof memberNetworkControllerRelationship>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  handle: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof memberNetworkControllerRelationship>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getMemberNetworkControllerRelationshipQueryKey(handle);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof memberNetworkControllerRelationship>>> = ({
+    signal,
+  }) => memberNetworkControllerRelationship(handle, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: handle !== null && handle !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof memberNetworkControllerRelationship>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type MemberNetworkControllerRelationshipQueryResult = NonNullable<
+  Awaited<ReturnType<typeof memberNetworkControllerRelationship>>
+>;
+export type MemberNetworkControllerRelationshipQueryError = ErrorType<ProblemDetails>;
+
+export function useMemberNetworkControllerRelationship<
+  TData = Awaited<ReturnType<typeof memberNetworkControllerRelationship>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  handle: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof memberNetworkControllerRelationship>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof memberNetworkControllerRelationship>>,
+          TError,
+          Awaited<ReturnType<typeof memberNetworkControllerRelationship>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useMemberNetworkControllerRelationship<
+  TData = Awaited<ReturnType<typeof memberNetworkControllerRelationship>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  handle: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof memberNetworkControllerRelationship>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof memberNetworkControllerRelationship>>,
+          TError,
+          Awaited<ReturnType<typeof memberNetworkControllerRelationship>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useMemberNetworkControllerRelationship<
+  TData = Awaited<ReturnType<typeof memberNetworkControllerRelationship>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  handle: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof memberNetworkControllerRelationship>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useMemberNetworkControllerRelationship<
+  TData = Awaited<ReturnType<typeof memberNetworkControllerRelationship>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  handle: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof memberNetworkControllerRelationship>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getMemberNetworkControllerRelationshipQueryOptions(handle, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getMemberNetworkControllerPublicFollowersUrl = (
+  handle: string,
+  params?: MemberNetworkControllerPublicFollowersParams,
+) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/v1/public/network/members/${handle}/followers?${stringifiedParams}`
+    : `/v1/public/network/members/${handle}/followers`;
+};
+
+export const memberNetworkControllerPublicFollowers = async (
+  handle: string,
+  params?: MemberNetworkControllerPublicFollowersParams,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<FollowerPageDtoOutput> => {
+  return apiFetch<FollowerPageDtoOutput>(
+    getMemberNetworkControllerPublicFollowersUrl(handle, params),
+    {
+      ...options,
+      method: 'GET',
+    },
+  );
+};
+
+export const getMemberNetworkControllerPublicFollowersQueryKey = (
+  handle: string,
+  params?: MemberNetworkControllerPublicFollowersParams,
+) => {
+  return [`/v1/public/network/members/${handle}/followers`, ...(params ? [params] : [])] as const;
+};
+
+export const getMemberNetworkControllerPublicFollowersQueryOptions = <
+  TData = Awaited<ReturnType<typeof memberNetworkControllerPublicFollowers>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  handle: string,
+  params?: MemberNetworkControllerPublicFollowersParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof memberNetworkControllerPublicFollowers>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getMemberNetworkControllerPublicFollowersQueryKey(handle, params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof memberNetworkControllerPublicFollowers>>
+  > = ({ signal }) =>
+    memberNetworkControllerPublicFollowers(handle, params, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: handle !== null && handle !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof memberNetworkControllerPublicFollowers>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type MemberNetworkControllerPublicFollowersQueryResult = NonNullable<
+  Awaited<ReturnType<typeof memberNetworkControllerPublicFollowers>>
+>;
+export type MemberNetworkControllerPublicFollowersQueryError = ErrorType<ProblemDetails>;
+
+export function useMemberNetworkControllerPublicFollowers<
+  TData = Awaited<ReturnType<typeof memberNetworkControllerPublicFollowers>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  handle: string,
+  params: undefined | MemberNetworkControllerPublicFollowersParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof memberNetworkControllerPublicFollowers>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof memberNetworkControllerPublicFollowers>>,
+          TError,
+          Awaited<ReturnType<typeof memberNetworkControllerPublicFollowers>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useMemberNetworkControllerPublicFollowers<
+  TData = Awaited<ReturnType<typeof memberNetworkControllerPublicFollowers>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  handle: string,
+  params?: MemberNetworkControllerPublicFollowersParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof memberNetworkControllerPublicFollowers>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof memberNetworkControllerPublicFollowers>>,
+          TError,
+          Awaited<ReturnType<typeof memberNetworkControllerPublicFollowers>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useMemberNetworkControllerPublicFollowers<
+  TData = Awaited<ReturnType<typeof memberNetworkControllerPublicFollowers>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  handle: string,
+  params?: MemberNetworkControllerPublicFollowersParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof memberNetworkControllerPublicFollowers>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useMemberNetworkControllerPublicFollowers<
+  TData = Awaited<ReturnType<typeof memberNetworkControllerPublicFollowers>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  handle: string,
+  params?: MemberNetworkControllerPublicFollowersParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof memberNetworkControllerPublicFollowers>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getMemberNetworkControllerPublicFollowersQueryOptions(
+    handle,
+    params,
+    options,
+  );
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getMemberNetworkControllerPublicFollowingUrl = (
+  handle: string,
+  params?: MemberNetworkControllerPublicFollowingParams,
+) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/v1/public/network/members/${handle}/following?${stringifiedParams}`
+    : `/v1/public/network/members/${handle}/following`;
+};
+
+export const memberNetworkControllerPublicFollowing = async (
+  handle: string,
+  params?: MemberNetworkControllerPublicFollowingParams,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<FollowPageDtoOutput> => {
+  return apiFetch<FollowPageDtoOutput>(
+    getMemberNetworkControllerPublicFollowingUrl(handle, params),
+    {
+      ...options,
+      method: 'GET',
+    },
+  );
+};
+
+export const getMemberNetworkControllerPublicFollowingQueryKey = (
+  handle: string,
+  params?: MemberNetworkControllerPublicFollowingParams,
+) => {
+  return [`/v1/public/network/members/${handle}/following`, ...(params ? [params] : [])] as const;
+};
+
+export const getMemberNetworkControllerPublicFollowingQueryOptions = <
+  TData = Awaited<ReturnType<typeof memberNetworkControllerPublicFollowing>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  handle: string,
+  params?: MemberNetworkControllerPublicFollowingParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof memberNetworkControllerPublicFollowing>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getMemberNetworkControllerPublicFollowingQueryKey(handle, params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof memberNetworkControllerPublicFollowing>>
+  > = ({ signal }) =>
+    memberNetworkControllerPublicFollowing(handle, params, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: handle !== null && handle !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof memberNetworkControllerPublicFollowing>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type MemberNetworkControllerPublicFollowingQueryResult = NonNullable<
+  Awaited<ReturnType<typeof memberNetworkControllerPublicFollowing>>
+>;
+export type MemberNetworkControllerPublicFollowingQueryError = ErrorType<ProblemDetails>;
+
+export function useMemberNetworkControllerPublicFollowing<
+  TData = Awaited<ReturnType<typeof memberNetworkControllerPublicFollowing>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  handle: string,
+  params: undefined | MemberNetworkControllerPublicFollowingParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof memberNetworkControllerPublicFollowing>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof memberNetworkControllerPublicFollowing>>,
+          TError,
+          Awaited<ReturnType<typeof memberNetworkControllerPublicFollowing>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useMemberNetworkControllerPublicFollowing<
+  TData = Awaited<ReturnType<typeof memberNetworkControllerPublicFollowing>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  handle: string,
+  params?: MemberNetworkControllerPublicFollowingParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof memberNetworkControllerPublicFollowing>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof memberNetworkControllerPublicFollowing>>,
+          TError,
+          Awaited<ReturnType<typeof memberNetworkControllerPublicFollowing>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useMemberNetworkControllerPublicFollowing<
+  TData = Awaited<ReturnType<typeof memberNetworkControllerPublicFollowing>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  handle: string,
+  params?: MemberNetworkControllerPublicFollowingParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof memberNetworkControllerPublicFollowing>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useMemberNetworkControllerPublicFollowing<
+  TData = Awaited<ReturnType<typeof memberNetworkControllerPublicFollowing>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  handle: string,
+  params?: MemberNetworkControllerPublicFollowingParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof memberNetworkControllerPublicFollowing>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getMemberNetworkControllerPublicFollowingQueryOptions(
+    handle,
+    params,
+    options,
+  );
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getMemberNetworkControllerPublicConnectionsUrl = (
+  handle: string,
+  params?: MemberNetworkControllerPublicConnectionsParams,
+) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/v1/public/network/members/${handle}/connections?${stringifiedParams}`
+    : `/v1/public/network/members/${handle}/connections`;
+};
+
+export const memberNetworkControllerPublicConnections = async (
+  handle: string,
+  params?: MemberNetworkControllerPublicConnectionsParams,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<ConnectionPageDtoOutput> => {
+  return apiFetch<ConnectionPageDtoOutput>(
+    getMemberNetworkControllerPublicConnectionsUrl(handle, params),
+    {
+      ...options,
+      method: 'GET',
+    },
+  );
+};
+
+export const getMemberNetworkControllerPublicConnectionsQueryKey = (
+  handle: string,
+  params?: MemberNetworkControllerPublicConnectionsParams,
+) => {
+  return [`/v1/public/network/members/${handle}/connections`, ...(params ? [params] : [])] as const;
+};
+
+export const getMemberNetworkControllerPublicConnectionsQueryOptions = <
+  TData = Awaited<ReturnType<typeof memberNetworkControllerPublicConnections>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  handle: string,
+  params?: MemberNetworkControllerPublicConnectionsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof memberNetworkControllerPublicConnections>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getMemberNetworkControllerPublicConnectionsQueryKey(handle, params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof memberNetworkControllerPublicConnections>>
+  > = ({ signal }) =>
+    memberNetworkControllerPublicConnections(handle, params, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: handle !== null && handle !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof memberNetworkControllerPublicConnections>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type MemberNetworkControllerPublicConnectionsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof memberNetworkControllerPublicConnections>>
+>;
+export type MemberNetworkControllerPublicConnectionsQueryError = ErrorType<ProblemDetails>;
+
+export function useMemberNetworkControllerPublicConnections<
+  TData = Awaited<ReturnType<typeof memberNetworkControllerPublicConnections>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  handle: string,
+  params: undefined | MemberNetworkControllerPublicConnectionsParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof memberNetworkControllerPublicConnections>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof memberNetworkControllerPublicConnections>>,
+          TError,
+          Awaited<ReturnType<typeof memberNetworkControllerPublicConnections>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useMemberNetworkControllerPublicConnections<
+  TData = Awaited<ReturnType<typeof memberNetworkControllerPublicConnections>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  handle: string,
+  params?: MemberNetworkControllerPublicConnectionsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof memberNetworkControllerPublicConnections>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof memberNetworkControllerPublicConnections>>,
+          TError,
+          Awaited<ReturnType<typeof memberNetworkControllerPublicConnections>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useMemberNetworkControllerPublicConnections<
+  TData = Awaited<ReturnType<typeof memberNetworkControllerPublicConnections>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  handle: string,
+  params?: MemberNetworkControllerPublicConnectionsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof memberNetworkControllerPublicConnections>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useMemberNetworkControllerPublicConnections<
+  TData = Awaited<ReturnType<typeof memberNetworkControllerPublicConnections>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  handle: string,
+  params?: MemberNetworkControllerPublicConnectionsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof memberNetworkControllerPublicConnections>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getMemberNetworkControllerPublicConnectionsQueryOptions(
+    handle,
+    params,
+    options,
+  );
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getProfileViewsControllerSettingsUrl = () => {
+  return `/v1/me/network/settings`;
+};
+
+export const profileViewsControllerSettings = async (
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<NetworkSettingsDtoOutput> => {
+  return apiFetch<NetworkSettingsDtoOutput>(getProfileViewsControllerSettingsUrl(), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getProfileViewsControllerSettingsQueryKey = () => {
+  return [`/v1/me/network/settings`] as const;
+};
+
+export const getProfileViewsControllerSettingsQueryOptions = <
+  TData = Awaited<ReturnType<typeof profileViewsControllerSettings>>,
+  TError = ErrorType<ProblemDetails>,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<Awaited<ReturnType<typeof profileViewsControllerSettings>>, TError, TData>
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getProfileViewsControllerSettingsQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof profileViewsControllerSettings>>> = ({
+    signal,
+  }) => profileViewsControllerSettings({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof profileViewsControllerSettings>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ProfileViewsControllerSettingsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof profileViewsControllerSettings>>
+>;
+export type ProfileViewsControllerSettingsQueryError = ErrorType<ProblemDetails>;
+
+export function useProfileViewsControllerSettings<
+  TData = Awaited<ReturnType<typeof profileViewsControllerSettings>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof profileViewsControllerSettings>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof profileViewsControllerSettings>>,
+          TError,
+          Awaited<ReturnType<typeof profileViewsControllerSettings>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useProfileViewsControllerSettings<
+  TData = Awaited<ReturnType<typeof profileViewsControllerSettings>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof profileViewsControllerSettings>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof profileViewsControllerSettings>>,
+          TError,
+          Awaited<ReturnType<typeof profileViewsControllerSettings>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useProfileViewsControllerSettings<
+  TData = Awaited<ReturnType<typeof profileViewsControllerSettings>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof profileViewsControllerSettings>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useProfileViewsControllerSettings<
+  TData = Awaited<ReturnType<typeof profileViewsControllerSettings>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof profileViewsControllerSettings>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getProfileViewsControllerSettingsQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getProfileViewsControllerUpdateSettingsUrl = () => {
+  return `/v1/me/network/settings`;
+};
+
+export const profileViewsControllerUpdateSettings = async (
+  updateNetworkSettingsDto: UpdateNetworkSettingsDto,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<NetworkSettingsDtoOutput> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit['headers']>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(
+          h as Iterable<Iterable<string>>,
+          (entry) => Array.from(entry) as [string, string],
+        ),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+  return apiFetch<NetworkSettingsDtoOutput>(getProfileViewsControllerUpdateSettingsUrl(), {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(updateNetworkSettingsDto),
+  });
+};
+
+export const getProfileViewsControllerUpdateSettingsMutationKey = () =>
+  ['profileViewsControllerUpdateSettings'] as const;
+
+export const getProfileViewsControllerUpdateSettingsMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof profileViewsControllerUpdateSettings>>,
+    TError,
+    ProfileViewsControllerUpdateSettingsMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof profileViewsControllerUpdateSettings>>,
+  TError,
+  ProfileViewsControllerUpdateSettingsMutationVariables,
+  TContext
+> => {
+  const mutationKey = getProfileViewsControllerUpdateSettingsMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof profileViewsControllerUpdateSettings>>,
+    ProfileViewsControllerUpdateSettingsMutationVariables
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return profileViewsControllerUpdateSettings(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ProfileViewsControllerUpdateSettingsMutationResult = NonNullable<
+  Awaited<ReturnType<typeof profileViewsControllerUpdateSettings>>
+>;
+export type ProfileViewsControllerUpdateSettingsMutationBody = UpdateNetworkSettingsDto;
+export type ProfileViewsControllerUpdateSettingsMutationError = ErrorType<ProblemDetails>;
+export type ProfileViewsControllerUpdateSettingsMutationVariables = {
+  data: UpdateNetworkSettingsDto;
+};
+
+export const useProfileViewsControllerUpdateSettings = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof profileViewsControllerUpdateSettings>>,
+      TError,
+      ProfileViewsControllerUpdateSettingsMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof profileViewsControllerUpdateSettings>>,
+  TError,
+  ProfileViewsControllerUpdateSettingsMutationVariables,
+  TContext
+> => {
+  return useMutation(getProfileViewsControllerUpdateSettingsMutationOptions(options), queryClient);
+};
+
+export const getProfileViewsControllerSummaryUrl = () => {
+  return `/v1/me/profile-views/summary`;
+};
+
+export const profileViewsControllerSummary = async (
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<ProfileViewsSummaryDtoOutput> => {
+  return apiFetch<ProfileViewsSummaryDtoOutput>(getProfileViewsControllerSummaryUrl(), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getProfileViewsControllerSummaryQueryKey = () => {
+  return [`/v1/me/profile-views/summary`] as const;
+};
+
+export const getProfileViewsControllerSummaryQueryOptions = <
+  TData = Awaited<ReturnType<typeof profileViewsControllerSummary>>,
+  TError = ErrorType<ProblemDetails>,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<Awaited<ReturnType<typeof profileViewsControllerSummary>>, TError, TData>
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getProfileViewsControllerSummaryQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof profileViewsControllerSummary>>> = ({
+    signal,
+  }) => profileViewsControllerSummary({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof profileViewsControllerSummary>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ProfileViewsControllerSummaryQueryResult = NonNullable<
+  Awaited<ReturnType<typeof profileViewsControllerSummary>>
+>;
+export type ProfileViewsControllerSummaryQueryError = ErrorType<ProblemDetails>;
+
+export function useProfileViewsControllerSummary<
+  TData = Awaited<ReturnType<typeof profileViewsControllerSummary>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof profileViewsControllerSummary>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof profileViewsControllerSummary>>,
+          TError,
+          Awaited<ReturnType<typeof profileViewsControllerSummary>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useProfileViewsControllerSummary<
+  TData = Awaited<ReturnType<typeof profileViewsControllerSummary>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof profileViewsControllerSummary>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof profileViewsControllerSummary>>,
+          TError,
+          Awaited<ReturnType<typeof profileViewsControllerSummary>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useProfileViewsControllerSummary<
+  TData = Awaited<ReturnType<typeof profileViewsControllerSummary>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof profileViewsControllerSummary>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useProfileViewsControllerSummary<
+  TData = Awaited<ReturnType<typeof profileViewsControllerSummary>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof profileViewsControllerSummary>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getProfileViewsControllerSummaryQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getProfileViewsControllerVisitsUrl = (params?: ProfileViewsControllerVisitsParams) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/v1/me/profile-views?${stringifiedParams}`
+    : `/v1/me/profile-views`;
+};
+
+export const profileViewsControllerVisits = async (
+  params?: ProfileViewsControllerVisitsParams,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<ProfileVisitPageDtoOutput> => {
+  return apiFetch<ProfileVisitPageDtoOutput>(getProfileViewsControllerVisitsUrl(params), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getProfileViewsControllerVisitsQueryKey = (
+  params?: ProfileViewsControllerVisitsParams,
+) => {
+  return [`/v1/me/profile-views`, ...(params ? [params] : [])] as const;
+};
+
+export const getProfileViewsControllerVisitsQueryOptions = <
+  TData = Awaited<ReturnType<typeof profileViewsControllerVisits>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: ProfileViewsControllerVisitsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof profileViewsControllerVisits>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getProfileViewsControllerVisitsQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof profileViewsControllerVisits>>> = ({
+    signal,
+  }) => profileViewsControllerVisits(params, { signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof profileViewsControllerVisits>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ProfileViewsControllerVisitsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof profileViewsControllerVisits>>
+>;
+export type ProfileViewsControllerVisitsQueryError = ErrorType<ProblemDetails>;
+
+export function useProfileViewsControllerVisits<
+  TData = Awaited<ReturnType<typeof profileViewsControllerVisits>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params: undefined | ProfileViewsControllerVisitsParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof profileViewsControllerVisits>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof profileViewsControllerVisits>>,
+          TError,
+          Awaited<ReturnType<typeof profileViewsControllerVisits>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useProfileViewsControllerVisits<
+  TData = Awaited<ReturnType<typeof profileViewsControllerVisits>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: ProfileViewsControllerVisitsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof profileViewsControllerVisits>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof profileViewsControllerVisits>>,
+          TError,
+          Awaited<ReturnType<typeof profileViewsControllerVisits>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useProfileViewsControllerVisits<
+  TData = Awaited<ReturnType<typeof profileViewsControllerVisits>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: ProfileViewsControllerVisitsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof profileViewsControllerVisits>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useProfileViewsControllerVisits<
+  TData = Awaited<ReturnType<typeof profileViewsControllerVisits>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: ProfileViewsControllerVisitsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof profileViewsControllerVisits>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getProfileViewsControllerVisitsQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getPostsControllerReadUrl = (params?: PostsControllerReadParams) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/v1/feed?${stringifiedParams}` : `/v1/feed`;
+};
+
+export const postsControllerRead = async (
+  params?: PostsControllerReadParams,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<FeedPageDtoOutput> => {
+  return apiFetch<FeedPageDtoOutput>(getPostsControllerReadUrl(params), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getPostsControllerReadQueryKey = (params?: PostsControllerReadParams) => {
+  return [`/v1/feed`, ...(params ? [params] : [])] as const;
+};
+
+export const getPostsControllerReadQueryOptions = <
+  TData = Awaited<ReturnType<typeof postsControllerRead>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: PostsControllerReadParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof postsControllerRead>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getPostsControllerReadQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof postsControllerRead>>> = ({ signal }) =>
+    postsControllerRead(params, { signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof postsControllerRead>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type PostsControllerReadQueryResult = NonNullable<
+  Awaited<ReturnType<typeof postsControllerRead>>
+>;
+export type PostsControllerReadQueryError = ErrorType<ProblemDetails>;
+
+export function usePostsControllerRead<
+  TData = Awaited<ReturnType<typeof postsControllerRead>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params: undefined | PostsControllerReadParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof postsControllerRead>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof postsControllerRead>>,
+          TError,
+          Awaited<ReturnType<typeof postsControllerRead>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function usePostsControllerRead<
+  TData = Awaited<ReturnType<typeof postsControllerRead>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: PostsControllerReadParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof postsControllerRead>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof postsControllerRead>>,
+          TError,
+          Awaited<ReturnType<typeof postsControllerRead>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function usePostsControllerRead<
+  TData = Awaited<ReturnType<typeof postsControllerRead>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: PostsControllerReadParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof postsControllerRead>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function usePostsControllerRead<
+  TData = Awaited<ReturnType<typeof postsControllerRead>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: PostsControllerReadParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof postsControllerRead>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getPostsControllerReadQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getPostsControllerCreateUrl = () => {
+  return `/v1/posts`;
+};
+
+export const postsControllerCreate = async (
+  createPostDto: CreatePostDto,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<PostDtoOutput> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit['headers']>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(
+          h as Iterable<Iterable<string>>,
+          (entry) => Array.from(entry) as [string, string],
+        ),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+  return apiFetch<PostDtoOutput>(getPostsControllerCreateUrl(), {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(createPostDto),
+  });
+};
+
+export const getPostsControllerCreateMutationKey = () => ['postsControllerCreate'] as const;
+
+export const getPostsControllerCreateMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof postsControllerCreate>>,
+    TError,
+    PostsControllerCreateMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof postsControllerCreate>>,
+  TError,
+  PostsControllerCreateMutationVariables,
+  TContext
+> => {
+  const mutationKey = getPostsControllerCreateMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof postsControllerCreate>>,
+    PostsControllerCreateMutationVariables
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return postsControllerCreate(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type PostsControllerCreateMutationResult = NonNullable<
+  Awaited<ReturnType<typeof postsControllerCreate>>
+>;
+export type PostsControllerCreateMutationBody = CreatePostDto;
+export type PostsControllerCreateMutationError = ErrorType<ProblemDetails>;
+export type PostsControllerCreateMutationVariables = { data: CreatePostDto };
+
+export const usePostsControllerCreate = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof postsControllerCreate>>,
+      TError,
+      PostsControllerCreateMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof postsControllerCreate>>,
+  TError,
+  PostsControllerCreateMutationVariables,
+  TContext
+> => {
+  return useMutation(getPostsControllerCreateMutationOptions(options), queryClient);
+};
+
+export const getPostsControllerGetUrl = (postId: string) => {
+  return `/v1/posts/${postId}`;
+};
+
+export const postsControllerGet = async (
+  postId: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<PostDtoOutput> => {
+  return apiFetch<PostDtoOutput>(getPostsControllerGetUrl(postId), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getPostsControllerGetQueryKey = (postId: string) => {
+  return [`/v1/posts/${postId}`] as const;
+};
+
+export const getPostsControllerGetQueryOptions = <
+  TData = Awaited<ReturnType<typeof postsControllerGet>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  postId: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof postsControllerGet>>, TError, TData>>;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getPostsControllerGetQueryKey(postId);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof postsControllerGet>>> = ({ signal }) =>
+    postsControllerGet(postId, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: postId !== null && postId !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<Awaited<ReturnType<typeof postsControllerGet>>, TError, TData> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+};
+
+export type PostsControllerGetQueryResult = NonNullable<
+  Awaited<ReturnType<typeof postsControllerGet>>
+>;
+export type PostsControllerGetQueryError = ErrorType<ProblemDetails>;
+
+export function usePostsControllerGet<
+  TData = Awaited<ReturnType<typeof postsControllerGet>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  postId: string,
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof postsControllerGet>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof postsControllerGet>>,
+          TError,
+          Awaited<ReturnType<typeof postsControllerGet>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function usePostsControllerGet<
+  TData = Awaited<ReturnType<typeof postsControllerGet>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  postId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof postsControllerGet>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof postsControllerGet>>,
+          TError,
+          Awaited<ReturnType<typeof postsControllerGet>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function usePostsControllerGet<
+  TData = Awaited<ReturnType<typeof postsControllerGet>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  postId: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof postsControllerGet>>, TError, TData>>;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function usePostsControllerGet<
+  TData = Awaited<ReturnType<typeof postsControllerGet>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  postId: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof postsControllerGet>>, TError, TData>>;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getPostsControllerGetQueryOptions(postId, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getPostsControllerUpdateUrl = (postId: string) => {
+  return `/v1/posts/${postId}`;
+};
+
+export const postsControllerUpdate = async (
+  postId: string,
+  updatePostDto: UpdatePostDto,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<PostDtoOutput> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit['headers']>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(
+          h as Iterable<Iterable<string>>,
+          (entry) => Array.from(entry) as [string, string],
+        ),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+  return apiFetch<PostDtoOutput>(getPostsControllerUpdateUrl(postId), {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(updatePostDto),
+  });
+};
+
+export const getPostsControllerUpdateMutationKey = () => ['postsControllerUpdate'] as const;
+
+export const getPostsControllerUpdateMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof postsControllerUpdate>>,
+    TError,
+    PostsControllerUpdateMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof postsControllerUpdate>>,
+  TError,
+  PostsControllerUpdateMutationVariables,
+  TContext
+> => {
+  const mutationKey = getPostsControllerUpdateMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof postsControllerUpdate>>,
+    PostsControllerUpdateMutationVariables
+  > = (props) => {
+    const { postId, data } = props ?? {};
+
+    return postsControllerUpdate(postId, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type PostsControllerUpdateMutationResult = NonNullable<
+  Awaited<ReturnType<typeof postsControllerUpdate>>
+>;
+export type PostsControllerUpdateMutationBody = UpdatePostDto;
+export type PostsControllerUpdateMutationError = ErrorType<ProblemDetails>;
+export type PostsControllerUpdateMutationVariables = { postId: string; data: UpdatePostDto };
+
+export const usePostsControllerUpdate = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof postsControllerUpdate>>,
+      TError,
+      PostsControllerUpdateMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof postsControllerUpdate>>,
+  TError,
+  PostsControllerUpdateMutationVariables,
+  TContext
+> => {
+  return useMutation(getPostsControllerUpdateMutationOptions(options), queryClient);
+};
+
+export const getPostsControllerDeleteUrl = (postId: string) => {
+  return `/v1/posts/${postId}`;
+};
+
+export const postsControllerDelete = async (
+  postId: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<void> => {
+  return apiFetch<void>(getPostsControllerDeleteUrl(postId), {
+    ...options,
+    method: 'DELETE',
+  });
+};
+
+export const getPostsControllerDeleteMutationKey = () => ['postsControllerDelete'] as const;
+
+export const getPostsControllerDeleteMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof postsControllerDelete>>,
+    TError,
+    PostsControllerDeleteMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof postsControllerDelete>>,
+  TError,
+  PostsControllerDeleteMutationVariables,
+  TContext
+> => {
+  const mutationKey = getPostsControllerDeleteMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof postsControllerDelete>>,
+    PostsControllerDeleteMutationVariables
+  > = (props) => {
+    const { postId } = props ?? {};
+
+    return postsControllerDelete(postId, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type PostsControllerDeleteMutationResult = NonNullable<
+  Awaited<ReturnType<typeof postsControllerDelete>>
+>;
+
+export type PostsControllerDeleteMutationError = ErrorType<ProblemDetails>;
+export type PostsControllerDeleteMutationVariables = { postId: string };
+
+export const usePostsControllerDelete = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof postsControllerDelete>>,
+      TError,
+      PostsControllerDeleteMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof postsControllerDelete>>,
+  TError,
+  PostsControllerDeleteMutationVariables,
+  TContext
+> => {
+  return useMutation(getPostsControllerDeleteMutationOptions(options), queryClient);
+};
+
+export const getPostsControllerGetPublicUrl = (postId: string) => {
+  return `/v1/public/posts/${postId}`;
+};
+
+export const postsControllerGetPublic = async (
+  postId: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<PostDtoOutput> => {
+  return apiFetch<PostDtoOutput>(getPostsControllerGetPublicUrl(postId), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getPostsControllerGetPublicQueryKey = (postId: string) => {
+  return [`/v1/public/posts/${postId}`] as const;
+};
+
+export const getPostsControllerGetPublicQueryOptions = <
+  TData = Awaited<ReturnType<typeof postsControllerGetPublic>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  postId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof postsControllerGetPublic>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getPostsControllerGetPublicQueryKey(postId);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof postsControllerGetPublic>>> = ({
+    signal,
+  }) => postsControllerGetPublic(postId, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: postId !== null && postId !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<Awaited<ReturnType<typeof postsControllerGetPublic>>, TError, TData> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+};
+
+export type PostsControllerGetPublicQueryResult = NonNullable<
+  Awaited<ReturnType<typeof postsControllerGetPublic>>
+>;
+export type PostsControllerGetPublicQueryError = ErrorType<ProblemDetails>;
+
+export function usePostsControllerGetPublic<
+  TData = Awaited<ReturnType<typeof postsControllerGetPublic>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  postId: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof postsControllerGetPublic>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof postsControllerGetPublic>>,
+          TError,
+          Awaited<ReturnType<typeof postsControllerGetPublic>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function usePostsControllerGetPublic<
+  TData = Awaited<ReturnType<typeof postsControllerGetPublic>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  postId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof postsControllerGetPublic>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof postsControllerGetPublic>>,
+          TError,
+          Awaited<ReturnType<typeof postsControllerGetPublic>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function usePostsControllerGetPublic<
+  TData = Awaited<ReturnType<typeof postsControllerGetPublic>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  postId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof postsControllerGetPublic>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function usePostsControllerGetPublic<
+  TData = Awaited<ReturnType<typeof postsControllerGetPublic>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  postId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof postsControllerGetPublic>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getPostsControllerGetPublicQueryOptions(postId, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getPostsControllerRepostUrl = (postId: string) => {
+  return `/v1/posts/${postId}/reposts`;
+};
+
+export const postsControllerRepost = async (
+  postId: string,
+  createRepostDto: CreateRepostDto,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<PostDtoOutput> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit['headers']>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(
+          h as Iterable<Iterable<string>>,
+          (entry) => Array.from(entry) as [string, string],
+        ),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+  return apiFetch<PostDtoOutput>(getPostsControllerRepostUrl(postId), {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(createRepostDto),
+  });
+};
+
+export const getPostsControllerRepostMutationKey = () => ['postsControllerRepost'] as const;
+
+export const getPostsControllerRepostMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof postsControllerRepost>>,
+    TError,
+    PostsControllerRepostMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof postsControllerRepost>>,
+  TError,
+  PostsControllerRepostMutationVariables,
+  TContext
+> => {
+  const mutationKey = getPostsControllerRepostMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof postsControllerRepost>>,
+    PostsControllerRepostMutationVariables
+  > = (props) => {
+    const { postId, data } = props ?? {};
+
+    return postsControllerRepost(postId, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type PostsControllerRepostMutationResult = NonNullable<
+  Awaited<ReturnType<typeof postsControllerRepost>>
+>;
+export type PostsControllerRepostMutationBody = CreateRepostDto;
+export type PostsControllerRepostMutationError = ErrorType<ProblemDetails>;
+export type PostsControllerRepostMutationVariables = { postId: string; data: CreateRepostDto };
+
+export const usePostsControllerRepost = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof postsControllerRepost>>,
+      TError,
+      PostsControllerRepostMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof postsControllerRepost>>,
+  TError,
+  PostsControllerRepostMutationVariables,
+  TContext
+> => {
+  return useMutation(getPostsControllerRepostMutationOptions(options), queryClient);
+};
+
+export const getPostsControllerReactUrl = (postId: string) => {
+  return `/v1/posts/${postId}/reaction`;
+};
+
+export const postsControllerReact = async (
+  postId: string,
+  setReactionDto: SetReactionDto,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<ReactionSummaryDtoOutput> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit['headers']>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(
+          h as Iterable<Iterable<string>>,
+          (entry) => Array.from(entry) as [string, string],
+        ),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+  return apiFetch<ReactionSummaryDtoOutput>(getPostsControllerReactUrl(postId), {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(setReactionDto),
+  });
+};
+
+export const getPostsControllerReactMutationKey = () => ['postsControllerReact'] as const;
+
+export const getPostsControllerReactMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof postsControllerReact>>,
+    TError,
+    PostsControllerReactMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof postsControllerReact>>,
+  TError,
+  PostsControllerReactMutationVariables,
+  TContext
+> => {
+  const mutationKey = getPostsControllerReactMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof postsControllerReact>>,
+    PostsControllerReactMutationVariables
+  > = (props) => {
+    const { postId, data } = props ?? {};
+
+    return postsControllerReact(postId, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type PostsControllerReactMutationResult = NonNullable<
+  Awaited<ReturnType<typeof postsControllerReact>>
+>;
+export type PostsControllerReactMutationBody = SetReactionDto;
+export type PostsControllerReactMutationError = ErrorType<ProblemDetails>;
+export type PostsControllerReactMutationVariables = { postId: string; data: SetReactionDto };
+
+export const usePostsControllerReact = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof postsControllerReact>>,
+      TError,
+      PostsControllerReactMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof postsControllerReact>>,
+  TError,
+  PostsControllerReactMutationVariables,
+  TContext
+> => {
+  return useMutation(getPostsControllerReactMutationOptions(options), queryClient);
+};
+
+export const getPostsControllerUnreactUrl = (postId: string) => {
+  return `/v1/posts/${postId}/reaction`;
+};
+
+export const postsControllerUnreact = async (
+  postId: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<ReactionSummaryDtoOutput> => {
+  return apiFetch<ReactionSummaryDtoOutput>(getPostsControllerUnreactUrl(postId), {
+    ...options,
+    method: 'DELETE',
+  });
+};
+
+export const getPostsControllerUnreactMutationKey = () => ['postsControllerUnreact'] as const;
+
+export const getPostsControllerUnreactMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof postsControllerUnreact>>,
+    TError,
+    PostsControllerUnreactMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof postsControllerUnreact>>,
+  TError,
+  PostsControllerUnreactMutationVariables,
+  TContext
+> => {
+  const mutationKey = getPostsControllerUnreactMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof postsControllerUnreact>>,
+    PostsControllerUnreactMutationVariables
+  > = (props) => {
+    const { postId } = props ?? {};
+
+    return postsControllerUnreact(postId, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type PostsControllerUnreactMutationResult = NonNullable<
+  Awaited<ReturnType<typeof postsControllerUnreact>>
+>;
+
+export type PostsControllerUnreactMutationError = ErrorType<ProblemDetails>;
+export type PostsControllerUnreactMutationVariables = { postId: string };
+
+export const usePostsControllerUnreact = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof postsControllerUnreact>>,
+      TError,
+      PostsControllerUnreactMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof postsControllerUnreact>>,
+  TError,
+  PostsControllerUnreactMutationVariables,
+  TContext
+> => {
+  return useMutation(getPostsControllerUnreactMutationOptions(options), queryClient);
+};
+
+export const getPostsControllerSaveUrl = (postId: string) => {
+  return `/v1/posts/${postId}/save`;
+};
+
+export const postsControllerSave = async (
+  postId: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<void> => {
+  return apiFetch<void>(getPostsControllerSaveUrl(postId), {
+    ...options,
+    method: 'PUT',
+  });
+};
+
+export const getPostsControllerSaveMutationKey = () => ['postsControllerSave'] as const;
+
+export const getPostsControllerSaveMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof postsControllerSave>>,
+    TError,
+    PostsControllerSaveMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof postsControllerSave>>,
+  TError,
+  PostsControllerSaveMutationVariables,
+  TContext
+> => {
+  const mutationKey = getPostsControllerSaveMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof postsControllerSave>>,
+    PostsControllerSaveMutationVariables
+  > = (props) => {
+    const { postId } = props ?? {};
+
+    return postsControllerSave(postId, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type PostsControllerSaveMutationResult = NonNullable<
+  Awaited<ReturnType<typeof postsControllerSave>>
+>;
+
+export type PostsControllerSaveMutationError = ErrorType<ProblemDetails>;
+export type PostsControllerSaveMutationVariables = { postId: string };
+
+export const usePostsControllerSave = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof postsControllerSave>>,
+      TError,
+      PostsControllerSaveMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof postsControllerSave>>,
+  TError,
+  PostsControllerSaveMutationVariables,
+  TContext
+> => {
+  return useMutation(getPostsControllerSaveMutationOptions(options), queryClient);
+};
+
+export const getPostsControllerUnsaveUrl = (postId: string) => {
+  return `/v1/posts/${postId}/save`;
+};
+
+export const postsControllerUnsave = async (
+  postId: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<void> => {
+  return apiFetch<void>(getPostsControllerUnsaveUrl(postId), {
+    ...options,
+    method: 'DELETE',
+  });
+};
+
+export const getPostsControllerUnsaveMutationKey = () => ['postsControllerUnsave'] as const;
+
+export const getPostsControllerUnsaveMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof postsControllerUnsave>>,
+    TError,
+    PostsControllerUnsaveMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof postsControllerUnsave>>,
+  TError,
+  PostsControllerUnsaveMutationVariables,
+  TContext
+> => {
+  const mutationKey = getPostsControllerUnsaveMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof postsControllerUnsave>>,
+    PostsControllerUnsaveMutationVariables
+  > = (props) => {
+    const { postId } = props ?? {};
+
+    return postsControllerUnsave(postId, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type PostsControllerUnsaveMutationResult = NonNullable<
+  Awaited<ReturnType<typeof postsControllerUnsave>>
+>;
+
+export type PostsControllerUnsaveMutationError = ErrorType<ProblemDetails>;
+export type PostsControllerUnsaveMutationVariables = { postId: string };
+
+export const usePostsControllerUnsave = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof postsControllerUnsave>>,
+      TError,
+      PostsControllerUnsaveMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof postsControllerUnsave>>,
+  TError,
+  PostsControllerUnsaveMutationVariables,
+  TContext
+> => {
+  return useMutation(getPostsControllerUnsaveMutationOptions(options), queryClient);
+};
+
+export const getPostsControllerSavedUrl = (params?: PostsControllerSavedParams) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/v1/me/saved-posts?${stringifiedParams}`
+    : `/v1/me/saved-posts`;
+};
+
+export const postsControllerSaved = async (
+  params?: PostsControllerSavedParams,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<SavedPostPageDtoOutput> => {
+  return apiFetch<SavedPostPageDtoOutput>(getPostsControllerSavedUrl(params), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getPostsControllerSavedQueryKey = (params?: PostsControllerSavedParams) => {
+  return [`/v1/me/saved-posts`, ...(params ? [params] : [])] as const;
+};
+
+export const getPostsControllerSavedQueryOptions = <
+  TData = Awaited<ReturnType<typeof postsControllerSaved>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: PostsControllerSavedParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof postsControllerSaved>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getPostsControllerSavedQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof postsControllerSaved>>> = ({ signal }) =>
+    postsControllerSaved(params, { signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof postsControllerSaved>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type PostsControllerSavedQueryResult = NonNullable<
+  Awaited<ReturnType<typeof postsControllerSaved>>
+>;
+export type PostsControllerSavedQueryError = ErrorType<ProblemDetails>;
+
+export function usePostsControllerSaved<
+  TData = Awaited<ReturnType<typeof postsControllerSaved>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params: undefined | PostsControllerSavedParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof postsControllerSaved>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof postsControllerSaved>>,
+          TError,
+          Awaited<ReturnType<typeof postsControllerSaved>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function usePostsControllerSaved<
+  TData = Awaited<ReturnType<typeof postsControllerSaved>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: PostsControllerSavedParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof postsControllerSaved>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof postsControllerSaved>>,
+          TError,
+          Awaited<ReturnType<typeof postsControllerSaved>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function usePostsControllerSaved<
+  TData = Awaited<ReturnType<typeof postsControllerSaved>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: PostsControllerSavedParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof postsControllerSaved>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function usePostsControllerSaved<
+  TData = Awaited<ReturnType<typeof postsControllerSaved>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: PostsControllerSavedParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof postsControllerSaved>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getPostsControllerSavedQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getPostsControllerHideUrl = (postId: string) => {
+  return `/v1/posts/${postId}/hide`;
+};
+
+export const postsControllerHide = async (
+  postId: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<void> => {
+  return apiFetch<void>(getPostsControllerHideUrl(postId), {
+    ...options,
+    method: 'PUT',
+  });
+};
+
+export const getPostsControllerHideMutationKey = () => ['postsControllerHide'] as const;
+
+export const getPostsControllerHideMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof postsControllerHide>>,
+    TError,
+    PostsControllerHideMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof postsControllerHide>>,
+  TError,
+  PostsControllerHideMutationVariables,
+  TContext
+> => {
+  const mutationKey = getPostsControllerHideMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof postsControllerHide>>,
+    PostsControllerHideMutationVariables
+  > = (props) => {
+    const { postId } = props ?? {};
+
+    return postsControllerHide(postId, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type PostsControllerHideMutationResult = NonNullable<
+  Awaited<ReturnType<typeof postsControllerHide>>
+>;
+
+export type PostsControllerHideMutationError = ErrorType<ProblemDetails>;
+export type PostsControllerHideMutationVariables = { postId: string };
+
+export const usePostsControllerHide = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof postsControllerHide>>,
+      TError,
+      PostsControllerHideMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof postsControllerHide>>,
+  TError,
+  PostsControllerHideMutationVariables,
+  TContext
+> => {
+  return useMutation(getPostsControllerHideMutationOptions(options), queryClient);
+};
+
+export const getPostsControllerUnhideUrl = (postId: string) => {
+  return `/v1/posts/${postId}/hide`;
+};
+
+export const postsControllerUnhide = async (
+  postId: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<void> => {
+  return apiFetch<void>(getPostsControllerUnhideUrl(postId), {
+    ...options,
+    method: 'DELETE',
+  });
+};
+
+export const getPostsControllerUnhideMutationKey = () => ['postsControllerUnhide'] as const;
+
+export const getPostsControllerUnhideMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof postsControllerUnhide>>,
+    TError,
+    PostsControllerUnhideMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof postsControllerUnhide>>,
+  TError,
+  PostsControllerUnhideMutationVariables,
+  TContext
+> => {
+  const mutationKey = getPostsControllerUnhideMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof postsControllerUnhide>>,
+    PostsControllerUnhideMutationVariables
+  > = (props) => {
+    const { postId } = props ?? {};
+
+    return postsControllerUnhide(postId, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type PostsControllerUnhideMutationResult = NonNullable<
+  Awaited<ReturnType<typeof postsControllerUnhide>>
+>;
+
+export type PostsControllerUnhideMutationError = ErrorType<ProblemDetails>;
+export type PostsControllerUnhideMutationVariables = { postId: string };
+
+export const usePostsControllerUnhide = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof postsControllerUnhide>>,
+      TError,
+      PostsControllerUnhideMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof postsControllerUnhide>>,
+  TError,
+  PostsControllerUnhideMutationVariables,
+  TContext
+> => {
+  return useMutation(getPostsControllerUnhideMutationOptions(options), queryClient);
+};
+
+export const getPostsControllerFeatureUrl = (postId: string) => {
+  return `/v1/posts/${postId}/feature`;
+};
+
+export const postsControllerFeature = async (
+  postId: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<PostDtoOutput> => {
+  return apiFetch<PostDtoOutput>(getPostsControllerFeatureUrl(postId), {
+    ...options,
+    method: 'PUT',
+  });
+};
+
+export const getPostsControllerFeatureMutationKey = () => ['postsControllerFeature'] as const;
+
+export const getPostsControllerFeatureMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof postsControllerFeature>>,
+    TError,
+    PostsControllerFeatureMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof postsControllerFeature>>,
+  TError,
+  PostsControllerFeatureMutationVariables,
+  TContext
+> => {
+  const mutationKey = getPostsControllerFeatureMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof postsControllerFeature>>,
+    PostsControllerFeatureMutationVariables
+  > = (props) => {
+    const { postId } = props ?? {};
+
+    return postsControllerFeature(postId, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type PostsControllerFeatureMutationResult = NonNullable<
+  Awaited<ReturnType<typeof postsControllerFeature>>
+>;
+
+export type PostsControllerFeatureMutationError = ErrorType<ProblemDetails>;
+export type PostsControllerFeatureMutationVariables = { postId: string };
+
+export const usePostsControllerFeature = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof postsControllerFeature>>,
+      TError,
+      PostsControllerFeatureMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof postsControllerFeature>>,
+  TError,
+  PostsControllerFeatureMutationVariables,
+  TContext
+> => {
+  return useMutation(getPostsControllerFeatureMutationOptions(options), queryClient);
+};
+
+export const getPostsControllerUnfeatureUrl = (postId: string) => {
+  return `/v1/posts/${postId}/feature`;
+};
+
+export const postsControllerUnfeature = async (
+  postId: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<PostDtoOutput> => {
+  return apiFetch<PostDtoOutput>(getPostsControllerUnfeatureUrl(postId), {
+    ...options,
+    method: 'DELETE',
+  });
+};
+
+export const getPostsControllerUnfeatureMutationKey = () => ['postsControllerUnfeature'] as const;
+
+export const getPostsControllerUnfeatureMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof postsControllerUnfeature>>,
+    TError,
+    PostsControllerUnfeatureMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof postsControllerUnfeature>>,
+  TError,
+  PostsControllerUnfeatureMutationVariables,
+  TContext
+> => {
+  const mutationKey = getPostsControllerUnfeatureMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof postsControllerUnfeature>>,
+    PostsControllerUnfeatureMutationVariables
+  > = (props) => {
+    const { postId } = props ?? {};
+
+    return postsControllerUnfeature(postId, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type PostsControllerUnfeatureMutationResult = NonNullable<
+  Awaited<ReturnType<typeof postsControllerUnfeature>>
+>;
+
+export type PostsControllerUnfeatureMutationError = ErrorType<ProblemDetails>;
+export type PostsControllerUnfeatureMutationVariables = { postId: string };
+
+export const usePostsControllerUnfeature = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof postsControllerUnfeature>>,
+      TError,
+      PostsControllerUnfeatureMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof postsControllerUnfeature>>,
+  TError,
+  PostsControllerUnfeatureMutationVariables,
+  TContext
+> => {
+  return useMutation(getPostsControllerUnfeatureMutationOptions(options), queryClient);
+};
+
+export const getPostsControllerStatsUrl = (postId: string) => {
+  return `/v1/posts/${postId}/stats`;
+};
+
+export const postsControllerStats = async (
+  postId: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<PostStatsDtoOutput> => {
+  return apiFetch<PostStatsDtoOutput>(getPostsControllerStatsUrl(postId), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getPostsControllerStatsQueryKey = (postId: string) => {
+  return [`/v1/posts/${postId}/stats`] as const;
+};
+
+export const getPostsControllerStatsQueryOptions = <
+  TData = Awaited<ReturnType<typeof postsControllerStats>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  postId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof postsControllerStats>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getPostsControllerStatsQueryKey(postId);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof postsControllerStats>>> = ({ signal }) =>
+    postsControllerStats(postId, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: postId !== null && postId !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<Awaited<ReturnType<typeof postsControllerStats>>, TError, TData> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+};
+
+export type PostsControllerStatsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof postsControllerStats>>
+>;
+export type PostsControllerStatsQueryError = ErrorType<ProblemDetails>;
+
+export function usePostsControllerStats<
+  TData = Awaited<ReturnType<typeof postsControllerStats>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  postId: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof postsControllerStats>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof postsControllerStats>>,
+          TError,
+          Awaited<ReturnType<typeof postsControllerStats>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function usePostsControllerStats<
+  TData = Awaited<ReturnType<typeof postsControllerStats>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  postId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof postsControllerStats>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof postsControllerStats>>,
+          TError,
+          Awaited<ReturnType<typeof postsControllerStats>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function usePostsControllerStats<
+  TData = Awaited<ReturnType<typeof postsControllerStats>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  postId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof postsControllerStats>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function usePostsControllerStats<
+  TData = Awaited<ReturnType<typeof postsControllerStats>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  postId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof postsControllerStats>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getPostsControllerStatsQueryOptions(postId, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getCommentsControllerCreateUrl = (postId: string) => {
+  return `/v1/posts/${postId}/comments`;
+};
+
+export const commentsControllerCreate = async (
+  postId: string,
+  createCommentDto: CreateCommentDto,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<CommentDtoOutput> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit['headers']>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(
+          h as Iterable<Iterable<string>>,
+          (entry) => Array.from(entry) as [string, string],
+        ),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+  return apiFetch<CommentDtoOutput>(getCommentsControllerCreateUrl(postId), {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(createCommentDto),
+  });
+};
+
+export const getCommentsControllerCreateMutationKey = () => ['commentsControllerCreate'] as const;
+
+export const getCommentsControllerCreateMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof commentsControllerCreate>>,
+    TError,
+    CommentsControllerCreateMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof commentsControllerCreate>>,
+  TError,
+  CommentsControllerCreateMutationVariables,
+  TContext
+> => {
+  const mutationKey = getCommentsControllerCreateMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof commentsControllerCreate>>,
+    CommentsControllerCreateMutationVariables
+  > = (props) => {
+    const { postId, data } = props ?? {};
+
+    return commentsControllerCreate(postId, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type CommentsControllerCreateMutationResult = NonNullable<
+  Awaited<ReturnType<typeof commentsControllerCreate>>
+>;
+export type CommentsControllerCreateMutationBody = CreateCommentDto;
+export type CommentsControllerCreateMutationError = ErrorType<ProblemDetails>;
+export type CommentsControllerCreateMutationVariables = { postId: string; data: CreateCommentDto };
+
+export const useCommentsControllerCreate = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof commentsControllerCreate>>,
+      TError,
+      CommentsControllerCreateMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof commentsControllerCreate>>,
+  TError,
+  CommentsControllerCreateMutationVariables,
+  TContext
+> => {
+  return useMutation(getCommentsControllerCreateMutationOptions(options), queryClient);
+};
+
+export const getCommentsControllerListUrl = (
+  postId: string,
+  params?: CommentsControllerListParams,
+) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/v1/posts/${postId}/comments?${stringifiedParams}`
+    : `/v1/posts/${postId}/comments`;
+};
+
+export const commentsControllerList = async (
+  postId: string,
+  params?: CommentsControllerListParams,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<CommentPageDtoOutput> => {
+  return apiFetch<CommentPageDtoOutput>(getCommentsControllerListUrl(postId, params), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getCommentsControllerListQueryKey = (
+  postId: string,
+  params?: CommentsControllerListParams,
+) => {
+  return [`/v1/posts/${postId}/comments`, ...(params ? [params] : [])] as const;
+};
+
+export const getCommentsControllerListQueryOptions = <
+  TData = Awaited<ReturnType<typeof commentsControllerList>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  postId: string,
+  params?: CommentsControllerListParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof commentsControllerList>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getCommentsControllerListQueryKey(postId, params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof commentsControllerList>>> = ({ signal }) =>
+    commentsControllerList(postId, params, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: postId !== null && postId !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<Awaited<ReturnType<typeof commentsControllerList>>, TError, TData> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+};
+
+export type CommentsControllerListQueryResult = NonNullable<
+  Awaited<ReturnType<typeof commentsControllerList>>
+>;
+export type CommentsControllerListQueryError = ErrorType<ProblemDetails>;
+
+export function useCommentsControllerList<
+  TData = Awaited<ReturnType<typeof commentsControllerList>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  postId: string,
+  params: undefined | CommentsControllerListParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof commentsControllerList>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof commentsControllerList>>,
+          TError,
+          Awaited<ReturnType<typeof commentsControllerList>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useCommentsControllerList<
+  TData = Awaited<ReturnType<typeof commentsControllerList>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  postId: string,
+  params?: CommentsControllerListParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof commentsControllerList>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof commentsControllerList>>,
+          TError,
+          Awaited<ReturnType<typeof commentsControllerList>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useCommentsControllerList<
+  TData = Awaited<ReturnType<typeof commentsControllerList>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  postId: string,
+  params?: CommentsControllerListParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof commentsControllerList>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useCommentsControllerList<
+  TData = Awaited<ReturnType<typeof commentsControllerList>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  postId: string,
+  params?: CommentsControllerListParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof commentsControllerList>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getCommentsControllerListQueryOptions(postId, params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getCommentsControllerRepliesUrl = (
+  commentId: string,
+  params?: CommentsControllerRepliesParams,
+) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/v1/comments/${commentId}/replies?${stringifiedParams}`
+    : `/v1/comments/${commentId}/replies`;
+};
+
+export const commentsControllerReplies = async (
+  commentId: string,
+  params?: CommentsControllerRepliesParams,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<CommentPageDtoOutput> => {
+  return apiFetch<CommentPageDtoOutput>(getCommentsControllerRepliesUrl(commentId, params), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getCommentsControllerRepliesQueryKey = (
+  commentId: string,
+  params?: CommentsControllerRepliesParams,
+) => {
+  return [`/v1/comments/${commentId}/replies`, ...(params ? [params] : [])] as const;
+};
+
+export const getCommentsControllerRepliesQueryOptions = <
+  TData = Awaited<ReturnType<typeof commentsControllerReplies>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  commentId: string,
+  params?: CommentsControllerRepliesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof commentsControllerReplies>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getCommentsControllerRepliesQueryKey(commentId, params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof commentsControllerReplies>>> = ({
+    signal,
+  }) => commentsControllerReplies(commentId, params, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: commentId !== null && commentId !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<Awaited<ReturnType<typeof commentsControllerReplies>>, TError, TData> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+};
+
+export type CommentsControllerRepliesQueryResult = NonNullable<
+  Awaited<ReturnType<typeof commentsControllerReplies>>
+>;
+export type CommentsControllerRepliesQueryError = ErrorType<ProblemDetails>;
+
+export function useCommentsControllerReplies<
+  TData = Awaited<ReturnType<typeof commentsControllerReplies>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  commentId: string,
+  params: undefined | CommentsControllerRepliesParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof commentsControllerReplies>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof commentsControllerReplies>>,
+          TError,
+          Awaited<ReturnType<typeof commentsControllerReplies>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useCommentsControllerReplies<
+  TData = Awaited<ReturnType<typeof commentsControllerReplies>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  commentId: string,
+  params?: CommentsControllerRepliesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof commentsControllerReplies>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof commentsControllerReplies>>,
+          TError,
+          Awaited<ReturnType<typeof commentsControllerReplies>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useCommentsControllerReplies<
+  TData = Awaited<ReturnType<typeof commentsControllerReplies>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  commentId: string,
+  params?: CommentsControllerRepliesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof commentsControllerReplies>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useCommentsControllerReplies<
+  TData = Awaited<ReturnType<typeof commentsControllerReplies>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  commentId: string,
+  params?: CommentsControllerRepliesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof commentsControllerReplies>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getCommentsControllerRepliesQueryOptions(commentId, params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getCommentsControllerUpdateUrl = (commentId: string) => {
+  return `/v1/comments/${commentId}`;
+};
+
+export const commentsControllerUpdate = async (
+  commentId: string,
+  updateCommentDto: UpdateCommentDto,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<CommentDtoOutput> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit['headers']>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(
+          h as Iterable<Iterable<string>>,
+          (entry) => Array.from(entry) as [string, string],
+        ),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+  return apiFetch<CommentDtoOutput>(getCommentsControllerUpdateUrl(commentId), {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(updateCommentDto),
+  });
+};
+
+export const getCommentsControllerUpdateMutationKey = () => ['commentsControllerUpdate'] as const;
+
+export const getCommentsControllerUpdateMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof commentsControllerUpdate>>,
+    TError,
+    CommentsControllerUpdateMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof commentsControllerUpdate>>,
+  TError,
+  CommentsControllerUpdateMutationVariables,
+  TContext
+> => {
+  const mutationKey = getCommentsControllerUpdateMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof commentsControllerUpdate>>,
+    CommentsControllerUpdateMutationVariables
+  > = (props) => {
+    const { commentId, data } = props ?? {};
+
+    return commentsControllerUpdate(commentId, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type CommentsControllerUpdateMutationResult = NonNullable<
+  Awaited<ReturnType<typeof commentsControllerUpdate>>
+>;
+export type CommentsControllerUpdateMutationBody = UpdateCommentDto;
+export type CommentsControllerUpdateMutationError = ErrorType<ProblemDetails>;
+export type CommentsControllerUpdateMutationVariables = {
+  commentId: string;
+  data: UpdateCommentDto;
+};
+
+export const useCommentsControllerUpdate = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof commentsControllerUpdate>>,
+      TError,
+      CommentsControllerUpdateMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof commentsControllerUpdate>>,
+  TError,
+  CommentsControllerUpdateMutationVariables,
+  TContext
+> => {
+  return useMutation(getCommentsControllerUpdateMutationOptions(options), queryClient);
+};
+
+export const getCommentsControllerDeleteUrl = (commentId: string) => {
+  return `/v1/comments/${commentId}`;
+};
+
+export const commentsControllerDelete = async (
+  commentId: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<void> => {
+  return apiFetch<void>(getCommentsControllerDeleteUrl(commentId), {
+    ...options,
+    method: 'DELETE',
+  });
+};
+
+export const getCommentsControllerDeleteMutationKey = () => ['commentsControllerDelete'] as const;
+
+export const getCommentsControllerDeleteMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof commentsControllerDelete>>,
+    TError,
+    CommentsControllerDeleteMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof commentsControllerDelete>>,
+  TError,
+  CommentsControllerDeleteMutationVariables,
+  TContext
+> => {
+  const mutationKey = getCommentsControllerDeleteMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof commentsControllerDelete>>,
+    CommentsControllerDeleteMutationVariables
+  > = (props) => {
+    const { commentId } = props ?? {};
+
+    return commentsControllerDelete(commentId, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type CommentsControllerDeleteMutationResult = NonNullable<
+  Awaited<ReturnType<typeof commentsControllerDelete>>
+>;
+
+export type CommentsControllerDeleteMutationError = ErrorType<ProblemDetails>;
+export type CommentsControllerDeleteMutationVariables = { commentId: string };
+
+export const useCommentsControllerDelete = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof commentsControllerDelete>>,
+      TError,
+      CommentsControllerDeleteMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof commentsControllerDelete>>,
+  TError,
+  CommentsControllerDeleteMutationVariables,
+  TContext
+> => {
+  return useMutation(getCommentsControllerDeleteMutationOptions(options), queryClient);
+};
+
+export const getCommentsControllerReactUrl = (commentId: string) => {
+  return `/v1/comments/${commentId}/reaction`;
+};
+
+export const commentsControllerReact = async (
+  commentId: string,
+  setReactionDto: SetReactionDto,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<ReactionSummaryDtoOutput> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit['headers']>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(
+          h as Iterable<Iterable<string>>,
+          (entry) => Array.from(entry) as [string, string],
+        ),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+  return apiFetch<ReactionSummaryDtoOutput>(getCommentsControllerReactUrl(commentId), {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(setReactionDto),
+  });
+};
+
+export const getCommentsControllerReactMutationKey = () => ['commentsControllerReact'] as const;
+
+export const getCommentsControllerReactMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof commentsControllerReact>>,
+    TError,
+    CommentsControllerReactMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof commentsControllerReact>>,
+  TError,
+  CommentsControllerReactMutationVariables,
+  TContext
+> => {
+  const mutationKey = getCommentsControllerReactMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof commentsControllerReact>>,
+    CommentsControllerReactMutationVariables
+  > = (props) => {
+    const { commentId, data } = props ?? {};
+
+    return commentsControllerReact(commentId, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type CommentsControllerReactMutationResult = NonNullable<
+  Awaited<ReturnType<typeof commentsControllerReact>>
+>;
+export type CommentsControllerReactMutationBody = SetReactionDto;
+export type CommentsControllerReactMutationError = ErrorType<ProblemDetails>;
+export type CommentsControllerReactMutationVariables = { commentId: string; data: SetReactionDto };
+
+export const useCommentsControllerReact = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof commentsControllerReact>>,
+      TError,
+      CommentsControllerReactMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof commentsControllerReact>>,
+  TError,
+  CommentsControllerReactMutationVariables,
+  TContext
+> => {
+  return useMutation(getCommentsControllerReactMutationOptions(options), queryClient);
+};
+
+export const getCommentsControllerUnreactUrl = (commentId: string) => {
+  return `/v1/comments/${commentId}/reaction`;
+};
+
+export const commentsControllerUnreact = async (
+  commentId: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<ReactionSummaryDtoOutput> => {
+  return apiFetch<ReactionSummaryDtoOutput>(getCommentsControllerUnreactUrl(commentId), {
+    ...options,
+    method: 'DELETE',
+  });
+};
+
+export const getCommentsControllerUnreactMutationKey = () => ['commentsControllerUnreact'] as const;
+
+export const getCommentsControllerUnreactMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof commentsControllerUnreact>>,
+    TError,
+    CommentsControllerUnreactMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof commentsControllerUnreact>>,
+  TError,
+  CommentsControllerUnreactMutationVariables,
+  TContext
+> => {
+  const mutationKey = getCommentsControllerUnreactMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof commentsControllerUnreact>>,
+    CommentsControllerUnreactMutationVariables
+  > = (props) => {
+    const { commentId } = props ?? {};
+
+    return commentsControllerUnreact(commentId, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type CommentsControllerUnreactMutationResult = NonNullable<
+  Awaited<ReturnType<typeof commentsControllerUnreact>>
+>;
+
+export type CommentsControllerUnreactMutationError = ErrorType<ProblemDetails>;
+export type CommentsControllerUnreactMutationVariables = { commentId: string };
+
+export const useCommentsControllerUnreact = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof commentsControllerUnreact>>,
+      TError,
+      CommentsControllerUnreactMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof commentsControllerUnreact>>,
+  TError,
+  CommentsControllerUnreactMutationVariables,
+  TContext
+> => {
+  return useMutation(getCommentsControllerUnreactMutationOptions(options), queryClient);
 };

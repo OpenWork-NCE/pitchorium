@@ -128,6 +128,28 @@ export const ActionPrerequisitesDtoOutputAction = {
   organizationinvitationrespond: 'organization.invitation.respond',
   organizationverificationrequest: 'organization.verification.request',
   organizationverificationreview: 'organization.verification.review',
+  networkread: 'network.read',
+  networkfollow: 'network.follow',
+  networkconnectionrequest: 'network.connection.request',
+  networkconnectionrespond: 'network.connection.respond',
+  networkconnectionremove: 'network.connection.remove',
+  networkblock: 'network.block',
+  networksettingsupdate: 'network.settings.update',
+  'networkprofile-viewsread': 'network.profile-views.read',
+  contentfeedread: 'content.feed.read',
+  contentpostread: 'content.post.read',
+  contentpostcreate: 'content.post.create',
+  contentpostupdate: 'content.post.update',
+  contentpostdelete: 'content.post.delete',
+  contentpostrepost: 'content.post.repost',
+  contentpostsave: 'content.post.save',
+  contentposthide: 'content.post.hide',
+  contentpostfeature: 'content.post.feature',
+  contentpoststatsread: 'content.post.stats.read',
+  contentreactionset: 'content.reaction.set',
+  contentcommentcreate: 'content.comment.create',
+  contentcommentupdate: 'content.comment.update',
+  contentcommentdelete: 'content.comment.delete',
 } as const;
 
 export type ActionPrerequisitesDtoOutputCode =
@@ -186,6 +208,30 @@ export const ActionPrerequisitesDtoOutputCode = {
   ORGANIZATIONS_VERIFICATION_INVALID_STATE: 'ORGANIZATIONS_VERIFICATION_INVALID_STATE',
   ORGANIZATIONS_VERIFICATION_REQUEST_NOT_FOUND: 'ORGANIZATIONS_VERIFICATION_REQUEST_NOT_FOUND',
   ORGANIZATIONS_VERIFICATION_CRITERION_UNKNOWN: 'ORGANIZATIONS_VERIFICATION_CRITERION_UNKNOWN',
+  NETWORK_TARGET_NOT_FOUND: 'NETWORK_TARGET_NOT_FOUND',
+  NETWORK_MEMBER_NOT_FOUND: 'NETWORK_MEMBER_NOT_FOUND',
+  NETWORK_SELF_RELATION: 'NETWORK_SELF_RELATION',
+  NETWORK_ALREADY_CONNECTED: 'NETWORK_ALREADY_CONNECTED',
+  NETWORK_REQUEST_ALREADY_PENDING: 'NETWORK_REQUEST_ALREADY_PENDING',
+  NETWORK_REQUEST_COOLDOWN: 'NETWORK_REQUEST_COOLDOWN',
+  NETWORK_WEEKLY_REQUEST_LIMIT: 'NETWORK_WEEKLY_REQUEST_LIMIT',
+  NETWORK_REQUEST_NOT_FOUND: 'NETWORK_REQUEST_NOT_FOUND',
+  NETWORK_REQUEST_NOT_PENDING: 'NETWORK_REQUEST_NOT_PENDING',
+  NETWORK_NOT_CONNECTED: 'NETWORK_NOT_CONNECTED',
+  NETWORK_MEMBER_BLOCKED: 'NETWORK_MEMBER_BLOCKED',
+  NETWORK_LIST_HIDDEN: 'NETWORK_LIST_HIDDEN',
+  CONTENT_POST_NOT_FOUND: 'CONTENT_POST_NOT_FOUND',
+  CONTENT_COMMENT_NOT_FOUND: 'CONTENT_COMMENT_NOT_FOUND',
+  CONTENT_POST_EMPTY: 'CONTENT_POST_EMPTY',
+  CONTENT_MEDIA_COMBINATION: 'CONTENT_MEDIA_COMBINATION',
+  CONTENT_PUBLIC_VISIBILITY_NOT_ALLOWED: 'CONTENT_PUBLIC_VISIBILITY_NOT_ALLOWED',
+  CONTENT_VISIBILITY_NOT_ALLOWED: 'CONTENT_VISIBILITY_NOT_ALLOWED',
+  CONTENT_REPOST_NOT_ALLOWED: 'CONTENT_REPOST_NOT_ALLOWED',
+  CONTENT_PROJECT_NOT_FOUND: 'CONTENT_PROJECT_NOT_FOUND',
+  CONTENT_MENTION_NOT_ALLOWED: 'CONTENT_MENTION_NOT_ALLOWED',
+  CONTENT_COMMENTS_DISABLED: 'CONTENT_COMMENTS_DISABLED',
+  CONTENT_REPLY_DEPTH: 'CONTENT_REPLY_DEPTH',
+  CONTENT_ORGANIZATION_ROLE_REQUIRED: 'CONTENT_ORGANIZATION_ROLE_REQUIRED',
   INTERNAL_ERROR: 'INTERNAL_ERROR',
   SERVICE_UNAVAILABLE: 'SERVICE_UNAVAILABLE',
 } as const;
@@ -1224,6 +1270,7 @@ export const MediaUsagesDtoOutputItemsItemUsage = {
   project_document: 'project_document',
   message_attachment: 'message_attachment',
   verification_document: 'verification_document',
+  link_preview: 'link_preview',
 } as const;
 
 export type MediaUsagesDtoOutputItemsItemContentTypesItem =
@@ -1283,6 +1330,7 @@ export const CreateUploadDtoUsage = {
   project_document: 'project_document',
   message_attachment: 'message_attachment',
   verification_document: 'verification_document',
+  link_preview: 'link_preview',
 } as const;
 
 export type CreateUploadDtoContentType =
@@ -1319,6 +1367,7 @@ export const UploadTicketDtoOutputMediaUsage = {
   project_document: 'project_document',
   message_attachment: 'message_attachment',
   verification_document: 'verification_document',
+  link_preview: 'link_preview',
 } as const;
 
 export type UploadTicketDtoOutputMediaStatus =
@@ -1441,6 +1490,7 @@ export const MediaAssetDtoOutputUsage = {
   project_document: 'project_document',
   message_attachment: 'message_attachment',
   verification_document: 'verification_document',
+  link_preview: 'link_preview',
 } as const;
 
 export type MediaAssetDtoOutputStatus =
@@ -2034,6 +2084,2245 @@ export interface RevocationDto {
   reason: string;
 }
 
+export type FollowDtoOutputTarget = {
+  /** @pattern ^[a-z][a-z_]{1,31}$ */
+  type: string;
+  key: string;
+  displayName: string;
+  /** @nullable */
+  subtitle: string | null;
+  /** @nullable */
+  imageUrl: string | null;
+};
+
+export interface FollowDtoOutput {
+  target: FollowDtoOutputTarget;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  followedAt: string;
+}
+
+export type FollowerPageDtoOutputItemsItemMember = {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  displayName: string;
+  /** @nullable */
+  headline: string | null;
+  /** @nullable */
+  avatarUrl: string | null;
+};
+
+export type FollowerPageDtoOutputItemsItem = {
+  member: FollowerPageDtoOutputItemsItemMember;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  followedAt: string;
+};
+
+export interface FollowerPageDtoOutput {
+  items: FollowerPageDtoOutputItemsItem[];
+  nextCursor: string[];
+}
+
+export interface CreateConnectionRequestDto {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  /**
+   * @minLength 1
+   * @maxLength 300
+   */
+  note?: string;
+}
+
+export type ConnectionRequestDtoOutputDirection =
+  (typeof ConnectionRequestDtoOutputDirection)[keyof typeof ConnectionRequestDtoOutputDirection];
+
+export const ConnectionRequestDtoOutputDirection = {
+  received: 'received',
+  sent: 'sent',
+} as const;
+
+export type ConnectionRequestDtoOutputMember = {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  displayName: string;
+  /** @nullable */
+  headline: string | null;
+  /** @nullable */
+  avatarUrl: string | null;
+};
+
+export type ConnectionRequestDtoOutputStatus =
+  (typeof ConnectionRequestDtoOutputStatus)[keyof typeof ConnectionRequestDtoOutputStatus];
+
+export const ConnectionRequestDtoOutputStatus = {
+  pending: 'pending',
+  accepted: 'accepted',
+  declined: 'declined',
+  withdrawn: 'withdrawn',
+  expired: 'expired',
+  cancelled: 'cancelled',
+} as const;
+
+export interface ConnectionRequestDtoOutput {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  direction: ConnectionRequestDtoOutputDirection;
+  member: ConnectionRequestDtoOutputMember;
+  note: string[];
+  status: ConnectionRequestDtoOutputStatus;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  expiresAt: string;
+  respondedAt: string | null;
+}
+
+export type ConnectionRequestPageDtoOutputItemsItemDirection =
+  (typeof ConnectionRequestPageDtoOutputItemsItemDirection)[keyof typeof ConnectionRequestPageDtoOutputItemsItemDirection];
+
+export const ConnectionRequestPageDtoOutputItemsItemDirection = {
+  received: 'received',
+  sent: 'sent',
+} as const;
+
+export type ConnectionRequestPageDtoOutputItemsItemMember = {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  displayName: string;
+  /** @nullable */
+  headline: string | null;
+  /** @nullable */
+  avatarUrl: string | null;
+};
+
+export type ConnectionRequestPageDtoOutputItemsItemStatus =
+  (typeof ConnectionRequestPageDtoOutputItemsItemStatus)[keyof typeof ConnectionRequestPageDtoOutputItemsItemStatus];
+
+export const ConnectionRequestPageDtoOutputItemsItemStatus = {
+  pending: 'pending',
+  accepted: 'accepted',
+  declined: 'declined',
+  withdrawn: 'withdrawn',
+  expired: 'expired',
+  cancelled: 'cancelled',
+} as const;
+
+export type ConnectionRequestPageDtoOutputItemsItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  direction: ConnectionRequestPageDtoOutputItemsItemDirection;
+  member: ConnectionRequestPageDtoOutputItemsItemMember;
+  /** @nullable */
+  note: string | null;
+  status: ConnectionRequestPageDtoOutputItemsItemStatus;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  expiresAt: string;
+  respondedAt: string | null;
+};
+
+export interface ConnectionRequestPageDtoOutput {
+  items: ConnectionRequestPageDtoOutputItemsItem[];
+  nextCursor: string[];
+}
+
+export type BlockPageDtoOutputItemsItemMember = {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  displayName: string;
+  /** @nullable */
+  headline: string | null;
+  /** @nullable */
+  avatarUrl: string | null;
+};
+
+export type BlockPageDtoOutputItemsItem = {
+  member: BlockPageDtoOutputItemsItemMember;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  blockedAt: string;
+};
+
+export interface BlockPageDtoOutput {
+  items: BlockPageDtoOutputItemsItem[];
+  nextCursor: string[];
+}
+
+export type FollowPageDtoOutputItemsItemTarget = {
+  /** @pattern ^[a-z][a-z_]{1,31}$ */
+  type: string;
+  key: string;
+  displayName: string;
+  /** @nullable */
+  subtitle: string | null;
+  /** @nullable */
+  imageUrl: string | null;
+};
+
+export type FollowPageDtoOutputItemsItem = {
+  target: FollowPageDtoOutputItemsItemTarget;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  followedAt: string;
+};
+
+export interface FollowPageDtoOutput {
+  items: FollowPageDtoOutputItemsItem[];
+  nextCursor: string[];
+}
+
+export type ConnectionPageDtoOutputItemsItemMember = {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  displayName: string;
+  /** @nullable */
+  headline: string | null;
+  /** @nullable */
+  avatarUrl: string | null;
+};
+
+export type ConnectionPageDtoOutputItemsItem = {
+  member: ConnectionPageDtoOutputItemsItemMember;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  connectedAt: string;
+};
+
+export interface ConnectionPageDtoOutput {
+  items: ConnectionPageDtoOutputItemsItem[];
+  nextCursor: string[];
+}
+
+export type RelationshipDtoOutputDegree =
+  (typeof RelationshipDtoOutputDegree)[keyof typeof RelationshipDtoOutputDegree];
+
+export const RelationshipDtoOutputDegree = {
+  self: 'self',
+  first: 'first',
+  second: 'second',
+  out_of_network: 'out_of_network',
+} as const;
+
+export type RelationshipDtoOutputMutualConnections = {
+  /**
+   * @minimum 0
+   * @maximum 9007199254740991
+   */
+  count: number;
+  capped: boolean;
+};
+
+export type RelationshipDtoOutputConnection =
+  (typeof RelationshipDtoOutputConnection)[keyof typeof RelationshipDtoOutputConnection];
+
+export const RelationshipDtoOutputConnection = {
+  connected: 'connected',
+  request_sent: 'request_sent',
+  request_received: 'request_received',
+  none: 'none',
+} as const;
+
+export type RelationshipDtoOutputCounts = {
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  followers: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  connections: number;
+} | null;
+
+export interface RelationshipDtoOutput {
+  degree: RelationshipDtoOutputDegree;
+  mutualConnections: RelationshipDtoOutputMutualConnections;
+  connection: RelationshipDtoOutputConnection;
+  requestId: string | null;
+  following: boolean;
+  followedBy: boolean;
+  blocked: boolean;
+  counts: RelationshipDtoOutputCounts;
+}
+
+export interface NetworkSettingsDtoOutput {
+  privateProfileViews: boolean;
+}
+
+export interface UpdateNetworkSettingsDto {
+  privateProfileViews?: boolean;
+}
+
+export interface ProfileViewsSummaryDtoOutput {
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  last7Days: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  last30Days: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  last90Days: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  retentionDays: number;
+}
+
+export type ProfileVisitPageDtoOutputItemsItemVisitor = {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  displayName: string;
+  /** @nullable */
+  headline: string | null;
+  /** @nullable */
+  avatarUrl: string | null;
+} | null;
+
+export type ProfileVisitPageDtoOutputItemsItemAnonymous = {
+  /** @nullable */
+  sectorCode: string | null;
+} | null;
+
+export type ProfileVisitPageDtoOutputItemsItem = {
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))$ */
+  day: string;
+  visitor: ProfileVisitPageDtoOutputItemsItemVisitor;
+  anonymous: ProfileVisitPageDtoOutputItemsItemAnonymous;
+};
+
+export interface ProfileVisitPageDtoOutput {
+  items: ProfileVisitPageDtoOutputItemsItem[];
+  nextCursor: string[];
+}
+
+export type FeedPageDtoOutputItemsItem =
+  | {
+      type: 'post';
+      id: string;
+      post: {
+        /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+        id: string;
+        author:
+          | {
+              type: 'member';
+              member: {
+                /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+                handle: string;
+                displayName: string;
+                /** @nullable */
+                headline: string | null;
+                /** @nullable */
+                avatarUrl: string | null;
+              };
+            }
+          | {
+              type: 'organization';
+              organization: {
+                /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+                id: string;
+                slug: string;
+                name: string;
+                /** @nullable */
+                logoUrl: string | null;
+                verified: boolean;
+              };
+            };
+        /** @nullable */
+        text: string | null;
+        /** @nullable */
+        language: string | null;
+        languageSource: 'declared' | 'detected' | 'undetermined';
+        visibility: 'public' | 'members' | 'connections';
+        images: {
+          /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+          mediaId: string;
+          url: string;
+          variants: {
+            [key: string]: {
+              /**
+               * @minimum -9007199254740991
+               * @maximum 9007199254740991
+               */
+              width: number;
+              /**
+               * @minimum -9007199254740991
+               * @maximum 9007199254740991
+               */
+              height: number;
+              /** @nullable */
+              webp: string | null;
+              /** @nullable */
+              avif: string | null;
+            };
+          };
+        }[];
+        document: {
+          /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+          mediaId: string;
+          /** @nullable */
+          thumbnailUrl: string | null;
+          pageCount: number | null;
+        } | null;
+        link: {
+          url: string;
+          status: 'pending' | 'ready' | 'failed';
+          /** @nullable */
+          title: string | null;
+          /** @nullable */
+          description: string | null;
+          /** @nullable */
+          siteName: string | null;
+          /** @nullable */
+          imageUrl: string | null;
+        } | null;
+        mentions: {
+          token: string;
+          type: 'member' | 'organization';
+          key: string;
+          displayName: string;
+        }[];
+        projectId: string | null;
+        commentsDisabled: boolean;
+        reactions: {
+          counts: {
+            /**
+             * @minimum -9007199254740991
+             * @maximum 9007199254740991
+             */
+            like: number;
+            /**
+             * @minimum -9007199254740991
+             * @maximum 9007199254740991
+             */
+            bravo: number;
+            /**
+             * @minimum -9007199254740991
+             * @maximum 9007199254740991
+             */
+            insightful: number;
+            /**
+             * @minimum -9007199254740991
+             * @maximum 9007199254740991
+             */
+            support: number;
+          };
+          /**
+           * @minimum -9007199254740991
+           * @maximum 9007199254740991
+           */
+          total: number;
+          viewerReaction: 'like' | 'bravo' | 'insightful' | 'support' | null;
+        };
+        /**
+         * @minimum -9007199254740991
+         * @maximum 9007199254740991
+         */
+        commentCount: number;
+        /**
+         * @minimum -9007199254740991
+         * @maximum 9007199254740991
+         */
+        repostCount: number;
+        saved: boolean;
+        viewerIsAuthor: boolean;
+        featured: boolean;
+        /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+        createdAt: string;
+        editedAt: string | null;
+        kind: 'post' | 'repost';
+        repostOf: {
+          /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+          id: string;
+          author:
+            | {
+                type: 'member';
+                member: {
+                  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+                  handle: string;
+                  displayName: string;
+                  /** @nullable */
+                  headline: string | null;
+                  /** @nullable */
+                  avatarUrl: string | null;
+                };
+              }
+            | {
+                type: 'organization';
+                organization: {
+                  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+                  id: string;
+                  slug: string;
+                  name: string;
+                  /** @nullable */
+                  logoUrl: string | null;
+                  verified: boolean;
+                };
+              };
+          /** @nullable */
+          text: string | null;
+          /** @nullable */
+          language: string | null;
+          languageSource: 'declared' | 'detected' | 'undetermined';
+          visibility: 'public' | 'members' | 'connections';
+          images: {
+            /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+            mediaId: string;
+            url: string;
+            variants: {
+              [key: string]: {
+                /**
+                 * @minimum -9007199254740991
+                 * @maximum 9007199254740991
+                 */
+                width: number;
+                /**
+                 * @minimum -9007199254740991
+                 * @maximum 9007199254740991
+                 */
+                height: number;
+                /** @nullable */
+                webp: string | null;
+                /** @nullable */
+                avif: string | null;
+              };
+            };
+          }[];
+          document: {
+            /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+            mediaId: string;
+            /** @nullable */
+            thumbnailUrl: string | null;
+            pageCount: number | null;
+          } | null;
+          link: {
+            url: string;
+            status: 'pending' | 'ready' | 'failed';
+            /** @nullable */
+            title: string | null;
+            /** @nullable */
+            description: string | null;
+            /** @nullable */
+            siteName: string | null;
+            /** @nullable */
+            imageUrl: string | null;
+          } | null;
+          mentions: {
+            token: string;
+            type: 'member' | 'organization';
+            key: string;
+            displayName: string;
+          }[];
+          projectId: string | null;
+          commentsDisabled: boolean;
+          reactions: {
+            counts: {
+              /**
+               * @minimum -9007199254740991
+               * @maximum 9007199254740991
+               */
+              like: number;
+              /**
+               * @minimum -9007199254740991
+               * @maximum 9007199254740991
+               */
+              bravo: number;
+              /**
+               * @minimum -9007199254740991
+               * @maximum 9007199254740991
+               */
+              insightful: number;
+              /**
+               * @minimum -9007199254740991
+               * @maximum 9007199254740991
+               */
+              support: number;
+            };
+            /**
+             * @minimum -9007199254740991
+             * @maximum 9007199254740991
+             */
+            total: number;
+            viewerReaction: 'like' | 'bravo' | 'insightful' | 'support' | null;
+          };
+          /**
+           * @minimum -9007199254740991
+           * @maximum 9007199254740991
+           */
+          commentCount: number;
+          /**
+           * @minimum -9007199254740991
+           * @maximum 9007199254740991
+           */
+          repostCount: number;
+          saved: boolean;
+          viewerIsAuthor: boolean;
+          featured: boolean;
+          /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+          createdAt: string;
+          editedAt: string | null;
+        } | null;
+      };
+    }
+  | {
+      type: 'repost';
+      id: string;
+      post: {
+        /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+        id: string;
+        author:
+          | {
+              type: 'member';
+              member: {
+                /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+                handle: string;
+                displayName: string;
+                /** @nullable */
+                headline: string | null;
+                /** @nullable */
+                avatarUrl: string | null;
+              };
+            }
+          | {
+              type: 'organization';
+              organization: {
+                /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+                id: string;
+                slug: string;
+                name: string;
+                /** @nullable */
+                logoUrl: string | null;
+                verified: boolean;
+              };
+            };
+        /** @nullable */
+        text: string | null;
+        /** @nullable */
+        language: string | null;
+        languageSource: 'declared' | 'detected' | 'undetermined';
+        visibility: 'public' | 'members' | 'connections';
+        images: {
+          /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+          mediaId: string;
+          url: string;
+          variants: {
+            [key: string]: {
+              /**
+               * @minimum -9007199254740991
+               * @maximum 9007199254740991
+               */
+              width: number;
+              /**
+               * @minimum -9007199254740991
+               * @maximum 9007199254740991
+               */
+              height: number;
+              /** @nullable */
+              webp: string | null;
+              /** @nullable */
+              avif: string | null;
+            };
+          };
+        }[];
+        document: {
+          /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+          mediaId: string;
+          /** @nullable */
+          thumbnailUrl: string | null;
+          pageCount: number | null;
+        } | null;
+        link: {
+          url: string;
+          status: 'pending' | 'ready' | 'failed';
+          /** @nullable */
+          title: string | null;
+          /** @nullable */
+          description: string | null;
+          /** @nullable */
+          siteName: string | null;
+          /** @nullable */
+          imageUrl: string | null;
+        } | null;
+        mentions: {
+          token: string;
+          type: 'member' | 'organization';
+          key: string;
+          displayName: string;
+        }[];
+        projectId: string | null;
+        commentsDisabled: boolean;
+        reactions: {
+          counts: {
+            /**
+             * @minimum -9007199254740991
+             * @maximum 9007199254740991
+             */
+            like: number;
+            /**
+             * @minimum -9007199254740991
+             * @maximum 9007199254740991
+             */
+            bravo: number;
+            /**
+             * @minimum -9007199254740991
+             * @maximum 9007199254740991
+             */
+            insightful: number;
+            /**
+             * @minimum -9007199254740991
+             * @maximum 9007199254740991
+             */
+            support: number;
+          };
+          /**
+           * @minimum -9007199254740991
+           * @maximum 9007199254740991
+           */
+          total: number;
+          viewerReaction: 'like' | 'bravo' | 'insightful' | 'support' | null;
+        };
+        /**
+         * @minimum -9007199254740991
+         * @maximum 9007199254740991
+         */
+        commentCount: number;
+        /**
+         * @minimum -9007199254740991
+         * @maximum 9007199254740991
+         */
+        repostCount: number;
+        saved: boolean;
+        viewerIsAuthor: boolean;
+        featured: boolean;
+        /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+        createdAt: string;
+        editedAt: string | null;
+        kind: 'post' | 'repost';
+        repostOf: {
+          /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+          id: string;
+          author:
+            | {
+                type: 'member';
+                member: {
+                  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+                  handle: string;
+                  displayName: string;
+                  /** @nullable */
+                  headline: string | null;
+                  /** @nullable */
+                  avatarUrl: string | null;
+                };
+              }
+            | {
+                type: 'organization';
+                organization: {
+                  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+                  id: string;
+                  slug: string;
+                  name: string;
+                  /** @nullable */
+                  logoUrl: string | null;
+                  verified: boolean;
+                };
+              };
+          /** @nullable */
+          text: string | null;
+          /** @nullable */
+          language: string | null;
+          languageSource: 'declared' | 'detected' | 'undetermined';
+          visibility: 'public' | 'members' | 'connections';
+          images: {
+            /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+            mediaId: string;
+            url: string;
+            variants: {
+              [key: string]: {
+                /**
+                 * @minimum -9007199254740991
+                 * @maximum 9007199254740991
+                 */
+                width: number;
+                /**
+                 * @minimum -9007199254740991
+                 * @maximum 9007199254740991
+                 */
+                height: number;
+                /** @nullable */
+                webp: string | null;
+                /** @nullable */
+                avif: string | null;
+              };
+            };
+          }[];
+          document: {
+            /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+            mediaId: string;
+            /** @nullable */
+            thumbnailUrl: string | null;
+            pageCount: number | null;
+          } | null;
+          link: {
+            url: string;
+            status: 'pending' | 'ready' | 'failed';
+            /** @nullable */
+            title: string | null;
+            /** @nullable */
+            description: string | null;
+            /** @nullable */
+            siteName: string | null;
+            /** @nullable */
+            imageUrl: string | null;
+          } | null;
+          mentions: {
+            token: string;
+            type: 'member' | 'organization';
+            key: string;
+            displayName: string;
+          }[];
+          projectId: string | null;
+          commentsDisabled: boolean;
+          reactions: {
+            counts: {
+              /**
+               * @minimum -9007199254740991
+               * @maximum 9007199254740991
+               */
+              like: number;
+              /**
+               * @minimum -9007199254740991
+               * @maximum 9007199254740991
+               */
+              bravo: number;
+              /**
+               * @minimum -9007199254740991
+               * @maximum 9007199254740991
+               */
+              insightful: number;
+              /**
+               * @minimum -9007199254740991
+               * @maximum 9007199254740991
+               */
+              support: number;
+            };
+            /**
+             * @minimum -9007199254740991
+             * @maximum 9007199254740991
+             */
+            total: number;
+            viewerReaction: 'like' | 'bravo' | 'insightful' | 'support' | null;
+          };
+          /**
+           * @minimum -9007199254740991
+           * @maximum 9007199254740991
+           */
+          commentCount: number;
+          /**
+           * @minimum -9007199254740991
+           * @maximum 9007199254740991
+           */
+          repostCount: number;
+          saved: boolean;
+          viewerIsAuthor: boolean;
+          featured: boolean;
+          /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+          createdAt: string;
+          editedAt: string | null;
+        } | null;
+      };
+    }
+  | {
+      type: 'featured';
+      id: string;
+      post: {
+        /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+        id: string;
+        author:
+          | {
+              type: 'member';
+              member: {
+                /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+                handle: string;
+                displayName: string;
+                /** @nullable */
+                headline: string | null;
+                /** @nullable */
+                avatarUrl: string | null;
+              };
+            }
+          | {
+              type: 'organization';
+              organization: {
+                /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+                id: string;
+                slug: string;
+                name: string;
+                /** @nullable */
+                logoUrl: string | null;
+                verified: boolean;
+              };
+            };
+        /** @nullable */
+        text: string | null;
+        /** @nullable */
+        language: string | null;
+        languageSource: 'declared' | 'detected' | 'undetermined';
+        visibility: 'public' | 'members' | 'connections';
+        images: {
+          /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+          mediaId: string;
+          url: string;
+          variants: {
+            [key: string]: {
+              /**
+               * @minimum -9007199254740991
+               * @maximum 9007199254740991
+               */
+              width: number;
+              /**
+               * @minimum -9007199254740991
+               * @maximum 9007199254740991
+               */
+              height: number;
+              /** @nullable */
+              webp: string | null;
+              /** @nullable */
+              avif: string | null;
+            };
+          };
+        }[];
+        document: {
+          /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+          mediaId: string;
+          /** @nullable */
+          thumbnailUrl: string | null;
+          pageCount: number | null;
+        } | null;
+        link: {
+          url: string;
+          status: 'pending' | 'ready' | 'failed';
+          /** @nullable */
+          title: string | null;
+          /** @nullable */
+          description: string | null;
+          /** @nullable */
+          siteName: string | null;
+          /** @nullable */
+          imageUrl: string | null;
+        } | null;
+        mentions: {
+          token: string;
+          type: 'member' | 'organization';
+          key: string;
+          displayName: string;
+        }[];
+        projectId: string | null;
+        commentsDisabled: boolean;
+        reactions: {
+          counts: {
+            /**
+             * @minimum -9007199254740991
+             * @maximum 9007199254740991
+             */
+            like: number;
+            /**
+             * @minimum -9007199254740991
+             * @maximum 9007199254740991
+             */
+            bravo: number;
+            /**
+             * @minimum -9007199254740991
+             * @maximum 9007199254740991
+             */
+            insightful: number;
+            /**
+             * @minimum -9007199254740991
+             * @maximum 9007199254740991
+             */
+            support: number;
+          };
+          /**
+           * @minimum -9007199254740991
+           * @maximum 9007199254740991
+           */
+          total: number;
+          viewerReaction: 'like' | 'bravo' | 'insightful' | 'support' | null;
+        };
+        /**
+         * @minimum -9007199254740991
+         * @maximum 9007199254740991
+         */
+        commentCount: number;
+        /**
+         * @minimum -9007199254740991
+         * @maximum 9007199254740991
+         */
+        repostCount: number;
+        saved: boolean;
+        viewerIsAuthor: boolean;
+        featured: boolean;
+        /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+        createdAt: string;
+        editedAt: string | null;
+        kind: 'post' | 'repost';
+        repostOf: {
+          /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+          id: string;
+          author:
+            | {
+                type: 'member';
+                member: {
+                  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+                  handle: string;
+                  displayName: string;
+                  /** @nullable */
+                  headline: string | null;
+                  /** @nullable */
+                  avatarUrl: string | null;
+                };
+              }
+            | {
+                type: 'organization';
+                organization: {
+                  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+                  id: string;
+                  slug: string;
+                  name: string;
+                  /** @nullable */
+                  logoUrl: string | null;
+                  verified: boolean;
+                };
+              };
+          /** @nullable */
+          text: string | null;
+          /** @nullable */
+          language: string | null;
+          languageSource: 'declared' | 'detected' | 'undetermined';
+          visibility: 'public' | 'members' | 'connections';
+          images: {
+            /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+            mediaId: string;
+            url: string;
+            variants: {
+              [key: string]: {
+                /**
+                 * @minimum -9007199254740991
+                 * @maximum 9007199254740991
+                 */
+                width: number;
+                /**
+                 * @minimum -9007199254740991
+                 * @maximum 9007199254740991
+                 */
+                height: number;
+                /** @nullable */
+                webp: string | null;
+                /** @nullable */
+                avif: string | null;
+              };
+            };
+          }[];
+          document: {
+            /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+            mediaId: string;
+            /** @nullable */
+            thumbnailUrl: string | null;
+            pageCount: number | null;
+          } | null;
+          link: {
+            url: string;
+            status: 'pending' | 'ready' | 'failed';
+            /** @nullable */
+            title: string | null;
+            /** @nullable */
+            description: string | null;
+            /** @nullable */
+            siteName: string | null;
+            /** @nullable */
+            imageUrl: string | null;
+          } | null;
+          mentions: {
+            token: string;
+            type: 'member' | 'organization';
+            key: string;
+            displayName: string;
+          }[];
+          projectId: string | null;
+          commentsDisabled: boolean;
+          reactions: {
+            counts: {
+              /**
+               * @minimum -9007199254740991
+               * @maximum 9007199254740991
+               */
+              like: number;
+              /**
+               * @minimum -9007199254740991
+               * @maximum 9007199254740991
+               */
+              bravo: number;
+              /**
+               * @minimum -9007199254740991
+               * @maximum 9007199254740991
+               */
+              insightful: number;
+              /**
+               * @minimum -9007199254740991
+               * @maximum 9007199254740991
+               */
+              support: number;
+            };
+            /**
+             * @minimum -9007199254740991
+             * @maximum 9007199254740991
+             */
+            total: number;
+            viewerReaction: 'like' | 'bravo' | 'insightful' | 'support' | null;
+          };
+          /**
+           * @minimum -9007199254740991
+           * @maximum 9007199254740991
+           */
+          commentCount: number;
+          /**
+           * @minimum -9007199254740991
+           * @maximum 9007199254740991
+           */
+          repostCount: number;
+          saved: boolean;
+          viewerIsAuthor: boolean;
+          featured: boolean;
+          /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+          createdAt: string;
+          editedAt: string | null;
+        } | null;
+      };
+    };
+
+export interface FeedPageDtoOutput {
+  schemaVersion: 1;
+  items: FeedPageDtoOutputItemsItem[];
+  nextCursor: string[];
+}
+
+export type CreatePostDtoVisibility =
+  (typeof CreatePostDtoVisibility)[keyof typeof CreatePostDtoVisibility];
+
+export const CreatePostDtoVisibility = {
+  public: 'public',
+  members: 'members',
+  connections: 'connections',
+} as const;
+
+export interface CreatePostDto {
+  /** @maxLength 3000 */
+  text?: string;
+  visibility?: CreatePostDtoVisibility;
+  /** @pattern ^[a-z]{2}$ */
+  language?: string;
+  /**
+   * @maxItems 9
+   * @items.pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$
+   */
+  imageMediaIds?: string[];
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  documentMediaId?: string;
+  /** @maxLength 2048 */
+  linkUrl?: string;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  organizationId?: string;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  projectId?: string;
+  commentsDisabled?: boolean;
+}
+
+export type PostDtoOutputAuthor =
+  | {
+      type: 'member';
+      member: {
+        /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+        handle: string;
+        displayName: string;
+        /** @nullable */
+        headline: string | null;
+        /** @nullable */
+        avatarUrl: string | null;
+      };
+    }
+  | {
+      type: 'organization';
+      organization: {
+        /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+        id: string;
+        slug: string;
+        name: string;
+        /** @nullable */
+        logoUrl: string | null;
+        verified: boolean;
+      };
+    };
+
+export type PostDtoOutputLanguageSource =
+  (typeof PostDtoOutputLanguageSource)[keyof typeof PostDtoOutputLanguageSource];
+
+export const PostDtoOutputLanguageSource = {
+  declared: 'declared',
+  detected: 'detected',
+  undetermined: 'undetermined',
+} as const;
+
+export type PostDtoOutputVisibility =
+  (typeof PostDtoOutputVisibility)[keyof typeof PostDtoOutputVisibility];
+
+export const PostDtoOutputVisibility = {
+  public: 'public',
+  members: 'members',
+  connections: 'connections',
+} as const;
+
+export type PostDtoOutputImagesItemVariants = {
+  [key: string]: {
+    /**
+     * @minimum -9007199254740991
+     * @maximum 9007199254740991
+     */
+    width: number;
+    /**
+     * @minimum -9007199254740991
+     * @maximum 9007199254740991
+     */
+    height: number;
+    /** @nullable */
+    webp: string | null;
+    /** @nullable */
+    avif: string | null;
+  };
+};
+
+export type PostDtoOutputImagesItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  mediaId: string;
+  url: string;
+  variants: PostDtoOutputImagesItemVariants;
+};
+
+export type PostDtoOutputDocument = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  mediaId: string;
+  /** @nullable */
+  thumbnailUrl: string | null;
+  pageCount: number | null;
+} | null;
+
+export type PostDtoOutputLinkStatus =
+  (typeof PostDtoOutputLinkStatus)[keyof typeof PostDtoOutputLinkStatus];
+
+export const PostDtoOutputLinkStatus = {
+  pending: 'pending',
+  ready: 'ready',
+  failed: 'failed',
+} as const;
+
+export type PostDtoOutputLink = {
+  url: string;
+  status: PostDtoOutputLinkStatus;
+  /** @nullable */
+  title: string | null;
+  /** @nullable */
+  description: string | null;
+  /** @nullable */
+  siteName: string | null;
+  /** @nullable */
+  imageUrl: string | null;
+} | null;
+
+export type PostDtoOutputMentionsItemType =
+  (typeof PostDtoOutputMentionsItemType)[keyof typeof PostDtoOutputMentionsItemType];
+
+export const PostDtoOutputMentionsItemType = {
+  member: 'member',
+  organization: 'organization',
+} as const;
+
+export type PostDtoOutputMentionsItem = {
+  token: string;
+  type: PostDtoOutputMentionsItemType;
+  key: string;
+  displayName: string;
+};
+
+export type PostDtoOutputReactionsCounts = {
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  like: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  bravo: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  insightful: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  support: number;
+};
+
+export type PostDtoOutputReactionsViewerReaction =
+  | (typeof PostDtoOutputReactionsViewerReaction)[keyof typeof PostDtoOutputReactionsViewerReaction]
+  | null;
+
+export const PostDtoOutputReactionsViewerReaction = {
+  like: 'like',
+  bravo: 'bravo',
+  insightful: 'insightful',
+  support: 'support',
+} as const;
+
+export type PostDtoOutputReactions = {
+  counts: PostDtoOutputReactionsCounts;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  total: number;
+  viewerReaction: PostDtoOutputReactionsViewerReaction;
+};
+
+export type PostDtoOutputKind = (typeof PostDtoOutputKind)[keyof typeof PostDtoOutputKind];
+
+export const PostDtoOutputKind = {
+  post: 'post',
+  repost: 'repost',
+} as const;
+
+export type PostDtoOutputRepostOfAuthor =
+  | {
+      type: 'member';
+      member: {
+        /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+        handle: string;
+        displayName: string;
+        /** @nullable */
+        headline: string | null;
+        /** @nullable */
+        avatarUrl: string | null;
+      };
+    }
+  | {
+      type: 'organization';
+      organization: {
+        /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+        id: string;
+        slug: string;
+        name: string;
+        /** @nullable */
+        logoUrl: string | null;
+        verified: boolean;
+      };
+    };
+
+export type PostDtoOutputRepostOfLanguageSource =
+  (typeof PostDtoOutputRepostOfLanguageSource)[keyof typeof PostDtoOutputRepostOfLanguageSource];
+
+export const PostDtoOutputRepostOfLanguageSource = {
+  declared: 'declared',
+  detected: 'detected',
+  undetermined: 'undetermined',
+} as const;
+
+export type PostDtoOutputRepostOfVisibility =
+  (typeof PostDtoOutputRepostOfVisibility)[keyof typeof PostDtoOutputRepostOfVisibility];
+
+export const PostDtoOutputRepostOfVisibility = {
+  public: 'public',
+  members: 'members',
+  connections: 'connections',
+} as const;
+
+export type PostDtoOutputRepostOfImagesItemVariants = {
+  [key: string]: {
+    /**
+     * @minimum -9007199254740991
+     * @maximum 9007199254740991
+     */
+    width: number;
+    /**
+     * @minimum -9007199254740991
+     * @maximum 9007199254740991
+     */
+    height: number;
+    /** @nullable */
+    webp: string | null;
+    /** @nullable */
+    avif: string | null;
+  };
+};
+
+export type PostDtoOutputRepostOfImagesItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  mediaId: string;
+  url: string;
+  variants: PostDtoOutputRepostOfImagesItemVariants;
+};
+
+export type PostDtoOutputRepostOfDocument = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  mediaId: string;
+  /** @nullable */
+  thumbnailUrl: string | null;
+  pageCount: number | null;
+} | null;
+
+export type PostDtoOutputRepostOfLinkStatus =
+  (typeof PostDtoOutputRepostOfLinkStatus)[keyof typeof PostDtoOutputRepostOfLinkStatus];
+
+export const PostDtoOutputRepostOfLinkStatus = {
+  pending: 'pending',
+  ready: 'ready',
+  failed: 'failed',
+} as const;
+
+export type PostDtoOutputRepostOfLink = {
+  url: string;
+  status: PostDtoOutputRepostOfLinkStatus;
+  /** @nullable */
+  title: string | null;
+  /** @nullable */
+  description: string | null;
+  /** @nullable */
+  siteName: string | null;
+  /** @nullable */
+  imageUrl: string | null;
+} | null;
+
+export type PostDtoOutputRepostOfMentionsItemType =
+  (typeof PostDtoOutputRepostOfMentionsItemType)[keyof typeof PostDtoOutputRepostOfMentionsItemType];
+
+export const PostDtoOutputRepostOfMentionsItemType = {
+  member: 'member',
+  organization: 'organization',
+} as const;
+
+export type PostDtoOutputRepostOfMentionsItem = {
+  token: string;
+  type: PostDtoOutputRepostOfMentionsItemType;
+  key: string;
+  displayName: string;
+};
+
+export type PostDtoOutputRepostOfReactionsCounts = {
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  like: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  bravo: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  insightful: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  support: number;
+};
+
+export type PostDtoOutputRepostOfReactionsViewerReaction =
+  | (typeof PostDtoOutputRepostOfReactionsViewerReaction)[keyof typeof PostDtoOutputRepostOfReactionsViewerReaction]
+  | null;
+
+export const PostDtoOutputRepostOfReactionsViewerReaction = {
+  like: 'like',
+  bravo: 'bravo',
+  insightful: 'insightful',
+  support: 'support',
+} as const;
+
+export type PostDtoOutputRepostOfReactions = {
+  counts: PostDtoOutputRepostOfReactionsCounts;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  total: number;
+  viewerReaction: PostDtoOutputRepostOfReactionsViewerReaction;
+};
+
+export type PostDtoOutputRepostOf = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  author: PostDtoOutputRepostOfAuthor;
+  /** @nullable */
+  text: string | null;
+  /** @nullable */
+  language: string | null;
+  languageSource: PostDtoOutputRepostOfLanguageSource;
+  visibility: PostDtoOutputRepostOfVisibility;
+  images: PostDtoOutputRepostOfImagesItem[];
+  document: PostDtoOutputRepostOfDocument;
+  link: PostDtoOutputRepostOfLink;
+  mentions: PostDtoOutputRepostOfMentionsItem[];
+  projectId: string | null;
+  commentsDisabled: boolean;
+  reactions: PostDtoOutputRepostOfReactions;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  commentCount: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  repostCount: number;
+  saved: boolean;
+  viewerIsAuthor: boolean;
+  featured: boolean;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+  editedAt: string | null;
+} | null;
+
+export interface PostDtoOutput {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  author: PostDtoOutputAuthor;
+  text: string[];
+  language: string[];
+  languageSource: PostDtoOutputLanguageSource;
+  visibility: PostDtoOutputVisibility;
+  images: PostDtoOutputImagesItem[];
+  document: PostDtoOutputDocument;
+  link: PostDtoOutputLink;
+  mentions: PostDtoOutputMentionsItem[];
+  projectId: string | null;
+  commentsDisabled: boolean;
+  reactions: PostDtoOutputReactions;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  commentCount: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  repostCount: number;
+  saved: boolean;
+  viewerIsAuthor: boolean;
+  featured: boolean;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+  editedAt: string | null;
+  kind: PostDtoOutputKind;
+  repostOf: PostDtoOutputRepostOf;
+}
+
+export type UpdatePostDtoVisibility =
+  (typeof UpdatePostDtoVisibility)[keyof typeof UpdatePostDtoVisibility];
+
+export const UpdatePostDtoVisibility = {
+  public: 'public',
+  members: 'members',
+  connections: 'connections',
+} as const;
+
+export interface UpdatePostDto {
+  /** @maxLength 3000 */
+  text?: string;
+  visibility?: UpdatePostDtoVisibility;
+  language?: string | null;
+  commentsDisabled?: boolean;
+}
+
+export type CreateRepostDtoVisibility =
+  (typeof CreateRepostDtoVisibility)[keyof typeof CreateRepostDtoVisibility];
+
+export const CreateRepostDtoVisibility = {
+  public: 'public',
+  members: 'members',
+  connections: 'connections',
+} as const;
+
+export interface CreateRepostDto {
+  /** @maxLength 3000 */
+  comment?: string;
+  visibility?: CreateRepostDtoVisibility;
+}
+
+export type SetReactionDtoType = (typeof SetReactionDtoType)[keyof typeof SetReactionDtoType];
+
+export const SetReactionDtoType = {
+  like: 'like',
+  bravo: 'bravo',
+  insightful: 'insightful',
+  support: 'support',
+} as const;
+
+export interface SetReactionDto {
+  type: SetReactionDtoType;
+}
+
+export type ReactionSummaryDtoOutputCounts = {
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  like: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  bravo: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  insightful: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  support: number;
+};
+
+export type ReactionSummaryDtoOutputViewerReaction =
+  | (typeof ReactionSummaryDtoOutputViewerReaction)[keyof typeof ReactionSummaryDtoOutputViewerReaction]
+  | null;
+
+export const ReactionSummaryDtoOutputViewerReaction = {
+  like: 'like',
+  bravo: 'bravo',
+  insightful: 'insightful',
+  support: 'support',
+} as const;
+
+export interface ReactionSummaryDtoOutput {
+  counts: ReactionSummaryDtoOutputCounts;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  total: number;
+  viewerReaction: ReactionSummaryDtoOutputViewerReaction;
+}
+
+export type SavedPostPageDtoOutputItemsItemPostAuthor =
+  | {
+      type: 'member';
+      member: {
+        /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+        handle: string;
+        displayName: string;
+        /** @nullable */
+        headline: string | null;
+        /** @nullable */
+        avatarUrl: string | null;
+      };
+    }
+  | {
+      type: 'organization';
+      organization: {
+        /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+        id: string;
+        slug: string;
+        name: string;
+        /** @nullable */
+        logoUrl: string | null;
+        verified: boolean;
+      };
+    };
+
+export type SavedPostPageDtoOutputItemsItemPostLanguageSource =
+  (typeof SavedPostPageDtoOutputItemsItemPostLanguageSource)[keyof typeof SavedPostPageDtoOutputItemsItemPostLanguageSource];
+
+export const SavedPostPageDtoOutputItemsItemPostLanguageSource = {
+  declared: 'declared',
+  detected: 'detected',
+  undetermined: 'undetermined',
+} as const;
+
+export type SavedPostPageDtoOutputItemsItemPostVisibility =
+  (typeof SavedPostPageDtoOutputItemsItemPostVisibility)[keyof typeof SavedPostPageDtoOutputItemsItemPostVisibility];
+
+export const SavedPostPageDtoOutputItemsItemPostVisibility = {
+  public: 'public',
+  members: 'members',
+  connections: 'connections',
+} as const;
+
+export type SavedPostPageDtoOutputItemsItemPostImagesItemVariants = {
+  [key: string]: {
+    /**
+     * @minimum -9007199254740991
+     * @maximum 9007199254740991
+     */
+    width: number;
+    /**
+     * @minimum -9007199254740991
+     * @maximum 9007199254740991
+     */
+    height: number;
+    /** @nullable */
+    webp: string | null;
+    /** @nullable */
+    avif: string | null;
+  };
+};
+
+export type SavedPostPageDtoOutputItemsItemPostImagesItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  mediaId: string;
+  url: string;
+  variants: SavedPostPageDtoOutputItemsItemPostImagesItemVariants;
+};
+
+export type SavedPostPageDtoOutputItemsItemPostDocument = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  mediaId: string;
+  /** @nullable */
+  thumbnailUrl: string | null;
+  pageCount: number | null;
+} | null;
+
+export type SavedPostPageDtoOutputItemsItemPostLinkStatus =
+  (typeof SavedPostPageDtoOutputItemsItemPostLinkStatus)[keyof typeof SavedPostPageDtoOutputItemsItemPostLinkStatus];
+
+export const SavedPostPageDtoOutputItemsItemPostLinkStatus = {
+  pending: 'pending',
+  ready: 'ready',
+  failed: 'failed',
+} as const;
+
+export type SavedPostPageDtoOutputItemsItemPostLink = {
+  url: string;
+  status: SavedPostPageDtoOutputItemsItemPostLinkStatus;
+  /** @nullable */
+  title: string | null;
+  /** @nullable */
+  description: string | null;
+  /** @nullable */
+  siteName: string | null;
+  /** @nullable */
+  imageUrl: string | null;
+} | null;
+
+export type SavedPostPageDtoOutputItemsItemPostMentionsItemType =
+  (typeof SavedPostPageDtoOutputItemsItemPostMentionsItemType)[keyof typeof SavedPostPageDtoOutputItemsItemPostMentionsItemType];
+
+export const SavedPostPageDtoOutputItemsItemPostMentionsItemType = {
+  member: 'member',
+  organization: 'organization',
+} as const;
+
+export type SavedPostPageDtoOutputItemsItemPostMentionsItem = {
+  token: string;
+  type: SavedPostPageDtoOutputItemsItemPostMentionsItemType;
+  key: string;
+  displayName: string;
+};
+
+export type SavedPostPageDtoOutputItemsItemPostReactionsCounts = {
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  like: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  bravo: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  insightful: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  support: number;
+};
+
+export type SavedPostPageDtoOutputItemsItemPostReactionsViewerReaction =
+  | (typeof SavedPostPageDtoOutputItemsItemPostReactionsViewerReaction)[keyof typeof SavedPostPageDtoOutputItemsItemPostReactionsViewerReaction]
+  | null;
+
+export const SavedPostPageDtoOutputItemsItemPostReactionsViewerReaction = {
+  like: 'like',
+  bravo: 'bravo',
+  insightful: 'insightful',
+  support: 'support',
+} as const;
+
+export type SavedPostPageDtoOutputItemsItemPostReactions = {
+  counts: SavedPostPageDtoOutputItemsItemPostReactionsCounts;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  total: number;
+  viewerReaction: SavedPostPageDtoOutputItemsItemPostReactionsViewerReaction;
+};
+
+export type SavedPostPageDtoOutputItemsItemPostKind =
+  (typeof SavedPostPageDtoOutputItemsItemPostKind)[keyof typeof SavedPostPageDtoOutputItemsItemPostKind];
+
+export const SavedPostPageDtoOutputItemsItemPostKind = {
+  post: 'post',
+  repost: 'repost',
+} as const;
+
+export type SavedPostPageDtoOutputItemsItemPostRepostOfAuthor =
+  | {
+      type: 'member';
+      member: {
+        /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+        handle: string;
+        displayName: string;
+        /** @nullable */
+        headline: string | null;
+        /** @nullable */
+        avatarUrl: string | null;
+      };
+    }
+  | {
+      type: 'organization';
+      organization: {
+        /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+        id: string;
+        slug: string;
+        name: string;
+        /** @nullable */
+        logoUrl: string | null;
+        verified: boolean;
+      };
+    };
+
+export type SavedPostPageDtoOutputItemsItemPostRepostOfLanguageSource =
+  (typeof SavedPostPageDtoOutputItemsItemPostRepostOfLanguageSource)[keyof typeof SavedPostPageDtoOutputItemsItemPostRepostOfLanguageSource];
+
+export const SavedPostPageDtoOutputItemsItemPostRepostOfLanguageSource = {
+  declared: 'declared',
+  detected: 'detected',
+  undetermined: 'undetermined',
+} as const;
+
+export type SavedPostPageDtoOutputItemsItemPostRepostOfVisibility =
+  (typeof SavedPostPageDtoOutputItemsItemPostRepostOfVisibility)[keyof typeof SavedPostPageDtoOutputItemsItemPostRepostOfVisibility];
+
+export const SavedPostPageDtoOutputItemsItemPostRepostOfVisibility = {
+  public: 'public',
+  members: 'members',
+  connections: 'connections',
+} as const;
+
+export type SavedPostPageDtoOutputItemsItemPostRepostOfImagesItemVariants = {
+  [key: string]: {
+    /**
+     * @minimum -9007199254740991
+     * @maximum 9007199254740991
+     */
+    width: number;
+    /**
+     * @minimum -9007199254740991
+     * @maximum 9007199254740991
+     */
+    height: number;
+    /** @nullable */
+    webp: string | null;
+    /** @nullable */
+    avif: string | null;
+  };
+};
+
+export type SavedPostPageDtoOutputItemsItemPostRepostOfImagesItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  mediaId: string;
+  url: string;
+  variants: SavedPostPageDtoOutputItemsItemPostRepostOfImagesItemVariants;
+};
+
+export type SavedPostPageDtoOutputItemsItemPostRepostOfDocument = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  mediaId: string;
+  /** @nullable */
+  thumbnailUrl: string | null;
+  pageCount: number | null;
+} | null;
+
+export type SavedPostPageDtoOutputItemsItemPostRepostOfLinkStatus =
+  (typeof SavedPostPageDtoOutputItemsItemPostRepostOfLinkStatus)[keyof typeof SavedPostPageDtoOutputItemsItemPostRepostOfLinkStatus];
+
+export const SavedPostPageDtoOutputItemsItemPostRepostOfLinkStatus = {
+  pending: 'pending',
+  ready: 'ready',
+  failed: 'failed',
+} as const;
+
+export type SavedPostPageDtoOutputItemsItemPostRepostOfLink = {
+  url: string;
+  status: SavedPostPageDtoOutputItemsItemPostRepostOfLinkStatus;
+  /** @nullable */
+  title: string | null;
+  /** @nullable */
+  description: string | null;
+  /** @nullable */
+  siteName: string | null;
+  /** @nullable */
+  imageUrl: string | null;
+} | null;
+
+export type SavedPostPageDtoOutputItemsItemPostRepostOfMentionsItemType =
+  (typeof SavedPostPageDtoOutputItemsItemPostRepostOfMentionsItemType)[keyof typeof SavedPostPageDtoOutputItemsItemPostRepostOfMentionsItemType];
+
+export const SavedPostPageDtoOutputItemsItemPostRepostOfMentionsItemType = {
+  member: 'member',
+  organization: 'organization',
+} as const;
+
+export type SavedPostPageDtoOutputItemsItemPostRepostOfMentionsItem = {
+  token: string;
+  type: SavedPostPageDtoOutputItemsItemPostRepostOfMentionsItemType;
+  key: string;
+  displayName: string;
+};
+
+export type SavedPostPageDtoOutputItemsItemPostRepostOfReactionsCounts = {
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  like: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  bravo: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  insightful: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  support: number;
+};
+
+export type SavedPostPageDtoOutputItemsItemPostRepostOfReactionsViewerReaction =
+  | (typeof SavedPostPageDtoOutputItemsItemPostRepostOfReactionsViewerReaction)[keyof typeof SavedPostPageDtoOutputItemsItemPostRepostOfReactionsViewerReaction]
+  | null;
+
+export const SavedPostPageDtoOutputItemsItemPostRepostOfReactionsViewerReaction = {
+  like: 'like',
+  bravo: 'bravo',
+  insightful: 'insightful',
+  support: 'support',
+} as const;
+
+export type SavedPostPageDtoOutputItemsItemPostRepostOfReactions = {
+  counts: SavedPostPageDtoOutputItemsItemPostRepostOfReactionsCounts;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  total: number;
+  viewerReaction: SavedPostPageDtoOutputItemsItemPostRepostOfReactionsViewerReaction;
+};
+
+export type SavedPostPageDtoOutputItemsItemPostRepostOf = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  author: SavedPostPageDtoOutputItemsItemPostRepostOfAuthor;
+  /** @nullable */
+  text: string | null;
+  /** @nullable */
+  language: string | null;
+  languageSource: SavedPostPageDtoOutputItemsItemPostRepostOfLanguageSource;
+  visibility: SavedPostPageDtoOutputItemsItemPostRepostOfVisibility;
+  images: SavedPostPageDtoOutputItemsItemPostRepostOfImagesItem[];
+  document: SavedPostPageDtoOutputItemsItemPostRepostOfDocument;
+  link: SavedPostPageDtoOutputItemsItemPostRepostOfLink;
+  mentions: SavedPostPageDtoOutputItemsItemPostRepostOfMentionsItem[];
+  projectId: string | null;
+  commentsDisabled: boolean;
+  reactions: SavedPostPageDtoOutputItemsItemPostRepostOfReactions;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  commentCount: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  repostCount: number;
+  saved: boolean;
+  viewerIsAuthor: boolean;
+  featured: boolean;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+  editedAt: string | null;
+} | null;
+
+export type SavedPostPageDtoOutputItemsItemPost = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  author: SavedPostPageDtoOutputItemsItemPostAuthor;
+  /** @nullable */
+  text: string | null;
+  /** @nullable */
+  language: string | null;
+  languageSource: SavedPostPageDtoOutputItemsItemPostLanguageSource;
+  visibility: SavedPostPageDtoOutputItemsItemPostVisibility;
+  images: SavedPostPageDtoOutputItemsItemPostImagesItem[];
+  document: SavedPostPageDtoOutputItemsItemPostDocument;
+  link: SavedPostPageDtoOutputItemsItemPostLink;
+  mentions: SavedPostPageDtoOutputItemsItemPostMentionsItem[];
+  projectId: string | null;
+  commentsDisabled: boolean;
+  reactions: SavedPostPageDtoOutputItemsItemPostReactions;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  commentCount: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  repostCount: number;
+  saved: boolean;
+  viewerIsAuthor: boolean;
+  featured: boolean;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+  editedAt: string | null;
+  kind: SavedPostPageDtoOutputItemsItemPostKind;
+  repostOf: SavedPostPageDtoOutputItemsItemPostRepostOf;
+};
+
+export type SavedPostPageDtoOutputItemsItem = {
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  savedAt: string;
+  post: SavedPostPageDtoOutputItemsItemPost;
+};
+
+export interface SavedPostPageDtoOutput {
+  items: SavedPostPageDtoOutputItemsItem[];
+  nextCursor: string[];
+}
+
+export type PostStatsDtoOutputDaysItem = {
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))$ */
+  day: string;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  uniqueViewers: number;
+};
+
+export interface PostStatsDtoOutput {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  postId: string;
+  days: PostStatsDtoOutputDaysItem[];
+}
+
+export interface CreateCommentDto {
+  /**
+   * @minLength 1
+   * @maxLength 1250
+   */
+  text: string;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  parentId?: string;
+}
+
+export type CommentDtoOutputAuthor = {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  displayName: string;
+  /** @nullable */
+  headline: string | null;
+  /** @nullable */
+  avatarUrl: string | null;
+};
+
+export type CommentDtoOutputReactionsCounts = {
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  like: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  bravo: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  insightful: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  support: number;
+};
+
+export type CommentDtoOutputReactionsViewerReaction =
+  | (typeof CommentDtoOutputReactionsViewerReaction)[keyof typeof CommentDtoOutputReactionsViewerReaction]
+  | null;
+
+export const CommentDtoOutputReactionsViewerReaction = {
+  like: 'like',
+  bravo: 'bravo',
+  insightful: 'insightful',
+  support: 'support',
+} as const;
+
+export type CommentDtoOutputReactions = {
+  counts: CommentDtoOutputReactionsCounts;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  total: number;
+  viewerReaction: CommentDtoOutputReactionsViewerReaction;
+};
+
+export interface CommentDtoOutput {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  postId: string;
+  parentId: string | null;
+  author: CommentDtoOutputAuthor;
+  text: string;
+  reactions: CommentDtoOutputReactions;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  replyCount: number;
+  viewerIsAuthor: boolean;
+  viewerCanDelete: boolean;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+  editedAt: string | null;
+}
+
+export type CommentPageDtoOutputItemsItemAuthor = {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  displayName: string;
+  /** @nullable */
+  headline: string | null;
+  /** @nullable */
+  avatarUrl: string | null;
+};
+
+export type CommentPageDtoOutputItemsItemReactionsCounts = {
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  like: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  bravo: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  insightful: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  support: number;
+};
+
+export type CommentPageDtoOutputItemsItemReactionsViewerReaction =
+  | (typeof CommentPageDtoOutputItemsItemReactionsViewerReaction)[keyof typeof CommentPageDtoOutputItemsItemReactionsViewerReaction]
+  | null;
+
+export const CommentPageDtoOutputItemsItemReactionsViewerReaction = {
+  like: 'like',
+  bravo: 'bravo',
+  insightful: 'insightful',
+  support: 'support',
+} as const;
+
+export type CommentPageDtoOutputItemsItemReactions = {
+  counts: CommentPageDtoOutputItemsItemReactionsCounts;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  total: number;
+  viewerReaction: CommentPageDtoOutputItemsItemReactionsViewerReaction;
+};
+
+export type CommentPageDtoOutputItemsItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  postId: string;
+  parentId: string | null;
+  author: CommentPageDtoOutputItemsItemAuthor;
+  text: string;
+  reactions: CommentPageDtoOutputItemsItemReactions;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  replyCount: number;
+  viewerIsAuthor: boolean;
+  viewerCanDelete: boolean;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+  editedAt: string | null;
+};
+
+export interface CommentPageDtoOutput {
+  items: CommentPageDtoOutputItemsItem[];
+  nextCursor: string[];
+}
+
+export interface UpdateCommentDto {
+  /**
+   * @minLength 1
+   * @maxLength 1250
+   */
+  text: string;
+}
+
 export type ProblemDetailsCode = (typeof ProblemDetailsCode)[keyof typeof ProblemDetailsCode];
 
 export const ProblemDetailsCode = {
@@ -2089,6 +4378,30 @@ export const ProblemDetailsCode = {
   ORGANIZATIONS_VERIFICATION_INVALID_STATE: 'ORGANIZATIONS_VERIFICATION_INVALID_STATE',
   ORGANIZATIONS_VERIFICATION_REQUEST_NOT_FOUND: 'ORGANIZATIONS_VERIFICATION_REQUEST_NOT_FOUND',
   ORGANIZATIONS_VERIFICATION_CRITERION_UNKNOWN: 'ORGANIZATIONS_VERIFICATION_CRITERION_UNKNOWN',
+  NETWORK_TARGET_NOT_FOUND: 'NETWORK_TARGET_NOT_FOUND',
+  NETWORK_MEMBER_NOT_FOUND: 'NETWORK_MEMBER_NOT_FOUND',
+  NETWORK_SELF_RELATION: 'NETWORK_SELF_RELATION',
+  NETWORK_ALREADY_CONNECTED: 'NETWORK_ALREADY_CONNECTED',
+  NETWORK_REQUEST_ALREADY_PENDING: 'NETWORK_REQUEST_ALREADY_PENDING',
+  NETWORK_REQUEST_COOLDOWN: 'NETWORK_REQUEST_COOLDOWN',
+  NETWORK_WEEKLY_REQUEST_LIMIT: 'NETWORK_WEEKLY_REQUEST_LIMIT',
+  NETWORK_REQUEST_NOT_FOUND: 'NETWORK_REQUEST_NOT_FOUND',
+  NETWORK_REQUEST_NOT_PENDING: 'NETWORK_REQUEST_NOT_PENDING',
+  NETWORK_NOT_CONNECTED: 'NETWORK_NOT_CONNECTED',
+  NETWORK_MEMBER_BLOCKED: 'NETWORK_MEMBER_BLOCKED',
+  NETWORK_LIST_HIDDEN: 'NETWORK_LIST_HIDDEN',
+  CONTENT_POST_NOT_FOUND: 'CONTENT_POST_NOT_FOUND',
+  CONTENT_COMMENT_NOT_FOUND: 'CONTENT_COMMENT_NOT_FOUND',
+  CONTENT_POST_EMPTY: 'CONTENT_POST_EMPTY',
+  CONTENT_MEDIA_COMBINATION: 'CONTENT_MEDIA_COMBINATION',
+  CONTENT_PUBLIC_VISIBILITY_NOT_ALLOWED: 'CONTENT_PUBLIC_VISIBILITY_NOT_ALLOWED',
+  CONTENT_VISIBILITY_NOT_ALLOWED: 'CONTENT_VISIBILITY_NOT_ALLOWED',
+  CONTENT_REPOST_NOT_ALLOWED: 'CONTENT_REPOST_NOT_ALLOWED',
+  CONTENT_PROJECT_NOT_FOUND: 'CONTENT_PROJECT_NOT_FOUND',
+  CONTENT_MENTION_NOT_ALLOWED: 'CONTENT_MENTION_NOT_ALLOWED',
+  CONTENT_COMMENTS_DISABLED: 'CONTENT_COMMENTS_DISABLED',
+  CONTENT_REPLY_DEPTH: 'CONTENT_REPLY_DEPTH',
+  CONTENT_ORGANIZATION_ROLE_REQUIRED: 'CONTENT_ORGANIZATION_ROLE_REQUIRED',
   INTERNAL_ERROR: 'INTERNAL_ERROR',
   SERVICE_UNAVAILABLE: 'SERVICE_UNAVAILABLE',
 } as const;
@@ -2133,3 +4446,202 @@ export const VerificationControllerQueueStatus = {
   approved: 'approved',
   rejected: 'rejected',
 } as const;
+
+export type FollowsControllerFollowersParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+};
+
+export type ConnectionsControllerListParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+  direction?: ConnectionsControllerListDirection;
+};
+
+export type ConnectionsControllerListDirection =
+  (typeof ConnectionsControllerListDirection)[keyof typeof ConnectionsControllerListDirection];
+
+export const ConnectionsControllerListDirection = {
+  received: 'received',
+  sent: 'sent',
+} as const;
+
+export type BlocksControllerListParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+};
+
+export type MemberNetworkControllerFollowersParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+};
+
+export type MemberNetworkControllerFollowingParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+  /**
+   * @pattern ^[a-z][a-z_]{1,31}$
+   */
+  type?: string;
+};
+
+export type MemberNetworkControllerConnectionsParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+};
+
+export type MemberNetworkControllerPublicFollowersParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+};
+
+export type MemberNetworkControllerPublicFollowingParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+  /**
+   * @pattern ^[a-z][a-z_]{1,31}$
+   */
+  type?: string;
+};
+
+export type MemberNetworkControllerPublicConnectionsParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+};
+
+export type ProfileViewsControllerVisitsParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+};
+
+export type PostsControllerReadParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+};
+
+export type PostsControllerSavedParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+};
+
+export type CommentsControllerListParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+};
+
+export type CommentsControllerRepliesParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+};
