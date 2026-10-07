@@ -105,11 +105,12 @@ Lecture avec `FeatureFlagsService.isEnabled(key)` (cache de 10 s, flag inconnu =
 
 ## Tests
 
-| Type                | Emplacement                                                 | Commande                |
-| ------------------- | ----------------------------------------------------------- | ----------------------- |
-| Unitaires           | `src/**/*.spec.ts`, à côté du code                          | `pnpm test`             |
-| Architecture        | `apps/server/test/architecture/`                            | `pnpm test`             |
-| Intégration et HTTP | `apps/server/test/integration/` (Testcontainers, Supertest) | `pnpm test:integration` |
+| Type                       | Emplacement                                                   | Commande                |
+| -------------------------- | ------------------------------------------------------------- | ----------------------- |
+| Unitaires                  | `src/**/*.spec.ts`, à côté du code                            | `pnpm test`             |
+| Architecture               | `apps/server/test/architecture/`                              | `pnpm test`             |
+| Intégration et HTTP        | `apps/server/test/integration/` (Testcontainers, Supertest)   | `pnpm test:integration` |
+| Sandboxes des prestataires | `apps/server/test/providers/` (API de test réelles, ADR 0054) | `pnpm test:providers`   |
 
 Le kernel (`src/platform/kernel`) est couvert à 100 %, seuil vérifié par `pnpm test`. Les tests d'intégration utilisent de vrais PostgreSQL, Valkey et Mailpit (lu par son API) ; seuls le stockage S3 et les fournisseurs OAuth sont remplacés, ces derniers par un serveur OIDC local (`test/integration/support/oauth-providers.ts`). Les tests unitaires du domaine sont à côté du code, dans `domain/`.
 

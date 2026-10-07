@@ -57,3 +57,4 @@ Un fichier par décision, numéroté, au format Contexte / Décision / Conséque
 | [0051](0051-equity-and-loans-guardrail.md)               | Garde-fou equity et prêts                                    |
 | [0052](0052-simulated-provider.md)                       | Prestataire simulé                                           |
 | [0053](0053-engagement-projection.md)                    | Projection du module engagement                              |
+| [0054](0054-provider-sandbox-tests.md)                   | Tests contre les sandboxes des prestataires                  |

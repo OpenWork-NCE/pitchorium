@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "test": "vitest run --coverage",
     "test:integration": "vitest run -c vitest.integration.config.mts",
+    "test:providers": "node scripts/test-providers.mjs",
     "dev:api": "node --env-file-if-exists=.env --watch -r @swc-node/register src/main.api.ts",
     "dev:worker": "node --env-file-if-exists=.env --watch -r @swc-node/register src/main.worker.ts",
     "start:api": "node dist/main.api.js",

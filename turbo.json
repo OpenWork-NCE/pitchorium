@@ -26,6 +26,15 @@
       "cache": false,
       "passThroughEnv": ["DOCKER_HOST", "DOCKER_*", "TESTCONTAINERS_*"]
     },
+    "test:providers": {
+      "dependsOn": ["^build"],
+      "cache": false,
+      "passThroughEnv": [
+        "STRIPE_TEST_SECRET_KEY",
+        "STRIPE_TEST_CONNECTED_ACCOUNT",
+        "FLUTTERWAVE_TEST_SECRET_KEY"
+      ]
+    },
     "dev:api": {
       "dependsOn": ["^build"],
       "cache": false,
