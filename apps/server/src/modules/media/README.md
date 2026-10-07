@@ -69,7 +69,7 @@ Usage `link_preview` : le module content demande l'import (`requestImport`) de l
 
 ## Façade publique (`index.ts`)
 
-`MediaFacade` : `attach` (avec `resourceVisibility`), `detach`, `describe`, `images` (URL publiques ou présignées par identifiant), `setResourceVisibility`, `setModerationStatus`, `requestImport`, `registerReadAuthorizer` ; types `MediaReadAuthorizer`, `MediaImage`, `MediaResourceRef` ; classes d'événements.
+`MediaFacade` : `attach` (avec `resourceVisibility`), `detach`, `describe` (propriétaire, usage, statut, ressource, nombre de pages d'un PDF), `images` (URL publiques ou présignées par identifiant), `setResourceVisibility`, `setModerationStatus`, `requestImport`, `registerReadAuthorizer` ; types `MediaReadAuthorizer`, `MediaImage`, `MediaResourceRef` ; classes d'événements.
 
 ## Événements émis
 

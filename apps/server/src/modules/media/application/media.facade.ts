@@ -55,6 +55,8 @@ export interface MediaSummary {
   usage: MediaUsage;
   status: MediaAssetRecord['status'];
   attachedTo: MediaResourceRef | null;
+  /** Pages of a ready PDF, null otherwise. */
+  pageCount: number | null;
 }
 
 /**
@@ -156,6 +158,7 @@ export class MediaFacade {
           usage: asset.usage,
           status: asset.status,
           attachedTo: asset.attachedTo,
+          pageCount: asset.pageCount,
         }
       : null;
   }
