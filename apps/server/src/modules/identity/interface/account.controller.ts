@@ -8,6 +8,7 @@ import {
   legalVersionsSchema,
   type Preferences,
   preferencesSchema,
+  updatePreferencesRequestSchema,
 } from '@pitchorium/contracts';
 import { createZodDto, ZodSerializerDto } from 'nestjs-zod';
 import { CurrentPrincipal, type Principal, Public, RequireAction } from '../../../platform/http';
@@ -19,6 +20,7 @@ class LegalVersionsDto extends createZodDto(legalVersionsSchema) {}
 class LegalAcceptanceRequestDto extends createZodDto(legalAcceptanceRequestSchema) {}
 class LegalStatusDto extends createZodDto(legalStatusSchema) {}
 class PreferencesDto extends createZodDto(preferencesSchema) {}
+class UpdatePreferencesDto extends createZodDto(updatePreferencesRequestSchema) {}
 
 @ApiTags('account')
 @Controller()
@@ -55,7 +57,7 @@ export class AccountController {
   @ApiOkResponse({ type: PreferencesDto.Output })
   updatePreferences(
     @CurrentPrincipal() principal: Principal,
-    @Body() body: PreferencesDto,
+    @Body() body: UpdatePreferencesDto,
   ): Promise<Preferences> {
     return this.preferences.update(principal.userId, body);
   }

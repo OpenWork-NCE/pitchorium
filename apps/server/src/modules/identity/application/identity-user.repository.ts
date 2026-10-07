@@ -8,6 +8,8 @@ export interface IdentityUser extends LegalRecord {
   emailVerified: boolean;
   image: string | null;
   locale: Locale;
+  /** IANA time zone (digests). */
+  timeZone: string;
   twoFactorEnabled: boolean;
   createdAt: Date;
 }
@@ -22,7 +24,11 @@ export interface LegalAcceptanceRow {
 export abstract class IdentityUserRepository {
   abstract findById(id: string): Promise<IdentityUser | null>;
   abstract findByEmail(email: string): Promise<IdentityUser | null>;
-  abstract updateLocale(id: string, locale: Locale, now: Date): Promise<void>;
+  abstract updatePreferences(
+    id: string,
+    preferences: { locale: Locale; timeZone: string },
+    now: Date,
+  ): Promise<void>;
   abstract recordLegalAcceptance(
     id: string,
     rows: LegalAcceptanceRow[],

@@ -20,6 +20,7 @@ import type { ActiveLocalesService } from '../../application/active-locales.serv
 import type { IdentityEventsRecorder } from '../../application/identity-events.recorder';
 import type { IdentityUserRepository } from '../../application/identity-user.repository';
 import { negotiateLocale } from '../../domain/locale-negotiation';
+import { timeZoneOrDefault } from '../../domain/time-zone';
 import {
   EMAIL_VERIFICATION_TTL_SECONDS,
   type IdentityMailer,
@@ -181,6 +182,7 @@ export function createBetterAuth(deps: BetterAuthDependencies) {
         // Not returned: the generic answer to a duplicate sign-up has no negotiated locale, so
         // returning it would reveal that the account exists. Read it from GET /v1/me.
         locale: { type: 'string', required: false, input: false, returned: false },
+        timeZone: { type: 'string', required: false, input: false, returned: false },
       },
     },
     session: {
@@ -297,6 +299,8 @@ export function createBetterAuth(deps: BetterAuthDependencies) {
                 headerOf(context as HookContext, 'accept-language'),
                 await deps.locales.list(),
               ),
+              // Sent by the web app (Intl.DateTimeFormat().resolvedOptions().timeZone).
+              timeZone: timeZoneOrDefault(headerOf(context as HookContext, 'x-time-zone')),
             },
           }),
         },

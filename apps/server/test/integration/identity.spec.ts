@@ -90,7 +90,9 @@ describe('identity', () => {
 
   describe('email and password', () => {
     it('signs up, verifies the email from the received link and opens a session', async () => {
-      const agent = browser(app).set('Accept-Language', 'en-GB,en;q=0.9');
+      const agent = browser(app)
+        .set('Accept-Language', 'en-GB,en;q=0.9')
+        .set('X-Time-Zone', 'Africa/Lagos');
       await signUp(agent, 'ada@example.com', 'Ada Lovelace');
       await agent.get('/v1/me').expect(401);
 
@@ -103,7 +105,7 @@ describe('identity', () => {
       const me = await agent.get('/v1/me').expect(200);
       expect(me.body).toMatchObject({
         user: { email: 'ada@example.com', emailVerified: true, name: 'Ada Lovelace' },
-        preferences: { locale: 'en' },
+        preferences: { locale: 'en', timeZone: 'Africa/Lagos' },
         roles: ['member'],
         legal: { upToDate: false },
         trust: { emailVerified: true, kycVerified: false, suspended: false },
@@ -116,6 +118,14 @@ describe('identity', () => {
         emailVerified: false,
       });
       expect(await eventsOf('identity.user.email-verified.v1')).toHaveLength(1);
+
+      // The time zone is kept when a preference update leaves it out; an unknown one is refused.
+      await agent
+        .put('/v1/me/preferences')
+        .send({ locale: 'en', timeZone: 'Mars/Olympus' })
+        .expect(400);
+      const kept = await agent.put('/v1/me/preferences').send({ locale: 'fr' }).expect(200);
+      expect(kept.body).toEqual({ locale: 'fr', timeZone: 'Africa/Lagos' });
     });
 
     it('answers a sign-up with a known email exactly like a new one', async () => {

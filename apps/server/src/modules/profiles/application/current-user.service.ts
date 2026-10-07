@@ -37,7 +37,7 @@ export class CurrentUserService {
         twoFactorEnabled: user.twoFactorEnabled,
         createdAt: user.createdAt.toISOString(),
       },
-      preferences: { locale: user.locale },
+      preferences: { locale: user.locale, timeZone: user.timeZone },
       activeLocales,
       legal: this.identity.legalStatus(user),
       roles,

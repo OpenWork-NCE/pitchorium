@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { roleSchema, trustLevelsSchema } from './access.js';
-import { legalStatusSchema } from './identity.js';
+import { legalStatusSchema, preferencesSchema } from './identity.js';
 import { uuidV7Schema } from './ids.js';
 import { localeSchema } from './locale.js';
 import { profileStrengthSchema, profileSummarySchema } from './profiles.js';
@@ -16,7 +16,7 @@ export const currentUserSchema = z.object({
     twoFactorEnabled: z.boolean(),
     createdAt: z.iso.datetime(),
   }),
-  preferences: z.object({ locale: localeSchema }),
+  preferences: preferencesSchema,
   /** Locales whose feature flag is enabled. */
   activeLocales: z.array(localeSchema),
   legal: legalStatusSchema,

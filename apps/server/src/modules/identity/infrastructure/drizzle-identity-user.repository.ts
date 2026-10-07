@@ -24,6 +24,7 @@ function toUser(row: UserRow): IdentityUser {
     emailVerified: row.emailVerified,
     image: row.image,
     locale: locale.success ? locale.data : DEFAULT_LOCALE,
+    timeZone: row.timeZone,
     twoFactorEnabled: row.twoFactorEnabled,
     acceptedTermsVersion: row.acceptedTermsVersion,
     acceptedPrivacyVersion: row.acceptedPrivacyVersion,
@@ -52,10 +53,14 @@ export class DrizzleIdentityUserRepository extends IdentityUserRepository {
     return row ? toUser(row) : null;
   }
 
-  async updateLocale(id: string, locale: Locale, now: Date): Promise<void> {
+  async updatePreferences(
+    id: string,
+    preferences: { locale: Locale; timeZone: string },
+    now: Date,
+  ): Promise<void> {
     await this.db
       .update(identityUsers)
-      .set({ locale, updatedAt: now })
+      .set({ locale: preferences.locale, timeZone: preferences.timeZone, updatedAt: now })
       .where(eq(identityUsers.id, id));
   }
 

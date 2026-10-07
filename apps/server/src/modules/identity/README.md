@@ -12,6 +12,7 @@ Comptes et authentification (cahier des charges §7) avec Better Auth 1.7, mont�
 - Double authentification TOTP avec codes de secours (Better Auth `two-factor`) ; exigée pour les rôles `moderator` et `admin` par le module access.
 - Acceptation versionnée des CGU et de la politique de confidentialité, et déclaration d'âge (18 ans) ; versions en vigueur fournies par `LEGAL_TERMS_VERSION` et `LEGAL_PRIVACY_VERSION`.
 - Locale du compte : déduite de `Accept-Language` à l'inscription parmi les locales actives (flags `locale.*`), modifiable par `PUT /v1/me/preferences`.
+- Fuseau horaire IANA du compte (envoi des digests, ADR 0061) : lu à l'inscription dans l'en-tête `X-Time-Zone` que l'application web renseigne (`Intl.DateTimeFormat().resolvedOptions().timeZone`), `UTC` s'il est absent ou inconnu ; modifiable par `PUT /v1/me/preferences` (`timeZone` facultatif, conservé s'il est omis) et renvoyé par `GET /v1/me`.
 - Emails transactionnels (FR et EN, `@pitchorium/emails`) : vérification, lien magique, réinitialisation et nouvelle connexion envoyés par l'api après la réponse ; changement de méthode de connexion envoyé par le worker.
 - Façade et événement préparés pour la suppression de compte (`requestAccountDeletion`), sans suppression : elle viendra avec le module privacy.
 
@@ -26,7 +27,7 @@ Comptes et authentification (cahier des charges §7) avec Better Auth 1.7, mont�
 
 ## Façade publique (`index.ts`)
 
-- `IdentityFacade` : `findUser`, `findUserByEmail`, `activeLocales`, `legalStatus`, `revokeAllSessions(userId, reason)`, `requestAccountDeletion(userId)`.
+- `IdentityFacade` : `findUser` (avec `locale` et `timeZone`), `findUserByEmail`, `activeLocales`, `legalStatus`, `revokeAllSessions(userId, reason)`, `requestAccountDeletion(userId)`.
 - `SessionAuthenticator` (api) : session portée par les cookies d'une requête HTTP ou d'un handshake Socket.IO.
 - Classes d'événements ci-dessous (constante `TYPE`).
 

@@ -32,8 +32,31 @@ export const legalStatusSchema = z.object({
   current: legalVersionsSchema,
 });
 
+/** True for an IANA time zone known to the runtime (`Europe/Paris`, `Africa/Lagos`, `UTC`). */
+export function isTimeZone(value: string): boolean {
+  if (value.length === 0 || value.length > 64) return false;
+  try {
+    new Intl.DateTimeFormat('en-US', { timeZone: value });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export const DEFAULT_TIME_ZONE = 'UTC';
+
+export const timeZoneSchema = z.string().refine(isTimeZone, { message: 'Unknown IANA time zone' });
+
 export const preferencesSchema = z.object({
   locale: localeSchema,
+  /** Time zone of the digests (ADR 0061); from the `X-Time-Zone` header at sign-up. */
+  timeZone: timeZoneSchema,
+});
+
+/** PUT /v1/me/preferences: the time zone is kept when absent. */
+export const updatePreferencesRequestSchema = z.object({
+  locale: localeSchema,
+  timeZone: timeZoneSchema.optional(),
 });
 
 export const SIGN_IN_PROVIDERS = ['credential', 'google', 'linkedin', 'microsoft'] as const;
@@ -44,4 +67,5 @@ export type LegalVersions = z.infer<typeof legalVersionsSchema>;
 export type LegalAcceptanceRequest = z.infer<typeof legalAcceptanceRequestSchema>;
 export type LegalStatus = z.infer<typeof legalStatusSchema>;
 export type Preferences = z.infer<typeof preferencesSchema>;
+export type UpdatePreferencesRequest = z.infer<typeof updatePreferencesRequestSchema>;
 export type SignInProvider = z.infer<typeof signInProviderSchema>;

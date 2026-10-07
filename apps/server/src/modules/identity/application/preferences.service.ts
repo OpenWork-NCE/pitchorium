@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import type { Preferences } from '@pitchorium/contracts';
+import type { Preferences, UpdatePreferencesRequest } from '@pitchorium/contracts';
 import { Clock, DomainError } from '../../../platform/kernel';
 import { ActiveLocalesService } from './active-locales.service';
 import { IdentityUserRepository } from './identity-user.repository';
@@ -12,11 +12,14 @@ export class PreferencesService {
     private readonly clock: Clock,
   ) {}
 
-  async update(userId: string, preferences: Preferences): Promise<Preferences> {
-    if (!(await this.locales.isActive(preferences.locale))) {
+  async update(userId: string, request: UpdatePreferencesRequest): Promise<Preferences> {
+    if (!(await this.locales.isActive(request.locale))) {
       throw new DomainError('IDENTITY_LOCALE_NOT_ACTIVE', 'Locale is not active');
     }
-    await this.users.updateLocale(userId, preferences.locale, this.clock.now());
+    const user = await this.users.findById(userId);
+    if (!user) throw new DomainError('IDENTITY_USER_NOT_FOUND', 'User not found');
+    const preferences = { locale: request.locale, timeZone: request.timeZone ?? user.timeZone };
+    await this.users.updatePreferences(userId, preferences, this.clock.now());
     return preferences;
   }
 }
