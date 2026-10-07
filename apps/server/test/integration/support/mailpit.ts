@@ -30,19 +30,30 @@ export class Mailpit {
 
   /** Waits for an email to `address` whose subject contains `subject`. */
   async waitFor(address: string, subject: string): Promise<ReceivedEmail> {
-    const summary = await vi.waitFor(
+    const [email] = await this.waitForAll(address, subject, 1);
+    if (!email) throw new Error(`No email "${subject}" to ${address}`);
+    return email;
+  }
+
+  /** Waits for at least `count` emails to `address` whose subject contains `subject`. */
+  async waitForAll(address: string, subject: string, count: number): Promise<ReceivedEmail[]> {
+    const summaries = await vi.waitFor(
       async () => {
-        const found = (await this.messagesTo(address)).find((message) =>
+        const found = (await this.messagesTo(address)).filter((message) =>
           message.Subject.includes(subject),
         );
-        if (!found) throw new Error(`No email "${subject}" to ${address} yet`);
+        if (found.length < count) throw new Error(`Not enough emails "${subject}" to ${address}`);
         return found;
       },
       { timeout: 10_000, interval: 100 },
     );
-    const response = await fetch(`${this.baseUrl}/api/v1/message/${summary.ID}`);
-    const message = (await response.json()) as { Subject: string; Text: string; HTML: string };
-    return { subject: message.Subject, text: message.Text, html: message.HTML };
+    return Promise.all(
+      summaries.map(async (summary) => {
+        const response = await fetch(`${this.baseUrl}/api/v1/message/${summary.ID}`);
+        const message = (await response.json()) as { Subject: string; Text: string; HTML: string };
+        return { subject: message.Subject, text: message.Text, html: message.HTML };
+      }),
+    );
   }
 }
 

@@ -1,6 +1,11 @@
 import type { NestExpressApplication } from '@nestjs/platform-express';
+import type { TestingModule } from '@nestjs/testing';
 import request from 'supertest';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
+import { IdentityModule } from '../../src/modules/identity';
+import { FeatureFlagsModule } from '../../src/platform/feature-flags';
+import { MailerModule } from '../../src/platform/mailer';
+import { OutboxRelayService } from '../../src/platform/outbox';
 import { createApiTestApp } from './support/api-app';
 import { query, truncateAllTables } from './support/database';
 import { TEST_API_URL, TEST_WEB_APP_URL } from './support/environment';
@@ -11,6 +16,7 @@ import {
   FakeOAuthProviders,
   type FakeProvider,
 } from './support/oauth-providers';
+import { createWorkerTestingModule } from './support/worker-testing-module';
 
 const AUTH_LINK = `${TEST_API_URL}/v1/auth/`;
 
@@ -45,6 +51,42 @@ describe('identity', () => {
     await truncateAllTables();
     await mailpit.clear();
   });
+
+  async function oauth(
+    agent: Agent,
+    provider: FakeProvider,
+    identity: FakeIdentity,
+  ): Promise<string> {
+    const started = await agent
+      .post('/v1/auth/sign-in/social')
+      .send({
+        provider,
+        callbackURL: `${TEST_WEB_APP_URL}/home`,
+        errorCallbackURL: `${TEST_WEB_APP_URL}/auth/error`,
+      })
+      .expect(200);
+    const state = new URL(started.body.url as string).searchParams.get('state');
+    const code = providers.issueCode(provider, identity);
+    const callback = await agent
+      .get(`/v1/auth/callback/${provider}`)
+      .query({ code, state })
+      .expect(302);
+    return callback.headers['location'] as string;
+  }
+
+  async function accountsOf(email: string): Promise<string[]> {
+    const rows = await query<{ provider_id: string }>(
+      `SELECT a.provider_id FROM identity.accounts a JOIN identity.users u ON u.id = a.user_id
+       WHERE u.email = $1 ORDER BY a.provider_id`,
+      [email],
+    );
+    return rows.map((row) => row.provider_id);
+  }
+
+  async function verifiedPasswordAccount(email: string): Promise<void> {
+    await signUp(browser(app), email);
+    await query('UPDATE identity.users SET email_verified = true WHERE email = $1', [email]);
+  }
 
   describe('email and password', () => {
     it('signs up, verifies the email from the received link and opens a session', async () => {
@@ -180,42 +222,6 @@ describe('identity', () => {
   });
 
   describe('OAuth providers', () => {
-    async function oauth(
-      agent: Agent,
-      provider: FakeProvider,
-      identity: FakeIdentity,
-    ): Promise<string> {
-      const started = await agent
-        .post('/v1/auth/sign-in/social')
-        .send({
-          provider,
-          callbackURL: `${TEST_WEB_APP_URL}/home`,
-          errorCallbackURL: `${TEST_WEB_APP_URL}/auth/error`,
-        })
-        .expect(200);
-      const state = new URL(started.body.url as string).searchParams.get('state');
-      const code = providers.issueCode(provider, identity);
-      const callback = await agent
-        .get(`/v1/auth/callback/${provider}`)
-        .query({ code, state })
-        .expect(302);
-      return callback.headers['location'] as string;
-    }
-
-    async function accountsOf(email: string): Promise<string[]> {
-      const rows = await query<{ provider_id: string }>(
-        `SELECT a.provider_id FROM identity.accounts a JOIN identity.users u ON u.id = a.user_id
-         WHERE u.email = $1 ORDER BY a.provider_id`,
-        [email],
-      );
-      return rows.map((row) => row.provider_id);
-    }
-
-    async function verifiedPasswordAccount(email: string): Promise<void> {
-      await signUp(browser(app), email);
-      await query('UPDATE identity.users SET email_verified = true WHERE email = $1', [email]);
-    }
-
     it('creates an account pre-filled with name and photo only', async () => {
       const agent = browser(app);
       const location = await oauth(agent, 'google', {
@@ -379,6 +385,137 @@ describe('identity', () => {
       } finally {
         await limited.app.close();
       }
+    });
+  });
+
+  describe('sign-in methods', () => {
+    let worker: TestingModule;
+
+    beforeAll(async () => {
+      worker = await createWorkerTestingModule(
+        [],
+        [FeatureFlagsModule, MailerModule, IdentityModule.forWorker()],
+      );
+    });
+
+    afterAll(async () => {
+      await worker.close();
+    });
+
+    /** Relays the outbox to the worker handlers (the alert emails are sent by the worker). */
+    const deliverEvents = () => worker.get(OutboxRelayService).relayBatch();
+
+    async function signedInWithPassword(email: string, userAgent = 'Laptop'): Promise<Agent> {
+      await verifiedPasswordAccount(email);
+      const agent = browser(app).set('User-Agent', userAgent);
+      await signIn(agent, email);
+      return agent;
+    }
+
+    it('links a provider explicitly from a signed-in account and warns by email', async () => {
+      const agent = await signedInWithPassword('owner@example.com');
+      const started = await agent
+        .post('/v1/auth/link-social')
+        .send({ provider: 'microsoft', callbackURL: `${TEST_WEB_APP_URL}/settings` })
+        .expect(200);
+      const state = new URL(started.body.url as string).searchParams.get('state');
+      // Another address, never verified by Entra ID: only an explicit link may attach it.
+      const code = providers.issueCode('microsoft', {
+        subject: 'entra-oid-link',
+        email: 'owner@contoso.test',
+        emailVerified: false,
+        name: 'Owner',
+      });
+      const callback = await agent
+        .get('/v1/auth/callback/microsoft')
+        .query({ code, state })
+        .expect(302);
+
+      expect(callback.headers['location']).toBe(`${TEST_WEB_APP_URL}/settings`);
+      expect(await accountsOf('owner@example.com')).toEqual(['credential', 'microsoft']);
+      expect((await eventsOf('identity.account.linked.v1')).map((event) => event.payload)).toEqual([
+        { provider: 'microsoft' },
+      ]);
+      await deliverEvents();
+      const email = await mailpit.waitFor('owner@example.com', 'Vos méthodes de connexion');
+      expect(email.text).toContain('Microsoft a été ajouté à vos méthodes de connexion');
+    });
+
+    it('unlinks a provider but never the last sign-in method', async () => {
+      await verifiedPasswordAccount('two@example.com');
+      await oauth(browser(app), 'google', {
+        subject: 'google-two',
+        email: 'two@example.com',
+        emailVerified: true,
+        name: 'Two Methods',
+      });
+      const agent = browser(app);
+      await signIn(agent, 'two@example.com');
+
+      const listed = await agent.get('/v1/auth/list-accounts').expect(200);
+      const accountIdOf = (providerId: string) =>
+        (listed.body as { id: string; providerId: string }[]).find(
+          (account) => account.providerId === providerId,
+        )?.id;
+
+      await agent
+        .post('/v1/auth/unlink-account')
+        .send({ accountId: accountIdOf('google') })
+        .expect(200);
+      expect(await accountsOf('two@example.com')).toEqual(['credential']);
+      expect(
+        (await eventsOf('identity.account.unlinked.v1')).map((event) => event.payload),
+      ).toEqual([{ provider: 'google' }]);
+
+      const last = await agent
+        .post('/v1/auth/unlink-account')
+        .send({ accountId: accountIdOf('credential') })
+        .expect(400);
+      expect(last.body.code).toBe('FAILED_TO_UNLINK_LAST_ACCOUNT');
+      expect(await accountsOf('two@example.com')).toEqual(['credential']);
+      expect(await eventsOf('identity.account.unlinked.v1')).toHaveLength(1);
+
+      await deliverEvents();
+      const emails = await mailpit.waitForAll('two@example.com', 'Vos méthodes de connexion', 2);
+      expect(emails.map((email) => email.text).join('\n')).toContain(
+        'Google a été retiré de vos méthodes de connexion',
+      );
+    });
+
+    it('changes the password, signs out the other sessions and warns by email', async () => {
+      const laptop = await signedInWithPassword('change@example.com', 'Laptop');
+      const phone = browser(app).set('User-Agent', 'Phone');
+      await signIn(phone, 'change@example.com');
+      const newPassword = 'a brand new passphrase';
+
+      // revokeOtherSessions is not sent: the server always applies it.
+      await laptop
+        .post('/v1/auth/change-password')
+        .send({ currentPassword: PASSWORD, newPassword })
+        .expect(200);
+
+      await phone.get('/v1/me').expect(401);
+      await laptop.get('/v1/me').expect(200);
+      expect(
+        (await eventsOf('identity.user.password-changed.v1')).map((event) => event.payload),
+      ).toEqual([{ reason: 'changed' }]);
+      expect(
+        (await eventsOf('identity.user.sessions-revoked.v1')).map((event) => event.payload),
+      ).toEqual([{ scope: 'others', reason: 'user_request' }]);
+      await browser(app)
+        .post('/v1/auth/sign-in/email')
+        .send({ email: 'change@example.com', password: PASSWORD })
+        .expect(401);
+      await signIn(browser(app).set('User-Agent', 'Laptop'), 'change@example.com', newPassword);
+
+      await deliverEvents();
+      const email = await mailpit.waitFor('change@example.com', 'Vos méthodes de connexion');
+      expect(email.text).toContain('Votre mot de passe a été modifié');
+      // Laptop and Phone only: the session that replaced the laptop one is not a new device.
+      const newDevices = (await mailpit.messagesTo('change@example.com')).filter((message) =>
+        message.Subject.includes('Nouvelle connexion'),
+      );
+      expect(newDevices).toHaveLength(2);
     });
   });
 });
