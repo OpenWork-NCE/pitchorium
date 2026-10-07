@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import type { RelationDegree } from '@pitchorium/contracts';
 import { FollowTargetRegistry, MEMBER_TARGET } from './follow-target.registry';
 import { type FollowTargetType, NetworkRepository } from './ports';
 
@@ -35,6 +36,13 @@ export class NetworkFacade {
 
   areConnected(a: string, b: string): Promise<boolean> {
     return this.network.areConnected(a, b);
+  }
+
+  /** Degree of relation from `a` to `b`, up to the second degree (messaging eligibility). */
+  async degreeBetween(a: string, b: string): Promise<RelationDegree> {
+    if (a === b) return 'self';
+    if (await this.network.areConnected(a, b)) return 'first';
+    return (await this.network.countMutualConnections(a, b, 1)) > 0 ? 'second' : 'out_of_network';
   }
 
   /** Called at startup by the module owning a kind of target (organizations, projects). */

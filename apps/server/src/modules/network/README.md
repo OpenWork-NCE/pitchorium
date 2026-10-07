@@ -53,7 +53,7 @@ Graphe social (cahier des charges §10.2) : suivis, connexions, blocages, listes
 
 ## Façade publique (`index.ts`)
 
-`NetworkFacade` : `blockedUserIds`, `isBlockedBetween`, `followedIds`, `followedMemberIds`, `connectionIds`, `areConnected`, `registerFollowTargetType` ; interfaces `FollowTargetType`, `FollowTargetSummary` ; classes d'événements.
+`NetworkFacade` : `blockedUserIds`, `isBlockedBetween`, `followedIds`, `followedMemberIds`, `connectionIds`, `areConnected`, `degreeBetween` (degré jusqu'au 2e, pour la messagerie), `registerFollowTargetType` ; interfaces `FollowTargetType`, `FollowTargetSummary` ; classes d'événements.
 
 ## Événements émis
 
