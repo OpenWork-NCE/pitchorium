@@ -3,6 +3,7 @@ import { FixedClock, SystemClock } from './clock';
 import { DomainError } from './domain-error';
 import { DomainEvent, isValidEventType } from './domain-event';
 import { UuidV7Generator } from './ids';
+import { slugCandidates, slugify } from './slug';
 
 const UUID_V7 = /^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
 
@@ -77,5 +78,38 @@ describe('DomainEvent', () => {
     ['campaign.v0', false],
   ])('validates event type %s', (type, valid) => {
     expect(isValidEventType(type)).toBe(valid);
+  });
+});
+
+describe('slugs', () => {
+  const options = { minLength: 3, maxLength: 20, fallback: 'item', reserved: new Set(['admin']) };
+
+  it('turns a free text into a slug, without accents', () => {
+    const wide = { ...options, maxLength: 40 };
+    expect(slugify('  Aminata Diallo-Ndiaye ', wide)).toBe('aminata-diallo-ndiaye');
+    expect(slugify('Économie & Société', wide)).toBe('economie-societe');
+  });
+
+  it('cuts a long text at a word boundary when one is available', () => {
+    // Room for 13 characters: "fondation-pou" would cut a word.
+    expect(slugify('Fondation pour Demain', options)).toBe('fondation');
+    // The 14th character is a hyphen: the cut falls between two words.
+    expect(slugify('Association-x abc', options)).toBe('association-x');
+    // No boundary far enough: the word itself is cut.
+    expect(slugify('Ab-Supercalifragilistic', options)).toBe('ab-supercalif');
+  });
+
+  it('falls back for a text too short or giving a reserved slug', () => {
+    expect(slugify('Æ', options)).toBe('item');
+    expect(slugify('!!', options)).toBe('item');
+    expect(slugify('Admin', options)).toBe('item');
+  });
+
+  it('proposes the base, numbered then random candidates', () => {
+    let random = 100;
+    const candidates = [...slugCandidates('ngo', () => (random += 1))];
+    expect(candidates.slice(0, 3)).toEqual(['ngo', 'ngo-2', 'ngo-3']);
+    expect(candidates).toHaveLength(14);
+    expect(candidates.slice(-2)).toEqual(['ngo-104', 'ngo-105']);
   });
 });

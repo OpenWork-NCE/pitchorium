@@ -1,5 +1,5 @@
 import { HANDLE_MAX_LENGTH, HANDLE_MIN_LENGTH, HANDLE_PATTERN } from '@pitchorium/contracts';
-import { DomainError } from '../../../platform/kernel';
+import { DomainError, slugify } from '../../../platform/kernel';
 
 /**
  * Words that would collide with routes, roles or impersonate the platform. Lower case; a handle
@@ -50,10 +50,6 @@ export const RESERVED_HANDLES: ReadonlySet<string> = new Set([
   'www',
 ]);
 
-const FALLBACK_BASE = 'member';
-/** Leaves room for a `-NNNNNN` suffix. */
-const BASE_MAX_LENGTH = HANDLE_MAX_LENGTH - 7;
-
 export function isReservedHandle(handle: string): boolean {
   return RESERVED_HANDLES.has(handle);
 }
@@ -70,22 +66,10 @@ export function assertHandleAllowed(handle: string): void {
 
 /** `Aminata Diallo-Ndiaye` gives `aminata-diallo-ndiaye`; accents are dropped. */
 export function handleBaseFromName(name: string): string {
-  const full = name
-    .normalize('NFKD')
-    .replace(/\p{M}/gu, '')
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
-  let slug = full.slice(0, BASE_MAX_LENGTH).replace(/-+$/g, '');
-  // Cut at a word boundary rather than in the middle of a word, when one is available.
-  if (full.length > BASE_MAX_LENGTH && full[BASE_MAX_LENGTH] !== '-') {
-    const boundary = slug.lastIndexOf('-');
-    if (boundary >= HANDLE_MIN_LENGTH) slug = slug.slice(0, boundary);
-  }
-  if (slug.length < HANDLE_MIN_LENGTH || isReservedHandle(slug)) return FALLBACK_BASE;
-  return slug;
-}
-
-export function handleWithSuffix(base: string, suffix: number): string {
-  return `${base}-${suffix}`;
+  return slugify(name, {
+    minLength: HANDLE_MIN_LENGTH,
+    maxLength: HANDLE_MAX_LENGTH,
+    fallback: 'member',
+    reserved: RESERVED_HANDLES,
+  });
 }

@@ -12,11 +12,11 @@ import type {
   UpdateProfileVisibilityRequest,
 } from '@pitchorium/contracts';
 import { TransactionManager } from '../../../platform/database';
-import { Clock, DomainError } from '../../../platform/kernel';
+import { Clock, DomainError, slugCandidates } from '../../../platform/kernel';
 import { IdentityFacade } from '../../identity';
 import { MediaFacade } from '../../media';
 import { assertContributorFacet, assertEligibleCompanyCountry } from '../domain/facet-rules';
-import { assertHandleAllowed, handleBaseFromName, handleWithSuffix } from '../domain/handle';
+import { assertHandleAllowed, handleBaseFromName } from '../domain/handle';
 import { DEFAULT_VISIBILITY, type Profile } from '../domain/profile';
 import {
   ContributorFacetUpdated,
@@ -30,20 +30,6 @@ import {
 import { ProfileEventsRecorder } from './profile-events.recorder';
 import { type ProfileImageSlot, ProfileRepository } from './ports';
 import { ReferenceDataService } from './reference-data.service';
-
-const SEQUENTIAL_SUFFIXES = 8;
-const RANDOM_SUFFIXES = 5;
-
-/** Base, base-2 ... base-9, then random suffixes: a handle is always found. */
-function* handleCandidates(base: string): Generator<string> {
-  yield base;
-  for (let suffix = 2; suffix < 2 + SEQUENTIAL_SUFFIXES; suffix += 1) {
-    yield handleWithSuffix(base, suffix);
-  }
-  for (let attempt = 0; attempt < RANDOM_SUFFIXES; attempt += 1) {
-    yield handleWithSuffix(base, randomInt(1000, 1_000_000));
-  }
-}
 
 /** Write side of profiles. Every write records its event in the same transaction. */
 @Injectable()
@@ -69,7 +55,8 @@ export class ProfilesService {
     if (!user) throw new DomainError('IDENTITY_USER_NOT_FOUND', 'User not found');
 
     await this.transactions.run(async () => {
-      for (const handle of handleCandidates(handleBaseFromName(user.name))) {
+      const base = handleBaseFromName(user.name);
+      for (const handle of slugCandidates(base, () => randomInt(1000, 1_000_000))) {
         if (await this.profiles.isHandleUnavailable(handle, userId)) continue;
         const now = this.clock.now();
         const inserted = await this.profiles.insertIfAbsent({
