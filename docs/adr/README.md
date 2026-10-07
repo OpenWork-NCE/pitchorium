@@ -23,3 +23,5 @@ Un fichier par décision, numéroté, au format Contexte / Décision / Conséque
 | [0017](0017-privacy-by-default.md)                       | Confidentialité par défaut                      |
 | [0018](0018-reference-data.md)                           | Données de référence                            |
 | [0019](0019-short-transactions-around-external-calls.md) | Transactions courtes autour des appels externes |
+| [0020](0020-auth-error-format.md)                        | Format d'erreur des routes d'authentification   |
+| [0021](0021-origin-check-and-non-browser-clients.md)     | En-tête Origin et clients non navigateur        |

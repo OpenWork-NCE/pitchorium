@@ -1,6 +1,6 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { errorCodes } from '@pitchorium/contracts';
+import { AUTH_ERROR_CODES, errorCodes } from '@pitchorium/contracts';
 
 type Tree = { [key: string]: string | Tree };
 
@@ -37,6 +37,15 @@ const missingErrorCodes = Object.keys(errorCodes).filter(
 if (missingErrorCodes.length > 0) {
   failures.push(
     `${manifest.sourceLocale}/errors: missing error codes ${missingErrorCodes.join(', ')}`,
+  );
+}
+
+const missingAuthCodes = AUTH_ERROR_CODES.filter(
+  (code) => !source.get('errors')?.has(`auth.${code}`),
+);
+if (missingAuthCodes.length > 0) {
+  failures.push(
+    `${manifest.sourceLocale}/errors: missing /v1/auth codes ${missingAuthCodes.map((code) => `auth.${code}`).join(', ')}`,
   );
 }
 

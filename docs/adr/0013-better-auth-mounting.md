@@ -17,6 +17,6 @@ L'authentification (email et mot de passe, lien magique, Google, LinkedIn, Micro
 
 ## Conséquences
 
-- Les routes `/v1/auth` gardent le format d'erreur de Better Auth (`{ code, message }`) et ne figurent pas dans l'OpenAPI : le frontend utilise le client Better Auth pour elles.
+- Les routes `/v1/auth` gardent le format d'erreur de Better Auth (`{ code, message }`) et ne figurent pas dans l'OpenAPI : le frontend utilise le client Better Auth pour elles ; la traduction de ces codes suit l'ADR 0020, le contrôle d'origine l'ADR 0021.
 - Elles ne passent ni par les guards, ni par les filtres, ni par le logger HTTP de Nest : le handler journalise lui-même et pose `X-Request-Id`.
 - Une requête d'authentification n'emprunte une connexion que le temps de chaque écriture, jamais pendant un appel réseau (ADR 0019).

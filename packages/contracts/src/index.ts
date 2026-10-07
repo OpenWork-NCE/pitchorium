@@ -1,4 +1,5 @@
 export * from './access.js';
+export * from './auth-errors.js';
 export * from './account.js';
 export * from './errors/error-codes.js';
 export * from './errors/problem-details.js';

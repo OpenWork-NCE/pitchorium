@@ -53,6 +53,7 @@ Une action refusée faute d'éléments complétés répond `403 ACCESS_PREREQUIS
 ## Erreurs et codes
 
 - Toute réponse d'erreur suit RFC 9457 (`application/problem+json`) : `type` (`urn:pitchorium:problem:<code>`), `title`, `status`, `code`, `instance`, `requestId`, `detail` et `errors` selon le cas.
+- Exception : `/v1/auth` répond au format de Better Auth `{ code, message }` ; `authErrorTranslationKey` (`packages/contracts/src/auth-errors.ts`) donne la clé de traduction de ces codes (ADR 0020).
 - Les codes sont déclarés dans `packages/contracts/src/errors/error-codes.ts` avec leur statut HTTP et un titre technique anglais. Chaque nouveau code reçoit une traduction FR et EN dans `packages/i18n/src/locales/*/errors.json` (vérifié par `pnpm i18n:check`).
 - Un échec métier attendu lève une `DomainError(code, message)`. Seul ce message est exposé dans `detail` ; toute autre erreur devient `INTERNAL_ERROR` sans détail, journalisée et envoyée à Sentry.
 - Les erreurs de validation listent `errors: [{ pointer, code }]`, où `pointer` est un JSON Pointer et `code` le code d'issue Zod.
