@@ -53,6 +53,7 @@ describe('configuration', () => {
     PAYMENTS_MODE: 'live',
     STRIPE_SECRET_KEY: 'sk_test_x',
     STRIPE_WEBHOOK_SECRET: 'whsec_x',
+    EMAIL_LINK_SECRET: 'an-email-link-secret-of-thirty-two-characters',
   };
 
   it('disables Swagger in production and reads worker settings', () => {
@@ -85,6 +86,13 @@ describe('configuration', () => {
     ).toEqual({ provider: 'cloudflare', cloudflare: { zoneId, apiToken: 'token' } });
   });
 
+  it('refuses the development secret of the email links in production', () => {
+    const { EMAIL_LINK_SECRET: _secret, ...withoutSecret } = livePayments;
+    expect(
+      issuesOf(() => parseApiConfig({ ...baseEnv, ...withoutSecret, NODE_ENV: 'production' })),
+    ).toEqual(['EMAIL_LINK_SECRET: Set a secret of at least 32 characters in production']);
+  });
+
   it('refuses the simulated payment provider in production and incomplete credentials', () => {
     expect(parseApiConfig(baseEnv).payments).toMatchObject({
       mode: 'simulated',
@@ -92,9 +100,15 @@ describe('configuration', () => {
       commission: { rateBps: 500 },
       minEurMinor: 100n,
     });
-    expect(issuesOf(() => parseApiConfig({ ...baseEnv, NODE_ENV: 'production' }))).toEqual([
-      'PAYMENTS_MODE: The simulated payment provider is refused in production',
-    ]);
+    expect(
+      issuesOf(() =>
+        parseApiConfig({
+          ...baseEnv,
+          EMAIL_LINK_SECRET: livePayments.EMAIL_LINK_SECRET,
+          NODE_ENV: 'production',
+        }),
+      ),
+    ).toEqual(['PAYMENTS_MODE: The simulated payment provider is refused in production']);
     expect(issuesOf(() => parseApiConfig({ ...baseEnv, PAYMENTS_MODE: 'live' }))).toEqual([
       'PAYMENTS_MODE: PAYMENTS_MODE=live requires the Stripe or Flutterwave credentials',
     ]);

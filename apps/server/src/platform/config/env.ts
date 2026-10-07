@@ -1,3 +1,4 @@
+import { MESSAGE_POLICIES } from '@pitchorium/contracts';
 import { z } from 'zod';
 
 const booleanFromString = z.enum(['true', 'false']).transform((value) => value === 'true');
@@ -12,6 +13,9 @@ const urlList = z
       .filter(Boolean),
   )
   .pipe(z.array(z.url()));
+
+/** Default of EMAIL_LINK_SECRET outside production only. */
+export const DEVELOPMENT_EMAIL_LINK_SECRET = 'email-link-secret-for-development-only';
 
 const commonEnvSchema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
@@ -42,6 +46,19 @@ const commonEnvSchema = z.object({
   LEGAL_TERMS_VERSION: z.string().regex(/^[A-Za-z0-9._-]{1,64}$/),
   LEGAL_PRIVACY_VERSION: z.string().regex(/^[A-Za-z0-9._-]{1,64}$/),
   NETWORK_PROFILE_VIEWS_RETENTION_DAYS: z.coerce.number().int().min(1).max(3650).default(90),
+  // Public origin of the api: links of the emails (one-click unsubscribe) and OAuth callbacks.
+  API_PUBLIC_URL: z.url().default('http://localhost:3000'),
+  // Signs the links of the emails (unsubscribe); a development value is refused in production.
+  EMAIL_LINK_SECRET: z.string().min(32).default(DEVELOPMENT_EMAIL_LINK_SECRET),
+  // Messaging and notifications (docs/architecture/notifications.md), provisional values.
+  MESSAGING_DEFAULT_POLICY: z.enum(MESSAGE_POLICIES).default('connections_and_second_degree'),
+  MESSAGING_EDIT_WINDOW_MINUTES: z.coerce.number().int().min(0).max(10_080).default(15),
+  NOTIFICATIONS_AGGREGATION_WINDOW_MINUTES: z.coerce
+    .number()
+    .int()
+    .min(1)
+    .max(10_080)
+    .default(1440),
   // Payments (section 9): providers, commission and limits (docs/architecture/payments.md).
   PAYMENTS_MODE: z.enum(['simulated', 'live']).default('simulated'),
   STRIPE_SECRET_KEY: z.string().min(1).optional(),
@@ -71,7 +88,6 @@ const commonEnvSchema = z.object({
 const apiEnvSchema = commonEnvSchema.extend({
   API_HOST: z.string().min(1).default('0.0.0.0'),
   API_PORT: z.coerce.number().int().min(1).max(65535).default(3000),
-  API_PUBLIC_URL: z.url().default('http://localhost:3000'),
   CORS_ORIGINS: urlList,
   TRUST_PROXY_HOPS: z.coerce.number().int().min(0).default(0),
   RATE_LIMIT_TTL_SECONDS: z.coerce.number().int().positive().default(60),
@@ -103,6 +119,9 @@ const apiEnvSchema = commonEnvSchema.extend({
   NETWORK_DECLINE_COOLDOWN_DAYS: z.coerce.number().int().min(0).max(365).default(21),
   NETWORK_REQUEST_TTL_DAYS: z.coerce.number().int().min(1).max(365).default(30),
   NETWORK_MUTUAL_CONNECTIONS_CAP: z.coerce.number().int().min(1).max(100_000).default(999),
+  MESSAGING_REQUESTS_PER_DAY: z.coerce.number().int().min(1).max(1000).default(20),
+  // Svix signing secret of the Resend webhook (`whsec_...`); the route refuses everything without.
+  RESEND_WEBHOOK_SECRET: z.string().startsWith('whsec_').optional(),
   CONTENT_FEED_EDITORIAL_THRESHOLD: z.coerce.number().int().min(0).max(1000).default(10),
   ORGANIZATIONS_VERIFICATION_CRITERIA: z
     .string()
@@ -130,6 +149,16 @@ const workerEnvSchema = commonEnvSchema.extend({
   CONTENT_LINK_PREVIEW_TIMEOUT_MS: z.coerce.number().int().positive().default(5000),
   CONTENT_LINK_PREVIEW_MAX_BYTES: z.coerce.number().int().positive().default(1_048_576),
   PROJECTS_ENDING_SOON_HOURS: z.coerce.number().int().min(1).max(2160).default(72),
+  NOTIFICATIONS_RETENTION_DAYS: z.coerce.number().int().min(1).max(3650).default(90),
+  NOTIFICATIONS_FANOUT_BATCH_SIZE: z.coerce.number().int().min(10).max(10_000).default(500),
+  NOTIFICATIONS_LOW_PRIORITY_PER_DAY: z.coerce.number().int().min(1).max(1000).default(20),
+  NOTIFICATIONS_UNREAD_MESSAGE_EMAIL_DELAY_MINUTES: z.coerce
+    .number()
+    .int()
+    .min(1)
+    .max(10_080)
+    .default(30),
+  NOTIFICATIONS_DIGEST_HOUR: z.coerce.number().int().min(0).max(23).default(8),
   PAYMENTS_RECONCILIATION_LOOKBACK_DAYS: z.coerce.number().int().min(1).max(90).default(3),
   CDN_PURGE_PROVIDER: z.enum(['none', 'cloudflare']).default('none'),
   CLOUDFLARE_ZONE_ID: z
@@ -201,6 +230,20 @@ function requirePaymentProviders(env: z.infer<typeof commonEnvSchema>, ctx: z.Re
   }
 }
 
+/** The signing secret of the email links must be a real secret in production. */
+function refuseDevelopmentEmailSecret(
+  env: z.infer<typeof commonEnvSchema>,
+  ctx: z.RefinementCtx,
+): void {
+  if (env.NODE_ENV === 'production' && env.EMAIL_LINK_SECRET === DEVELOPMENT_EMAIL_LINK_SECRET) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['EMAIL_LINK_SECRET'],
+      message: 'Set a secret of at least 32 characters in production',
+    });
+  }
+}
+
 const OAUTH_PROVIDERS = ['GOOGLE', 'LINKEDIN', 'MICROSOFT'] as const;
 
 /** An OAuth provider is enabled only when both its client id and secret are set. */
@@ -223,6 +266,7 @@ function requireCompleteOAuthCredentials(
 
 export const apiEnv = apiEnvSchema
   .superRefine(requireMailCredentials)
+  .superRefine(refuseDevelopmentEmailSecret)
   .superRefine(requirePaymentProviders)
   .superRefine(requireCompleteOAuthCredentials);
 /** The interval override replaces every cron pattern: tests and local debugging only. */
@@ -265,6 +309,7 @@ function requireCdnPurge(env: z.infer<typeof workerEnvSchema>, ctx: z.Refinement
 
 export const workerEnv = workerEnvSchema
   .superRefine(requireMailCredentials)
+  .superRefine(refuseDevelopmentEmailSecret)
   .superRefine(requirePaymentProviders)
   .superRefine(refuseScheduleOverrideInProduction)
   .superRefine(requireCdnPurge);

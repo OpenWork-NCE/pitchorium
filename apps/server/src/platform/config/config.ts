@@ -1,3 +1,4 @@
+import type { MessagePolicy } from '@pitchorium/contracts';
 import type { z } from 'zod';
 import { apiEnv, type ApiEnv, type CommonEnv, workerEnv, type WorkerEnv } from './env';
 
@@ -29,6 +30,13 @@ export interface CommonConfig {
   legal: { termsVersion: string; privacyVersion: string };
   network: { profileViewsRetentionDays: number };
   payments: PaymentsConfig;
+  /** Public origin of the api, as seen by browsers, OAuth providers and email clients. */
+  apiPublicUrl: string;
+  /** Signs the links of the emails (unsubscribe). */
+  emailLinkSecret: string;
+  /** Provisional values (docs/open-questions.md). */
+  messaging: { defaultPolicy: MessagePolicy; editWindowMs: number };
+  notifications: { aggregationWindowMs: number };
 }
 
 export interface PaymentsConfig {
@@ -83,6 +91,14 @@ export interface ApiConfig extends CommonConfig {
     /** Below this number of network publications, the feed is completed by highlights. */
     feedEditorialThreshold: number;
   };
+  messaging: CommonConfig['messaging'] & {
+    /** First messages out of network a member may send in 24 hours. */
+    requestsPerDay: number;
+  };
+  notifications: CommonConfig['notifications'] & {
+    /** Svix secret of the Resend webhook; without it the webhook is refused. */
+    resendWebhookSecret: string | undefined;
+  };
   organizations: {
     maxCreatedPerUser: number;
     invitationTtlMs: number;
@@ -119,6 +135,14 @@ export interface WorkerConfig extends CommonConfig {
   projects: { endingSoonMs: number };
   /** Days of provider transactions compared with the ledger by the daily reconciliation. */
   reconciliation: { lookbackMs: number };
+  notifications: CommonConfig['notifications'] & {
+    retentionDays: number;
+    fanoutBatchSize: number;
+    lowPriorityPerDay: number;
+    unreadMessageEmailDelayMs: number;
+    /** Local hour of the digests in the time zone of each member. */
+    digestHour: number;
+  };
   /** Purge of the CDN in front of the public bucket (ADR 0026). */
   cdn:
     | { provider: 'none' }
@@ -206,6 +230,13 @@ function toCommonConfig(env: CommonEnv): CommonConfig {
       enhancedVerificationEurMinor: BigInt(env.PAYMENTS_ENHANCED_VERIFICATION_EUR_MINOR),
       anonymousDonations: env.PAYMENTS_ANONYMOUS_DONATIONS,
     },
+    apiPublicUrl: withoutTrailingSlash(env.API_PUBLIC_URL),
+    emailLinkSecret: env.EMAIL_LINK_SECRET,
+    messaging: {
+      defaultPolicy: env.MESSAGING_DEFAULT_POLICY,
+      editWindowMs: env.MESSAGING_EDIT_WINDOW_MINUTES * 60_000,
+    },
+    notifications: { aggregationWindowMs: env.NOTIFICATIONS_AGGREGATION_WINDOW_MINUTES * 60_000 },
   };
 }
 
@@ -222,8 +253,11 @@ function oauthClient(
 
 export function parseApiConfig(rawEnv: RawEnv): ApiConfig {
   const env: ApiEnv = parse(apiEnv, rawEnv);
+  const common = toCommonConfig(env);
   return {
-    ...toCommonConfig(env),
+    ...common,
+    messaging: { ...common.messaging, requestsPerDay: env.MESSAGING_REQUESTS_PER_DAY },
+    notifications: { ...common.notifications, resendWebhookSecret: env.RESEND_WEBHOOK_SECRET },
     http: {
       host: env.API_HOST,
       port: env.API_PORT,
@@ -275,8 +309,17 @@ export function parseApiConfig(rawEnv: RawEnv): ApiConfig {
 
 export function parseWorkerConfig(rawEnv: RawEnv): WorkerConfig {
   const env: WorkerEnv = parse(workerEnv, rawEnv);
+  const common = toCommonConfig(env);
   return {
-    ...toCommonConfig(env),
+    ...common,
+    notifications: {
+      ...common.notifications,
+      retentionDays: env.NOTIFICATIONS_RETENTION_DAYS,
+      fanoutBatchSize: env.NOTIFICATIONS_FANOUT_BATCH_SIZE,
+      lowPriorityPerDay: env.NOTIFICATIONS_LOW_PRIORITY_PER_DAY,
+      unreadMessageEmailDelayMs: env.NOTIFICATIONS_UNREAD_MESSAGE_EMAIL_DELAY_MINUTES * 60_000,
+      digestHour: env.NOTIFICATIONS_DIGEST_HOUR,
+    },
     worker: { healthPort: env.WORKER_HEALTH_PORT },
     outbox: {
       pollIntervalMs: env.OUTBOX_POLL_INTERVAL_MS,
