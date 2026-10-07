@@ -20,7 +20,7 @@ Pages organisation (cahier des charges §5, §10.7, §13) : fondations, entrepri
 ## Vérification et badge
 
 - Statuts : `unverified`, `pending`, `verified`, `rejected`, `revoked` ; transitions dans `domain/verification.ts` (demande depuis `unverified`, `rejected` ou `revoked` ; décision sur `pending` ; révocation de `verified`).
-- Demande par un `owner` à l'email vérifié : déclaration, certification, 1 à 10 pièces justificatives (usage media `verification_document`, toujours privé), attachées à la demande. Une seule demande en attente par organisation.
+- Demande par un `owner` à l'email vérifié : déclaration, certification, 1 à 10 pièces justificatives (usage media `verification_document`, toujours privé), attachées à la demande. Une seule demande en attente par organisation. Les pièces d'une demande décidée lui restent attachées (trace de la décision) : une nouvelle demande joint de nouvelles pièces.
 - Signal automatique non décisif : un membre a un email vérifié sur le domaine du site web (`memberEmailOnWebsiteDomain`).
 - Revue par un `moderator` ou un `admin` avec double authentification : file, décision motivée (`approved` ou `rejected`) avec les critères cochés parmi `ORGANIZATIONS_VERIFICATION_CRITERIA` (liste vide par défaut, critères non définis par le cahier des charges), révocation motivée.
 - Pièces justificatives lisibles (URL présignée du module media) par les `owner` et `admin` de l'organisation et par les modérateurs et administrateurs avec double authentification.

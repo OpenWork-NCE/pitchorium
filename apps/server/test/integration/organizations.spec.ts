@@ -222,6 +222,130 @@ describe('organizations', () => {
     ]);
   });
 
+  it('lets the invitee decline an invitation and an admin revoke one', async () => {
+    const awa = await createMember(app, 'awa@teranga.org', { name: 'Awa Ndiaye' });
+    const organization = await createOrganization(awa);
+
+    const declinedToken = await invite(awa, organization.id, 'kofi@example.com');
+    const kofi = await createMember(app, 'kofi@example.com', { name: 'Kofi Mensah' });
+    await kofi.agent
+      .post('/v1/organization-invitations/decline')
+      .send({ token: declinedToken })
+      .expect(204);
+    const afterDecline = await kofi.agent
+      .post('/v1/organization-invitations/accept')
+      .send({ token: declinedToken })
+      .expect(410);
+    expect(afterDecline.body.code).toBe('ORGANIZATIONS_INVITATION_INVALID');
+
+    const revokedToken = await invite(awa, organization.id, 'ama@example.com');
+    const pending = await awa.agent
+      .get(`/v1/organizations/${organization.id}/invitations`)
+      .expect(200);
+    expect(pending.body.items).toEqual([
+      expect.objectContaining({ email: 'ama@example.com', status: 'pending' }),
+    ]);
+    const invitationId = (pending.body.items as { id: string }[])[0]?.id ?? '';
+    await awa.agent
+      .delete(`/v1/organizations/${organization.id}/invitations/${invitationId}`)
+      .expect(204);
+    await awa.agent
+      .delete(`/v1/organizations/${organization.id}/invitations/${invitationId}`)
+      .expect(410);
+    const ama = await createMember(app, 'ama@example.com', { name: 'Ama Owusu' });
+    const afterRevocation = await ama.agent
+      .post('/v1/organization-invitations/accept')
+      .send({ token: revokedToken })
+      .expect(410);
+    expect(afterRevocation.body.code).toBe('ORGANIZATIONS_INVITATION_INVALID');
+
+    const invitations = await query<{ email: string; status: string; responded_by: string | null }>(
+      `SELECT email, status, responded_by FROM organizations.invitations
+       WHERE organization_id = $1 ORDER BY created_at`,
+      [organization.id],
+    );
+    expect(invitations).toEqual([
+      { email: 'kofi@example.com', status: 'declined', responded_by: kofi.userId },
+      { email: 'ama@example.com', status: 'revoked', responded_by: null },
+    ]);
+    const page = await awa.agent.get('/v1/organizations/by-slug/fondation-teranga').expect(200);
+    expect(page.body.members).toEqual([expect.objectContaining({ displayName: 'Awa Ndiaye' })]);
+    expect(await eventTypes(organization.id)).not.toContain('organizations.member.joined.v1');
+  });
+
+  it('rejects a verification request with a reason, then accepts a new request', async () => {
+    const awa = await createMember(app, 'awa@teranga.org', { name: 'Awa Ndiaye' });
+    const organization = await createOrganization(awa);
+    const upload = async () => {
+      const id = await uploadFile(
+        awa.agent,
+        minimalPdf(),
+        'verification_document',
+        'application/pdf',
+      );
+      await waitUntilProcessed(awa.agent, id, deliver);
+      return id;
+    };
+    const request = async (key: string, document: string) =>
+      (
+        await awa.agent
+          .post(`/v1/organizations/${organization.id}/verification-requests`)
+          .set('Idempotency-Key', key)
+          .send({
+            declaration: 'Association déclarée, récépissé joint.',
+            certified: true,
+            documentMediaIds: [document],
+          })
+          .expect((response) => {
+            expect(response.status, JSON.stringify(response.body)).toBe(201);
+          })
+      ).body as { id: string };
+    const firstDocument = await upload();
+    const first = await request('verification-rejected-1', firstDocument);
+
+    const reviewer = await moderator();
+    const decided = await reviewer.agent
+      .post(`/v1/organization-verification-requests/${first.id}/decision`)
+      .send({ decision: 'rejected', reason: 'Récépissé illisible.', criteriaMet: [] })
+      .expect(200);
+    expect(decided.body).toMatchObject({
+      status: 'rejected',
+      decisionReason: 'Récépissé illisible.',
+      decidedBy: reviewer.userId,
+      organization: { verificationStatus: 'rejected' },
+    });
+    const page = await browser(app).get('/v1/public/organizations/fondation-teranga').expect(200);
+    expect(page.body.verification).toMatchObject({ status: 'rejected', verified: false });
+    const rejected = await emailTo('awa@teranga.org', 'Vérification de Fondation Teranga refusée');
+    expect(rejected.text).toContain('Récépissé illisible.');
+    const again = await reviewer.agent
+      .post(`/v1/organization-verification-requests/${first.id}/decision`)
+      .send({ decision: 'approved', reason: 'Trop tard.', criteriaMet: [] })
+      .expect(409);
+    expect(again.body.code).toBe('ORGANIZATIONS_VERIFICATION_INVALID_STATE');
+
+    // A rejection lets the owner file a new request, with new documents: those of a decided
+    // request stay attached to it, as the record of the decision.
+    const reused = await awa.agent
+      .post(`/v1/organizations/${organization.id}/verification-requests`)
+      .set('Idempotency-Key', 'verification-rejected-reused')
+      .send({
+        declaration: 'Association déclarée, récépissé joint.',
+        certified: true,
+        documentMediaIds: [firstDocument],
+      })
+      .expect(409);
+    expect(reused.body.code).toBe('MEDIA_ATTACHED');
+    const second = await request('verification-rejected-2', await upload());
+    expect(second.id).not.toBe(first.id);
+    expect(await eventTypes(organization.id)).toEqual([
+      'organizations.organization.created.v1',
+      'organizations.verification.requested.v1',
+      'organizations.verification.rejected.v1',
+      'organizations.verification.requested.v1',
+    ]);
+  });
+
   it('verifies an organization with a private document and a moderator decision', async () => {
     const awa = await createMember(app, 'awa@teranga.org', { name: 'Awa Ndiaye' });
     const organization = await createOrganization(awa);
