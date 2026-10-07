@@ -1,6 +1,7 @@
 {
   "layout": {
-    "footer": "You are receiving this email because you use Pitchorium."
+    "footer": "You are receiving this email because you use Pitchorium.",
+    "unsubscribe": "Unsubscribe from these emails"
   },
   "technicalTest": {
     "subject": "Pitchorium test email",
@@ -140,5 +141,29 @@
     "notTaxReceipt": "This email confirms your payment. It is not a tax receipt.",
     "mentions": "The impact of the project is self-declared by its holder. A donation is not a financial security, and an unlocked tier is not a guarantee of success.",
     "reference": "Contribution reference: {{reference}}"
+  },
+  "notification": {
+    "greeting": "Hello {{name}},",
+    "action": "View on Pitchorium"
+  },
+  "notificationDigest": {
+    "subject": {
+      "daily": "Your daily summary: {{count}} notifications",
+      "weekly": "Your weekly summary: {{count}} notifications"
+    },
+    "intro": {
+      "daily": "Here is what happened today on Pitchorium.",
+      "weekly": "Here is what happened this week on Pitchorium."
+    },
+    "action": "See all my notifications"
+  },
+  "unreadMessages": {
+    "subject": {
+      "one": "New message from {{sender}}",
+      "many": "{{count}} new messages from {{sender}}"
+    },
+    "attachments": "{{count}} attachment(s)",
+    "action": "Reply on Pitchorium",
+    "note": "You receive a copy of your unread messages because you turned it on in your notification settings on Pitchorium."
   }
 }

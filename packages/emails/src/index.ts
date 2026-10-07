@@ -16,6 +16,18 @@ import NewSignInEmail, {
   newSignInSubject,
   type NewSignInEmailProps,
 } from './templates/new-sign-in.js';
+import NotificationDigestEmail, {
+  notificationDigestSubject,
+  type NotificationDigestEmailProps,
+} from './templates/notification-digest.js';
+import NotificationEmail, {
+  notificationSubject,
+  type NotificationEmailProps,
+} from './templates/notification.js';
+import UnreadMessagesEmail, {
+  unreadMessagesSubject,
+  type UnreadMessagesEmailProps,
+} from './templates/unread-messages.js';
 import OrganizationNoticeEmail, {
   organizationNoticeSubject,
   type OrganizationNoticeEmailProps,
@@ -47,6 +59,13 @@ export type {
   OrganizationRoleLabel,
 } from './templates/organization-notice.js';
 export type { PasswordResetEmailProps } from './templates/password-reset.js';
+export type { NotificationDigestEmailProps } from './templates/notification-digest.js';
+export {
+  type NotificationEmailProps,
+  type NotificationTextParams,
+  notificationText,
+} from './templates/notification.js';
+export type { UnreadMessagesEmailProps } from './templates/unread-messages.js';
 export type {
   SignInMethodChange,
   SignInMethodChangedEmailProps,
@@ -103,4 +122,21 @@ export function renderContributionConfirmationEmail(
     contributionConfirmationSubject(props),
     createElement(ContributionConfirmationEmail, props),
   );
+}
+
+export function renderNotificationEmail(props: NotificationEmailProps): Promise<RenderedEmail> {
+  return renderEmail(notificationSubject(props), createElement(NotificationEmail, props));
+}
+
+export function renderNotificationDigestEmail(
+  props: NotificationDigestEmailProps,
+): Promise<RenderedEmail> {
+  return renderEmail(
+    notificationDigestSubject(props),
+    createElement(NotificationDigestEmail, props),
+  );
+}
+
+export function renderUnreadMessagesEmail(props: UnreadMessagesEmailProps): Promise<RenderedEmail> {
+  return renderEmail(unreadMessagesSubject(props), createElement(UnreadMessagesEmail, props));
 }

@@ -5,6 +5,9 @@ import {
   renderEmailVerificationEmail,
   renderMagicLinkEmail,
   renderNewSignInEmail,
+  renderNotificationDigestEmail,
+  renderNotificationEmail,
+  renderUnreadMessagesEmail,
   renderOrganizationNoticeEmail,
   type OrganizationNoticeKind,
   renderPasswordResetEmail,
@@ -26,7 +29,7 @@ const url = 'https://app.pitchorium.test/action?token=abc';
 
 /** A missing key renders as the key itself; an unresolved parameter keeps its braces. */
 const MISSING_TRANSLATION =
-  /\{\{|\b(?:layout|providers|emailVerification|magicLink|passwordReset|newSignIn|signInMethodChanged|technicalTest|organizationNotice|contributionConfirmation)\./;
+  /\{\{|\b(?:layout|providers|emailVerification|magicLink|passwordReset|newSignIn|signInMethodChanged|technicalTest|organizationNotice|contributionConfirmation|notification|notificationDigest|unreadMessages|types)\./;
 
 const cases: TemplateCase[] = [
   {
@@ -197,6 +200,62 @@ describe('email templates', () => {
       }
       expect(emails[6]?.text).toContain('Statuts fournis et site officiel concordant.');
     }
+  });
+
+  it('renders notifications, digests and unread messages with a one-click unsubscribe link', async () => {
+    const unsubscribeUrl = 'https://app.pitchorium.test/notifications/unsubscribe?token=t';
+    for (const locale of ['fr', 'en'] as const) {
+      const emails = await Promise.all([
+        renderNotificationEmail({
+          locale,
+          name: 'Kofi',
+          type: 'reaction',
+          grouped: true,
+          params: { actor: 'Amina Diop', others: 12 },
+          actionUrl: url,
+          unsubscribeUrl,
+        }),
+        renderNotificationDigestEmail({
+          locale,
+          name: 'Kofi',
+          period: 'weekly',
+          items: [{ text: 'Amina Diop vous suit', url }],
+          notificationsUrl: url,
+          unsubscribeUrl,
+        }),
+        renderUnreadMessagesEmail({
+          locale,
+          name: 'Kofi',
+          sender: 'Amina Diop',
+          count: 2,
+          excerpts: [
+            { sender: 'Amina Diop', text: 'Bonjour', attachments: 0 },
+            { sender: 'Amina Diop', text: '', attachments: 1 },
+          ],
+          conversationUrl: url,
+          unsubscribeUrl,
+        }),
+      ]);
+      for (const email of emails) {
+        expect(email.text).toContain(unsubscribeUrl);
+        expect(email.text).not.toMatch(MISSING_TRANSLATION);
+      }
+      expect(emails[0]?.subject).toBe(
+        locale === 'fr'
+          ? 'Amina Diop et 12 autres ont réagi à votre publication'
+          : 'Amina Diop and 12 others reacted to your post',
+      );
+    }
+    const transactional = await renderNotificationEmail({
+      locale: 'fr',
+      name: 'Kofi',
+      type: 'kyc_decided',
+      grouped: false,
+      params: {},
+      actionUrl: url,
+      unsubscribeUrl: null,
+    });
+    expect(transactional.text).not.toContain('Se désinscrire');
   });
 
   it('says that the confirmation of a contribution is not a tax receipt', async () => {

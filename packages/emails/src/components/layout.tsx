@@ -1,16 +1,18 @@
 import type { Locale } from '@pitchorium/contracts';
 import { translate } from '@pitchorium/i18n';
 import type { ReactNode } from 'react';
-import { Body, Container, Head, Hr, Html, Preview, Section, Text } from 'react-email';
+import { Body, Container, Head, Hr, Html, Link, Preview, Section, Text } from 'react-email';
 import { theme } from '../theme.js';
 
 export interface LayoutProps {
   locale: Locale;
   preview: string;
   children: ReactNode;
+  /** One-click unsubscribe page of a non-transactional email (RFC 8058, ADR 0062). */
+  unsubscribeUrl?: string | null;
 }
 
-export function Layout({ locale, preview, children }: LayoutProps) {
+export function Layout({ locale, preview, children, unsubscribeUrl }: LayoutProps) {
   return (
     <Html lang={locale}>
       <Head />
@@ -34,6 +36,13 @@ export function Layout({ locale, preview, children }: LayoutProps) {
           <Text style={{ color: theme.muted, fontSize: 12, margin: 0 }}>
             {translate(locale, 'emails', 'layout.footer')}
           </Text>
+          {unsubscribeUrl ? (
+            <Text style={{ color: theme.muted, fontSize: 12, margin: '8px 0 0' }}>
+              <Link href={unsubscribeUrl} style={{ color: theme.muted }}>
+                {translate(locale, 'emails', 'layout.unsubscribe')}
+              </Link>
+            </Text>
+          ) : null}
         </Container>
       </Body>
     </Html>

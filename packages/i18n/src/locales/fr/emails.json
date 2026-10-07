@@ -1,6 +1,7 @@
 {
   "layout": {
-    "footer": "Vous recevez cet email car vous utilisez Pitchorium."
+    "footer": "Vous recevez cet email car vous utilisez Pitchorium.",
+    "unsubscribe": "Se désinscrire de ces emails"
   },
   "technicalTest": {
     "subject": "Email de test Pitchorium",
@@ -140,5 +141,29 @@
     "notTaxReceipt": "Cet email confirme votre paiement. Ce n'est pas un reçu fiscal.",
     "mentions": "L'impact du projet est auto-déclaré par son porteur. Un don n'est pas un titre financier, et un palier débloqué n'est pas une garantie de succès.",
     "reference": "Référence de la contribution : {{reference}}"
+  },
+  "notification": {
+    "greeting": "Bonjour {{name}},",
+    "action": "Voir sur Pitchorium"
+  },
+  "notificationDigest": {
+    "subject": {
+      "daily": "Votre résumé du jour : {{count}} notifications",
+      "weekly": "Votre résumé de la semaine : {{count}} notifications"
+    },
+    "intro": {
+      "daily": "Voici ce qui s'est passé aujourd'hui sur Pitchorium.",
+      "weekly": "Voici ce qui s'est passé cette semaine sur Pitchorium."
+    },
+    "action": "Voir toutes mes notifications"
+  },
+  "unreadMessages": {
+    "subject": {
+      "one": "Nouveau message de {{sender}}",
+      "many": "{{count}} nouveaux messages de {{sender}}"
+    },
+    "attachments": "{{count}} pièce(s) jointe(s)",
+    "action": "Répondre sur Pitchorium",
+    "note": "Vous recevez la copie de vos messages non lus car vous l'avez activée dans vos préférences de notifications sur Pitchorium."
   }
 }
