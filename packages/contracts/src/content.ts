@@ -181,7 +181,7 @@ export const feedPageSchema = z.object({
 
 export const createCommentRequestSchema = z.object({
   text: z.string().trim().min(1).max(COMMENT_TEXT_MAX_LENGTH),
-  /** Top-level comment answered; a reply to a reply is attached to its top-level comment. */
+  /** Top-level comment answered; a reply to a reply is refused (one level of nesting). */
   parentId: uuidV7Schema.optional(),
 });
 
