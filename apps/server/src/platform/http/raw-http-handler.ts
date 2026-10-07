@@ -32,3 +32,26 @@ export function mountRawHttpHandlers(app: INestApplication): void {
     );
   }
 }
+
+const MAX_BODY_BYTES = 1024 * 1024;
+
+export class BodyTooLargeError extends Error {}
+
+/** Reads the raw body of a webhook: signatures are computed on the exact bytes sent. */
+export function readRawBody(request: IncomingMessage, limit = MAX_BODY_BYTES): Promise<Buffer> {
+  return new Promise((resolve, reject) => {
+    const chunks: Buffer[] = [];
+    let size = 0;
+    request.on('data', (chunk: Buffer) => {
+      size += chunk.length;
+      if (size > limit) {
+        reject(new BodyTooLargeError());
+        request.destroy();
+        return;
+      }
+      chunks.push(chunk);
+    });
+    request.on('end', () => resolve(Buffer.concat(chunks)));
+    request.on('error', reject);
+  });
+}

@@ -2,9 +2,11 @@ import type { IncomingMessage, ServerResponse } from 'node:http';
 import { Injectable, Logger } from '@nestjs/common';
 import type { ErrorCode } from '@pitchorium/contracts';
 import {
+  BodyTooLargeError,
   problemFromCode,
   RawHttpHandler,
   type RawHttpRequestHandler,
+  readRawBody,
   resolveRequestId,
 } from '../../../platform/http';
 import { ErrorReporter } from '../../../platform/observability';
@@ -12,29 +14,6 @@ import { WebhookRejectedError } from '../application/ports';
 import { WebhooksService } from '../application/webhooks.service';
 
 export const WEBHOOKS_PATH = '/v1/payments/webhooks';
-const MAX_BODY_BYTES = 1024 * 1024;
-
-class BodyTooLargeError extends Error {}
-
-/** Reads the raw body: the signatures are computed on the exact bytes sent. */
-export function readRawBody(request: IncomingMessage, limit = MAX_BODY_BYTES): Promise<Buffer> {
-  return new Promise((resolve, reject) => {
-    const chunks: Buffer[] = [];
-    let size = 0;
-    request.on('data', (chunk: Buffer) => {
-      size += chunk.length;
-      if (size > limit) {
-        reject(new BodyTooLargeError());
-        request.destroy();
-        return;
-      }
-      chunks.push(chunk);
-    });
-    request.on('end', () => resolve(Buffer.concat(chunks)));
-    request.on('error', reject);
-  });
-}
-
 function send(
   response: ServerResponse,
   status: number,
