@@ -27,6 +27,7 @@ export interface CommonConfig {
   webAppUrl: string;
   /** Versions in force of the terms of service and the privacy policy. */
   legal: { termsVersion: string; privacyVersion: string };
+  network: { profileViewsRetentionDays: number };
 }
 
 export interface OAuthClientConfig {
@@ -51,6 +52,14 @@ export interface ApiConfig extends CommonConfig {
     downloadUrlTtlSeconds: number;
     quota: { maxFiles: number; maxBytes: number };
     uploadRequestsPerHour: number;
+  };
+  /** Provisional anti-abuse values (docs/open-questions.md). */
+  network: CommonConfig['network'] & {
+    connectionRequestsPerWeek: number;
+    declineCooldownMs: number;
+    requestTtlMs: number;
+    /** Mutual connections are counted up to this value, then shown as « cap+ ». */
+    mutualConnectionsCap: number;
   };
   organizations: {
     maxCreatedPerUser: number;
@@ -134,6 +143,7 @@ function toCommonConfig(env: CommonEnv): CommonConfig {
     otel: { enabled: env.OTEL_EXPORTER_OTLP_ENDPOINT !== undefined },
     webAppUrl: withoutTrailingSlash(env.WEB_APP_URL),
     legal: { termsVersion: env.LEGAL_TERMS_VERSION, privacyVersion: env.LEGAL_PRIVACY_VERSION },
+    network: { profileViewsRetentionDays: env.NETWORK_PROFILE_VIEWS_RETENTION_DAYS },
   };
 }
 
@@ -167,6 +177,13 @@ export function parseApiConfig(rawEnv: RawEnv): ApiConfig {
       downloadUrlTtlSeconds: env.MEDIA_DOWNLOAD_URL_TTL_SECONDS,
       quota: { maxFiles: env.MEDIA_QUOTA_MAX_FILES, maxBytes: env.MEDIA_QUOTA_MAX_BYTES },
       uploadRequestsPerHour: env.MEDIA_UPLOAD_REQUESTS_PER_HOUR,
+    },
+    network: {
+      profileViewsRetentionDays: env.NETWORK_PROFILE_VIEWS_RETENTION_DAYS,
+      connectionRequestsPerWeek: env.NETWORK_CONNECTION_REQUESTS_PER_WEEK,
+      declineCooldownMs: env.NETWORK_DECLINE_COOLDOWN_DAYS * 86_400_000,
+      requestTtlMs: env.NETWORK_REQUEST_TTL_DAYS * 86_400_000,
+      mutualConnectionsCap: env.NETWORK_MUTUAL_CONNECTIONS_CAP,
     },
     organizations: {
       maxCreatedPerUser: env.ORGANIZATIONS_MAX_CREATED_PER_USER,

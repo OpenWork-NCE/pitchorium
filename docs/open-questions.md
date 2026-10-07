@@ -25,6 +25,12 @@ Informations nécessaires au développement et absentes du cahier des charges (d
 33. Les limites par usage (types acceptés, taille maximale, dimensions minimales et maximales, nombre de pages, nombre par ressource, visibilité par défaut) : valeurs provisoires dans `apps/server/src/modules/media/domain/usages.ts` et dans le README du module media.
 34. Les quotas par membre (provisoirement 500 fichiers, 1 Gio et 60 demandes de téléversement par heure) et le délai de suppression des fichiers non attachés (provisoirement 24 heures).
 
+## Réseau
+
+39. Les seuils anti-abus des demandes de connexion : plafond hebdomadaire (provisoirement 100 demandes sur sept jours glissants, `NETWORK_CONNECTION_REQUESTS_PER_WEEK`), délai avant une nouvelle demande après un refus (provisoirement 21 jours, `NETWORK_DECLINE_COOLDOWN_DAYS`) et expiration des demandes en attente (provisoirement 30 jours, `NETWORK_REQUEST_TTL_DAYS`).
+40. La durée de conservation des vues de profil (provisoirement 90 jours, `NETWORK_PROFILE_VIEWS_RETENTION_DAYS`) et le contenu de la mention anonymisée d'une visite privée (provisoirement le premier secteur que le visiteur montre aux membres).
+41. Le plafond de calcul des connexions en commun (provisoirement 999, affiché « 999+ », `NETWORK_MUTUAL_CONNECTIONS_CAP`) et l'arrêt du degré de relation au 2e degré.
+
 ## Organisations
 
 36. Les critères de vérification d'une organisation (pièces exigées par type de structure et par pays, contrôles du modérateur) et le processus de validation : le flux est en place avec une liste de critères configurable (`ORGANIZATIONS_VERIFICATION_CRITERIA`), vide par défaut (§13, §14).

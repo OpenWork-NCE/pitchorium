@@ -30,3 +30,7 @@ Un fichier par décision, numéroté, au format Contexte / Décision / Conséque
 | [0024](0024-no-video-hosting.md)                         | Pas d'hébergement vidéo                                      |
 | [0025](0025-organization-members-and-verification.md)    | Membres et vérification des organisations                    |
 | [0026](0026-file-visibility.md)                          | Visibilité des fichiers                                      |
+| [0027](0027-generic-follow-model.md)                     | Modèle de suivi générique                                    |
+| [0028](0028-connection-and-mutual-follow.md)             | Connexion et suivi mutuel                                    |
+| [0029](0029-blocking.md)                                 | Blocage                                                      |
+| [0030](0030-profile-views-mechanism.md)                  | Mécanisme des vues de profil                                 |

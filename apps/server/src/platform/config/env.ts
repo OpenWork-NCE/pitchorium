@@ -41,6 +41,7 @@ const commonEnvSchema = z.object({
   WEB_APP_URL: z.url().default('http://localhost:5173'),
   LEGAL_TERMS_VERSION: z.string().regex(/^[A-Za-z0-9._-]{1,64}$/),
   LEGAL_PRIVACY_VERSION: z.string().regex(/^[A-Za-z0-9._-]{1,64}$/),
+  NETWORK_PROFILE_VIEWS_RETENTION_DAYS: z.coerce.number().int().min(1).max(3650).default(90),
 });
 
 const apiEnvSchema = commonEnvSchema.extend({
@@ -74,6 +75,10 @@ const apiEnvSchema = commonEnvSchema.extend({
   MEDIA_UPLOAD_REQUESTS_PER_HOUR: z.coerce.number().int().positive().default(60),
   ORGANIZATIONS_MAX_CREATED_PER_USER: z.coerce.number().int().positive().default(5),
   ORGANIZATIONS_INVITATION_TTL_DAYS: z.coerce.number().int().min(1).max(90).default(7),
+  NETWORK_CONNECTION_REQUESTS_PER_WEEK: z.coerce.number().int().positive().default(100),
+  NETWORK_DECLINE_COOLDOWN_DAYS: z.coerce.number().int().min(0).max(365).default(21),
+  NETWORK_REQUEST_TTL_DAYS: z.coerce.number().int().min(1).max(365).default(30),
+  NETWORK_MUTUAL_CONNECTIONS_CAP: z.coerce.number().int().min(1).max(100_000).default(999),
   ORGANIZATIONS_VERIFICATION_CRITERIA: z
     .string()
     .default('')
