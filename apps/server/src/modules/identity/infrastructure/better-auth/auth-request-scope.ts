@@ -4,16 +4,19 @@ import { ErrorReporter } from '../../../../platform/observability';
 
 /** State of one /v1/auth request, shared by the Better Auth hooks of that request. */
 export interface AuthRequestState {
-  /** Work to run once the transaction has committed and the response is sent (emails). */
+  /** Better Auth path, relative to /v1/auth (for example `/callback/google`). */
+  readonly path: string;
+  /** Work to run once the response is sent (emails). */
   readonly afterResponse: (() => Promise<void>)[];
   /** Users created by this request: their first account and session are not "new". */
   readonly registeredUserIds: Set<string>;
-  pendingEmailVerification: boolean;
+  /** Events already recorded by this request, for writes that Better Auth may repeat. */
+  readonly emitted: Set<string>;
 }
 
 /**
  * Request-scoped state for the Better Auth handler (AsyncLocalStorage). Emails are deferred
- * until after the response, so that they are never sent for a rolled back write and so that
+ * until after the response, so that they are never sent for a failed request and so that
  * response times do not reveal whether an email was sent (account enumeration).
  */
 @Injectable()
@@ -32,12 +35,8 @@ export class AuthRequestScope implements OnApplicationShutdown {
     return this.storage.getStore();
   }
 
-  static newState(): AuthRequestState {
-    return {
-      afterResponse: [],
-      registeredUserIds: new Set(),
-      pendingEmailVerification: false,
-    };
+  static newState(path: string): AuthRequestState {
+    return { path, afterResponse: [], registeredUserIds: new Set(), emitted: new Set() };
   }
 
   /** Runs `task` after the response, or immediately outside of an auth request. */

@@ -9,8 +9,8 @@ import {
 } from '@pitchorium/db/schemas/identity';
 import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
-import { createAuthMiddleware, getOAuthState } from 'better-auth/api';
-import { haveIBeenPwned, magicLink, twoFactor } from 'better-auth/plugins';
+import { APIError, createAuthMiddleware, getOAuthState } from 'better-auth/api';
+import { magicLink, twoFactor } from 'better-auth/plugins';
 import type { Redis } from 'ioredis';
 import type { ApiConfig } from '../../../../platform/config';
 import type { TransactionManager } from '../../../../platform/database';
@@ -18,7 +18,6 @@ import type { IdGenerator } from '../../../../platform/kernel';
 import type { ActiveLocalesService } from '../../application/active-locales.service';
 import type { IdentityEventsRecorder } from '../../application/identity-events.recorder';
 import type { IdentityUserRepository } from '../../application/identity-user.repository';
-import type { RegistrationMethod, SessionRevocationScope } from '../../domain/identity-events';
 import { negotiateLocale } from '../../domain/locale-negotiation';
 import {
   EMAIL_VERIFICATION_TTL_SECONDS,
@@ -27,6 +26,8 @@ import {
   PASSWORD_RESET_TTL_SECONDS,
 } from '../identity-mailer';
 import type { AuthRequestScope } from './auth-request-scope';
+import { withIdentityEvents } from './identity-events.adapter';
+import { isPasswordCompromised } from './pwned-passwords';
 import { RedisRateLimitStorage } from './redis-rate-limit.storage';
 import { transactionalDatabase } from './transactional-database';
 
@@ -38,6 +39,8 @@ export const CLIENT_IP_HEADER = 'x-pitchorium-client-ip';
 const SESSION_TTL_SECONDS = 30 * 24 * 3600;
 const SESSION_REFRESH_AFTER_SECONDS = 24 * 3600;
 const MAX_USER_AGENT_LENGTH = 200;
+const MIN_PASSWORD_LENGTH = 12;
+const MAX_PASSWORD_LENGTH = 128;
 
 /** Endpoints that can be used to guess passwords, spam inboxes or enumerate accounts. */
 const SENSITIVE_PATHS = [
@@ -55,10 +58,12 @@ const SENSITIVE_PATHS = [
   '/two-factor/verify-backup-code',
 ];
 
-const REVOCATION_PATHS: Readonly<Record<string, SessionRevocationScope>> = {
-  '/revoke-session': 'one',
-  '/revoke-other-sessions': 'others',
-  '/revoke-sessions': 'all',
+/** Body field holding the new password, for the endpoints that set one. */
+const NEW_PASSWORD_FIELDS: Readonly<Record<string, string>> = {
+  '/sign-up/email': 'password',
+  '/change-password': 'newPassword',
+  '/reset-password': 'newPassword',
+  '/set-password': 'newPassword',
 };
 
 export interface BetterAuthDependencies {
@@ -75,24 +80,12 @@ export interface BetterAuthDependencies {
 
 interface HookContext {
   path?: string;
-  params?: Record<string, string>;
   headers?: Headers;
   request?: Request;
 }
 
 function headerOf(context: HookContext | null | undefined, name: string): string | null {
   return context?.headers?.get(name) ?? context?.request?.headers.get(name) ?? null;
-}
-
-function registrationMethod(context: HookContext | null | undefined): RegistrationMethod {
-  if (context?.path?.startsWith('/callback/')) {
-    const provider = context.params?.['id'];
-    if (provider === 'google' || provider === 'linkedin' || provider === 'microsoft') {
-      return provider;
-    }
-  }
-  if (context?.path === '/magic-link/verify') return 'magic_link';
-  return 'credential';
 }
 
 /**
@@ -126,16 +119,22 @@ export function createBetterAuth(deps: BetterAuthDependencies) {
         else logger.debug(line);
       },
     },
-    database: drizzleAdapter(transactionalDatabase(deps.transactions), {
-      provider: 'pg',
-      schema: {
-        user: identityUsers,
-        session: identitySessions,
-        account: identityAccounts,
-        verification: identityVerifications,
-        twoFactor: identityTwoFactors,
-      },
-    }),
+    // Better Auth transactions become TransactionManager transactions, and each write commits
+    // with its identity event (ADR 0019).
+    database: withIdentityEvents(
+      drizzleAdapter(transactionalDatabase(deps.transactions), {
+        provider: 'pg',
+        transaction: true,
+        schema: {
+          user: identityUsers,
+          session: identitySessions,
+          account: identityAccounts,
+          verification: identityVerifications,
+          twoFactor: identityTwoFactors,
+        },
+      }),
+      { transactions: deps.transactions, scope, events },
+    ),
     user: {
       additionalFields: {
         // Not returned: the generic answer to a duplicate sign-up has no negotiated locale, so
@@ -162,17 +161,13 @@ export function createBetterAuth(deps: BetterAuthDependencies) {
     },
     emailAndPassword: {
       enabled: true,
-      minPasswordLength: 12,
-      maxPasswordLength: 128,
+      minPasswordLength: MIN_PASSWORD_LENGTH,
+      maxPasswordLength: MAX_PASSWORD_LENGTH,
       // Without auto sign-in, signing up with a known email answers like a new sign-up.
       autoSignIn: false,
       requireEmailVerification: false,
       resetPasswordTokenExpiresIn: PASSWORD_RESET_TTL_SECONDS,
       revokeSessionsOnPasswordReset: true,
-      onPasswordReset: async ({ user }) => {
-        await events.passwordChanged(user.id, 'reset');
-        await events.sessionsRevoked(user.id, 'all', 'password_reset');
-      },
       sendResetPassword: async ({ user, url }) => {
         const to = await recipient(user);
         await scope.defer(() => mailer.sendPasswordReset(to, url));
@@ -223,10 +218,6 @@ export function createBetterAuth(deps: BetterAuthDependencies) {
         },
       }),
       twoFactor({ issuer: 'Pitchorium' }),
-      haveIBeenPwned({
-        enabled: config.auth.pwnedPasswordCheck,
-        paths: ['/sign-up/email', '/change-password', '/reset-password', '/set-password'],
-      }),
     ],
     rateLimit: {
       enabled: true,
@@ -267,46 +258,10 @@ export function createBetterAuth(deps: BetterAuthDependencies) {
               ),
             },
           }),
-          after: async (user, context) => {
-            scope.current()?.registeredUserIds.add(user.id);
-            const stored = await users.findById(user.id);
-            await events.userRegistered(user.id, {
-              method: registrationMethod(context as HookContext),
-              locale: stored?.locale ?? DEFAULT_LOCALE,
-              emailVerified: user.emailVerified,
-            });
-            if (user.emailVerified) await events.emailVerified(user.id);
-          },
-        },
-        update: {
-          // Better Auth only writes emailVerified=true when the email was not verified yet.
-          before: (data) => {
-            const state = scope.current();
-            if (state && data.emailVerified === true) state.pendingEmailVerification = true;
-            return Promise.resolve();
-          },
-          after: async (user) => {
-            const state = scope.current();
-            if (state?.pendingEmailVerification && user.emailVerified) {
-              state.pendingEmailVerification = false;
-              await events.emailVerified(user.id);
-            }
-          },
         },
       },
-      account: {
-        create: {
-          after: async (account) => {
-            if (scope.current()?.registeredUserIds.has(account.userId)) return;
-            await events.accountLinked(account.userId, account.providerId);
-          },
-        },
-        delete: {
-          after: async (account) => {
-            await events.accountUnlinked(account.userId, account.providerId);
-          },
-        },
-      },
+      // Identity events are recorded by withIdentityEvents, in the transaction of each write:
+      // the `after` hooks below run once the write has committed and only send emails.
       session: {
         create: {
           after: async (session, context) => {
@@ -331,19 +286,35 @@ export function createBetterAuth(deps: BetterAuthDependencies) {
       },
     },
     hooks: {
-      after: createAuthMiddleware(async (ctx) => {
-        const userId = ctx.context.session?.user.id;
-        if (!userId || ctx.context.returned instanceof Error) return;
-        if (ctx.path === '/change-password') {
-          await events.passwordChanged(userId, 'changed');
-          const body = ctx.body as { revokeOtherSessions?: boolean } | undefined;
-          if (body?.revokeOtherSessions) {
-            await events.sessionsRevoked(userId, 'others', 'user_request');
-          }
+      // Have I Been Pwned is called before the endpoint, never inside a database transaction
+      // (ADR 0019). A password outside the length limits is left to Better Auth's validation.
+      before: createAuthMiddleware(async (ctx) => {
+        const field = NEW_PASSWORD_FIELDS[ctx.path];
+        if (!config.auth.pwnedPasswordCheck || !field) return;
+        const password = (ctx.body as Record<string, unknown> | undefined)?.[field];
+        if (
+          typeof password !== 'string' ||
+          password.length < MIN_PASSWORD_LENGTH ||
+          password.length > MAX_PASSWORD_LENGTH
+        ) {
           return;
         }
-        const scopeOfPath = REVOCATION_PATHS[ctx.path];
-        if (scopeOfPath) await events.sessionsRevoked(userId, scopeOfPath, 'user_request');
+        let compromised: boolean;
+        try {
+          compromised = await isPasswordCompromised(password);
+        } catch (error) {
+          logger.error(error);
+          throw new APIError('INTERNAL_SERVER_ERROR', {
+            code: 'PASSWORD_CHECK_FAILED',
+            message: 'Failed to check password. Please try again later.',
+          });
+        }
+        if (compromised) {
+          throw new APIError('BAD_REQUEST', {
+            code: 'PASSWORD_COMPROMISED',
+            message: 'The password you entered has been compromised. Please choose another one.',
+          });
+        }
       }),
     },
   });

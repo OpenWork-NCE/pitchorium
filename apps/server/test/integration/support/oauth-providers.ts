@@ -41,6 +41,7 @@ export class FakeOAuthProviders {
   private readonly accessTokens = new Map<string, FakeIdentity>();
   private readonly keys = generateKeyPairSync('rsa', { modulusLength: 2048 });
   private originalFetch: typeof fetch | undefined;
+  private pausedTokenRequest: { reached: () => void; released: Promise<void> } | undefined;
 
   async start(): Promise<void> {
     this.server = createServer((request, response) => {
@@ -67,6 +68,19 @@ export class FakeOAuthProviders {
     const code = randomUUID();
     this.codes.set(code, { provider, identity });
     return code;
+  }
+
+  /**
+   * Holds the next token request until `release()` is called, to observe the api while it waits
+   * for the provider. `reached` resolves once the request has arrived.
+   */
+  pauseNextTokenRequest(): { reached: Promise<void>; release: () => void } {
+    let reached!: () => void;
+    let release!: () => void;
+    const arrived = new Promise<void>((resolve) => (reached = resolve));
+    const released = new Promise<void>((resolve) => (release = resolve));
+    this.pausedTokenRequest = { reached, released };
+    return { reached: arrived, release };
   }
 
   private install(): void {
@@ -123,6 +137,12 @@ export class FakeOAuthProviders {
         : undefined;
     }
     const body = await readBody(request);
+    const paused = this.pausedTokenRequest;
+    if (paused) {
+      this.pausedTokenRequest = undefined;
+      paused.reached();
+      await paused.released;
+    }
     const grant = this.codes.get(body.get('code') ?? '');
     if (!grant || grant.provider !== provider) return undefined;
     this.codes.delete(body.get('code') ?? '');

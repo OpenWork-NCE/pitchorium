@@ -6,6 +6,7 @@ import { DatabaseModule } from '../../../src/platform/database';
 import { InboxModule } from '../../../src/platform/inbox';
 import { OutboxModule, OutboxRelayModule, OutboxRelayService } from '../../../src/platform/outbox';
 import { RedisModule } from '../../../src/platform/redis';
+import { truncateAllTables } from './database';
 import { useTestEnvironment } from './environment';
 
 /**
@@ -17,6 +18,9 @@ export async function createWorkerTestingModule(
   imports: (Type | DynamicModule)[] = [],
 ): Promise<TestingModule> {
   useTestEnvironment({ OUTBOX_POLL_INTERVAL_MS: '3600000' });
+  // The relay runs one batch at startup: events left by a previous test file must not reach the
+  // handlers while the next test truncates the tables.
+  await truncateAllTables();
   const moduleRef = await Test.createTestingModule({
     imports: [
       ConfigModule.forWorker(),

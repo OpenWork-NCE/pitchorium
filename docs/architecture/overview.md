@@ -94,10 +94,9 @@ sequenceDiagram
   participant G as api (garde access)
   participant DB as PostgreSQL
   B->>H: POST /v1/auth/sign-in/email (Origin de confiance)
-  H->>DB: BEGIN
   H->>BA: Request web (flux brut)
-  BA->>DB: session, hooks : outbox identity
-  H->>DB: COMMIT
+  BA->>DB: lectures (pool, hors transaction)
+  BA->>DB: BEGIN, écriture + événement identity (outbox), COMMIT
   H-->>B: 200 + cookie pitchorium.session_token
   H->>H: emails différés (après la réponse)
   B->>G: PATCH /v1/me/profile (cookie)
@@ -107,6 +106,7 @@ sequenceDiagram
 ```
 
 - `/v1/auth` est servi par Better Auth avant les body parsers (ADR 0013) ; toutes les autres routes passent par le garde global du module access (ADR 0015).
+- Aucune transaction ne couvre un appel réseau (fournisseur OAuth, Have I Been Pwned) : chaque écriture de Better Auth est validée avec son événement dans une transaction courte (ADR 0019).
 - Le handshake Socket.IO est authentifié par la même session ; seul le namespace `/system` reste anonyme.
 - `pnpm admin:create --email <email>` attribue le rôle `admin` à un compte existant ; c'est le seul moyen de créer le premier administrateur.
 

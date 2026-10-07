@@ -5,7 +5,7 @@ Comptes et authentification (cahier des charges §7) avec Better Auth 1.7, mont�
 ## Responsabilité
 
 - Inscription sans choix de rôle ni champ obligatoire hors identité : Google, LinkedIn (OpenID Connect), Microsoft (Entra ID, tenant `common`), email et mot de passe, lien magique. Un fournisseur OAuth n'est actif que si ses identifiants sont configurés.
-- Mot de passe de 12 caractères minimum, refus des mots de passe compromis (Have I Been Pwned, k-anonymat, `AUTH_PWNED_PASSWORD_CHECK`), réinitialisation par lien à usage unique valable 30 minutes ; toutes les sessions sont fermées après une réinitialisation.
+- Mot de passe de 12 caractères minimum, refus des mots de passe compromis (Have I Been Pwned, k-anonymat, `AUTH_PWNED_PASSWORD_CHECK`, appelé avant l'endpoint et hors transaction ; service injoignable : `PASSWORD_CHECK_FAILED`), réinitialisation par lien à usage unique valable 30 minutes ; toutes les sessions sont fermées après une réinitialisation.
 - Vérification d'email (lien valable 24 h) ; un email assuré vérifié par Google, ou par LinkedIn via `email_verified`, est vérifié d'office. Microsoft ne l'est jamais.
 - Liaison de comptes (ADR 0014) : implicite pour Google et LinkedIn seulement si les deux emails sont vérifiés ; jamais pour Microsoft ; liaison et déliaison manuelles depuis le compte connecté, la dernière méthode ne peut pas être retirée.
 - Sessions : cookie `pitchorium.session_token` (`__Secure-` en HTTPS), `HttpOnly`, `SameSite=Lax`, domaine parent `AUTH_COOKIE_DOMAIN` ; 30 jours, prolongées chaque jour d'usage ; liste et révocation unitaire ou globale par Better Auth.
@@ -42,7 +42,7 @@ Comptes et authentification (cahier des charges §7) avec Better Auth 1.7, mont�
 | `identity.user.sessions-revoked.v1`   | `scope` (`one`, `others`, `all`), `reason` |
 | `identity.user.deletion-requested.v1` | aucun                                      |
 
-L'agrégat est l'utilisateur (`aggregateId`). Les écritures de Better Auth et ces événements sont validés dans la même transaction (une transaction par requête `/v1/auth`).
+L'agrégat est l'utilisateur (`aggregateId`). Chaque écriture de Better Auth est validée avec son événement dans une transaction courte (`withIdentityEvents`, ADR 0019) ; aucune transaction ne couvre un appel réseau (fournisseur OAuth, Have I Been Pwned).
 
 ## Événements consommés
 

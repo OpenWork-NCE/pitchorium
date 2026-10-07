@@ -3,7 +3,6 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import { getRequest, setResponse } from 'better-call/node';
 import type { Request as ExpressRequest } from 'express';
 import { API_CONFIG, type ApiConfig } from '../../../../platform/config';
-import { TransactionManager } from '../../../../platform/database';
 import {
   RawHttpHandler,
   type RawHttpRequestHandler,
@@ -17,17 +16,16 @@ import { BETTER_AUTH } from './better-auth.provider';
 
 const SAFE_METHODS: ReadonlySet<string> = new Set(['GET', 'HEAD', 'OPTIONS']);
 
-/** Thrown inside the transaction to roll it back while keeping the Better Auth response. */
-class RollbackWithResponse extends Error {
-  constructor(readonly response: Response) {
-    super('Rolled back after a server error response');
-  }
+/** `/v1/auth/callback/google?code=...` gives `/callback/google`. */
+function authPath(url: string): string {
+  const { pathname } = new URL(url);
+  return pathname.startsWith(AUTH_BASE_PATH) ? pathname.slice(AUTH_BASE_PATH.length) : pathname;
 }
 
 /**
- * Serves /v1/auth with Better Auth, mounted before the body parsers (ADR 0013). Each request
- * runs in one database transaction, so that Better Auth writes and the outbox events recorded by
- * its hooks commit together; a 5xx response rolls everything back.
+ * Serves /v1/auth with Better Auth, mounted before the body parsers (ADR 0013). No transaction
+ * spans the request: each Better Auth write commits with its identity event in a short
+ * transaction (ADR 0019), so that no connection is held during a call to an OAuth provider.
  */
 @Injectable()
 @RawHttpHandler({ path: AUTH_BASE_PATH })
@@ -37,7 +35,6 @@ export class AuthHttpHandler implements RawHttpRequestHandler {
   constructor(
     @Inject(BETTER_AUTH) private readonly auth: BetterAuthInstance,
     @Inject(API_CONFIG) private readonly config: ApiConfig,
-    private readonly transactions: TransactionManager,
     private readonly scope: AuthRequestScope,
     private readonly errorReporter: ErrorReporter,
     private readonly origins: TrustedOrigins,
@@ -61,21 +58,16 @@ export class AuthHttpHandler implements RawHttpRequestHandler {
     // Only the address resolved by Express (trust proxy) is used for rate limiting.
     request.headers[CLIENT_IP_HEADER] = (request as ExpressRequest).ip ?? '';
 
-    const state = AuthRequestScope.newState();
     const webRequest = getRequest({ base: this.config.http.publicUrl, request });
+    const state = AuthRequestScope.newState(authPath(webRequest.url));
     let result: Response;
     try {
-      result = await this.scope.run(state, () =>
-        this.transactions.run(async () => {
-          const handled = await this.auth.handler(webRequest);
-          if (handled.status >= 500) throw new RollbackWithResponse(handled);
-          return handled;
-        }),
-      );
+      result = await this.scope.run(state, () => this.auth.handler(webRequest));
     } catch (error) {
-      result = error instanceof RollbackWithResponse ? error.response : this.failure(error);
-      state.afterResponse.length = 0;
+      result = this.failure(error);
     }
+    // A failed request sends no email: its writes may be partial.
+    if (result.status >= 500) state.afterResponse.length = 0;
 
     await setResponse(response, result);
     this.scope.flush(state);
