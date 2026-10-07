@@ -50,7 +50,7 @@ pnpm dev
 
 ## Documentation
 
-- [Cahier des charges](docs/product/cahier-des-charges.md) et [lecture du périmètre](docs/product/README.md)
+- Cahier des charges et lecture du périmètre : `docs/product/`, document client confidentiel conservé hors du dépôt (ignoré par git)
 - [Vue d'ensemble de l'architecture](docs/architecture/overview.md)
 - [Modules métier](docs/architecture/modules.md)
 - [Conventions](docs/architecture/conventions.md)
