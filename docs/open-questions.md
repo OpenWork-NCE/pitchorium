@@ -11,8 +11,14 @@ Informations nécessaires au développement et absentes du cahier des charges (`
 ## Matching et découverte
 
 4. Les règles de matching du prototype : correspondances besoins et casquettes, secteurs, complémentarité géographique et sectorielle, ordre de priorité (§2.1, §10.2, §11.4).
-5. La liste des secteurs, des stades d'entreprise, des besoins et des expertises.
+5. La liste des secteurs, des stades d'entreprise, des besoins et des expertises. Provisoirement : secteurs = 21 sections CITI/ISIC rév. 4 (libellés français à faire relire), stades = `idea`, `prototype`, `early_revenue`, `growth`, `scale`, besoins alignés sur les casquettes (`NEED_TO_HATS`), expertises recherchées en texte libre (ADR 0018).
 6. Le contenu de la « découverte éditorialisée » : qui choisit les projets et profils mis en avant (§10.3).
+
+## Profils
+
+28. Les pondérations de la force du profil et les seuils des niveaux Débutant, Intermédiaire, Avancé, Complet (§7.2) : règle provisoire dans `apps/server/src/modules/profiles/domain/profile-strength.ts`.
+29. Le contenu minimal du volet entrepreneur exigé avant de publier un projet (provisoirement : entreprise, secteur, stade, pays de l'entreprise) et du volet contributeur (au moins une casquette et le type de structure).
+30. La longueur maximale du pitch (provisoirement 2 600 caractères, comme la présentation) et la liste des identifiants publics réservés.
 
 ## Paiements
 
@@ -31,8 +37,13 @@ Informations nécessaires au développement et absentes du cahier des charges (`
 16. La vérification d'organisation (badge) : critères et processus de validation.
 17. Le module « Événements » (§14, V3) : aucune description fonctionnelle.
 18. Les missions d'expertise packagées : contenu, déroulé, éventuelle rémunération.
-19. Les rôles d'administration et de modération, et la composition de l'équipe de modération.
+19. Les permissions du rôle `moderator` et la composition de l'équipe de modération (les rôles `member`, `moderator` et `admin` existent ; aucune action n'est encore réservée aux modérateurs).
 20. Les durées de conservation (messages, signalements, journal d'audit, comptes supprimés) et la procédure RGPD de suppression.
+
+## Comptes et conditions
+
+31. Les textes des CGU et de la politique de confidentialité, et leurs identifiants de version (`LEGAL_TERMS_VERSION`, `LEGAL_PRIVACY_VERSION`, actuellement `draft-2026-10` en local).
+32. Le préremplissage LinkedIn : le §7.3 prévoit titre, photo et organisation, mais « Sign In with LinkedIn using OpenID Connect » ne fournit que le nom, la photo et l'email. Le titre et l'organisation demanderaient un produit LinkedIn partenaire (accès au profil complet) : à confirmer ou à retirer du périmètre.
 
 ## Langues
 
@@ -45,4 +56,4 @@ Informations nécessaires au développement et absentes du cahier des charges (`
 24. Le choix de l'hébergeur (conteneurs api et worker, PostgreSQL et Redis managés) et la région.
 25. Les domaines (site, api, bucket public R2) et l'adresse d'expédition des emails.
 26. Le fournisseur de traces OpenTelemetry et le projet Sentry.
-27. Les identifiants OAuth Google, LinkedIn et Microsoft (Microsoft conditionné à la demande B2B selon le §7.3).
+27. Les identifiants OAuth de production Google, LinkedIn et Microsoft (application Entra ID multi-tenant), avec les URI de redirection `<API_PUBLIC_URL>/v1/auth/callback/<fournisseur>`, et le domaine parent des cookies (`AUTH_COOKIE_DOMAIN`).

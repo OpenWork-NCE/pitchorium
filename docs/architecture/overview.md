@@ -27,7 +27,7 @@ Le frontend (`apps/web`) n'existe pas encore. Il consommera `@pitchorium/api-cli
 | api       | `src/main.api.ts`    | HTTP REST sous `/v1` (Express), Socket.IO (adaptateur Redis), Swagger UI sur `/docs` hors production |
 | worker    | `src/main.worker.ts` | Workers BullMQ, relais de l'outbox, tâches planifiées, sonde de santé HTTP sur `WORKER_HEALTH_PORT`  |
 
-Les deux processus chargent les mêmes modules métier ; le module racine diffère (`AppModule` ou `WorkerModule`) et `PlatformModule.forApi()` ou `.forWorker()` choisit les services techniques. `src/main.openapi.ts` exporte le document OpenAPI sans démarrer de serveur (mode `preview` de Nest : aucun provider instancié, aucune connexion).
+Les deux processus chargent les mêmes modules métier, avec leurs providers propres au processus (`forApi()` ou `forWorker()`, voir `src/business-modules.ts`) ; le module racine diffère (`AppModule` ou `WorkerModule`) et `PlatformModule.forApi()` ou `.forWorker()` choisit les services techniques. `src/main.openapi.ts` exporte le document OpenAPI sans démarrer de serveur (mode `preview` de Nest : aucun provider instancié, aucune connexion).
 
 ## Composants
 
@@ -83,6 +83,32 @@ sequenceDiagram
 - Le relais peut tourner sur plusieurs workers (`SKIP LOCKED`). Un échec de publication incrémente `attempts` et repousse `next_attempt_at` (backoff exponentiel plafonné par `OUTBOX_MAX_BACKOFF_MS`).
 - Un événement republié après un arrêt brutal ne crée pas de second job tant que le job est conservé (24 h) ; au-delà, l'inbox empêche un handler de s'exécuter deux fois.
 - L'ordre de traitement entre événements n'est pas garanti.
+
+## Authentification et autorisation
+
+```mermaid
+sequenceDiagram
+  participant B as Navigateur
+  participant H as api (handler /v1/auth)
+  participant BA as Better Auth
+  participant G as api (garde access)
+  participant DB as PostgreSQL
+  B->>H: POST /v1/auth/sign-in/email (Origin de confiance)
+  H->>DB: BEGIN
+  H->>BA: Request web (flux brut)
+  BA->>DB: session, hooks : outbox identity
+  H->>DB: COMMIT
+  H-->>B: 200 + cookie pitchorium.session_token
+  H->>H: emails différés (après la réponse)
+  B->>G: PATCH /v1/me/profile (cookie)
+  G->>DB: session, rôles
+  G->>G: politique de l'action profile.update
+  G-->>B: 403 ACCESS_PREREQUISITES_MISSING ou suite du traitement
+```
+
+- `/v1/auth` est servi par Better Auth avant les body parsers (ADR 0013) ; toutes les autres routes passent par le garde global du module access (ADR 0015).
+- Le handshake Socket.IO est authentifié par la même session ; seul le namespace `/system` reste anonyme.
+- `pnpm admin:create --email <email>` attribue le rôle `admin` à un compte existant ; c'est le seul moyen de créer le premier administrateur.
 
 ## Arrêt propre
 

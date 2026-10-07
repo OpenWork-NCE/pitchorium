@@ -16,3 +16,9 @@ Un fichier par décision, numéroté, au format Contexte / Décision / Conséque
 | [0010](0010-eslint-boundaries.md)              | Frontières vérifiées par ESLint       |
 | [0011](0011-minio-community-images.md)         | Images MinIO communautaires en local  |
 | [0012](0012-runtime-and-version-choices.md)    | Runtime et choix de versions          |
+| [0013](0013-better-auth-mounting.md)           | Montage de Better Auth                |
+| [0014](0014-account-linking-policy.md)         | Politique de liaison de comptes       |
+| [0015](0015-authorization-model.md)            | Modèle d'autorisation                 |
+| [0016](0016-faceted-profile-model.md)          | Modèle de profil à volets             |
+| [0017](0017-privacy-by-default.md)             | Confidentialité par défaut            |
+| [0018](0018-reference-data.md)                 | Données de référence                  |

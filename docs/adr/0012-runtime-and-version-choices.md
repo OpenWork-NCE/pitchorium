@@ -21,6 +21,7 @@ La règle est d'utiliser les dernières versions stables, figées exactement. Pl
 | Zod                       | 4.6.5            | 4.6.5            |                                                                                   |
 | Vitest                    | 5.0.3            | 5.0.3            |                                                                                   |
 | ESLint                    | 10.12.0          | 10.12.0          |                                                                                   |
+| Better Auth / better-call | 1.7.7 / 1.4.0    | 1.7.7            | better-call figé sur la version dont dépend Better Auth                           |
 
 Le serveur est en CommonJS (métadonnées de décorateurs et ordre de chargement maîtrisés) ; les packages partagés sont en ESM et chargés par `require(esm)` de Node 24.
 
