@@ -61,6 +61,12 @@ export class ProfilesFacade {
     return new Map([...found].filter(([, userId]) => !hidden.has(userId)));
   }
 
+  /** Country of residence declared on the profile (ISO 3166-1), null when not given. */
+  async countryOf(userId: string): Promise<string | null> {
+    const [base] = await this.profiles.findBaseProfiles([userId]);
+    return base?.countryCode ?? null;
+  }
+
   /** Privacy settings of a member, null without profile. */
   async visibilityOf(userId: string): Promise<ProfileVisibility | null> {
     const [base] = await this.profiles.findBaseProfiles([userId]);
