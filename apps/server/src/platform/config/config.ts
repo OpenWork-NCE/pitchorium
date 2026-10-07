@@ -36,7 +36,7 @@ export interface CommonConfig {
   emailLinkSecret: string;
   /** Provisional values (docs/open-questions.md). */
   messaging: { defaultPolicy: MessagePolicy; editWindowMs: number };
-  notifications: { aggregationWindowMs: number };
+  notifications: { aggregationWindowMs: number; lowPriorityPerDay: number };
 }
 
 export interface PaymentsConfig {
@@ -138,7 +138,6 @@ export interface WorkerConfig extends CommonConfig {
   notifications: CommonConfig['notifications'] & {
     retentionDays: number;
     fanoutBatchSize: number;
-    lowPriorityPerDay: number;
     unreadMessageEmailDelayMs: number;
     /** Local hour of the digests in the time zone of each member. */
     digestHour: number;
@@ -236,7 +235,10 @@ function toCommonConfig(env: CommonEnv): CommonConfig {
       defaultPolicy: env.MESSAGING_DEFAULT_POLICY,
       editWindowMs: env.MESSAGING_EDIT_WINDOW_MINUTES * 60_000,
     },
-    notifications: { aggregationWindowMs: env.NOTIFICATIONS_AGGREGATION_WINDOW_MINUTES * 60_000 },
+    notifications: {
+      aggregationWindowMs: env.NOTIFICATIONS_AGGREGATION_WINDOW_MINUTES * 60_000,
+      lowPriorityPerDay: env.NOTIFICATIONS_LOW_PRIORITY_PER_DAY,
+    },
   };
 }
 
@@ -316,7 +318,6 @@ export function parseWorkerConfig(rawEnv: RawEnv): WorkerConfig {
       ...common.notifications,
       retentionDays: env.NOTIFICATIONS_RETENTION_DAYS,
       fanoutBatchSize: env.NOTIFICATIONS_FANOUT_BATCH_SIZE,
-      lowPriorityPerDay: env.NOTIFICATIONS_LOW_PRIORITY_PER_DAY,
       unreadMessageEmailDelayMs: env.NOTIFICATIONS_UNREAD_MESSAGE_EMAIL_DELAY_MINUTES * 60_000,
       digestHour: env.NOTIFICATIONS_DIGEST_HOUR,
     },

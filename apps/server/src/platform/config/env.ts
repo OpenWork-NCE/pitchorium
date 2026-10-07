@@ -59,6 +59,7 @@ const commonEnvSchema = z.object({
     .min(1)
     .max(10_080)
     .default(1440),
+  NOTIFICATIONS_LOW_PRIORITY_PER_DAY: z.coerce.number().int().min(1).max(1000).default(20),
   // Payments (section 9): providers, commission and limits (docs/architecture/payments.md).
   PAYMENTS_MODE: z.enum(['simulated', 'live']).default('simulated'),
   STRIPE_SECRET_KEY: z.string().min(1).optional(),
@@ -151,7 +152,6 @@ const workerEnvSchema = commonEnvSchema.extend({
   PROJECTS_ENDING_SOON_HOURS: z.coerce.number().int().min(1).max(2160).default(72),
   NOTIFICATIONS_RETENTION_DAYS: z.coerce.number().int().min(1).max(3650).default(90),
   NOTIFICATIONS_FANOUT_BATCH_SIZE: z.coerce.number().int().min(10).max(10_000).default(500),
-  NOTIFICATIONS_LOW_PRIORITY_PER_DAY: z.coerce.number().int().min(1).max(1000).default(20),
   NOTIFICATIONS_UNREAD_MESSAGE_EMAIL_DELAY_MINUTES: z.coerce
     .number()
     .int()
