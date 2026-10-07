@@ -79,6 +79,7 @@ const apiEnvSchema = commonEnvSchema.extend({
   NETWORK_DECLINE_COOLDOWN_DAYS: z.coerce.number().int().min(0).max(365).default(21),
   NETWORK_REQUEST_TTL_DAYS: z.coerce.number().int().min(1).max(365).default(30),
   NETWORK_MUTUAL_CONNECTIONS_CAP: z.coerce.number().int().min(1).max(100_000).default(999),
+  CONTENT_FEED_EDITORIAL_THRESHOLD: z.coerce.number().int().min(0).max(1000).default(10),
   ORGANIZATIONS_VERIFICATION_CRITERIA: z
     .string()
     .default('')
@@ -102,6 +103,8 @@ const workerEnvSchema = commonEnvSchema.extend({
   MEDIA_ORPHAN_TTL_HOURS: z.coerce.number().int().positive().default(24),
   MEDIA_IMPORT_TIMEOUT_MS: z.coerce.number().int().positive().default(10_000),
   SCHEDULED_TASKS_EVERY_MS: z.coerce.number().int().min(100).optional(),
+  CONTENT_LINK_PREVIEW_TIMEOUT_MS: z.coerce.number().int().positive().default(5000),
+  CONTENT_LINK_PREVIEW_MAX_BYTES: z.coerce.number().int().positive().default(1_048_576),
 });
 
 function requireMailCredentials(env: z.infer<typeof commonEnvSchema>, ctx: z.RefinementCtx): void {

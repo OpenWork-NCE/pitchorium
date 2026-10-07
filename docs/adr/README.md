@@ -34,3 +34,7 @@ Un fichier par décision, numéroté, au format Contexte / Décision / Conséque
 | [0028](0028-connection-and-mutual-follow.md)             | Connexion et suivi mutuel                                    |
 | [0029](0029-blocking.md)                                 | Blocage                                                      |
 | [0030](0030-profile-views-mechanism.md)                  | Mécanisme des vues de profil                                 |
+| [0031](0031-post-visibility.md)                          | Visibilité des publications                                  |
+| [0032](0032-feed-strategy.md)                            | Stratégie du fil                                             |
+| [0033](0033-link-previews-and-ssrf.md)                   | Aperçus de liens et protection anti-SSRF                     |
+| [0034](0034-post-statistics-hyperloglog.md)              | Statistiques de visibilité par HyperLogLog                   |

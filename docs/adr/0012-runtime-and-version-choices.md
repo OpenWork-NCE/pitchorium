@@ -26,6 +26,7 @@ La règle est d'utiliser les dernières versions stables, figées exactement. Pl
 | file-type                    | 22.1.1           | 22.1.1           | ESM chargé par `require(esm)`                                                     |
 | pdfjs-dist / @napi-rs/canvas | 6.4.299 / 1.0.10 | idem             | pdf.js (Apache 2.0) plutôt que MuPDF (AGPL) ; chargé par `import()` dynamique     |
 | ClamAV (image)               | 1.5.4            | 1.5.4            | `clamav/clamav`, signatures incluses                                              |
+| franc-min                    | 6.2.0            | 6.2.0            | détection de la langue des publications (ESM chargé par `require(esm)`)           |
 
 Le serveur est en CommonJS (métadonnées de décorateurs et ordre de chargement maîtrisés) ; les packages partagés sont en ESM et chargés par `require(esm)` de Node 24.
 

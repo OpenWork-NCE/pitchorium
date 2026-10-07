@@ -31,6 +31,11 @@ Informations nécessaires au développement et absentes du cahier des charges (d
 40. La durée de conservation des vues de profil (provisoirement 90 jours, `NETWORK_PROFILE_VIEWS_RETENTION_DAYS`) et le contenu de la mention anonymisée d'une visite privée (provisoirement le premier secteur que le visiteur montre aux membres).
 41. Le plafond de calcul des connexions en commun (provisoirement 999, affiché « 999+ », `NETWORK_MUTUAL_CONNECTIONS_CAP`) et l'arrêt du degré de relation au 2e degré.
 
+## Contenu
+
+42. Le seuil du complément éditorial du fil (provisoirement 10 publications du réseau, `CONTENT_FEED_EDITORIAL_THRESHOLD`) et la composition de l'équipe éditoriale qui met en avant (aujourd'hui les rôles `moderator` et `admin` avec double authentification ; voir aussi la question 6).
+43. La longueur maximale d'un commentaire (provisoirement 1 250 caractères) et le nombre maximal de mentions par publication (provisoirement 20).
+
 ## Organisations
 
 36. Les critères de vérification d'une organisation (pièces exigées par type de structure et par pays, contrôles du modérateur) et le processus de validation : le flux est en place avec une liste de critères configurable (`ORGANIZATIONS_VERIFICATION_CRITERIA`), vide par défaut (§13, §14).

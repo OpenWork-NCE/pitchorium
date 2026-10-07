@@ -61,6 +61,10 @@ export interface ApiConfig extends CommonConfig {
     /** Mutual connections are counted up to this value, then shown as « cap+ ». */
     mutualConnectionsCap: number;
   };
+  content: {
+    /** Below this number of network publications, the feed is completed by highlights. */
+    feedEditorialThreshold: number;
+  };
   organizations: {
     maxCreatedPerUser: number;
     invitationTtlMs: number;
@@ -92,6 +96,7 @@ export interface WorkerConfig extends CommonConfig {
   media: { orphanTtlMs: number; importTimeoutMs: number };
   /** Fixed interval replacing the cron pattern of every scheduled task (tests only). */
   scheduledTasks: { everyMs: number | undefined };
+  content: { linkPreview: { timeoutMs: number; maxBytes: number } };
 }
 
 export class ConfigValidationError extends Error {
@@ -185,6 +190,7 @@ export function parseApiConfig(rawEnv: RawEnv): ApiConfig {
       requestTtlMs: env.NETWORK_REQUEST_TTL_DAYS * 86_400_000,
       mutualConnectionsCap: env.NETWORK_MUTUAL_CONNECTIONS_CAP,
     },
+    content: { feedEditorialThreshold: env.CONTENT_FEED_EDITORIAL_THRESHOLD },
     organizations: {
       maxCreatedPerUser: env.ORGANIZATIONS_MAX_CREATED_PER_USER,
       invitationTtlMs: env.ORGANIZATIONS_INVITATION_TTL_DAYS * 86_400_000,
@@ -226,6 +232,12 @@ export function parseWorkerConfig(rawEnv: RawEnv): WorkerConfig {
       importTimeoutMs: env.MEDIA_IMPORT_TIMEOUT_MS,
     },
     scheduledTasks: { everyMs: env.SCHEDULED_TASKS_EVERY_MS },
+    content: {
+      linkPreview: {
+        timeoutMs: env.CONTENT_LINK_PREVIEW_TIMEOUT_MS,
+        maxBytes: env.CONTENT_LINK_PREVIEW_MAX_BYTES,
+      },
+    },
   };
 }
 
