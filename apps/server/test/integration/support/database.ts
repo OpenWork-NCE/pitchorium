@@ -18,6 +18,9 @@ const BUSINESS_TABLES = [
   'network.profile_views',
   'content.posts',
   'content.reactions',
+  'impact.methodologies',
+  'impact.assessments',
+  'projects.projects',
 ];
 
 export async function truncatePlatformTables(): Promise<void> {
