@@ -13,18 +13,16 @@ export const validationIssueSchema = z.object({
 });
 
 /** RFC 9457 problem details, extended with a stable `code` and the request id. */
-export const problemDetailsSchema = z
-  .object({
-    type: z.string(),
-    title: z.string(),
-    status: z.number().int().min(400).max(599),
-    detail: z.string().optional(),
-    instance: z.string().optional(),
-    code: errorCodeSchema,
-    requestId: z.string().optional(),
-    errors: z.array(validationIssueSchema).optional(),
-  })
-  .meta({ id: 'ProblemDetails' });
+export const problemDetailsSchema = z.object({
+  type: z.string(),
+  title: z.string(),
+  status: z.number().int().min(400).max(599),
+  detail: z.string().optional(),
+  instance: z.string().optional(),
+  code: errorCodeSchema,
+  requestId: z.string().optional(),
+  errors: z.array(validationIssueSchema).optional(),
+});
 
 export type ValidationIssue = z.infer<typeof validationIssueSchema>;
 export type ProblemDetails = z.infer<typeof problemDetailsSchema>;
