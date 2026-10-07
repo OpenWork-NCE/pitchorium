@@ -33,6 +33,10 @@
       "dependsOn": ["^build"],
       "cache": false,
       "persistent": true
+    },
+    "check:keys": {
+      "dependsOn": ["^build"],
+      "outputs": []
     }
   }
 }

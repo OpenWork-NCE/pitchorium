@@ -1,0 +1,16 @@
+{
+  "BAD_REQUEST": "La requête est invalide.",
+  "VALIDATION_FAILED": "Certaines informations sont invalides.",
+  "IDEMPOTENCY_KEY_MISSING": "L'en-tête Idempotency-Key est obligatoire pour cette opération.",
+  "UNAUTHENTICATED": "Vous devez être connecté.",
+  "FORBIDDEN": "Vous n'avez pas accès à cette ressource.",
+  "NOT_FOUND": "La ressource demandée est introuvable.",
+  "CONFLICT": "L'opération est en conflit avec l'état actuel de la ressource.",
+  "IDEMPOTENCY_REQUEST_IN_PROGRESS": "Une requête identique est déjà en cours de traitement.",
+  "PAYLOAD_TOO_LARGE": "Le contenu envoyé est trop volumineux.",
+  "UNSUPPORTED_MEDIA_TYPE": "Le format du contenu envoyé n'est pas pris en charge.",
+  "IDEMPOTENCY_KEY_REUSED": "Cette clé d'idempotence a déjà servi pour une autre requête.",
+  "RATE_LIMITED": "Trop de requêtes. Réessayez dans quelques instants.",
+  "INTERNAL_ERROR": "Une erreur inattendue est survenue.",
+  "SERVICE_UNAVAILABLE": "Le service est momentanément indisponible."
+}

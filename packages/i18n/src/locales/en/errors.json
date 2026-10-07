@@ -1,0 +1,16 @@
+{
+  "BAD_REQUEST": "The request is invalid.",
+  "VALIDATION_FAILED": "Some information is invalid.",
+  "IDEMPOTENCY_KEY_MISSING": "The Idempotency-Key header is required for this operation.",
+  "UNAUTHENTICATED": "You must be signed in.",
+  "FORBIDDEN": "You do not have access to this resource.",
+  "NOT_FOUND": "The requested resource could not be found.",
+  "CONFLICT": "The operation conflicts with the current state of the resource.",
+  "IDEMPOTENCY_REQUEST_IN_PROGRESS": "An identical request is already being processed.",
+  "PAYLOAD_TOO_LARGE": "The submitted content is too large.",
+  "UNSUPPORTED_MEDIA_TYPE": "The format of the submitted content is not supported.",
+  "IDEMPOTENCY_KEY_REUSED": "This idempotency key was already used for another request.",
+  "RATE_LIMITED": "Too many requests. Please try again shortly.",
+  "INTERNAL_ERROR": "An unexpected error occurred.",
+  "SERVICE_UNAVAILABLE": "The service is temporarily unavailable."
+}

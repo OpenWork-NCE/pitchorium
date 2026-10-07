@@ -21,6 +21,7 @@
     "db:migrate": "pnpm --filter @pitchorium/db db:migrate",
     "db:seed": "pnpm --filter @pitchorium/db db:seed",
     "db:check": "pnpm --filter @pitchorium/db db:check",
+    "i18n:check": "turbo run check:keys",
     "openapi:generate": "turbo run openapi:generate",
     "api-client:generate": "turbo run api-client:generate",
     "infra:up": "docker compose -f infra/docker/compose.yaml up -d --wait postgres valkey minio mailpit && docker compose -f infra/docker/compose.yaml run --rm minio-init",

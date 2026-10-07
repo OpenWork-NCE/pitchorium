@@ -1,0 +1,11 @@
+{
+  "sourceLocale": "fr",
+  "fallbackLocale": "fr",
+  "locales": {
+    "fr": { "status": "source", "reviewedBy": null, "reviewedAt": null },
+    "en": { "status": "pending-review", "reviewedBy": null, "reviewedAt": null },
+    "sw": { "status": "empty", "reviewedBy": null, "reviewedAt": null },
+    "wo": { "status": "empty", "reviewedBy": null, "reviewedAt": null },
+    "ln": { "status": "empty", "reviewedBy": null, "reviewedAt": null }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "layout": {
+    "footer": "You are receiving this email because you use Pitchorium."
+  },
+  "technicalTest": {
+    "subject": "Pitchorium test email",
+    "preview": "The email delivery pipeline works.",
+    "heading": "Test email",
+    "body": "This email was sent on {{sentAt}} to check the delivery pipeline."
+  }
+}

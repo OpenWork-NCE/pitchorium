@@ -37,6 +37,7 @@ pnpm dev
 | `pnpm db:migrate`                   | Applique les migrations sur `DATABASE_URL`                          |
 | `pnpm db:seed`                      | Seed idempotent (feature flags)                                     |
 | `pnpm db:check`                     | Vérifie la cohérence des migrations                                 |
+| `pnpm i18n:check`                   | Vérifie l'alignement des clés de traduction sur le français         |
 | `pnpm openapi:generate`             | Exporte `apps/server/openapi/openapi.json` sans démarrer de serveur |
 | `pnpm api-client:generate`          | Régénère le client Orval à partir de l'OpenAPI                      |
 | `pnpm infra:up` / `pnpm infra:down` | Démarre ou arrête l'infrastructure locale                           |

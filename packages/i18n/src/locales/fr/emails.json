@@ -1,0 +1,11 @@
+{
+  "layout": {
+    "footer": "Vous recevez cet email car vous utilisez Pitchorium."
+  },
+  "technicalTest": {
+    "subject": "Email de test Pitchorium",
+    "preview": "La chaîne d'envoi d'emails fonctionne.",
+    "heading": "Email de test",
+    "body": "Cet email a été envoyé le {{sentAt}} pour vérifier la chaîne d'envoi."
+  }
+}
