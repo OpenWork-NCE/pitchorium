@@ -8,6 +8,7 @@ export * from './errors/problem-details.js';
 export * from './health.js';
 export * from './identity.js';
 export * from './impact.js';
+export * from './labels.js';
 export * from './ids.js';
 export * from './locale.js';
 export * from './media.js';

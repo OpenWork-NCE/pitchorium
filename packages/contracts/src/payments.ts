@@ -77,6 +77,7 @@ export const PAYMENTS_UNAVAILABLE_REASONS = [
   'holder_not_ready',
   'no_payment_route',
 ] as const;
+export const paymentsUnavailableReasonSchema = z.enum(PAYMENTS_UNAVAILABLE_REASONS);
 
 export const paymentMethodOptionSchema = z.object({
   method: paymentMethodSchema,
@@ -94,7 +95,7 @@ export const paymentCurrencyOptionSchema = z.object({
 export const paymentOptionsSchema = z.object({
   projectId: uuidV7Schema,
   acceptsPayments: z.boolean(),
-  unavailableReason: z.enum(PAYMENTS_UNAVAILABLE_REASONS).nullable(),
+  unavailableReason: paymentsUnavailableReasonSchema.nullable(),
   contributorCountry: countryCodeSchema.nullable(),
   /** Collected kinds the project accepts. */
   kinds: z.array(contributionKindSchema),
@@ -333,11 +334,14 @@ export const submitKycRequestSchema = z.object({
   certification: z.literal(true),
 });
 
+export const KYC_REVIEW_STATUSES = ['pending', 'approved', 'rejected'] as const;
+export const kycReviewStatusSchema = z.enum(KYC_REVIEW_STATUSES);
+
 export const kycSubmissionSchema = z.object({
   id: uuidV7Schema,
   userId: uuidV7Schema,
   holder: memberCardSchema.nullable(),
-  status: z.enum(['pending', 'approved', 'rejected']),
+  status: kycReviewStatusSchema,
   documentMediaIds: z.array(uuidV7Schema),
   submittedAt: z.iso.datetime(),
   decidedAt: z.iso.datetime().nullable(),
@@ -353,7 +357,7 @@ export const kycOverviewSchema = z.object({
 export const kycSubmissionPageSchema = cursorPageSchema(kycSubmissionSchema);
 export const kycSubmissionIdParamsSchema = z.object({ kycSubmissionId: uuidV7Schema });
 export const kycSubmissionListQuerySchema = cursorPageQuerySchema.extend({
-  status: z.enum(['pending', 'approved', 'rejected']).optional(),
+  status: kycReviewStatusSchema.optional(),
 });
 export const kycDecisionRequestSchema = z.object({
   decision: z.enum(['approved', 'rejected']),
@@ -361,6 +365,9 @@ export const kycDecisionRequestSchema = z.object({
 });
 
 /** Refund by an administrator: all that remains, or a part (section 13). */
+export const REFUND_STATUSES = ['pending', 'succeeded', 'failed'] as const;
+export const refundStatusSchema = z.enum(REFUND_STATUSES);
+
 export const refundRequestSchema = z.object({
   amount: positiveMoneySchema.optional(),
   reason: decisionReasonSchema,
@@ -371,7 +378,7 @@ export const refundSchema = z.object({
   contributionId: uuidV7Schema,
   amount: moneySchema,
   commissionRefunded: moneySchema,
-  status: z.enum(['pending', 'succeeded', 'failed']),
+  status: refundStatusSchema,
   reason: z.string(),
   createdAt: z.iso.datetime(),
 });
@@ -393,6 +400,9 @@ export const DISCREPANCY_KINDS = [
 ] as const;
 export const discrepancyKindSchema = z.enum(DISCREPANCY_KINDS);
 
+export const DISCREPANCY_STATUSES = ['open', 'resolved'] as const;
+export const discrepancyStatusSchema = z.enum(DISCREPANCY_STATUSES);
+
 export const discrepancySchema = z.object({
   id: uuidV7Schema,
   kind: discrepancyKindSchema,
@@ -402,7 +412,7 @@ export const discrepancySchema = z.object({
   projectId: uuidV7Schema.nullable(),
   expected: z.string().nullable(),
   actual: z.string().nullable(),
-  status: z.enum(['open', 'resolved']),
+  status: discrepancyStatusSchema,
   detectedAt: z.iso.datetime(),
   resolvedAt: z.iso.datetime().nullable(),
   resolution: z.string().nullable(),
@@ -411,7 +421,7 @@ export const discrepancySchema = z.object({
 export const discrepancyPageSchema = cursorPageSchema(discrepancySchema);
 export const discrepancyIdParamsSchema = z.object({ discrepancyId: uuidV7Schema });
 export const discrepancyListQuerySchema = cursorPageQuerySchema.extend({
-  status: z.enum(['open', 'resolved']).optional(),
+  status: discrepancyStatusSchema.optional(),
 });
 export const resolveDiscrepancyRequestSchema = z.object({ note: decisionReasonSchema });
 
