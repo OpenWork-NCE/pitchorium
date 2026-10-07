@@ -67,4 +67,22 @@ export const ACTION_POLICIES: Readonly<Record<Action, ActionPolicy>> = {
   'network.block': {},
   'network.settings.update': {},
   'network.profile-views.read': {},
+  // Content (§10.3). A resolver gives the author of the publication or comment as owner.
+  'content.feed.read': {},
+  'content.post.read': {},
+  // Publishing, reposting and commenting reach other members: a verified email first.
+  'content.post.create': { requires: ['email_verified'] },
+  'content.post.update': { ownership: 'self' },
+  'content.post.delete': { ownership: 'self' },
+  'content.post.repost': { requires: ['email_verified'] },
+  'content.post.save': {},
+  'content.post.hide': {},
+  // Editorial highlight of the « découverte éditorialisée » (§10.3).
+  'content.post.feature': { roles: ['moderator', 'admin'], sensitive: true },
+  'content.post.stats.read': { ownership: 'self' },
+  'content.reaction.set': {},
+  'content.comment.create': { requires: ['email_verified'] },
+  'content.comment.update': { ownership: 'self' },
+  // The author of the comment, or the author of the publication it belongs to.
+  'content.comment.delete': { resourceRoles: ['author', 'post_author'] },
 };

@@ -170,6 +170,20 @@ const MATRIX: Record<Action, Record<Scenario, Expected>> = {
   'network.block': membersWithAcceptedTerms,
   'network.settings.update': membersWithAcceptedTerms,
   'network.profile-views.read': membersWithAcceptedTerms,
+  'content.feed.read': membersWithAcceptedTerms,
+  'content.post.read': membersWithAcceptedTerms,
+  'content.post.create': membersWithVerifiedEmail,
+  'content.post.update': membersWithAcceptedTerms,
+  'content.post.delete': membersWithAcceptedTerms,
+  'content.post.repost': membersWithVerifiedEmail,
+  'content.post.save': membersWithAcceptedTerms,
+  'content.post.hide': membersWithAcceptedTerms,
+  'content.post.feature': moderatorsAndAdminsWith2fa,
+  'content.post.stats.read': membersWithAcceptedTerms,
+  'content.reaction.set': membersWithAcceptedTerms,
+  'content.comment.create': membersWithVerifiedEmail,
+  'content.comment.update': membersWithAcceptedTerms,
+  'content.comment.delete': organizationRoleRequired,
 };
 
 function outcome(action: Action, scenario: Scenario): Expected {
@@ -204,6 +218,21 @@ describe('access policies', () => {
     expect(decide('profile.read', { ...facts('member'), resource: other })).toEqual({
       allowed: true,
     });
+  });
+
+  it('lets the author of a comment or of its publication delete the comment', () => {
+    const comment = (roles: string[]) => ({ type: 'comment', id: 'c-1', ownerId: 'user-2', roles });
+    const decision = (roles: string[]) =>
+      decide('content.comment.delete', { ...facts('member'), resource: comment(roles) });
+    expect(decision(['author'])).toEqual({ allowed: true });
+    expect(decision(['post_author'])).toEqual({ allowed: true });
+    expect(decision([])).toMatchObject({ code: 'FORBIDDEN' });
+    for (const action of ['content.post.update', 'content.comment.update'] as const) {
+      const other = { type: 'post', id: 'p-1', ownerId: 'user-2' };
+      expect(decide(action, { ...facts('member'), resource: other })).toMatchObject({
+        code: 'FORBIDDEN',
+      });
+    }
   });
 
   it('grants organization actions by the role held on the organization', () => {

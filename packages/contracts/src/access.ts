@@ -44,6 +44,20 @@ export const ACTIONS = [
   'network.block',
   'network.settings.update',
   'network.profile-views.read',
+  'content.feed.read',
+  'content.post.read',
+  'content.post.create',
+  'content.post.update',
+  'content.post.delete',
+  'content.post.repost',
+  'content.post.save',
+  'content.post.hide',
+  'content.post.feature',
+  'content.post.stats.read',
+  'content.reaction.set',
+  'content.comment.create',
+  'content.comment.update',
+  'content.comment.delete',
 ] as const;
 export const actionSchema = z.enum(ACTIONS);
 
