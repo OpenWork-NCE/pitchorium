@@ -73,6 +73,18 @@ export class OrganizationsFacade implements OnModuleInit {
     });
   }
 
+  /** Identifiers of live organizations by current slug (mentions `@slug`). */
+  async idsBySlugs(slugs: readonly string[]): Promise<Map<string, string>> {
+    const ids = new Map<string, string>();
+    for (const slug of new Set(slugs)) {
+      const resolved = await this.organizations.resolveSlug(slug);
+      if (!resolved?.current) continue;
+      const organization = await this.organizations.findById(resolved.organizationId);
+      if (organization && !organization.deletedAt) ids.set(slug, organization.id);
+    }
+    return ids;
+  }
+
   /** Cards of live organizations, with their public logo, by id. */
   async cards(ids: readonly string[]): Promise<Map<string, OrganizationCard>> {
     const organizations = (await this.organizations.findByIds(ids)).filter(
