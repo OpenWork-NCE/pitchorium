@@ -99,3 +99,12 @@ export interface ProfileView {
 export interface ProfileViewListener {
   profileViewed(view: ProfileView): void;
 }
+
+/**
+ * Implemented by the network module and registered at startup: the members a viewer must not
+ * see (a block in either direction, ADR 0029), so that profiles hides them without depending
+ * on network. Without a registered filter, nobody is hidden.
+ */
+export interface ProfileAccessFilter {
+  hiddenFrom(viewerId: string, userIds: readonly string[]): Promise<ReadonlySet<string>>;
+}

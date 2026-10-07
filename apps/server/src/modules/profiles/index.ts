@@ -12,6 +12,7 @@ export { type MemberCard, ProfilesFacade } from './application/profiles.facade';
 export type {
   OrganizationDirectory,
   OrganizationSummary,
+  ProfileAccessFilter,
   ProfileView,
   ProfileViewListener,
 } from './application/ports';

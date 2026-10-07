@@ -3,7 +3,13 @@ import type { ProfileVisibility } from '@pitchorium/contracts';
 import { TransactionManager } from '../../../platform/database';
 import { ProfileUpdated } from '../domain/profile-events';
 import { OrganizationDirectoryRegistry } from './organization-directory.registry';
-import { type OrganizationDirectory, ProfileRepository, type ProfileViewListener } from './ports';
+import {
+  type OrganizationDirectory,
+  type ProfileAccessFilter,
+  ProfileRepository,
+  type ProfileViewListener,
+} from './ports';
+import { ProfileAccessRegistry } from './profile-access.registry';
 import { ProfileViewRegistry } from './profile-view.registry';
 import { ProfileDisplayService } from './profile-display.service';
 import { ProfileEventsRecorder } from './profile-events.recorder';
@@ -31,16 +37,27 @@ export class ProfilesFacade {
     private readonly events: ProfileEventsRecorder,
     private readonly transactions: TransactionManager,
     private readonly views: ProfileViewRegistry,
+    private readonly access: ProfileAccessRegistry,
   ) {}
 
-  /** User id behind a current or former handle, null when unknown. */
-  async userIdOf(handle: string): Promise<string | null> {
-    return (await this.profiles.resolveHandle(handle))?.userId ?? null;
+  /**
+   * User id behind a current or former handle, null when unknown. With a viewer, a member
+   * hidden from them (block in either direction) is unknown too.
+   */
+  async userIdOf(handle: string, viewerId: string | null = null): Promise<string | null> {
+    const userId = (await this.profiles.resolveHandle(handle))?.userId ?? null;
+    if (!userId || (await this.access.isHidden(viewerId, userId))) return null;
+    return userId;
   }
 
-  /** User ids of the given current handles (mentions), by handle. */
-  userIdsByHandles(handles: readonly string[]): Promise<Map<string, string>> {
-    return this.profiles.userIdsByHandles(handles);
+  /** User ids of the given current handles (mentions), by handle, without hidden members. */
+  async userIdsByHandles(
+    handles: readonly string[],
+    viewerId: string | null = null,
+  ): Promise<Map<string, string>> {
+    const found = await this.profiles.userIdsByHandles(handles);
+    const hidden = await this.access.hiddenFrom(viewerId, [...found.values()]);
+    return new Map([...found].filter(([, userId]) => !hidden.has(userId)));
   }
 
   /** Privacy settings of a member, null without profile. */
@@ -62,6 +79,11 @@ export class ProfilesFacade {
     this.views.register(listener);
   }
 
+  /** Called at startup by the network module, which hides blocked members (ADR 0029). */
+  registerProfileAccessFilter(filter: ProfileAccessFilter): void {
+    this.access.register(filter);
+  }
+
   /** Throws PROFILES_UNKNOWN_REFERENCE for a country missing from the reference data. */
   assertCountries(codes: readonly string[]): Promise<void> {
     return this.reference.assertCountries(codes);
@@ -71,10 +93,18 @@ export class ProfilesFacade {
     return this.reference.assertSectors(codes);
   }
 
-  /** Cards of the given members that have a profile, by user id. */
-  async memberCards(userIds: readonly string[]): Promise<Map<string, MemberCard>> {
+  /**
+   * Cards of the given members that have a profile, by user id. With a viewer, members hidden
+   * from them are left out, as if they had no profile.
+   */
+  async memberCards(
+    userIds: readonly string[],
+    viewerId: string | null = null,
+  ): Promise<Map<string, MemberCard>> {
     const cards = new Map<string, MemberCard>();
-    for (const base of await this.profiles.findBaseProfiles(userIds)) {
+    const hidden = await this.access.hiddenFrom(viewerId, userIds);
+    const shown = hidden.size === 0 ? userIds : userIds.filter((id) => !hidden.has(id));
+    for (const base of await this.profiles.findBaseProfiles(shown)) {
       const { avatarUrl } = await this.display.resolve({
         base,
         entrepreneur: null,

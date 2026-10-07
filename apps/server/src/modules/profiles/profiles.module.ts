@@ -1,5 +1,6 @@
 import { type DynamicModule, Module, type Provider } from '@nestjs/common';
 import { CurrentUserService } from './application/current-user.service';
+import { ProfileAccessRegistry } from './application/profile-access.registry';
 import { ProfileEventsRecorder } from './application/profile-events.recorder';
 import { OrganizationDirectoryRegistry } from './application/organization-directory.registry';
 import { ProfileDisplayService } from './application/profile-display.service';
@@ -30,6 +31,7 @@ const SHARED_PROVIDERS: Provider[] = [
   OrganizationDirectoryRegistry,
   ProfileDisplayService,
   ProfileViewRegistry,
+  ProfileAccessRegistry,
   ProfilesFacade,
 ];
 

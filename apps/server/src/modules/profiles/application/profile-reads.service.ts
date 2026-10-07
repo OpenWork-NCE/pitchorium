@@ -3,6 +3,7 @@ import type { OwnProfile, ProfileView } from '@pitchorium/contracts';
 import { Clock, DomainError } from '../../../platform/kernel';
 import { profileStrength } from '../domain/profile-strength';
 import { ownProfileView, profileView, publicProfileView } from '../domain/profile-views';
+import { ProfileAccessRegistry } from './profile-access.registry';
 import { ProfileDisplayService } from './profile-display.service';
 import { ProfileViewRegistry } from './profile-view.registry';
 import { ProfileRepository } from './ports';
@@ -21,6 +22,7 @@ export class ProfileReadsService {
     private readonly writer: ProfilesService,
     private readonly display: ProfileDisplayService,
     private readonly views: ProfileViewRegistry,
+    private readonly access: ProfileAccessRegistry,
     private readonly clock: Clock,
   ) {}
 
@@ -29,10 +31,13 @@ export class ProfileReadsService {
     return ownProfileView(profile, profileStrength(profile), await this.display.resolve(profile));
   }
 
-  /** Member view; a former handle answers with the current one (redirect). */
+  /**
+   * Member view; a former handle answers with the current one (redirect). A member on either
+   * side of a block with the viewer is not found, through a former handle too (ADR 0029).
+   */
   async forMember(handle: string, viewerId: string): Promise<ProfileLookup> {
     const resolved = await this.profiles.resolveHandle(handle);
-    if (!resolved) throw notFound();
+    if (!resolved || (await this.access.isHidden(viewerId, resolved.userId))) throw notFound();
     const profile = await this.profiles.findByUserId(resolved.userId);
     if (!profile) throw notFound();
     if (!resolved.current) return { kind: 'moved', handle: profile.base.handle };
