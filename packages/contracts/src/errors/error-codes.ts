@@ -152,6 +152,92 @@ export const errorCodes = {
     status: 403,
     title: 'Only owners and admins publish as the organization',
   },
+  IMPACT_METHODOLOGY_UNAVAILABLE: { status: 409, title: 'No impact methodology is published' },
+  IMPACT_METHODOLOGY_NOT_FOUND: { status: 404, title: 'Impact methodology version not found' },
+  IMPACT_METHODOLOGY_NOT_DRAFT: {
+    status: 409,
+    title: 'A published or archived methodology version cannot change',
+  },
+  IMPACT_METHODOLOGY_NOT_PUBLISHED: {
+    status: 409,
+    title: 'Only the published methodology version can be archived',
+  },
+  IMPACT_METHODOLOGY_OUTDATED: {
+    status: 409,
+    title: 'The answers were given for a methodology version that is no longer published',
+  },
+  IMPACT_ANSWERS_INVALID: {
+    status: 422,
+    title: 'Every criterion must be answered with a level of its scale',
+  },
+  IMPACT_DEMO_REFUSED: {
+    status: 403,
+    title: 'The demonstration methodology is refused in production',
+  },
+  PROJECTS_NOT_FOUND: { status: 404, title: 'Project not found' },
+  PROJECTS_SLUG_TAKEN: { status: 409, title: 'Project slug is already taken' },
+  PROJECTS_SLUG_RESERVED: { status: 409, title: 'Project slug is reserved' },
+  PROJECTS_NOT_DRAFT: { status: 409, title: 'Only a draft project allows this action' },
+  PROJECTS_INVALID_TRANSITION: {
+    status: 409,
+    title: 'The project status does not allow this transition',
+  },
+  PROJECTS_NOT_PUBLISHABLE: { status: 422, title: 'Project fields are missing for publication' },
+  PROJECTS_PUBLIC_DISPLAY_CONSENT_REQUIRED: {
+    status: 422,
+    title: 'Consent to the public display of the team is required',
+  },
+  PROJECTS_IMPACT_ASSESSMENT_REQUIRED: {
+    status: 422,
+    title: 'A self-declared impact assessment is required before publication',
+  },
+  PROJECTS_CURRENCY_NOT_SUPPORTED: { status: 422, title: 'Project amounts are labelled in euros' },
+  PROJECTS_TIERS_INVALID: {
+    status: 422,
+    title: 'Tier thresholds must increase strictly and the last one equal the goal',
+  },
+  PROJECTS_COUNTRY_NOT_ELIGIBLE: {
+    status: 422,
+    title: 'Project countries must be in Africa or the Caribbean',
+  },
+  PROJECTS_VIDEO_URL_INVALID: {
+    status: 422,
+    title: 'Only YouTube and Vimeo video links are accepted',
+  },
+  PROJECTS_DESCRIPTION_INVALID: {
+    status: 422,
+    title: 'The description uses Markdown outside the allowed subset',
+  },
+  PROJECTS_FUNDING_LOCKED: {
+    status: 409,
+    title: 'Amounts are locked after the first paid contribution',
+  },
+  PROJECTS_ORGANIZATION_ROLE_REQUIRED: {
+    status: 403,
+    title: 'Only owners and admins of the organization may carry a project with it',
+  },
+  PROJECTS_TEAM_MEMBER_NOT_FOUND: { status: 404, title: 'Project team member not found' },
+  PROJECTS_TEAM_MEMBER_EXISTS: {
+    status: 409,
+    title: 'The member is already in the team or invited',
+  },
+  PROJECTS_INVITATION_NOT_FOUND: { status: 404, title: 'Project invitation not found' },
+  PROJECTS_LAST_OWNER: { status: 409, title: 'A project cannot be left without an owner' },
+  PROJECTS_REWARD_NOT_FOUND: { status: 404, title: 'Reward not found' },
+  PROJECTS_REWARD_INVALID: {
+    status: 422,
+    title: 'Reward instruments must be accepted by the project and exclude love money',
+  },
+  PROJECTS_REWARD_SOLD_OUT: { status: 409, title: 'Reward sold out' },
+  PROJECTS_REWARD_IN_USE: { status: 409, title: 'A reward with reservations cannot be deleted' },
+  PROJECTS_RESERVATION_NOT_FOUND: { status: 404, title: 'Reward reservation not found' },
+  PROJECTS_UPDATE_NOT_FOUND: { status: 404, title: 'Project update not found' },
+  PROJECTS_NOT_OPEN: { status: 409, title: 'The project is not published' },
+  PROJECTS_CONTRIBUTION_CONFLICT: {
+    status: 409,
+    title: 'The contribution was already applied with other values',
+  },
+  PROJECTS_CONTRIBUTION_NOT_FOUND: { status: 404, title: 'Contribution not found' },
   INTERNAL_ERROR: { status: 500, title: 'Internal error' },
   SERVICE_UNAVAILABLE: { status: 503, title: 'Service unavailable' },
 } as const satisfies Record<string, ErrorCodeDefinition>;
