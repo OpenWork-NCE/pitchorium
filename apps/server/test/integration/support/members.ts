@@ -70,18 +70,35 @@ export async function createMember(
   return { agent, email, userId: user.id };
 }
 
+/** Window of the rate limit of Better Auth on `/two-factor/*`: 3 requests per 10 seconds. */
+const TWO_FACTOR_WINDOW_MS = 10_000;
+
+/**
+ * Sends a request to `/two-factor/*`, waiting for the next window of the rate limit of the
+ * two-factor plugin when the tests of every file, from the same address, used it up.
+ */
+export async function twoFactorRequest(send: () => request.Test): Promise<request.Response> {
+  for (let attempt = 0; ; attempt += 1) {
+    const response = await send();
+    if (response.status !== 429 || attempt === 2) return response;
+    await new Promise((resolve) => setTimeout(resolve, TWO_FACTOR_WINDOW_MS));
+  }
+}
+
 /** Grants a platform role to a member, who then enables two-factor authentication. */
 export async function grantRoleWith2fa(member: Member, role: 'moderator' | 'admin'): Promise<void> {
   await query(
     `INSERT INTO access.role_assignments (user_id, role, granted_at) VALUES ($1, $2, now())`,
     [member.userId, role],
   );
-  const enabled = await member.agent
-    .post('/v1/auth/two-factor/enable')
-    .send({ password: PASSWORD })
-    .expect(200);
-  await member.agent
-    .post('/v1/auth/two-factor/verify-totp')
-    .send({ code: totp(enabled.body.totpURI as string) })
-    .expect(200);
+  const enabled = await twoFactorRequest(() =>
+    member.agent.post('/v1/auth/two-factor/enable').send({ password: PASSWORD }),
+  );
+  expect(enabled.status).toBe(200);
+  const verified = await twoFactorRequest(() =>
+    member.agent
+      .post('/v1/auth/two-factor/verify-totp')
+      .send({ code: totp(enabled.body.totpURI as string) }),
+  );
+  expect(verified.status).toBe(200);
 }

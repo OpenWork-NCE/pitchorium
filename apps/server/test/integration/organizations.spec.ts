@@ -20,8 +20,7 @@ import { FakeMalwareScanner } from './support/fake-malware-scanner';
 import { minimalPdf, png } from './support/files';
 import { linkIn, Mailpit, type ReceivedEmail } from './support/mailpit';
 import { uploadFile, waitUntilProcessed } from './support/media';
-import { browser, createMember, type Member, PASSWORD } from './support/members';
-import { totp } from './support/totp';
+import { browser, createMember, grantRoleWith2fa, type Member } from './support/members';
 import { createWorkerTestingModule } from './support/worker-testing-module';
 
 const TERANGA = {
@@ -76,18 +75,7 @@ describe('organizations', () => {
 
   async function moderator(): Promise<Member> {
     const member = await createMember(app, 'moderator@pitchorium.test', { name: 'Modo' });
-    await query(
-      `INSERT INTO access.role_assignments (user_id, role, granted_at) VALUES ($1, 'moderator', now())`,
-      [member.userId],
-    );
-    const enabled = await member.agent
-      .post('/v1/auth/two-factor/enable')
-      .send({ password: PASSWORD })
-      .expect(200);
-    await member.agent
-      .post('/v1/auth/two-factor/verify-totp')
-      .send({ code: totp(enabled.body.totpURI as string) })
-      .expect(200);
+    await grantRoleWith2fa(member, 'moderator');
     return member;
   }
 
