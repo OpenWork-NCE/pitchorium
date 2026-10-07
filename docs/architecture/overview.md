@@ -158,4 +158,4 @@ Sur SIGTERM, Nest déclenche les hooks d'arrêt : l'api cesse d'accepter des con
 | Antivirus     | Conteneur ClamAV joignable par le worker (`CLAMAV_HOST`, `CLAMAV_PORT`)                          |
 | Web           | `apps/web`, étape ultérieure, servi séparément de l'api                                          |
 
-L'hébergeur n'est pas choisi (voir `docs/open-questions.md`). Les migrations s'appliquent avant le déploiement de l'api et du worker avec `pnpm db:migrate`.
+La configuration de production du stockage (buckets, CORS, domaine public) est décrite dans `storage.md`. L'hébergeur n'est pas choisi (voir `docs/open-questions.md`). Les migrations s'appliquent avant le déploiement de l'api et du worker avec `pnpm db:migrate`.
