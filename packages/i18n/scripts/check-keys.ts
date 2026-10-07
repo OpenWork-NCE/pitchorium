@@ -1,6 +1,8 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { AUTH_ERROR_CODES, errorCodes } from '@pitchorium/contracts';
+import * as contracts from '@pitchorium/contracts';
+
+const { AUTH_ERROR_CODES, errorCodes, LABELLED_ENUMS, TECHNICAL_ENUMS } = contracts;
 
 type Tree = { [key: string]: string | Tree };
 
@@ -47,6 +49,33 @@ if (missingAuthCodes.length > 0) {
   failures.push(
     `${manifest.sourceLocale}/errors: missing /v1/auth codes ${missingAuthCodes.map((code) => `auth.${code}`).join(', ')}`,
   );
+}
+
+// Every enum exported by the contracts is labelled in `reference`, or declared technical.
+const labelled = new Set<unknown>(Object.values(LABELLED_ENUMS).flat());
+const isEnum = (value: unknown): value is { options: readonly string[] } =>
+  typeof value === 'object' &&
+  value !== null &&
+  '_zod' in value &&
+  (value as { _zod: { def: { type: string } } })._zod.def.type === 'enum';
+const unclassified = Object.entries(contracts)
+  .filter(
+    ([name, value]) => isEnum(value) && !labelled.has(value) && !TECHNICAL_ENUMS.includes(name),
+  )
+  .map(([name]) => name);
+if (unclassified.length > 0) {
+  failures.push(
+    `contracts: enums neither in LABELLED_ENUMS nor in TECHNICAL_ENUMS: ${unclassified.join(', ')}`,
+  );
+}
+const reference = source.get('reference') ?? new Set<string>();
+const missingLabels = Object.entries(LABELLED_ENUMS).flatMap(([group, schemas]) =>
+  [...new Set(schemas.flatMap((schema) => schema.options))]
+    .map((value) => `${group}.${value}`)
+    .filter((key) => !reference.has(key)),
+);
+if (missingLabels.length > 0) {
+  failures.push(`${manifest.sourceLocale}/reference: missing labels ${missingLabels.join(', ')}`);
 }
 
 for (const [locale, { status }] of Object.entries(manifest.locales)) {

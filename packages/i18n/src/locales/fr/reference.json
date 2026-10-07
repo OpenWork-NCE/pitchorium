@@ -382,5 +382,225 @@
       "partial": "Partiel (DEMO)",
       "full": "Complet (DEMO)"
     }
+  },
+  "visibilityLevels": {
+    "public": "Public",
+    "members": "Membres",
+    "private": "Privé"
+  },
+  "profileStrengthLevels": {
+    "beginner": "Débutant",
+    "intermediate": "Intermédiaire",
+    "advanced": "Avancé",
+    "complete": "Complet"
+  },
+  "profileElements": {
+    "avatar": "Photo",
+    "display_name": "Nom",
+    "headline": "Titre",
+    "location": "Localisation",
+    "bio": "Présentation",
+    "languages": "Langues",
+    "links": "Liens",
+    "cover": "Photo de couverture",
+    "intention": "Intention",
+    "facet": "Volet entrepreneur ou contributeur"
+  },
+  "prerequisiteElements": {
+    "legal_acceptance": "Acceptation des conditions",
+    "email_verified": "Email vérifié",
+    "kyc_verified": "Identité vérifiée (KYC)",
+    "two_factor": "Double authentification",
+    "profile": {
+      "entrepreneur_facet": "Volet entrepreneur",
+      "contributor_facet": "Volet contributeur"
+    },
+    "payout_account": "Compte de versement"
+  },
+  "roles": {
+    "member": "Membre",
+    "moderator": "Modérateur",
+    "admin": "Administrateur"
+  },
+  "legalDocuments": {
+    "terms_of_service": "Conditions générales d'utilisation",
+    "privacy_policy": "Politique de confidentialité",
+    "age_declaration": "Déclaration d'âge"
+  },
+  "signInProviders": {
+    "credential": "Email et mot de passe",
+    "google": "Google",
+    "linkedin": "LinkedIn",
+    "microsoft": "Microsoft"
+  },
+  "organizationRoles": {
+    "owner": "Propriétaire",
+    "admin": "Administrateur",
+    "member": "Membre"
+  },
+  "organizationInvitationStatuses": {
+    "pending": "En attente",
+    "accepted": "Acceptée",
+    "declined": "Refusée",
+    "revoked": "Révoquée",
+    "expired": "Expirée"
+  },
+  "verificationStatuses": {
+    "unverified": "Non vérifiée",
+    "pending": "Vérification en cours",
+    "verified": "Vérifiée",
+    "rejected": "Refusée",
+    "revoked": "Révoquée"
+  },
+  "connectionRequestStatuses": {
+    "pending": "En attente",
+    "accepted": "Acceptée",
+    "declined": "Refusée",
+    "withdrawn": "Retirée",
+    "expired": "Expirée",
+    "cancelled": "Annulée"
+  },
+  "connectionStates": {
+    "connected": "Connecté",
+    "request_sent": "Demande envoyée",
+    "request_received": "Demande reçue",
+    "none": "Non connecté"
+  },
+  "relationDegrees": {
+    "self": "Vous",
+    "first": "1er degré",
+    "second": "2e degré",
+    "out_of_network": "Hors réseau"
+  },
+  "mediaRejectionReasons": {
+    "upload_missing": "Fichier non reçu",
+    "type_not_allowed": "Type de fichier non accepté",
+    "type_mismatch": "Le contenu ne correspond pas au type déclaré",
+    "size_exceeded": "Fichier trop volumineux",
+    "size_mismatch": "Taille différente de la taille déclarée",
+    "malware_detected": "Fichier infecté",
+    "image_unreadable": "Image illisible",
+    "image_too_small": "Image trop petite",
+    "image_too_large": "Image trop grande",
+    "pdf_unreadable": "PDF illisible",
+    "pdf_too_many_pages": "PDF trop long",
+    "import_failed": "Import impossible",
+    "processing_failed": "Traitement impossible"
+  },
+  "impactMethodologyStatuses": {
+    "draft": "Brouillon",
+    "published": "Publiée",
+    "archived": "Archivée"
+  },
+  "contributionKinds": {
+    "donation": "Don",
+    "reward_crowdfunding": "Crowdfunding avec contrepartie",
+    "love_money": "Love money"
+  },
+  "contributionRequestKinds": {
+    "donation": "Don",
+    "reward_crowdfunding": "Crowdfunding avec contrepartie",
+    "love_money": "Love money",
+    "grant": "Subvention",
+    "honor_loan": "Prêt d'honneur",
+    "equity": "Prise de participation",
+    "convertible_bonds": "Obligations convertibles",
+    "loan": "Prêt"
+  },
+  "contributionStatuses": {
+    "pending_payment": "Paiement en attente",
+    "succeeded": "Payée",
+    "failed": "Échouée",
+    "expired": "Expirée",
+    "canceled": "Annulée",
+    "partially_refunded": "Remboursée en partie",
+    "refunded": "Remboursée",
+    "disputed": "Contestée",
+    "dispute_won": "Contestation rejetée",
+    "dispute_lost": "Contestation perdue"
+  },
+  "paymentMethods": {
+    "card": "Carte bancaire",
+    "sepa_debit": "Prélèvement SEPA",
+    "apple_pay": "Apple Pay",
+    "google_pay": "Google Pay",
+    "paypal": "PayPal",
+    "mobile_money": "Mobile Money",
+    "bank_transfer": "Virement bancaire",
+    "bank_account": "Compte bancaire",
+    "ussd": "USSD"
+  },
+  "paymentsUnavailableReasons": {
+    "project_not_open": "Le projet n'accepte pas de contribution",
+    "holder_not_ready": "Le porteur n'a pas encore ouvert les contributions",
+    "no_payment_route": "Aucun moyen de paiement disponible pour ce projet"
+  },
+  "rewardReservationStates": {
+    "none": "Aucune contrepartie",
+    "reserved": "Contrepartie réservée",
+    "confirmed": "Contrepartie confirmée",
+    "released": "Contrepartie libérée"
+  },
+  "fxRateSources": {
+    "identity": "Même devise",
+    "fixed_parity": "Parité fixe",
+    "provider": "Taux indicatif du prestataire",
+    "simulated": "Taux simulé"
+  },
+  "refundStatuses": {
+    "pending": "Remboursement en cours",
+    "succeeded": "Remboursé",
+    "failed": "Remboursement échoué"
+  },
+  "offlineContributionKinds": {
+    "cash": "Espèces",
+    "institutional_transfer": "Virement institutionnel",
+    "love_money_commitment": "Engagement love money",
+    "skills_sponsorship": "Mécénat de compétences"
+  },
+  "offlineContributionStatuses": {
+    "declared": "Déclarée",
+    "confirmed": "Confirmée",
+    "validated": "Validée",
+    "rejected": "Rejetée"
+  },
+  "payoutAccountStatuses": {
+    "pending": "En attente",
+    "active": "Actif",
+    "restricted": "Restreint"
+  },
+  "kycStatuses": {
+    "not_submitted": "Non transmis",
+    "pending": "En cours de vérification",
+    "verified": "Vérifié",
+    "rejected": "Refusé"
+  },
+  "kycReviewStatuses": {
+    "pending": "En attente",
+    "approved": "Approuvé",
+    "rejected": "Refusé"
+  },
+  "discrepancyKinds": {
+    "missing_contribution": "Transaction sans contribution",
+    "missing_provider_transaction": "Contribution absente chez le prestataire",
+    "status_mismatch": "Statut différent",
+    "amount_mismatch": "Montant différent",
+    "refund_mismatch": "Remboursement différent",
+    "ledger_mismatch": "Écart avec le ledger",
+    "ledger_unbalanced": "Ledger déséquilibré",
+    "project_total_mismatch": "Total du projet différent"
+  },
+  "discrepancyStatuses": {
+    "open": "À traiter",
+    "resolved": "Résolu"
+  },
+  "timeEntryKinds": {
+    "mentoring": "Mentorat",
+    "expertise": "Expertise"
+  },
+  "timeEntryStatuses": {
+    "declared": "Déclaré",
+    "confirmed": "Confirmé",
+    "disputed": "Contesté"
   }
 }
