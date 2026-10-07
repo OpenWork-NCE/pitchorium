@@ -45,3 +45,4 @@ pnpm dev
 | `pnpm openapi:generate`             | Exporte `apps/server/openapi/openapi.json` sans démarrer de serveur |
 | `pnpm api-client:generate`          | Régénère le client Orval à partir de l'OpenAPI                      |
 | `pnpm infra:up` / `pnpm infra:down` | Démarre ou arrête l'infrastructure locale                           |
+| `pnpm check:box-drawing`            | Échoue si un fichier suivi contient un caractère U+2500 à U+257F    |
