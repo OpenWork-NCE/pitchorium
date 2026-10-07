@@ -1,6 +1,6 @@
 # Questions ouvertes
 
-Informations nécessaires au développement et absentes du cahier des charges (`docs/product/cahier-des-charges.md`). Rien de ce qui suit n'est implémenté par supposition. Une question tranchée est retirée de cette liste et sa réponse documentée là où elle s'applique.
+Informations nécessaires au développement et absentes du cahier des charges (document client confidentiel, hors du dépôt). Rien de ce qui suit n'est implémenté par supposition. Une question tranchée est retirée de cette liste et sa réponse documentée là où elle s'applique.
 
 ## Impact
 

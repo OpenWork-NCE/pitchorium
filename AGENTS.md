@@ -2,7 +2,9 @@
 
 ## Projet
 
-Pitchorium est un réseau professionnel et une plateforme de financement à impact entre l'Afrique, les Caraïbes et la diaspora européenne. La source de vérité produit est `docs/product/cahier-des-charges.md`. Le périmètre est la totalité des fonctionnalités V1, V2 et V3. Seuls garde-fous encore valables : swahili, wolof et lingala activés après relecture humaine native ; equity et prêts activés après validation légale ; exclusions explicites du document (applications natives, paiement crypto, certification d'impact tierce, job board).
+Pitchorium est un réseau professionnel et une plateforme de financement à impact entre l'Afrique, les Caraïbes et la diaspora européenne. La source de vérité produit est le cahier des charges du client (voir ci-dessous). Le périmètre est la totalité des fonctionnalités V1, V2 et V3. Seuls garde-fous encore valables : swahili, wolof et lingala activés après relecture humaine native ; equity et prêts activés après validation légale ; exclusions explicites du document (applications natives, paiement crypto, certification d'impact tierce, job board).
+
+`docs/product/` (cahier des charges et proposition produit du client) est confidentiel : ignoré par git, absent du dépôt GitHub, présent uniquement en local. Il est requis pour travailler : s'il manque, s'arrêter et le demander. Ne jamais l'ajouter au dépôt (ni par `git add -f`, ni dans un autre dossier) et ne jamais le citer par un lien dans un fichier publié ; citer seulement les numéros de section (§10.7).
 
 ## Règles absolues
 
