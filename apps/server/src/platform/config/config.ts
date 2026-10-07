@@ -81,6 +81,8 @@ export interface WorkerConfig extends CommonConfig {
   outbox: { pollIntervalMs: number; batchSize: number; maxBackoffMs: number };
   clamav: { host: string; port: number; timeoutMs: number };
   media: { orphanTtlMs: number; importTimeoutMs: number };
+  /** Fixed interval replacing the cron pattern of every scheduled task (tests only). */
+  scheduledTasks: { everyMs: number | undefined };
 }
 
 export class ConfigValidationError extends Error {
@@ -206,6 +208,7 @@ export function parseWorkerConfig(rawEnv: RawEnv): WorkerConfig {
       orphanTtlMs: env.MEDIA_ORPHAN_TTL_HOURS * 3_600_000,
       importTimeoutMs: env.MEDIA_IMPORT_TIMEOUT_MS,
     },
+    scheduledTasks: { everyMs: env.SCHEDULED_TASKS_EVERY_MS },
   };
 }
 

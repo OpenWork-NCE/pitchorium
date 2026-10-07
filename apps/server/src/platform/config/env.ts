@@ -96,6 +96,7 @@ const workerEnvSchema = commonEnvSchema.extend({
   CLAMAV_TIMEOUT_MS: z.coerce.number().int().positive().default(60_000),
   MEDIA_ORPHAN_TTL_HOURS: z.coerce.number().int().positive().default(24),
   MEDIA_IMPORT_TIMEOUT_MS: z.coerce.number().int().positive().default(10_000),
+  SCHEDULED_TASKS_EVERY_MS: z.coerce.number().int().min(100).optional(),
 });
 
 function requireMailCredentials(env: z.infer<typeof commonEnvSchema>, ctx: z.RefinementCtx): void {
@@ -138,7 +139,23 @@ function requireCompleteOAuthCredentials(
 export const apiEnv = apiEnvSchema
   .superRefine(requireMailCredentials)
   .superRefine(requireCompleteOAuthCredentials);
-export const workerEnv = workerEnvSchema.superRefine(requireMailCredentials);
+/** The interval override replaces every cron pattern: tests and local debugging only. */
+function refuseScheduleOverrideInProduction(
+  env: z.infer<typeof workerEnvSchema>,
+  ctx: z.RefinementCtx,
+): void {
+  if (env.NODE_ENV === 'production' && env.SCHEDULED_TASKS_EVERY_MS !== undefined) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['SCHEDULED_TASKS_EVERY_MS'],
+      message: 'Not allowed in production',
+    });
+  }
+}
+
+export const workerEnv = workerEnvSchema
+  .superRefine(requireMailCredentials)
+  .superRefine(refuseScheduleOverrideInProduction);
 
 export type CommonEnv = z.infer<typeof commonEnvSchema>;
 export type ApiEnv = z.infer<typeof apiEnvSchema>;

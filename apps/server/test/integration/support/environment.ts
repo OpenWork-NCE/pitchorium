@@ -41,6 +41,8 @@ export function useTestEnvironment(overrides: Record<string, string> = {}): void
     LINKEDIN_CLIENT_SECRET: 'linkedin-secret',
     MICROSOFT_CLIENT_ID: 'microsoft-client',
     MICROSOFT_CLIENT_SECRET: 'microsoft-secret',
+    // Unset unless a test asks for short intervals: scheduled tasks keep their cron pattern.
+    SCHEDULED_TASKS_EVERY_MS: '',
     ...overrides,
   });
 }

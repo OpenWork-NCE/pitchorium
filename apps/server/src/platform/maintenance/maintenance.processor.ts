@@ -1,8 +1,9 @@
 import { InjectQueue, Processor, WorkerHost } from '@nestjs/bullmq';
-import { Logger, type OnApplicationBootstrap } from '@nestjs/common';
+import { Inject, Logger, type OnApplicationBootstrap } from '@nestjs/common';
 import type { Job, Queue } from 'bullmq';
+import { WORKER_CONFIG, type WorkerConfig } from '../config';
 import { IdempotencyService } from '../idempotency';
-import { QUEUE_NAMES } from '../queue';
+import { QUEUE_NAMES, repeatEvery } from '../queue';
 
 export const MAINTENANCE_JOBS = {
   purgeIdempotencyKeys: 'purge-idempotency-keys',
@@ -16,6 +17,7 @@ export class MaintenanceProcessor extends WorkerHost implements OnApplicationBoo
   constructor(
     @InjectQueue(QUEUE_NAMES.maintenance) private readonly queue: Queue,
     private readonly idempotency: IdempotencyService,
+    @Inject(WORKER_CONFIG) private readonly config: WorkerConfig,
   ) {
     super();
   }
@@ -23,7 +25,7 @@ export class MaintenanceProcessor extends WorkerHost implements OnApplicationBoo
   async onApplicationBootstrap(): Promise<void> {
     await this.queue.upsertJobScheduler(
       MAINTENANCE_JOBS.purgeIdempotencyKeys,
-      { pattern: '17 * * * *' },
+      repeatEvery('17 * * * *', this.config.scheduledTasks.everyMs),
       { name: MAINTENANCE_JOBS.purgeIdempotencyKeys },
     );
   }
