@@ -36,8 +36,10 @@ export interface DevProjectsResult {
   assessments: number;
   projects: number;
   contributions: number;
-  follows: number;
-  posts: number;
+  /** Follows of projects; the follows of members are counted by seedDevData. */
+  projectFollows: number;
+  /** Publications attached to a project. */
+  projectPosts: number;
 }
 
 /**
@@ -75,8 +77,8 @@ export async function seedDevProjects(
     assessments: 0,
     projects: 0,
     contributions: 0,
-    follows: 0,
-    posts: 0,
+    projectFollows: 0,
+    projectPosts: 0,
   };
   const impact = get(ImpactFacade);
   const transactions = get(TransactionManager);
@@ -214,7 +216,7 @@ export async function seedDevProjects(
     }
     for (const follower of demo.followers ?? []) {
       await get(FollowsService).follow(userId(follower), 'project', projectId);
-      result.follows += 1;
+      result.projectFollows += 1;
     }
     for (const post of demo.posts ?? []) {
       await get(PostsService).create(userId(post.author), {
@@ -223,7 +225,7 @@ export async function seedDevProjects(
         visibility: 'members',
         commentsDisabled: false,
       });
-      result.posts += 1;
+      result.projectPosts += 1;
     }
   }
 }

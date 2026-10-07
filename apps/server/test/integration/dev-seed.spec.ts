@@ -98,8 +98,8 @@ describe('development data', () => {
         assessments: 7,
         projects: 8,
         contributions: 11,
-        follows: 8,
-        posts: 2,
+        projectFollows: 8,
+        projectPosts: 2,
       });
       const statuses = await query<{ status: string; count: string }>(
         'SELECT status, count(*) FROM projects.projects GROUP BY status ORDER BY status',
@@ -130,8 +130,8 @@ describe('development data', () => {
         assessments: 0,
         projects: 0,
         contributions: 0,
-        follows: 0,
-        posts: 0,
+        projectFollows: 0,
+        projectPosts: 0,
       });
       expect(await counts()).toEqual(withProjects);
       // ensureDemo is idempotent: it returns the existing DEMO version.
