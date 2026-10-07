@@ -85,7 +85,10 @@ export class OrganizationReadsService {
   ): Promise<Organization> {
     const members = await this.organizations.members(organization.id);
     const [cards, images, projects] = await Promise.all([
-      this.profiles.memberCards(members.map((member) => member.userId)),
+      this.profiles.memberCards(
+        members.map((member) => member.userId),
+        viewerId,
+      ),
       this.media.images([organization.logoMediaId, organization.coverMediaId]),
       this.projects.of(organization.id),
     ]);
