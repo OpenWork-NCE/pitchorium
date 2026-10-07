@@ -17,8 +17,9 @@ export async function createWorkerTestingModule(
   providers: Provider[] = [],
   imports: (Type | DynamicModule)[] = [],
   configure: (builder: TestingModuleBuilder) => TestingModuleBuilder = (builder) => builder,
+  environment: Record<string, string> = {},
 ): Promise<TestingModule> {
-  useTestEnvironment({ OUTBOX_POLL_INTERVAL_MS: '3600000' });
+  useTestEnvironment({ OUTBOX_POLL_INTERVAL_MS: '3600000', ...environment });
   // The relay runs one batch at startup: events left by a previous test file must not reach the
   // handlers while the next test truncates the tables.
   await truncateAllTables();
