@@ -1,6 +1,8 @@
 import { InjectQueue, Processor, WorkerHost } from '@nestjs/bullmq';
-import { Logger, type OnApplicationBootstrap } from '@nestjs/common';
+import { Inject, Logger, type OnApplicationBootstrap } from '@nestjs/common';
 import type { Job, Queue } from 'bullmq';
+import { WORKER_CONFIG, type WorkerConfig } from '../../../platform/config';
+import { repeatEvery } from '../../../platform/queue';
 import { MediaMaintenanceService } from '../application/media-maintenance.service';
 import { MediaProcessingService } from '../application/media-processing.service';
 import { MEDIA_JOBS, MEDIA_QUEUE, type ProcessJobData } from './media-queue';
@@ -17,19 +19,21 @@ export class MediaJobsProcessor extends WorkerHost implements OnApplicationBoots
     @InjectQueue(MEDIA_QUEUE) private readonly queue: Queue,
     private readonly processing: MediaProcessingService,
     private readonly maintenance: MediaMaintenanceService,
+    @Inject(WORKER_CONFIG) private readonly config: WorkerConfig,
   ) {
     super();
   }
 
   async onApplicationBootstrap(): Promise<void> {
+    const every = this.config.scheduledTasks.everyMs;
     await this.queue.upsertJobScheduler(
       MEDIA_JOBS.deleteOrphans,
-      { pattern: '7,37 * * * *' },
+      repeatEvery('7,37 * * * *', every),
       { name: MEDIA_JOBS.deleteOrphans },
     );
     await this.queue.upsertJobScheduler(
       MEDIA_JOBS.purgeDeleted,
-      { pattern: '*/5 * * * *' },
+      repeatEvery('*/5 * * * *', every),
       { name: MEDIA_JOBS.purgeDeleted },
     );
   }
