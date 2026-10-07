@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import type { ProfileVisibility } from '@pitchorium/contracts';
 import { TransactionManager } from '../../../platform/database';
+import { isEligibleCompanyCountry } from '../domain/facet-rules';
 import { ProfileUpdated } from '../domain/profile-events';
 import { OrganizationDirectoryRegistry } from './organization-directory.registry';
 import {
@@ -91,6 +92,18 @@ export class ProfilesFacade {
 
   assertSectors(codes: readonly string[]): Promise<void> {
     return this.reference.assertSectors(codes);
+  }
+
+  /**
+   * Known countries outside Africa (UN M49 002) and the Caribbean (029), for the projects
+   * module; PROFILES_UNKNOWN_REFERENCE for a country missing from the reference data.
+   */
+  async countriesOutsideProjectRegions(codes: readonly string[]): Promise<string[]> {
+    const outside: string[] = [];
+    for (const code of codes) {
+      if (!isEligibleCompanyCountry(await this.reference.country(code))) outside.push(code);
+    }
+    return outside;
   }
 
   /**
