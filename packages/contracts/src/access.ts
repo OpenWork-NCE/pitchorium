@@ -22,6 +22,9 @@ export const ACTIONS = [
   'access.roles.read',
   'access.roles.manage',
   'project.publish',
+  'media.upload',
+  'media.read',
+  'media.delete',
 ] as const;
 export const actionSchema = z.enum(ACTIONS);
 

@@ -7,6 +7,7 @@ export * from './health.js';
 export * from './identity.js';
 export * from './ids.js';
 export * from './locale.js';
+export * from './media.js';
 export * from './money.js';
 export * from './pagination.js';
 export * from './profiles.js';
