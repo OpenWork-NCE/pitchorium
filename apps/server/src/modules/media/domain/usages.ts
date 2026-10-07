@@ -132,7 +132,7 @@ export const USAGE_RULES: Readonly<Record<MediaUsage, UsageRule>> = {
     maxBytes: 10 * MB,
     image: FEED_IMAGE,
     pdf: null,
-    maxPerResource: 10,
+    maxPerResource: 9,
     visibility: 'resource',
   },
   post_document: {
@@ -199,6 +199,24 @@ export const USAGE_RULES: Readonly<Record<MediaUsage, UsageRule>> = {
     maxPerResource: 10,
     // Always private, whatever the resource: identity and registration documents.
     visibility: 'private',
+  },
+  // Image of a link preview, imported by the worker from the linked site (never hotlinked).
+  link_preview: {
+    contentTypes: IMAGE_CONTENT_TYPES,
+    maxBytes: 5 * MB,
+    image: {
+      minWidth: 100,
+      minHeight: 100,
+      maxWidth: 10_000,
+      maxHeight: 10_000,
+      variants: [
+        { name: 'large', width: 1200, height: null, fit: 'inside' },
+        { name: 'small', width: 400, height: null, fit: 'inside' },
+      ],
+    },
+    pdf: null,
+    maxPerResource: 1,
+    visibility: 'resource',
   },
 };
 

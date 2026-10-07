@@ -105,10 +105,13 @@ export class ImportRefusedError extends Error {
   }
 }
 
-/** Port: download of a provider photo (closed list of hosts, timeout, size limit). */
+/**
+ * Port: download of an image to import: an OAuth provider photo (closed list of hosts) or the
+ * image of a link preview (any public host, SSRF protections), with a timeout and a size limit.
+ */
 export abstract class RemoteImageFetcher {
   /** Throws ImportRefusedError for a refused URL or answer; other errors may be retried. */
-  abstract fetch(url: string, maxBytes: number): Promise<Buffer>;
+  abstract fetch(url: string, maxBytes: number, usage: MediaUsage): Promise<Buffer>;
 }
 
 /** Port: per-member limit of upload requests. */

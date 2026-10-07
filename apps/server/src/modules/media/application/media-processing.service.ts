@@ -127,7 +127,7 @@ export class MediaProcessingService {
     if (!asset.importUrl) return reject('import_failed');
     let content: Buffer;
     try {
-      content = await this.fetcher.fetch(asset.importUrl, rule.maxBytes);
+      content = await this.fetcher.fetch(asset.importUrl, rule.maxBytes, asset.usage);
     } catch (error) {
       if (error instanceof ImportRefusedError) {
         this.logger.warn(`Import of media ${asset.id} refused: ${error.message}`);
