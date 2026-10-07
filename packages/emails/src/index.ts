@@ -1,5 +1,9 @@
 import { createElement } from 'react';
 import { renderEmail, type RenderedEmail } from './render.js';
+import ContributionConfirmationEmail, {
+  contributionConfirmationSubject,
+  type ContributionConfirmationEmailProps,
+} from './templates/contribution-confirmation.js';
 import EmailVerificationEmail, {
   emailVerificationSubject,
   type EmailVerificationEmailProps,
@@ -30,6 +34,10 @@ import TechnicalTestEmail, {
 } from './templates/technical-test.js';
 
 export type { RenderedEmail } from './render.js';
+export type {
+  ContributionConfirmationEmailProps,
+  ContributionKindLabel,
+} from './templates/contribution-confirmation.js';
 export type { EmailVerificationEmailProps } from './templates/email-verification.js';
 export type { MagicLinkEmailProps } from './templates/magic-link.js';
 export type { NewSignInEmailProps } from './templates/new-sign-in.js';
@@ -85,5 +93,14 @@ export function renderOrganizationNoticeEmail(
   return renderEmail(
     organizationNoticeSubject(props),
     createElement(OrganizationNoticeEmail, props),
+  );
+}
+
+export function renderContributionConfirmationEmail(
+  props: ContributionConfirmationEmailProps,
+): Promise<RenderedEmail> {
+  return renderEmail(
+    contributionConfirmationSubject(props),
+    createElement(ContributionConfirmationEmail, props),
   );
 }

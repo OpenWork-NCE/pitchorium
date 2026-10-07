@@ -123,5 +123,22 @@
       "body": "The verification badge of {{organization}} was withdrawn by the moderation team.",
       "action": "View the organization"
     }
+  },
+  "contributionConfirmation": {
+    "subject": "Your contribution to {{project}} is confirmed",
+    "preview": "Your payment for {{project}} was received.",
+    "heading": "Hello {{name}},",
+    "body": "Your contribution of {{amount}} to the project {{project}} was paid on {{paidAt}} (UTC).",
+    "kinds": {
+      "donation": "This is a donation.",
+      "reward_crowdfunding": "This is a contribution with a reward.",
+      "love_money": "This is a love money contribution."
+    },
+    "commission": "Pitchorium keeps a commission of {{commission}}. The rest goes to the holder through our licensed payment provider, minus its fees: Pitchorium never holds your money.",
+    "reward": "Reward chosen: {{reward}}.",
+    "action": "View the project",
+    "notTaxReceipt": "This email confirms your payment. It is not a tax receipt.",
+    "mentions": "The impact of the project is self-declared by its holder. A donation is not a financial security, and an unlocked tier is not a guarantee of success.",
+    "reference": "Contribution reference: {{reference}}"
   }
 }

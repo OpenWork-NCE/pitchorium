@@ -123,5 +123,22 @@
       "body": "Le badge de vérification de {{organization}} a été retiré par l'équipe de modération.",
       "action": "Voir l'organisation"
     }
+  },
+  "contributionConfirmation": {
+    "subject": "Votre contribution à {{project}} est confirmée",
+    "preview": "Votre paiement pour {{project}} a bien été reçu.",
+    "heading": "Bonjour {{name}},",
+    "body": "Votre contribution de {{amount}} au projet {{project}} a bien été payée le {{paidAt}} (UTC).",
+    "kinds": {
+      "donation": "Il s'agit d'un don.",
+      "reward_crowdfunding": "Il s'agit d'une contribution avec contrepartie.",
+      "love_money": "Il s'agit d'une contribution love money."
+    },
+    "commission": "Pitchorium prélève une commission de {{commission}}. Le reste est versé au porteur par notre prestataire de paiement agréé, déduction faite de ses frais : Pitchorium ne détient jamais votre argent.",
+    "reward": "Contrepartie choisie : {{reward}}.",
+    "action": "Voir le projet",
+    "notTaxReceipt": "Cet email confirme votre paiement. Ce n'est pas un reçu fiscal.",
+    "mentions": "L'impact du projet est auto-déclaré par son porteur. Un don n'est pas un titre financier, et un palier débloqué n'est pas une garantie de succès.",
+    "reference": "Référence de la contribution : {{reference}}"
   }
 }

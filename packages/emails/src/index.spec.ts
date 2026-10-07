@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   type RenderedEmail,
+  renderContributionConfirmationEmail,
   renderEmailVerificationEmail,
   renderMagicLinkEmail,
   renderNewSignInEmail,
@@ -25,7 +26,7 @@ const url = 'https://app.pitchorium.test/action?token=abc';
 
 /** A missing key renders as the key itself; an unresolved parameter keeps its braces. */
 const MISSING_TRANSLATION =
-  /\{\{|\b(?:layout|providers|emailVerification|magicLink|passwordReset|newSignIn|signInMethodChanged|technicalTest|organizationNotice)\./;
+  /\{\{|\b(?:layout|providers|emailVerification|magicLink|passwordReset|newSignIn|signInMethodChanged|technicalTest|organizationNotice|contributionConfirmation)\./;
 
 const cases: TemplateCase[] = [
   {
@@ -99,6 +100,27 @@ const cases: TemplateCase[] = [
       en: 'Invitation to join Fondation Teranga on Pitchorium',
     },
     mustContain: url,
+  },
+  {
+    name: 'contribution confirmation',
+    render: (locale) =>
+      renderContributionConfirmationEmail({
+        locale,
+        name: 'Amina',
+        project: 'Sahel Agri',
+        kind: 'reward_crowdfunding',
+        amount: '50.00 EUR',
+        commission: '2.50 EUR',
+        paidAt: '2026-10-07 10:00',
+        reward: 'Visite',
+        reference: 'ref-1',
+        projectUrl: url,
+      }),
+    subjects: {
+      fr: 'Votre contribution à Sahel Agri est confirmée',
+      en: 'Your contribution to Sahel Agri is confirmed',
+    },
+    mustContain: '50.00 EUR',
   },
 ];
 
@@ -175,5 +197,23 @@ describe('email templates', () => {
       }
       expect(emails[6]?.text).toContain('Statuts fournis et site officiel concordant.');
     }
+  });
+
+  it('says that the confirmation of a contribution is not a tax receipt', async () => {
+    const props = {
+      name: 'Amina',
+      project: 'Sahel Agri',
+      kind: 'donation' as const,
+      amount: '65596 XOF',
+      commission: '3279 XOF',
+      paidAt: '2026-10-07 10:00',
+      reference: 'ref-1',
+      projectUrl: url,
+    };
+    const fr = await renderContributionConfirmationEmail({ ...props, locale: 'fr' });
+    const en = await renderContributionConfirmationEmail({ ...props, locale: 'en' });
+
+    expect(fr.text).toContain("Ce n'est pas un reçu fiscal.");
+    expect(en.text).toContain('It is not a tax receipt.');
   });
 });
