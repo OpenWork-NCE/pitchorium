@@ -58,6 +58,23 @@ export class ContentFacade implements OnModuleInit {
     await this.content.updateComment(commentId, { moderationStatus: status });
   }
 
+  /**
+   * Publications as a reader sees them, by id; the deleted ones and those the reader may not
+   * see are absent (a publication shared in a message, §10.3).
+   */
+  async visiblePosts(viewerId: string, postIds: readonly string[]): Promise<Map<string, Post>> {
+    if (postIds.length === 0) return new Map();
+    const reader = await this.presenter.reader(viewerId);
+    const posts = await this.presenter.present(reader, await this.content.findPosts(postIds));
+    return new Map(posts.map((post) => [post.id, post]));
+  }
+
+  /** Author of a live publication, null when unknown or deleted. */
+  async postAuthorId(postId: string): Promise<string | null> {
+    const post = await this.content.findPost(postId);
+    return post && !post.deletedAt ? post.authorId : null;
+  }
+
   /** Called at startup by the projects module. */
   registerProjectLinkValidator(validator: ProjectLinkValidator): void {
     this.projects.register(validator);
