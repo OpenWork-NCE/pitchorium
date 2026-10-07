@@ -23,7 +23,8 @@
     },
     "test:integration": {
       "dependsOn": ["^build"],
-      "cache": false
+      "cache": false,
+      "passThroughEnv": ["DOCKER_HOST", "DOCKER_*", "TESTCONTAINERS_*"]
     },
     "dev:api": {
       "dependsOn": ["^build"],
@@ -38,6 +39,11 @@
     "check:keys": {
       "dependsOn": ["^build"],
       "outputs": []
+    },
+    "openapi:generate": {
+      "dependsOn": ["build"],
+      "inputs": ["dist/**"],
+      "outputs": ["openapi/openapi.json"]
     }
   }
 }

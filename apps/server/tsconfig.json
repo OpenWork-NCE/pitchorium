@@ -1,0 +1,8 @@
+{
+  "extends": "@pitchorium/config/tsconfig.nest.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "noEmit": true
+  },
+  "include": ["src", "test", "scripts", "vitest.config.mts", "vitest.integration.config.mts"]
+}
