@@ -10,6 +10,12 @@ const BUSINESS_TABLES = [
   'access.role_assignments',
   'profiles.profiles',
   'media.assets',
+  'network.follows',
+  'network.connections',
+  'network.connection_requests',
+  'network.blocks',
+  'network.settings',
+  'network.profile_views',
 ];
 
 export async function truncatePlatformTables(): Promise<void> {
