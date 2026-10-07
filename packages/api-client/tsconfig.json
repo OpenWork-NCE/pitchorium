@@ -1,0 +1,12 @@
+{
+  "extends": "@pitchorium/config/tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "noEmit": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "lib": ["es2024", "dom"],
+    "types": []
+  },
+  "include": ["src", "orval.config.ts"]
+}

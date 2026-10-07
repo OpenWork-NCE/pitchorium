@@ -1,0 +1,40 @@
+{
+  "name": "@pitchorium/api-client",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rm -rf dist && tsc -p tsconfig.build.json",
+    "typecheck": "tsc",
+    "lint": "eslint .",
+    "api-client:generate": "orval --config orval.config.ts",
+    "api-client:check": "orval --config orval.config.ts && git diff --exit-code -- src/generated && test -z \"$(git ls-files --others --exclude-standard src/generated)\""
+  },
+  "peerDependencies": {
+    "@tanstack/react-query": "5.104.1",
+    "react": "19.3.0"
+  },
+  "dependencies": {
+    "@pitchorium/contracts": "workspace:*"
+  },
+  "devDependencies": {
+    "@pitchorium/config": "workspace:*",
+    "@tanstack/react-query": "5.104.1",
+    "@types/node": "24.19.1",
+    "@types/react": "19.3.0",
+    "eslint": "10.12.0",
+    "orval": "8.40.0",
+    "prettier": "3.9.9",
+    "react": "19.3.0",
+    "typescript": "6.0.3"
+  }
+}

@@ -44,6 +44,15 @@
       "dependsOn": ["build"],
       "inputs": ["dist/**"],
       "outputs": ["openapi/openapi.json"]
+    },
+    "api-client:generate": {
+      "dependsOn": ["@pitchorium/server#openapi:generate"],
+      "inputs": ["orval.config.ts", "src/http/**", "../../apps/server/openapi/openapi.json"],
+      "outputs": ["src/generated/**"]
+    },
+    "api-client:check": {
+      "dependsOn": ["@pitchorium/server#openapi:generate"],
+      "cache": false
     }
   }
 }
