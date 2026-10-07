@@ -11,6 +11,7 @@ import { InboxModule } from './inbox';
 import { MailerModule } from './mailer';
 import { MaintenanceModule } from './maintenance/maintenance.module';
 import { ObservabilityModule } from './observability';
+import { OutboundModule } from './outbound';
 import { OutboxModule, OutboxRelayModule } from './outbox';
 import { QueueModule } from './queue';
 import { RealtimeModule } from './realtime';
@@ -30,6 +31,7 @@ const SHARED_MODULES = [
   MailerModule,
   FeatureFlagsModule,
   AuditModule,
+  OutboundModule,
 ];
 
 @Module({})

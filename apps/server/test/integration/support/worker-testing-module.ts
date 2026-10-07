@@ -4,6 +4,7 @@ import { ConfigModule } from '../../../src/platform/config';
 import { CoreModule } from '../../../src/platform/core/core.module';
 import { DatabaseModule } from '../../../src/platform/database';
 import { InboxModule } from '../../../src/platform/inbox';
+import { OutboundModule } from '../../../src/platform/outbound';
 import { OutboxModule, OutboxRelayModule, OutboxRelayService } from '../../../src/platform/outbox';
 import { RedisModule } from '../../../src/platform/redis';
 import { truncateAllTables } from './database';
@@ -33,6 +34,7 @@ export async function createWorkerTestingModule(
         InboxModule,
         OutboxModule,
         OutboxRelayModule,
+        OutboundModule,
         ...imports,
       ],
       providers,

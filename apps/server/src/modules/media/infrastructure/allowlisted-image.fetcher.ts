@@ -43,9 +43,10 @@ export function assertAllowedPhotoUrl(raw: string): URL {
  */
 @Injectable()
 export class AllowlistedImageFetcher extends RemoteImageFetcher {
-  private readonly outbound = new SafeHttpClient();
-
-  constructor(@Inject(WORKER_CONFIG) private readonly config: WorkerConfig) {
+  constructor(
+    @Inject(WORKER_CONFIG) private readonly config: WorkerConfig,
+    private readonly outbound: SafeHttpClient,
+  ) {
     super();
   }
 
