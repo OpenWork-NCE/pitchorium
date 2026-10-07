@@ -29,13 +29,33 @@ export const ACTION_POLICIES: Readonly<Record<Action, ActionPolicy>> = {
   'profile.update': { ownership: 'self' },
   'access.roles.read': { roles: ['admin'], sensitive: true },
   'access.roles.manage': { roles: ['admin'], sensitive: true },
+  // Projects (section 11). The owner of a project has an entrepreneur facet; a resolver gives
+  // the role held in the project team (`owner`, `editor`).
+  'project.create': { requires: ['profile.entrepreneur_facet'] },
+  'project.read': {},
+  'project.update': { resourceRoles: ['owner', 'editor'] },
+  'project.delete': { resourceRoles: ['owner'], sensitive: true },
   // Cahier des charges 7.2 step 4 and 7.3: verified email and a minimal entrepreneur facet.
-  // The route arrives with the projects module; the policy already drives the prerequisites.
   'project.publish': {
-    ownership: 'self',
+    resourceRoles: ['owner'],
     requires: ['email_verified', 'profile.entrepreneur_facet'],
     sensitive: true,
   },
+  // An invitation reaches another member: the inviting owner must have proved their email.
+  'project.team.manage': { resourceRoles: ['owner'], requires: ['email_verified'] },
+  'project.team.leave': { resourceRoles: ['owner', 'editor'] },
+  'project.invitation.respond': {},
+  'project.updates.publish': { resourceRoles: ['owner', 'editor'], requires: ['email_verified'] },
+  // An expression of interest reaches the team: a verified email first.
+  'project.interest.express': { requires: ['email_verified'] },
+  'project.interest.read': { resourceRoles: ['owner', 'editor'] },
+  'project.impact.assess': { resourceRoles: ['owner', 'editor'] },
+  // Editorial highlight of the showcase.
+  'project.feature': { roles: ['moderator', 'admin'], sensitive: true },
+  // Impact (section 12): versions of the methodology are managed by administrators only.
+  'impact.methodology.manage': { roles: ['admin'], sensitive: true },
+  'impact.assessment.submit': { ownership: 'self', requires: ['profile.entrepreneur_facet'] },
+  'impact.assessment.read': { ownership: 'self' },
   // Ownership of the file and the visibility of its resource are checked by the media module.
   'media.upload': {},
   'media.read': {},

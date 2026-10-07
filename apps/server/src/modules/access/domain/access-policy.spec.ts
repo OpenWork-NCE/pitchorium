@@ -129,6 +129,20 @@ const moderatorsAndAdminsWith2fa: Record<Scenario, Expected> = {
   moderator: 'allow',
 };
 
+/** Actions on a project, here without any role in its team (see the test below). */
+const projectRoleRequired = organizationRoleRequired;
+
+const entrepreneursOnly: Record<Scenario, Expected> = {
+  anonymous: 'UNAUTHENTICATED',
+  newcomer: ['legal_acceptance', 'profile.entrepreneur_facet'],
+  member: ['profile.entrepreneur_facet'],
+  entrepreneur: 'allow',
+  suspended: 'SUSPENDED',
+  adminWithout2fa: ['profile.entrepreneur_facet'],
+  admin: ['profile.entrepreneur_facet'],
+  moderator: ['profile.entrepreneur_facet'],
+};
+
 /** The complete matrix: every registered action against every kind of actor. */
 const MATRIX: Record<Action, Record<Scenario, Expected>> = {
   'account.read': everyoneSignedIn,
@@ -138,16 +152,22 @@ const MATRIX: Record<Action, Record<Scenario, Expected>> = {
   'profile.update': membersWithAcceptedTerms,
   'access.roles.read': adminsWith2fa,
   'access.roles.manage': adminsWith2fa,
-  'project.publish': {
-    anonymous: 'UNAUTHENTICATED',
-    newcomer: ['email_verified', 'legal_acceptance', 'profile.entrepreneur_facet'],
-    member: ['profile.entrepreneur_facet'],
-    entrepreneur: 'allow',
-    suspended: 'SUSPENDED',
-    adminWithout2fa: ['profile.entrepreneur_facet'],
-    admin: ['profile.entrepreneur_facet'],
-    moderator: ['profile.entrepreneur_facet'],
-  },
+  'project.create': entrepreneursOnly,
+  'project.read': membersWithAcceptedTerms,
+  'project.update': projectRoleRequired,
+  'project.delete': projectRoleRequired,
+  'project.publish': projectRoleRequired,
+  'project.team.manage': projectRoleRequired,
+  'project.team.leave': projectRoleRequired,
+  'project.invitation.respond': membersWithAcceptedTerms,
+  'project.updates.publish': projectRoleRequired,
+  'project.interest.express': membersWithVerifiedEmail,
+  'project.interest.read': projectRoleRequired,
+  'project.impact.assess': projectRoleRequired,
+  'project.feature': moderatorsAndAdminsWith2fa,
+  'impact.methodology.manage': adminsWith2fa,
+  'impact.assessment.submit': entrepreneursOnly,
+  'impact.assessment.read': membersWithAcceptedTerms,
   'media.upload': membersWithAcceptedTerms,
   'media.read': membersWithAcceptedTerms,
   'media.delete': membersWithAcceptedTerms,
@@ -208,7 +228,7 @@ describe('access policies', () => {
 
   it('refuses owner-only actions on someone else’s resource', () => {
     const other = { type: 'user', id: 'user-2', ownerId: 'user-2' };
-    for (const action of ['profile.update', 'project.publish'] as const) {
+    for (const action of ['profile.update', 'impact.assessment.submit'] as const) {
       expect(decide(action, { ...facts('entrepreneur'), resource: other })).toEqual({
         allowed: false,
         code: 'FORBIDDEN',
@@ -233,6 +253,28 @@ describe('access policies', () => {
         code: 'FORBIDDEN',
       });
     }
+  });
+
+  it('grants project actions by the role held in the team, publication with prerequisites', () => {
+    const project = (roles: string[]) => ({ type: 'project', id: 'p-1', ownerId: null, roles });
+    const allowed = (action: Action, roles: string[], scenario: Scenario = 'entrepreneur') =>
+      decide(action, { ...facts(scenario), resource: project(roles) });
+
+    expect(allowed('project.update', ['editor'])).toEqual({ allowed: true });
+    expect(allowed('project.publish', ['editor'])).toMatchObject({ code: 'FORBIDDEN' });
+    expect(allowed('project.publish', ['owner'])).toEqual({ allowed: true });
+    expect(allowed('project.publish', ['owner'], 'member')).toEqual({
+      allowed: false,
+      code: 'ACCESS_PREREQUISITES_MISSING',
+      missing: ['profile.entrepreneur_facet'],
+    });
+    expect(allowed('project.delete', ['editor'])).toMatchObject({ code: 'FORBIDDEN' });
+    expect(allowed('project.team.manage', ['owner'], 'newcomer')).toMatchObject({
+      code: 'ACCESS_PREREQUISITES_MISSING',
+      missing: ['email_verified', 'legal_acceptance'],
+    });
+    expect(allowed('project.interest.read', ['editor'])).toEqual({ allowed: true });
+    expect(allowed('project.impact.assess', [])).toMatchObject({ code: 'FORBIDDEN' });
   });
 
   it('grants organization actions by the role held on the organization', () => {
