@@ -62,3 +62,4 @@ Un fichier par décision, numéroté, au format Contexte / Décision / Conséque
 | [0056](0056-realtime-reliability.md)                     | Fiabilité du temps réel                                      |
 | [0057](0057-no-end-to-end-encryption.md)                 | Pas de chiffrement de bout en bout des messages              |
 | [0058](0058-introductions.md)                            | Introductions à trois                                        |
+| [0059](0059-notification-registry-and-grouping.md)       | Registre et regroupement des notifications                   |
