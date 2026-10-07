@@ -40,8 +40,16 @@ export const MEDIA_REJECTION_REASONS = [
 ] as const;
 export const mediaRejectionReasonSchema = z.enum(MEDIA_REJECTION_REASONS);
 
+/** Bucket holding the files of an asset. */
 export const MEDIA_VISIBILITIES = ['public', 'private'] as const;
 export const mediaVisibilitySchema = z.enum(MEDIA_VISIBILITIES);
+
+/**
+ * Visibility rule of a usage: always public, always private, or `resource`: public only while
+ * the resource the file is attached to is public (ADR 0026).
+ */
+export const MEDIA_USAGE_VISIBILITIES = ['public', 'private', 'resource'] as const;
+export const mediaUsageVisibilitySchema = z.enum(MEDIA_USAGE_VISIBILITIES);
 
 /** Set by moderation (trust module): a removed file is no longer served. */
 export const MEDIA_MODERATION_STATUSES = ['none', 'flagged', 'removed'] as const;
@@ -67,7 +75,7 @@ export const mediaUsageLimitsSchema = z.object({
   /** PDF only. */
   maxPages: z.number().int().nullable(),
   maxPerResource: z.number().int().positive(),
-  visibility: mediaVisibilitySchema,
+  visibility: mediaUsageVisibilitySchema,
 });
 
 export const createUploadRequestSchema = z.object({
@@ -88,7 +96,7 @@ export const uploadInstructionsSchema = z.object({
 export const mediaVariantSchema = z.object({
   width: z.number().int(),
   height: z.number().int(),
-  /** Public URL for a public file, null for a private one (use the download route). */
+  /** Public URL for a public file, null for a private one in the owner's view (download route). */
   webp: z.string().nullable(),
   avif: z.string().nullable(),
 });
@@ -131,6 +139,7 @@ export type MediaUsage = z.infer<typeof mediaUsageSchema>;
 export type MediaStatus = z.infer<typeof mediaStatusSchema>;
 export type MediaRejectionReason = z.infer<typeof mediaRejectionReasonSchema>;
 export type MediaVisibility = z.infer<typeof mediaVisibilitySchema>;
+export type MediaUsageVisibility = z.infer<typeof mediaUsageVisibilitySchema>;
 export type MediaModerationStatus = z.infer<typeof mediaModerationStatusSchema>;
 export type MediaContentType = z.infer<typeof mediaContentTypeSchema>;
 export type MediaUsageLimits = z.infer<typeof mediaUsageLimitsSchema>;
