@@ -48,7 +48,7 @@ Les routes `{organizationId}` passent par `OrganizationResolver`, qui donne au m
 
 ## Façade publique (`index.ts`)
 
-`OrganizationsFacade` : `roleOf`, `summaries`, `registerProjectsProvider` ; interface `OrganizationProjectsProvider` ; classes d'événements.
+`OrganizationsFacade` : `roleOf`, `summaries`, `cards` (nom, slug, type de structure, logo public, badge), `registerProjectsProvider` ; interface `OrganizationProjectsProvider` ; classes d'événements.
 
 ## Événements émis
 
@@ -73,4 +73,4 @@ Les siens, par le worker (handler `organizations.send-emails`) : invitation (ave
 
 ## Dépendances
 
-identity (emails des membres et des invités), access (rôles de plateforme des relecteurs), profiles (données de référence, cartes des membres, lien du volet contributeur), media (logo, couverture, pièces justificatives).
+identity (emails des membres et des invités), access (rôles de plateforme des relecteurs), profiles (données de référence, cartes des membres, lien du volet contributeur), media (logo, couverture, pièces justificatives), network (enregistrement du type de cible de suivi `organization` au démarrage : une organisation se suit par son identifiant, ADR 0027).

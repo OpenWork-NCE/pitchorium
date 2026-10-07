@@ -1,8 +1,9 @@
 import { Injectable, type OnModuleInit } from '@nestjs/common';
-import type { OrganizationRole } from '@pitchorium/contracts';
+import { type OrganizationRole, type StructureType, uuidV7Schema } from '@pitchorium/contracts';
 import { AccessFacade } from '../../access';
 import { IdentityFacade } from '../../identity';
 import { MediaFacade, type MediaResourceRef } from '../../media';
+import { NetworkFacade } from '../../network';
 import { type OrganizationSummary, ProfilesFacade } from '../../profiles';
 import { OrganizationProjectsRegistry } from './organization-projects.registry';
 import { type OrganizationProjectsProvider, OrganizationRepository } from './ports';
@@ -10,9 +11,23 @@ import { VERIFICATION_RESOURCE } from './verification.service';
 
 const REVIEWER_ROLES: readonly string[] = ['moderator', 'admin'];
 
+/** Follow target type of organizations in the network module. */
+export const ORGANIZATION_FOLLOW_TARGET = 'organization';
+
+/** How an organization appears on another module's page (author of a post, followed target). */
+export interface OrganizationCard {
+  id: string;
+  slug: string;
+  name: string;
+  structureType: StructureType;
+  logoUrl: string | null;
+  verified: boolean;
+}
+
 /**
  * Public facade of the organizations module. At startup it gives profiles the organization
- * directory (contributor facet link) and media the read rule of verification documents.
+ * directory (contributor facet link), media the read rule of verification documents and network
+ * the `organization` follow target.
  */
 @Injectable()
 export class OrganizationsFacade implements OnModuleInit {
@@ -23,6 +38,7 @@ export class OrganizationsFacade implements OnModuleInit {
     private readonly media: MediaFacade,
     private readonly access: AccessFacade,
     private readonly identity: IdentityFacade,
+    private readonly network: NetworkFacade,
   ) {}
 
   onModuleInit(): void {
@@ -35,6 +51,51 @@ export class OrganizationsFacade implements OnModuleInit {
       resourceTypes: [VERIFICATION_RESOURCE],
       canRead: (viewerId, resource) => this.canReadVerificationDocument(viewerId, resource),
     });
+    this.network.registerFollowTargetType({
+      type: ORGANIZATION_FOLLOW_TARGET,
+      resolve: async (key) => {
+        if (!uuidV7Schema.safeParse(key).success) return null;
+        const organization = await this.organizations.findById(key);
+        return organization && !organization.deletedAt ? organization.id : null;
+      },
+      describe: async (ids) =>
+        new Map(
+          [...(await this.cards(ids)).values()].map((card) => [
+            card.id,
+            {
+              key: card.id,
+              displayName: card.name,
+              subtitle: card.structureType,
+              imageUrl: card.logoUrl,
+            },
+          ]),
+        ),
+    });
+  }
+
+  /** Cards of live organizations, with their public logo, by id. */
+  async cards(ids: readonly string[]): Promise<Map<string, OrganizationCard>> {
+    const organizations = (await this.organizations.findByIds(ids)).filter(
+      (organization) => !organization.deletedAt,
+    );
+    const logos = await this.media.images(
+      organizations.map((organization) => organization.logoMediaId),
+    );
+    return new Map(
+      organizations.map((organization) => [
+        organization.id,
+        {
+          id: organization.id,
+          slug: organization.slug,
+          name: organization.name,
+          structureType: organization.structureType,
+          logoUrl: organization.logoMediaId
+            ? (logos.get(organization.logoMediaId)?.url ?? null)
+            : null,
+          verified: organization.verificationStatus === 'verified',
+        },
+      ]),
+    );
   }
 
   /** Role of a member in a live organization, null otherwise. */

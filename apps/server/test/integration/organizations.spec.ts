@@ -5,6 +5,7 @@ import { AccessModule } from '../../src/modules/access';
 import { IdentityModule } from '../../src/modules/identity';
 import { MediaModule } from '../../src/modules/media';
 import { MalwareScanner } from '../../src/modules/media/application/ports';
+import { NetworkModule } from '../../src/modules/network';
 import { OrganizationsModule } from '../../src/modules/organizations';
 import { ProfilesModule } from '../../src/modules/profiles';
 import { AuditModule } from '../../src/platform/audit';
@@ -116,6 +117,7 @@ describe('organizations', () => {
         MediaModule.forWorker(),
         ProfilesModule.forWorker(),
         OrganizationsModule.forWorker(),
+        NetworkModule.forWorker(),
       ],
       (builder) => builder.overrideProvider(MalwareScanner).useValue(new FakeMalwareScanner()),
     );

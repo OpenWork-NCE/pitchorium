@@ -1,5 +1,9 @@
 /** Public facade of the organizations module: the only file other modules may import. */
-export { OrganizationsFacade } from './application/organizations.facade';
+export {
+  ORGANIZATION_FOLLOW_TARGET,
+  type OrganizationCard,
+  OrganizationsFacade,
+} from './application/organizations.facade';
 export type { OrganizationProjectsProvider } from './application/ports';
 export {
   MemberInvited,
