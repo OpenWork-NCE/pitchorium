@@ -69,6 +69,8 @@ export abstract class OrganizationRepository {
   abstract findInvitation(id: string): Promise<InvitationRecord | null>;
   abstract findInvitationByTokenHash(tokenHash: string): Promise<InvitationRecord | null>;
   abstract pendingInvitations(organizationId: string): Promise<InvitationRecord[]>;
+  /** Pending, unexpired invitations sent to an address, in live organizations. */
+  abstract countPendingInvitationsTo(email: string, now: Date): Promise<number>;
   /** Revokes the pending invitations of an address (a new one replaces them). */
   abstract revokePendingInvitations(organizationId: string, email?: string): Promise<number>;
   /** Moves a pending invitation to `status`; false when it was not pending anymore. */

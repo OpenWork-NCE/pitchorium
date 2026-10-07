@@ -131,6 +131,33 @@ export class OrganizationsFacade implements OnModuleInit {
     return summaries;
   }
 
+  /** Members of a live organization holding one of the roles (notifications). */
+  async memberIds(
+    organizationId: string,
+    roles: readonly OrganizationRole[] = ['owner', 'admin'],
+  ): Promise<string[]> {
+    const organization = await this.organizations.findById(organizationId);
+    if (!organization || organization.deletedAt) return [];
+    return (await this.organizations.members(organizationId))
+      .filter((member) => roles.includes(member.role))
+      .map((member) => member.userId);
+  }
+
+  /** Invited address and organization of an invitation (notification of an existing member). */
+  async invitation(
+    invitationId: string,
+  ): Promise<{ email: string; organizationId: string; role: string } | null> {
+    const found = await this.organizations.findInvitation(invitationId);
+    return found
+      ? { email: found.email, organizationId: found.organizationId, role: found.role }
+      : null;
+  }
+
+  /** Pending invitations sent to the verified address of a member (unified counters). */
+  async pendingInvitationsTo(email: string): Promise<number> {
+    return this.organizations.countPendingInvitationsTo(email.toLowerCase(), new Date());
+  }
+
   /** Extension point for the projects and payments modules (carried and supported projects). */
   registerProjectsProvider(provider: OrganizationProjectsProvider): void {
     this.projects.register(provider);

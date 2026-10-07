@@ -48,7 +48,7 @@ Les routes `{organizationId}` passent par `OrganizationResolver`, qui donne au m
 
 ## Façade publique (`index.ts`)
 
-`OrganizationsFacade` : `roleOf`, `summaries`, `cards` (nom, slug, type de structure, logo public, badge), `idsBySlugs` (slugs actuels, pour les mentions), `registerProjectsProvider` ; interface `OrganizationProjectsProvider` ; classes d'événements.
+`OrganizationsFacade` : `roleOf`, `summaries`, `cards` (nom, slug, type de structure, logo public, badge), `idsBySlugs` (slugs actuels, pour les mentions), `memberIds` (membres par rôle), `invitation` (adresse invitée), `pendingInvitationsTo` (invitations en attente d'une adresse), `registerProjectsProvider` ; interface `OrganizationProjectsProvider` ; classes d'événements.
 
 ## Événements émis
 
@@ -69,7 +69,7 @@ Les routes `{organizationId}` passent par `OrganizationResolver`, qui donne au m
 
 ## Événements consommés
 
-Les siens, par le worker (handler `organizations.send-emails`) : invitation (avec création du jeton), acceptation (aux `owner` et à l'auteur de l'invitation), changement de rôle (au membre), transfert de propriété (aux deux membres), demande, décision et révocation de vérification (aux `owner`). Emails FR et EN (`@pitchorium/emails`, `organization-notice`).
+Les siens, par le worker (handler `organizations.send-emails`) : invitation (avec création du jeton), acceptation (aux `owner` et à l'auteur de l'invitation), changement de rôle (au membre), transfert de propriété (aux deux membres), demande, décision et révocation de vérification (aux `owner`). Emails FR et EN (`@pitchorium/emails`, `organization-notice`). Les mêmes événements donnent les notifications in-app du module notifications (sans second email).
 
 ## Dépendances
 

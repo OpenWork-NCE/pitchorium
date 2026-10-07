@@ -6,7 +6,7 @@ import type {
   StructureType,
   VerificationStatus,
 } from '@pitchorium/contracts';
-import { and, asc, count, desc, eq, inArray, isNull, ne, sql } from '@pitchorium/db/orm';
+import { and, asc, count, desc, eq, gt, inArray, isNull, ne, sql } from '@pitchorium/db/orm';
 import {
   organizationsInvitations,
   organizationsMembers,
@@ -287,6 +287,25 @@ export class DrizzleOrganizationRepository extends OrganizationRepository {
       )
       .orderBy(desc(organizationsInvitations.createdAt));
     return rows.map(toInvitation);
+  }
+
+  async countPendingInvitationsTo(email: string, now: Date): Promise<number> {
+    const [row] = await this.db
+      .select({ value: count() })
+      .from(organizationsInvitations)
+      .innerJoin(
+        organizationsOrganizations,
+        eq(organizationsOrganizations.id, organizationsInvitations.organizationId),
+      )
+      .where(
+        and(
+          eq(organizationsInvitations.email, email),
+          eq(organizationsInvitations.status, 'pending'),
+          gt(organizationsInvitations.expiresAt, now),
+          isNull(organizationsOrganizations.deletedAt),
+        ),
+      );
+    return row?.value ?? 0;
   }
 
   async revokePendingInvitations(organizationId: string, email?: string): Promise<number> {
