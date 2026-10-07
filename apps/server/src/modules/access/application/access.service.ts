@@ -8,6 +8,7 @@ import {
 import { AuditService } from '../../../platform/audit';
 import { DomainError } from '../../../platform/kernel';
 import { type AuthenticatedSession, IdentityFacade } from '../../identity';
+import { ACTION_POLICIES } from '../domain/action-policies';
 import {
   type AccessDecision,
   decide,
@@ -96,9 +97,14 @@ export class AccessService {
     throw new DomainError(decision.code, `Action ${action} denied`, { missing: decision.missing });
   }
 
-  /** What the actor still has to complete for an action (GET /v1/me/prerequisites/:action). */
+  /**
+   * What the actor still has to complete for an action (GET /v1/me/prerequisites/:action). A
+   * role held on a resource is not an element to complete: the answer is given for an actor who
+   * holds the role the policy requires (the owner of a project about to publish it, say).
+   */
   async prerequisitesOf(actor: Actor, action: Action): Promise<ActionPrerequisites> {
-    const decision = await this.decide(actor, action, selfResource(actor));
+    const roles = ACTION_POLICIES[action].resourceRoles ?? [];
+    const decision = await this.decide(actor, action, { ...selfResource(actor), roles });
     return decision.allowed
       ? { action, allowed: true, code: null, missing: [] }
       : { action, allowed: false, code: decision.code, missing: decision.missing };

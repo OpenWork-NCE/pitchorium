@@ -1,4 +1,4 @@
-import type { Type } from '@nestjs/common';
+import type { Provider, Type } from '@nestjs/common';
 import type { NestExpressApplication } from '@nestjs/platform-express';
 import { Test } from '@nestjs/testing';
 import { setupApiApp } from '../../../src/api-app';
@@ -20,11 +20,15 @@ export interface ApiTestApp {
 export async function createApiTestApp(
   controllers: Type[] = [],
   environment: Record<string, string> = {},
-  options: { storage?: 'fake' | 'minio' } = {},
+  options: { storage?: 'fake' | 'minio'; providers?: Provider[] } = {},
 ): Promise<ApiTestApp> {
   useTestEnvironment(environment);
   const storage = new FakeObjectStorage();
-  const builder = Test.createTestingModule({ imports: [AppModule], controllers });
+  const builder = Test.createTestingModule({
+    imports: [AppModule],
+    controllers,
+    providers: options.providers ?? [],
+  });
   if (options.storage !== 'minio') builder.overrideProvider(ObjectStorage).useValue(storage);
   const moduleRef = await builder.compile();
   const app = moduleRef.createNestApplication<NestExpressApplication>({ logger: false });

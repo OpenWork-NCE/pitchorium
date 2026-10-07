@@ -17,7 +17,7 @@ Autorisations (cahier des charges §7.3, §13) : refus par défaut, registre cen
 
 ## Routes
 
-- `GET /v1/me/prerequisites/{action}` : ce que le membre doit compléter avant une action.
+- `GET /v1/me/prerequisites/{action}` : ce que le membre doit compléter avant une action. Pour une action réservée à un rôle porté sur une ressource (`project.publish` pour le propriétaire d'un projet, par exemple), la réponse vaut pour un membre qui détient ce rôle : le rôle n'est pas un élément à compléter.
 - `GET /v1/access/users/{userId}/roles`, `POST /v1/access/users/{userId}/roles`, `DELETE /v1/access/users/{userId}/roles/{role}` : administrateurs avec 2FA.
 
 ## Schéma `access`

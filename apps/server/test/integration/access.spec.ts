@@ -3,9 +3,16 @@ import request from 'supertest';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { AdminBootstrapService } from '../../src/modules/access';
 import { createApiTestApp } from './support/api-app';
-import { AccessProbeController } from './support/access-probe.controller';
+import { AccessProbeController, OwnProjectResolver } from './support/access-probe.controller';
 import { query, truncateAllTables } from './support/database';
-import { type Agent, browser, createMember, PASSWORD, signIn } from './support/members';
+import {
+  type Agent,
+  browser,
+  createMember,
+  PASSWORD,
+  signIn,
+  twoFactorRequest,
+} from './support/members';
 import { totp } from './support/totp';
 
 const auditOf = (action: string) =>
@@ -19,7 +26,13 @@ describe('access', () => {
   let bootstrap: AdminBootstrapService;
 
   beforeAll(async () => {
-    ({ app } = await createApiTestApp([AccessProbeController]));
+    ({ app } = await createApiTestApp(
+      [AccessProbeController],
+      {},
+      {
+        providers: [OwnProjectResolver],
+      },
+    ));
     bootstrap = app.get(AdminBootstrapService, { strict: false });
   });
 
@@ -90,13 +103,15 @@ describe('access', () => {
 
   describe('administrators', () => {
     async function enableTwoFactor(agent: Agent): Promise<string> {
-      const enabled = await agent.post('/v1/auth/two-factor/enable').send({ password: PASSWORD });
+      const enabled = await twoFactorRequest(() =>
+        agent.post('/v1/auth/two-factor/enable').send({ password: PASSWORD }),
+      );
       expect(enabled.status, JSON.stringify(enabled.body)).toBe(200);
       const uri = enabled.body.totpURI as string;
-      await agent
-        .post('/v1/auth/two-factor/verify-totp')
-        .send({ code: totp(uri) })
-        .expect(200);
+      const verified = await twoFactorRequest(() =>
+        agent.post('/v1/auth/two-factor/verify-totp').send({ code: totp(uri) }),
+      );
+      expect(verified.status).toBe(200);
       return uri;
     }
 
@@ -152,10 +167,10 @@ describe('access', () => {
         .expect(200);
       expect(firstStep.body).toMatchObject({ twoFactorRedirect: true });
       await laptop.get('/v1/me').expect(401);
-      await laptop
-        .post('/v1/auth/two-factor/verify-totp')
-        .send({ code: totp(uri) })
-        .expect(200);
+      const second = await twoFactorRequest(() =>
+        laptop.post('/v1/auth/two-factor/verify-totp').send({ code: totp(uri) }),
+      );
+      expect(second.status).toBe(200);
 
       const granted = await laptop
         .post(`/v1/access/users/${target.userId}/roles`)
