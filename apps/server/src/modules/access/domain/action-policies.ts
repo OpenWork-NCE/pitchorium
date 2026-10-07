@@ -57,4 +57,14 @@ export const ACTION_POLICIES: Readonly<Record<Action, ActionPolicy>> = {
     sensitive: true,
   },
   'organization.verification.review': { roles: ['moderator', 'admin'], sensitive: true },
+  // Network (§10.2): reading lists and relationships, following, connecting, blocking.
+  'network.read': {},
+  'network.follow': {},
+  // A connection request reaches another member: the requester must have proved their email.
+  'network.connection.request': { requires: ['email_verified'] },
+  'network.connection.respond': {},
+  'network.connection.remove': {},
+  'network.block': {},
+  'network.settings.update': {},
+  'network.profile-views.read': {},
 };

@@ -36,6 +36,14 @@ export const ACTIONS = [
   'organization.invitation.respond',
   'organization.verification.request',
   'organization.verification.review',
+  'network.read',
+  'network.follow',
+  'network.connection.request',
+  'network.connection.respond',
+  'network.connection.remove',
+  'network.block',
+  'network.settings.update',
+  'network.profile-views.read',
 ] as const;
 export const actionSchema = z.enum(ACTIONS);
 

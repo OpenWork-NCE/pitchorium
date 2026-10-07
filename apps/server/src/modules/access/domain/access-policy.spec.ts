@@ -162,6 +162,14 @@ const MATRIX: Record<Action, Record<Scenario, Expected>> = {
   'organization.invitation.respond': membersWithVerifiedEmail,
   'organization.verification.request': organizationRoleRequired,
   'organization.verification.review': moderatorsAndAdminsWith2fa,
+  'network.read': membersWithAcceptedTerms,
+  'network.follow': membersWithAcceptedTerms,
+  'network.connection.request': membersWithVerifiedEmail,
+  'network.connection.respond': membersWithAcceptedTerms,
+  'network.connection.remove': membersWithAcceptedTerms,
+  'network.block': membersWithAcceptedTerms,
+  'network.settings.update': membersWithAcceptedTerms,
+  'network.profile-views.read': membersWithAcceptedTerms,
 };
 
 function outcome(action: Action, scenario: Scenario): Expected {
