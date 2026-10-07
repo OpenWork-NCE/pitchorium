@@ -1,5 +1,6 @@
 import { Global, Module, type OnApplicationShutdown } from '@nestjs/common';
 import { type CommonConfig, COMMON_CONFIG } from '../config';
+import { MailSuppressionRegistry, SuppressingMailer } from './mail-suppressions';
 import { Mailer } from './mailer';
 import { ResendMailer } from './resend-mailer';
 import { SmtpMailer } from './smtp-mailer';
@@ -16,20 +17,24 @@ export function createMailer(config: CommonConfig['mail']): Mailer {
 @Global()
 @Module({
   providers: [
+    MailSuppressionRegistry,
     {
       provide: Mailer,
-      inject: [COMMON_CONFIG],
-      useFactory: (config: CommonConfig) => createMailer(config.mail),
+      inject: [COMMON_CONFIG, MailSuppressionRegistry],
+      useFactory: (config: CommonConfig, suppressions: MailSuppressionRegistry) =>
+        new SuppressingMailer(createMailer(config.mail), suppressions),
     },
   ],
-  exports: [Mailer],
+  exports: [Mailer, MailSuppressionRegistry],
 })
 export class MailerModule implements OnApplicationShutdown {
   constructor(private readonly mailer: Mailer) {}
 
   onApplicationShutdown(): void {
-    if (this.mailer instanceof SmtpMailer) {
-      this.mailer.close();
+    const transport =
+      this.mailer instanceof SuppressingMailer ? this.mailer.transport : this.mailer;
+    if (transport instanceof SmtpMailer) {
+      transport.close();
     }
   }
 }

@@ -20,6 +20,7 @@ export class ResendMailer extends Mailer {
       html: message.html,
       text: message.text,
       ...(message.replyTo ? { replyTo: message.replyTo } : {}),
+      ...(message.headers ? { headers: message.headers } : {}),
     });
     if (error) {
       throw new Error(`Resend rejected the email: ${error.name}`);
