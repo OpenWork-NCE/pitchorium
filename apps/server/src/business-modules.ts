@@ -22,7 +22,6 @@ import { AdminModule } from './modules/admin';
 
 /** Modules wired the same way in both processes. */
 const COMMON_MODULES: Type[] = [
-  AccessModule,
   ProfilesModule,
   OrganizationsModule,
   MediaModule,
@@ -49,10 +48,12 @@ const COMMON_MODULES: Type[] = [
  */
 export const API_BUSINESS_MODULES: (Type | DynamicModule)[] = [
   IdentityModule.forApi(),
+  AccessModule.forApi(),
   ...COMMON_MODULES,
 ];
 
 export const WORKER_BUSINESS_MODULES: (Type | DynamicModule)[] = [
   IdentityModule.forWorker(),
+  AccessModule.forWorker(),
   ...COMMON_MODULES,
 ];

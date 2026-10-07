@@ -21,7 +21,7 @@ pnpm db:seed
 pnpm dev
 ```
 
-- api : http://localhost:3000/v1/health/ready, Swagger UI sur http://localhost:3000/docs
+- api : http://localhost:3000/v1/health/ready, Swagger UI sur http://localhost:3000/docs, authentification sur http://localhost:3000/v1/auth (Better Auth) ; les emails de vérification arrivent dans Mailpit
 - worker : sonde sur http://localhost:3001/health/ready ; `pnpm --filter @pitchorium/server outbox:ping` écrit un événement technique que le worker relaie et journalise
 - Mailpit : http://localhost:8025, console MinIO : http://localhost:9001
 
@@ -41,6 +41,7 @@ pnpm dev
 | `pnpm db:migrate`                   | Applique les migrations sur `DATABASE_URL`                          |
 | `pnpm db:seed`                      | Seed idempotent (feature flags)                                     |
 | `pnpm db:check`                     | Vérifie la cohérence des migrations                                 |
+| `pnpm admin:create --email <email>` | Attribue le rôle admin à un compte existant (idempotent)            |
 | `pnpm i18n:check`                   | Vérifie l'alignement des clés de traduction sur le français         |
 | `pnpm openapi:generate`             | Exporte `apps/server/openapi/openapi.json` sans démarrer de serveur |
 | `pnpm api-client:generate`          | Régénère le client Orval à partir de l'OpenAPI                      |
