@@ -15,7 +15,8 @@
     "start:worker": "node dist/main.worker.js",
     "openapi:generate": "node dist/main.openapi.js",
     "outbox:ping": "node --env-file-if-exists=.env --import tsx scripts/emit-ping-event.mts",
-    "admin:create": "node --env-file-if-exists=.env -r @swc-node/register src/main.create-admin.ts"
+    "admin:create": "node --env-file-if-exists=.env -r @swc-node/register src/main.create-admin.ts",
+    "db:seed:dev": "node --env-file-if-exists=.env -r @swc-node/register scripts/seed-dev.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "3.1147.0",

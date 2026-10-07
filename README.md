@@ -18,8 +18,11 @@ cp apps/server/.env.example apps/server/.env
 pnpm infra:up
 pnpm db:migrate
 pnpm db:seed
+pnpm db:seed:dev
 pnpm dev
 ```
+
+`pnpm db:seed:dev` (facultatif, refusé si `NODE_ENV=production`) ajoute des données de démonstration pour le développement du frontend : 14 membres fictifs (Afrique, Caraïbes, diaspora) avec profils et volets, 3 organisations, connexions, suivis, deux demandes en attente, publications, repartages, commentaires et réactions. Comptes : `<identifiant avec des points>@demo.pitchorium.test` (par exemple `aissatou.ba@demo.pitchorium.test`, `kofi.mensah@demo.pitchorium.test`), mot de passe `pitchorium-demo-2026`. Les photos, couvertures, logos et images sont déposés en quarantaine : le worker (`pnpm dev`) les traite comme de vrais téléversements. Le script est idempotent : une nouvelle exécution n'insère rien.
 
 - api : http://localhost:3000/v1/health/ready, Swagger UI sur http://localhost:3000/docs, authentification sur http://localhost:3000/v1/auth (Better Auth) ; les emails de vérification arrivent dans Mailpit
 - worker : sonde sur http://localhost:3001/health/ready ; `pnpm --filter @pitchorium/server outbox:ping` écrit un événement technique que le worker relaie et journalise
@@ -40,6 +43,7 @@ pnpm dev
 | `pnpm db:generate`                  | Génère une migration Drizzle à partir des schémas                   |
 | `pnpm db:migrate`                   | Applique les migrations sur `DATABASE_URL`                          |
 | `pnpm db:seed`                      | Seed idempotent (feature flags, données de référence)               |
+| `pnpm db:seed:dev`                  | Données de démonstration idempotentes (développement uniquement)    |
 | `pnpm db:check`                     | Vérifie la cohérence des migrations                                 |
 | `pnpm admin:create --email <email>` | Attribue le rôle admin à un compte existant (idempotent)            |
 | `pnpm i18n:check`                   | Vérifie l'alignement des clés de traduction sur le français         |

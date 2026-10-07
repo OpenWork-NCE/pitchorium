@@ -36,5 +36,6 @@ scripts/             outils de développement
 | `pnpm openapi:generate`                                  | Écrit `openapi/openapi.json` à partir de `dist/`                                                                          |
 | `pnpm outbox:ping`                                       | Insère un événement `platform.ping.v1` relayé par le worker                                                               |
 | `pnpm admin:create --email <email>`                      | Attribue le rôle admin à un compte existant (idempotent)                                                                  |
+| `pnpm db:seed:dev`                                       | Données de démonstration (`scripts/dev-seed/`), idempotentes, refusées en production                                      |
 
 Toutes les variables d'environnement sont décrites dans `.env.example`.
