@@ -5,7 +5,12 @@ import { PostsService } from '../../src/modules/content/application/posts.servic
 import { ImpactFacade } from '../../src/modules/impact';
 import { MethodologiesService } from '../../src/modules/impact/application/methodologies.service';
 import { FollowsService } from '../../src/modules/network/application/follows.service';
-import { ProjectsFacade } from '../../src/modules/projects';
+import { ContributionEffectsService } from '../../src/modules/payments/application/contribution-effects.service';
+import { ContributionsService } from '../../src/modules/payments/application/contributions.service';
+import { PayoutService } from '../../src/modules/payments/application/payout.service';
+import { PaymentsRepository } from '../../src/modules/payments/application/ports';
+import { WebhooksService } from '../../src/modules/payments/application/webhooks.service';
+import { ConfiguredPaymentProviders } from '../../src/modules/payments/infrastructure/payment-providers';
 import { InterestsService } from '../../src/modules/projects/application/interests.service';
 import { ProjectEventsRecorder } from '../../src/modules/projects/application/project-events.recorder';
 import { ProjectMaintenanceService } from '../../src/modules/projects/application/project-maintenance.service';
@@ -17,7 +22,7 @@ import { UpdatesService } from '../../src/modules/projects/application/updates.s
 import { slugBaseFromTitle } from '../../src/modules/projects/domain/project';
 import { parseWorkerConfig } from '../../src/platform/config/config';
 import { TransactionManager } from '../../src/platform/database';
-import { Clock, type FixedClock, Money } from '../../src/platform/kernel';
+import { Clock, type FixedClock } from '../../src/platform/kernel';
 import { DEMO_MEMBERS } from './dataset';
 import {
   DEMO_FACET_ASSESSMENTS,
@@ -29,6 +34,23 @@ import { demoId } from './seed-dev-data';
 
 const DAY_MS = 86_400_000;
 const euros = (amount: number) => ({ amountMinor: String(amount * 100), currency: 'EUR' });
+/** Euros in CFA francs at the fixed parity (655.957): exact for whole euros. */
+const francs = (amount: number) => ({
+  amountMinor: String((BigInt(amount) * 655_957n) / 1000n),
+  currency: 'XOF',
+});
+
+/**
+ * The demonstration pays through the simulated provider (ADR 0052), with institutional amounts
+ * above the default bounds and no two-factor authentication: development settings only.
+ */
+const DEMO_PAYMENTS_ENV = {
+  PAYMENTS_MODE: 'simulated',
+  PAYMENTS_MAX_EUR_MINOR: '10000000',
+  PAYMENTS_ENHANCED_VERIFICATION_EUR_MINOR: '10000000',
+  PAYMENTS_CONTRIBUTIONS_PER_HOUR: '1000',
+  PAYMENTS_SESSIONS_PER_METHOD_PER_HOUR: '1000',
+};
 
 /** Rows created by this run; a second run creates nothing. */
 export interface DevProjectsResult {
@@ -48,6 +70,7 @@ export interface DevProjectsResult {
  * tool only: it relies on @nestjs/testing to replace the clock.
  */
 export async function createSeedContext(clock: FixedClock): Promise<INestApplicationContext> {
+  Object.assign(process.env, DEMO_PAYMENTS_ENV);
   const moduleRef = await Test.createTestingModule({ imports: [AppModule] })
     .overrideProvider(Clock)
     .useValue(clock)
@@ -123,6 +146,62 @@ export async function seedDevProjects(
   await maintenance.announceEndingSoon();
   return result;
 
+  /**
+   * Payout account at the simulated provider and identity verified, as a holder does before
+   * collecting (section 9.5). The KYC decision is a demonstration decision without reviewer.
+   */
+  async function readyToCollect(ownerId: string, country: string): Promise<void> {
+    const payout = get(PayoutService);
+    if (!(await get(PaymentsRepository).findPayoutAccount(ownerId))) {
+      await payout.create(ownerId, {
+        country,
+        bankAccount: { bankCode: 'DEMO', accountNumber: '00000000', accountName: 'DEMO' },
+      });
+    }
+    if (await payout.isKycVerified(ownerId)) return;
+    const submission = await payout.submitKyc(ownerId, {
+      documentMediaIds: [],
+      certification: true,
+    });
+    await payout.decideKyc(submission.id, null, 'approved', 'Données de démonstration.');
+  }
+
+  /**
+   * A contribution paid like a real one (A1): payment session at the simulated provider, signed
+   * notification received by the webhook ingestion, state read again from the provider, then
+   * ledger, collected amount and reward through the payments module.
+   */
+  async function pay(
+    projectId: string,
+    contribution: NonNullable<DemoProject['contributions']>[number],
+    rewardIds: readonly string[],
+    index: number,
+  ): Promise<void> {
+    const rewardId =
+      contribution.rewardIndex === undefined ? undefined : rewardIds[contribution.rewardIndex];
+    const request = {
+      kind: rewardId ? ('reward_crowdfunding' as const) : ('donation' as const),
+      amount: contribution.inXof ? francs(contribution.amount) : euros(contribution.amount),
+      method: 'card' as const,
+      ...(rewardId ? { rewardId } : {}),
+      publicDisplay: index % 2 === 0,
+      anonymous: false,
+    };
+    const contributions = get(ContributionsService);
+    const created = await contributions.create(
+      userId(contribution.contributor),
+      projectId,
+      request,
+      contribution.organization ? demoId(`organization:${contribution.organization}`) : null,
+    );
+    const simulated = get(ConfiguredPaymentProviders).simulated;
+    if (!simulated) throw new Error('db:seed:dev needs the simulated payment provider');
+    const webhook = await simulated.play(`sim_cs_${created.id}`, 'succeed');
+    await get(WebhooksService).ingest('simulated', webhook.headers, Buffer.from(webhook.body));
+    const paid = await get(ContributionEffectsService).sync(created.id);
+    if (paid?.status !== 'succeeded') throw new Error(`Demo contribution ${created.id} not paid`);
+  }
+
   async function seedProject(demo: DemoProject): Promise<void> {
     const ownerId = userId(demo.owner);
     const publishedAt =
@@ -185,21 +264,10 @@ export async function seedDevProjects(
 
     at(0);
     await projects.publish(projectId, ownerId, true);
-    const facade = get(ProjectsFacade);
+    if (demo.contributions?.length) await readyToCollect(ownerId, demo.countryCodes?.[0] ?? 'SN');
     for (const [index, contribution] of (demo.contributions ?? []).entries()) {
       at(contribution.daysAfterPublication);
-      const contributionId = demoId(`contribution:${demo.key}:${index}`);
-      const rewardId =
-        contribution.rewardIndex === undefined ? undefined : rewardIds[contribution.rewardIndex];
-      if (rewardId) {
-        await facade.reserve(rewardId, contributionId);
-        await facade.confirm(contributionId);
-      }
-      await facade.applyFunding(
-        contributionId,
-        projectId,
-        Money.of(BigInt(contribution.amount) * 100n, 'EUR'),
-      );
+      await pay(projectId, contribution, rewardIds, index);
       result.contributions += 1;
     }
     for (const update of demo.updates ?? []) {

@@ -13,6 +13,7 @@ import {
 } from '../../scripts/dev-seed/seed-dev-data';
 import { createSeedContext, seedDevProjects } from '../../scripts/dev-seed/seed-dev-projects';
 import { MethodologiesService } from '../../src/modules/impact/application/methodologies.service';
+import { ReconciliationService } from '../../src/modules/payments/application/reconciliation.service';
 import { FixedClock } from '../../src/platform/kernel';
 import { createApiTestApp } from './support/api-app';
 import { query, truncateAllTables } from './support/database';
@@ -34,6 +35,9 @@ const COUNTED_TABLES = [
   'projects.projects',
   'projects.updates',
   'projects.funding_entries',
+  'payments.contributions',
+  'payments.ledger_entries',
+  'payments.payout_accounts',
   'platform.outbox_events',
 ];
 
@@ -124,6 +128,27 @@ describe('development data', () => {
           'projects.update.published.v1',
         ]),
       );
+      // A1: the contributions went through payments; the ledger matches every project total,
+      // and the reconciliation over the whole demonstration finds nothing.
+      const totals = await query<{ project_id: string; collected: string; ledger: string }>(
+        `SELECT p.id AS project_id, p.collected_minor::text AS collected,
+           coalesce(sum(l.amount_minor), 0)::text AS ledger
+         FROM projects.projects p
+         LEFT JOIN payments.ledger_entries e ON e.project_id = p.id
+         LEFT JOIN payments.ledger_lines l ON l.entry_id = e.id AND l.account = 'project_funding'
+         GROUP BY p.id, p.collected_minor`,
+      );
+      expect(totals.filter((row) => row.collected !== row.ledger)).toEqual([]);
+      expect(totals.some((row) => row.collected !== '0')).toBe(true);
+      const paid = await query<{ count: string }>(
+        `SELECT count(*) FROM payments.contributions WHERE status = 'succeeded'`,
+      );
+      expect(Number(paid[0]?.count)).toBe(11);
+      const report = await context
+        .get(ReconciliationService, { strict: false })
+        .run(365 * 86_400_000);
+      expect(report.discrepancies).toEqual([]);
+      expect(report.checkedTransactions).toBe(11);
       const withProjects = await counts();
       expect(await seedDevProjects(context, clock)).toEqual({
         methodologies: 0,

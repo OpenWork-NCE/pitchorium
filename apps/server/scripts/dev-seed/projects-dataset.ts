@@ -70,7 +70,20 @@ export interface DemoProject {
   /** Days before the seeding; absent for a draft. */
   publishedDaysAgo?: number;
   /** Paid contributions applied through the facade, with the reward taken by each. */
-  contributions?: { amount: number; daysAfterPublication: number; rewardIndex?: number }[];
+  /**
+   * Contributions paid through the payments module and its simulated provider (ADR 0035), by a
+   * member (or on behalf of an organization they administer), in euros or in CFA francs at the
+   * fixed parity, with the reward taken by each.
+   */
+  contributions?: {
+    contributor: string;
+    organization?: string;
+    amount: number;
+    /** Paid in XOF: `amount` euros at the fixed parity, exactly. */
+    inXof?: boolean;
+    daysAfterPublication: number;
+    rewardIndex?: number;
+  }[];
   updates?: { author: string; daysAfterPublication: number; text: string }[];
   editor?: { member: string; function: string };
   interests?: { member: string; kind: ProjectInterestKind; message: string; amount?: number }[];
@@ -118,9 +131,9 @@ export const DEMO_PROJECTS: readonly DemoProject[] = [
     ],
     publishedDaysAgo: 20,
     contributions: [
-      { amount: 5_000, daysAfterPublication: 1 },
-      { amount: 2_400, daysAfterPublication: 4, rewardIndex: 0 },
-      { amount: 5_000, daysAfterPublication: 9, rewardIndex: 1 },
+      { contributor: 'kofi', amount: 5_000, daysAfterPublication: 1 },
+      { contributor: 'fatou', amount: 2_400, daysAfterPublication: 4, rewardIndex: 0 },
+      { contributor: 'thierry', amount: 5_000, daysAfterPublication: 9, rewardIndex: 1 },
     ],
     updates: [
       {
@@ -180,9 +193,14 @@ export const DEMO_PROJECTS: readonly DemoProject[] = [
     ],
     publishedDaysAgo: 30,
     contributions: [
-      { amount: 20_000, daysAfterPublication: 2 },
-      { amount: 22_000, daysAfterPublication: 10 },
-      { amount: 10_000, daysAfterPublication: 21, rewardIndex: 0 },
+      {
+        contributor: 'koffi',
+        organization: 'femmes-sahel',
+        amount: 20_000,
+        daysAfterPublication: 2,
+      },
+      { contributor: 'nadia', amount: 22_000, daysAfterPublication: 10 },
+      { contributor: 'claudine', amount: 10_000, daysAfterPublication: 21, rewardIndex: 0 },
     ],
     updates: [
       {
@@ -225,8 +243,8 @@ export const DEMO_PROJECTS: readonly DemoProject[] = [
     durationDays: 45,
     publishedDaysAgo: 70,
     contributions: [
-      { amount: 9_000, daysAfterPublication: 3 },
-      { amount: 9_000, daysAfterPublication: 30 },
+      { contributor: 'fatou', amount: 9_000, inXof: true, daysAfterPublication: 3 },
+      { contributor: 'koffi', amount: 9_000, daysAfterPublication: 30 },
     ],
     updates: [
       {
@@ -265,8 +283,8 @@ export const DEMO_PROJECTS: readonly DemoProject[] = [
     ],
     publishedDaysAgo: 100,
     contributions: [
-      { amount: 6_000, daysAfterPublication: 5 },
-      { amount: 2_200, daysAfterPublication: 50, rewardIndex: 0 },
+      { contributor: 'thierry', amount: 6_000, daysAfterPublication: 5 },
+      { contributor: 'claudine', amount: 2_200, daysAfterPublication: 50, rewardIndex: 0 },
     ],
     interests: [
       {
@@ -294,7 +312,7 @@ export const DEMO_PROJECTS: readonly DemoProject[] = [
     ],
     durationDays: 45,
     publishedDaysAgo: 43,
-    contributions: [{ amount: 9_000, daysAfterPublication: 6 }],
+    contributions: [{ contributor: 'grace', amount: 9_000, daysAfterPublication: 6 }],
     followers: ['kofi'],
   },
   {
