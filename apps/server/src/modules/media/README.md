@@ -16,7 +16,7 @@ Fichiers et leurs métadonnées (cahier des charges §10.1, §10.3, §11.1, §13
 4. Attachement à une ressource par la façade (`attach`, `detach`), dans la limite par ressource de l'usage. Un actif non attaché depuis `MEDIA_ORPHAN_TTL_HOURS` (jamais confirmé, rejeté, jamais attaché ou détaché) est supprimé par la tâche `delete-orphans` (toutes les 30 minutes).
 5. Suppression logique (`DELETE /v1/media/{mediaId}` sur un actif non attaché, ou nettoyage), puis physique par la tâche `purge-deleted` (toutes les 5 minutes).
 
-Motifs de rejet : `upload_missing`, `type_not_allowed`, `type_mismatch`, `size_exceeded`, `malware_detected`, `image_unreadable`, `image_too_small`, `image_too_large`, `pdf_unreadable`, `pdf_too_many_pages`, `import_failed`, `processing_failed`.
+Motifs de rejet : `upload_missing`, `type_not_allowed`, `type_mismatch`, `size_exceeded`, `size_mismatch` (taille stockée différente de la taille déclarée), `malware_detected`, `image_unreadable`, `image_too_small`, `image_too_large`, `pdf_unreadable`, `pdf_too_many_pages`, `import_failed`, `processing_failed`.
 
 ## Usages (`domain/usages.ts`, valeurs provisoires)
 

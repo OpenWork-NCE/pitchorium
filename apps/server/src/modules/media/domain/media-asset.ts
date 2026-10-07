@@ -106,21 +106,30 @@ export function assertWithinQuota(used: StorageUsage, size: number, quota: Quota
   }
 }
 
+/** What the client declared when it asked for the upload URL (none for an import). */
+export interface DeclaredUpload {
+  contentType: MediaContentType;
+  size: number;
+}
+
 /**
- * Checks the real content against the usage. The declared type is never trusted: the detected
- * type must be allowed and, for an upload, equal to the declared one.
+ * Checks the real content against the usage. The declaration is never trusted: the detected
+ * type must be allowed and, for an upload, equal to the declared one, and the stored size must
+ * be the declared size, which the quota was computed with. The size is also signed into the
+ * upload URL; this check does not depend on the storage enforcing it.
  */
 export function checkContent(
   rule: UsageRule,
-  declared: MediaContentType | null,
+  declared: DeclaredUpload | null,
   detected: string | null,
   size: number,
 ): MediaRejectionReason | null {
   if (size > rule.maxBytes) return 'size_exceeded';
+  if (declared !== null && size !== declared.size) return 'size_mismatch';
   if (!detected || !(rule.contentTypes as readonly string[]).includes(detected)) {
     return 'type_not_allowed';
   }
-  if (declared !== null && detected !== declared) return 'type_mismatch';
+  if (declared !== null && detected !== declared.contentType) return 'type_mismatch';
   return null;
 }
 

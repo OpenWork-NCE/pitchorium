@@ -111,7 +111,10 @@ export class MediaProcessingService {
     }
 
     const detected = await this.detector.detect(content);
-    const declared = asset.source === 'upload' ? asset.declaredContentType : null;
+    const declared =
+      asset.source === 'upload'
+        ? { contentType: asset.declaredContentType, size: asset.declaredSize }
+        : null;
     const contentIssue = checkContent(rule, declared, detected, content.length);
     if (contentIssue || !detected) return reject(contentIssue ?? 'type_not_allowed');
 

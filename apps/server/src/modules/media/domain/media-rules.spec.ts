@@ -88,14 +88,18 @@ describe('usage limits', () => {
 describe('content checks', () => {
   const avatar = USAGE_RULES.avatar;
 
-  it('never trusts the declared type', () => {
-    expect(checkContent(avatar, 'image/png', 'image/png', 100)).toBeNull();
-    expect(checkContent(avatar, 'image/png', 'image/jpeg', 100)).toBe('type_mismatch');
-    expect(checkContent(avatar, 'image/png', 'application/pdf', 100)).toBe('type_not_allowed');
-    expect(checkContent(avatar, 'image/png', null, 100)).toBe('type_not_allowed');
-    expect(checkContent(avatar, 'image/png', 'image/png', avatar.maxBytes + 1)).toBe(
+  it('never trusts the declared type nor the declared size', () => {
+    const png = (size = 100) => ({ contentType: 'image/png' as const, size });
+    expect(checkContent(avatar, png(), 'image/png', 100)).toBeNull();
+    expect(checkContent(avatar, png(), 'image/jpeg', 100)).toBe('type_mismatch');
+    expect(checkContent(avatar, png(), 'application/pdf', 100)).toBe('type_not_allowed');
+    expect(checkContent(avatar, png(), null, 100)).toBe('type_not_allowed');
+    expect(checkContent(avatar, png(avatar.maxBytes + 1), 'image/png', avatar.maxBytes + 1)).toBe(
       'size_exceeded',
     );
+    // A file larger or smaller than declared, should the storage not enforce the signed size.
+    expect(checkContent(avatar, png(100), 'image/png', 101)).toBe('size_mismatch');
+    expect(checkContent(avatar, png(100), 'image/png', 99)).toBe('size_mismatch');
     // An imported photo has no declared type: only the detected one counts.
     expect(checkContent(avatar, null, 'image/jpeg', 100)).toBeNull();
   });
