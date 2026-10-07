@@ -26,6 +26,7 @@ pnpm dev
 
 - api : http://localhost:3000/v1/health/ready, Swagger UI sur http://localhost:3000/docs, authentification sur http://localhost:3000/v1/auth (Better Auth) ; les emails de vérification arrivent dans Mailpit
 - worker : sonde sur http://localhost:3001/health/ready ; `pnpm --filter @pitchorium/server outbox:ping` écrit un événement technique que le worker relaie et journalise
+- paiements : `PAYMENTS_MODE=simulated` en local ; la page de paiement simulée est servie par l'api (`/v1/payments/simulated/checkout/<session>`) et livre la notification signée du scénario choisi
 - Mailpit : http://localhost:8025, console MinIO : http://localhost:9001, ClamAV (clamd) sur le port 3310, interrogé par le worker pour les fichiers envoyés
 
 ## Scripts
@@ -46,6 +47,7 @@ pnpm dev
 | `pnpm db:seed:dev`                  | Données de démonstration idempotentes (développement uniquement)    |
 | `pnpm db:check`                     | Vérifie la cohérence des migrations                                 |
 | `pnpm admin:create --email <email>` | Attribue le rôle admin à un compte existant (idempotent)            |
+| `pnpm payments:reconcile`           | Rapprochement des paiements à la demande (`--days N`, 3 par défaut) |
 | `pnpm i18n:check`                   | Vérifie l'alignement des clés de traduction sur le français         |
 | `pnpm openapi:generate`             | Exporte `apps/server/openapi/openapi.json` sans démarrer de serveur |
 | `pnpm api-client:generate`          | Régénère le client Orval à partir de l'OpenAPI                      |
@@ -61,6 +63,7 @@ pnpm dev
 - [Stockage objet et configuration Cloudflare R2](docs/architecture/storage.md)
 - [Graphe social et fil d'actualité](docs/architecture/social-graph-and-feed.md)
 - [Projets : cycle de vie et flux du financement](docs/architecture/projects-and-funding.md)
+- [Paiements : contributions, rails, ledger et rapprochement](docs/architecture/payments.md) et [hypothèses réglementaires à valider](docs/architecture/payments-compliance.md)
 - [Décisions d'architecture (ADR)](docs/adr/README.md)
 - [Questions ouvertes](docs/open-questions.md)
 - [Infrastructure locale](infra/docker/README.md), [serveur](apps/server/README.md), [base de données](packages/db/README.md), [i18n](packages/i18n/README.md), [emails](packages/emails/README.md), [client d'API](packages/api-client/README.md)

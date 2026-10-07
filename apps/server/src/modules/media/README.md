@@ -1,6 +1,6 @@
 # Module media
 
-Fichiers et leurs métadonnées (cahier des charges §10.1, §10.3, §11.1, §13) : photos de profil et de couverture, logos et couvertures d'organisation, images et documents de publication, galerie, documents et images d'actualité de projet, pièces d'une manifestation d'intérêt, pièces jointes de message, pièces justificatives de vérification. Les autres modules ne manipulent qu'un `mediaId`, par la façade. Pas d'hébergement vidéo (ADR 0024).
+Fichiers et leurs métadonnées (cahier des charges §10.1, §10.3, §11.1, §13) : photos de profil et de couverture, logos et couvertures d'organisation, images et documents de publication, galerie, documents et images d'actualité de projet, pièces d'une manifestation d'intérêt, pièces jointes de message, pièces justificatives (vérification d'organisation, KYC des porteurs et contributions hors plateforme, module payments). Les autres modules ne manipulent qu'un `mediaId`, par la façade. Pas d'hébergement vidéo (ADR 0024).
 
 ## Cycle de vie (ADR 0022)
 

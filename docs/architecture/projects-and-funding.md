@@ -1,6 +1,6 @@
 # Projets : cycle de vie et flux du financement
 
-Le module projects porte les projets, leurs paliers, contreparties, actualités et manifestations d'intérêt ; le module impact, le score auto-déclaré ; le module payments (étape suivante) encaissera les contributions et appellera la façade de projects. projects ne lit aucune table d'un autre module : il passe par les façades de profiles, organizations, media, network, content et impact, et s'enregistre auprès de network, content, organizations et media au démarrage.
+Le module projects porte les projets, leurs paliers, contreparties, actualités et manifestations d'intérêt ; le module impact, le score auto-déclaré ; le module payments encaisse les contributions et appelle la façade de projects (`docs/architecture/payments.md`). projects ne lit aucune table d'un autre module : il passe par les façades de profiles, organizations, media, network, content et impact, et s'enregistre auprès de network, content, organizations et media au démarrage.
 
 ## Cycle de vie d'un projet
 
@@ -27,7 +27,7 @@ stateDiagram-v2
 ```mermaid
 sequenceDiagram
   participant C as Contributeur
-  participant P as payments (étape suivante)
+  participant P as payments
   participant F as ProjectsFacade
   participant DB as PostgreSQL (schéma projects)
   participant W as worker
@@ -43,13 +43,13 @@ sequenceDiagram
   F->>DB: INSERT funding_entries (idempotent par contribution)
   F->>DB: collecté, paliers débloqués, funded, verrou des montants + événements (outbox)
   Note over P: remboursement ou rétrofacturation
-  P->>F: release(contributionId), reverseFunding(contributionId)
+  P->>F: release(contributionId), reverseFunding(contributionId, part)
   W->>DB: close-ended à la date de fin, projects.project.closed.v1
 ```
 
 - Toutes les méthodes de la façade sont idempotentes par identifiant de contribution : un webhook rejoué ne compte jamais deux fois.
 - Les événements `projects.tier.unlocked.v1`, `projects.project.funded.v1` et `projects.project.closed.v1` sont écrits dans la même transaction que le montant (outbox) ; les notifications (§10.5 « palier débloqué ») les consommeront.
-- Jusqu'au module payments, seuls les tests et `pnpm db:seed:dev` appellent `applyFunding`.
+- Seul le module payments appelle ces méthodes, y compris pour les données de démonstration (ADR 0035) ; un remboursement partiel ou un litige perdu annule une part (`reverseFunding` avec un identifiant d'annulation), une contribution hors plateforme validée est appliquée comme une contribution.
 
 ## Actualités et fil
 

@@ -55,13 +55,33 @@ Informations nécessaires au développement et absentes du cahier des charges (d
 ## Paiements
 
 7. La devise de libellé d'une campagne (EUR uniquement, devise du porteur, ou au choix) ; l'objectif est exprimé en euros au §11.1. Provisoirement l'euro, la devise étant stockée avec chaque montant (ADR 0037).
-8. La gestion du change : qui le porte, à quel taux, à quel moment, et son affichage au contributeur et au porteur.
-9. La couverture pays et devises de Flutterwave et de Stripe Connect à retenir : pays des porteurs, pays des contributeurs, moyens de paiement par pays.
-10. Le choix final du prestataire d'encaissement (option A ou B du §15) et le recours éventuel à Mangopay ou Lemonway pour le séquestre.
-11. L'assiette et l'arrondi de la commission de 5 % (sur le brut ou net des frais du prestataire ; arrondi en faveur de qui).
+8. La gestion du change : qui le porte, à quel taux, à quel moment, et son affichage au contributeur et au porteur. Provisoirement (ADR 0046) : parité fixe exacte pour XOF et XAF, taux indicatif de Flutterwave figé pour la session pour les autres devises, écart avec le change réel supporté hors de la plateforme.
+9. La couverture pays et devises de Flutterwave et de Stripe Connect à retenir : pays des porteurs, pays des contributeurs, moyens de paiement par pays. La matrice vérifiée le 2026-10-07 (`docs/architecture/payments.md`) laisse sans rail l'Afrique francophone et le Kenya (voir les questions 61 et 62).
+10. Le choix final du prestataire d'encaissement (option A ou B du §15) et le recours éventuel à Mangopay ou Lemonway pour le séquestre. Provisoirement l'option A, recommandée par le document : Stripe Connect et Flutterwave (ADR 0043 à 0045).
+11. L'assiette et l'arrondi de la commission de 5 % (sur le brut ou net des frais du prestataire ; arrondi en faveur de qui). Provisoirement (ADR 0047) : assiette le montant de la contribution, arrondi à l'unité mineure inférieure en faveur du porteur, commission rendue au prorata (arrondi supérieur) en cas de remboursement.
 12. Le comportement d'une campagne non financée à l'échéance (remboursement, versement partiel, paliers indépendants).
-13. Le niveau de KYC exigé du porteur et le prestataire qui le réalise.
+13. Le niveau de KYC exigé du porteur et le prestataire qui le réalise. Provisoirement (ADR 0050) : vérification par Stripe sur son rail, revue manuelle par un administrateur sur les autres rails, sans liste de pièces exigées par pays.
 14. Le cadre légal de l'equity et des prêts (licence ECSP ou partenaire habilité) : conditions d'activation des flags `funding.equity` et `funding.loans`.
+
+### Validation juridique et conformité des paiements (`docs/architecture/payments-compliance.md`)
+
+51. La qualification juridique du schéma retenu : absence de détention de fonds avec les charges directes de Stripe Connect, et avec les sous-comptes de Flutterwave, où le paiement passe par le compte marchand de Pitchorium avant le partage et où un remboursement débite le compte principal.
+52. La prise en charge des frais du prestataire par le porteur (ADR 0047) et son acceptation contractuelle par les porteurs.
+53. Le sort de la commission sur un litige perdu : Stripe ne la rend pas d'office, elle reste aujourd'hui acquise à Pitchorium.
+54. Les seuils de lutte contre le blanchiment : seuil de vérification renforcée (provisoirement 1 000 EUR, double authentification exigée), mesures au-delà, cumul par période, filtrage des sanctions par les prestataires.
+55. Les bornes et fréquences des contributions : provisoirement 1 EUR à 10 000 EUR d'équivalent, 10 contributions par heure et par contributeur, 5 sessions par heure et par moyen de paiement, sessions de 60 minutes (`PAYMENTS_*`).
+56. Les dons anonymes : autorisés ou non, et à quelles conditions (désactivés par défaut, `PAYMENTS_ANONYMOUS_DONATIONS`).
+57. Le prestataire de KYC automatisé à brancher sur le port `KycProvider`, et les pièces exigées par pays pour la revue manuelle.
+58. L'absence de reçu fiscal : responsabilité du porteur, mentions selon son statut (association, entreprise, personne).
+59. Le pays d'établissement de Pitchorium (hypothèse : Espace économique européen), qui conditionne l'analyse de Stripe Connect, et la TVA applicable à la commission.
+60. La portée de la validation d'une contribution hors plateforme par un administrateur (attestation ou contrôle de cohérence) et les pièces acceptées.
+
+### Capacités des prestataires non vérifiées (désactivées)
+
+61. Stripe Connect pour des porteurs au Nigeria, au Kenya, au Ghana, en Afrique du Sud ou en Côte d'Ivoire : seulement « extended network » par Paystack, versements transfrontaliers d'une plateforme EEE limités aux US, UK, EEE, Canada et Suisse. À confirmer avec Stripe, ou à servir par Paystack. Les comptes en zone hors euro (Royaume-Uni, Suisse, EEE hors euro) et les départements d'outre-mer des Caraïbes (pays ISO distincts de FR) ne sont pas non plus retenus.
+62. Flutterwave : sous-comptes de collecte au Sénégal, en Côte d'Ivoire, au Burkina Faso, au Cameroun, au Kenya et en Afrique du Sud ; partage d'un paiement par carte en EUR, GBP ou USD vers un sous-compte réglé en devise africaine (contributions de la diaspora) ; opérateurs de Mobile Money en collecte au Rwanda et en Tanzanie ; montants minimum et maximum ; valeur de `payment_options` pour le Mobile Money francophone (deux tableaux contradictoires) ; suivi des rétrofacturations par l'API. À confirmer avec Flutterwave.
+63. Les grilles de frais des prestataires hors France (Stripe) et hors Nigeria (Flutterwave), pour l'estimation du devis.
+64. La migration éventuelle vers l'API v4 de Flutterwave (authentification OAuth, signature HMAC des webhooks).
 
 ## Produit
 

@@ -46,3 +46,13 @@ Un fichier par décision, numéroté, au format Contexte / Décision / Conséque
 | [0040](0040-public-display-consent.md)                   | Consentement d'affichage public du porteur et de l'équipe    |
 | [0041](0041-reward-reservations.md)                      | Réservation des contreparties                                |
 | [0042](0042-embedded-video.md)                           | Vidéo intégrée des projets                                   |
+| [0043](0043-no-funds-held-routing-by-holder.md)          | Non-détention des fonds et routage par le porteur            |
+| [0044](0044-stripe-connect-model.md)                     | Modèle Stripe Connect retenu                                 |
+| [0045](0045-flutterwave-subaccounts.md)                  | Sous-comptes Flutterwave                                     |
+| [0046](0046-currencies-and-conversion.md)                | Devises et conversion                                        |
+| [0047](0047-commission-rounding-and-fees.md)             | Commission, arrondi et frais                                 |
+| [0048](0048-double-entry-ledger.md)                      | Ledger en partie double et rapprochement                     |
+| [0049](0049-off-platform-contributions.md)               | Contributions hors plateforme                                |
+| [0050](0050-holder-kyc.md)                               | KYC du porteur                                               |
+| [0051](0051-equity-and-loans-guardrail.md)               | Garde-fou equity et prêts                                    |
+| [0052](0052-simulated-provider.md)                       | Prestataire simulé                                           |

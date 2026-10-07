@@ -47,11 +47,16 @@ flowchart LR
   worker --> mail[Mailpit ou Resend]
   worker --> s3
   worker --> clamav[ClamAV]
+  api --> psp[Stripe, Flutterwave]
+  worker --> psp
+  psp -->|webhooks signés| api
   api -.->|traces OTLP| otel[Collecteur OpenTelemetry]
   worker -.->|traces OTLP| otel
   api -.-> sentry[Sentry]
   worker -.-> sentry
 ```
+
+Les prestataires de paiement sont appelés hors transaction (ADR 0019) ; leurs webhooks arrivent sur `/v1/payments/webhooks/<prestataire>`, servi comme `/v1/auth` avant les analyseurs de corps pour vérifier la signature sur le corps brut (`payments.md`).
 
 Redis sert au rate limiting, à l'adaptateur Socket.IO et à BullMQ. Les traces, les métriques (port `Metrics` de `platform/observability`, compteurs OpenTelemetry exportés en OTLP) et Sentry ne sont actifs que si `OTEL_EXPORTER_OTLP_ENDPOINT` ou `SENTRY_DSN` sont définis.
 

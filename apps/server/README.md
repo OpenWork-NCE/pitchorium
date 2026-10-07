@@ -8,6 +8,7 @@ src/
   main.worker.ts     worker : BullMQ, relais d'outbox, tâches planifiées, sonde de santé
   main.openapi.ts    export de openapi/openapi.json sans serveur réseau
   main.create-admin.ts  commande admin:create (rôle admin d'un compte existant)
+  main.reconcile.ts     commande payments:reconcile (rapprochement des paiements à la demande)
   api-app.ts         configuration HTTP et Socket.IO de l'api, partagée avec les tests
   app.module.ts      racine de l'api
   worker.module.ts   racine du worker
@@ -36,6 +37,7 @@ scripts/             outils de développement
 | `pnpm openapi:generate`                                  | Écrit `openapi/openapi.json` à partir de `dist/`                                                                          |
 | `pnpm outbox:ping`                                       | Insère un événement `platform.ping.v1` relayé par le worker                                                               |
 | `pnpm admin:create --email <email>`                      | Attribue le rôle admin à un compte existant (idempotent)                                                                  |
+| `pnpm payments:reconcile [--days N]`                     | Rapprochement des paiements, écarts listés, code de sortie 1 s'il y en a ; ne corrige rien                                |
 | `pnpm db:seed:dev`                                       | Données de démonstration (`scripts/dev-seed/`), idempotentes, refusées en production                                      |
 
 Toutes les variables d'environnement sont décrites dans `.env.example`.
