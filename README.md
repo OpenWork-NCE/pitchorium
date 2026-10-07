@@ -46,3 +46,13 @@ pnpm dev
 | `pnpm api-client:generate`          | Régénère le client Orval à partir de l'OpenAPI                      |
 | `pnpm infra:up` / `pnpm infra:down` | Démarre ou arrête l'infrastructure locale                           |
 | `pnpm check:box-drawing`            | Échoue si un fichier suivi contient un caractère U+2500 à U+257F    |
+
+## Documentation
+
+- [Cahier des charges](docs/product/cahier-des-charges.md) et [lecture du périmètre](docs/product/README.md)
+- [Vue d'ensemble de l'architecture](docs/architecture/overview.md)
+- [Modules métier](docs/architecture/modules.md)
+- [Conventions](docs/architecture/conventions.md)
+- [Décisions d'architecture (ADR)](docs/adr/README.md)
+- [Questions ouvertes](docs/open-questions.md)
+- [Infrastructure locale](infra/docker/README.md), [serveur](apps/server/README.md), [base de données](packages/db/README.md), [i18n](packages/i18n/README.md), [emails](packages/emails/README.md), [client d'API](packages/api-client/README.md)
