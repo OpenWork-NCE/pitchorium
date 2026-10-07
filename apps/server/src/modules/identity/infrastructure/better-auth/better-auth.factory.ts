@@ -63,8 +63,13 @@ const NEW_PASSWORD_FIELDS: Readonly<Record<string, string>> = {
   '/sign-up/email': 'password',
   '/change-password': 'newPassword',
   '/reset-password': 'newPassword',
-  '/set-password': 'newPassword',
 };
+
+/** Sessions opened by these endpoints replace one of the same device: no "new sign-in" email. */
+const SAME_DEVICE_SESSION_PATHS: ReadonlySet<string> = new Set([
+  '/verify-email',
+  '/change-password',
+]);
 
 export interface BetterAuthDependencies {
   config: ApiConfig;
@@ -102,6 +107,37 @@ export function createBetterAuth(deps: BetterAuthDependencies) {
     const stored = await users.findById(user.id);
     return { email: user.email, name: user.name, locale: stored?.locale ?? DEFAULT_LOCALE };
   };
+
+  /**
+   * Have I Been Pwned is called before the endpoint, never inside a database transaction
+   * (ADR 0019). A password outside the length limits is left to Better Auth's validation.
+   */
+  async function rejectCompromisedPassword(password: unknown): Promise<void> {
+    if (
+      !config.auth.pwnedPasswordCheck ||
+      typeof password !== 'string' ||
+      password.length < MIN_PASSWORD_LENGTH ||
+      password.length > MAX_PASSWORD_LENGTH
+    ) {
+      return;
+    }
+    let compromised: boolean;
+    try {
+      compromised = await isPasswordCompromised(password);
+    } catch (error) {
+      logger.error(error);
+      throw new APIError('INTERNAL_SERVER_ERROR', {
+        code: 'PASSWORD_CHECK_FAILED',
+        message: 'Failed to check password. Please try again later.',
+      });
+    }
+    if (compromised) {
+      throw new APIError('BAD_REQUEST', {
+        code: 'PASSWORD_COMPROMISED',
+        message: 'The password you entered has been compromised. Please choose another one.',
+      });
+    }
+  }
 
   return betterAuth({
     appName: 'Pitchorium',
@@ -267,8 +303,9 @@ export function createBetterAuth(deps: BetterAuthDependencies) {
           after: async (session, context) => {
             const path = (context as HookContext | null)?.path;
             if (scope.current()?.registeredUserIds.has(session.userId)) return;
-            // The automatic sign-in that follows an email verification is not a new device.
-            if (path === '/verify-email') return;
+            // The sign-in that follows an email verification or a password change is not a new
+            // device.
+            if (path && SAME_DEVICE_SESSION_PATHS.has(path)) return;
             const device = (session.userAgent ?? '').slice(0, MAX_USER_AGENT_LENGTH) || 'unknown';
             const known = await users.otherSessionUserAgents(session.userId, session.id);
             if (known.some((agent) => agent.slice(0, MAX_USER_AGENT_LENGTH) === device)) return;
@@ -286,35 +323,15 @@ export function createBetterAuth(deps: BetterAuthDependencies) {
       },
     },
     hooks: {
-      // Have I Been Pwned is called before the endpoint, never inside a database transaction
-      // (ADR 0019). A password outside the length limits is left to Better Auth's validation.
       before: createAuthMiddleware(async (ctx) => {
-        const field = NEW_PASSWORD_FIELDS[ctx.path];
-        if (!config.auth.pwnedPasswordCheck || !field) return;
-        const password = (ctx.body as Record<string, unknown> | undefined)?.[field];
-        if (
-          typeof password !== 'string' ||
-          password.length < MIN_PASSWORD_LENGTH ||
-          password.length > MAX_PASSWORD_LENGTH
-        ) {
-          return;
+        const body = (ctx.body ?? {}) as Record<string, unknown>;
+        await rejectCompromisedPassword(body[NEW_PASSWORD_FIELDS[ctx.path] ?? '']);
+        // A password change always signs out the other sessions: it often follows a suspected
+        // compromise, which other open sessions would survive.
+        if (ctx.path === '/change-password') {
+          return { context: { body: { ...body, revokeOtherSessions: true } } };
         }
-        let compromised: boolean;
-        try {
-          compromised = await isPasswordCompromised(password);
-        } catch (error) {
-          logger.error(error);
-          throw new APIError('INTERNAL_SERVER_ERROR', {
-            code: 'PASSWORD_CHECK_FAILED',
-            message: 'Failed to check password. Please try again later.',
-          });
-        }
-        if (compromised) {
-          throw new APIError('BAD_REQUEST', {
-            code: 'PASSWORD_COMPROMISED',
-            message: 'The password you entered has been compromised. Please choose another one.',
-          });
-        }
+        return undefined;
       }),
     },
   });
