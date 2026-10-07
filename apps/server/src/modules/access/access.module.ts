@@ -12,6 +12,7 @@ import {
   UnverifiedKycStatusProvider,
 } from './infrastructure/default-status.providers';
 import { DrizzleRoleRepository } from './infrastructure/drizzle-role.repository';
+import { SessionHandshakeGuard } from './infrastructure/session-handshake.guard';
 import { AccessController } from './interface/access.controller';
 import { AuthenticationGuard } from './interface/authentication.guard';
 
@@ -40,9 +41,10 @@ export class AccessModule {
       providers: [
         ...SHARED_PROVIDERS,
         TrustedOrigins,
+        SessionHandshakeGuard,
         { provide: APP_GUARD, useClass: AuthenticationGuard },
       ],
-      exports: [AccessFacade],
+      exports: [AccessFacade, SessionHandshakeGuard],
     };
   }
 

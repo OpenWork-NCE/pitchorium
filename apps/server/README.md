@@ -7,9 +7,11 @@ src/
   main.api.ts        api : HTTP /v1, Socket.IO, Swagger UI hors production
   main.worker.ts     worker : BullMQ, relais d'outbox, tâches planifiées, sonde de santé
   main.openapi.ts    export de openapi/openapi.json sans serveur réseau
+  main.create-admin.ts  commande admin:create (rôle admin d'un compte existant)
+  api-app.ts         configuration HTTP et Socket.IO de l'api, partagée avec les tests
   app.module.ts      racine de l'api
   worker.module.ts   racine du worker
-  business-modules.ts
+  business-modules.ts  modules métier de chaque processus (forApi, forWorker)
   platform/          socle technique partagé (aucun import de module métier)
     kernel/          TypeScript pur : Money, IdGenerator, Clock, DomainEvent, DomainError
     config/          variables d'environnement validées par Zod, arrêt immédiat si invalides
@@ -32,5 +34,6 @@ scripts/             outils de développement
 | `pnpm test:integration`                                  | Tests d'intégration et HTTP (Docker requis)                     |
 | `pnpm openapi:generate`                                  | Écrit `openapi/openapi.json` à partir de `dist/`                |
 | `pnpm outbox:ping`                                       | Insère un événement `platform.ping.v1` relayé par le worker     |
+| `pnpm admin:create --email <email>`                      | Attribue le rôle admin à un compte existant (idempotent)        |
 
 Toutes les variables d'environnement sont décrites dans `.env.example`.
