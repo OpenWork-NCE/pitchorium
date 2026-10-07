@@ -83,23 +83,33 @@ describe('profile media', () => {
       'profile_cover',
       'image/png',
     );
-    const [photoMedia, coverMedia] = [
-      await waitUntilProcessed(member.agent, photo, deliver),
-      await waitUntilProcessed(member.agent, cover, deliver),
-    ];
+    await waitUntilProcessed(member.agent, photo, deliver);
+    await waitUntilProcessed(member.agent, cover, deliver);
 
+    // Without a public page, photo and cover stay private files with presigned URLs.
     await member.agent.put('/v1/me/profile/avatar').send({ mediaId: photo }).expect(200);
     const own = await member.agent.put('/v1/me/profile/cover').send({ mediaId: cover }).expect(200);
-    expect(own.body).toMatchObject({
-      avatarMediaId: photo,
-      avatarUrl: photoMedia.variants['large']?.webp,
-      coverMediaId: cover,
-      coverUrl: coverMedia.variants['large']?.webp,
-    });
+    expect(own.body).toMatchObject({ avatarMediaId: photo, coverMediaId: cover });
+    for (const url of [own.body.avatarUrl, own.body.coverUrl] as string[]) {
+      expect(url).toContain('X-Amz-Signature=');
+      expect((await fetch(url)).status).toBe(200);
+    }
+
+    // The public page makes them public files, moved by the worker to the public bucket.
     await member.agent.patch('/v1/me/profile/visibility').send({ publicPageEnabled: true });
-    const page = await browser(app).get('/v1/public/profiles/amina-diop').expect(200);
-    expect(page.body.avatarUrl).toBe(photoMedia.variants['large']?.webp);
-    expect((await fetch(page.body.avatarUrl as string)).status).toBe(200);
+    const page = await vi.waitFor(
+      async () => {
+        await deliver();
+        const response = await browser(app).get('/v1/public/profiles/amina-diop').expect(200);
+        expect(response.body.avatarUrl).not.toContain('X-Amz-Signature=');
+        return response.body as { avatarUrl: string; coverUrl: string };
+      },
+      { timeout: 20_000, interval: 200 },
+    );
+    const publicPhoto = await fetch(page.avatarUrl);
+    expect(publicPhoto.status).toBe(200);
+    expect(publicPhoto.headers.get('cache-control')).toBe('public, max-age=3600');
+    expect((await fetch(own.body.avatarUrl as string)).status).toBe(404);
 
     // A cover is not a photo, and a file can be attached only once.
     const wrongUsage = await member.agent

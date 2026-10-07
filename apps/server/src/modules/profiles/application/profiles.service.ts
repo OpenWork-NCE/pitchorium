@@ -33,6 +33,12 @@ import { type ProfileImageSlot, ProfileRepository } from './ports';
 import { ReferenceDataService } from './reference-data.service';
 
 /** Write side of profiles. Every write records its event in the same transaction. */
+const profileResource = (userId: string) => ({ type: 'profile', id: userId });
+
+/** The profile is a public resource only through its public page (ADR 0017, ADR 0026). */
+const imageVisibility = (profile: Profile) =>
+  profile.base.visibility.publicPageEnabled ? ('public' as const) : ('private' as const);
+
 @Injectable()
 export class ProfilesService {
   constructor(
@@ -132,6 +138,13 @@ export class ProfilesService {
     await this.transactions.run(async () => {
       await this.profiles.setVisibility(userId, visibility, this.clock.now());
       await this.events.record(VisibilityChanged, userId, visibility);
+      // Photo and cover are public files only while the public page is enabled (ADR 0026).
+      if (visibility.publicPageEnabled !== profile.base.visibility.publicPageEnabled) {
+        await this.media.setResourceVisibility(
+          profileResource(userId),
+          visibility.publicPageEnabled ? 'public' : 'private',
+        );
+      }
     });
   }
 
@@ -149,7 +162,8 @@ export class ProfilesService {
         mediaId,
         ownerId: userId,
         usage: slot === 'avatar' ? 'avatar' : 'profile_cover',
-        resource: { type: 'profile', id: userId },
+        resource: profileResource(userId),
+        resourceVisibility: imageVisibility(profile),
       });
       await this.profiles.setImage(userId, slot, mediaId, this.clock.now());
       await this.events.record(ProfileUpdated, userId, { fields: [slot] });
@@ -190,7 +204,8 @@ export class ProfilesService {
         mediaId,
         ownerId: userId,
         usage: 'avatar',
-        resource: { type: 'profile', id: userId },
+        resource: profileResource(userId),
+        resourceVisibility: imageVisibility(profile),
       });
       await this.profiles.setImage(userId, 'avatar', mediaId, this.clock.now());
       await this.events.record(ProfileUpdated, userId, { fields: ['avatar'] });
