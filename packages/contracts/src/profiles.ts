@@ -266,8 +266,11 @@ const profileBaseViewFields = {
   city: z.string().nullable(),
   languages: z.array(z.string()),
   links: profileLinksSchema,
+  /** Uploaded photo (largest variant), else the photo of the OAuth provider. */
   avatarUrl: z.string().nullable(),
   avatarMediaId: z.string().nullable(),
+  /** Uploaded cover (largest variant). */
+  coverUrl: z.string().nullable(),
   coverMediaId: z.string().nullable(),
   /** Which facets exist, even when their details are hidden from the reader. */
   facets: z.object({ entrepreneur: z.boolean(), contributor: z.boolean() }),
