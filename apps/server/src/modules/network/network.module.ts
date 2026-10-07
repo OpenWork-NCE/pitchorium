@@ -1,5 +1,6 @@
 import { BullModule } from '@nestjs/bullmq';
 import { type DynamicModule, Module, type Provider } from '@nestjs/common';
+import { BlockedProfilesFilter } from './application/blocked-profiles.filter';
 import { BlocksService } from './application/blocks.service';
 import { ConnectionsService } from './application/connections.service';
 import { FollowTargetRegistry } from './application/follow-target.registry';
@@ -26,6 +27,7 @@ const SHARED_PROVIDERS: Provider[] = [
   { provide: ProfileViewBuffer, useClass: RedisProfileViewBuffer },
   FollowTargetRegistry,
   MemberDirectory,
+  BlockedProfilesFilter,
   NetworkEventsRecorder,
   NetworkFacade,
 ];

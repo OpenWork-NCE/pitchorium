@@ -20,7 +20,8 @@ Graphe social (cahier des charges §10.2) : suivis, connexions, blocages, listes
 
 - Bloquer un membre supprime la connexion, les suivis dans les deux sens et les demandes en attente (statut `cancelled`) ; rien n'est rétabli par le déblocage.
 - Un membre bloqué ne trouve plus celui qui l'a bloqué (404 sur la relation, les listes, le suivi et les demandes) ; celui qui a bloqué reçoit `NETWORK_MEMBER_BLOCKED`.
-- La façade expose les blocages (`blockedUserIds`, `isBlockedBetween`) : content masque les contenus et refuse commentaires, réactions et mentions ; messaging l'appliquera.
+- La façade expose les blocages (`blockedUserIds`, `isBlockedBetween`) : content masque les contenus et refuse commentaires et réactions ; messaging l'appliquera.
+- Profils : network enregistre auprès de profiles un filtre d'accès (`BlockedProfilesFilter`, port `ProfileAccessFilter`) ; les deux membres ne voient plus le profil, la carte ni les mentions l'un de l'autre, avec la même réponse que pour un profil inexistant.
 
 ## Listes et relation
 
