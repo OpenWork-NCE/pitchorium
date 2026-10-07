@@ -321,7 +321,6 @@ export const errorCodes = {
   MESSAGING_CONVERSATION_NOT_FOUND: { status: 404, title: 'Conversation not found' },
   MESSAGING_RECIPIENT_NOT_FOUND: { status: 404, title: 'Recipient not found' },
   MESSAGING_SELF_CONVERSATION: { status: 422, title: 'A conversation needs another member' },
-  MESSAGING_MEMBER_BLOCKED: { status: 403, title: 'A block stands between the members' },
   MESSAGING_RECIPIENT_NOT_ACCEPTING: {
     status: 403,
     title: 'The recipient does not accept messages from this member',

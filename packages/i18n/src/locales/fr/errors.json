@@ -14,7 +14,6 @@
   "MESSAGING_CONVERSATION_NOT_FOUND": "Conversation introuvable.",
   "MESSAGING_RECIPIENT_NOT_FOUND": "Ce membre est introuvable.",
   "MESSAGING_SELF_CONVERSATION": "Vous ne pouvez pas vous écrire à vous-même.",
-  "MESSAGING_MEMBER_BLOCKED": "Vous avez bloqué ce membre : débloquez-le pour lui écrire.",
   "MESSAGING_RECIPIENT_NOT_ACCEPTING": "Ce membre n'accepte pas les messages hors de son réseau.",
   "MESSAGING_REQUEST_PENDING": "Votre demande de message attend la réponse du destinataire.",
   "MESSAGING_REQUEST_LIMIT": "Vous avez envoyé trop de premiers messages hors réseau récemment. Réessayez plus tard.",

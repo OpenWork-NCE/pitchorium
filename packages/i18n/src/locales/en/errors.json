@@ -14,7 +14,6 @@
   "MESSAGING_CONVERSATION_NOT_FOUND": "Conversation not found.",
   "MESSAGING_RECIPIENT_NOT_FOUND": "This member cannot be found.",
   "MESSAGING_SELF_CONVERSATION": "You cannot write to yourself.",
-  "MESSAGING_MEMBER_BLOCKED": "You blocked this member: unblock them to write to them.",
   "MESSAGING_RECIPIENT_NOT_ACCEPTING": "This member does not accept messages from outside their network.",
   "MESSAGING_REQUEST_PENDING": "Your message request is waiting for the recipient.",
   "MESSAGING_REQUEST_LIMIT": "You sent too many first messages outside your network recently. Try again later.",
