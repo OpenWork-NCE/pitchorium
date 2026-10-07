@@ -1,0 +1,28 @@
+import type { Type } from '@nestjs/common';
+import type { NestExpressApplication } from '@nestjs/platform-express';
+import { Test } from '@nestjs/testing';
+import { AppModule } from '../../../src/app.module';
+import { parseApiConfig } from '../../../src/platform/config';
+import { configureHttpApp } from '../../../src/platform/http';
+import { ObjectStorage } from '../../../src/platform/storage';
+import { useTestEnvironment } from './environment';
+import { FakeObjectStorage } from './fake-object-storage';
+
+export interface ApiTestApp {
+  app: NestExpressApplication;
+  storage: FakeObjectStorage;
+}
+
+/** The real AppModule and HTTP setup, with storage replaced by an in-memory fake. */
+export async function createApiTestApp(controllers: Type[] = []): Promise<ApiTestApp> {
+  useTestEnvironment();
+  const storage = new FakeObjectStorage();
+  const moduleRef = await Test.createTestingModule({ imports: [AppModule], controllers })
+    .overrideProvider(ObjectStorage)
+    .useValue(storage)
+    .compile();
+  const app = moduleRef.createNestApplication<NestExpressApplication>({ logger: false });
+  configureHttpApp(app, parseApiConfig(process.env));
+  await app.init();
+  return { app, storage };
+}
