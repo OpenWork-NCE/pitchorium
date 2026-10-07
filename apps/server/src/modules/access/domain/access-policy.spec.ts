@@ -120,6 +120,9 @@ const MATRIX: Record<Action, Record<Scenario, Expected>> = {
     admin: ['profile.entrepreneur_facet'],
     moderator: ['profile.entrepreneur_facet'],
   },
+  'media.upload': membersWithAcceptedTerms,
+  'media.read': membersWithAcceptedTerms,
+  'media.delete': membersWithAcceptedTerms,
 };
 
 function outcome(action: Action, scenario: Scenario): Expected {

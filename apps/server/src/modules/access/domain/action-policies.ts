@@ -34,4 +34,8 @@ export const ACTION_POLICIES: Readonly<Record<Action, ActionPolicy>> = {
     requires: ['email_verified', 'profile.entrepreneur_facet'],
     sensitive: true,
   },
+  // Ownership of the file and the visibility of its resource are checked by the media module.
+  'media.upload': {},
+  'media.read': {},
+  'media.delete': {},
 };

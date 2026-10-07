@@ -23,7 +23,6 @@ import { AdminModule } from './modules/admin';
 /** Modules wired the same way in both processes. */
 const COMMON_MODULES: Type[] = [
   OrganizationsModule,
-  MediaModule,
   NetworkModule,
   ContentModule,
   ProjectsModule,
@@ -43,12 +42,13 @@ const COMMON_MODULES: Type[] = [
 
 /**
  * Business modules of each process. Modules with process-specific providers (the api serves
- * Better Auth, the worker sends emails) expose forApi() and forWorker().
+ * Better Auth, the worker sends emails and processes files) expose forApi() and forWorker().
  */
 export const API_BUSINESS_MODULES: (Type | DynamicModule)[] = [
   IdentityModule.forApi(),
   AccessModule.forApi(),
   ProfilesModule.forApi(),
+  MediaModule.forApi(),
   ...COMMON_MODULES,
 ];
 
@@ -56,5 +56,6 @@ export const WORKER_BUSINESS_MODULES: (Type | DynamicModule)[] = [
   IdentityModule.forWorker(),
   AccessModule.forWorker(),
   ProfilesModule.forWorker(),
+  MediaModule.forWorker(),
   ...COMMON_MODULES,
 ];

@@ -46,6 +46,12 @@ export interface ApiConfig extends CommonConfig {
   };
   rateLimit: { ttlMs: number; limit: number };
   idempotency: { ttlMs: number };
+  media: {
+    uploadUrlTtlSeconds: number;
+    downloadUrlTtlSeconds: number;
+    quota: { maxFiles: number; maxBytes: number };
+    uploadRequestsPerHour: number;
+  };
   auth: {
     secret: string;
     /** Origins allowed to send cookie-authenticated writes (CSRF protection). */
@@ -67,6 +73,8 @@ export interface ApiConfig extends CommonConfig {
 export interface WorkerConfig extends CommonConfig {
   worker: { healthPort: number };
   outbox: { pollIntervalMs: number; batchSize: number; maxBackoffMs: number };
+  clamav: { host: string; port: number; timeoutMs: number };
+  media: { orphanTtlMs: number; importTimeoutMs: number };
 }
 
 export class ConfigValidationError extends Error {
@@ -146,6 +154,12 @@ export function parseApiConfig(rawEnv: RawEnv): ApiConfig {
     },
     rateLimit: { ttlMs: env.RATE_LIMIT_TTL_SECONDS * 1000, limit: env.RATE_LIMIT_MAX },
     idempotency: { ttlMs: env.IDEMPOTENCY_TTL_HOURS * 3_600_000 },
+    media: {
+      uploadUrlTtlSeconds: env.MEDIA_UPLOAD_URL_TTL_SECONDS,
+      downloadUrlTtlSeconds: env.MEDIA_DOWNLOAD_URL_TTL_SECONDS,
+      quota: { maxFiles: env.MEDIA_QUOTA_MAX_FILES, maxBytes: env.MEDIA_QUOTA_MAX_BYTES },
+      uploadRequestsPerHour: env.MEDIA_UPLOAD_REQUESTS_PER_HOUR,
+    },
     auth: {
       secret: env.AUTH_SECRET,
       trustedOrigins:
@@ -175,6 +189,11 @@ export function parseWorkerConfig(rawEnv: RawEnv): WorkerConfig {
       pollIntervalMs: env.OUTBOX_POLL_INTERVAL_MS,
       batchSize: env.OUTBOX_BATCH_SIZE,
       maxBackoffMs: env.OUTBOX_MAX_BACKOFF_MS,
+    },
+    clamav: { host: env.CLAMAV_HOST, port: env.CLAMAV_PORT, timeoutMs: env.CLAMAV_TIMEOUT_MS },
+    media: {
+      orphanTtlMs: env.MEDIA_ORPHAN_TTL_HOURS * 3_600_000,
+      importTimeoutMs: env.MEDIA_IMPORT_TIMEOUT_MS,
     },
   };
 }

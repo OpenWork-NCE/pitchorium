@@ -46,6 +46,7 @@ flowchart LR
   api --> s3[(Stockage S3 : MinIO ou R2)]
   worker --> mail[Mailpit ou Resend]
   worker --> s3
+  worker --> clamav[ClamAV]
   api -.->|traces OTLP| otel[Collecteur OpenTelemetry]
   worker -.->|traces OTLP| otel
   api -.-> sentry[Sentry]
@@ -83,6 +84,36 @@ sequenceDiagram
 - Le relais peut tourner sur plusieurs workers (`SKIP LOCKED`). Un échec de publication incrémente `attempts` et repousse `next_attempt_at` (backoff exponentiel plafonné par `OUTBOX_MAX_BACKOFF_MS`).
 - Un événement republié après un arrêt brutal ne crée pas de second job tant que le job est conservé (24 h) ; au-delà, l'inbox empêche un handler de s'exécuter deux fois.
 - L'ordre de traitement entre événements n'est pas garanti.
+
+## Téléversement et traitement d'un fichier
+
+```mermaid
+sequenceDiagram
+  participant C as Client
+  participant A as api (media)
+  participant S as Stockage S3 (privé, quarantaine)
+  participant DB as PostgreSQL
+  participant W as worker (media.processing)
+  participant AV as ClamAV
+  participant P as Stockage S3 (public ou privé)
+  C->>A: POST /v1/media/uploads (usage, type, taille)
+  A->>DB: quota sous verrou, actif pending, media.asset.requested.v1
+  A-->>C: URL PUT présignée (type et taille signés)
+  C->>S: PUT quarantine/<mediaId>
+  C->>A: POST /v1/media/{id}/confirm
+  A->>S: HEAD (fichier présent ?)
+  A->>DB: processing + media.asset.uploaded.v1
+  Note over DB,W: relais de l'outbox, handler : job process
+  W->>S: lecture plafonnée
+  W->>AV: INSTREAM
+  W->>W: type réel, dimensions ou pages, variantes sans métadonnées
+  W->>P: variantes WebP et AVIF (et PDF), clés à empreinte
+  W->>DB: ready ou rejected + événement (transaction courte)
+  W->>S: suppression de l'original en quarantaine
+```
+
+- Aucun appel au stockage ou à l'antivirus ne se fait dans une transaction (ADR 0019) ; le traitement est idempotent et réessayé par BullMQ.
+- Les fichiers publics sont servis par le CDN (`S3_PUBLIC_BASE_URL`) avec un cache immuable ; les fichiers privés par URL présignée courte, après un contrôle délégué au module propriétaire de la ressource (ADR 0022).
 
 ## Authentification et autorisation
 
@@ -124,6 +155,7 @@ Sur SIGTERM, Nest déclenche les hooks d'arrêt : l'api cesse d'accepter des con
 | Redis         | Service managé compatible Redis (Valkey), politique `noeviction`                                 |
 | Stockage      | Cloudflare R2 : bucket public (domaine personnalisé, `S3_PUBLIC_BASE_URL`) et bucket privé       |
 | Emails        | Resend (`MAIL_TRANSPORT=resend`)                                                                 |
+| Antivirus     | Conteneur ClamAV joignable par le worker (`CLAMAV_HOST`, `CLAMAV_PORT`)                          |
 | Web           | `apps/web`, étape ultérieure, servi séparément de l'api                                          |
 
 L'hébergeur n'est pas choisi (voir `docs/open-questions.md`). Les migrations s'appliquent avant le déploiement de l'api et du worker avec `pnpm db:migrate`.

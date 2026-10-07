@@ -20,6 +20,12 @@ Informations nécessaires au développement et absentes du cahier des charges (d
 29. Le contenu minimal du volet entrepreneur exigé avant de publier un projet (provisoirement : entreprise, secteur, stade, pays de l'entreprise) et du volet contributeur (au moins une casquette et le type de structure).
 30. La longueur maximale du pitch (provisoirement 2 600 caractères, comme la présentation) et la liste des identifiants publics réservés.
 
+## Fichiers
+
+33. Les limites par usage (types acceptés, taille maximale, dimensions minimales et maximales, nombre de pages, nombre par ressource, visibilité par défaut) : valeurs provisoires dans `apps/server/src/modules/media/domain/usages.ts` et dans le README du module media.
+34. Les quotas par membre (provisoirement 500 fichiers, 1 Gio et 60 demandes de téléversement par heure) et le délai de suppression des fichiers non attachés (provisoirement 24 heures).
+35. La visibilité des documents de publication et de projet (PDF de pitch, one-pager) : privés par défaut, lus par URL présignée ; à rendre publics si le produit le souhaite pour les projets publiés.
+
 ## Paiements
 
 7. La devise de libellé d'une campagne (EUR uniquement, devise du porteur, ou au choix) ; l'objectif est exprimé en euros au §11.1.

@@ -1,0 +1,55 @@
+import { InjectQueue, Processor, WorkerHost } from '@nestjs/bullmq';
+import { Logger, type OnApplicationBootstrap } from '@nestjs/common';
+import type { Job, Queue } from 'bullmq';
+import { MediaMaintenanceService } from '../application/media-maintenance.service';
+import { MediaProcessingService } from '../application/media-processing.service';
+import { MEDIA_JOBS, MEDIA_QUEUE, type ProcessJobData } from './media-queue';
+
+/**
+ * Processing jobs and scheduled tasks of the media module. A processing job retried after a
+ * failure is safe: the service skips settled assets.
+ */
+@Processor(MEDIA_QUEUE, { concurrency: 2 })
+export class MediaJobsProcessor extends WorkerHost implements OnApplicationBootstrap {
+  private readonly logger = new Logger(MediaJobsProcessor.name);
+
+  constructor(
+    @InjectQueue(MEDIA_QUEUE) private readonly queue: Queue,
+    private readonly processing: MediaProcessingService,
+    private readonly maintenance: MediaMaintenanceService,
+  ) {
+    super();
+  }
+
+  async onApplicationBootstrap(): Promise<void> {
+    await this.queue.upsertJobScheduler(
+      MEDIA_JOBS.deleteOrphans,
+      { pattern: '7,37 * * * *' },
+      { name: MEDIA_JOBS.deleteOrphans },
+    );
+    await this.queue.upsertJobScheduler(
+      MEDIA_JOBS.purgeDeleted,
+      { pattern: '*/5 * * * *' },
+      { name: MEDIA_JOBS.purgeDeleted },
+    );
+  }
+
+  async process(job: Job): Promise<void> {
+    switch (job.name) {
+      case MEDIA_JOBS.process: {
+        const { mediaId } = job.data as ProcessJobData;
+        const lastAttempt = job.attemptsMade + 1 >= (job.opts.attempts ?? 1);
+        await this.processing.process(mediaId, lastAttempt);
+        return;
+      }
+      case MEDIA_JOBS.deleteOrphans:
+        await this.maintenance.deleteOrphans();
+        return;
+      case MEDIA_JOBS.purgeDeleted:
+        await this.maintenance.purgeDeleted();
+        return;
+      default:
+        this.logger.warn(`Unknown media job ${job.name}`);
+    }
+  }
+}

@@ -67,6 +67,11 @@ const apiEnvSchema = commonEnvSchema.extend({
   LINKEDIN_CLIENT_SECRET: z.string().min(1).optional(),
   MICROSOFT_CLIENT_ID: z.string().min(1).optional(),
   MICROSOFT_CLIENT_SECRET: z.string().min(1).optional(),
+  MEDIA_UPLOAD_URL_TTL_SECONDS: z.coerce.number().int().min(60).max(3600).default(900),
+  MEDIA_DOWNLOAD_URL_TTL_SECONDS: z.coerce.number().int().min(30).max(3600).default(300),
+  MEDIA_QUOTA_MAX_FILES: z.coerce.number().int().positive().default(500),
+  MEDIA_QUOTA_MAX_BYTES: z.coerce.number().int().positive().default(1_073_741_824),
+  MEDIA_UPLOAD_REQUESTS_PER_HOUR: z.coerce.number().int().positive().default(60),
 });
 
 const workerEnvSchema = commonEnvSchema.extend({
@@ -74,6 +79,11 @@ const workerEnvSchema = commonEnvSchema.extend({
   OUTBOX_POLL_INTERVAL_MS: z.coerce.number().int().positive().default(1000),
   OUTBOX_BATCH_SIZE: z.coerce.number().int().positive().max(1000).default(100),
   OUTBOX_MAX_BACKOFF_MS: z.coerce.number().int().positive().default(300_000),
+  CLAMAV_HOST: z.string().min(1).default('localhost'),
+  CLAMAV_PORT: z.coerce.number().int().min(1).max(65535).default(3310),
+  CLAMAV_TIMEOUT_MS: z.coerce.number().int().positive().default(60_000),
+  MEDIA_ORPHAN_TTL_HOURS: z.coerce.number().int().positive().default(24),
+  MEDIA_IMPORT_TIMEOUT_MS: z.coerce.number().int().positive().default(10_000),
 });
 
 function requireMailCredentials(env: z.infer<typeof commonEnvSchema>, ctx: z.RefinementCtx): void {
