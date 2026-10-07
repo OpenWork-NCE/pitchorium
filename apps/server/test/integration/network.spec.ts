@@ -1,6 +1,6 @@
 import type { NestExpressApplication } from '@nestjs/platform-express';
 import type { TestingModule } from '@nestjs/testing';
-import type { CursorPage, Follower } from '@pitchorium/contracts';
+import type { CursorPage, Follower, Organization } from '@pitchorium/contracts';
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AccessModule } from '../../src/modules/access';
 import { IdentityModule } from '../../src/modules/identity';
@@ -221,6 +221,43 @@ describe('network', () => {
     expect(await eventTypes()).toEqual(
       expect.arrayContaining(['network.block.created.v1', 'network.block.removed.v1']),
     );
+  });
+
+  it('hides the profiles of both members of a block, as if they did not exist', async () => {
+    const awa = await member('awa@example.com', 'Awa Ndiaye');
+    await kofi.agent.put('/v1/me/profile/handle').send({ handle: 'kofi-m' }).expect(200);
+    const organization = await kofi.agent
+      .post('/v1/organizations')
+      .set('Idempotency-Key', 'kofi-organization')
+      .send({ name: 'Kofi Ventures', structureType: 'company', countryCodes: ['GH'] })
+      .expect(201);
+    const membersSeenBy = async (reader: Member) => {
+      const page = await reader.agent
+        .get(`/v1/organizations/by-slug/${organization.body.slug}`)
+        .expect(200);
+      return (page.body as Organization).members.map((card) => card.handle);
+    };
+    expect(await membersSeenBy(ama)).toEqual(['kofi-m']);
+    const unknown = await ama.agent.get('/v1/profiles/nobody-here').expect(404);
+
+    await kofi.agent.put('/v1/network/blocks/ama-owusu').expect(204);
+    // Both ways, through the current and a former handle: the same answer as an unknown handle.
+    for (const [reader, handle] of [
+      [ama, 'kofi-m'],
+      [ama, 'kofi-mensah'],
+      [kofi, 'ama-owusu'],
+    ] as const) {
+      const hidden = await reader.agent.get(`/v1/profiles/${handle}`).expect(404);
+      expect(hidden.body).toMatchObject({ code: unknown.body.code, title: unknown.body.title });
+    }
+    expect(await membersSeenBy(ama)).toEqual([]);
+    await awa.agent.get('/v1/profiles/kofi-m').expect(200);
+    await awa.agent.get('/v1/profiles/ama-owusu').expect(200);
+    expect(await membersSeenBy(awa)).toEqual(['kofi-m']);
+
+    await kofi.agent.delete('/v1/network/blocks/ama-owusu').expect(204);
+    await ama.agent.get('/v1/profiles/kofi-m').expect(200);
+    await kofi.agent.get('/v1/profiles/ama-owusu').expect(200);
   });
 
   it('shows the network lists according to their visibility', async () => {
