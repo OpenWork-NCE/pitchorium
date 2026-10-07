@@ -2,7 +2,8 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import * as contracts from '@pitchorium/contracts';
 
-const { AUTH_ERROR_CODES, errorCodes, LABELLED_ENUMS, TECHNICAL_ENUMS } = contracts;
+const { AUTH_ERROR_CODES, errorCodes, LABELLED_ENUMS, NOTIFICATION_TYPES, TECHNICAL_ENUMS } =
+  contracts;
 
 type Tree = { [key: string]: string | Tree };
 
@@ -76,6 +77,15 @@ const missingLabels = Object.entries(LABELLED_ENUMS).flatMap(([group, schemas]) 
 );
 if (missingLabels.length > 0) {
   failures.push(`${manifest.sourceLocale}/reference: missing labels ${missingLabels.join(', ')}`);
+}
+
+// Each notification type has its singular and grouped texts.
+const notificationTexts = source.get('notifications') ?? new Set<string>();
+const missingTexts = NOTIFICATION_TYPES.flatMap((type) =>
+  ['one', 'many'].map((form) => `types.${type}.${form}`),
+).filter((key) => !notificationTexts.has(key));
+if (missingTexts.length > 0) {
+  failures.push(`${manifest.sourceLocale}/notifications: missing ${missingTexts.join(', ')}`);
 }
 
 for (const [locale, { status }] of Object.entries(manifest.locales)) {

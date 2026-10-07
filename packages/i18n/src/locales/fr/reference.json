@@ -602,5 +602,81 @@
     "declared": "Déclaré",
     "confirmed": "Confirmé",
     "disputed": "Contesté"
+  },
+  "messagePolicies": {
+    "connections_only": "Mes connexions uniquement",
+    "connections_and_second_degree": "Mes connexions et leurs connexions (2e degré)",
+    "verified_members": "Tout membre à l'email vérifié"
+  },
+  "conversationKinds": {
+    "direct": "Conversation",
+    "group": "Conversation de groupe"
+  },
+  "conversationBoxes": {
+    "inbox": "Messages",
+    "requests": "Demandes",
+    "archived": "Archivées"
+  },
+  "messageRequestStates": {
+    "none": "Aucune demande",
+    "sent": "Demande envoyée",
+    "received": "Demande reçue"
+  },
+  "introductionStatuses": {
+    "pending": "En attente",
+    "completed": "Conclue",
+    "declined": "Déclinée"
+  },
+  "introductionAnswers": {
+    "pending": "Sans réponse",
+    "accepted": "Acceptée",
+    "declined": "Déclinée"
+  },
+  "notificationTypes": {
+    "connection_request": "Demandes de connexion",
+    "connection_accepted": "Connexions acceptées",
+    "new_follower": "Nouveaux abonnés",
+    "reaction": "Réactions",
+    "comment": "Commentaires",
+    "mention": "Mentions",
+    "followed_post": "Publications des membres suivis",
+    "message": "Messages",
+    "message_request": "Demandes de message",
+    "message_request_accepted": "Demandes de message acceptées",
+    "introduction_proposed": "Introductions proposées",
+    "introduction_completed": "Introductions conclues",
+    "introduction_declined": "Introductions déclinées",
+    "profile_views": "Vues de profil",
+    "project_contribution": "Contributions à mes projets",
+    "tier_unlocked": "Paliers débloqués",
+    "project_update": "Actualités des campagnes suivies",
+    "project_ending_soon": "Fins de campagne proches",
+    "project_funded": "Projets financés",
+    "project_closed": "Projets clôturés",
+    "project_interest": "Manifestations d'intérêt",
+    "project_team_invitation": "Invitations dans une équipe de projet",
+    "project_team_joined": "Arrivées dans l'équipe de projet",
+    "project_team_invitation_declined": "Invitations d'équipe déclinées",
+    "organization_invitation": "Invitations d'organisation",
+    "organization_member_joined": "Arrivées dans une organisation",
+    "organization_role_changed": "Changements de rôle",
+    "organization_ownership_transferred": "Transferts de propriété",
+    "organization_verification_decided": "Vérification des organisations",
+    "kyc_decided": "Vérification d'identité (KYC)",
+    "contribution_refunded": "Remboursements",
+    "offline_contribution_declared": "Contributions hors plateforme déclarées",
+    "offline_contribution_decided": "Contributions hors plateforme confirmées ou rejetées",
+    "time_entry_declared": "Temps partagé déclaré",
+    "time_entry_answered": "Temps partagé confirmé ou contesté",
+    "security_alert": "Sécurité du compte"
+  },
+  "notificationChannels": {
+    "in_app": "Dans l'application",
+    "email": "Email"
+  },
+  "emailDigests": {
+    "off": "Un email à chaque notification",
+    "daily": "Résumé quotidien",
+    "weekly": "Résumé hebdomadaire"
   }
 }

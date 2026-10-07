@@ -602,5 +602,81 @@
     "declared": "Declared",
     "confirmed": "Confirmed",
     "disputed": "Disputed"
+  },
+  "messagePolicies": {
+    "connections_only": "My connections only",
+    "connections_and_second_degree": "My connections and theirs (2nd degree)",
+    "verified_members": "Any member with a verified email"
+  },
+  "conversationKinds": {
+    "direct": "Conversation",
+    "group": "Group conversation"
+  },
+  "conversationBoxes": {
+    "inbox": "Messages",
+    "requests": "Requests",
+    "archived": "Archived"
+  },
+  "messageRequestStates": {
+    "none": "No request",
+    "sent": "Request sent",
+    "received": "Request received"
+  },
+  "introductionStatuses": {
+    "pending": "Pending",
+    "completed": "Completed",
+    "declined": "Declined"
+  },
+  "introductionAnswers": {
+    "pending": "No answer",
+    "accepted": "Accepted",
+    "declined": "Declined"
+  },
+  "notificationTypes": {
+    "connection_request": "Connection requests",
+    "connection_accepted": "Accepted connections",
+    "new_follower": "New followers",
+    "reaction": "Reactions",
+    "comment": "Comments",
+    "mention": "Mentions",
+    "followed_post": "Posts of the members you follow",
+    "message": "Messages",
+    "message_request": "Message requests",
+    "message_request_accepted": "Accepted message requests",
+    "introduction_proposed": "Proposed introductions",
+    "introduction_completed": "Completed introductions",
+    "introduction_declined": "Declined introductions",
+    "profile_views": "Profile views",
+    "project_contribution": "Contributions to my projects",
+    "tier_unlocked": "Unlocked tiers",
+    "project_update": "Updates of the campaigns you follow",
+    "project_ending_soon": "Campaigns ending soon",
+    "project_funded": "Funded projects",
+    "project_closed": "Closed projects",
+    "project_interest": "Expressions of interest",
+    "project_team_invitation": "Project team invitations",
+    "project_team_joined": "New project team members",
+    "project_team_invitation_declined": "Declined team invitations",
+    "organization_invitation": "Organization invitations",
+    "organization_member_joined": "New organization members",
+    "organization_role_changed": "Role changes",
+    "organization_ownership_transferred": "Ownership transfers",
+    "organization_verification_decided": "Organization verification",
+    "kyc_decided": "Identity verification (KYC)",
+    "contribution_refunded": "Refunds",
+    "offline_contribution_declared": "Declared off-platform contributions",
+    "offline_contribution_decided": "Confirmed or rejected off-platform contributions",
+    "time_entry_declared": "Declared shared time",
+    "time_entry_answered": "Confirmed or disputed shared time",
+    "security_alert": "Account security"
+  },
+  "notificationChannels": {
+    "in_app": "In the app",
+    "email": "Email"
+  },
+  "emailDigests": {
+    "off": "One email per notification",
+    "daily": "Daily summary",
+    "weekly": "Weekly summary"
   }
 }

@@ -1,0 +1,148 @@
+{
+  "types": {
+    "connection_request": {
+      "one": "{{actor}} souhaite se connecter avec vous",
+      "many": "{{actor}} et {{others}} autres souhaitent se connecter avec vous"
+    },
+    "connection_accepted": {
+      "one": "{{actor}} a accepté votre demande de connexion",
+      "many": "{{actor}} et {{others}} autres ont accepté votre demande de connexion"
+    },
+    "new_follower": {
+      "one": "{{actor}} vous suit",
+      "many": "{{actor}} et {{others}} autres vous suivent"
+    },
+    "reaction": {
+      "one": "{{actor}} a réagi à votre publication",
+      "many": "{{actor}} et {{others}} autres ont réagi à votre publication"
+    },
+    "comment": {
+      "one": "{{actor}} a commenté votre publication",
+      "many": "{{actor}} et {{others}} autres ont commenté votre publication"
+    },
+    "mention": {
+      "one": "{{actor}} vous a mentionné",
+      "many": "{{actor}} et {{others}} autres vous ont mentionné"
+    },
+    "followed_post": {
+      "one": "{{actor}} a publié",
+      "many": "{{actor}} et {{others}} autres membres que vous suivez ont publié"
+    },
+    "message": {
+      "one": "Nouveau message de {{actor}}",
+      "many": "{{count}} nouveaux messages de {{actor}}"
+    },
+    "message_request": {
+      "one": "{{actor}} vous a envoyé une demande de message",
+      "many": "{{actor}} et {{others}} autres vous ont envoyé une demande de message"
+    },
+    "message_request_accepted": {
+      "one": "{{actor}} a accepté votre demande de message",
+      "many": "{{actor}} et {{others}} autres ont accepté votre demande de message"
+    },
+    "introduction_proposed": {
+      "one": "{{actor}} souhaite vous présenter un membre de son réseau",
+      "many": "{{actor}} souhaite vous présenter un membre de son réseau"
+    },
+    "introduction_completed": {
+      "one": "Votre introduction est conclue : la conversation est ouverte",
+      "many": "Votre introduction est conclue : la conversation est ouverte"
+    },
+    "introduction_declined": {
+      "one": "Votre introduction n'a pas abouti",
+      "many": "Votre introduction n'a pas abouti"
+    },
+    "profile_views": {
+      "one": "{{count}} membre a consulté votre profil",
+      "many": "{{count}} membres ont consulté votre profil"
+    },
+    "project_contribution": {
+      "one": "Nouvelle contribution sur {{title}}",
+      "many": "{{count}} nouvelles contributions sur {{title}}"
+    },
+    "tier_unlocked": {
+      "one": "{{title}} a débloqué son palier {{position}}",
+      "many": "{{title}} a débloqué son palier {{position}}"
+    },
+    "project_update": {
+      "one": "Nouvelle actualité de {{title}}",
+      "many": "{{count}} nouvelles actualités de {{title}}"
+    },
+    "project_ending_soon": {
+      "one": "La campagne {{title}} se termine bientôt",
+      "many": "La campagne {{title}} se termine bientôt"
+    },
+    "project_funded": {
+      "one": "{{title}} a atteint son objectif",
+      "many": "{{title}} a atteint son objectif"
+    },
+    "project_closed": {
+      "one": "La campagne {{title}} est clôturée",
+      "many": "La campagne {{title}} est clôturée"
+    },
+    "project_interest": {
+      "one": "{{actor}} a manifesté son intérêt pour {{title}}",
+      "many": "{{actor}} et {{others}} autres ont manifesté leur intérêt pour {{title}}"
+    },
+    "project_team_invitation": {
+      "one": "{{actor}} vous invite dans l'équipe de {{title}}",
+      "many": "{{actor}} vous invite dans l'équipe de {{title}}"
+    },
+    "project_team_joined": {
+      "one": "{{actor}} a rejoint l'équipe de {{title}}",
+      "many": "{{actor}} et {{others}} autres ont rejoint l'équipe de {{title}}"
+    },
+    "project_team_invitation_declined": {
+      "one": "{{actor}} a décliné l'invitation dans l'équipe de {{title}}",
+      "many": "{{actor}} et {{others}} autres ont décliné l'invitation dans l'équipe de {{title}}"
+    },
+    "organization_invitation": {
+      "one": "Vous êtes invité à rejoindre {{title}}",
+      "many": "Vous êtes invité à rejoindre {{title}}"
+    },
+    "organization_member_joined": {
+      "one": "{{actor}} a rejoint {{title}}",
+      "many": "{{actor}} et {{others}} autres ont rejoint {{title}}"
+    },
+    "organization_role_changed": {
+      "one": "Votre rôle dans {{title}} a changé",
+      "many": "Votre rôle dans {{title}} a changé"
+    },
+    "organization_ownership_transferred": {
+      "one": "La propriété de {{title}} a été transférée",
+      "many": "La propriété de {{title}} a été transférée"
+    },
+    "organization_verification_decided": {
+      "one": "La vérification de {{title}} a été mise à jour",
+      "many": "La vérification de {{title}} a été mise à jour"
+    },
+    "kyc_decided": {
+      "one": "La vérification de votre identité a été traitée",
+      "many": "La vérification de votre identité a été traitée"
+    },
+    "contribution_refunded": {
+      "one": "Votre contribution à {{title}} a été remboursée",
+      "many": "Votre contribution à {{title}} a été remboursée"
+    },
+    "offline_contribution_declared": {
+      "one": "Une contribution hors plateforme à {{title}} attend votre confirmation",
+      "many": "Des contributions hors plateforme à {{title}} attendent votre confirmation"
+    },
+    "offline_contribution_decided": {
+      "one": "Une contribution hors plateforme à {{title}} a été traitée",
+      "many": "Des contributions hors plateforme à {{title}} ont été traitées"
+    },
+    "time_entry_declared": {
+      "one": "{{actor}} a déclaré du temps partagé avec vous",
+      "many": "{{actor}} et {{others}} autres ont déclaré du temps partagé avec vous"
+    },
+    "time_entry_answered": {
+      "one": "Votre temps partagé a reçu une réponse",
+      "many": "Votre temps partagé a reçu des réponses"
+    },
+    "security_alert": {
+      "one": "Activité de sécurité sur votre compte",
+      "many": "Activité de sécurité sur votre compte"
+    }
+  }
+}
