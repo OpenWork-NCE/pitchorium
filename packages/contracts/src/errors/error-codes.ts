@@ -318,6 +318,62 @@ export const errorCodes = {
     status: 409,
     title: 'The time entry was already confirmed or disputed',
   },
+  MESSAGING_CONVERSATION_NOT_FOUND: { status: 404, title: 'Conversation not found' },
+  MESSAGING_RECIPIENT_NOT_FOUND: { status: 404, title: 'Recipient not found' },
+  MESSAGING_SELF_CONVERSATION: { status: 422, title: 'A conversation needs another member' },
+  MESSAGING_MEMBER_BLOCKED: { status: 403, title: 'A block stands between the members' },
+  MESSAGING_RECIPIENT_NOT_ACCEPTING: {
+    status: 403,
+    title: 'The recipient does not accept messages from this member',
+  },
+  MESSAGING_REQUEST_PENDING: {
+    status: 409,
+    title: 'The message request waits for the recipient',
+  },
+  MESSAGING_REQUEST_LIMIT: {
+    status: 429,
+    title: 'Too many first messages out of network in the period',
+  },
+  MESSAGING_REQUEST_NOT_FOUND: { status: 404, title: 'Message request not found' },
+  MESSAGING_CANNOT_SEND: { status: 409, title: 'Messages cannot be sent in this conversation' },
+  MESSAGING_MESSAGE_EMPTY: {
+    status: 422,
+    title: 'A message needs a text, an attachment or a shared publication',
+  },
+  MESSAGING_MESSAGE_NOT_FOUND: { status: 404, title: 'Message not found' },
+  MESSAGING_NOT_SENDER: { status: 403, title: 'Only the sender may change the message' },
+  MESSAGING_EDIT_WINDOW_CLOSED: { status: 409, title: 'The message can no longer be edited' },
+  MESSAGING_MESSAGE_DELETED: { status: 409, title: 'The message was deleted' },
+  MESSAGING_CLIENT_ID_REUSED: {
+    status: 409,
+    title: 'The client message id was already used for another message',
+  },
+  MESSAGING_SHARED_POST_NOT_FOUND: { status: 404, title: 'Shared publication not found' },
+  MESSAGING_NOT_A_GROUP: { status: 422, title: 'Only a group conversation can be left' },
+  MESSAGING_INTRODUCTION_NOT_FOUND: { status: 404, title: 'Introduction not found' },
+  MESSAGING_INTRODUCTION_INVALID: {
+    status: 422,
+    title: 'An introduction brings together two other distinct members',
+  },
+  MESSAGING_INTRODUCTION_NOT_CONNECTED: {
+    status: 422,
+    title: 'The introducer must be connected to both members',
+  },
+  MESSAGING_INTRODUCTION_PENDING: {
+    status: 409,
+    title: 'The same introduction is already pending',
+  },
+  MESSAGING_INTRODUCTION_ALREADY_ANSWERED: {
+    status: 409,
+    title: 'The introduction was already answered',
+  },
+  NOTIFICATIONS_NOT_FOUND: { status: 404, title: 'Notification not found' },
+  NOTIFICATIONS_PREFERENCE_LOCKED: {
+    status: 422,
+    title: 'A transactional notification cannot be turned off',
+  },
+  NOTIFICATIONS_UNSUBSCRIBE_INVALID: { status: 400, title: 'Unsubscribe link is invalid' },
+  NOTIFICATIONS_WEBHOOK_INVALID: { status: 400, title: 'Webhook signature or payload is invalid' },
   INTERNAL_ERROR: { status: 500, title: 'Internal error' },
   SERVICE_UNAVAILABLE: { status: 503, title: 'Service unavailable' },
 } as const satisfies Record<string, ErrorCodeDefinition>;

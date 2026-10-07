@@ -5,10 +5,23 @@ import { legalDocumentSchema, signInProviderSchema } from './identity.js';
 import { impactLevelSchema, impactMethodologyStatusSchema } from './impact.js';
 import { mediaRejectionReasonSchema } from './media.js';
 import {
+  conversationBoxSchema,
+  conversationKindSchema,
+  introductionAnswerSchema,
+  introductionStatusSchema,
+  messagePolicySchema,
+  requestStateSchema,
+} from './messaging.js';
+import {
   connectionRequestStatusSchema,
   connectionStateSchema,
   relationDegreeSchema,
 } from './network.js';
+import {
+  emailDigestSchema,
+  notificationChannelSchema,
+  notificationTypeSchema,
+} from './notifications.js';
 import {
   invitableRoleSchema,
   invitationStatusSchema,
@@ -105,6 +118,15 @@ export const LABELLED_ENUMS: Readonly<Record<string, readonly AnyEnum[]>> = {
   discrepancyStatuses: [discrepancyStatusSchema],
   timeEntryKinds: [timeEntryKindSchema],
   timeEntryStatuses: [timeEntryStatusSchema],
+  messagePolicies: [messagePolicySchema],
+  conversationKinds: [conversationKindSchema],
+  conversationBoxes: [conversationBoxSchema],
+  messageRequestStates: [requestStateSchema],
+  introductionStatuses: [introductionStatusSchema],
+  introductionAnswers: [introductionAnswerSchema],
+  notificationTypes: [notificationTypeSchema],
+  notificationChannels: [notificationChannelSchema],
+  emailDigests: [emailDigestSchema],
 };
 
 /**
@@ -132,4 +154,9 @@ export const TECHNICAL_ENUMS: readonly string[] = [
   'projectModerationStatusSchema',
   'projectSortSchema',
   'videoProviderSchema',
+  'messageKindSchema',
+  'messageModerationStatusSchema',
+  'introductionRoleSchema',
+  'notificationPrioritySchema',
+  'notificationTargetTypeSchema',
 ];
