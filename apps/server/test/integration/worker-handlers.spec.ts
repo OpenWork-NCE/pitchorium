@@ -2,12 +2,14 @@ import type { TestingModule } from '@nestjs/testing';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { AccessModule } from '../../src/modules/access';
 import { AccountLinked, IdentityModule, UserRegistered } from '../../src/modules/identity';
+import { MediaModule } from '../../src/modules/media';
 import { ProfilesModule } from '../../src/modules/profiles';
 import { AuditModule } from '../../src/platform/audit';
 import { FeatureFlagsModule } from '../../src/platform/feature-flags';
 import { IdGenerator } from '../../src/platform/kernel';
 import { MailerModule } from '../../src/platform/mailer';
 import { DomainEventDispatcher, type OutboxEnvelope } from '../../src/platform/outbox';
+import { StorageModule } from '../../src/platform/storage';
 import { query, truncateAllTables } from './support/database';
 import { Mailpit } from './support/mailpit';
 import { createWorkerTestingModule } from './support/worker-testing-module';
@@ -25,8 +27,10 @@ describe('worker handlers', () => {
         FeatureFlagsModule,
         AuditModule,
         MailerModule,
+        StorageModule,
         IdentityModule.forWorker(),
         AccessModule.forWorker(),
+        MediaModule.forWorker(),
         ProfilesModule.forWorker(),
       ],
     );
