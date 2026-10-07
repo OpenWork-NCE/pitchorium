@@ -49,8 +49,9 @@ function isSatisfied(element: PrerequisiteElement, facts: AccessFacts, actor: Ac
 }
 
 /**
- * Order of checks: authentication, suspension, role, ownership, then every missing
- * prerequisite at once, so that the client can open the right form (cahier des charges 7.2).
+ * Order of checks: authentication, suspension, platform role, ownership, role on the resource,
+ * then every missing prerequisite at once, so that the client can open the right form
+ * (cahier des charges 7.2).
  */
 export function decide(action: Action, facts: AccessFacts): AccessDecision {
   const policy = policyOf(action);
@@ -61,6 +62,10 @@ export function decide(action: Action, facts: AccessFacts): AccessDecision {
     return deny('FORBIDDEN');
   }
   if (policy.ownership === 'self' && facts.resource?.ownerId !== actor.userId) {
+    return deny('FORBIDDEN');
+  }
+  const held = facts.resource?.roles ?? [];
+  if (policy.resourceRoles && !policy.resourceRoles.some((role) => held.includes(role))) {
     return deny('FORBIDDEN');
   }
 

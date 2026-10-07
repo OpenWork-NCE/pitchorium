@@ -101,6 +101,34 @@ const adminsWith2fa: Record<Scenario, Expected> = {
   moderator: 'FORBIDDEN',
 };
 
+const membersWithVerifiedEmail: Record<Scenario, Expected> = {
+  anonymous: 'UNAUTHENTICATED',
+  newcomer: ['email_verified', 'legal_acceptance'],
+  member: 'allow',
+  entrepreneur: 'allow',
+  suspended: 'SUSPENDED',
+  adminWithout2fa: 'allow',
+  admin: 'allow',
+  moderator: 'allow',
+};
+
+/** Actions on an organization, here without any role on it (see the test below). */
+const organizationRoleRequired: Record<Scenario, Expected> = {
+  anonymous: 'UNAUTHENTICATED',
+  newcomer: 'FORBIDDEN',
+  member: 'FORBIDDEN',
+  entrepreneur: 'FORBIDDEN',
+  suspended: 'SUSPENDED',
+  adminWithout2fa: 'FORBIDDEN',
+  admin: 'FORBIDDEN',
+  moderator: 'FORBIDDEN',
+};
+
+const moderatorsAndAdminsWith2fa: Record<Scenario, Expected> = {
+  ...adminsWith2fa,
+  moderator: 'allow',
+};
+
 /** The complete matrix: every registered action against every kind of actor. */
 const MATRIX: Record<Action, Record<Scenario, Expected>> = {
   'account.read': everyoneSignedIn,
@@ -123,6 +151,17 @@ const MATRIX: Record<Action, Record<Scenario, Expected>> = {
   'media.upload': membersWithAcceptedTerms,
   'media.read': membersWithAcceptedTerms,
   'media.delete': membersWithAcceptedTerms,
+  'organization.read': membersWithAcceptedTerms,
+  'organization.create': membersWithVerifiedEmail,
+  'organization.update': organizationRoleRequired,
+  'organization.delete': organizationRoleRequired,
+  'organization.member.invite': organizationRoleRequired,
+  'organization.member.manage': organizationRoleRequired,
+  'organization.member.leave': organizationRoleRequired,
+  'organization.ownership.transfer': organizationRoleRequired,
+  'organization.invitation.respond': membersWithVerifiedEmail,
+  'organization.verification.request': organizationRoleRequired,
+  'organization.verification.review': moderatorsAndAdminsWith2fa,
 };
 
 function outcome(action: Action, scenario: Scenario): Expected {
@@ -156,6 +195,32 @@ describe('access policies', () => {
     }
     expect(decide('profile.read', { ...facts('member'), resource: other })).toEqual({
       allowed: true,
+    });
+  });
+
+  it('grants organization actions by the role held on the organization', () => {
+    const organization = (roles: string[]) => ({
+      type: 'organization',
+      id: 'org-1',
+      ownerId: null,
+      roles,
+    });
+    const allowed = (action: Action, roles: string[], scenario: Scenario = 'member') =>
+      decide(action, { ...facts(scenario), resource: organization(roles) });
+
+    expect(allowed('organization.update', ['admin'])).toEqual({ allowed: true });
+    expect(allowed('organization.update', ['member'])).toMatchObject({ code: 'FORBIDDEN' });
+    expect(allowed('organization.delete', ['admin'])).toMatchObject({ code: 'FORBIDDEN' });
+    expect(allowed('organization.delete', ['owner'])).toEqual({ allowed: true });
+    expect(allowed('organization.ownership.transfer', ['owner'])).toEqual({ allowed: true });
+    expect(allowed('organization.member.leave', ['member'])).toEqual({ allowed: true });
+    expect(allowed('organization.member.invite', ['owner'], 'newcomer')).toEqual({
+      allowed: false,
+      code: 'ACCESS_PREREQUISITES_MISSING',
+      missing: ['email_verified', 'legal_acceptance'],
+    });
+    expect(allowed('organization.verification.request', ['owner'], 'suspended')).toMatchObject({
+      code: 'ACCESS_ACCOUNT_SUSPENDED',
     });
   });
 });

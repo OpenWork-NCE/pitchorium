@@ -4,11 +4,15 @@ import type { Action } from '@pitchorium/contracts';
 import type { Request } from 'express';
 import type { Principal } from './principal';
 
-/** Resource an action applies to; `ownerId` drives ownership policies. */
+/**
+ * Resource an action applies to; `ownerId` drives ownership policies, `roles` lists the roles
+ * the principal holds on the resource (for example `owner` of an organization).
+ */
 export interface ProtectedResource {
   type: string;
   id: string;
   ownerId: string | null;
+  roles?: readonly string[];
 }
 
 /**

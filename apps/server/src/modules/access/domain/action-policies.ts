@@ -5,6 +5,8 @@ export interface ActionPolicy {
   roles?: readonly AssignableRole[];
   /** `self`: the resource must belong to the actor. */
   ownership?: 'self';
+  /** Roles the actor must hold on the resource (any of), for example in an organization. */
+  resourceRoles?: readonly string[];
   /** Trust levels and profile elements to complete first. */
   requires?: readonly PrerequisiteElement[];
   /** False for the actions needed to read and accept the terms. Default true. */
@@ -38,4 +40,21 @@ export const ACTION_POLICIES: Readonly<Record<Action, ActionPolicy>> = {
   'media.upload': {},
   'media.read': {},
   'media.delete': {},
+  'organization.read': {},
+  // Cahier des charges 7.2: an organization page needs a verified email.
+  'organization.create': { requires: ['email_verified'] },
+  'organization.update': { resourceRoles: ['owner', 'admin'] },
+  'organization.delete': { resourceRoles: ['owner'], sensitive: true },
+  'organization.member.invite': { resourceRoles: ['owner', 'admin'], requires: ['email_verified'] },
+  'organization.member.manage': { resourceRoles: ['owner', 'admin'] },
+  'organization.member.leave': { resourceRoles: ['owner', 'admin', 'member'] },
+  'organization.ownership.transfer': { resourceRoles: ['owner'], sensitive: true },
+  // The invitation is bound to an email address: the account must have proved its own.
+  'organization.invitation.respond': { requires: ['email_verified'] },
+  'organization.verification.request': {
+    resourceRoles: ['owner'],
+    requires: ['email_verified'],
+    sensitive: true,
+  },
+  'organization.verification.review': { roles: ['moderator', 'admin'], sensitive: true },
 };

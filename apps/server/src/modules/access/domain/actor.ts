@@ -17,4 +17,6 @@ export interface AccessResource {
   type: string;
   id: string;
   ownerId: string | null;
+  /** Roles of the actor on the resource, given by the module that owns it. */
+  roles?: readonly string[];
 }
