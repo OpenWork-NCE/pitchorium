@@ -23,7 +23,7 @@
     "db:check": "pnpm --filter @pitchorium/db db:check",
     "openapi:generate": "turbo run openapi:generate",
     "api-client:generate": "turbo run api-client:generate",
-    "infra:up": "docker compose -f infra/docker/compose.yaml up -d --wait",
+    "infra:up": "docker compose -f infra/docker/compose.yaml up -d --wait postgres valkey minio mailpit && docker compose -f infra/docker/compose.yaml run --rm minio-init",
     "infra:down": "docker compose -f infra/docker/compose.yaml down",
     "prepare": "husky"
   },
