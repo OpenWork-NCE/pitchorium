@@ -154,6 +154,52 @@ export class DrizzleProfileRepository extends ProfileRepository {
     return cleared.length > 0;
   }
 
+  async userIdsByHandles(handles: readonly string[]): Promise<Map<string, string>> {
+    if (handles.length === 0) return new Map();
+    const rows = await this.db
+      .select({ handle: profilesProfiles.handle, userId: profilesProfiles.userId })
+      .from(profilesProfiles)
+      .where(inArray(profilesProfiles.handle, [...handles]));
+    return new Map(rows.map((row) => [row.handle, row.userId]));
+  }
+
+  async visibleSectors(userIds: readonly string[]): Promise<Map<string, string[]>> {
+    const sectors = new Map<string, string[]>();
+    if (userIds.length === 0) return sectors;
+    const ids = [...userIds];
+    const add = (userId: string, codes: readonly string[]) =>
+      sectors.set(userId, [...new Set([...(sectors.get(userId) ?? []), ...codes])]);
+    const entrepreneurs = await this.db
+      .select({
+        userId: profilesEntrepreneurFacets.userId,
+        sector: profilesEntrepreneurFacets.sectorCode,
+      })
+      .from(profilesEntrepreneurFacets)
+      .innerJoin(profilesProfiles, eq(profilesProfiles.userId, profilesEntrepreneurFacets.userId))
+      .where(
+        and(
+          inArray(profilesEntrepreneurFacets.userId, ids),
+          ne(profilesProfiles.entrepreneurDetailsVisibility, 'private'),
+        ),
+      );
+    for (const row of entrepreneurs) add(row.userId, [row.sector]);
+    const contributors = await this.db
+      .select({
+        userId: profilesContributorFacets.userId,
+        sectors: profilesContributorFacets.sectorCodes,
+      })
+      .from(profilesContributorFacets)
+      .innerJoin(profilesProfiles, eq(profilesProfiles.userId, profilesContributorFacets.userId))
+      .where(
+        and(
+          inArray(profilesContributorFacets.userId, ids),
+          ne(profilesProfiles.contributorDetailsVisibility, 'private'),
+        ),
+      );
+    for (const row of contributors) add(row.userId, row.sectors);
+    return sectors;
+  }
+
   async resolveHandle(handle: string): Promise<{ userId: string; current: boolean } | null> {
     const [current] = await this.db
       .select({ userId: profilesProfiles.userId })

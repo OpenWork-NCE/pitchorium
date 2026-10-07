@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import type { OwnProfile, ProfileView } from '@pitchorium/contracts';
-import { DomainError } from '../../../platform/kernel';
+import { Clock, DomainError } from '../../../platform/kernel';
 import { profileStrength } from '../domain/profile-strength';
 import { ownProfileView, profileView, publicProfileView } from '../domain/profile-views';
 import { ProfileDisplayService } from './profile-display.service';
+import { ProfileViewRegistry } from './profile-view.registry';
 import { ProfileRepository } from './ports';
 import { ProfilesService } from './profiles.service';
 
@@ -19,6 +20,8 @@ export class ProfileReadsService {
     private readonly profiles: ProfileRepository,
     private readonly writer: ProfilesService,
     private readonly display: ProfileDisplayService,
+    private readonly views: ProfileViewRegistry,
+    private readonly clock: Clock,
   ) {}
 
   async own(userId: string): Promise<OwnProfile> {
@@ -34,6 +37,9 @@ export class ProfileReadsService {
     if (!profile) throw notFound();
     if (!resolved.current) return { kind: 'moved', handle: profile.base.handle };
     const audience = resolved.userId === viewerId ? 'owner' : 'member';
+    if (audience === 'member') {
+      this.views.notify({ viewerId, profileUserId: resolved.userId, at: this.clock.now() });
+    }
     return {
       kind: 'found',
       view: profileView(profile, audience, await this.display.resolve(profile)),

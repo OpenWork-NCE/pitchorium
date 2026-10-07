@@ -6,6 +6,7 @@ import { ProfileDisplayService } from './application/profile-display.service';
 import { ProfilesFacade } from './application/profiles.facade';
 import { ProfilePrerequisitesProvider } from './application/profile-prerequisites.provider';
 import { ProfileReadsService } from './application/profile-reads.service';
+import { ProfileViewRegistry } from './application/profile-view.registry';
 import { ProfilesService } from './application/profiles.service';
 import { ProfileRepository, ReferenceDataRepository } from './application/ports';
 import { ReferenceDataService } from './application/reference-data.service';
@@ -28,6 +29,7 @@ const SHARED_PROVIDERS: Provider[] = [
   ProfilePrerequisitesProvider,
   OrganizationDirectoryRegistry,
   ProfileDisplayService,
+  ProfileViewRegistry,
   ProfilesFacade,
 ];
 

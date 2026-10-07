@@ -32,7 +32,8 @@ Profils personne (cahier des charges §5, §7.2, §10.1) : profil de base, volet
 
 ## Façade publique (`index.ts`)
 
-- `ProfilesFacade` : `assertCountries`, `assertSectors` (données de référence), `memberCards` (carte d'un membre : identifiant public, nom, titre, photo, page publique activée ou non), `unlinkOrganization`, `registerOrganizationDirectory`.
+- `ProfilesFacade` : `assertCountries`, `assertSectors` (données de référence), `memberCards` (carte d'un membre : identifiant public, nom, titre, photo, page publique activée ou non), `userIdOf` (identifiant actuel ou ancien), `userIdsByHandles` (identifiants actuels, pour les mentions), `visibilityOf` (réglages de confidentialité, dont la visibilité des listes de réseau appliquée par network), `visibleSectors` (secteurs des volets dont les détails ne sont pas privés, pour la mention anonymisée d'une visite privée), `unlinkOrganization`, `registerOrganizationDirectory`, `registerProfileViewListener`.
+- Interface `ProfileViewListener`, implémentée et enregistrée par le module network : la lecture d'un profil par un autre membre (`GET /v1/profiles/{handle}`) lui est signalée sans attente ni échec possible de la lecture (ADR 0030).
 - Interface `OrganizationDirectory`, implémentée et enregistrée par le module organizations au démarrage (`isMember`, `summaries`) : profiles valide le lien du volet contributeur et l'affiche (`contributorOrganization` dans les vues) sans dépendre de organizations. Sans annuaire enregistré, aucun lien n'est accepté.
 - `ProfilesModule` et les classes d'événements ci-dessous.
 

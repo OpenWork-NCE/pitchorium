@@ -9,5 +9,10 @@ export {
   VisibilityChanged,
 } from './domain/profile-events';
 export { type MemberCard, ProfilesFacade } from './application/profiles.facade';
-export type { OrganizationDirectory, OrganizationSummary } from './application/ports';
+export type {
+  OrganizationDirectory,
+  OrganizationSummary,
+  ProfileView,
+  ProfileViewListener,
+} from './application/ports';
 export { ProfilesModule } from './profiles.module';
