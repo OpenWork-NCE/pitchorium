@@ -107,6 +107,11 @@ export class MessagingFacade implements OnModuleInit {
       }));
   }
 
+  /** False while a message request waits for its recipient, or after its decline. */
+  async isActive(conversationId: string): Promise<boolean> {
+    return (await this.messaging.findConversation(conversationId))?.status === 'active';
+  }
+
   async participantIds(conversationId: string): Promise<string[]> {
     return activeIds(await this.messaging.participants(conversationId));
   }
