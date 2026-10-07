@@ -1,0 +1,9 @@
+{
+  "extends": "@pitchorium/config/tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "noEmit": true,
+    "verbatimModuleSyntax": true
+  },
+  "include": ["src", "drizzle.config.ts"]
+}
