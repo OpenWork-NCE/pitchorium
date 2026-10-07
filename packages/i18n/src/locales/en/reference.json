@@ -334,5 +334,53 @@
     "public": "Public",
     "members": "Members",
     "connections": "Connections"
+  },
+  "projectStatuses": {
+    "draft": "Draft",
+    "funding": "Funding",
+    "funded": "Funded",
+    "closed": "Closed"
+  },
+  "projectTeamRoles": {
+    "owner": "Owner",
+    "editor": "Editor"
+  },
+  "projectInterestKinds": {
+    "grant": "Grant",
+    "honor_loan": "Honour loan",
+    "equity": "Equity investment",
+    "general": "General contact"
+  },
+  "impactLevels": {
+    "emerging": "Emerging",
+    "moderate": "Moderate",
+    "strong": "Strong"
+  },
+  "impactMentions": {
+    "selfDeclared": "Score self-declared by the project holder, under methodology {{version}}. It is not a certification.",
+    "demo": "Demonstration methodology, not contractual"
+  },
+  "impactDemo": {
+    "criterion01": {
+      "label": "Demonstration criterion 1 (DEMO)",
+      "description": "Fictitious criterion 1 of the development data, not contractual."
+    },
+    "criterion02": {
+      "label": "Demonstration criterion 2 (DEMO)",
+      "description": "Fictitious criterion 2 of the development data, not contractual."
+    },
+    "criterion03": {
+      "label": "Demonstration criterion 3 (DEMO)",
+      "description": "Fictitious criterion 3 of the development data, not contractual."
+    },
+    "criterion04": {
+      "label": "Demonstration criterion 4 (DEMO)",
+      "description": "Fictitious criterion 4 of the development data, not contractual."
+    },
+    "levels": {
+      "none": "None (DEMO)",
+      "partial": "Partial (DEMO)",
+      "full": "Full (DEMO)"
+    }
   }
 }

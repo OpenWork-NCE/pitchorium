@@ -334,5 +334,53 @@
     "public": "Public",
     "members": "Membres",
     "connections": "Relations"
+  },
+  "projectStatuses": {
+    "draft": "Brouillon",
+    "funding": "En financement",
+    "funded": "Financé",
+    "closed": "Clôturé"
+  },
+  "projectTeamRoles": {
+    "owner": "Propriétaire",
+    "editor": "Éditeur"
+  },
+  "projectInterestKinds": {
+    "grant": "Subvention",
+    "honor_loan": "Prêt d'honneur",
+    "equity": "Prise de participation",
+    "general": "Contact général"
+  },
+  "impactLevels": {
+    "emerging": "Émergent",
+    "moderate": "Modéré",
+    "strong": "Fort"
+  },
+  "impactMentions": {
+    "selfDeclared": "Score auto-déclaré par le porteur, selon la méthodologie {{version}}. Ce n'est pas une certification.",
+    "demo": "Méthodologie de démonstration, non contractuelle"
+  },
+  "impactDemo": {
+    "criterion01": {
+      "label": "Critère de démonstration 1 (DEMO)",
+      "description": "Critère fictif n° 1 des données de développement, non contractuel."
+    },
+    "criterion02": {
+      "label": "Critère de démonstration 2 (DEMO)",
+      "description": "Critère fictif n° 2 des données de développement, non contractuel."
+    },
+    "criterion03": {
+      "label": "Critère de démonstration 3 (DEMO)",
+      "description": "Critère fictif n° 3 des données de développement, non contractuel."
+    },
+    "criterion04": {
+      "label": "Critère de démonstration 4 (DEMO)",
+      "description": "Critère fictif n° 4 des données de développement, non contractuel."
+    },
+    "levels": {
+      "none": "Aucun (DEMO)",
+      "partial": "Partiel (DEMO)",
+      "full": "Complet (DEMO)"
+    }
   }
 }
