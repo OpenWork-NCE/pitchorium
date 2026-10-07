@@ -1,4 +1,4 @@
-import type { Type } from '@nestjs/common';
+import type { DynamicModule, Type } from '@nestjs/common';
 import { IdentityModule } from './modules/identity';
 import { AccessModule } from './modules/access';
 import { ProfilesModule } from './modules/profiles';
@@ -20,9 +20,8 @@ import { PrivacyModule } from './modules/privacy';
 import { LocalizationModule } from './modules/localization';
 import { AdminModule } from './modules/admin';
 
-/** Business modules, registered in both the api and the worker. */
-export const BUSINESS_MODULES: Type[] = [
-  IdentityModule,
+/** Modules wired the same way in both processes. */
+const COMMON_MODULES: Type[] = [
   AccessModule,
   ProfilesModule,
   OrganizationsModule,
@@ -42,4 +41,18 @@ export const BUSINESS_MODULES: Type[] = [
   PrivacyModule,
   LocalizationModule,
   AdminModule,
+];
+
+/**
+ * Business modules of each process. Modules with process-specific providers (the api serves
+ * Better Auth, the worker sends emails) expose forApi() and forWorker().
+ */
+export const API_BUSINESS_MODULES: (Type | DynamicModule)[] = [
+  IdentityModule.forApi(),
+  ...COMMON_MODULES,
+];
+
+export const WORKER_BUSINESS_MODULES: (Type | DynamicModule)[] = [
+  IdentityModule.forWorker(),
+  ...COMMON_MODULES,
 ];

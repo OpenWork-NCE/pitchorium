@@ -23,6 +23,15 @@ export interface CommonConfig {
     | { transport: 'resend'; from: string; resendApiKey: string };
   sentry: { dsn: string | undefined; environment: string };
   otel: { enabled: boolean };
+  /** Origin of the web application, used in links sent by email. */
+  webAppUrl: string;
+  /** Versions in force of the terms of service and the privacy policy. */
+  legal: { termsVersion: string; privacyVersion: string };
+}
+
+export interface OAuthClientConfig {
+  clientId: string;
+  clientSecret: string;
 }
 
 export interface ApiConfig extends CommonConfig {
@@ -32,9 +41,27 @@ export interface ApiConfig extends CommonConfig {
     corsOrigins: string[];
     trustProxyHops: number;
     swaggerEnabled: boolean;
+    /** Public origin of the api, as seen by browsers and OAuth providers. */
+    publicUrl: string;
   };
   rateLimit: { ttlMs: number; limit: number };
   idempotency: { ttlMs: number };
+  auth: {
+    secret: string;
+    /** Origins allowed to send cookie-authenticated writes (CSRF protection). */
+    trustedOrigins: string[];
+    /** Parent domain shared by the web app and the api, for example pitchorium.com. */
+    cookieDomain: string | undefined;
+    /** Secure cookies everywhere except on a plain-http (local) api. */
+    secureCookies: boolean;
+    rateLimit: { windowSeconds: number; max: number };
+    pwnedPasswordCheck: boolean;
+    providers: {
+      google: OAuthClientConfig | undefined;
+      linkedin: OAuthClientConfig | undefined;
+      microsoft: OAuthClientConfig | undefined;
+    };
+  };
 }
 
 export interface WorkerConfig extends CommonConfig {
@@ -81,7 +108,7 @@ function toCommonConfig(env: CommonEnv): CommonConfig {
       secretAccessKey: env.S3_SECRET_ACCESS_KEY,
       forcePathStyle: env.S3_FORCE_PATH_STYLE,
       buckets: { public: env.S3_BUCKET_PUBLIC, private: env.S3_BUCKET_PRIVATE },
-      publicBaseUrl: env.S3_PUBLIC_BASE_URL.replace(/\/+$/, ''),
+      publicBaseUrl: withoutTrailingSlash(env.S3_PUBLIC_BASE_URL),
     },
     mail:
       env.MAIL_TRANSPORT === 'smtp'
@@ -89,7 +116,20 @@ function toCommonConfig(env: CommonEnv): CommonConfig {
         : { transport: 'resend', from: env.MAIL_FROM, resendApiKey: env.RESEND_API_KEY ?? '' },
     sentry: { dsn: env.SENTRY_DSN, environment: env.SENTRY_ENVIRONMENT ?? env.NODE_ENV },
     otel: { enabled: env.OTEL_EXPORTER_OTLP_ENDPOINT !== undefined },
+    webAppUrl: withoutTrailingSlash(env.WEB_APP_URL),
+    legal: { termsVersion: env.LEGAL_TERMS_VERSION, privacyVersion: env.LEGAL_PRIVACY_VERSION },
   };
+}
+
+function withoutTrailingSlash(url: string): string {
+  return url.replace(/\/+$/, '');
+}
+
+function oauthClient(
+  clientId: string | undefined,
+  clientSecret: string | undefined,
+): OAuthClientConfig | undefined {
+  return clientId && clientSecret ? { clientId, clientSecret } : undefined;
 }
 
 export function parseApiConfig(rawEnv: RawEnv): ApiConfig {
@@ -102,9 +142,27 @@ export function parseApiConfig(rawEnv: RawEnv): ApiConfig {
       corsOrigins: env.CORS_ORIGINS,
       trustProxyHops: env.TRUST_PROXY_HOPS,
       swaggerEnabled: env.NODE_ENV !== 'production',
+      publicUrl: withoutTrailingSlash(env.API_PUBLIC_URL),
     },
     rateLimit: { ttlMs: env.RATE_LIMIT_TTL_SECONDS * 1000, limit: env.RATE_LIMIT_MAX },
     idempotency: { ttlMs: env.IDEMPOTENCY_TTL_HOURS * 3_600_000 },
+    auth: {
+      secret: env.AUTH_SECRET,
+      trustedOrigins:
+        env.AUTH_TRUSTED_ORIGINS.length > 0 ? env.AUTH_TRUSTED_ORIGINS : env.CORS_ORIGINS,
+      cookieDomain: env.AUTH_COOKIE_DOMAIN,
+      secureCookies: env.API_PUBLIC_URL.startsWith('https://'),
+      rateLimit: {
+        windowSeconds: env.AUTH_RATE_LIMIT_WINDOW_SECONDS,
+        max: env.AUTH_RATE_LIMIT_MAX,
+      },
+      pwnedPasswordCheck: env.AUTH_PWNED_PASSWORD_CHECK,
+      providers: {
+        google: oauthClient(env.GOOGLE_CLIENT_ID, env.GOOGLE_CLIENT_SECRET),
+        linkedin: oauthClient(env.LINKEDIN_CLIENT_ID, env.LINKEDIN_CLIENT_SECRET),
+        microsoft: oauthClient(env.MICROSOFT_CLIENT_ID, env.MICROSOFT_CLIENT_SECRET),
+      },
+    },
   };
 }
 

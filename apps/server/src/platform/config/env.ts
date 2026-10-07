@@ -2,6 +2,17 @@ import { z } from 'zod';
 
 const booleanFromString = z.enum(['true', 'false']).transform((value) => value === 'true');
 
+const urlList = z
+  .string()
+  .default('')
+  .transform((value) =>
+    value
+      .split(',')
+      .map((entry) => entry.trim())
+      .filter(Boolean),
+  )
+  .pipe(z.array(z.url()));
+
 const commonEnvSchema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
   LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent']).default('info'),
@@ -27,25 +38,35 @@ const commonEnvSchema = z.object({
   SENTRY_DSN: z.url().optional(),
   SENTRY_ENVIRONMENT: z.string().min(1).optional(),
   OTEL_EXPORTER_OTLP_ENDPOINT: z.url().optional(),
+  WEB_APP_URL: z.url().default('http://localhost:5173'),
+  LEGAL_TERMS_VERSION: z.string().regex(/^[A-Za-z0-9._-]{1,64}$/),
+  LEGAL_PRIVACY_VERSION: z.string().regex(/^[A-Za-z0-9._-]{1,64}$/),
 });
 
 const apiEnvSchema = commonEnvSchema.extend({
   API_HOST: z.string().min(1).default('0.0.0.0'),
   API_PORT: z.coerce.number().int().min(1).max(65535).default(3000),
-  CORS_ORIGINS: z
-    .string()
-    .default('')
-    .transform((value) =>
-      value
-        .split(',')
-        .map((origin) => origin.trim())
-        .filter(Boolean),
-    )
-    .pipe(z.array(z.url())),
+  API_PUBLIC_URL: z.url().default('http://localhost:3000'),
+  CORS_ORIGINS: urlList,
   TRUST_PROXY_HOPS: z.coerce.number().int().min(0).default(0),
   RATE_LIMIT_TTL_SECONDS: z.coerce.number().int().positive().default(60),
   RATE_LIMIT_MAX: z.coerce.number().int().positive().default(120),
   IDEMPOTENCY_TTL_HOURS: z.coerce.number().int().positive().default(24),
+  AUTH_SECRET: z.string().min(32),
+  AUTH_TRUSTED_ORIGINS: urlList,
+  AUTH_COOKIE_DOMAIN: z
+    .string()
+    .regex(/^[a-z0-9.-]+$/)
+    .optional(),
+  AUTH_RATE_LIMIT_WINDOW_SECONDS: z.coerce.number().int().positive().default(60),
+  AUTH_RATE_LIMIT_MAX: z.coerce.number().int().positive().default(10),
+  AUTH_PWNED_PASSWORD_CHECK: booleanFromString.default(true),
+  GOOGLE_CLIENT_ID: z.string().min(1).optional(),
+  GOOGLE_CLIENT_SECRET: z.string().min(1).optional(),
+  LINKEDIN_CLIENT_ID: z.string().min(1).optional(),
+  LINKEDIN_CLIENT_SECRET: z.string().min(1).optional(),
+  MICROSOFT_CLIENT_ID: z.string().min(1).optional(),
+  MICROSOFT_CLIENT_SECRET: z.string().min(1).optional(),
 });
 
 const workerEnvSchema = commonEnvSchema.extend({
@@ -72,7 +93,29 @@ function requireMailCredentials(env: z.infer<typeof commonEnvSchema>, ctx: z.Ref
   }
 }
 
-export const apiEnv = apiEnvSchema.superRefine(requireMailCredentials);
+const OAUTH_PROVIDERS = ['GOOGLE', 'LINKEDIN', 'MICROSOFT'] as const;
+
+/** An OAuth provider is enabled only when both its client id and secret are set. */
+function requireCompleteOAuthCredentials(
+  env: z.infer<typeof apiEnvSchema>,
+  ctx: z.RefinementCtx,
+): void {
+  for (const provider of OAUTH_PROVIDERS) {
+    const id = env[`${provider}_CLIENT_ID`];
+    const secret = env[`${provider}_CLIENT_SECRET`];
+    if ((id === undefined) !== (secret === undefined)) {
+      ctx.addIssue({
+        code: 'custom',
+        path: [id === undefined ? `${provider}_CLIENT_ID` : `${provider}_CLIENT_SECRET`],
+        message: `Set both ${provider}_CLIENT_ID and ${provider}_CLIENT_SECRET, or neither`,
+      });
+    }
+  }
+}
+
+export const apiEnv = apiEnvSchema
+  .superRefine(requireMailCredentials)
+  .superRefine(requireCompleteOAuthCredentials);
 export const workerEnv = workerEnvSchema.superRefine(requireMailCredentials);
 
 export type CommonEnv = z.infer<typeof commonEnvSchema>;

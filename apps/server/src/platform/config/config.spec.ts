@@ -13,6 +13,9 @@ const baseEnv = {
   MAIL_TRANSPORT: 'smtp',
   MAIL_FROM: 'Pitchorium <no-reply@pitchorium.local>',
   SMTP_URL: 'smtp://localhost:1025',
+  LEGAL_TERMS_VERSION: '2026-10',
+  LEGAL_PRIVACY_VERSION: '2026-10',
+  AUTH_SECRET: 'a-secret-of-at-least-thirty-two-characters',
 };
 
 function issuesOf(run: () => unknown): string[] {
@@ -84,5 +87,31 @@ describe('configuration', () => {
     expect(
       parseWorkerConfig({ ...baseEnv, MAIL_TRANSPORT: 'resend', RESEND_API_KEY: 're_x' }).mail,
     ).toMatchObject({ transport: 'resend', resendApiKey: 're_x' });
+  });
+
+  it('enables an OAuth provider only with both credentials, and derives auth settings', () => {
+    const config = parseApiConfig({
+      ...baseEnv,
+      API_PUBLIC_URL: 'https://api.pitchorium.example/',
+      CORS_ORIGINS: 'https://app.pitchorium.example',
+      GOOGLE_CLIENT_ID: 'id',
+      GOOGLE_CLIENT_SECRET: 'secret',
+    });
+    expect(config.auth.providers).toEqual({
+      google: { clientId: 'id', clientSecret: 'secret' },
+      linkedin: undefined,
+      microsoft: undefined,
+    });
+    expect(config.auth.trustedOrigins).toEqual(['https://app.pitchorium.example']);
+    expect(config.auth.secureCookies).toBe(true);
+    expect(config.http.publicUrl).toBe('https://api.pitchorium.example');
+    expect(parseApiConfig(baseEnv).auth.secureCookies).toBe(false);
+
+    expect(issuesOf(() => parseApiConfig({ ...baseEnv, LINKEDIN_CLIENT_ID: 'id' }))).toEqual([
+      'LINKEDIN_CLIENT_SECRET: Set both LINKEDIN_CLIENT_ID and LINKEDIN_CLIENT_SECRET, or neither',
+    ]);
+    expect(issuesOf(() => parseApiConfig({ ...baseEnv, AUTH_SECRET: 'short' }))).toEqual([
+      'AUTH_SECRET: Too small: expected string to have >=32 characters',
+    ]);
   });
 });
