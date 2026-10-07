@@ -71,6 +71,24 @@ describe('architecture boundaries', () => {
     ]);
   });
 
+  it('lets a unit test use the layers of its own module, never those of another', async () => {
+    write('src/modules/identity/application/arch-test-own.ts', 'export const own = 1;\n');
+    write('src/modules/profiles/application/arch-test-other.ts', 'export const other = 1;\n');
+    const file = write(
+      'src/modules/identity/domain/arch-test.spec.ts',
+      [
+        "import { describe } from 'vitest';",
+        "import { own } from '../application/arch-test-own';",
+        "import { other } from '../../profiles/application/arch-test-other';",
+        "import { ProfilesModule } from '../../profiles';",
+        'export const all = [describe, own, other, ProfilesModule];',
+        '',
+      ].join('\n'),
+    );
+
+    expect(await violations(file)).toEqual(['3:boundaries/dependencies']);
+  });
+
   it('forbids platform/ from importing business modules', async () => {
     const file = write(
       'src/platform/core/arch-test.ts',
