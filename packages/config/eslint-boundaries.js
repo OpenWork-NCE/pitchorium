@@ -24,7 +24,7 @@ export function serverBoundaries({ rootDir }) {
         'boundaries/include': ['src/**/*.ts'],
         'boundaries/elements': [
           { type: 'platform-kernel', pattern: 'src/platform/kernel', partialMatch: false },
-          { type: 'platform', pattern: 'src/platform/*', partialMatch: false },
+          { type: 'platform', pattern: 'src/platform', partialMatch: false },
           {
             type: 'module-layer',
             pattern: 'src/modules/*/*',
@@ -43,6 +43,7 @@ export function serverBoundaries({ rootDir }) {
           'error',
           {
             default: 'allow',
+            checkAllOrigins: true,
             policies: [
               {
                 from: { element: { types: { anyOf: MODULE_ELEMENTS } } },
@@ -99,21 +100,28 @@ export function serverBoundaries({ rootDir }) {
         ],
       },
     },
-    ...moduleNames.map((name) => ({
-      files: [`src/modules/${name}/**/*.ts`],
-      rules: {
-        'no-restricted-imports': [
-          'error',
-          {
-            patterns: [
-              {
-                regex: `^@pitchorium/db/schemas/(?!${name}$)`,
-                message: `Module "${name}" may only use its own database schema.`,
-              },
-            ],
+    ...moduleNames.flatMap((name) => {
+      const ownSchemaOnly = {
+        regex: `^@pitchorium/db/schemas/(?!${name}$)`,
+        message: `Module "${name}" may only use its own database schema.`,
+      };
+      // Workspace packages resolve as local files, outside the elements above.
+      const contractsOnly = {
+        regex: '^@pitchorium/(?!contracts$)',
+        message: 'domain/ may only import @pitchorium/contracts among workspace packages.',
+      };
+      return [
+        {
+          files: [`src/modules/${name}/**/*.ts`],
+          rules: { 'no-restricted-imports': ['error', { patterns: [ownSchemaOnly] }] },
+        },
+        {
+          files: [`src/modules/${name}/domain/**/*.ts`],
+          rules: {
+            'no-restricted-imports': ['error', { patterns: [ownSchemaOnly, contractsOnly] }],
           },
-        ],
-      },
-    })),
+        },
+      ];
+    }),
   ];
 }
