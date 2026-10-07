@@ -50,6 +50,7 @@ describe('payment providers', () => {
   let worker: TestingModule;
   let admin: Member;
   let contributor: Member;
+  let chargedBackId = '';
 
   const deliver = () => worker.get(OutboxRelayService).relayBatch();
   const statusOf = async (id: string) =>
@@ -286,6 +287,15 @@ describe('payment providers', () => {
     ).expect(200);
     await until(contribution.id, 'succeeded');
 
+    // A chargeback notification names the transaction by its flw_ref only: the chargebacks of
+    // the provider give the transaction, whose read reports the open dispute.
+    const chargeback = flutterwave.chargeback(flutterwave.payments.get(contribution.id)!);
+    await postWebhook(app, 'flutterwave', flutterwave.chargebackWebhook(chargeback)).expect(200);
+    await until(contribution.id, 'disputed');
+    // The outcome comes without notification: the reconciliation reads the chargebacks.
+    chargeback.status = 'lost';
+    chargedBackId = contribution.id;
+
     // A notification whose verification disagrees is never applied: a discrepancy instead.
     const tampered = await contribute(contributor, project.id, {
       kind: 'donation',
@@ -317,5 +327,6 @@ describe('payment providers', () => {
     expect(report.checkedTransactions).toBe(3);
     // The tampered payment is known to the provider but not applied here.
     expect(report.discrepancies.map((found) => found.kind)).toEqual(['status_mismatch']);
+    expect(await statusOf(chargedBackId)).toBe('dispute_lost');
   });
 });

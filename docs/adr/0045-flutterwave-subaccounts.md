@@ -18,5 +18,5 @@ Pour les porteurs que Stripe ne sert pas, Flutterwave est le prestataire de réf
 ## Conséquences
 
 - Le paiement transite par le compte marchand de Pitchorium chez Flutterwave avant le partage, et un remboursement débite le compte principal : point juridique et de trésorerie à valider.
-- Pas de suivi des litiges Flutterwave (API de rétrofacturation non vérifiée) : seul le rapprochement les révélerait.
+- Litiges Flutterwave suivis par l'API des rétrofacturations v3 (`GET /v3/chargebacks`, vérifiée dans la documentation le 2026-10-07) : à la lecture d'une transaction, sur notification `chargeback.*` (activée sur demande) et au rapprochement quotidien (`docs/architecture/payments.md`). Forme réelle des réponses à confirmer par `pnpm test:providers` avec des clés de test.
 - Les cartes de la diaspora en EUR, GBP ou USD vers un porteur africain restent désactivées tant que le partage multidevise n'est pas confirmé.

@@ -222,9 +222,19 @@ interface FlutterwavePayment {
   verifiedAmount: string | null;
 }
 
+interface FlutterwaveChargeback {
+  id: number;
+  transactionId: number;
+  txRef: string;
+  flwRef: string;
+  amount: string;
+  status: 'initiated' | 'declined' | 'accepted' | 'won' | 'lost';
+}
+
 /** Reproduces the Flutterwave v3 endpoints used by the adapter, with raw numeric amounts. */
 export class FakeFlutterwave extends FakeServer {
   readonly payments = new Map<string, FlutterwavePayment>();
+  readonly chargebacks: FlutterwaveChargeback[] = [];
   private sequence = 9000;
 
   constructor(private readonly secretHash: string) {
@@ -244,6 +254,29 @@ export class FakeFlutterwave extends FakeServer {
   webhook(payment: FlutterwavePayment, hash = this.secretHash) {
     const body = `{"event":"charge.completed","data":{"id":${payment.id},"tx_ref":"${payment.txRef}","amount":${payment.amount},"currency":"${payment.currency}","status":"${payment.status}"}}`;
     return { headers: { 'content-type': 'application/json', 'verif-hash': hash }, body };
+  }
+
+  /** A chargeback on the whole amount of a paid transaction. */
+  chargeback(payment: FlutterwavePayment): FlutterwaveChargeback {
+    const chargeback: FlutterwaveChargeback = {
+      id: (this.sequence += 1),
+      transactionId: payment.id ?? 0,
+      txRef: payment.txRef,
+      flwRef: `FLW-MOCK-${payment.id}`,
+      amount: payment.amount,
+      status: 'initiated',
+    };
+    this.chargebacks.push(chargeback);
+    return chargeback;
+  }
+
+  /** `chargeback.initiated` as documented: the transaction is named by its `flw_ref` only. */
+  chargebackWebhook(chargeback: FlutterwaveChargeback) {
+    const body = `{"event":"chargeback.${chargeback.status}","data":{"id":${chargeback.id},"flw_ref":"${chargeback.flwRef}","amount":${chargeback.amount},"status":"${chargeback.status}","stage":"new","comment":"Fraud dispute"}}`;
+    return {
+      headers: { 'content-type': 'application/json', 'verif-hash': this.secretHash },
+      body,
+    };
   }
 
   protected route(method: string, path: string, query: URLSearchParams, body: string) {
@@ -287,8 +320,21 @@ export class FakeFlutterwave extends FakeServer {
       );
       if (!payment) return { status: 404, body: '{"status":"error","message":"not found"}' };
       return raw(
-        `{"id":${payment.id},"tx_ref":"${payment.txRef}","amount":${payment.verifiedAmount ?? payment.amount},"currency":"${payment.currency}","status":"${payment.status}","app_fee":10.5}`,
+        `{"id":${payment.id},"tx_ref":"${payment.txRef}","flw_ref":"FLW-MOCK-${payment.id}","amount":${payment.verifiedAmount ?? payment.amount},"currency":"${payment.currency}","status":"${payment.status}","app_fee":10.5}`,
       );
+    }
+    if (method === 'GET' && path === '/v3/chargebacks') {
+      const flwRef = query.get('flw_ref');
+      const items = this.chargebacks
+        .filter((item) => flwRef === null || item.flwRef === flwRef)
+        .map(
+          (item) =>
+            `{"id":${item.id},"amount":${item.amount},"flw_ref":"${item.flwRef}","status":"${item.status}","stage":"new","comment":"Fraud dispute","meta":{"uploaded_proof":null,"history":[]},"due_date":"${new Date().toISOString()}","settlement_id":"NEW","created_at":"${new Date().toISOString()}","transaction_id":${item.transactionId},"tx_ref":"${item.txRef}"}`,
+        );
+      return {
+        status: 200,
+        body: `{"status":"success","message":"Chargebacks fetched","meta":{"page_info":{"total":${items.length},"current_page":1,"total_pages":1,"page_size":20}},"data":[${items.join(',')}]}`,
+      };
     }
     if (method === 'GET' && path === '/v3/transactions') {
       const items = [...this.payments.values()]

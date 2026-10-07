@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import type { DiscrepancyKind } from '@pitchorium/contracts';
+import { type DiscrepancyKind, uuidV7Schema } from '@pitchorium/contracts';
 import { TransactionManager } from '../../../platform/database';
 import { Clock, DomainError, IdGenerator, Money } from '../../../platform/kernel';
 import { Metrics } from '../../../platform/observability';
@@ -36,7 +36,13 @@ import {
   DiscrepancyDetected,
 } from '../domain/payments-events';
 import { PaymentsEventsRecorder } from './payments-events.recorder';
-import { PaymentProviders, PaymentsRepository, type RefundRecord } from './ports';
+import type { ProviderId } from '../domain/capability-matrix';
+import {
+  PaymentProviders,
+  type ProviderPaymentRef,
+  PaymentsRepository,
+  type RefundRecord,
+} from './ports';
 
 export const DISCREPANCY_METRIC = 'pitchorium.payments.reconciliation.discrepancy';
 
@@ -104,6 +110,37 @@ export class ContributionEffectsService {
       ...snapshot,
       refunds: [...snapshot.refunds, ...refreshed],
     });
+  }
+
+  /**
+   * A notification that names the payment only by its provider reference (Flutterwave
+   * chargeback): the provider gives the payment, which is then synced like any other.
+   */
+  async syncByReference(
+    provider: ProviderId,
+    paymentReference: string,
+  ): Promise<ContributionRecord | null> {
+    const payment = await this.providers.payment(provider).paymentOf?.(paymentReference);
+    const contribution = payment ? await this.contributionOf(provider, payment) : null;
+    if (!payment || !contribution) {
+      this.logger.warn(`No contribution for the ${provider} payment ${paymentReference}`);
+      return null;
+    }
+    return this.sync(contribution.id, payment.providerPaymentId);
+  }
+
+  /** The contribution of a payment: by our reference first, then by the payment identifier. */
+  async contributionOf(
+    provider: ProviderId,
+    payment: ProviderPaymentRef,
+  ): Promise<ContributionRecord | null> {
+    if (payment.reference && uuidV7Schema.safeParse(payment.reference).success) {
+      const found = await this.payments.findContribution(payment.reference);
+      if (found) return found;
+    }
+    return payment.providerPaymentId
+      ? this.payments.findContributionByPayment(provider, payment.providerPaymentId)
+      : null;
   }
 
   apply(contributionId: string, snapshot: ProviderSnapshot): Promise<ContributionRecord | null> {

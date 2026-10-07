@@ -63,6 +63,7 @@ export class WebhooksService {
         contributionId,
         providerPaymentId: webhook.providerPaymentId,
         providerAccountId: webhook.providerAccountId,
+        paymentReference: webhook.paymentReference,
       });
     });
     return result.status === 'processed' ? 'accepted' : 'duplicate';

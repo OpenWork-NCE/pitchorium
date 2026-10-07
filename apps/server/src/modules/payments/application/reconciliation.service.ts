@@ -1,11 +1,9 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import type { DiscrepancyKind } from '@pitchorium/contracts';
-import { uuidV7Schema } from '@pitchorium/contracts';
 import { COMMON_CONFIG, type CommonConfig } from '../../../platform/config';
 import { Clock, IdGenerator } from '../../../platform/kernel';
 import { ProjectsFacade } from '../../projects';
-import type { ContributionRecord } from '../domain/contribution';
-import { wasPaid } from '../domain/contribution';
+import { type ContributionRecord, wasPaid } from '../domain/contribution';
 import { EUR } from '../domain/fx';
 import { LEDGER_ACCOUNTS } from '../domain/ledger';
 import { ContributionEffectsService } from './contribution-effects.service';
@@ -68,6 +66,14 @@ export class ReconciliationService {
     let checked = 0;
     const contributions = await this.payments.contributionsCreatedBetween(periodStart, periodEnd);
     for (const provider of this.providers.enabled()) {
+      // Disputes the payment reads may not reveal (Flutterwave chargebacks) are synced first.
+      const disputed = await this.providers
+        .payment(provider)
+        .disputedPayments?.(periodStart, periodEnd);
+      for (const payment of disputed ?? []) {
+        const contribution = await this.effects.contributionOf(provider, payment);
+        if (contribution) await this.effects.sync(contribution.id, payment.providerPaymentId);
+      }
       const accounts = (await this.payments.payoutAccountsOf(provider)).map(
         (account) => account.providerAccountId,
       );
@@ -77,7 +83,7 @@ export class ReconciliationService {
       checked += transactions.length;
       const seen = new Set<string>();
       for (const transaction of transactions) {
-        const contribution = await this.contributionOf(provider, transaction);
+        const contribution = await this.effects.contributionOf(provider, transaction);
         if (!contribution) {
           if (transaction.status === 'succeeded') {
             await report(
@@ -159,19 +165,6 @@ export class ReconciliationService {
 
   get defaultLookbackMs(): number {
     return 3 * DAY_MS + this.config.payments.sessionTtlMs;
-  }
-
-  private async contributionOf(
-    provider: ContributionRecord['provider'],
-    transaction: ProviderTransaction,
-  ): Promise<ContributionRecord | null> {
-    if (transaction.reference && uuidV7Schema.safeParse(transaction.reference).success) {
-      const found = await this.payments.findContribution(transaction.reference);
-      if (found) return found;
-    }
-    return transaction.providerPaymentId
-      ? this.payments.findContributionByPayment(provider, transaction.providerPaymentId)
-      : null;
   }
 
   private async compare(

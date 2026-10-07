@@ -7,13 +7,18 @@ import {
   type PaymentProvider,
   type PaymentSession,
   type PayoutAccountProvider,
+  type ProviderPaymentRef,
   type ProviderRefundRequest,
   type ProviderRefundResult,
   type ProviderTransaction,
   type VerifiedWebhook,
   WebhookRejectedError,
 } from '../../application/ports';
-import type { ContributionRecord, ProviderSnapshot } from '../../domain/contribution';
+import type {
+  ContributionRecord,
+  ProviderDispute,
+  ProviderSnapshot,
+} from '../../domain/contribution';
 import type { Rate } from '../../domain/fx';
 import type { PayoutAccountState } from '../../domain/payout';
 import {
@@ -65,7 +70,46 @@ class FlutterwaveClient {
     }
     return field(response.body, 'data') ?? null;
   }
+
+  /** Every item of a paginated list (`meta.page_info.total_pages`). */
+  async list(path: string): Promise<ExactJson[]> {
+    const items: ExactJson[] = [];
+    const separator = path.includes('?') ? '&' : '?';
+    for (let page = 1; ; page += 1) {
+      const response = await callProvider(
+        'flutterwave',
+        `${this.config.apiBaseUrl}${path}${separator}page=${page}`,
+        { method: 'GET', headers: { authorization: `Bearer ${this.config.secretKey}` } },
+      );
+      if (response.status >= 400) throw unavailable('flutterwave', `HTTP ${response.status}`);
+      items.push(...list(field(response.body, 'data')));
+      const pages = Number(text(field(response.body, 'meta', 'page_info', 'total_pages')) ?? '1');
+      if (page >= pages) break;
+    }
+    return items;
+  }
 }
+
+/**
+ * State of a chargeback (developer.flutterwave.com, chargebacks v3): `accepted` by the merchant
+ * or `lost` gives the money back to the customer; `won` or `reversed` keeps it; `initiated`,
+ * `pending` and `declined` (contested by the merchant) wait for the outcome.
+ */
+export function chargebackStatus(status: string | null): ProviderDispute['status'] {
+  const value = status?.toLowerCase() ?? '';
+  if (value === 'lost' || value === 'accepted') return 'lost';
+  if (value === 'won' || value === 'reversed') return 'won';
+  return 'open';
+}
+
+function paymentRef(chargeback: ExactJson): ProviderPaymentRef | null {
+  const providerPaymentId = text(field(chargeback, 'transaction_id'));
+  return providerPaymentId
+    ? { reference: text(field(chargeback, 'tx_ref')), providerPaymentId }
+    : null;
+}
+
+const day = (date: Date) => date.toISOString().slice(0, 10);
 
 /**
  * Flutterwave v3 (ADR 0045): the payment page is Flutterwave Standard (`POST /v3/payments`),
@@ -126,16 +170,43 @@ export class FlutterwaveProvider implements PaymentProvider, PayoutAccountProvid
     const currency = text(field(data, 'currency')) ?? contribution.currency;
     const status = text(field(data, 'status'));
     const fee = text(field(data, 'app_fee'));
+    const flwRef = text(field(data, 'flw_ref'));
+    const paymentId = text(field(data, 'id'));
+    // Chargebacks are listed apart from the transaction, by its Flutterwave reference.
+    const chargebacks =
+      status === 'successful' && flwRef
+        ? (await this.client.list(`/v3/chargebacks?flw_ref=${encodeURIComponent(flwRef)}`)).filter(
+            (item) => text(field(item, 'transaction_id')) === paymentId,
+          )
+        : [];
     return {
       status: status === 'successful' ? 'succeeded' : status === 'failed' ? 'failed' : 'pending',
       reference: text(field(data, 'tx_ref')),
       amount: fromFlutterwaveAmount(field(data, 'amount'), currency),
-      paymentId: text(field(data, 'id')),
+      paymentId,
       providerFee: fee ? fromFlutterwaveAmount(fee, currency) : null,
       settledEur: null,
       refunds: [],
-      disputes: [],
+      disputes: chargebacks.map((item) => ({
+        providerDisputeId: text(field(item, 'id')) ?? '',
+        amount: fromFlutterwaveAmount(field(item, 'amount'), currency),
+        status: chargebackStatus(text(field(item, 'status'))),
+      })),
     };
+  }
+
+  /** Chargebacks raised in the period (`GET /v3/chargebacks?from=&to=`). */
+  async disputedPayments(from: Date, to: Date): Promise<ProviderPaymentRef[]> {
+    const items = await this.client.list(`/v3/chargebacks?from=${day(from)}&to=${day(to)}`);
+    return items.flatMap((item) => paymentRef(item) ?? []);
+  }
+
+  /** The transaction a chargeback notification names by its `flw_ref`. */
+  async paymentOf(paymentReference: string): Promise<ProviderPaymentRef | null> {
+    const items = await this.client.list(
+      `/v3/chargebacks?flw_ref=${encodeURIComponent(paymentReference)}`,
+    );
+    return items.map(paymentRef).find((ref) => ref !== null) ?? null;
   }
 
   async refund(request: ProviderRefundRequest): Promise<ProviderRefundResult> {
@@ -165,33 +236,20 @@ export class FlutterwaveProvider implements PaymentProvider, PayoutAccountProvid
     from: Date,
     to: Date,
   ): Promise<ProviderTransaction[]> {
-    const transactions: ProviderTransaction[] = [];
-    const day = (date: Date) => date.toISOString().slice(0, 10);
-    for (let page = 1; ; page += 1) {
-      const response = await callProvider(
-        'flutterwave',
-        `${this.config.apiBaseUrl}/v3/transactions?from=${day(from)}&to=${day(to)}&page=${page}`,
-        { method: 'GET', headers: { authorization: `Bearer ${this.config.secretKey}` } },
-      );
-      if (response.status >= 400) throw unavailable('flutterwave', `HTTP ${response.status}`);
-      for (const item of list(field(response.body, 'data'))) {
-        const currency = text(field(item, 'currency')) ?? 'NGN';
-        const status = text(field(item, 'status'));
-        transactions.push({
-          reference: text(field(item, 'tx_ref')),
-          providerPaymentId: text(field(item, 'id')) ?? '',
-          providerAccountId: '',
-          status:
-            status === 'successful' ? 'succeeded' : status === 'failed' ? 'failed' : 'pending',
-          amount: fromFlutterwaveAmount(field(item, 'amount'), currency),
-          refunded: null,
-          createdAt: new Date(text(field(item, 'created_at')) ?? 0),
-        });
-      }
-      const pages = Number(text(field(response.body, 'meta', 'page_info', 'total_pages')) ?? '1');
-      if (page >= pages) break;
-    }
-    return transactions;
+    const items = await this.client.list(`/v3/transactions?from=${day(from)}&to=${day(to)}`);
+    return items.map((item) => {
+      const currency = text(field(item, 'currency')) ?? 'NGN';
+      const status = text(field(item, 'status'));
+      return {
+        reference: text(field(item, 'tx_ref')),
+        providerPaymentId: text(field(item, 'id')) ?? '',
+        providerAccountId: '',
+        status: status === 'successful' ? 'succeeded' : status === 'failed' ? 'failed' : 'pending',
+        amount: fromFlutterwaveAmount(field(item, 'amount'), currency),
+        refunded: null,
+        createdAt: new Date(text(field(item, 'created_at')) ?? 0),
+      };
+    });
   }
 
   /** v3 sends the secret hash of the dashboard in `verif-hash` (developer.flutterwave.com). */
@@ -209,14 +267,17 @@ export class FlutterwaveProvider implements PaymentProvider, PayoutAccountProvid
     const type = text(field(event, 'event')) ?? text(field(event, 'event.type'));
     const id = text(field(event, 'data', 'id'));
     if (!type || !id) throw new WebhookRejectedError('missing event or data.id');
-    // v3 notifications carry no event identifier: the type, the transaction and its status.
+    // v3 notifications carry no event identifier: the type, the object and its status.
     const status = text(field(event, 'data', 'status')) ?? '';
+    // A chargeback names the transaction by its `flw_ref`; `data.id` is the chargeback.
+    const chargeback = type.startsWith('chargeback.');
     return {
       externalId: `${type}:${id}:${status}`,
       type,
       contributionId: text(field(event, 'data', 'tx_ref')),
-      providerPaymentId: id,
+      providerPaymentId: chargeback ? text(field(event, 'data', 'transaction_id')) : id,
       providerAccountId: null,
+      paymentReference: chargeback ? text(field(event, 'data', 'flw_ref')) : null,
     };
   }
 

@@ -221,6 +221,8 @@ export class ProviderEventReceived extends DomainEvent<{
   /** Payment at the provider, to verify through its API (Flutterwave transaction). */
   providerPaymentId: string | null;
   providerAccountId: string | null;
+  /** Payment named only by its provider reference (Flutterwave chargeback `flw_ref`). */
+  paymentReference: string | null;
 }> {
   static readonly TYPE = 'payments.provider-event.received.v1';
   readonly type = ProviderEventReceived.TYPE;

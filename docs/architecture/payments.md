@@ -155,11 +155,18 @@ A : montant payé ; C : commission ; F : frais ; E : équivalent EUR ; R, Cr, Er
 - `POST /v1/payments/webhooks/stripe|flutterwave|simulated` : servi hors du routage Nest et avant les analyseurs de corps (corps brut), sans session ; absent du document OpenAPI et du client généré.
 - Signature vérifiée sur le corps brut : Stripe, `Stripe-Signature` (HMAC SHA-256 de `t.corps`, tolérance 5 minutes) ; Flutterwave v3, `verif-hash` comparé au secret en temps constant ; simulé, `x-simulated-signature` sur le modèle de Stripe.
 - Déduplication par l'inbox (`webhook:<prestataire>`, identifiant de l'événement ; pour Flutterwave v3, qui n'en fournit pas : type, transaction et statut), enregistrement dans `payments.provider_events` (références seulement) et événement interne `payments.provider-event.received.v1`, dans une transaction courte ; réponse 200 immédiate, 400 sur signature invalide, 500 si l'enregistrement échoue (le prestataire réessaie).
-- Le worker met en file `sync-contribution` (ou `sync-payout-account` pour `account.updated` de Stripe), qui relit l'état chez le prestataire hors transaction (ADR 0019), puis l'applique.
+- Le worker met en file `sync-contribution` (ou `sync-payout-account` pour `account.updated` de Stripe), qui relit l'état chez le prestataire hors transaction (ADR 0019), puis l'applique. Une notification `chargeback.*` de Flutterwave ne nomme la transaction que par son `flw_ref` : le job `sync-payment-reference` retrouve la transaction par `GET /v3/chargebacks?flw_ref=`, puis la synchronise comme les autres.
+
+### Litiges Flutterwave
+
+- API v3 vérifiée dans la documentation officielle le 2026-10-07 (developer.flutterwave.com, chargebacks v3) : `GET /v3/chargebacks` filtrable par `flw_ref`, `from`, `to`, `status`, paginé (`meta.page_info`) ; chaque rétrofacturation porte `id`, `amount` (devise de la transaction), `status`, `stage`, `transaction_id`, `tx_ref`. Les webhooks `chargeback.initiated|accepted|declined|lost` ne sont actifs que sur demande à Flutterwave.
+- La lecture d'une transaction réussie (`verify`) liste ses rétrofacturations par son `flw_ref` et les rapporte comme litiges : `initiated`, `pending` et `declined` (contestée par le marchand) restent ouverts ; `accepted` et `lost` sont perdus ; `won` et `reversed` sont gagnés. Les effets sont ceux d'un litige Stripe (ledger, `reverseFunding`, événements).
+- Sans webhook, le rapprochement quotidien lit les rétrofacturations de la période et synchronise chaque contribution concernée avant ses contrôles.
 
 ### Rapprochement
 
 - Tâche quotidienne `reconcile` (03:30 UTC), sur `PAYMENTS_RECONCILIATION_LOOKBACK_DAYS` jours ; à la demande : `POST /v1/admin/payments/reconciliation-runs` ou `pnpm payments:reconcile [--days N]`.
+- Synchronisation préalable des paiements contestés que la lecture d'un paiement ne révèle pas (rétrofacturations Flutterwave de la période).
 - Contrôles : chaque transaction listée par le prestataire contre sa contribution (existence, statut, montant, remboursements) ; chaque contribution payée contre une transaction ; chaque contribution payée contre ses lignes (`contributor_funds`, `refunds`) ; l'équilibre global du ledger ; le total de chaque projet contre `project_funding`.
 - Un écart est enregistré (`payments.discrepancies`, unique tant qu'il est ouvert), journalisé en `error`, compté (`pitchorium.payments.reconciliation.discrepancy`, attributs `kind` et `provider`) et annoncé (`payments.reconciliation.discrepancy-detected.v1`). Aucune correction automatique : un administrateur le traite (`GET /v1/admin/payments/discrepancies`, `POST .../{id}/resolve` avec une note auditée).
 

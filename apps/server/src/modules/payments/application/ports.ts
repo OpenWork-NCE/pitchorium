@@ -73,6 +73,17 @@ export interface VerifiedWebhook {
   contributionId: string | null;
   providerPaymentId: string | null;
   providerAccountId: string | null;
+  /**
+   * Reference of the payment at the provider, for a notification that names neither the
+   * contribution nor the payment (Flutterwave chargeback: `flw_ref`).
+   */
+  paymentReference: string | null;
+}
+
+/** A payment named by the provider: our contribution identifier and its payment identifier. */
+export interface ProviderPaymentRef {
+  reference: string | null;
+  providerPaymentId: string;
 }
 
 export class WebhookRejectedError extends Error {
@@ -103,6 +114,13 @@ export interface PaymentProvider {
     from: Date,
     to: Date,
   ): Promise<ProviderTransaction[]>;
+  /**
+   * Payments disputed in the period, for a provider whose payment read is not enough to learn
+   * about every dispute (Flutterwave chargebacks): the reconciliation syncs each of them.
+   */
+  disputedPayments?(from: Date, to: Date): Promise<ProviderPaymentRef[]>;
+  /** The payment a `paymentReference` of a notification names, read through the API. */
+  paymentOf?(paymentReference: string): Promise<ProviderPaymentRef | null>;
   /** Throws WebhookRejectedError when the signature, its age or the body is invalid. */
   verifyWebhook(
     headers: Record<string, string | undefined>,

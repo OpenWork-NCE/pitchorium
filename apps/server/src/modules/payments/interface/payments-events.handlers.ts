@@ -27,7 +27,8 @@ export class ProviderEventsHandler implements DomainEventSubscriber {
   constructor(@InjectQueue(PAYMENTS_QUEUE) private readonly queue: Queue) {}
 
   async handle(event: OutboxEnvelope): Promise<void> {
-    const { contributionId, providerAccountId, provider, providerPaymentId } = event.payload;
+    const { contributionId, providerAccountId, provider, providerPaymentId, paymentReference } =
+      event.payload;
     if (typeof contributionId === 'string') {
       await this.queue.add(
         PAYMENTS_JOBS.syncContribution,
@@ -36,6 +37,14 @@ export class ProviderEventsHandler implements DomainEventSubscriber {
           providerPaymentId: typeof providerPaymentId === 'string' ? providerPaymentId : null,
         },
         { jobId: `${PAYMENTS_JOBS.syncContribution}-${event.id}` },
+      );
+      return;
+    }
+    if (typeof paymentReference === 'string' && typeof provider === 'string') {
+      await this.queue.add(
+        PAYMENTS_JOBS.syncPaymentReference,
+        { provider, paymentReference },
+        { jobId: `${PAYMENTS_JOBS.syncPaymentReference}-${event.id}` },
       );
       return;
     }

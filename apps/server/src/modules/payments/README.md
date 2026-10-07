@@ -49,31 +49,31 @@ Espèces, virement institutionnel (montant en EUR, XOF ou XAF), engagement de lo
 
 ## Événements émis
 
-| Type                                              | Payload                                                                                       |
-| ------------------------------------------------- | --------------------------------------------------------------------------------------------- |
-| `payments.contribution.created.v1`                | `projectId`, `contributorId`, `organizationId`, `kind`, `amountMinor`, `currency`, `eurMinor` |
-| `payments.contribution.succeeded.v1`              | `projectId`, `contributorId`, `organizationId`, `kind`, `eurMinor`                            |
-| `payments.contribution.failed.v1`                 | `projectId`, `reason`                                                                         |
-| `payments.contribution.expired.v1`                | `projectId`                                                                                   |
-| `payments.contribution.canceled.v1`               | `projectId`                                                                                   |
-| `payments.contribution.refunded.v1`               | `projectId`, `refundId`, `amountMinor`, `currency`, `eurMinor`, `full`                        |
-| `payments.contribution.disputed.v1`               | `projectId`, `disputeId`, `amountMinor`, `currency`                                           |
-| `payments.contribution.dispute-resolved.v1`       | `projectId`, `disputeId`, `outcome`, `eurMinor`                                               |
-| `payments.offline-contribution.declared.v1`       | `projectId`, `kind`, `by`, `declaredBy`                                                       |
-| `payments.offline-contribution.confirmed.v1`      | `projectId`, `kind`, `by`                                                                     |
-| `payments.offline-contribution.validated.v1`      | `projectId`, `kind`, `by`, `eurMinor`                                                         |
-| `payments.offline-contribution.rejected.v1`       | `projectId`, `kind`, `by`                                                                     |
-| `payments.payout-account.onboarded.v1`            | `provider`, `country`                                                                         |
-| `payments.payout-account.updated.v1`              | `status`, `fields`                                                                            |
-| `payments.kyc.submitted.v1`                       | `submissionId`                                                                                |
-| `payments.kyc.approved.v1`                        | `submissionId`, `mode`                                                                        |
-| `payments.kyc.rejected.v1`                        | `submissionId`, `decidedBy`                                                                   |
-| `payments.reconciliation.discrepancy-detected.v1` | `kind`, `reference`, `provider`                                                               |
-| `payments.provider-event.received.v1`             | interne : `provider`, `type`, `contributionId`, `providerPaymentId`, `providerAccountId`      |
+| Type                                              | Payload                                                                                                      |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `payments.contribution.created.v1`                | `projectId`, `contributorId`, `organizationId`, `kind`, `amountMinor`, `currency`, `eurMinor`                |
+| `payments.contribution.succeeded.v1`              | `projectId`, `contributorId`, `organizationId`, `kind`, `eurMinor`                                           |
+| `payments.contribution.failed.v1`                 | `projectId`, `reason`                                                                                        |
+| `payments.contribution.expired.v1`                | `projectId`                                                                                                  |
+| `payments.contribution.canceled.v1`               | `projectId`                                                                                                  |
+| `payments.contribution.refunded.v1`               | `projectId`, `refundId`, `amountMinor`, `currency`, `eurMinor`, `full`                                       |
+| `payments.contribution.disputed.v1`               | `projectId`, `disputeId`, `amountMinor`, `currency`                                                          |
+| `payments.contribution.dispute-resolved.v1`       | `projectId`, `disputeId`, `outcome`, `eurMinor`                                                              |
+| `payments.offline-contribution.declared.v1`       | `projectId`, `kind`, `by`, `declaredBy`                                                                      |
+| `payments.offline-contribution.confirmed.v1`      | `projectId`, `kind`, `by`                                                                                    |
+| `payments.offline-contribution.validated.v1`      | `projectId`, `kind`, `by`, `eurMinor`                                                                        |
+| `payments.offline-contribution.rejected.v1`       | `projectId`, `kind`, `by`                                                                                    |
+| `payments.payout-account.onboarded.v1`            | `provider`, `country`                                                                                        |
+| `payments.payout-account.updated.v1`              | `status`, `fields`                                                                                           |
+| `payments.kyc.submitted.v1`                       | `submissionId`                                                                                               |
+| `payments.kyc.approved.v1`                        | `submissionId`, `mode`                                                                                       |
+| `payments.kyc.rejected.v1`                        | `submissionId`, `decidedBy`                                                                                  |
+| `payments.reconciliation.discrepancy-detected.v1` | `kind`, `reference`, `provider`                                                                              |
+| `payments.provider-event.received.v1`             | interne : `provider`, `type`, `contributionId`, `providerPaymentId`, `providerAccountId`, `paymentReference` |
 
 ## Événements consommés
 
-`payments.provider-event.received.v1` (handler `payments.queue-provider-sync` : lecture chez le prestataire dans la file `payments.provider-sync`) ; `payments.contribution.succeeded.v1` (handler `payments.send-emails` : confirmation au contributeur, « pas un reçu fiscal »). Tâches planifiées : `expire-pending` (5 minutes), `release-orphans` (15 minutes), `reconcile` (03:30 UTC).
+`payments.provider-event.received.v1` (handler `payments.queue-provider-sync` : lecture chez le prestataire dans la file `payments.provider-sync`, par la contribution, le compte de versement ou, pour une rétrofacturation Flutterwave, son `flw_ref`) ; `payments.contribution.succeeded.v1` (handler `payments.send-emails` : confirmation au contributeur, « pas un reçu fiscal »). Tâches planifiées : `expire-pending` (5 minutes), `release-orphans` (15 minutes), `reconcile` (03:30 UTC).
 
 ## Dépendances
 

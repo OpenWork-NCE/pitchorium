@@ -12,6 +12,7 @@ import {
   PAYMENTS_JOBS,
   PAYMENTS_QUEUE,
   type SyncContributionJob,
+  type SyncPaymentReferenceJob,
   type SyncPayoutAccountJob,
 } from './payments-queue';
 
@@ -67,6 +68,11 @@ export class PaymentsJobsProcessor extends WorkerHost implements OnApplicationBo
           data.provider as ProviderId,
           data.providerAccountId,
         );
+        return;
+      }
+      case PAYMENTS_JOBS.syncPaymentReference: {
+        const data = job.data as SyncPaymentReferenceJob;
+        await this.effects.syncByReference(data.provider as ProviderId, data.paymentReference);
         return;
       }
       case PAYMENTS_JOBS.expirePending:

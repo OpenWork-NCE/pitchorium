@@ -257,6 +257,7 @@ export class SimulatedProvider implements PaymentProvider, PayoutAccountProvider
       contributionId: textOf('reference'),
       providerPaymentId: textOf('paymentId'),
       providerAccountId: textOf('accountId'),
+      paymentReference: null,
     };
   }
 

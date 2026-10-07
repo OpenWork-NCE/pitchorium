@@ -268,6 +268,7 @@ export class StripeProvider implements PaymentProvider, PayoutAccountProvider {
         : text(field(object, 'payment_intent')),
       providerAccountId:
         type === 'account.updated' ? text(field(object, 'id')) : text(field(event, 'account')),
+      paymentReference: null,
     };
   }
 
