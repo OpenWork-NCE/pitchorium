@@ -5,3 +5,7 @@ packages:
 allowBuilds:
   unrs-resolver: true
   esbuild: true
+
+minimumReleaseAgeExclude:
+  - react-email@6.11.1
+  - '@react-email/ui@6.11.1'

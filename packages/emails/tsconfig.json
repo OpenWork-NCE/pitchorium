@@ -1,0 +1,11 @@
+{
+  "extends": "@pitchorium/config/tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "noEmit": true,
+    "verbatimModuleSyntax": true,
+    "jsx": "react-jsx",
+    "lib": ["es2024", "dom"]
+  },
+  "include": ["src", "vitest.config.ts"]
+}
