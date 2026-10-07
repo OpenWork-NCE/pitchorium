@@ -554,6 +554,7 @@ describe('projects', () => {
     const view = (await kofi.agent.get(`/v1/projects/${project.id}`).expect(200)).body as Project;
     expect(view.owner?.handle).toBe('kofi-mensah');
     expect(await eventTypes('projects.team')).toEqual([
+      'projects.team.member-invited.v1',
       'projects.team.member-added.v1',
       'projects.team.member-removed.v1',
     ]);
