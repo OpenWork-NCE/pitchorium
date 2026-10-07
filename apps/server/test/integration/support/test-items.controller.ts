@@ -2,6 +2,7 @@ import { Body, Controller, Get, Post } from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
 import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
+import { Public } from '../../../src/platform/http';
 import { Idempotent } from '../../../src/platform/idempotency';
 import { DomainError } from '../../../src/platform/kernel';
 
@@ -10,6 +11,7 @@ class CreateItemDto extends createZodDto(
 ) {}
 
 /** Test-only routes exercising validation, idempotency and error mapping. */
+@Public()
 @Controller('test-items')
 export class TestItemsController {
   created = 0;

@@ -46,7 +46,7 @@ function middlewareStatus(exception: unknown): number | undefined {
 
 export function problemFromCode(
   code: ErrorCode,
-  extras: Partial<Pick<ProblemDetails, 'detail' | 'errors' | 'status'>> = {},
+  extras: Partial<Pick<ProblemDetails, 'detail' | 'errors' | 'status' | 'missing'>> = {},
 ): ProblemDetails {
   const definition = errorCodes[code];
   return {
@@ -56,7 +56,16 @@ export function problemFromCode(
     code,
     ...(extras.detail ? { detail: extras.detail } : {}),
     ...(extras.errors ? { errors: extras.errors } : {}),
+    ...(extras.missing ? { missing: extras.missing } : {}),
   };
+}
+
+/** Only whitelisted extension members of a DomainError reach the client. */
+function missingOf(error: DomainError): string[] | undefined {
+  const missing = error.details['missing'];
+  return Array.isArray(missing) && missing.every((item) => typeof item === 'string')
+    ? missing
+    : undefined;
 }
 
 /**
@@ -65,7 +74,11 @@ export function problemFromCode(
  */
 export function toProblem(exception: unknown): ProblemDetails {
   if (exception instanceof DomainError) {
-    return problemFromCode(exception.code, { detail: exception.message });
+    const missing = missingOf(exception);
+    return problemFromCode(exception.code, {
+      detail: exception.message,
+      ...(missing ? { missing } : {}),
+    });
   }
   if (exception instanceof ZodValidationException) {
     const zodError = exception.getZodError();

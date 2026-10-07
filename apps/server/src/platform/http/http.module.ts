@@ -1,6 +1,6 @@
 import { ThrottlerStorageRedisService } from '@nest-lab/throttler-storage-redis';
 import { Module } from '@nestjs/common';
-import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR, APP_PIPE, DiscoveryModule } from '@nestjs/core';
 import { ThrottlerModule } from '@nestjs/throttler';
 import type { Redis } from 'ioredis';
 import { ZodSerializerInterceptor, ZodValidationPipe } from 'nestjs-zod';
@@ -11,6 +11,7 @@ import { ProblemDetailsFilter } from './problem-details.filter';
 
 @Module({
   imports: [
+    DiscoveryModule,
     ThrottlerModule.forRootAsync({
       inject: [API_CONFIG, REDIS],
       useFactory: (config: ApiConfig, redis: Redis) => ({

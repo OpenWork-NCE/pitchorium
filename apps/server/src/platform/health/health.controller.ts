@@ -4,11 +4,13 @@ import { SkipThrottle } from '@nestjs/throttler';
 import { healthResponseSchema, type HealthResponse } from '@pitchorium/contracts';
 import type { Response } from 'express';
 import { createZodDto, ZodSerializerDto } from 'nestjs-zod';
+import { Public } from '../http/public.decorator';
 import { HealthService } from './health.service';
 
 class HealthResponseDto extends createZodDto(healthResponseSchema) {}
 
 @ApiTags('health')
+@Public()
 @SkipThrottle()
 @Controller('health')
 export class HealthController {

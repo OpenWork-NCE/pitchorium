@@ -11,6 +11,7 @@ import { Reflector } from '@nestjs/core';
 import type { Request, Response } from 'express';
 import { catchError, from, mergeMap, type Observable, of } from 'rxjs';
 import { API_CONFIG, type ApiConfig } from '../config';
+import { getPrincipal } from '../http/principal';
 import { DomainError } from '../kernel';
 import { fingerprintRequest, IdempotencyService } from './idempotency.service';
 
@@ -41,9 +42,9 @@ export class IdempotencyInterceptor implements NestInterceptor {
       );
     }
 
-    // The scope will include the authenticated principal once authentication exists.
+    // Keys are scoped by principal: two users may legitimately pick the same key.
     const routePath = `${request.baseUrl}${(request.route as { path?: string } | undefined)?.path ?? request.path}`;
-    const scope = `${request.method} ${routePath}`;
+    const scope = `${getPrincipal(request)?.userId ?? 'anonymous'} ${request.method} ${routePath}`;
     const fingerprint = fingerprintRequest(request.method, request.originalUrl, request.body);
     const status =
       this.reflector.get<number | undefined>(HTTP_CODE_METADATA, context.getHandler()) ??
