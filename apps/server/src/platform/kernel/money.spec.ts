@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { currencyExponent, isActiveCurrency, minorUnitsPerMajor } from './currency';
 import { DomainError } from './domain-error';
 import { Money } from './money';
 
@@ -17,6 +18,7 @@ describe('Money', () => {
     ['1e3', 'EUR'],
     ['10', 'eur'],
     ['10', 'EURO'],
+    ['10', 'XXY'],
   ])('rejects amount %s in %s', (amount, currency) => {
     expect(() => Money.of(amount, currency)).toThrow(DomainError);
   });
@@ -71,6 +73,67 @@ describe('Money', () => {
 
     it.each([[[]], [[1n, -1n]], [[0n, 0n]]])('rejects invalid ratios (case %#)', (ratios) => {
       expect(() => eur(10n).allocate(ratios)).toThrow(DomainError);
+    });
+  });
+
+  describe('currency exponents', () => {
+    it.each([
+      ['EUR', 2],
+      ['XAF', 0],
+      ['XOF', 0],
+      ['KES', 2],
+      ['NGN', 2],
+      ['GHS', 2],
+      ['USD', 2],
+      ['GBP', 2],
+      ['KWD', 3],
+      ['CLF', 4],
+    ])('%s has %i decimals', (currency, exponent) => {
+      expect(currencyExponent(currency)).toBe(exponent);
+      expect(Money.zero(currency).exponent).toBe(exponent);
+      expect(minorUnitsPerMajor(currency)).toBe(10n ** BigInt(exponent));
+    });
+
+    it('refuses unknown codes', () => {
+      expect(isActiveCurrency('XXY')).toBe(false);
+      expect(() => currencyExponent('XXY')).toThrow(DomainError);
+    });
+
+    it.each([
+      ['12.50', 'EUR', 1250n],
+      ['12.5', 'EUR', 1250n],
+      ['12', 'EUR', 1200n],
+      ['0.01', 'EUR', 1n],
+      ['-3.20', 'EUR', -320n],
+      ['5000', 'XOF', 5000n],
+      ['655957', 'XAF', 655957n],
+      ['1.234', 'KWD', 1234n],
+    ])('parses %s %s as %s minor units', (decimal, currency, minor) => {
+      expect(Money.fromDecimal(decimal, currency).amountMinor).toBe(minor);
+    });
+
+    it.each([
+      ['12.505', 'EUR'],
+      ['5000.5', 'XOF'],
+      ['1e3', 'EUR'],
+      ['', 'EUR'],
+      ['01', 'EUR'],
+      ['10', 'XXY'],
+    ])('refuses %s %s instead of rounding', (decimal, currency) => {
+      expect(() => Money.fromDecimal(decimal, currency)).toThrow(DomainError);
+    });
+
+    it.each([
+      [1250n, 'EUR', '12.50'],
+      [5n, 'EUR', '0.05'],
+      [-320n, 'EUR', '-3.20'],
+      [5000n, 'XOF', '5000'],
+      [-7n, 'XAF', '-7'],
+      [1234n, 'KWD', '1.234'],
+    ])('formats %s %s as %s', (minor, currency, decimal) => {
+      const money = Money.of(minor, currency);
+      expect(money.toDecimal()).toBe(decimal);
+      expect(Money.fromDecimal(decimal, currency).equals(money)).toBe(true);
     });
   });
 });

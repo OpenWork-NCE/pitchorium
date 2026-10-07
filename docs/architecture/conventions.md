@@ -62,6 +62,7 @@ Une action refusée faute d'éléments complétés répond `403 ACCESS_PREREQUIS
 ## Argent
 
 - Montant en unités mineures, entier, avec une devise ISO 4217 : `bigint` + colonne `currency` en base, `Money` dans le code, `{ amountMinor: string, currency }` dans l'API.
+- L'exposant de chaque devise vient de la liste ISO 4217 (`platform/kernel/currency.ts`) : EUR, USD, GBP, KES, NGN, GHS 2 décimales ; XOF, XAF, RWF, UGX 0 ; KWD 3. Un code hors de la liste est refusé. `Money.fromDecimal` refuse plus de décimales que l'exposant au lieu d'arrondir ; `toDecimal` écrit le montant en unités majeures avec exactement l'exposant (`12.50`, `5000`).
 - Jamais de flottant, ni en base, ni en calcul, ni en JSON.
 - Répartitions (commission, versement) avec `Money.allocate`, qui ne perd aucune unité. Le sens d'arrondi d'une commission reste une décision métier.
 - Les mouvements financiers seront enregistrés dans un ledger en écritures immuables (voir ADR 0007).

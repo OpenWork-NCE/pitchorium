@@ -1,4 +1,5 @@
 export * from './clock';
+export * from './currency';
 export * from './domain-error';
 export * from './domain-event';
 export * from './ids';

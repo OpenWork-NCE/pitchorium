@@ -1,7 +1,8 @@
+import { currencyExponent, isActiveCurrency, minorUnitsPerMajor } from './currency';
 import { DomainError } from './domain-error';
 
-const CURRENCY_PATTERN = /^[A-Z]{3}$/;
 const MINOR_UNITS_PATTERN = /^-?(0|[1-9]\d*)$/;
+const DECIMAL_PATTERN = /^(-?)(0|[1-9]\d*)(?:\.(\d+))?$/;
 
 export interface MoneyJson {
   amountMinor: string;
@@ -9,7 +10,8 @@ export interface MoneyJson {
 }
 
 /**
- * Amount in minor units of an ISO 4217 currency. Never a float: arithmetic stays on bigint.
+ * Amount in minor units of an active ISO 4217 currency, whose exponent gives the decimals
+ * (EUR 2, XOF 0). Never a float: arithmetic and conversions stay on bigint and strings.
  */
 export class Money {
   private constructor(
@@ -18,7 +20,7 @@ export class Money {
   ) {}
 
   static of(amountMinor: bigint | string, currency: string): Money {
-    if (!CURRENCY_PATTERN.test(currency)) {
+    if (!isActiveCurrency(currency)) {
       throw new DomainError('VALIDATION_FAILED', `Invalid ISO 4217 currency code: ${currency}`);
     }
     if (typeof amountMinor === 'string' && !MINOR_UNITS_PATTERN.test(amountMinor)) {
@@ -33,6 +35,39 @@ export class Money {
 
   static fromJSON(json: MoneyJson): Money {
     return Money.of(json.amountMinor, json.currency);
+  }
+
+  /**
+   * Parses a decimal amount in major units (`12.50` EUR, `5000` XOF). More decimals than the
+   * exponent of the currency are refused rather than rounded.
+   */
+  static fromDecimal(decimal: string, currency: string): Money {
+    const exponent = currencyExponent(currency);
+    const match = DECIMAL_PATTERN.exec(decimal);
+    const fraction = match?.[3] ?? '';
+    if (!match || fraction.length > exponent) {
+      throw new DomainError('VALIDATION_FAILED', `Invalid ${currency} amount: ${decimal}`);
+    }
+    const minor = BigInt(`${match[2]}${fraction.padEnd(exponent, '0')}`);
+    return new Money(match[1] === '-' ? -minor : minor, currency);
+  }
+
+  /** Decimals of the minor unit of the currency. */
+  get exponent(): number {
+    return currencyExponent(this.currency);
+  }
+
+  /** Decimal amount in major units, with exactly `exponent` decimals: `12.50`, `5000`. */
+  toDecimal(): string {
+    const exponent = this.exponent;
+    const sign = this.amountMinor < 0n ? '-' : '';
+    const absolute = this.amountMinor < 0n ? -this.amountMinor : this.amountMinor;
+    const major = absolute / minorUnitsPerMajor(this.currency);
+    if (exponent === 0) return `${sign}${major}`;
+    const fraction = (absolute % minorUnitsPerMajor(this.currency))
+      .toString()
+      .padStart(exponent, '0');
+    return `${sign}${major}.${fraction}`;
   }
 
   add(other: Money): Money {
