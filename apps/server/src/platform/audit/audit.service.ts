@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { auditLog } from '@pitchorium/db';
+import { replaceIdentifier } from '../compliance/personal-data-sql';
 import { TransactionManager } from '../database';
 import { Clock, IdGenerator } from '../kernel';
 
@@ -20,6 +21,30 @@ export class AuditService {
     private readonly ids: IdGenerator,
     private readonly clock: Clock,
   ) {}
+
+  /**
+   * Erasure of a member (GDPR): the log stays as evidence, their identifier and email are
+   * replaced by the pseudonym of the erasure.
+   */
+  async pseudonymize(userId: string, email: string, pseudonym: string): Promise<void> {
+    const db = this.transactions.executor;
+    await replaceIdentifier(
+      db,
+      [
+        { table: 'platform.audit_log', column: 'actor_id', kind: 'text' },
+        { table: 'platform.audit_log', column: 'target_id', kind: 'text' },
+        { table: 'platform.audit_log', column: 'metadata', kind: 'jsonb' },
+      ],
+      userId,
+      pseudonym,
+    );
+    await replaceIdentifier(
+      db,
+      [{ table: 'platform.audit_log', column: 'metadata', kind: 'jsonb' }],
+      email,
+      pseudonym,
+    );
+  }
 
   async record(entry: AuditEntry): Promise<void> {
     await this.transactions.executor.insert(auditLog).values({
