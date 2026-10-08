@@ -4,8 +4,17 @@ import { type CommonConfig, COMMON_CONFIG } from '../config';
 
 export const REDIS = Symbol('REDIS');
 
+/**
+ * Commands fail fast while Redis is unreachable (no offline queue once connected, one retry):
+ * a request answers an error in milliseconds instead of waiting for the reconnection
+ * (docs/operations/resilience.md).
+ */
 export function createRedisClient(url: string, connectionName: string): Redis {
-  return new Redis(url, { connectionName, maxRetriesPerRequest: 3 });
+  const client = new Redis(url, { connectionName, maxRetriesPerRequest: 1 });
+  client.once('ready', () => {
+    client.options.enableOfflineQueue = false;
+  });
+  return client;
 }
 
 /** Shared client for commands (rate limiting, health). BullMQ and Socket.IO own their connections. */

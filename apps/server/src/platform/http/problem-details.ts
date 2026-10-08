@@ -69,6 +69,19 @@ function missingOf(error: DomainError): string[] | undefined {
 }
 
 /**
+ * A command refused by the Redis client while the server is unreachable (fail fast, see
+ * createRedisClient): the request may be retried, 503 rather than 500.
+ */
+function isRedisUnavailable(exception: unknown): boolean {
+  if (!(exception instanceof Error)) return false;
+  return (
+    exception.name === 'MaxRetriesPerRequestError' ||
+    exception.message.includes("Stream isn't writeable and enableOfflineQueue") ||
+    exception.message === 'Connection is closed.'
+  );
+}
+
+/**
  * Maps any thrown value to a problem. Only DomainError messages are exposed as `detail`:
  * framework and unknown errors never leak their message.
  */
@@ -94,6 +107,7 @@ export function toProblem(exception: unknown): ProblemDetails {
     const code = STATUS_TO_CODE[status] ?? (status >= 500 ? 'INTERNAL_ERROR' : 'BAD_REQUEST');
     return problemFromCode(code, { status });
   }
+  if (isRedisUnavailable(exception)) return problemFromCode('SERVICE_UNAVAILABLE');
   const status = middlewareStatus(exception);
   if (status !== undefined) {
     return problemFromCode(STATUS_TO_CODE[status] ?? 'BAD_REQUEST', { status });

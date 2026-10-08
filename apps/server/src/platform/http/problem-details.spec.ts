@@ -29,6 +29,12 @@ describe('toProblem', () => {
     ]);
   });
 
+  it('answers 503 while Redis is unreachable, without leaking the client message', () => {
+    const refused = new Error("Stream isn't writeable and enableOfflineQueue options is false");
+    expect(toProblem(refused)).toMatchObject({ status: 503, code: 'SERVICE_UNAVAILABLE' });
+    expect(toProblem(refused).detail).toBeUndefined();
+  });
+
   it.each([
     [new NotFoundException('Cannot GET /v1/secret-route'), 404, 'NOT_FOUND'],
     [new BadRequestException('internal parser message'), 400, 'BAD_REQUEST'],
