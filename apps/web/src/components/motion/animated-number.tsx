@@ -10,6 +10,8 @@ interface AnimatedNumberProps {
   format: (value: number) => string;
   /** Step of the displayed values: 1 for a count, 0.01 for euros, 1 for CFA francs. */
   step?: number;
+  /** Milliseconds to wait once in view, after another beat (a drawn stroke, H18). */
+  delay?: number;
   className?: string;
 }
 
@@ -34,7 +36,13 @@ function easeEnter(progress: number): number {
  * formatted on every frame. The server renders the final value (no JavaScript, search engines);
  * with less motion the final value stays.
  */
-export function AnimatedNumber({ value, format, step = 1, className }: AnimatedNumberProps) {
+export function AnimatedNumber({
+  value,
+  format,
+  step = 1,
+  delay = 0,
+  className,
+}: AnimatedNumberProps) {
   const ref = useRef<HTMLSpanElement>(null);
   const reduced = useMotionPreference() === 'reduced';
 
@@ -50,9 +58,9 @@ export function AnimatedNumber({ value, format, step = 1, className }: AnimatedN
       ([entry]) => {
         if (!entry?.isIntersecting) return;
         observer.disconnect();
-        const start = performance.now();
+        const start = performance.now() + delay;
         const tick = (now: number) => {
-          const progress = Math.min(1, (now - start) / DURATION_MS.counter);
+          const progress = Math.min(1, Math.max(0, now - start) / DURATION_MS.counter);
           const current = Math.round((value * easeEnter(progress)) / step) * step;
           element.textContent = format(progress === 1 ? value : current);
           if (progress < 1) frame = requestAnimationFrame(tick);
@@ -67,7 +75,7 @@ export function AnimatedNumber({ value, format, step = 1, className }: AnimatedN
       observer.disconnect();
       cancelAnimationFrame(frame);
     };
-  }, [value, format, step, reduced]);
+  }, [value, format, step, delay, reduced]);
 
   return (
     <span ref={ref} data-counter="" className={className}>

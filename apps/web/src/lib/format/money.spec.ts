@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { minorStep, moneyFormatOptions, toMajor } from './money';
+import { formatMoney, minorStep, moneyFormatOptions, toDecimalString, toMajor } from './money';
 
 const format = (locale: string, amountMinor: string, currency: string) =>
   new Intl.NumberFormat(locale, moneyFormatOptions(currency)).format(
@@ -13,6 +13,19 @@ describe('money', () => {
     expect(format('fr', '1250', 'EUR')).toBe('12,50\u00a0€');
     expect(format('en', '1250', 'EUR')).toBe('€12.50');
     expect(format('en', '1500', 'KWD')).toBe('KWD\u00a01.500');
+  });
+
+  it('formats from the exact decimal text, beyond the precision of a float', () => {
+    expect(toDecimalString({ amountMinor: '1250', currency: 'EUR' })).toBe('12.50');
+    expect(toDecimalString({ amountMinor: '7', currency: 'EUR' })).toBe('0.07');
+    expect(toDecimalString({ amountMinor: '-1250', currency: 'EUR' })).toBe('-12.50');
+    expect(toDecimalString({ amountMinor: '500000', currency: 'XAF' })).toBe('500000');
+    expect(formatMoney({ amountMinor: '9007199254740993', currency: 'EUR' }, 'en')).toBe(
+      '€90,071,992,547,409.93',
+    );
+    expect(formatMoney({ amountMinor: '500000', currency: 'XAF' }, 'fr')).toBe(
+      '500\u202f000\u00a0FCFA',
+    );
   });
 
   it('steps counters by the minor unit', () => {

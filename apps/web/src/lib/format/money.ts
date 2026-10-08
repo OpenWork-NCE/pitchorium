@@ -28,3 +28,23 @@ export function moneyFormatOptions(currency: string): Intl.NumberFormatOptions {
     maximumFractionDigits: digits,
   };
 }
+
+/**
+ * Exact decimal text of an amount (`"1250"` EUR is `"12.50"`), for `Intl.NumberFormat`, which
+ * formats a decimal string without going through a floating point number.
+ */
+export function toDecimalString({ amountMinor, currency }: MoneyDto): `${number}` {
+  const exponent = exponentOf(currency);
+  const negative = amountMinor.startsWith('-');
+  const digits = (negative ? amountMinor.slice(1) : amountMinor).padStart(exponent + 1, '0');
+  const whole = digits.slice(0, digits.length - exponent);
+  const fraction = digits.slice(digits.length - exponent);
+  return `${negative ? '-' : ''}${whole}${exponent > 0 ? `.${fraction}` : ''}` as `${number}`;
+}
+
+/** An amount in the language of the page, with the decimals of its currency. */
+export function formatMoney(money: MoneyDto, locale: string): string {
+  return new Intl.NumberFormat(locale, moneyFormatOptions(money.currency)).format(
+    toDecimalString(money),
+  );
+}

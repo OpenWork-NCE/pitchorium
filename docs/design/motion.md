@@ -83,6 +83,10 @@ Deux courbes seulement : `enter` `cubic-bezier(0.16, 1, 0.3, 1)` (arrivées, mic
 | Apparition du logo            | `animate-brand-enter`                          | opacité et montée de 6 px, 220 ms (règle du guide)                                   | aucune                     |
 | Panneau de langue             | `LanguageSwitcher`                             | opacité et `scale(0.96)`, 200 ms                                                     | aucune                     |
 | Chargement d'une page         | `PageLoading`                                  | barre indéterminée cuivre                                                            | barre immobile             |
+| Palier atteint (H18 puis H17) | `FundingProgress`                              | trait dessiné sous « atteint » (800 ms), puis le montant compte                      | état final                 |
+| Squelette                     | `Skeleton`                                     | reflet discret qui traverse (1,6 s, `curtain`)                                       | squelette immobile         |
+| Dialogue, panneaux            | `DialogContent`, `SheetContent`, `Drawer`      | fondu et montée de 16 px, glissement latéral, tirage du bas (vaul)                   | aucune                     |
+| Voile d'une superposition     | `backdrop`                                     | fondu 320 ms, sortie 200 ms                                                          | aucune                     |
 
 Moins de mouvement veut dire `prefers-reduced-motion: reduce`, `prefers-reduced-data: reduce` ou `navigator.connection.saveData` (`useMotionPreference`) : pas de lecture automatique de vidéo, chaque primitive montre son état final. Le rendu serveur montre toujours l'état final : aucune première peinture n'attend une animation.
 
