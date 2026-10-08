@@ -47,6 +47,12 @@ export default {
         'server',
         'ci',
         'docs',
+        // Web app (apps/web): its features use the scopes of the business modules.
+        'web',
+        'ui',
+        'design',
+        'motion',
+        'seo',
         ...businessModules,
       ],
     ],
