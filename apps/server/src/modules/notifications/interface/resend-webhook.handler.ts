@@ -11,11 +11,16 @@ import {
   resolveRequestId,
 } from '../../../platform/http';
 import { Clock } from '../../../platform/kernel';
-import { ErrorReporter } from '../../../platform/observability';
+import { ErrorReporter, Metrics } from '../../../platform/observability';
 import { DeliverabilityService } from '../application/deliverability.service';
 import { verifySvix } from '../infrastructure/svix-signature';
 
 export const RESEND_WEBHOOK_PATH = '/v1/notifications/webhooks/resend';
+const WEBHOOK_FAILED_METRIC = 'pitchorium.notifications.webhook.failed';
+const KIND_METRICS = {
+  bounce: 'pitchorium.notifications.email.bounced',
+  complaint: 'pitchorium.notifications.email.complained',
+} as const;
 
 function send(response: ServerResponse, status: number, body: unknown, type: string): void {
   response.statusCode = status;
@@ -49,6 +54,7 @@ export class ResendWebhookHandler implements RawHttpRequestHandler {
     private readonly deliverability: DeliverabilityService,
     private readonly errorReporter: ErrorReporter,
     private readonly clock: Clock,
+    private readonly metrics: Metrics,
     @Inject(API_CONFIG) private readonly config: ApiConfig,
   ) {}
 
@@ -83,6 +89,7 @@ export class ResendWebhookHandler implements RawHttpRequestHandler {
     }
     if (!verified || typeof event.type !== 'string') {
       this.logger.warn('Rejected a Resend webhook: missing secret, signature or type');
+      this.metrics.increment(WEBHOOK_FAILED_METRIC, { reason: 'rejected' });
       problem(response, 'NOTIFICATIONS_WEBHOOK_INVALID', requestId);
       return;
     }
@@ -104,9 +111,11 @@ export class ResendWebhookHandler implements RawHttpRequestHandler {
       const outcome = kind
         ? await this.deliverability.report({ providerEventId: verified.id, kind, recipients })
         : 'ignored';
+      if (kind && outcome === 'accepted') this.metrics.add(KIND_METRICS[kind], recipients.length);
       send(response, 200, { received: true, outcome }, 'application/json');
     } catch (error) {
       this.errorReporter.capture(error);
+      this.metrics.increment(WEBHOOK_FAILED_METRIC, { reason: 'error' });
       this.logger.error(`Could not record a Resend webhook: ${String(error)}`);
       problem(response, 'INTERNAL_ERROR', requestId);
     }

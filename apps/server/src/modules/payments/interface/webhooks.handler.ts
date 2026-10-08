@@ -9,11 +9,13 @@ import {
   readRawBody,
   resolveRequestId,
 } from '../../../platform/http';
-import { ErrorReporter } from '../../../platform/observability';
+import { ErrorReporter, Metrics } from '../../../platform/observability';
 import { WebhookRejectedError } from '../application/ports';
 import { WebhooksService } from '../application/webhooks.service';
 
 export const WEBHOOKS_PATH = '/v1/payments/webhooks';
+const WEBHOOK_FAILED_METRIC = 'pitchorium.payments.webhook.failed';
+
 function send(
   response: ServerResponse,
   status: number,
@@ -51,6 +53,7 @@ export class WebhooksHttpHandler implements RawHttpRequestHandler {
   constructor(
     private readonly webhooks: WebhooksService,
     private readonly errorReporter: ErrorReporter,
+    private readonly metrics: Metrics,
   ) {}
 
   async handle(request: IncomingMessage, response: ServerResponse): Promise<void> {
@@ -81,10 +84,12 @@ export class WebhooksHttpHandler implements RawHttpRequestHandler {
     } catch (error) {
       if (error instanceof WebhookRejectedError) {
         this.logger.warn(`Rejected ${provider} webhook: ${error.message}`);
+        this.metrics.increment(WEBHOOK_FAILED_METRIC, { provider, reason: 'rejected' });
         problem(response, 'PAYMENTS_WEBHOOK_INVALID', requestId);
         return;
       }
       this.errorReporter.capture(error);
+      this.metrics.increment(WEBHOOK_FAILED_METRIC, { provider, reason: 'error' });
       this.logger.error(`Could not record a ${provider} webhook: ${String(error)}`);
       problem(response, 'INTERNAL_ERROR', requestId);
     }

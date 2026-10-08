@@ -12,10 +12,12 @@ import { and, asc, eq, inArray, isNull, lte, sql } from '@pitchorium/db/orm';
 import { WORKER_CONFIG, type WorkerConfig } from '../config';
 import { DATABASE } from '../database';
 import { Clock } from '../kernel';
+import { Metrics } from '../observability';
 import { QUEUE_NAMES } from '../queue';
 import type { OutboxEnvelope } from './outbox-envelope';
 
 const BASE_BACKOFF_MS = 1000;
+export const OUTBOX_LAG_METRIC = 'pitchorium.outbox.lag_seconds';
 
 export function computeBackoffMs(attempts: number, maxBackoffMs: number): number {
   return Math.min(maxBackoffMs, BASE_BACKOFF_MS * 2 ** Math.max(0, attempts - 1));
@@ -38,6 +40,7 @@ export class OutboxRelayService implements OnApplicationBootstrap, BeforeApplica
     @InjectQueue(QUEUE_NAMES.domainEvents) private readonly queue: Queue<OutboxEnvelope>,
     @Inject(WORKER_CONFIG) private readonly config: WorkerConfig,
     private readonly clock: Clock,
+    private readonly metrics: Metrics,
   ) {}
 
   onApplicationBootstrap(): void {
@@ -77,6 +80,14 @@ export class OutboxRelayService implements OnApplicationBootstrap, BeforeApplica
         try {
           await this.queue.add(row.eventType, envelope, { jobId: row.id });
           published.push(row.id);
+          // Time from the business write to the queue: the freshness of every consumer.
+          this.metrics.record(
+            OUTBOX_LAG_METRIC,
+            (now.getTime() - row.occurredAt.getTime()) / 1000,
+            {
+              type: row.eventType,
+            },
+          );
         } catch (error) {
           const attempts = row.attempts + 1;
           await tx

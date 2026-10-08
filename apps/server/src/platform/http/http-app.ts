@@ -3,6 +3,8 @@ import type { NestExpressApplication } from '@nestjs/platform-express';
 import helmet from 'helmet';
 import type { ApiConfig } from '../config';
 import { IDEMPOTENT_REPLAYED_HEADER } from '../idempotency';
+import { Metrics } from '../observability';
+import { httpMetricsMiddleware } from './http-metrics';
 import { mountRawHttpHandlers } from './raw-http-handler';
 import { REQUEST_ID_HEADER } from './request-id';
 
@@ -24,6 +26,7 @@ export function configureHttpApp(app: NestExpressApplication, config: ApiConfig)
     credentials: true,
     exposedHeaders: [REQUEST_ID_HEADER, IDEMPOTENT_REPLAYED_HEADER, 'Retry-After'],
   });
+  app.use(httpMetricsMiddleware(app.get(Metrics)));
   // Raw handlers (Better Auth) read the request stream themselves: they precede the body parsers.
   mountRawHttpHandlers(app);
   app.useBodyParser('json', { limit: '1mb' });

@@ -71,6 +71,20 @@ export class FailedJobsService implements OnModuleDestroy {
     return total;
   }
 
+  /** Jobs waiting (including delayed) and failed for good, per queue: the depth gauges. */
+  async depths(): Promise<{ queue: string; waiting: number; failed: number }[]> {
+    const depths = [];
+    for (const name of await this.queueNames()) {
+      const counts = await this.queue(name).getJobCounts('waiting', 'delayed', 'failed');
+      depths.push({
+        queue: name,
+        waiting: (counts.waiting ?? 0) + (counts.delayed ?? 0),
+        failed: counts.failed ?? 0,
+      });
+    }
+    return depths;
+  }
+
   /** Idempotent: a job no longer failed (retried meanwhile) is left as it is. */
   async retry(queueName: string, jobId: string): Promise<RetryOutcome> {
     const job = await this.queue(queueName).getJob(jobId);
