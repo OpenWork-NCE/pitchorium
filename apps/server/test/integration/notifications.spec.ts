@@ -339,12 +339,16 @@ describe('notifications', () => {
           )
         )[0]?.count,
       );
-    await vi.waitFor(
-      async () => {
-        await deliver();
-        expect(await count()).toBe(5000);
-      },
-      { timeout: 120_000, interval: 500 },
+    // Only the publication is relayed: the batches enqueue each other in the worker.
+    await deliver();
+    await vi.waitFor(async () => expect(await count()).toBe(5000), {
+      timeout: 120_000,
+      interval: 500,
+    });
+    // The 5 000 pushes are left aside: they would only delay the next checks.
+    await query(
+      `DELETE FROM platform.outbox_events
+       WHERE event_type = 'notifications.notification.created.v1' AND published_at IS NULL`,
     );
     // A replayed batch delivers nothing twice.
     const [source] = await query<{ source: string }>(
