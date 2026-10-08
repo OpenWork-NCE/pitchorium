@@ -21,7 +21,10 @@ import { SignalsHandler, TrustJobsHandler } from './interface/trust-events.handl
 import { TrustJobsProcessor } from './interface/trust-jobs.processor';
 import { TRUST_QUEUE } from './interface/trust-queue';
 
+import { TrustPersonalData } from './infrastructure/trust-personal-data';
+
 const SHARED_PROVIDERS: Provider[] = [
+  TrustPersonalData,
   { provide: TrustRepository, useClass: DrizzleTrustRepository },
   TrustEventsRecorder,
   TargetDirectory,

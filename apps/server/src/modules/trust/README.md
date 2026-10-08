@@ -94,3 +94,7 @@ L'activité comptée (table `activity`, une ligne par événement source) est pu
 ## Dépendances
 
 identity (révocation des sessions), access (rôles, source de suspension), profiles, organizations, content, projects, events, missions, messaging, media (résolution et modération des cibles), payments (contributions remboursables, remboursement).
+
+## Données personnelles (RGPD)
+
+Export : signalements faits, décisions le concernant avec leur exposé des motifs, appels, suspensions. Suppression : décisions, dossiers, appels et suspensions gardés comme preuve sous le pseudonyme ; coordonnées laissées sur un signalement effacées ; activité des signaux supprimée. Contrats enregistrés auprès du module privacy (`infrastructure/trust-personal-data.ts`, ADR 0074).
