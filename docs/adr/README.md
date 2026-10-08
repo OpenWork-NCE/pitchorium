@@ -75,3 +75,5 @@ Un fichier par décision, numéroté, au format Contexte / Décision / Conséque
 | [0069](0069-events-scope.md)                             | Périmètre des événements (à valider)                         |
 | [0070](0070-free-events-only.md)                         | Événements gratuits uniquement                               |
 | [0071](0071-volunteer-missions-no-job-board.md)          | Missions bénévoles, pas de job board                         |
+| [0072](0072-moderation-compatible-with-the-dsa.md)       | Modération compatible avec le DSA                            |
+| [0073](0073-suspension.md)                               | Suspension d'un compte                                       |

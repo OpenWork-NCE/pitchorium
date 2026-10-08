@@ -61,6 +61,11 @@ const commonEnvSchema = z.object({
     .default(1440),
   NOTIFICATIONS_LOW_PRIORITY_PER_DAY: z.coerce.number().int().min(1).max(1000).default(20),
   ACCESS_REAUTHENTICATION_MAX_AGE_MINUTES: z.coerce.number().int().min(1).max(1440).default(15),
+  TRUST_MODERATOR_MAX_SUSPENSION_DAYS: z.coerce.number().int().min(1).max(365).default(30),
+  TRUST_APPEAL_WINDOW_DAYS: z.coerce.number().int().min(1).max(3650).default(183),
+  TRUST_SIGNAL_MESSAGE_REQUESTS_PER_DAY: z.coerce.number().int().min(1).max(10_000).default(15),
+  TRUST_SIGNAL_CONNECTION_REQUESTS_PER_DAY: z.coerce.number().int().min(1).max(10_000).default(50),
+  TRUST_SIGNAL_REPORTS_RECEIVED_PER_WEEK: z.coerce.number().int().min(1).max(10_000).default(3),
   // Payments (section 9): providers, commission and limits (docs/architecture/payments.md).
   PAYMENTS_MODE: z.enum(['simulated', 'live']).default('simulated'),
   STRIPE_SECRET_KEY: z.string().min(1).optional(),

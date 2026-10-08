@@ -122,8 +122,15 @@ Informations nécessaires au développement et absentes du cahier des charges (d
 16. La vérification d'organisation (badge) : critères et processus de validation.
 17. Le module « Événements » (§14, V3) : aucune description fonctionnelle. Un périmètre provisoire est livré (ADR 0069, section « Événements » ci-dessous) et doit être validé.
 18. Les missions d'expertise packagées : contenu, déroulé, éventuelle rémunération. Un périmètre provisoire bénévole est livré (ADR 0071, section « Missions » ci-dessous).
-19. Les permissions du rôle `moderator` et la composition de l'équipe de modération (les rôles `member`, `moderator` et `admin` existent ; aucune action n'est encore réservée aux modérateurs).
+19. La composition de l'équipe de modération et la répartition des permissions. Provisoirement (ADR 0073, module trust) : le `moderator` traite la file, masque et retire les contenus, avertit, suspend jusqu'à `TRUST_MODERATOR_MAX_SUSPENSION_DAYS` (30 jours) et tranche les appels ; la suspension définitive ou plus longue, le gel d'un projet, les remboursements d'un projet gelé et les compteurs de transparence sont réservés à l'`admin`.
 20. Les durées de conservation (messages, signalements, journal d'audit, comptes supprimés) et la procédure RGPD de suppression.
+
+## Confiance et sécurité
+
+81. Les obligations du règlement européen sur les services numériques (DSA) réellement applicables à Pitchorium (hébergeur, plateforme en ligne, exemption des petites entreprises), le point de contact des autorités et des utilisateurs, le format du rapport de transparence. Le flux livré est conçu pour être compatible (ADR 0072), sans engagement de conformité.
+82. Les valeurs provisoires de la modération : liste des motifs de signalement (`REPORT_REASONS`), poids de la priorité (`apps/server/src/modules/trust/domain/priority.ts`), seuils des signaux automatiques (15 premiers messages hors réseau ou 50 demandes de connexion en 24 heures, 3 signalements reçus en 7 jours), 5 signalements sans compte par heure et par adresse, délai d'appel de 183 jours, 3 messages de contexte pour un message signalé.
+83. La contestation d'un classement sans suite par le notifiant (prévue par le DSA pour les plateformes en ligne) : aujourd'hui seul le membre concerné par une décision peut faire appel.
+84. La conservation des signalements, des coordonnées des notifiants sans compte et des décisions de modération (voir aussi la question 20 et `docs/compliance/retention.md`).
 
 ## Comptes et conditions
 

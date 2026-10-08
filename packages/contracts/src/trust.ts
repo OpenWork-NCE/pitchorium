@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { uuidV7Schema } from './ids.js';
+import { localeSchema } from './locale.js';
 import { cursorPageQuerySchema, cursorPageSchema } from './pagination.js';
 
 /**
@@ -86,10 +87,13 @@ export const appealOutcomeSchema = z.enum(APPEAL_OUTCOMES);
 
 const details = z.string().trim().min(1).max(REPORT_DETAILS_MAX_LENGTH);
 
+/** Identifier of the target; for a profile, its handle (member ids are never exposed). */
+export const reportTargetIdSchema = z.string().trim().min(1).max(64);
+
 export const createReportRequestSchema = z
   .object({
     targetType: reportTargetTypeSchema,
-    targetId: uuidV7Schema,
+    targetId: reportTargetIdSchema,
     reason: reportReasonSchema,
     details: details.nullable().default(null),
   })
@@ -102,10 +106,12 @@ export const createReportRequestSchema = z
 export const anonymousReportRequestSchema = z
   .object({
     targetType: reportTargetTypeSchema,
-    targetId: uuidV7Schema,
+    targetId: reportTargetIdSchema,
     details,
     reporterName: z.string().trim().min(1).max(120).nullable().default(null),
     reporterEmail: z.email().max(254).nullable().default(null),
+    /** Language of the receipt and of the outcome sent to `reporterEmail`. */
+    locale: localeSchema.default('fr'),
     goodFaith: z.literal(true),
   })
   .strict();
@@ -114,7 +120,8 @@ export const anonymousReportRequestSchema = z
 export const reportSchema = z.object({
   id: uuidV7Schema,
   targetType: reportTargetTypeSchema,
-  targetId: uuidV7Schema,
+  /** Current handle for a profile, null when the profile no longer shows. */
+  targetId: z.string().nullable(),
   reason: reportReasonSchema,
   status: reportStatusSchema,
   outcome: reportOutcomeSchema.nullable(),
@@ -221,6 +228,8 @@ export const moderationDecisionDetailSchema = moderationDecisionSchema.extend({
   decidedBy: uuidV7Schema,
   appealReviewerId: uuidV7Schema.nullable(),
 });
+
+export const moderationDecisionDetailPageSchema = cursorPageSchema(moderationDecisionDetailSchema);
 
 export const moderationCaseDetailSchema = moderationCaseSchema.extend({
   reports: z.array(moderationReportSchema),
@@ -362,6 +371,7 @@ export type Report = z.infer<typeof reportSchema>;
 export type ReportReceipt = z.infer<typeof reportReceiptSchema>;
 export type ReportedMessageContext = z.infer<typeof reportedMessageContextSchema>;
 export type ModerationReport = z.infer<typeof moderationReportSchema>;
+export type ModerationAssignment = z.infer<typeof moderationAssignmentSchema>;
 export type ModerationCase = z.infer<typeof moderationCaseSchema>;
 export type ModerationCaseDetail = z.infer<typeof moderationCaseDetailSchema>;
 export type ModerationDecision = z.infer<typeof moderationDecisionSchema>;

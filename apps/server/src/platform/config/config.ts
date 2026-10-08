@@ -8,6 +8,16 @@ export interface CommonConfig {
   env: Environment;
   /** Age of a session beyond which a sensitive action asks to sign in again. */
   access: { reauthenticationMaxAgeMs: number };
+  /** Moderation (§13); provisional values, docs/open-questions.md. */
+  trust: {
+    moderatorMaxSuspensionDays: number;
+    appealWindowMs: number;
+    signals: {
+      messageRequestsPerDay: number;
+      connectionRequestsPerDay: number;
+      reportsReceivedPerWeek: number;
+    };
+  };
   logLevel: CommonEnv['LOG_LEVEL'];
   database: { url: string; poolMax: number };
   redis: { url: string };
@@ -182,6 +192,15 @@ function toCommonConfig(env: CommonEnv): CommonConfig {
     env: env.NODE_ENV,
     logLevel: env.LOG_LEVEL,
     access: { reauthenticationMaxAgeMs: env.ACCESS_REAUTHENTICATION_MAX_AGE_MINUTES * 60_000 },
+    trust: {
+      moderatorMaxSuspensionDays: env.TRUST_MODERATOR_MAX_SUSPENSION_DAYS,
+      appealWindowMs: env.TRUST_APPEAL_WINDOW_DAYS * 86_400_000,
+      signals: {
+        messageRequestsPerDay: env.TRUST_SIGNAL_MESSAGE_REQUESTS_PER_DAY,
+        connectionRequestsPerDay: env.TRUST_SIGNAL_CONNECTION_REQUESTS_PER_DAY,
+        reportsReceivedPerWeek: env.TRUST_SIGNAL_REPORTS_RECEIVED_PER_WEEK,
+      },
+    },
     database: { url: env.DATABASE_URL, poolMax: env.DATABASE_POOL_MAX },
     redis: { url: env.REDIS_URL },
     queue: { prefix: env.QUEUE_PREFIX },
