@@ -169,9 +169,9 @@ export const ACTION_POLICIES: Readonly<Record<Action, ActionPolicy>> = {
   'messaging.introduction.propose': { requires: ['email_verified'] },
   // A resolver gives `introduced` to the two members introduced.
   'messaging.introduction.respond': { resourceRoles: ['introduced'] },
-  // Notifications (§10.5): the member's own.
-  'notifications.read': {},
-  'notifications.manage': {},
+  // Notifications (§10.5): the member's own; a suspended member reads the notice there.
+  'notifications.read': { allowWhenSuspended: true },
+  'notifications.manage': { allowWhenSuspended: true },
   'notifications.preferences.update': {},
   // Discovery (§10.2, §10.6, §11.4): search, suggestions and the Discover page for members; the
   // potential contributors of a project for its team. Anonymous search has its public routes.
