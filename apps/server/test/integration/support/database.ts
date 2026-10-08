@@ -51,6 +51,8 @@ const BUSINESS_TABLES = [
   'discovery.match_profiles',
   'discovery.suggestions',
   'discovery.dismissals',
+  'trust.cases',
+  'trust.activity',
 ];
 
 export async function truncatePlatformTables(): Promise<void> {
