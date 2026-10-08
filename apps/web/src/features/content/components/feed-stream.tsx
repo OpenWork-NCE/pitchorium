@@ -5,15 +5,15 @@ import {
   getPostsControllerReadQueryKey,
   postsControllerRead,
 } from '@pitchorium/api-client';
-import type { FeedItem, Suggestion } from '@pitchorium/contracts';
+import type { Suggestion } from '@pitchorium/contracts';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { Newspaper } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import type { ReactNode } from 'react';
 import { EmptyState, ErrorState, Loading, Pagination } from '@/components/ui';
 import { SuggestionsList } from '@/features/discovery';
 import { chunk, interleave } from '@/lib/collections/interleave';
 import { PostCard } from './post-card';
+import { ReactionButton } from './reaction-button';
 import { PostSkeleton } from './post-skeleton';
 
 /** Where the modules go among the items of a narrow feed (docs/design/patterns.md). */
@@ -27,8 +27,6 @@ interface FeedStreamProps {
   initialPage: FeedPageDtoOutput | null;
   /** People suggested to the member, shown among the items on a narrow screen. */
   suggestions: readonly Suggestion[];
-  /** Actions under a publication (react, comment, share). */
-  actionsOf?: (post: Extract<FeedItem, { post: unknown }>['post']) => ReactNode;
 }
 
 /**
@@ -38,7 +36,7 @@ interface FeedStreamProps {
  * show; a type the web does not draw yet (project update, event) is left out, as the contract
  * asks of an unknown type.
  */
-export function FeedStream({ initialPage, suggestions, actionsOf }: FeedStreamProps) {
+export function FeedStream({ initialPage, suggestions }: FeedStreamProps) {
   const t = useTranslations('web.feed');
   const feed = useInfiniteQuery({
     queryKey: getPostsControllerReadQueryKey({ limit: PAGE_SIZE }),
@@ -90,7 +88,7 @@ export function FeedStream({ initialPage, suggestions, actionsOf }: FeedStreamPr
             <PostCard
               key={entry.value.id}
               post={entry.value.post}
-              actions={actionsOf?.(entry.value.post)}
+              actions={<ReactionButton post={entry.value.post} />}
             />
           ) : null
         ) : (

@@ -59,6 +59,7 @@ Comment assembler les composants (`components.md`) pour les situations récurren
 - Une écriture faite hors ligne n'échoue pas : la mutation est mise en pause par TanStack Query, la bannière compte les actions en attente, puis tout repart à la reconnexion (« Connexion rétablie, 1 action envoyée »).
 - Une écriture rejouable passe par `useIdempotentMutation` : sa clé `Idempotency-Key` est tirée au moment de l'intention et voyage avec la mutation en pause ; rejouée, elle porte la même clé, et l'api ne l'applique qu'une fois.
 - Les lectures ne se relancent pas en boucle hors ligne ; elles se rafraîchissent au retour du réseau.
+- Un message, une réaction ou un commentaire faits hors ligne survivent à la fermeture de l'onglet (ADR 0102) : gardés sur l'appareil pour le membre qui les a faits, 24 heures au plus, ils partent à la prochaine ouverture de l'espace membre en ligne, une seule fois ; la déconnexion les efface.
 
 ## Confirmation destructrice
 

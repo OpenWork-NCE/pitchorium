@@ -9,6 +9,7 @@ import { RouteFocus } from '../route-focus';
 import { UrlStateProvider } from '../url-state';
 import { MemberHeader } from './member-header';
 import { OfflineBanner } from './offline-banner';
+import { PersistedMutations } from './persisted-mutations';
 
 interface MemberShellProps {
   member: CurrentUserDtoOutput;
@@ -38,6 +39,7 @@ export function MemberShell({ member, counters, children }: MemberShellProps) {
                     <div className="flex-1">{children}</div>
                   </div>
                   <RouteFocus />
+                  <PersistedMutations memberId={member.user.id} />
                 </ShortcutsProvider>
               </AnnouncerProvider>
             </CurrentMemberProvider>

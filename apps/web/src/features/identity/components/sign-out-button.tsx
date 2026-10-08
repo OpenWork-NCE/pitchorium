@@ -7,10 +7,12 @@ import { useTransition } from 'react';
 import { Button } from '@/components/ui';
 import { routes } from '@/config/routes';
 import { useRouter } from '@/i18n/navigation';
+import { clearPersistedMutations } from '@/lib/query/persisted-mutations';
 
 /**
- * Ends the session on the api, forgets the cached data of the member, back to the home page. The
- * authentication client loads on demand: it is not part of the first load (ADR 0094).
+ * Ends the session on the api, forgets the cached data of the member and the actions kept on the
+ * device (ADR 0102), back to the home page. The authentication client loads on demand: it is not
+ * part of the first load (ADR 0094).
  */
 export function useSignOut(): () => Promise<void> {
   const queryClient = useQueryClient();
@@ -19,6 +21,7 @@ export function useSignOut(): () => Promise<void> {
     const { authClient } = await import('@/lib/auth/client');
     await authClient.signOut();
     queryClient.clear();
+    await clearPersistedMutations();
     router.replace(routes.home);
   };
 }

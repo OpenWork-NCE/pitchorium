@@ -204,6 +204,60 @@ test.describe('member shell', () => {
     await api.dispose();
   });
 
+  test('keeps a reaction made offline after the tab closes, and sends it once', async ({
+    context,
+  }) => {
+    const api = await playwrightRequest.newContext({ baseURL: API_ORIGIN });
+    const first = await context.newPage();
+    await signIn(first, AISSATOU);
+    await first.goto('/fr/feed');
+    await first.waitForLoadState('networkidle');
+
+    await context.setOffline(true);
+    const like = first.getByRole('article').first().getByRole('button', { name: "J'aime" });
+    await like.click();
+    await expect(like).toHaveAttribute('aria-pressed', 'true');
+    await expect(first.getByText('1 action en attente.')).toBeVisible();
+    // Kept on the device (IndexedDB) before the tab closes.
+    await expect
+      .poll(() =>
+        first.evaluate(
+          () =>
+            new Promise<number>((resolve) => {
+              const opening = indexedDB.open('pitchorium', 1);
+              opening.onsuccess = () => {
+                const read = opening.result
+                  .transaction('paused-mutations', 'readonly')
+                  .objectStore('paused-mutations')
+                  .get('record');
+                read.onsuccess = () =>
+                  resolve(
+                    (read.result as { state?: { mutations?: unknown[] } } | undefined)?.state
+                      ?.mutations?.length ?? 0,
+                  );
+              };
+            }),
+        ),
+      )
+      .toBe(1);
+    await first.close();
+    expect(await stub(api).writes()).toEqual([]);
+
+    // Back online, the member space opens again: the reaction leaves, once, with its key.
+    await context.setOffline(false);
+    const second = await context.newPage();
+    await second.goto('/fr/feed');
+    await expect.poll(async () => (await stub(api).writes()).length).toBe(1);
+    const [write] = await stub(api).writes();
+    expect(write).toMatchObject({ route: 'reaction', replay: false });
+    expect(write?.key).toMatch(/^[0-9a-f-]{36}$/);
+    // Opened again, nothing is sent twice.
+    await second.reload();
+    await second.waitForLoadState('networkidle');
+    expect(await stub(api).writes()).toHaveLength(1);
+    await api.dispose();
+  });
+
   test('keeps Messages and Notifications in the header of a phone, the rest in the panel', async ({
     browser,
   }) => {

@@ -175,6 +175,29 @@ function projectOf(slug) {
   };
 }
 
+/**
+ * A reaction to a publication (`PUT` or `DELETE /v1/posts/{id}/reaction`), logged with its
+ * Idempotency-Key: a key seen before is a replay, answered without applying it again.
+ */
+function reaction(request, path) {
+  const match = /^\/v1\/posts\/([\w-]+)\/reaction$/.exec(path);
+  if (!match || (request.method !== 'PUT' && request.method !== 'DELETE')) return null;
+  const email = sessionOf(request);
+  if (!email) return problem(401, 'UNAUTHENTICATED');
+  const key = request.headers['idempotency-key'] ?? null;
+  const replay = key !== null && state.writes.some((write) => write.key === key);
+  state.writes.push({ route: 'reaction', email, key, replay, at: new Date().toISOString() });
+  return {
+    status: 200,
+    body: {
+      counts: { like: 13, bravo: 4, insightful: 2, support: 0 },
+      total: 19,
+      viewerReaction: request.method === 'PUT' ? 'like' : null,
+    },
+    headers: replay ? { 'idempotent-replayed': 'true' } : {},
+  };
+}
+
 /** Pages of resources, `GET /v1/public/...` for a visitor, `GET /v1/...` for a member. */
 function resource(request, path) {
   const publicProject = /^\/v1\/public\/projects\/([\w-]+)$/.exec(path);
@@ -418,7 +441,7 @@ const server = createServer(async (request, response) => {
   }
   const prerequisite = /^\/v1\/me\/prerequisites\/([\w.-]+)$/.exec(path);
   const handler = routes[`${request.method} ${path}`];
-  const read = request.method === 'GET' ? resource(request, path) : null;
+  const read = request.method === 'GET' ? resource(request, path) : reaction(request, path);
   const result = prerequisite
     ? prerequisites(request, prerequisite[1])
     : handler
