@@ -10,7 +10,10 @@ import { MissionsController } from './interface/missions.controller';
 
 import { MissionsPersonalData } from './infrastructure/missions-personal-data';
 
+import { MissionsTranslatable } from './infrastructure/missions-translatable';
+
 const SHARED_PROVIDERS: Provider[] = [
+  MissionsTranslatable,
   MissionsPersonalData,
   { provide: MissionsRepository, useClass: DrizzleMissionsRepository },
   MissionEventsRecorder,
