@@ -60,6 +60,7 @@ const BUSINESS_TABLES = [
   'localization.usage',
   'localization.monthly_usage',
   'localization.glossary_terms',
+  'admin.flag_changes',
 ];
 
 export async function truncatePlatformTables(): Promise<void> {
