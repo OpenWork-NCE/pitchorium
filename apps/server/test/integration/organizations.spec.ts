@@ -298,7 +298,7 @@ describe('organizations', () => {
 
     const reviewer = await moderator();
     const decided = await reviewer.agent
-      .post(`/v1/organization-verification-requests/${first.id}/decision`)
+      .post(`/v1/admin/organizations/verification-requests/${first.id}/decision`)
       .send({ decision: 'rejected', reason: 'Récépissé illisible.', criteriaMet: [] })
       .expect(200);
     expect(decided.body).toMatchObject({
@@ -312,7 +312,7 @@ describe('organizations', () => {
     const rejected = await emailTo('awa@teranga.org', 'Vérification de Fondation Teranga refusée');
     expect(rejected.text).toContain('Récépissé illisible.');
     const again = await reviewer.agent
-      .post(`/v1/organization-verification-requests/${first.id}/decision`)
+      .post(`/v1/admin/organizations/verification-requests/${first.id}/decision`)
       .send({ decision: 'approved', reason: 'Trop tard.', criteriaMet: [] })
       .expect(409);
     expect(again.body.code).toBe('ORGANIZATIONS_VERIFICATION_INVALID_STATE');
@@ -378,22 +378,24 @@ describe('organizations', () => {
 
     const stranger = await createMember(app, 'stranger@example.com');
     await stranger.agent.get(`/v1/media/${document}/download-url`).expect(404);
-    await stranger.agent.get('/v1/organization-verification-requests').expect(403);
+    await stranger.agent.get('/v1/admin/organizations/verification-requests').expect(403);
 
     const reviewer = await moderator();
-    const queue = await reviewer.agent.get('/v1/organization-verification-requests').expect(200);
+    const queue = await reviewer.agent
+      .get('/v1/admin/organizations/verification-requests')
+      .expect(200);
     expect(queue.body.criteria).toEqual(['legal_registration', 'official_website']);
     expect(queue.body.items).toEqual([expect.objectContaining({ id: requested.body.id })]);
     const read = await reviewer.agent.get(`/v1/media/${document}/download-url`).expect(200);
     expect((await fetch(read.body.url as string)).status).toBe(200);
 
     const unknownCriterion = await reviewer.agent
-      .post(`/v1/organization-verification-requests/${requested.body.id}/decision`)
+      .post(`/v1/admin/organizations/verification-requests/${requested.body.id}/decision`)
       .send({ decision: 'approved', reason: 'Statuts conformes.', criteriaMet: ['made_up'] })
       .expect(422);
     expect(unknownCriterion.body.code).toBe('ORGANIZATIONS_VERIFICATION_CRITERION_UNKNOWN');
     const decided = await reviewer.agent
-      .post(`/v1/organization-verification-requests/${requested.body.id}/decision`)
+      .post(`/v1/admin/organizations/verification-requests/${requested.body.id}/decision`)
       .send({
         decision: 'approved',
         reason: 'Statuts et récépissé conformes au site officiel.',
@@ -407,7 +409,7 @@ describe('organizations', () => {
     expect(approved.text).toContain('Statuts et récépissé conformes au site officiel.');
 
     await reviewer.agent
-      .post(`/v1/organizations/${organization.id}/verification-revocation`)
+      .post(`/v1/admin/organizations/${organization.id}/verification-revocation`)
       .send({ reason: 'Agrément retiré par l’autorité de tutelle.' })
       .expect(204);
     const revoked = await emailTo('awa@teranga.org', 'Vérification de Fondation Teranga retirée');

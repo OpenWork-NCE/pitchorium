@@ -50,7 +50,7 @@ export class VerificationController {
   }
 
   /** Review queue, oldest first, with the configured criteria. */
-  @Get('organization-verification-requests')
+  @Get('admin/organizations/verification-requests')
   @RequireAction('organization.verification.review')
   @ZodSerializerDto(VerificationQueueDto)
   @ApiOkResponse({ type: VerificationQueueDto.Output })
@@ -58,7 +58,7 @@ export class VerificationController {
     return this.verification.queue(query.status);
   }
 
-  @Get('organization-verification-requests/:requestId')
+  @Get('admin/organizations/verification-requests/:requestId')
   @RequireAction('organization.verification.review')
   @ZodSerializerDto(VerificationRequestDto)
   @ApiOkResponse({ type: VerificationRequestDto.Output })
@@ -66,7 +66,7 @@ export class VerificationController {
     return this.verification.get(params.requestId);
   }
 
-  @Post('organization-verification-requests/:requestId/decision')
+  @Post('admin/organizations/verification-requests/:requestId/decision')
   @RequireAction('organization.verification.review')
   @HttpCode(HttpStatus.OK)
   @ZodSerializerDto(VerificationRequestDto)
@@ -79,7 +79,7 @@ export class VerificationController {
     return this.verification.decide(params.requestId, principal.userId, body);
   }
 
-  @Post('organizations/:organizationId/verification-revocation')
+  @Post('admin/organizations/:organizationId/verification-revocation')
   @RequireAction('organization.verification.review')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiNoContentResponse()
