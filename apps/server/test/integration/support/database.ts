@@ -56,6 +56,10 @@ const BUSINESS_TABLES = [
   'privacy.exports',
   'privacy.erasures',
   'identity.legal_acceptances',
+  'localization.translations',
+  'localization.usage',
+  'localization.monthly_usage',
+  'localization.glossary_terms',
 ];
 
 export async function truncatePlatformTables(): Promise<void> {
