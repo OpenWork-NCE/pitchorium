@@ -8,7 +8,7 @@ import {
   eventStatusSchema,
   eventVisibilitySchema,
 } from './events.js';
-import { legalDocumentSchema, signInProviderSchema } from './identity.js';
+import { legalDocumentSchema, oauthProviderSchema, signInProviderSchema } from './identity.js';
 import { impactLevelSchema, impactMethodologyStatusSchema } from './impact.js';
 import { mediaRejectionReasonSchema } from './media.js';
 import {
@@ -112,7 +112,7 @@ export const LABELLED_ENUMS: Readonly<Record<string, readonly AnyEnum[]>> = {
   prerequisiteElements: [prerequisiteElementSchema],
   roles: [roleSchema, assignableRoleSchema],
   legalDocuments: [legalDocumentSchema],
-  signInProviders: [signInProviderSchema],
+  signInProviders: [signInProviderSchema, oauthProviderSchema],
   organizationRoles: [organizationRoleSchema, invitableRoleSchema],
   organizationInvitationStatuses: [invitationStatusSchema],
   verificationStatuses: [verificationStatusSchema],

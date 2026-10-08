@@ -48,8 +48,10 @@ describe('configuration', () => {
     expect(config.otel.enabled).toBe(false);
   });
 
-  /** Production refuses the simulated payment provider. */
+  /** Production refuses the simulated payment provider and requires Turnstile. */
   const livePayments = {
+    TURNSTILE_SITE_KEY: '1x00000000000000000000AA',
+    TURNSTILE_SECRET_KEY: '1x0000000000000000000000000000000AA',
     PAYMENTS_MODE: 'live',
     STRIPE_SECRET_KEY: 'sk_test_x',
     STRIPE_WEBHOOK_SECRET: 'whsec_x',
@@ -105,6 +107,8 @@ describe('configuration', () => {
         parseApiConfig({
           ...baseEnv,
           EMAIL_LINK_SECRET: livePayments.EMAIL_LINK_SECRET,
+          TURNSTILE_SITE_KEY: livePayments.TURNSTILE_SITE_KEY,
+          TURNSTILE_SECRET_KEY: livePayments.TURNSTILE_SECRET_KEY,
           NODE_ENV: 'production',
         }),
       ),
@@ -158,6 +162,25 @@ describe('configuration', () => {
     expect(
       parseWorkerConfig({ ...baseEnv, MAIL_TRANSPORT: 'resend', RESEND_API_KEY: 're_x' }).mail,
     ).toMatchObject({ transport: 'resend', resendApiKey: 're_x' });
+  });
+
+  it('enables Turnstile with both keys, and requires it in production', () => {
+    expect(parseApiConfig(baseEnv).auth.turnstile).toBeUndefined();
+    expect(
+      parseApiConfig({ ...baseEnv, TURNSTILE_SITE_KEY: 'site', TURNSTILE_SECRET_KEY: 'secret' })
+        .auth.turnstile,
+    ).toEqual({ siteKey: 'site', secretKey: 'secret', appearance: 'interaction-only' });
+    expect(issuesOf(() => parseApiConfig({ ...baseEnv, TURNSTILE_SITE_KEY: 'site' }))).toEqual([
+      'TURNSTILE_SECRET_KEY: Set both TURNSTILE_SITE_KEY and TURNSTILE_SECRET_KEY, or neither',
+    ]);
+    const {
+      TURNSTILE_SITE_KEY: _site,
+      TURNSTILE_SECRET_KEY: _secret,
+      ...withoutTurnstile
+    } = livePayments;
+    expect(
+      issuesOf(() => parseApiConfig({ ...baseEnv, ...withoutTurnstile, NODE_ENV: 'production' })),
+    ).toEqual(['TURNSTILE_SECRET_KEY: Cloudflare Turnstile is required in production']);
   });
 
   it('enables an OAuth provider only with both credentials, and derives auth settings', () => {

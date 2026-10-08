@@ -6,6 +6,7 @@ Comptes et authentification (cahier des charges §7) avec Better Auth 1.7, mont�
 
 - Inscription sans choix de rôle ni champ obligatoire hors identité : Google, LinkedIn (OpenID Connect), Microsoft (Entra ID, tenant `common`), email et mot de passe, lien magique. Un fournisseur OAuth n'est actif que si ses identifiants sont configurés.
 - Mot de passe de 12 caractères minimum, refus des mots de passe compromis (Have I Been Pwned, k-anonymat, `AUTH_PWNED_PASSWORD_CHECK`, appelé avant l'endpoint et hors transaction ; échec ouvert si le service est injoignable, dépasse 3 secondes ou répond une erreur : le mot de passe est accepté, avec un log `warn` et la métrique `pitchorium.identity.pwned_check.unavailable`, ADR 0019), réinitialisation par lien à usage unique valable 30 minutes ; toutes les sessions sont fermées après une réinitialisation. Un changement de mot de passe ferme toujours les autres sessions (`revokeOtherSessions` forcé côté serveur : un changement suit souvent une suspicion de compromission) et ouvre une nouvelle session pour l'appareil courant, sans email « nouvelle connexion ».
+- Anti-spam (ADR 0103) : Cloudflare Turnstile sur l'inscription, la connexion par email, la demande de lien magique et la réinitialisation (plugin `captcha` de Better Auth, en-tête `X-Captcha-Response`), actif quand ses deux clés sont configurées, obligatoire en production.
 - Vérification d'email (lien valable 24 h) ; un email assuré vérifié par Google, ou par LinkedIn via `email_verified`, est vérifié d'office. Microsoft ne l'est jamais.
 - Liaison de comptes (ADR 0014) : implicite pour Google et LinkedIn seulement si les deux emails sont vérifiés ; jamais pour Microsoft ; liaison et déliaison manuelles depuis le compte connecté, la dernière méthode ne peut pas être retirée.
 - Sessions : cookie `pitchorium.session_token` (`__Secure-` en HTTPS), `HttpOnly`, `SameSite=Lax`, domaine parent `AUTH_COOKIE_DOMAIN` ; 30 jours, prolongées chaque jour d'usage ; liste et révocation unitaire ou globale par Better Auth.
@@ -19,6 +20,7 @@ Comptes et authentification (cahier des charges §7) avec Better Auth 1.7, mont�
 ## Routes
 
 - `/v1/auth/*` : Better Auth (format d'erreur Better Auth `{ code, message }`, hors OpenAPI). Principales : `sign-up/email`, `sign-in/email`, `sign-in/social`, `callback/:provider`, `sign-in/magic-link`, `magic-link/verify`, `verify-email`, `send-verification-email`, `request-password-reset`, `reset-password`, `change-password`, `set-password`, `list-sessions`, `revoke-session`, `revoke-sessions`, `revoke-other-sessions`, `list-accounts`, `link-social`, `unlink-account`, `two-factor/*`, `sign-out`.
+- `GET /v1/auth-configuration` (public, cache 60 s) : fournisseurs OAuth activés dans l'ordre des boutons, clé publique et apparence de Turnstile (ou `null`), versions des conditions en vigueur, longueur minimale du mot de passe ; aucun secret.
 - `GET /v1/legal-documents/current` (public), `GET /v1/locales` (public, langues actives selon les flags `locale.<code>`, `Cache-Control: public, max-age=60`), `POST /v1/me/legal-acceptances`, `PUT /v1/me/preferences`.
 
 ## Schéma `identity`

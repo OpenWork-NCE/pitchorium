@@ -59,6 +59,7 @@ Sans réponse, la plateforme ne peut pas ouvrir au public : chaque point conditi
 ### Comptes de production
 
 - **27.** Les identifiants OAuth de production Google, LinkedIn et Microsoft (application Entra ID multi-tenant), avec les URI de redirection `<API_PUBLIC_URL>/v1/auth/callback/<fournisseur>`, et le domaine parent des cookies (`AUTH_COOKIE_DOMAIN`).
+- **105.** Le site Cloudflare Turnstile de production (ADR 0103), dans le compte Cloudflare du client : nom d'hôte autorisé (domaine du web), mode du widget (managé ou invisible) et apparence voulue (`TURNSTILE_APPEARANCE` : discret par défaut) ; clés `TURNSTILE_SITE_KEY` et `TURNSTILE_SECRET_KEY`.
 - **90.** Les comptes de production au nom du client : Stripe (compte de plateforme Connect, mode live, webhooks), Flutterwave (compte marchand live), Resend (domaine d'envoi vérifié), Cloudflare R2 et jeton de purge du CDN, DeepL ou Google Cloud Translation, Sentry ; qui les ouvre et qui détient les accès (`docs/production-readiness.md`).
 
 ## À trancher ensuite

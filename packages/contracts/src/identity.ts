@@ -72,6 +72,29 @@ export const activeLocalesSchema = z.object({
 export const SIGN_IN_PROVIDERS = ['credential', 'google', 'linkedin', 'microsoft'] as const;
 export const signInProviderSchema = z.enum(SIGN_IN_PROVIDERS);
 
+/** OAuth providers, in the order of the sign-in buttons (§7.2). */
+export const OAUTH_PROVIDERS = ['google', 'linkedin', 'microsoft'] as const;
+export const oauthProviderSchema = z.enum(OAUTH_PROVIDERS);
+
+/** Minimum length of a password (§7, identity module). */
+export const MIN_PASSWORD_LENGTH = 12;
+
+/** How the web app shows Cloudflare Turnstile: only when an interaction is needed, or always. */
+export const TURNSTILE_APPEARANCES = ['interaction-only', 'always'] as const;
+
+/**
+ * What the sign-in screens need to know before any session, without a secret (ADR 0103):
+ * OAuth providers enabled, Turnstile site key when it is required, legal versions in force.
+ */
+export const authConfigurationSchema = z.object({
+  oauthProviders: z.array(oauthProviderSchema),
+  turnstile: z
+    .object({ siteKey: z.string(), appearance: z.enum(TURNSTILE_APPEARANCES) })
+    .nullable(),
+  legal: legalVersionsSchema,
+  minPasswordLength: z.number().int(),
+});
+
 export type LegalDocument = z.infer<typeof legalDocumentSchema>;
 export type LegalVersions = z.infer<typeof legalVersionsSchema>;
 export type LegalAcceptanceRequest = z.infer<typeof legalAcceptanceRequestSchema>;
@@ -80,3 +103,5 @@ export type Preferences = z.infer<typeof preferencesSchema>;
 export type UpdatePreferencesRequest = z.infer<typeof updatePreferencesRequestSchema>;
 export type SignInProvider = z.infer<typeof signInProviderSchema>;
 export type ActiveLocales = z.infer<typeof activeLocalesSchema>;
+export type OAuthProvider = z.infer<typeof oauthProviderSchema>;
+export type AuthConfiguration = z.infer<typeof authConfigurationSchema>;

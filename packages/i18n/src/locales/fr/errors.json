@@ -288,6 +288,9 @@
     "UNABLE_TO_LINK_ACCOUNT": "Ce fournisseur n'a pas pu être lié à votre compte.",
     "STATE_MISMATCH": "La connexion a expiré ou a été lancée depuis un autre navigateur. Recommencez.",
     "NEW_USER_SIGNUP_DISABLED": "La création de compte par ce lien n'est pas disponible.",
-    "INTERNAL_SERVER_ERROR": "Une erreur inattendue est survenue."
+    "INTERNAL_SERVER_ERROR": "Une erreur inattendue est survenue.",
+    "MISSING_RESPONSE": "La vérification anti-spam n'a pas pu se faire. Rechargez la page et réessayez.",
+    "VERIFICATION_FAILED": "La vérification anti-spam a échoué. Réessayez.",
+    "UNKNOWN_ERROR": "La vérification anti-spam est indisponible pour le moment. Réessayez dans quelques instants."
   }
 }

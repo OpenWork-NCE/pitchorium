@@ -26,17 +26,18 @@ Liste ordonnée : chaque étape suppose les précédentes faites. Responsables :
 Tous au nom du client (question 90), accès partagés par le gestionnaire de secrets, jamais par email.
 
 1. **OAuth** (question 27) : applications Google, LinkedIn (« Sign In with LinkedIn using OpenID Connect ») et Microsoft (Entra ID multi-tenant). URI de redirection exactes : `<API_PUBLIC_URL>/v1/auth/callback/google`, `.../linkedin`, `.../microsoft`. Variables `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `LINKEDIN_*`, `MICROSOFT_*`.
-2. **Stripe** (compte de plateforme Connect, mode live) : endpoint de webhook **Connect** (événements des comptes connectés) sur `<API_PUBLIC_URL>/v1/payments/webhooks/stripe`, avec exactement :
+2. **Cloudflare Turnstile** (question 105, ADR 0103) : site au nom de domaine du web, clés `TURNSTILE_SITE_KEY` et `TURNSTILE_SECRET_KEY` ; l'api refuse de démarrer en production sans elles.
+3. **Stripe** (compte de plateforme Connect, mode live) : endpoint de webhook **Connect** (événements des comptes connectés) sur `<API_PUBLIC_URL>/v1/payments/webhooks/stripe`, avec exactement :
    - `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `checkout.session.async_payment_failed`, `checkout.session.expired` ;
    - `charge.updated` (porte les frais Stripe, rattachés après le paiement, ADR 0044), `charge.refunded` ;
    - `charge.dispute.created`, `charge.dispute.updated`, `charge.dispute.closed` ;
    - `account.updated` (état du compte de versement).
      Secret de signature : `STRIPE_WEBHOOK_SECRET` ; clé : `STRIPE_SECRET_KEY` ; `PAYMENTS_MODE=live`.
-3. **Flutterwave** (compte marchand live) : URL de webhook `<API_PUBLIC_URL>/v1/payments/webhooks/flutterwave`, hash secret `FLUTTERWAVE_WEBHOOK_SECRET_HASH`, clé `FLUTTERWAVE_SECRET_KEY` ; demander l'activation des webhooks de rétrofacturation (`chargeback.*`).
-4. **Resend** : domaine vérifié (étape 2.3), clé `RESEND_API_KEY`, `MAIL_TRANSPORT=resend` ; webhook `<API_PUBLIC_URL>/v1/notifications/webhooks/resend` avec `email.bounced` et `email.complained`, secret `RESEND_WEBHOOK_SECRET`.
-5. **Cloudflare R2 et CDN** : buckets public et privé (`S3_BUCKET_PUBLIC`, `S3_BUCKET_PRIVATE`), clés d'accès limitées à ces buckets, CORS du bucket privé autorisant `PUT` depuis `WEB_APP_URL`, domaine public `S3_PUBLIC_BASE_URL`, jeton d'API limité à la purge du cache de la zone (`CDN_PURGE_PROVIDER=cloudflare`, `CLOUDFLARE_ZONE_ID`, `CLOUDFLARE_API_TOKEN`), règles de cycle de vie et copie de sauvegarde (`docs/operations/backup-and-restore.md`).
-6. **Traduction** : clé DeepL ou Google (`LOCALIZATION_PROVIDERS`, `DEEPL_API_KEY`, `GOOGLE_TRANSLATE_API_KEY`), plafonds (question 88).
-7. **Sentry et traces** : `SENTRY_DSN`, `SENTRY_ENVIRONMENT`, `OTEL_EXPORTER_OTLP_ENDPOINT` ; pour le web, un projet Sentry dédié (`NEXT_PUBLIC_SENTRY_DSN`, jeton de build `SENTRY_AUTH_TOKEN` pour les cartes de sources).
+4. **Flutterwave** (compte marchand live) : URL de webhook `<API_PUBLIC_URL>/v1/payments/webhooks/flutterwave`, hash secret `FLUTTERWAVE_WEBHOOK_SECRET_HASH`, clé `FLUTTERWAVE_SECRET_KEY` ; demander l'activation des webhooks de rétrofacturation (`chargeback.*`).
+5. **Resend** : domaine vérifié (étape 2.3), clé `RESEND_API_KEY`, `MAIL_TRANSPORT=resend` ; webhook `<API_PUBLIC_URL>/v1/notifications/webhooks/resend` avec `email.bounced` et `email.complained`, secret `RESEND_WEBHOOK_SECRET`.
+6. **Cloudflare R2 et CDN** : buckets public et privé (`S3_BUCKET_PUBLIC`, `S3_BUCKET_PRIVATE`), clés d'accès limitées à ces buckets, CORS du bucket privé autorisant `PUT` depuis `WEB_APP_URL`, domaine public `S3_PUBLIC_BASE_URL`, jeton d'API limité à la purge du cache de la zone (`CDN_PURGE_PROVIDER=cloudflare`, `CLOUDFLARE_ZONE_ID`, `CLOUDFLARE_API_TOKEN`), règles de cycle de vie et copie de sauvegarde (`docs/operations/backup-and-restore.md`).
+7. **Traduction** : clé DeepL ou Google (`LOCALIZATION_PROVIDERS`, `DEEPL_API_KEY`, `GOOGLE_TRANSLATE_API_KEY`), plafonds (question 88).
+8. **Sentry et traces** : `SENTRY_DSN`, `SENTRY_ENVIRONMENT`, `OTEL_EXPORTER_OTLP_ENDPOINT` ; pour le web, un projet Sentry dédié (`NEXT_PUBLIC_SENTRY_DSN`, jeton de build `SENTRY_AUTH_TOKEN` pour les cartes de sources).
 
 ## 4. Secrets et configuration (développeur)
 

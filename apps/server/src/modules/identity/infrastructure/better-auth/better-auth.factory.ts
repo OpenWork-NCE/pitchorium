@@ -1,5 +1,5 @@
 import { Logger } from '@nestjs/common';
-import { DEFAULT_LOCALE } from '@pitchorium/contracts';
+import { DEFAULT_LOCALE, MIN_PASSWORD_LENGTH } from '@pitchorium/contracts';
 import {
   identityAccounts,
   identitySessions,
@@ -10,7 +10,7 @@ import {
 import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { APIError, createAuthMiddleware, getOAuthState } from 'better-auth/api';
-import { magicLink, twoFactor } from 'better-auth/plugins';
+import { captcha, magicLink, twoFactor } from 'better-auth/plugins';
 import type { Redis } from 'ioredis';
 import type { ApiConfig } from '../../../../platform/config';
 import type { TransactionManager } from '../../../../platform/database';
@@ -41,7 +41,6 @@ export const CLIENT_IP_HEADER = 'x-pitchorium-client-ip';
 const SESSION_TTL_SECONDS = 30 * 24 * 3600;
 const SESSION_REFRESH_AFTER_SECONDS = 24 * 3600;
 const MAX_USER_AGENT_LENGTH = 200;
-const MIN_PASSWORD_LENGTH = 12;
 const MAX_PASSWORD_LENGTH = 128;
 
 /** Endpoints that can be used to guess passwords, spam inboxes or enumerate accounts. */
@@ -58,6 +57,17 @@ const SENSITIVE_PATHS = [
   '/send-verification-email',
   '/two-factor/verify-totp',
   '/two-factor/verify-backup-code',
+];
+
+/**
+ * Endpoints checked by Cloudflare Turnstile when it is configured (ADR 0103): every way to create
+ * an account, to try a password or to send an email to an address typed by anyone.
+ */
+export const CAPTCHA_PATHS = [
+  '/sign-up/email',
+  '/sign-in/email',
+  '/sign-in/magic-link',
+  '/request-password-reset',
 ];
 
 /** Body field holding the new password, for the endpoints that set one. */
@@ -261,6 +271,15 @@ export function createBetterAuth(deps: BetterAuthDependencies) {
         },
       }),
       twoFactor({ issuer: 'Pitchorium' }),
+      ...(config.auth.turnstile
+        ? [
+            captcha({
+              provider: 'cloudflare-turnstile',
+              secretKey: config.auth.turnstile.secretKey,
+              endpoints: CAPTCHA_PATHS,
+            }),
+          ]
+        : []),
     ],
     rateLimit: {
       enabled: true,

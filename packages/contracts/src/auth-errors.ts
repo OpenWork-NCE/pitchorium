@@ -49,6 +49,13 @@ export const BETTER_AUTH_ERROR_CODES = [
   'INVALID_TWO_FACTOR_COOKIE',
 ] as const;
 
+/** Codes of the captcha plugin of Better Auth (Turnstile, ADR 0103). */
+export const CAPTCHA_AUTH_ERROR_CODES = [
+  'MISSING_RESPONSE',
+  'VERIFICATION_FAILED',
+  'UNKNOWN_ERROR',
+] as const;
+
 /** Codes added by Pitchorium on /v1/auth (password breach check). */
 export const PITCHORIUM_AUTH_ERROR_CODES = ['PASSWORD_COMPROMISED'] as const;
 
@@ -67,6 +74,7 @@ export const AUTH_REDIRECT_ERROR_CODES = [
 /** Every /v1/auth code with its own translation, under `errors.auth.<CODE>`. */
 export const AUTH_ERROR_CODES = [
   ...BETTER_AUTH_ERROR_CODES,
+  ...CAPTCHA_AUTH_ERROR_CODES,
   ...PITCHORIUM_AUTH_ERROR_CODES,
   ...AUTH_REDIRECT_ERROR_CODES,
 ] as const;

@@ -106,3 +106,4 @@ Un fichier par décision, numéroté, au format Contexte / Décision / Conséque
 | [0100](0100-date-and-time-field.md)                      | Champ de date et d'heure                                     |
 | [0101](0101-one-address-per-resource.md)                 | Une adresse par ressource                                    |
 | [0102](0102-offline-actions-across-tabs.md)              | Actions hors ligne gardées après la fermeture de l'onglet    |
+| [0103](0103-cloudflare-turnstile.md)                     | Cloudflare Turnstile                                         |

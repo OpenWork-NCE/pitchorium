@@ -137,6 +137,10 @@ const apiEnvSchema = commonEnvSchema.extend({
   LINKEDIN_CLIENT_SECRET: z.string().min(1).optional(),
   MICROSOFT_CLIENT_ID: z.string().min(1).optional(),
   MICROSOFT_CLIENT_SECRET: z.string().min(1).optional(),
+  TURNSTILE_SITE_KEY: z.string().min(1).optional(),
+  TURNSTILE_SECRET_KEY: z.string().min(1).optional(),
+  /** `interaction-only`: shown only when Cloudflare asks for an interaction; `always`: managed. */
+  TURNSTILE_APPEARANCE: z.enum(['interaction-only', 'always']).default('interaction-only'),
   MEDIA_UPLOAD_URL_TTL_SECONDS: z.coerce.number().int().min(60).max(3600).default(900),
   MEDIA_DOWNLOAD_URL_TTL_SECONDS: z.coerce.number().int().min(30).max(3600).default(300),
   MEDIA_QUOTA_MAX_FILES: z.coerce.number().int().positive().default(500),
@@ -321,12 +325,38 @@ function requireCompleteOAuthCredentials(
   }
 }
 
+/**
+ * Cloudflare Turnstile is enabled by its two keys (ADR 0103): both or neither, and both are
+ * required in production, where the anti-spam check cannot be switched off.
+ */
+function requireTurnstileInProduction(
+  env: z.infer<typeof apiEnvSchema>,
+  ctx: z.RefinementCtx,
+): void {
+  const site = env.TURNSTILE_SITE_KEY;
+  const secret = env.TURNSTILE_SECRET_KEY;
+  if ((site === undefined) !== (secret === undefined)) {
+    ctx.addIssue({
+      code: 'custom',
+      path: [site === undefined ? 'TURNSTILE_SITE_KEY' : 'TURNSTILE_SECRET_KEY'],
+      message: 'Set both TURNSTILE_SITE_KEY and TURNSTILE_SECRET_KEY, or neither',
+    });
+  } else if (env.NODE_ENV === 'production' && secret === undefined) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['TURNSTILE_SECRET_KEY'],
+      message: 'Cloudflare Turnstile is required in production',
+    });
+  }
+}
+
 export const apiEnv = apiEnvSchema
   .superRefine(requireMailCredentials)
   .superRefine(refuseDevelopmentEmailSecret)
   .superRefine(requirePaymentProviders)
   .superRefine(requireTranslationProviders)
-  .superRefine(requireCompleteOAuthCredentials);
+  .superRefine(requireCompleteOAuthCredentials)
+  .superRefine(requireTurnstileInProduction);
 /** The interval override replaces every cron pattern: tests and local debugging only. */
 function refuseScheduleOverrideInProduction(
   env: z.infer<typeof workerEnvSchema>,

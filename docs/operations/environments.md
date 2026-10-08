@@ -75,42 +75,45 @@ Toutes les variables lues par l'api et le worker, validées au démarrage par `a
 
 ## api
 
-| Variable                               | Type        | Défaut          | Local (`.env.example`)    | Staging          | Production                       |
-| -------------------------------------- | ----------- | --------------- | ------------------------- | ---------------- | -------------------------------- |
-| `API_HOST`                             | texte       | `0.0.0.0`       | `0.0.0.0`                 | comme production | défaut                           |
-| `API_PORT`                             | entier      | `3000`          | `3000`                    | comme production | défaut                           |
-| `CORS_ORIGINS`                         | URL (liste) | —               | `http://localhost:3200`   | comme production | à fixer                          |
-| `TRUST_PROXY_HOPS`                     | entier      | `0`             | `0`                       | comme production | défaut                           |
-| `RATE_LIMIT_TTL_SECONDS`               | entier      | `60`            | `60`                      | comme production | défaut                           |
-| `RATE_LIMIT_MAX`                       | entier      | `120`           | `120`                     | comme production | défaut                           |
-| `IDEMPOTENCY_TTL_HOURS`                | entier      | `24`            | `24`                      | comme production | défaut                           |
-| `AUTH_SECRET`                          | texte       | —               | (valeur de développement) | clé de test      | secret (gestionnaire de secrets) |
-| `AUTH_TRUSTED_ORIGINS`                 | URL (liste) | —               | —                         | comme production | à fixer                          |
-| `AUTH_COOKIE_DOMAIN`                   | texte       | —               | —                         | comme production | facultative                      |
-| `AUTH_RATE_LIMIT_WINDOW_SECONDS`       | entier      | `60`            | `60`                      | comme production | défaut                           |
-| `AUTH_RATE_LIMIT_MAX`                  | entier      | `10`            | `10`                      | comme production | défaut                           |
-| `AUTH_PWNED_PASSWORD_CHECK`            | booléen     | `true`          | (valeur de développement) | clé de test      | secret (gestionnaire de secrets) |
-| `GOOGLE_CLIENT_ID`                     | texte       | —               | —                         | comme production | facultative                      |
-| `GOOGLE_CLIENT_SECRET`                 | texte       | —               | —                         | clé de test      | secret (gestionnaire de secrets) |
-| `LINKEDIN_CLIENT_ID`                   | texte       | —               | —                         | comme production | facultative                      |
-| `LINKEDIN_CLIENT_SECRET`               | texte       | —               | —                         | clé de test      | secret (gestionnaire de secrets) |
-| `MICROSOFT_CLIENT_ID`                  | texte       | —               | —                         | comme production | facultative                      |
-| `MICROSOFT_CLIENT_SECRET`              | texte       | —               | —                         | clé de test      | secret (gestionnaire de secrets) |
-| `MEDIA_UPLOAD_URL_TTL_SECONDS`         | entier      | `900`           | `900`                     | comme production | défaut                           |
-| `MEDIA_DOWNLOAD_URL_TTL_SECONDS`       | entier      | `300`           | `300`                     | comme production | défaut                           |
-| `MEDIA_QUOTA_MAX_FILES`                | entier      | `500`           | `500`                     | comme production | défaut                           |
-| `MEDIA_QUOTA_MAX_BYTES`                | entier      | `1_073_741_824` | `1073741824`              | comme production | défaut                           |
-| `MEDIA_UPLOAD_REQUESTS_PER_HOUR`       | entier      | `60`            | `60`                      | comme production | défaut                           |
-| `ORGANIZATIONS_MAX_CREATED_PER_USER`   | entier      | `5`             | `5`                       | comme production | défaut                           |
-| `ORGANIZATIONS_INVITATION_TTL_DAYS`    | entier      | `7`             | `7`                       | comme production | défaut                           |
-| `NETWORK_CONNECTION_REQUESTS_PER_WEEK` | entier      | `100`           | `100`                     | comme production | défaut                           |
-| `NETWORK_DECLINE_COOLDOWN_DAYS`        | entier      | `21`            | `21`                      | comme production | défaut                           |
-| `NETWORK_REQUEST_TTL_DAYS`             | entier      | `30`            | `30`                      | comme production | défaut                           |
-| `NETWORK_MUTUAL_CONNECTIONS_CAP`       | entier      | `999`           | `999`                     | comme production | défaut                           |
-| `MESSAGING_REQUESTS_PER_DAY`           | entier      | `20`            | `20`                      | comme production | défaut                           |
-| `RESEND_WEBHOOK_SECRET`                | texte       | —               | —                         | clé de test      | secret (gestionnaire de secrets) |
-| `CONTENT_FEED_EDITORIAL_THRESHOLD`     | entier      | `10`            | `10`                      | comme production | défaut                           |
-| `ORGANIZATIONS_VERIFICATION_CRITERIA`  | texte       | —               | —                         | comme production | à fixer                          |
+| Variable                               | Type        | Défaut             | Local (`.env.example`)    | Staging          | Production                       |
+| -------------------------------------- | ----------- | ------------------ | ------------------------- | ---------------- | -------------------------------- |
+| `API_HOST`                             | texte       | `0.0.0.0`          | `0.0.0.0`                 | comme production | défaut                           |
+| `API_PORT`                             | entier      | `3000`             | `3000`                    | comme production | défaut                           |
+| `CORS_ORIGINS`                         | URL (liste) | —                  | `http://localhost:3200`   | comme production | à fixer                          |
+| `TRUST_PROXY_HOPS`                     | entier      | `0`                | `0`                       | comme production | défaut                           |
+| `RATE_LIMIT_TTL_SECONDS`               | entier      | `60`               | `60`                      | comme production | défaut                           |
+| `RATE_LIMIT_MAX`                       | entier      | `120`              | `120`                     | comme production | défaut                           |
+| `IDEMPOTENCY_TTL_HOURS`                | entier      | `24`               | `24`                      | comme production | défaut                           |
+| `AUTH_SECRET`                          | texte       | —                  | (valeur de développement) | clé de test      | secret (gestionnaire de secrets) |
+| `AUTH_TRUSTED_ORIGINS`                 | URL (liste) | —                  | —                         | comme production | à fixer                          |
+| `AUTH_COOKIE_DOMAIN`                   | texte       | —                  | —                         | comme production | facultative                      |
+| `AUTH_RATE_LIMIT_WINDOW_SECONDS`       | entier      | `60`               | `60`                      | comme production | défaut                           |
+| `AUTH_RATE_LIMIT_MAX`                  | entier      | `10`               | `10`                      | comme production | défaut                           |
+| `AUTH_PWNED_PASSWORD_CHECK`            | booléen     | `true`             | (valeur de développement) | clé de test      | secret (gestionnaire de secrets) |
+| `GOOGLE_CLIENT_ID`                     | texte       | —                  | —                         | comme production | facultative                      |
+| `GOOGLE_CLIENT_SECRET`                 | texte       | —                  | —                         | clé de test      | secret (gestionnaire de secrets) |
+| `LINKEDIN_CLIENT_ID`                   | texte       | —                  | —                         | comme production | facultative                      |
+| `LINKEDIN_CLIENT_SECRET`               | texte       | —                  | —                         | clé de test      | secret (gestionnaire de secrets) |
+| `MICROSOFT_CLIENT_ID`                  | texte       | —                  | —                         | comme production | facultative                      |
+| `MICROSOFT_CLIENT_SECRET`              | texte       | —                  | —                         | clé de test      | secret (gestionnaire de secrets) |
+| `TURNSTILE_SITE_KEY`                   | texte       | —                  | —                         | clé de test      | obligatoire                      |
+| `TURNSTILE_SECRET_KEY`                 | texte       | —                  | —                         | clé de test      | secret (gestionnaire de secrets) |
+| `TURNSTILE_APPEARANCE`                 | énumération | `interaction-only` | `interaction-only`        | comme production | défaut                           |
+| `MEDIA_UPLOAD_URL_TTL_SECONDS`         | entier      | `900`              | `900`                     | comme production | défaut                           |
+| `MEDIA_DOWNLOAD_URL_TTL_SECONDS`       | entier      | `300`              | `300`                     | comme production | défaut                           |
+| `MEDIA_QUOTA_MAX_FILES`                | entier      | `500`              | `500`                     | comme production | défaut                           |
+| `MEDIA_QUOTA_MAX_BYTES`                | entier      | `1_073_741_824`    | `1073741824`              | comme production | défaut                           |
+| `MEDIA_UPLOAD_REQUESTS_PER_HOUR`       | entier      | `60`               | `60`                      | comme production | défaut                           |
+| `ORGANIZATIONS_MAX_CREATED_PER_USER`   | entier      | `5`                | `5`                       | comme production | défaut                           |
+| `ORGANIZATIONS_INVITATION_TTL_DAYS`    | entier      | `7`                | `7`                       | comme production | défaut                           |
+| `NETWORK_CONNECTION_REQUESTS_PER_WEEK` | entier      | `100`              | `100`                     | comme production | défaut                           |
+| `NETWORK_DECLINE_COOLDOWN_DAYS`        | entier      | `21`               | `21`                      | comme production | défaut                           |
+| `NETWORK_REQUEST_TTL_DAYS`             | entier      | `30`               | `30`                      | comme production | défaut                           |
+| `NETWORK_MUTUAL_CONNECTIONS_CAP`       | entier      | `999`              | `999`                     | comme production | défaut                           |
+| `MESSAGING_REQUESTS_PER_DAY`           | entier      | `20`               | `20`                      | comme production | défaut                           |
+| `RESEND_WEBHOOK_SECRET`                | texte       | —                  | —                         | clé de test      | secret (gestionnaire de secrets) |
+| `CONTENT_FEED_EDITORIAL_THRESHOLD`     | entier      | `10`               | `10`                      | comme production | défaut                           |
+| `ORGANIZATIONS_VERIFICATION_CRITERIA`  | texte       | —                  | —                         | comme production | à fixer                          |
 
 ## worker
 

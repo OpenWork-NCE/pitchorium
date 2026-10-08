@@ -90,6 +90,12 @@ export interface OAuthClientConfig {
   clientSecret: string;
 }
 
+export interface TurnstileConfig {
+  siteKey: string;
+  secretKey: string;
+  appearance: 'interaction-only' | 'always';
+}
+
 export interface ApiConfig extends CommonConfig {
   http: {
     host: string;
@@ -144,6 +150,8 @@ export interface ApiConfig extends CommonConfig {
     secureCookies: boolean;
     rateLimit: { windowSeconds: number; max: number };
     pwnedPasswordCheck: boolean;
+    /** Cloudflare Turnstile, absent when disabled (never in production). */
+    turnstile: TurnstileConfig | undefined;
     providers: {
       google: OAuthClientConfig | undefined;
       linkedin: OAuthClientConfig | undefined;
@@ -317,6 +325,16 @@ function oauthClient(
   return clientId && clientSecret ? { clientId, clientSecret } : undefined;
 }
 
+function turnstile(env: ApiEnv): TurnstileConfig | undefined {
+  return env.TURNSTILE_SITE_KEY && env.TURNSTILE_SECRET_KEY
+    ? {
+        siteKey: env.TURNSTILE_SITE_KEY,
+        secretKey: env.TURNSTILE_SECRET_KEY,
+        appearance: env.TURNSTILE_APPEARANCE,
+      }
+    : undefined;
+}
+
 export function parseApiConfig(rawEnv: RawEnv): ApiConfig {
   const env: ApiEnv = parse(apiEnv, rawEnv);
   const common = toCommonConfig(env);
@@ -364,6 +382,7 @@ export function parseApiConfig(rawEnv: RawEnv): ApiConfig {
         max: env.AUTH_RATE_LIMIT_MAX,
       },
       pwnedPasswordCheck: env.AUTH_PWNED_PASSWORD_CHECK,
+      turnstile: turnstile(env),
       providers: {
         google: oauthClient(env.GOOGLE_CLIENT_ID, env.GOOGLE_CLIENT_SECRET),
         linkedin: oauthClient(env.LINKEDIN_CLIENT_ID, env.LINKEDIN_CLIENT_SECRET),

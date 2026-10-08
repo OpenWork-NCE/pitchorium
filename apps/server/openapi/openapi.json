@@ -1307,6 +1307,51 @@
         "x-access": "localization.manage"
       }
     },
+    "/v1/auth-configuration": {
+      "get": {
+        "operationId": "AccountController_authConfiguration",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthConfigurationDto_Output"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error (RFC 9457 problem details)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "RATE_LIMITED": {
+                    "$ref": "#/components/examples/RATE_LIMITED"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "account"
+        ],
+        "summary": "Auth configuration",
+        "description": "Public: no session needed.\n\nErrors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.",
+        "x-error-codes": [
+          "RATE_LIMITED",
+          "IDENTITY_USER_NOT_FOUND",
+          "IDENTITY_LEGAL_VERSION_OUTDATED",
+          "IDENTITY_LOCALE_NOT_ACTIVE"
+        ],
+        "x-access": "public"
+      }
+    },
     "/v1/locales": {
       "get": {
         "operationId": "AccountController_activeLocales",
@@ -34437,6 +34482,83 @@
         },
         "required": [
           "items"
+        ],
+        "additionalProperties": false
+      },
+      "AuthConfigurationDto_Output": {
+        "type": "object",
+        "properties": {
+          "oauthProviders": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "google",
+                "linkedin",
+                "microsoft"
+              ]
+            }
+          },
+          "turnstile": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "siteKey": {
+                    "type": "string"
+                  },
+                  "appearance": {
+                    "type": "string",
+                    "enum": [
+                      "interaction-only",
+                      "always"
+                    ]
+                  }
+                },
+                "required": [
+                  "siteKey",
+                  "appearance"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "legal": {
+            "type": "object",
+            "properties": {
+              "termsVersion": {
+                "type": "string"
+              },
+              "privacyVersion": {
+                "type": "string"
+              },
+              "minimumAge": {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              }
+            },
+            "required": [
+              "termsVersion",
+              "privacyVersion",
+              "minimumAge"
+            ],
+            "additionalProperties": false
+          },
+          "minPasswordLength": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "oauthProviders",
+          "turnstile",
+          "legal",
+          "minPasswordLength"
         ],
         "additionalProperties": false
       },

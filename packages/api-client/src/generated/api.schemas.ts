@@ -378,6 +378,49 @@ export interface LocaleStatusListDtoOutput {
   items: LocaleStatusListDtoOutputItemsItem[];
 }
 
+export type AuthConfigurationDtoOutputOauthProvidersItem =
+  (typeof AuthConfigurationDtoOutputOauthProvidersItem)[keyof typeof AuthConfigurationDtoOutputOauthProvidersItem];
+
+export const AuthConfigurationDtoOutputOauthProvidersItem = {
+  google: 'google',
+  linkedin: 'linkedin',
+  microsoft: 'microsoft',
+} as const;
+
+export type AuthConfigurationDtoOutputTurnstileAppearance =
+  (typeof AuthConfigurationDtoOutputTurnstileAppearance)[keyof typeof AuthConfigurationDtoOutputTurnstileAppearance];
+
+export const AuthConfigurationDtoOutputTurnstileAppearance = {
+  'interaction-only': 'interaction-only',
+  always: 'always',
+} as const;
+
+export type AuthConfigurationDtoOutputTurnstile = {
+  siteKey: string;
+  appearance: AuthConfigurationDtoOutputTurnstileAppearance;
+} | null;
+
+export type AuthConfigurationDtoOutputLegal = {
+  termsVersion: string;
+  privacyVersion: string;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  minimumAge: number;
+};
+
+export interface AuthConfigurationDtoOutput {
+  oauthProviders: AuthConfigurationDtoOutputOauthProvidersItem[];
+  turnstile: AuthConfigurationDtoOutputTurnstile;
+  legal: AuthConfigurationDtoOutputLegal;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  minPasswordLength: number;
+}
+
 export type ActiveLocalesDtoOutputDefaultLocale =
   (typeof ActiveLocalesDtoOutputDefaultLocale)[keyof typeof ActiveLocalesDtoOutputDefaultLocale];
 

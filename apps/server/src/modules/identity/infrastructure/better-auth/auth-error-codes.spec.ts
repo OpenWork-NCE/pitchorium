@@ -2,9 +2,10 @@ import {
   AUTH_ERROR_CODES,
   authErrorTranslationKey,
   BETTER_AUTH_ERROR_CODES,
+  CAPTCHA_AUTH_ERROR_CODES,
 } from '@pitchorium/contracts';
 import { BASE_ERROR_CODES } from 'better-auth';
-import { TWO_FACTOR_ERROR_CODES } from 'better-auth/plugins';
+import { captcha, TWO_FACTOR_ERROR_CODES } from 'better-auth/plugins';
 import { describe, expect, it } from 'vitest';
 
 describe('/v1/auth error codes (ADR 0020)', () => {
@@ -14,6 +15,11 @@ describe('/v1/auth error codes (ADR 0020)', () => {
       ...Object.keys(TWO_FACTOR_ERROR_CODES),
     ]);
     expect(BETTER_AUTH_ERROR_CODES.filter((code) => !defined.has(code))).toEqual([]);
+  });
+
+  it('lists the codes of the captcha plugin (Turnstile)', () => {
+    const plugin = captcha({ provider: 'cloudflare-turnstile', secretKey: 'unused' });
+    expect([...CAPTCHA_AUTH_ERROR_CODES].sort()).toEqual(Object.keys(plugin.$ERROR_CODES).sort());
   });
 
   it('resolves registry codes, auth codes in any case, then the status fallback', () => {
