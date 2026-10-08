@@ -72,11 +72,24 @@ export async function truncatePlatformTables(): Promise<void> {
   }
 }
 
+/**
+ * A handler of the previous test may still write while the tables are truncated: PostgreSQL
+ * then breaks the deadlock by failing one side, and the truncation is tried again.
+ */
 export async function truncateAllTables(): Promise<void> {
   const { pool } = createDatabase({ url: inject('databaseUrl'), maxConnections: 1 });
   try {
     const tables = [...PLATFORM_TABLES.map((table) => `platform.${table}`), ...BUSINESS_TABLES];
-    await pool.query(`TRUNCATE ${tables.join(', ')} CASCADE`);
+    for (let attempt = 1; ; attempt += 1) {
+      try {
+        await pool.query(`TRUNCATE ${tables.join(', ')} CASCADE`);
+        return;
+      } catch (error) {
+        const deadlock = (error as { code?: string }).code === '40P01';
+        if (!deadlock || attempt >= 5) throw error;
+        await new Promise((resolve) => setTimeout(resolve, 200 * attempt));
+      }
+    }
   } finally {
     await pool.end();
   }
