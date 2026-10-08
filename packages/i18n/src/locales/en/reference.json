@@ -668,7 +668,15 @@
     "offline_contribution_decided": "Confirmed or rejected off-platform contributions",
     "time_entry_declared": "Declared shared time",
     "time_entry_answered": "Confirmed or disputed shared time",
-    "security_alert": "Account security"
+    "security_alert": "Account security",
+    "event_registration_confirmed": "Event registration confirmed",
+    "event_waitlist_promoted": "Seat freed from the waiting list",
+    "event_reminder": "Event reminder",
+    "event_canceled": "Event canceled",
+    "mission_engagement_requested": "Mission application or request received",
+    "mission_engagement_answered": "Mission answer",
+    "mission_completed": "Completed mission to confirm",
+    "new_suggestions": "New suggestions"
   },
   "notificationChannels": {
     "in_app": "In the app",
@@ -678,5 +686,73 @@
     "off": "One email per notification",
     "daily": "Daily summary",
     "weekly": "Weekly summary"
+  },
+  "eventFormats": {
+    "online": "Online",
+    "in_person": "In person",
+    "hybrid": "Hybrid"
+  },
+  "eventStatuses": {
+    "draft": "Draft",
+    "published": "Published",
+    "canceled": "Canceled",
+    "completed": "Completed"
+  },
+  "eventVisibilities": {
+    "public": "Public",
+    "members": "Members"
+  },
+  "eventRegistrationStatuses": {
+    "registered": "Registered",
+    "waitlisted": "On the waiting list"
+  },
+  "missionDirections": {
+    "offer": "Offer",
+    "request": "Request"
+  },
+  "missionFormats": {
+    "session": "One-off session",
+    "short_mission": "Short mission"
+  },
+  "missionModes": {
+    "remote": "Remote",
+    "on_site": "On site"
+  },
+  "missionStatuses": {
+    "open": "Open",
+    "closed": "Closed"
+  },
+  "missionVisibilities": {
+    "members": "Members",
+    "public": "Public"
+  },
+  "missionEngagementStatuses": {
+    "requested": "Awaiting answer",
+    "accepted": "In progress",
+    "declined": "Declined",
+    "completed": "Completed",
+    "canceled": "Canceled"
+  },
+  "discoveryKinds": {
+    "person": "People",
+    "organization": "Organizations",
+    "project": "Projects",
+    "event": "Events",
+    "mission": "Missions"
+  },
+  "suggestionLists": {
+    "people": "Relevant people for you",
+    "complementary_entrepreneurs": "Complementary entrepreneurs",
+    "projects": "Projects for you",
+    "missions": "Missions for you",
+    "events": "Events for you"
+  },
+  "discoverSections": {
+    "recent_projects": "Recent projects",
+    "ending_soon_projects": "Campaigns ending soon",
+    "suggested_profiles": "Suggested profiles",
+    "editorial": "Editorial selection",
+    "upcoming_events": "Upcoming events",
+    "open_missions": "Open missions"
   }
 }

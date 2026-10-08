@@ -1,6 +1,13 @@
 import { assignableRoleSchema, prerequisiteElementSchema, roleSchema } from './access.js';
 import { postVisibilitySchema, reactionTypeSchema } from './content.js';
+import { discoverSectionSchema, discoveryKindSchema, suggestionListSchema } from './discovery.js';
 import { timeEntryKindSchema, timeEntryStatusSchema } from './engagement.js';
+import {
+  eventFormatSchema,
+  eventRegistrationStatusSchema,
+  eventStatusSchema,
+  eventVisibilitySchema,
+} from './events.js';
 import { legalDocumentSchema, signInProviderSchema } from './identity.js';
 import { impactLevelSchema, impactMethodologyStatusSchema } from './impact.js';
 import { mediaRejectionReasonSchema } from './media.js';
@@ -12,6 +19,14 @@ import {
   messagePolicySchema,
   requestStateSchema,
 } from './messaging.js';
+import {
+  missionDirectionSchema,
+  missionEngagementStatusSchema,
+  missionFormatSchema,
+  missionModeSchema,
+  missionStatusSchema,
+  missionVisibilitySchema,
+} from './missions.js';
 import {
   connectionRequestStatusSchema,
   connectionStateSchema,
@@ -127,6 +142,19 @@ export const LABELLED_ENUMS: Readonly<Record<string, readonly AnyEnum[]>> = {
   notificationTypes: [notificationTypeSchema],
   notificationChannels: [notificationChannelSchema],
   emailDigests: [emailDigestSchema],
+  eventFormats: [eventFormatSchema],
+  eventStatuses: [eventStatusSchema],
+  eventVisibilities: [eventVisibilitySchema],
+  eventRegistrationStatuses: [eventRegistrationStatusSchema],
+  missionDirections: [missionDirectionSchema],
+  missionFormats: [missionFormatSchema],
+  missionModes: [missionModeSchema],
+  missionStatuses: [missionStatusSchema],
+  missionVisibilities: [missionVisibilitySchema],
+  missionEngagementStatuses: [missionEngagementStatusSchema],
+  discoveryKinds: [discoveryKindSchema],
+  suggestionLists: [suggestionListSchema],
+  discoverSections: [discoverSectionSchema],
 };
 
 /**
@@ -159,4 +187,9 @@ export const TECHNICAL_ENUMS: readonly string[] = [
   'introductionRoleSchema',
   'notificationPrioritySchema',
   'notificationTargetTypeSchema',
+  'eventModerationStatusSchema',
+  'myEventRoleSchema',
+  'missionModerationStatusSchema',
+  'myEngagementRoleSchema',
+  'matchingRuleSchema',
 ];

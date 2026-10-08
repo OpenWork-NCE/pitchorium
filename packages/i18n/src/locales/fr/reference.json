@@ -668,7 +668,15 @@
     "offline_contribution_decided": "Contributions hors plateforme confirmées ou rejetées",
     "time_entry_declared": "Temps partagé déclaré",
     "time_entry_answered": "Temps partagé confirmé ou contesté",
-    "security_alert": "Sécurité du compte"
+    "security_alert": "Sécurité du compte",
+    "event_registration_confirmed": "Inscription à un événement confirmée",
+    "event_waitlist_promoted": "Place libérée sur liste d'attente",
+    "event_reminder": "Rappel d'événement",
+    "event_canceled": "Événement annulé",
+    "mission_engagement_requested": "Candidature ou sollicitation de mission reçue",
+    "mission_engagement_answered": "Réponse à une mission",
+    "mission_completed": "Mission terminée à confirmer",
+    "new_suggestions": "Nouvelles suggestions"
   },
   "notificationChannels": {
     "in_app": "Dans l'application",
@@ -678,5 +686,73 @@
     "off": "Un email à chaque notification",
     "daily": "Résumé quotidien",
     "weekly": "Résumé hebdomadaire"
+  },
+  "eventFormats": {
+    "online": "En ligne",
+    "in_person": "En présentiel",
+    "hybrid": "Hybride"
+  },
+  "eventStatuses": {
+    "draft": "Brouillon",
+    "published": "Publié",
+    "canceled": "Annulé",
+    "completed": "Terminé"
+  },
+  "eventVisibilities": {
+    "public": "Public",
+    "members": "Membres"
+  },
+  "eventRegistrationStatuses": {
+    "registered": "Inscrit",
+    "waitlisted": "En liste d'attente"
+  },
+  "missionDirections": {
+    "offer": "Offre",
+    "request": "Demande"
+  },
+  "missionFormats": {
+    "session": "Session ponctuelle",
+    "short_mission": "Mission courte"
+  },
+  "missionModes": {
+    "remote": "À distance",
+    "on_site": "Sur place"
+  },
+  "missionStatuses": {
+    "open": "Ouverte",
+    "closed": "Fermée"
+  },
+  "missionVisibilities": {
+    "members": "Membres",
+    "public": "Public"
+  },
+  "missionEngagementStatuses": {
+    "requested": "En attente de réponse",
+    "accepted": "En cours",
+    "declined": "Refusée",
+    "completed": "Terminée",
+    "canceled": "Annulée"
+  },
+  "discoveryKinds": {
+    "person": "Personnes",
+    "organization": "Organisations",
+    "project": "Projets",
+    "event": "Événements",
+    "mission": "Missions"
+  },
+  "suggestionLists": {
+    "people": "Personnes pertinentes pour vous",
+    "complementary_entrepreneurs": "Entrepreneurs complémentaires",
+    "projects": "Projets pour vous",
+    "missions": "Missions pour vous",
+    "events": "Événements pour vous"
+  },
+  "discoverSections": {
+    "recent_projects": "Projets récents",
+    "ending_soon_projects": "Fin de campagne proche",
+    "suggested_profiles": "Profils suggérés",
+    "editorial": "Sélection éditoriale",
+    "upcoming_events": "Événements à venir",
+    "open_missions": "Missions ouvertes"
   }
 }

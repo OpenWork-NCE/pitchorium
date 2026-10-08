@@ -1,7 +1,9 @@
 export * from './access.js';
 export * from './auth-errors.js';
 export * from './content.js';
+export * from './discovery.js';
 export * from './engagement.js';
+export * from './events.js';
 export * from './account.js';
 export * from './errors/error-codes.js';
 export * from './errors/problem-details.js';
@@ -13,6 +15,7 @@ export * from './ids.js';
 export * from './locale.js';
 export * from './media.js';
 export * from './messaging.js';
+export * from './missions.js';
 export * from './money.js';
 export * from './network.js';
 export * from './notifications.js';
