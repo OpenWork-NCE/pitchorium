@@ -17,7 +17,10 @@ import {
 } from './interface/messaging.controller';
 import { MessagingGateway } from './interface/messaging.gateway';
 
+import { MessagingPersonalData } from './infrastructure/messaging-personal-data';
+
 const SHARED_PROVIDERS: Provider[] = [
+  MessagingPersonalData,
   { provide: MessagingRepository, useClass: DrizzleMessagingRepository },
   ConversationAccess,
   MessagingFacade,

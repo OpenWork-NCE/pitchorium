@@ -81,3 +81,7 @@ Aucun.
 ## Dépendances
 
 identity (email vérifié, conditions acceptées), profiles (identifiants publics, cartes), network (connexions, degré, blocages), content (publications visibles par un lecteur), media (pièces jointes, règle de lecture).
+
+## Données personnelles (RGPD)
+
+Export : messages écrits, conversations, introductions, préférence de messagerie. Suppression : les conversations appartiennent aussi aux autres participants ; les messages du membre deviennent des pierres tombales vides sans fichier, expédiées par le pseudonyme (« Membre supprimé ») ; la note d'une introduction qu'il a proposée est vidée ; sa préférence supprimée. Contrats enregistrés auprès du module privacy (`infrastructure/messaging-personal-data.ts`, ADR 0074).
