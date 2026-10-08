@@ -29,7 +29,8 @@ async function rulesFor(relativePath: string, code: string): Promise<string[]> {
   return (result?.messages ?? []).map((message) => message.ruleId ?? message.message);
 }
 
-describe('architecture rules of the web app', () => {
+// The first lint starts the TypeScript project service: several seconds on a CI runner.
+describe('architecture rules of the web app', { timeout: 60_000 }, () => {
   it('keeps features out of the design system', async () => {
     expect(
       await rulesFor(
