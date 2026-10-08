@@ -45,3 +45,7 @@ Tableau de bord d'impact et journal du temps partagé (cahier des charges §6.3,
 ## Dépendances
 
 payments (faits des contributions), projects (projets, rôles d'équipe), profiles (cartes, identifiants publics), organizations (rôle dans l'organisation).
+
+## Données personnelles (RGPD)
+
+Export : contributions du tableau de bord, heures déclarées ou reçues. Suppression : la projection et le journal du temps gardés sous le pseudonyme (les heures comptent aussi pour l'autre partie). Contrats enregistrés auprès du module privacy (`infrastructure/engagement-personal-data.ts`, ADR 0074).

@@ -10,7 +10,10 @@ import {
   TimeEntryResolver,
 } from './interface/engagement.controller';
 
+import { EngagementPersonalData } from './infrastructure/engagement-personal-data';
+
 const SHARED_PROVIDERS: Provider[] = [
+  EngagementPersonalData,
   { provide: EngagementRepository, useClass: DrizzleEngagementRepository },
   EngagementService,
   EngagementFacade,
