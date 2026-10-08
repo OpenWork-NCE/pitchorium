@@ -10,11 +10,11 @@ La définition de terminé (`AGENTS.md`) s'exécutait sur le poste de développe
 
 - `pnpm verify:clean` (`scripts/verify-clean.sh`) clone l'état commité (`HEAD`, ou `VERIFY_REF`) dans un répertoire temporaire, sans fichier non suivi, sans `node_modules`, sans cache de Turborepo.
 - Il démarre un projet Docker Compose distinct (`COMPOSE_PROJECT_NAME`, `pitchorium-verify` par défaut, refus de `pitchorium`) sur des ports dédiés : port par défaut de chaque service plus `VERIFY_PORT_OFFSET` (20000 par défaut), par les variables `PITCHORIUM_*_PORT` de `infra/docker/compose.yaml`. Le `.env` du clone, dérivé de `.env.example`, pointe vers ces ports et un préfixe de files BullMQ propre.
-- Il enchaîne `pnpm install --frozen-lockfile`, `infra:up`, `db:migrate`, `db:seed`, `db:seed:dev`, `lint`, `typecheck`, `test`, `test:integration`, `build`, `test:e2e`, `openapi:generate`, `api-client:generate`, puis les contrôles de cohérence (`format:check`, `check:box-drawing`, `i18n:check`, `db:check`) et exige un `git status` vide après génération.
+- Il enchaîne `pnpm install --frozen-lockfile`, `infra:up`, `db:migrate`, `db:seed`, `db:seed:dev`, `lint`, `typecheck`, `test`, `test:integration`, `build`, les budgets de JavaScript du web (`check:bundles`), `test:e2e` (serveur, puis web dans l'image Playwright avec ses captures), la construction de Storybook, Lighthouse CI du web, `openapi:generate`, `api-client:generate`, puis les contrôles de cohérence (`format:check`, `check:box-drawing`, `i18n:check`, `db:check`) et exige un `git status` vide après génération. Le `.env` du web est copié de son `.env.example`.
 - Il s'arrête au premier échec, affiche la fin du journal de l'étape, puis supprime toujours ses conteneurs, ses volumes (`down -v`) et le clone ; les journaux restent dans un répertoire temporaire indiqué à la fin. `VERIFY_KEEP=1` conserve le clone et le projet pour une inspection.
 
 ## Conséquences
 
 - Le résultat ne dépend que du commit vérifié : un fichier oublié dans un commit, une migration non générée ou un client d'API non régénéré font échouer la vérification.
 - Une exécution complète prend plusieurs minutes (démarrage de ClamAV, tests d'intégration) ; les tests d'intégration gardent leurs propres conteneurs Testcontainers.
-- Les ports par défaut plus 20000 doivent être libres ; `VERIFY_PORT_OFFSET` en choisit d'autres.
+- Les ports par défaut plus 20000 doivent être libres ; `VERIFY_PORT_OFFSET` en choisit d'autres. Les tests de bout en bout du web utilisent les ports 3201 et 3299 ; Lighthouse CI demande Chrome sur le poste.

@@ -87,6 +87,8 @@ sed \
   -e "s#^CLAMAV_PORT=.*#CLAMAV_PORT=$PITCHORIUM_CLAMAV_PORT#" \
   -e "s#^QUEUE_PREFIX=.*#QUEUE_PREFIX=$project#" \
   "$clone/apps/server/.env.example" >"$clone/apps/server/.env"
+# The web app validates its configuration when it builds (apps/web/src/lib/env.ts).
+cp "$clone/apps/web/.env.example" "$clone/apps/web/.env"
 
 step 'pnpm install' pnpm install --frozen-lockfile
 step 'pnpm infra:up' pnpm infra:up
@@ -98,7 +100,10 @@ step 'pnpm typecheck' pnpm typecheck
 step 'pnpm test' pnpm test
 step 'pnpm test:integration' pnpm test:integration
 step 'pnpm build' pnpm build
+step 'web: initial JavaScript budgets' pnpm --filter @pitchorium/web check:bundles
 step 'pnpm test:e2e' pnpm test:e2e
+step 'web: Storybook build' pnpm --filter @pitchorium/web build-storybook
+step 'web: Lighthouse CI' pnpm --filter @pitchorium/web lighthouse
 step 'pnpm openapi:generate' pnpm openapi:generate
 step 'pnpm api-client:generate' pnpm api-client:generate
 step 'pnpm format:check' pnpm format:check

@@ -11,3 +11,13 @@ runs:
     - name: Install dependencies
       shell: bash
       run: pnpm install --frozen-lockfile
+    # Local cache of Turborepo, per job: an unchanged package is not built or checked twice.
+    - uses: actions/cache@v6.1.0
+      with:
+        path: .turbo/cache
+        key: turbo-${{ runner.os }}-${{ github.job }}-${{ github.sha }}
+        restore-keys: turbo-${{ runner.os }}-${{ github.job }}-
+    # The web app validates its configuration at build and type generation (apps/web/src/lib/env.ts).
+    - name: Environment of the web app
+      shell: bash
+      run: test -f apps/web/.env || cp apps/web/.env.example apps/web/.env

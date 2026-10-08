@@ -51,8 +51,40 @@ jobs:
     steps:
       - uses: actions/checkout@v7.0.1
       - uses: ./.github/actions/setup
-      # Built api and worker as processes, containers started by Testcontainers.
+      # Server: built api and worker as processes, containers started by Testcontainers.
+      # Web: production build against a stub api, in the official Playwright image (screenshots).
       - run: pnpm test:e2e
+      - if: failure()
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: playwright-report
+          path: apps/web/playwright-report
+          if-no-files-found: ignore
+
+  web-quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: ./.github/actions/setup
+      - uses: actions/cache@v6.1.0
+        with:
+          path: apps/web/.next-e2e/cache
+          key: next-e2e-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ github.sha }}
+          restore-keys: next-e2e-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-
+      - name: Packages used by the web app
+        run: pnpm turbo run build --filter=@pitchorium/web^...
+      - name: Design system (Storybook)
+        run: pnpm turbo run build-storybook --filter=@pitchorium/web
+      - name: Lighthouse CI (mobile profile, budgets of lighthouserc.cjs)
+        run: pnpm --filter @pitchorium/web lighthouse
+      - name: Initial JavaScript per route group, no GSAP outside the editorial pages
+        run: pnpm --filter @pitchorium/web check:bundles .next-e2e
+      - if: always()
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: lighthouse
+          path: apps/web/.lighthouseci
+          if-no-files-found: ignore
 
   security:
     runs-on: ubuntu-latest
@@ -116,7 +148,14 @@ jobs:
     steps:
       - uses: actions/checkout@v7.0.1
       - uses: ./.github/actions/setup
+      - uses: actions/cache@v6.1.0
+        with:
+          path: apps/web/.next/cache
+          key: next-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ github.sha }}
+          restore-keys: next-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-
       - run: pnpm build
+      - name: Initial JavaScript per route group of the web app
+        run: pnpm --filter @pitchorium/web check:bundles
 
   consistency:
     runs-on: ubuntu-latest

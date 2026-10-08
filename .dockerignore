@@ -9,3 +9,11 @@ docs/product
 apps/server/.env
 **/*.log
 infra/docker/data
+Pitchorium-Identite-Marque
+apps/web/.next
+apps/web/.next-e2e
+apps/web/.next-analyze
+apps/web/storybook-static
+apps/web/.lighthouseci
+apps/web/test-results
+apps/web/playwright-report

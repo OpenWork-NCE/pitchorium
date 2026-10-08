@@ -8,8 +8,9 @@ WORKDIR /app
 ENV CI=true TURBO_TELEMETRY_DISABLED=1
 RUN corepack enable
 COPY . .
-RUN pnpm install --frozen-lockfile \
-  && pnpm build \
+# The server and its packages only: the web app (apps/web) is deployed on its own.
+RUN pnpm install --frozen-lockfile --filter @pitchorium/server... \
+  && pnpm turbo run build --filter=@pitchorium/server... \
   && pnpm --filter @pitchorium/server deploy --prod /out \
   && rm -rf /out/src /out/test /out/scripts /out/openapi /out/*.mts /out/eslint.config.mjs /out/tsconfig*.json
 
