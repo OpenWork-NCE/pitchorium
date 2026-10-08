@@ -100,3 +100,4 @@ Un fichier par décision, numéroté, au format Contexte / Décision / Conséque
 | [0094](0094-web-bundle-regime.md)                        | Régime du bundle du web                                      |
 | [0095](0095-art-direction.md)                            | Direction artistique                                         |
 | [0096](0096-web-forms.md)                                | Système de formulaires du web                                |
+| [0098](0098-keyboard-shortcuts.md)                       | Raccourcis clavier                                           |

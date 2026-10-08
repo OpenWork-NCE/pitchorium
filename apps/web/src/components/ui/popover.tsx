@@ -8,7 +8,6 @@ import { floatingEnter, floatingSurface } from './overlay-classes';
 /** Floating panel anchored to its trigger, non-modal (Radix Popover): Escape and a click outside close it. */
 export const Popover = Primitive.Root;
 export const PopoverTrigger = Primitive.Trigger;
-export const PopoverAnchor = Primitive.Anchor;
 export const PopoverClose = Primitive.Close;
 
 export function PopoverContent({

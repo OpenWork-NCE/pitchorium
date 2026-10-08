@@ -27,7 +27,13 @@
       ]
     },
     "apps/web": {
-      "entry": ["scripts/*.mjs", "e2e/support/*.mjs", "lighthouserc.cjs"],
+      "entry": [
+        "scripts/*.mjs",
+        "e2e/support/*.mjs",
+        "lighthouserc.cjs",
+        "src/components/ui/index.ts",
+        "src/features/*/index.ts"
+      ],
       "ignoreDependencies": ["@lhci/cli"]
     }
   },
