@@ -218,4 +218,5 @@ export const TECHNICAL_ENUMS: readonly string[] = [
   'trustSignalKindSchema',
   'translationSourceTypeSchema',
   'translationProviderSchema',
+  'highlightTargetTypeSchema',
 ];

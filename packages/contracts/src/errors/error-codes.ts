@@ -476,6 +476,11 @@ export const errorCodes = {
   LOCALIZATION_LOCALE_NOT_READY: { status: 409, title: 'Locale incomplete or not reviewed' },
   LOCALIZATION_GLOSSARY_TERM_NOT_FOUND: { status: 404, title: 'Glossary term not found' },
   LOCALIZATION_GLOSSARY_TERM_EXISTS: { status: 409, title: 'Glossary term already exists' },
+  ADMIN_MEMBER_NOT_FOUND: { status: 404, title: 'Member not found' },
+  ADMIN_FLAG_NOT_FOUND: { status: 404, title: 'Feature flag not found' },
+  ADMIN_LEGAL_REFERENCE_REQUIRED: { status: 422, title: 'Legal validation reference required' },
+  ADMIN_HIGHLIGHT_TARGET_NOT_FOUND: { status: 404, title: 'Content to highlight not found' },
+  ADMIN_QUEUE_NOT_FOUND: { status: 404, title: 'Queue not found' },
   INTERNAL_ERROR: { status: 500, title: 'Internal error' },
   SERVICE_UNAVAILABLE: { status: 503, title: 'Service unavailable' },
 } as const satisfies Record<string, ErrorCodeDefinition>;

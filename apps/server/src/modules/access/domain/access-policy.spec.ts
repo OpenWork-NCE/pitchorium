@@ -331,6 +331,14 @@ const MATRIX: Record<Action, Record<Scenario, Expected>> = {
   'privacy.requests.read': adminsWith2fa,
   'localization.translate': membersWithAcceptedTerms,
   'localization.manage': adminsWith2fa,
+  'admin.members.read': adminsWith2fa,
+  'admin.flags.read': adminsWith2fa,
+  'admin.flags.manage': adminsWith2fa,
+  'admin.highlights.manage': moderatorsAndAdminsWith2fa,
+  'admin.jobs.read': adminsWith2fa,
+  'admin.jobs.retry': adminsWith2fa,
+  'admin.stats.read': adminsWith2fa,
+  'admin.audit.read': adminsWith2fa,
 };
 
 function outcome(action: Action, scenario: Scenario): Expected {
@@ -563,6 +571,7 @@ describe('access policies', () => {
       'trust.project.refund',
       'payment.refund',
       'privacy.erasure.request',
+      'admin.flags.manage',
     ] as const) {
       expect(decide(action, stale)).toEqual({
         allowed: false,

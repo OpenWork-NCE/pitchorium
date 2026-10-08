@@ -148,6 +148,14 @@ export const ACTIONS = [
   'privacy.requests.read',
   'localization.translate',
   'localization.manage',
+  'admin.members.read',
+  'admin.flags.read',
+  'admin.flags.manage',
+  'admin.highlights.manage',
+  'admin.jobs.read',
+  'admin.jobs.retry',
+  'admin.stats.read',
+  'admin.audit.read',
 ] as const;
 export const actionSchema = z.enum(ACTIONS);
 

@@ -237,4 +237,14 @@ export const ACTION_POLICIES: Readonly<Record<Action, ActionPolicy>> = {
   // and the state of the locales for administrators.
   'localization.translate': {},
   'localization.manage': { roles: ['admin'], sensitive: true },
+  // Back office (§13, §14). Reading members and the audit log is audited by the module; a
+  // change of flag needs a recent session. Editorial highlights for moderators and admins.
+  'admin.members.read': { roles: ['admin'], sensitive: true },
+  'admin.flags.read': { roles: ['admin'] },
+  'admin.flags.manage': { roles: ['admin'], sensitive: true, recentAuthentication: true },
+  'admin.highlights.manage': { roles: ['moderator', 'admin'], sensitive: true },
+  'admin.jobs.read': { roles: ['admin'] },
+  'admin.jobs.retry': { roles: ['admin'], sensitive: true },
+  'admin.stats.read': { roles: ['admin'] },
+  'admin.audit.read': { roles: ['admin'], sensitive: true },
 };
