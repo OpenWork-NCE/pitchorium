@@ -11,9 +11,8 @@ const FROM = 'Pitchorium <onboarding@resend.dev>';
  * mailbox and the reputation of the account is not affected.
  */
 describe.skipIf(!KEY)('Resend sandbox', () => {
-  const mailer = new ResendMailer(KEY, FROM);
-
   it('sends a batch and returns one identifier per email, in order', async () => {
+    const mailer = new ResendMailer(KEY, FROM);
     const receipts = await mailer.sendMany(
       ['delivered@resend.dev', 'bounced@resend.dev', 'complained@resend.dev'].map((to) => ({
         to,

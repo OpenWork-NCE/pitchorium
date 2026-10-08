@@ -36,3 +36,4 @@ Clés de test Stripe et Flutterwave disponibles (sans compte connecté de test `
 - La fermeture d'un compte v2 exige `applied_configurations` (`merchant`, ou `customer` et `merchant`) : sans elle, Stripe refuse et les comptes créés par les exécutions précédentes restaient ouverts. La suite et `providers:cleanup` la transmettent ; les comptes restants ont été fermés.
 - Une plateforme établie en France ne peut pas fixer `display_name` à la création d'un compte v2 (jetons de compte exigés), comme les autres données d'identité.
 - Resend : aucune clé `RESEND_TEST_API_KEY` fournie, l'envoi par lot n'est pas vérifié contre l'API réelle.
+- Flutterwave : `GET /v3/transfers/rates` répond « An error occurred... Please contact support » (puis « system token ») pour la clé de test depuis le 2026-10-08 ; le test du taux indicatif est alors ignoré avec ce motif, jamais compté comme réussi. À signaler à Flutterwave.

@@ -179,13 +179,23 @@ describe.skipIf(!KEY)('Flutterwave sandbox', () => {
     }
   });
 
-  it('reads the indicative rate of a currency against the euro', async () => {
-    const rate = await new FlutterwaveFxRateProvider({
+  it('reads the indicative rate of a currency against the euro', async (context) => {
+    const provider = new FlutterwaveFxRateProvider({
       secretKey: KEY,
       webhookSecretHash: 'unused',
       apiBaseUrl: BASE,
-    }).rate('NGN', new Date());
-    expect(rate.unitsPerEur).toMatch(/^\d+(\.\d+)?$/);
+    });
+    try {
+      const rate = await provider.rate('NGN', new Date());
+      expect(rate.unitsPerEur).toMatch(/^\d+(\.\d+)?$/);
+    } catch (error) {
+      // The sandbox answers this error for every key since 2026-10-08 (ADR 0054): reported as
+      // a skip with its reason, never as a pass.
+      if (String(error).includes('Please contact support')) {
+        context.skip(`Flutterwave sandbox outage: ${String(error)}`);
+      }
+      throw error;
+    }
   });
 
   it('accepts a documented notification carrying the secret hash, and only with it', () => {
