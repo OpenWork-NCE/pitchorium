@@ -117,6 +117,11 @@ export const notificationSchema = z.object({
   target: z.object({ type: notificationTargetTypeSchema, key: z.string(), path: z.string() }),
   /** Identifiers and codes of the source event (reaction type, decision, tier position...). */
   data: z.record(z.string(), z.union([z.string(), z.number(), z.boolean(), z.null()])),
+  /**
+   * Opening of the publication the notification is about (reaction, comment, mention), as its
+   * reader may read it now; null for another target or a publication no longer visible.
+   */
+  excerpt: z.string().nullable(),
   read: z.boolean(),
   createdAt: z.iso.datetime(),
   updatedAt: z.iso.datetime(),

@@ -195,10 +195,14 @@ export class NotificationSources {
     const id = event.aggregateId;
     switch (event.type) {
       case ConnectionRequested.TYPE:
-        return this.direct('connection_request', [text(p['addresseeId'])], text(p['requesterId']), {
-          type: 'connection_requests',
-          key: 'received',
-        });
+        // The request travels with its notification: it is accepted or declined from there.
+        return this.direct(
+          'connection_request',
+          [text(p['addresseeId'])],
+          text(p['requesterId']),
+          { type: 'connection_requests', key: 'received' },
+          { requestId: id },
+        );
       case ConnectionAccepted.TYPE: {
         const addresseeId = text(p['addresseeId']);
         return this.direct('connection_accepted', [text(p['requesterId'])], addresseeId, {

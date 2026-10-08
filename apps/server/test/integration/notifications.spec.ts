@@ -209,7 +209,10 @@ describe('notifications', () => {
 
     // Network: a connection request, then its acceptance.
     await connectMembers(kofi, ama);
-    await waitFor(ama, 'connection_request');
+    // The request travels with its notification, to be answered from there.
+    expect((await waitFor(ama, 'connection_request')).data['requestId']).toEqual(
+      expect.any(String),
+    );
     expect(await waitFor(kofi, 'connection_accepted')).toMatchObject({
       actors: [{ handle: await handleOf(ama) }],
     });
@@ -240,6 +243,8 @@ describe('notifications', () => {
         expect.objectContaining({ handle: await handleOf(kofi) }),
       ]),
       target: { type: 'post', key: post.body.id, path: `/posts/${post.body.id}` },
+      // The opening of the publication, as its reader may read it now.
+      excerpt: 'Notre coopérative recrute.',
     });
     await kofi.agent
       .post(`/v1/posts/${post.body.id}/comments`)

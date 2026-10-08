@@ -65940,6 +65940,12 @@
                     ]
                   }
                 },
+                "excerpt": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
                 "read": {
                   "type": "boolean"
                 },
@@ -65963,6 +65969,7 @@
                 "eventCount",
                 "target",
                 "data",
+                "excerpt",
                 "read",
                 "createdAt",
                 "updatedAt"

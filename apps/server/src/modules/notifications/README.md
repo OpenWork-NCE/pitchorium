@@ -41,6 +41,8 @@ Si le membre a activé l'email du type `message` (désactivé par défaut), un m
 
 `GET /v1/me/notifications?unread=&cursor=&limit=` (curseur), `POST /v1/me/notifications/{id}/read`, `POST /v1/me/notifications/read-all`, `DELETE /v1/me/notifications/{id}`, `GET /v1/me/counters` (notifications et messages non lus, demandes de message, invitations en attente : connexions, introductions, équipes de projet, organisations), poussés aussi en temps réel (événement `counters`).
 
+Une notification sur une publication (réaction, commentaire, mention, publication suivie) porte son début (`excerpt`, 140 caractères au plus, coupé au dernier mot) lu à la présentation avec les règles de visibilité de content : une publication supprimée ou devenue invisible n'en a pas. Une demande de connexion porte son identifiant (`data.requestId`), pour l'accepter ou l'ignorer depuis la notification.
+
 ## Rétention
 
 Purge quotidienne des notifications sans activité depuis `NOTIFICATIONS_RETENTION_DAYS` (90 jours, provisoire), de leurs livraisons et des emails de messages en attente.
@@ -76,7 +78,7 @@ Ceux de la colonne « sources » du registre (handler `notifications.create`, wo
 
 ## Dépendances
 
-identity (adresse, langue, fuseau), profiles (cartes des acteurs), network (abonnés, connexions, blocages, demandes, vues de profil), content (publication d'un commentaire), messaging (conversations, non lus, compteurs), projects (équipe, projet, invitations), organizations (membres, invitations), payments (contributeurs, contributions, hors plateforme), events (inscrits, événements qui commencent), missions (côtés d'un engagement), discovery (nouvelles suggestions), trust (exposé des motifs d'une décision et motivation d'un appel), privacy (événements de ses demandes).
+identity (adresse, langue, fuseau), profiles (cartes des acteurs), network (abonnés, connexions, blocages, demandes, vues de profil), content (publication d'un commentaire, début d'une publication visible), messaging (conversations, non lus, compteurs), projects (équipe, projet, invitations), organizations (membres, invitations), payments (contributeurs, contributions, hors plateforme), events (inscrits, événements qui commencent), missions (côtés d'un engagement), discovery (nouvelles suggestions), trust (exposé des motifs d'une décision et motivation d'un appel), privacy (événements de ses demandes).
 
 ## Données personnelles (RGPD)
 

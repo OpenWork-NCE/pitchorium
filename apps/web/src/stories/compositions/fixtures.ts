@@ -208,6 +208,12 @@ export const tiers: ProjectTier[] = [
   unlockedAt: unlocked ? at(`2026-09-${10 + index * 10}T12:00:00Z`) : null,
 }));
 
+const POST_TARGET = {
+  type: 'post',
+  key: '0192f4a0-2000-7000-8000-000000000002',
+  path: '/posts/0192f4a0-2000-7000-8000-000000000002',
+} as const;
+
 function notification(
   id: string,
   type: Notification['type'],
@@ -215,7 +221,7 @@ function notification(
   actorCount: number,
   hours: number,
   read: boolean,
-  data: Notification['data'] = {},
+  extra: Partial<Pick<Notification, 'data' | 'excerpt' | 'target'>> = {},
 ): Notification {
   return {
     id,
@@ -224,17 +230,18 @@ function notification(
     actors,
     actorCount,
     eventCount: actorCount,
-    target: {
-      type: 'post',
-      key: '0192f4a0-2000-7000-8000-000000000002',
-      path: '/posts/0192f4a0-2000-7000-8000-000000000002',
-    },
-    data,
+    target: POST_TARGET,
+    data: {},
+    excerpt: null,
     read,
     createdAt: hoursAgo(hours),
     updatedAt: hoursAgo(hours),
+    ...extra,
   };
 }
+
+const EXCERPT =
+  'Nous ouvrons un fonds d’amorçage pour des projets d’énergie solaire au Sahel. Critères : équipe locale, prototype en service, premiers clients…';
 
 export const notifications: Notification[] = [
   notification(
@@ -244,7 +251,7 @@ export const notifications: Notification[] = [
     13,
     1,
     false,
-    { reaction: 'bravo' },
+    { data: { reaction: 'bravo', on: 'post' }, excerpt: EXCERPT },
   ),
   notification(
     '0192f4a0-4000-7000-8000-000000000002',
@@ -253,9 +260,26 @@ export const notifications: Notification[] = [
     1,
     3,
     false,
+    {
+      target: { type: 'connection_requests', key: 'received', path: '/network/requests' },
+      data: { requestId: '0192f4a0-4100-7000-8000-000000000001' },
+    },
   ),
-  notification('0192f4a0-4000-7000-8000-000000000003', 'comment', [members.nadia], 1, 7, false),
-  notification('0192f4a0-4000-7000-8000-000000000004', 'new_follower', [members.jean], 1, 30, true),
+  notification('0192f4a0-4000-7000-8000-000000000003', 'comment', [members.nadia], 1, 7, false, {
+    data: { commentId: '0192f4a0-4200-7000-8000-000000000001', reply: false },
+    excerpt: EXCERPT,
+  }),
+  notification(
+    '0192f4a0-4000-7000-8000-000000000004',
+    'new_follower',
+    [members.jean],
+    1,
+    30,
+    true,
+    {
+      target: { type: 'member', key: members.jean.handle, path: `/members/${members.jean.handle}` },
+    },
+  ),
 ];
 
 const conversationId = '0192f4a0-5000-7000-8000-000000000001';
