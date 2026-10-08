@@ -57,9 +57,14 @@ async function newMember(name: string): Promise<Browser & { email: string; handl
   return Object.assign(browser, { email, handle: profile.body.handle as string });
 }
 
-/** No event left in the outbox and no job waiting or running, twice in a row. */
+/**
+ * No event left in the outbox and no job of the business waiting or running, twice in a row. The
+ * jobs of the schedulers (`repeat:` ids: erasures, digests, indexes, every 3 seconds here) are
+ * not work of the scenario: counted, they kept a slow worker from ever looking idle.
+ */
 async function workerIdle(): Promise<void> {
   const redis = new Redis(inject('redisUrl'));
+  const business = (ids: string[]) => ids.filter((id) => !id.startsWith('repeat:')).length;
   try {
     let quiet = 0;
     await eventually(
@@ -68,8 +73,15 @@ async function workerIdle(): Promise<void> {
           'SELECT count(*) AS pending FROM platform.outbox_events WHERE published_at IS NULL',
         );
         let jobs = 0;
-        for (const key of await redis.keys('e2e:*:wait')) jobs += await redis.llen(key);
-        for (const key of await redis.keys('e2e:*:active')) jobs += await redis.llen(key);
+        for (const key of await redis.keys('e2e:*:wait')) {
+          jobs += business(await redis.lrange(key, 0, -1));
+        }
+        for (const key of await redis.keys('e2e:*:active')) {
+          jobs += business(await redis.lrange(key, 0, -1));
+        }
+        for (const key of await redis.keys('e2e:*:prioritized')) {
+          jobs += business(await redis.zrange(key, '0', '-1'));
+        }
         quiet = Number(outbox?.pending) === 0 && jobs === 0 ? quiet + 1 : 0;
         return quiet;
       },
