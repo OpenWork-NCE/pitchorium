@@ -15,6 +15,7 @@ import { MediaModule } from '../../src/modules/media';
 import { MessagingModule } from '../../src/modules/messaging';
 import { MissionsModule } from '../../src/modules/missions';
 import { NetworkModule } from '../../src/modules/network';
+import { TrustModule } from '../../src/modules/trust';
 import { NotificationsModule } from '../../src/modules/notifications';
 import { NotificationsMaintenanceService } from '../../src/modules/notifications/application/notifications-maintenance.service';
 import { NOTIFICATIONS_QUEUE } from '../../src/modules/notifications/interface/notifications-queue';
@@ -83,6 +84,8 @@ describe('notifications fan-out volume', () => {
         EventsModule.forWorker(),
         MissionsModule.forWorker(),
         DiscoveryModule.forWorker(),
+        // The notifications read the statement of a moderation decision.
+        TrustModule.forWorker(),
         NotificationsModule.forWorker(),
       ],
       (builder) => builder,

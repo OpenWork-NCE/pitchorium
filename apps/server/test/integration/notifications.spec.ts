@@ -28,6 +28,7 @@ import { MediaModule } from '../../src/modules/media';
 import { MessagingModule } from '../../src/modules/messaging';
 import { MissionsModule } from '../../src/modules/missions';
 import { NetworkModule } from '../../src/modules/network';
+import { TrustModule } from '../../src/modules/trust';
 import { NotificationsFacade, NotificationsModule } from '../../src/modules/notifications';
 import { NotificationEmailsService } from '../../src/modules/notifications/application/notification-emails.service';
 import { NotificationsMaintenanceService } from '../../src/modules/notifications/application/notifications-maintenance.service';
@@ -160,6 +161,8 @@ describe('notifications', () => {
         EventsModule.forWorker(),
         MissionsModule.forWorker(),
         DiscoveryModule.forWorker(),
+        // The notifications read the statement of a moderation decision.
+        TrustModule.forWorker(),
         NotificationsModule.forWorker(),
       ],
       (builder) => builder.overrideProvider(Clock).useValue(clock),

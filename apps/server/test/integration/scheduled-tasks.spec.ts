@@ -52,6 +52,7 @@ describe('scheduled tasks', () => {
     ]);
     expect(await schedulers(QUEUE_NAMES.maintenance)).toEqual([
       ['purge-idempotency-keys', EVERY_MS],
+      ['purge-outbox', EVERY_MS],
     ]);
   });
 
