@@ -23,7 +23,10 @@ import { RewardsController } from './interface/rewards.controller';
 import { TeamController } from './interface/team.controller';
 import { UpdatesController } from './interface/updates.controller';
 
+import { ProjectsPersonalData } from './infrastructure/projects-personal-data';
+
 const SHARED_PROVIDERS: Provider[] = [
+  ProjectsPersonalData,
   { provide: ProjectRepository, useClass: DrizzleProjectsRepository },
   ProjectEventsRecorder,
   ProjectReadsService,

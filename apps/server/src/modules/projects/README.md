@@ -104,3 +104,7 @@ Aucun.
 ## Dépendances
 
 identity (par le garde d'access), access (politiques), profiles (cartes, identifiants, secteurs, pays), organizations (rôle, cartes, projets portés par enregistrement), media (fichiers, règles de lecture), network (cible de suivi, suivis du lecteur), content (rattachement, actualités du fil, publications rattachées), impact (méthodologie, évaluations).
+
+## Données personnelles (RGPD)
+
+Export : projets portés, rôles d'équipe, actualités écrites, manifestations d'intérêt. Suppression : refusée tant qu'un projet porté est en financement (`funding` ou `funded`, `PRIVACY_CAMPAIGN_IN_PROGRESS`) ; la propriété passe à un autre `owner` actif de l'équipe s'il existe ; un projet clôturé avec des contributions est conservé sous le pseudonyme (« Membre supprimé ») ; tout autre projet est supprimé ; appartenances aux équipes et intérêts supprimés ; actualités gardées sous le pseudonyme. Contrats enregistrés auprès du module privacy (`infrastructure/projects-personal-data.ts`, ADR 0074).
