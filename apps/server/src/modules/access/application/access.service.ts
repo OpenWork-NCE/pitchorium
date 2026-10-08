@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import {
   type Action,
   type ActionPrerequisites,
@@ -6,7 +6,8 @@ import {
   type TrustLevels,
 } from '@pitchorium/contracts';
 import { AuditService } from '../../../platform/audit';
-import { DomainError } from '../../../platform/kernel';
+import { COMMON_CONFIG, type CommonConfig } from '../../../platform/config';
+import { Clock, DomainError } from '../../../platform/kernel';
 import { type AuthenticatedSession, IdentityFacade } from '../../identity';
 import { ACTION_POLICIES } from '../domain/action-policies';
 import {
@@ -34,6 +35,8 @@ export class AccessService {
     private readonly prerequisites: PrerequisiteRegistry,
     private readonly identity: IdentityFacade,
     private readonly audit: AuditService,
+    private readonly clock: Clock,
+    @Inject(COMMON_CONFIG) private readonly config: CommonConfig,
   ) {}
 
   async rolesOf(userId: string): Promise<Role[]> {
@@ -49,6 +52,7 @@ export class AccessService {
       emailVerified: session.user.emailVerified,
       twoFactorEnabled: session.user.twoFactorEnabled,
       legalUpToDate: this.identity.legalStatus(session.user).upToDate,
+      authenticatedAt: session.authenticatedAt,
     };
   }
 
@@ -70,7 +74,17 @@ export class AccessService {
         ? this.prerequisites.missing(actor.userId, providedElements)
         : Promise.resolve([]),
     ]);
-    return decide(action, { actor, resource, suspended, kycVerified, missingProvidedElements });
+    const recentAuthenticationSince = new Date(
+      this.clock.now().getTime() - this.config.access.reauthenticationMaxAgeMs,
+    );
+    return decide(action, {
+      actor,
+      resource,
+      suspended,
+      kycVerified,
+      missingProvidedElements,
+      recentAuthenticationSince,
+    });
   }
 
   async can(actor: Actor, action: Action, resource: AccessResource): Promise<boolean> {

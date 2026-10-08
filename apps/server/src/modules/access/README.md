@@ -10,8 +10,9 @@ Autorisations (cahier des charges §7.3, §13) : refus par défaut, registre cen
   3. elle doit déclarer son action avec `@RequireAction()`, sinon `FORBIDDEN` ; la politique de l'action est alors évaluée.
 - Registre des actions (`domain/action-policies.ts`, noms dans `@pitchorium/contracts`) : rôles admis, propriété de la ressource, prérequis, exigence des conditions acceptées, suspension, audit des refus.
 - Rôles : `member` (implicite), `moderator`, `admin`. Un rôle privilégié exige la double authentification. Attribuer un rôle ferme toutes les sessions du compte (rotation à l'élévation de privilège). Le dernier administrateur ne peut pas être retiré. Le premier administrateur est créé par la commande `pnpm admin:create --email <email>` (idempotente), jamais par l'api.
-- Niveaux de confiance : `email_verified` (identity), `kyc_verified` (port `KycStatusProvider` : le module payments enregistre sa source au démarrage par `AccessFacade.registerKycStatusProvider` ; sans source, personne n'est vérifié), suspension (port `AccountStatusProvider`, adaptateur « jamais suspendu » jusqu'au module trust).
+- Niveaux de confiance : `email_verified` (identity), `kyc_verified` (port `KycStatusProvider` : le module payments enregistre sa source au démarrage par `AccessFacade.registerKycStatusProvider` ; sans source, personne n'est vérifié), suspension (port `AccountStatusProvider` : le module trust enregistre sa source au démarrage par `AccessFacade.registerAccountStatusSource` ; un membre suspendu n'a plus accès qu'aux actions marquées `allowWhenSuspended` : compte, conditions, préférences, sa situation de modération, l'appel, l'export et la suppression de ses données).
 - Prérequis : une action refusée pour des éléments manquants renvoie `ACCESS_PREREQUISITES_MISSING` avec `missing` (`legal_acceptance`, `email_verified`, `kyc_verified`, `two_factor`, `profile.entrepreneur_facet`, `profile.contributor_facet`, `payout_account`). Les éléments `profile.*` sont fournis par le module profiles, `payout_account` (compte de versement actif) par le module payments, via `PrerequisiteProvider`. L'action `payment.collection.open` n'est portée par aucune route : `GET /v1/me/prerequisites/payment.collection.open` dit au porteur ce qui manque avant l'ouverture des contributions encaissées (email vérifié, volet entrepreneur, KYC, compte de versement).
+- Session récente : une action marquée `recentAuthentication` (rôles, remboursements, flags, suppression de compte, remboursements d'un projet gelé) exige une session ouverte depuis moins de `ACCESS_REAUTHENTICATION_MAX_AGE_MINUTES` (15 minutes par défaut) ; sinon `403 ACCESS_REAUTHENTICATION_REQUIRED`, et le client fait se reconnecter le membre (`/v1/auth/sign-in/*`), ce qui ouvre une nouvelle session.
 - Journal d'audit : attribution et retrait de rôle, refus d'une action sensible.
 - Handshake Socket.IO (`SessionHandshakeGuard`) : session et origine de confiance exigées sur tous les namespaces sauf `/system`.
 
@@ -26,7 +27,7 @@ Autorisations (cahier des charges §7.3, §13) : refus par défaut, registre cen
 
 ## Façade publique (`index.ts`)
 
-`AccessFacade` (`rolesOf`, `trustLevels`, `registerPrerequisiteProvider`, `registerKycStatusProvider`), `CurrentActor`, type `Actor`, interfaces `PrerequisiteProvider` et `KycStatusSource`, `SessionHandshakeGuard`, `AdminBootstrapService` (commande), événements `RoleGranted` et `RoleRevoked`.
+`AccessFacade` (`rolesOf`, `trustLevels`, `registerPrerequisiteProvider`, `registerKycStatusProvider`, `registerAccountStatusSource`), `CurrentActor`, type `Actor`, interfaces `PrerequisiteProvider`, `KycStatusSource` et `AccountStatusSource`, `SessionHandshakeGuard`, `AdminBootstrapService` (commande), événements `RoleGranted` et `RoleRevoked`.
 
 ## Événements émis
 

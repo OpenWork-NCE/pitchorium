@@ -16,6 +16,7 @@ type Scenario =
 type Expected = 'allow' | 'UNAUTHENTICATED' | 'FORBIDDEN' | 'SUSPENDED' | PrerequisiteElement[];
 
 const SELF = 'user-1';
+const NOW = new Date('2026-10-08T12:00:00Z');
 
 function actor(overrides: Partial<Actor> = {}, roles: Role[] = ['member']): Actor {
   return {
@@ -25,6 +26,7 @@ function actor(overrides: Partial<Actor> = {}, roles: Role[] = ['member']): Acto
     emailVerified: true,
     twoFactorEnabled: false,
     legalUpToDate: true,
+    authenticatedAt: NOW,
     ...overrides,
   };
 }
@@ -40,6 +42,7 @@ function facts(scenario: Scenario): AccessFacts {
       'profile.contributor_facet',
       'payout_account',
     ],
+    recentAuthenticationSince: new Date(NOW.getTime() - 15 * 60_000),
   };
   switch (scenario) {
     case 'anonymous':
@@ -186,6 +189,12 @@ const contributorsWithVerifiedEmail: Record<Scenario, Expected> = {
 /** Actions on an event or a mission, here without any role on it (see the tests below). */
 const resourceRoleRequired = organizationRoleRequired;
 
+/** Own standing and appeals: still open to a suspended member. */
+const membersEvenSuspended: Record<Scenario, Expected> = {
+  ...membersWithAcceptedTerms,
+  suspended: 'allow',
+};
+
 /** The complete matrix: every registered action against every kind of actor. */
 const MATRIX: Record<Action, Record<Scenario, Expected>> = {
   'account.read': everyoneSignedIn,
@@ -304,6 +313,17 @@ const MATRIX: Record<Action, Record<Scenario, Expected>> = {
   'mission.engagement.respond': resourceRoleRequired,
   'mission.engagement.complete': resourceRoleRequired,
   'mission.engagement.cancel': resourceRoleRequired,
+  'trust.report.create': membersWithAcceptedTerms,
+  'trust.report.read': membersWithAcceptedTerms,
+  'trust.standing.read': membersEvenSuspended,
+  'trust.decision.appeal': { ...resourceRoleRequired, suspended: 'FORBIDDEN' },
+  'trust.moderation.read': moderatorsAndAdminsWith2fa,
+  'trust.moderation.assign': moderatorsAndAdminsWith2fa,
+  'trust.moderation.decide': moderatorsAndAdminsWith2fa,
+  'trust.appeal.resolve': moderatorsAndAdminsWith2fa,
+  'trust.suspension.lift': moderatorsAndAdminsWith2fa,
+  'trust.project.refund': adminsWith2fa,
+  'trust.transparency.read': adminsWith2fa,
 };
 
 function outcome(action: Action, scenario: Scenario): Expected {
@@ -509,6 +529,41 @@ describe('access policies', () => {
     expect(
       decide('discovery.project-suggestions.read', { ...facts('member'), resource: project([]) }),
     ).toMatchObject({ code: 'FORBIDDEN' });
+  });
+
+  it('lets the member concerned appeal a decision, even suspended', () => {
+    const decision = (roles: string[]) => ({ type: 'decision', id: 'd-1', ownerId: null, roles });
+    for (const scenario of ['member', 'suspended'] as const) {
+      expect(
+        decide('trust.decision.appeal', { ...facts(scenario), resource: decision(['subject']) }),
+      ).toEqual({ allowed: true });
+    }
+    expect(
+      decide('trust.decision.appeal', { ...facts('member'), resource: decision([]) }),
+    ).toMatchObject({ code: 'FORBIDDEN' });
+  });
+
+  it('asks to sign in again for a sensitive action on an old session', () => {
+    const stale = {
+      ...facts('admin'),
+      actor: actor(
+        { twoFactorEnabled: true, authenticatedAt: new Date(NOW.getTime() - 3_600_000) },
+        ['member', 'admin'],
+      ),
+    };
+    for (const action of [
+      'access.roles.manage',
+      'trust.project.refund',
+      'payment.refund',
+    ] as const) {
+      expect(decide(action, stale)).toEqual({
+        allowed: false,
+        code: 'ACCESS_REAUTHENTICATION_REQUIRED',
+        missing: [],
+      });
+    }
+    // Reading stays open on the same session.
+    expect(decide('access.roles.read', stale)).toEqual({ allowed: true });
   });
 
   it('opens collected contributions once KYC and payout account are complete', () => {

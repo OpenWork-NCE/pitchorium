@@ -10,6 +10,8 @@ export interface Actor {
   twoFactorEnabled: boolean;
   /** Current terms and privacy policy accepted, age declared. */
   legalUpToDate: boolean;
+  /** Sign-in time of the session, for the actions that require a recent authentication. */
+  authenticatedAt: Date;
 }
 
 /** What an action applies to; `ownerId` drives ownership policies. */

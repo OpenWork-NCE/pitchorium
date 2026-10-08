@@ -130,6 +130,17 @@ export const ACTIONS = [
   'mission.engagement.respond',
   'mission.engagement.complete',
   'mission.engagement.cancel',
+  'trust.report.create',
+  'trust.report.read',
+  'trust.standing.read',
+  'trust.decision.appeal',
+  'trust.moderation.read',
+  'trust.moderation.assign',
+  'trust.moderation.decide',
+  'trust.appeal.resolve',
+  'trust.suspension.lift',
+  'trust.project.refund',
+  'trust.transparency.read',
 ] as const;
 export const actionSchema = z.enum(ACTIONS);
 

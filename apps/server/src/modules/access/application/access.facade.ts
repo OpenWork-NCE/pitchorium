@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import type { Role, TrustLevels } from '@pitchorium/contracts';
 import { AccessService } from './access.service';
+import { RegisteredAccountStatusProvider } from './account-status.registry';
 import { RegisteredKycStatusProvider } from './kyc-status.registry';
-import type { KycStatusSource, PrerequisiteProvider } from './ports';
+import type { AccountStatusSource, KycStatusSource, PrerequisiteProvider } from './ports';
 import { PrerequisiteRegistry } from './prerequisite.registry';
 
 /** Public facade of the access module, for the other modules. */
@@ -12,6 +13,7 @@ export class AccessFacade {
     private readonly access: AccessService,
     private readonly registry: PrerequisiteRegistry,
     private readonly kyc: RegisteredKycStatusProvider,
+    private readonly accountStatus: RegisteredAccountStatusProvider,
   ) {}
 
   rolesOf(userId: string): Promise<Role[]> {
@@ -30,5 +32,10 @@ export class AccessFacade {
   /** Called at startup by the payments module, which implements the KYC of holders. */
   registerKycStatusProvider(source: KycStatusSource): void {
     this.kyc.register(source);
+  }
+
+  /** Called at startup by the trust module, which implements suspensions. */
+  registerAccountStatusSource(source: AccountStatusSource): void {
+    this.accountStatus.register(source);
   }
 }

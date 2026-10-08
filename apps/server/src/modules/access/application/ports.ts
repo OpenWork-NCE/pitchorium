@@ -29,9 +29,17 @@ export interface KycStatusSource {
   isVerified(userId: string): Promise<boolean>;
 }
 
-/** Port: suspension decided by moderation. The trust module provides the real adapter. */
+/**
+ * Port: suspension decided by moderation. The trust module registers its source at startup
+ * (AccessFacade.registerAccountStatusSource); without one, nobody is suspended.
+ */
 export abstract class AccountStatusProvider {
   abstract isSuspended(userId: string): Promise<boolean>;
+}
+
+/** What the trust module registers to answer whether an account is suspended. */
+export interface AccountStatusSource {
+  isSuspended(userId: string): Promise<boolean>;
 }
 
 /**

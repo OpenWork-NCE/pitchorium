@@ -60,6 +60,7 @@ const commonEnvSchema = z.object({
     .max(10_080)
     .default(1440),
   NOTIFICATIONS_LOW_PRIORITY_PER_DAY: z.coerce.number().int().min(1).max(1000).default(20),
+  ACCESS_REAUTHENTICATION_MAX_AGE_MINUTES: z.coerce.number().int().min(1).max(1440).default(15),
   // Payments (section 9): providers, commission and limits (docs/architecture/payments.md).
   PAYMENTS_MODE: z.enum(['simulated', 'live']).default('simulated'),
   STRIPE_SECRET_KEY: z.string().min(1).optional(),

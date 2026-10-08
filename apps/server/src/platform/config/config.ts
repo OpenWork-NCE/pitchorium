@@ -6,6 +6,8 @@ export type Environment = CommonEnv['NODE_ENV'];
 
 export interface CommonConfig {
   env: Environment;
+  /** Age of a session beyond which a sensitive action asks to sign in again. */
+  access: { reauthenticationMaxAgeMs: number };
   logLevel: CommonEnv['LOG_LEVEL'];
   database: { url: string; poolMax: number };
   redis: { url: string };
@@ -179,6 +181,7 @@ function toCommonConfig(env: CommonEnv): CommonConfig {
   return {
     env: env.NODE_ENV,
     logLevel: env.LOG_LEVEL,
+    access: { reauthenticationMaxAgeMs: env.ACCESS_REAUTHENTICATION_MAX_AGE_MINUTES * 60_000 },
     database: { url: env.DATABASE_URL, poolMax: env.DATABASE_POOL_MAX },
     redis: { url: env.REDIS_URL },
     queue: { prefix: env.QUEUE_PREFIX },

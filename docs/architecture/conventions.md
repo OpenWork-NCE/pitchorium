@@ -44,6 +44,7 @@ Les tables sont déclarées dans `packages/db/src/schemas/<module>.ts` avec le `
 - Une action est déclarée dans `ACTIONS` (`packages/contracts/src/access.ts`) et sa politique dans `ACTION_POLICIES` (`modules/access/domain/action-policies.ts`), avec sa ligne dans la matrice de `access-policy.spec.ts`. Nommage : `<domaine>.<objet>.<verbe>` ou `<domaine>.<verbe>`, par exemple `profile.update`, `project.publish`.
 - `resource` est une classe `ResourceResolver` (provider du module) qui charge la ressource ciblée ; `null` répond 404. Par défaut, la ressource est le compte de l'acteur (routes `/v1/me/...`).
 - Dans un contrôleur : `@CurrentPrincipal()` (`userId`, `sessionId`, tous modules) ou `@CurrentActor()` (rôles et faits de confiance, module access). L'idempotence est cloisonnée par principal.
+- Actions sensibles : `recentAuthentication: true` dans la politique exige une session ouverte depuis moins de `ACCESS_REAUTHENTICATION_MAX_AGE_MINUTES`, sinon `ACCESS_REAUTHENTICATION_REQUIRED` (le client fait se reconnecter le membre).
 - Écritures authentifiées par cookie : l'en-tête `Origin` (à défaut `Referer`) doit appartenir aux origines de confiance, sinon `ACCESS_ORIGIN_NOT_ALLOWED`.
 
 ## Prérequis

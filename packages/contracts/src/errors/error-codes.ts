@@ -38,6 +38,7 @@ export const errorCodes = {
   ACCESS_PREREQUISITES_MISSING: { status: 403, title: 'Action prerequisites are missing' },
   ACCESS_ACCOUNT_SUSPENDED: { status: 403, title: 'Account is suspended' },
   ACCESS_LAST_ADMIN: { status: 409, title: 'The last administrator cannot be removed' },
+  ACCESS_REAUTHENTICATION_REQUIRED: { status: 403, title: 'Recent authentication required' },
   PROFILES_PROFILE_NOT_FOUND: { status: 404, title: 'Profile not found' },
   PROFILES_FACET_NOT_FOUND: { status: 404, title: 'Profile facet not found' },
   PROFILES_FACET_ALREADY_EXISTS: { status: 409, title: 'Profile facet already exists' },

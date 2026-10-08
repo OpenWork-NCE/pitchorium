@@ -38,6 +38,7 @@ export class BetterAuthSessionAuthenticator extends SessionAuthenticator {
     return {
       sessionId: response.session.id,
       user,
+      authenticatedAt: new Date(response.session.createdAt),
       setCookies: responseHeaders.getSetCookie(),
     };
   }

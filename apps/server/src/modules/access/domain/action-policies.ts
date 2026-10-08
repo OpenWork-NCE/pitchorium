@@ -14,6 +14,11 @@ export interface ActionPolicy {
   allowWhenSuspended?: boolean;
   /** Refusals are written to the audit log. */
   sensitive?: boolean;
+  /**
+   * The session must have been opened recently (ACCESS_REAUTHENTICATION_MAX_AGE_MINUTES):
+   * otherwise ACCESS_REAUTHENTICATION_REQUIRED, and the client signs in again.
+   */
+  recentAuthentication?: boolean;
 }
 
 /**
@@ -28,7 +33,7 @@ export const ACTION_POLICIES: Readonly<Record<Action, ActionPolicy>> = {
   'profile.read': {},
   'profile.update': { ownership: 'self' },
   'access.roles.read': { roles: ['admin'], sensitive: true },
-  'access.roles.manage': { roles: ['admin'], sensitive: true },
+  'access.roles.manage': { roles: ['admin'], sensitive: true, recentAuthentication: true },
   // Projects (section 11). The owner of a project has an entrepreneur facet; a resolver gives
   // the role held in the project team (`owner`, `editor`).
   'project.create': { requires: ['profile.entrepreneur_facet'] },
@@ -140,7 +145,7 @@ export const ACTION_POLICIES: Readonly<Record<Action, ActionPolicy>> = {
     sensitive: true,
   },
   'payment.kyc.review': { roles: ['admin'], sensitive: true },
-  'payment.refund': { roles: ['admin'], sensitive: true },
+  'payment.refund': { roles: ['admin'], sensitive: true, recentAuthentication: true },
   'payment.reconciliation.manage': { roles: ['admin'], sensitive: true },
   // Engagement (section 9.4): own dashboard, the dashboard of an organization for its members.
   'engagement.dashboard.read': {},
@@ -201,4 +206,19 @@ export const ACTION_POLICIES: Readonly<Record<Action, ActionPolicy>> = {
   'mission.engagement.respond': { resourceRoles: ['responder'] },
   'mission.engagement.complete': { resourceRoles: ['expert'] },
   'mission.engagement.cancel': { resourceRoles: ['expert', 'beneficiary'] },
+  // Trust and safety (§13). A suspended member still reads their standing and appeals; a
+  // resolver gives `subject` to the member a decision concerns. Moderators act on contents and
+  // suspend up to TRUST_MODERATOR_MAX_SUSPENSION_DAYS; a permanent suspension and the freeze of
+  // a project are checked by the module for the `admin` role; refunds are admin actions.
+  'trust.report.create': {},
+  'trust.report.read': {},
+  'trust.standing.read': { allowWhenSuspended: true },
+  'trust.decision.appeal': { resourceRoles: ['subject'], allowWhenSuspended: true },
+  'trust.moderation.read': { roles: ['moderator', 'admin'], sensitive: true },
+  'trust.moderation.assign': { roles: ['moderator', 'admin'], sensitive: true },
+  'trust.moderation.decide': { roles: ['moderator', 'admin'], sensitive: true },
+  'trust.appeal.resolve': { roles: ['moderator', 'admin'], sensitive: true },
+  'trust.suspension.lift': { roles: ['moderator', 'admin'], sensitive: true },
+  'trust.project.refund': { roles: ['admin'], sensitive: true, recentAuthentication: true },
+  'trust.transparency.read': { roles: ['admin'], sensitive: true },
 };

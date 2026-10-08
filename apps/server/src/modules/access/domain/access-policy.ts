@@ -10,6 +10,8 @@ export interface AccessFacts {
   kycVerified: boolean;
   /** Elements owned by other modules (profile.*, payout_account) the actor has not completed. */
   missingProvidedElements: readonly PrerequisiteElement[];
+  /** Sessions opened before this instant are too old for a recentAuthentication action. */
+  recentAuthenticationSince: Date;
 }
 
 export type AccessDecision =
@@ -57,7 +59,7 @@ function isSatisfied(element: PrerequisiteElement, facts: AccessFacts, actor: Ac
 /**
  * Order of checks: authentication, suspension, platform role, ownership, role on the resource,
  * then every missing prerequisite at once, so that the client can open the right form
- * (cahier des charges 7.2).
+ * (cahier des charges 7.2), then the recent authentication of sensitive actions.
  */
 export function decide(action: Action, facts: AccessFacts): AccessDecision {
   const policy = policyOf(action);
@@ -79,5 +81,9 @@ export function decide(action: Action, facts: AccessFacts): AccessDecision {
   if (policy.requiresLegalAcceptance !== false) required.add('legal_acceptance');
   if (policy.roles) required.add('two_factor');
   const missing = [...required].filter((element) => !isSatisfied(element, facts, actor));
-  return missing.length > 0 ? deny('ACCESS_PREREQUISITES_MISSING', missing) : { allowed: true };
+  if (missing.length > 0) return deny('ACCESS_PREREQUISITES_MISSING', missing);
+  if (policy.recentAuthentication && actor.authenticatedAt < facts.recentAuthenticationSince) {
+    return deny('ACCESS_REAUTHENTICATION_REQUIRED');
+  }
+  return { allowed: true };
 }

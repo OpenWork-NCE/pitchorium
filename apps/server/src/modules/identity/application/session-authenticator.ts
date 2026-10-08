@@ -4,6 +4,8 @@ import type { IdentityUser } from './identity-user.repository';
 export interface AuthenticatedSession {
   sessionId: string;
   user: IdentityUser;
+  /** Sign-in time of the session (kept when its expiry is extended): recent authentication. */
+  authenticatedAt: Date;
   /** Set-Cookie headers to forward when the session expiry was extended. */
   setCookies: string[];
 }
