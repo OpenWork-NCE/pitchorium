@@ -6,7 +6,7 @@ import {
 import { SERVER_EVENTS } from '@pitchorium/contracts';
 import { QueryClient } from '@tanstack/react-query';
 import { describe, expect, it, vi } from 'vitest';
-import { realtimeHandlers } from './realtime-connection';
+import { realtimeHandlers } from './realtime-handlers';
 
 const counters = {
   notifications: 3,
