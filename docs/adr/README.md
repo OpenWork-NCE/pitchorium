@@ -66,3 +66,4 @@ Un fichier par décision, numéroté, au format Contexte / Décision / Conséque
 | [0060](0060-preferences-and-transactional-types.md)      | Préférences et types transactionnels                         |
 | [0061](0061-digests-and-time-zones.md)                   | Digests et fuseaux horaires                                  |
 | [0062](0062-email-deliverability.md)                     | Délivrabilité des emails                                     |
+| [0063](0063-verify-clean.md)                             | Vérification depuis zéro (`pnpm verify:clean`)               |

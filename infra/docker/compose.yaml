@@ -1,3 +1,4 @@
+# COMPOSE_PROJECT_NAME overrides this name (pnpm verify:clean runs an isolated project).
 name: pitchorium
 
 services:
@@ -8,7 +9,7 @@ services:
       POSTGRES_PASSWORD: pitchorium
       POSTGRES_DB: pitchorium
     ports:
-      - '127.0.0.1:5432:5432'
+      - '127.0.0.1:${PITCHORIUM_POSTGRES_PORT:-5432}:5432'
     volumes:
       - postgres-data:/var/lib/postgresql/data
       - ./postgres/init:/docker-entrypoint-initdb.d:ro
@@ -23,7 +24,7 @@ services:
     # BullMQ requires noeviction: an evicted key is a lost job.
     command: ['valkey-server', '--appendonly', 'yes', '--maxmemory-policy', 'noeviction']
     ports:
-      - '127.0.0.1:6379:6379'
+      - '127.0.0.1:${PITCHORIUM_VALKEY_PORT:-6379}:6379'
     volumes:
       - valkey-data:/data
     healthcheck:
@@ -39,8 +40,8 @@ services:
       MINIO_ROOT_USER: pitchorium
       MINIO_ROOT_PASSWORD: pitchorium-secret
     ports:
-      - '127.0.0.1:9000:9000'
-      - '127.0.0.1:9001:9001'
+      - '127.0.0.1:${PITCHORIUM_MINIO_PORT:-9000}:9000'
+      - '127.0.0.1:${PITCHORIUM_MINIO_CONSOLE_PORT:-9001}:9001'
     volumes:
       - minio-data:/data
     healthcheck:
@@ -66,8 +67,8 @@ services:
   mailpit:
     image: axllent/mailpit:v1.31.4
     ports:
-      - '127.0.0.1:1025:1025'
-      - '127.0.0.1:8025:8025'
+      - '127.0.0.1:${PITCHORIUM_MAILPIT_SMTP_PORT:-1025}:1025'
+      - '127.0.0.1:${PITCHORIUM_MAILPIT_UI_PORT:-8025}:8025'
     volumes:
       - mailpit-data:/data
     environment:
@@ -84,7 +85,7 @@ services:
     environment:
       CLAMAV_NO_MILTERD: 'true'
     ports:
-      - '127.0.0.1:3310:3310'
+      - '127.0.0.1:${PITCHORIUM_CLAMAV_PORT:-3310}:3310'
     volumes:
       - clamav-data:/var/lib/clamav
     healthcheck:

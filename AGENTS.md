@@ -46,6 +46,7 @@ Si les schémas changent : `pnpm db:generate`. Si les routes ou contrats changen
 
 ## Définition de terminé
 
+- `pnpm verify:clean` passe : il rejoue les commandes ci-dessus sur un clone propre, dans un projet Docker isolé (ADR 0063).
 - Toutes les commandes ci-dessus passent ; `git status` est vide après génération.
 - Documentation, ADR, `.env.example` et questions ouvertes à jour.
 - Comportement vérifié par exécution (tests ou parcours manuel), pas seulement par lecture.

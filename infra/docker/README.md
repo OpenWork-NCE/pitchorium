@@ -14,4 +14,5 @@
 - `postgres/init/01-init.sh` crée la base de test et active `pg_trgm`, `unaccent` et `citext` à la première initialisation du volume. La migration initiale crée aussi ces extensions.
 - Valkey tourne avec `maxmemory-policy noeviction`, exigé par BullMQ.
 - ClamAV charge ses signatures au démarrage (une à deux minutes, environ 1,5 Go de mémoire) puis les met à jour avec freshclam ; le worker l'interroge sur le port 3310 (ADR 0023).
+- Ports publiés : chaque port se change par une variable (`PITCHORIUM_POSTGRES_PORT`, `PITCHORIUM_VALKEY_PORT`, `PITCHORIUM_MINIO_PORT`, `PITCHORIUM_MINIO_CONSOLE_PORT`, `PITCHORIUM_MAILPIT_SMTP_PORT`, `PITCHORIUM_MAILPIT_UI_PORT`, `PITCHORIUM_CLAMAV_PORT`) et le nom du projet par `COMPOSE_PROJECT_NAME`. `pnpm verify:clean` s'en sert pour un projet isolé (`pitchorium-verify`, ports + 20000) qui ne touche jamais les volumes `pitchorium_*` (ADR 0063).
 - MinIO ne publie plus d'images Docker depuis octobre 2025 : les images utilisées sont celles du fork communautaire Pigsty (voir `docs/adr/0011-minio-community-images.md`).

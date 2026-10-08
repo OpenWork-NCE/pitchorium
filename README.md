@@ -31,29 +31,30 @@ pnpm dev
 
 ## Scripts
 
-| Script                              | Rôle                                                                                                                                                               |
-| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `pnpm dev`                          | Lance l'api et le worker en mode watch                                                                                                                             |
-| `pnpm dev:api` / `pnpm dev:worker`  | Lance un seul des deux processus                                                                                                                                   |
-| `pnpm build`                        | Compile tous les packages et le serveur                                                                                                                            |
-| `pnpm lint`                         | ESLint, dont les règles de frontières entre modules                                                                                                                |
-| `pnpm typecheck`                    | Vérification TypeScript sans émission                                                                                                                              |
-| `pnpm test`                         | Tests unitaires et tests HTTP sans dépendance externe                                                                                                              |
-| `pnpm test:integration`             | Tests d'intégration (Testcontainers, Docker requis)                                                                                                                |
-| `pnpm test:providers`               | Formes des réponses des vraies API de test de Stripe et Flutterwave (clés `STRIPE_TEST_SECRET_KEY`, `FLUTTERWAVE_TEST_SECRET_KEY` ; sans clé, s'arrête proprement) |
-| `pnpm format` / `pnpm format:check` | Prettier en écriture ou en vérification                                                                                                                            |
-| `pnpm db:generate`                  | Génère une migration Drizzle à partir des schémas                                                                                                                  |
-| `pnpm db:migrate`                   | Applique les migrations sur `DATABASE_URL`                                                                                                                         |
-| `pnpm db:seed`                      | Seed idempotent (feature flags, données de référence)                                                                                                              |
-| `pnpm db:seed:dev`                  | Données de démonstration idempotentes (développement uniquement)                                                                                                   |
-| `pnpm db:check`                     | Vérifie la cohérence des migrations                                                                                                                                |
-| `pnpm admin:create --email <email>` | Attribue le rôle admin à un compte existant (idempotent)                                                                                                           |
-| `pnpm payments:reconcile`           | Rapprochement des paiements à la demande (`--days N`, 3 par défaut)                                                                                                |
-| `pnpm i18n:check`                   | Vérifie l'alignement des clés de traduction sur le français                                                                                                        |
-| `pnpm openapi:generate`             | Exporte `apps/server/openapi/openapi.json` sans démarrer de serveur                                                                                                |
-| `pnpm api-client:generate`          | Régénère le client Orval à partir de l'OpenAPI                                                                                                                     |
-| `pnpm infra:up` / `pnpm infra:down` | Démarre ou arrête l'infrastructure locale                                                                                                                          |
-| `pnpm check:box-drawing`            | Échoue si un fichier suivi contient un caractère U+2500 à U+257F                                                                                                   |
+| Script                              | Rôle                                                                                                                                                                        |
+| ----------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pnpm dev`                          | Lance l'api et le worker en mode watch                                                                                                                                      |
+| `pnpm dev:api` / `pnpm dev:worker`  | Lance un seul des deux processus                                                                                                                                            |
+| `pnpm build`                        | Compile tous les packages et le serveur                                                                                                                                     |
+| `pnpm lint`                         | ESLint, dont les règles de frontières entre modules                                                                                                                         |
+| `pnpm typecheck`                    | Vérification TypeScript sans émission                                                                                                                                       |
+| `pnpm test`                         | Tests unitaires et tests HTTP sans dépendance externe                                                                                                                       |
+| `pnpm test:integration`             | Tests d'intégration (Testcontainers, Docker requis)                                                                                                                         |
+| `pnpm test:providers`               | Formes des réponses des vraies API de test de Stripe et Flutterwave (clés `STRIPE_TEST_SECRET_KEY`, `FLUTTERWAVE_TEST_SECRET_KEY` ; sans clé, s'arrête proprement)          |
+| `pnpm format` / `pnpm format:check` | Prettier en écriture ou en vérification                                                                                                                                     |
+| `pnpm db:generate`                  | Génère une migration Drizzle à partir des schémas                                                                                                                           |
+| `pnpm db:migrate`                   | Applique les migrations sur `DATABASE_URL`                                                                                                                                  |
+| `pnpm db:seed`                      | Seed idempotent (feature flags, données de référence)                                                                                                                       |
+| `pnpm db:seed:dev`                  | Données de démonstration idempotentes (développement uniquement)                                                                                                            |
+| `pnpm db:check`                     | Vérifie la cohérence des migrations                                                                                                                                         |
+| `pnpm admin:create --email <email>` | Attribue le rôle admin à un compte existant (idempotent)                                                                                                                    |
+| `pnpm payments:reconcile`           | Rapprochement des paiements à la demande (`--days N`, 3 par défaut)                                                                                                         |
+| `pnpm i18n:check`                   | Vérifie l'alignement des clés de traduction sur le français                                                                                                                 |
+| `pnpm openapi:generate`             | Exporte `apps/server/openapi/openapi.json` sans démarrer de serveur                                                                                                         |
+| `pnpm api-client:generate`          | Régénère le client Orval à partir de l'OpenAPI                                                                                                                              |
+| `pnpm infra:up` / `pnpm infra:down` | Démarre ou arrête l'infrastructure locale                                                                                                                                   |
+| `pnpm check:box-drawing`            | Échoue si un fichier suivi contient un caractère U+2500 à U+257F                                                                                                            |
+| `pnpm verify:clean`                 | Définition de terminé depuis zéro : clone propre, projet Docker isolé sur des ports dédiés, toutes les vérifications, puis suppression des conteneurs et volumes (ADR 0063) |
 
 ## Documentation
 
