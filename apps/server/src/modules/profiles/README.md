@@ -59,3 +59,7 @@ Profils personne (cahier des charges §5, §7.2, §10.1) : profil de base, volet
 ## Dépendances
 
 identity (nom, photo, locale), access (rôles, niveaux de confiance, enregistrement des prérequis), media (photo, couverture, import).
+
+## Données personnelles (RGPD)
+
+Export : profil, volets entrepreneur et contributeur, anciens identifiants publics. Suppression : profil supprimé (volets et historique par cascade) ; le membre apparaît ensuite comme « Membre supprimé » là où son identifiant est conservé. Contrats enregistrés auprès du module privacy (`infrastructure/profiles-personal-data.ts`, ADR 0074).

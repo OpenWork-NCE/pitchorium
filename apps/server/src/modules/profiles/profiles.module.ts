@@ -21,7 +21,10 @@ import {
 } from './interface/profile-photos.handler';
 import { UserRegisteredHandler } from './interface/user-registered.handler';
 
+import { ProfilesPersonalData } from './infrastructure/profiles-personal-data';
+
 const SHARED_PROVIDERS: Provider[] = [
+  ProfilesPersonalData,
   { provide: ProfileRepository, useClass: DrizzleProfileRepository },
   { provide: ReferenceDataRepository, useClass: DrizzleReferenceDataRepository },
   ProfileEventsRecorder,
