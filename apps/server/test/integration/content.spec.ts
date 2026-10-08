@@ -24,7 +24,7 @@ import { query, truncateAllTables } from './support/database';
 import { FakeMalwareScanner } from './support/fake-malware-scanner';
 import { minimalPdf, png } from './support/files';
 import { uploadFile, waitUntilProcessed } from './support/media';
-import { createMember, grantRoleWith2fa, type Member } from './support/members';
+import { createMember, type Member } from './support/members';
 import { createWorkerTestingModule } from './support/worker-testing-module';
 
 /** Publications, reposts, reactions, comments, blocks, feed and statistics (§10.3). */
@@ -402,14 +402,12 @@ describe('content', () => {
   it('completes the feed of a member whose network produces too little with highlights', async () => {
     const first = await publish(ama, { text: 'Appel à projets agriculture' });
     const second = await publish(kofi, { text: 'Retour sur le forum de Kigali' });
-    const private_ = await publish(kofi, { text: 'Réservé', visibility: 'connections' });
-    const moderator = await member('moderator@example.com', 'Modo');
-    await grantRoleWith2fa(moderator, 'moderator');
-    await moderator.agent.put(`/v1/posts/${first.id}/feature`).expect(200);
-    await moderator.agent.put(`/v1/posts/${second.id}/feature`).expect(200);
-    await kofi.agent.put(`/v1/posts/${first.id}/feature`).expect(403);
-    const refused = await moderator.agent.put(`/v1/posts/${private_.id}/feature`).expect(422);
-    expect(refused.body.code).toBe('CONTENT_VISIBILITY_NOT_ALLOWED');
+    // Featured through the administration (admin tests); the latest first.
+    await query(
+      `UPDATE content.posts SET featured_at = now() - interval '1 minute' WHERE id = $1`,
+      [first.id],
+    );
+    await query(`UPDATE content.posts SET featured_at = now() WHERE id = $1`, [second.id]);
 
     const own = await publish(awa, { text: 'Ma première publication' });
     const feed = await feedOf(awa);

@@ -225,6 +225,15 @@ export class DrizzleContentRepository extends ContentRepository {
     return (await this.networkFeed(query, null, cap)).length;
   }
 
+  async featuredPosts(limit: number): Promise<{ id: string; featuredAt: Date | null }[]> {
+    return this.db
+      .select({ id: contentPosts.id, featuredAt: contentPosts.featuredAt })
+      .from(contentPosts)
+      .where(and(isNotNull(contentPosts.featuredAt), isNull(contentPosts.deletedAt)))
+      .orderBy(desc(contentPosts.featuredAt))
+      .limit(limit);
+  }
+
   async featuredFeed(
     query: NetworkFeedQuery,
     after: KeysetPosition | null,

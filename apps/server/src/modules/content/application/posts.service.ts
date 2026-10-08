@@ -10,7 +10,6 @@ import type {
   SavedPost,
   UpdatePostRequest,
 } from '@pitchorium/contracts';
-import { AuditService } from '../../../platform/audit';
 import { TransactionManager } from '../../../platform/database';
 import {
   Clock,
@@ -69,7 +68,6 @@ export class PostsService {
     private readonly language: LanguageDetector,
     private readonly views: PostViewCounter,
     private readonly events: ContentEventsRecorder,
-    private readonly audit: AuditService,
     private readonly transactions: TransactionManager,
     private readonly ids: IdGenerator,
     private readonly clock: Clock,
@@ -301,36 +299,6 @@ export class PostsService {
     );
     if (!view || view.visibility !== 'public') throw notFound();
     return view;
-  }
-
-  /** Editorial highlight by a moderator or an administrator (ADR 0032). */
-  async setFeatured(userId: string, postId: string, featured: boolean): Promise<Post> {
-    const post = await this.content.findPost(postId);
-    if (!post || post.deletedAt || post.moderationStatus !== 'visible') throw notFound();
-    const card = (await this.profiles.memberCards([post.authorId])).get(post.authorId);
-    const visibility = effectiveVisibility(post, card?.publicPageEnabled ?? false);
-    if (featured && visibility === 'connections') {
-      throw new DomainError(
-        'CONTENT_VISIBILITY_NOT_ALLOWED',
-        'A connections-only publication cannot be featured',
-      );
-    }
-    const now = this.clock.now();
-    await this.transactions.run(async () => {
-      await this.content.updatePost(post.id, {
-        featuredAt: featured ? now : null,
-        featuredBy: featured ? userId : null,
-      });
-      await this.audit.record({
-        actor: { type: 'user', id: userId },
-        action: featured ? 'content.post-featured' : 'content.post-unfeatured',
-        target: { type: POST_RESOURCE, id: post.id },
-      });
-    });
-    return this.presentOne(await this.presenter.reader(userId), {
-      ...post,
-      featuredAt: featured ? now : null,
-    });
   }
 
   async save(userId: string, postId: string, saved: boolean): Promise<void> {

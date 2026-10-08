@@ -19,6 +19,7 @@ import {
   type FeedSuggestionSource,
   FeedSourcesRegistry,
 } from './feed-sources.registry';
+import { PostHighlightsService } from './post-highlights.service';
 import { ProjectLinkRegistry } from './project-link.registry';
 
 /**
@@ -34,7 +35,17 @@ export class ContentFacade implements OnModuleInit {
     private readonly media: MediaFacade,
     private readonly projects: ProjectLinkRegistry,
     private readonly feedSources: FeedSourcesRegistry,
+    private readonly highlights: PostHighlightsService,
   ) {}
+
+  /** Editorial highlight, through the administration (moderators and administrators). */
+  setPostFeatured(postId: string, actorId: string, featured: boolean): Promise<void> {
+    return this.highlights.setFeatured(postId, actorId, featured);
+  }
+
+  featuredPosts(limit: number): Promise<{ id: string; featuredAt: Date | null }[]> {
+    return this.highlights.featured(limit);
+  }
 
   onModuleInit(): void {
     // Documents and private images of a publication are read by whoever may see it.

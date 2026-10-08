@@ -35,6 +35,8 @@ import { ContentPersonalData } from './infrastructure/content-personal-data';
 
 import { ContentTranslatable } from './infrastructure/content-translatable';
 
+import { PostHighlightsService } from './application/post-highlights.service';
+
 const SHARED_PROVIDERS: Provider[] = [
   ContentTranslatable,
   ContentPersonalData,
@@ -44,6 +46,7 @@ const SHARED_PROVIDERS: Provider[] = [
   ProjectLinkRegistry,
   FeedSourcesRegistry,
   PostPresenter,
+  PostHighlightsService,
   ContentFacade,
 ];
 

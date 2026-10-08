@@ -223,28 +223,6 @@ export class PostsController {
   }
 
   /** Editorial highlight (moderators and administrators with 2FA). */
-  @Put('posts/:postId/feature')
-  @RequireAction('content.post.feature')
-  @ZodSerializerDto(PostDto)
-  @ApiOkResponse({ type: PostDto.Output })
-  feature(
-    @CurrentPrincipal() principal: Principal,
-    @Param() params: PostIdParamsDto,
-  ): Promise<Post> {
-    return this.posts.setFeatured(principal.userId, params.postId, true);
-  }
-
-  @Delete('posts/:postId/feature')
-  @RequireAction('content.post.feature')
-  @ZodSerializerDto(PostDto)
-  @ApiOkResponse({ type: PostDto.Output })
-  unfeature(
-    @CurrentPrincipal() principal: Principal,
-    @Param() params: PostIdParamsDto,
-  ): Promise<Post> {
-    return this.posts.setFeatured(principal.userId, params.postId, false);
-  }
-
   /** Daily unique viewers (approximate), for the author only. */
   @Get('posts/:postId/stats')
   @RequireAction('content.post.stats.read', { resource: PostResolver })

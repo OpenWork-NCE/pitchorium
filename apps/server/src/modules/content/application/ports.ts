@@ -66,6 +66,8 @@ export abstract class ContentRepository {
   /** Network publications counted up to `cap` (editorial complement threshold). */
   abstract countNetworkFeed(query: NetworkFeedQuery, cap: number): Promise<number>;
   /** Editorial highlights for the reader, newest highlight first, outside their network. */
+  /** Live featured publications, latest first (administration of the highlights). */
+  abstract featuredPosts(limit: number): Promise<{ id: string; featuredAt: Date | null }[]>;
   abstract featuredFeed(
     query: NetworkFeedQuery,
     after: KeysetPosition | null,

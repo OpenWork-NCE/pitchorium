@@ -39,7 +39,7 @@ Chaque lecture d'une publication par un autre membre (fil ou page) ajoute le lec
 
 ## Modération
 
-`moderation_status` (`visible`, `hidden`, `removed`) des publications et des commentaires, modifiable par la façade pour le module trust ; une publication `hidden` reste visible de son auteur seulement. Mise en avant éditoriale par `PUT|DELETE /v1/posts/{postId}/feature` (`moderator` ou `admin` avec double authentification, journal d'audit).
+`moderation_status` (`visible`, `hidden`, `removed`) des publications et des commentaires, modifiable par la façade pour le module trust ; une publication `hidden` reste visible de son auteur seulement. Mise en avant éditoriale par l'interface unique de l'administration (`PUT|DELETE /v1/admin/highlights/post/{postId}`, `moderator` ou `admin` avec double authentification, journal d'audit), par `ContentFacade.setPostFeatured`.
 
 ## Routes
 
@@ -50,7 +50,6 @@ Chaque lecture d'une publication par un autre membre (fil ou page) ajoute le lec
 - `PUT|DELETE /v1/posts/{postId}/reaction`, `PUT|DELETE /v1/comments/{commentId}/reaction` (`content.reaction.set`)
 - `POST /v1/posts/{postId}/comments` (`content.comment.create`, `Idempotency-Key`), `GET /v1/posts/{postId}/comments`, `GET /v1/comments/{commentId}/replies` (`content.post.read`), `PATCH /v1/comments/{commentId}` (`content.comment.update`, auteur), `DELETE /v1/comments/{commentId}` (`content.comment.delete`, auteur du commentaire ou de la publication, `CommentResolver`)
 - `PUT|DELETE /v1/posts/{postId}/save`, `GET /v1/me/saved-posts` (`content.post.save`), `PUT|DELETE /v1/posts/{postId}/hide` (`content.post.hide`)
-- `PUT|DELETE /v1/posts/{postId}/feature` (`content.post.feature`)
 - `GET /v1/posts/{postId}/stats` (`content.post.stats.read`, auteur)
 
 ## Schéma `content`
