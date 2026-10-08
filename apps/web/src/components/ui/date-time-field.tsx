@@ -378,11 +378,10 @@ export function DateTimeField({
               }}
               onPaste={(event) => event.preventDefault()}
               className={cn(
-                'rounded-xs px-px text-center caret-transparent outline-none focus:bg-accent focus:text-on-accent',
-                // A value takes the width of its digits; a placeholder or a typed digit keeps the
-                // width of the segment, so that nothing moves while typing.
-                (shown.empty || focusedIndex === segmentIndex) &&
-                  (type === 'year' ? 'min-w-[4ch]' : 'min-w-[2ch]'),
+                // At least 24 px wide, the minimal target (WCAG 2.5.8); a year keeps the width of
+                // its four digits while empty or typed, so that nothing moves while typing.
+                'min-w-6 rounded-xs px-px text-center caret-transparent outline-none focus:bg-accent focus:text-on-accent',
+                type === 'year' && (shown.empty || focusedIndex === segmentIndex) && 'min-w-[4ch]',
                 shown.empty && 'text-muted focus:text-on-accent',
               )}
             >
