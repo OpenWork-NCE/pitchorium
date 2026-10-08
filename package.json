@@ -34,6 +34,7 @@
     "infra:up": "docker compose -f infra/docker/compose.yaml up -d --wait postgres valkey minio mailpit clamav && docker compose -f infra/docker/compose.yaml run --rm minio-init",
     "infra:down": "docker compose -f infra/docker/compose.yaml down",
     "docs:api": "node scripts/serve-api-docs.mjs",
+    "ops:restore-drill": "bash scripts/restore-drill.sh",
     "check:box-drawing": "sh scripts/check-box-drawing.sh",
     "verify:clean": "bash scripts/verify-clean.sh",
     "prepare": "husky"

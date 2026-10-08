@@ -1,0 +1,11 @@
+**/node_modules
+**/dist
+**/.turbo
+**/coverage
+.git
+.github
+.husky
+docs/product
+apps/server/.env
+**/*.log
+infra/docker/data

@@ -1,0 +1,10 @@
+# TLS by ACME (Let's Encrypt), HTTP to HTTPS, HSTS; the api sets its own security headers (helmet).
+{$API_DOMAIN} {
+	encode zstd gzip
+	header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
+	request_body {
+		# The api refuses JSON bodies above 1 MB itself; files go straight to the bucket.
+		max_size 2MB
+	}
+	reverse_proxy api:3000
+}

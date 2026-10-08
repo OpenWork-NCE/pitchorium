@@ -1,0 +1,102 @@
+# Reference deployment on one virtual machine (docs/operations/vm-guide.md): api, worker, Caddy
+# (TLS, security headers) and ClamAV. PostgreSQL and Redis are managed services by default;
+# the `self-hosted` profile runs them here instead (backups are then yours).
+name: pitchorium
+
+x-app: &app
+  image: ${PITCHORIUM_IMAGE:?set PITCHORIUM_IMAGE, for example registry/pitchorium:0.1.0}
+  env_file: .env
+  environment:
+    NODE_ENV: production
+    CLAMAV_HOST: clamav
+  restart: unless-stopped
+
+services:
+  migrate:
+    <<: *app
+    command: ['dist/main.migrate.js']
+    restart: 'no'
+    profiles: [release]
+
+  seed:
+    <<: *app
+    command: ['dist/main.seed.js']
+    restart: 'no'
+    profiles: [release]
+
+  api:
+    <<: *app
+    command: ['dist/main.api.js']
+    environment:
+      NODE_ENV: production
+      API_PORT: '3000'
+      # One proxy (Caddy) in front of the api.
+      TRUST_PROXY_HOPS: '1'
+    expose: ['3000']
+
+  worker:
+    <<: *app
+    command: ['dist/main.worker.js']
+    environment:
+      NODE_ENV: production
+      CLAMAV_HOST: clamav
+      WORKER_HEALTH_PORT: '3001'
+    healthcheck:
+      test:
+        [
+          'CMD',
+          '/nodejs/bin/node',
+          '-e',
+          "fetch('http://127.0.0.1:3001/health/live').then(r=>process.exit(r.ok?0:1),()=>process.exit(1))",
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    depends_on:
+      clamav:
+        condition: service_healthy
+
+  caddy:
+    image: caddy:2.11.7-alpine
+    ports: ['80:80', '443:443']
+    environment:
+      API_DOMAIN: ${API_DOMAIN:?set API_DOMAIN, for example api.pitchorium.example}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    restart: unless-stopped
+    depends_on: [api]
+
+  clamav:
+    image: clamav/clamav:1.5.4
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD', 'clamdcheck.sh']
+      interval: 60s
+      timeout: 10s
+      retries: 5
+      start_period: 300s
+
+  postgres:
+    image: postgres:17.11-alpine
+    profiles: [self-hosted]
+    environment:
+      POSTGRES_DB: pitchorium
+      POSTGRES_USER: pitchorium
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
+    volumes: ['postgres-data:/var/lib/postgresql/data']
+    restart: unless-stopped
+
+  valkey:
+    image: valkey/valkey:9.0.6-alpine
+    profiles: [self-hosted]
+    command: ['valkey-server', '--appendonly', 'yes', '--maxmemory-policy', 'noeviction']
+    volumes: ['valkey-data:/data']
+    restart: unless-stopped
+
+volumes:
+  caddy-data:
+  caddy-config:
+  postgres-data:
+  valkey-data:
