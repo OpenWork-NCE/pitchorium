@@ -159,8 +159,10 @@ export class StripeProvider implements PaymentProvider, PayoutAccountProvider {
       {
         payment_intent: request.contribution.providerPaymentId,
         amount: toStripeAmount(request.amount),
-        // The application fee is refunded in proportion (docs.stripe.com/connect/direct-charges).
-        refund_application_fee: 'true',
+        // The application fee of a direct charge is refunded in proportion
+        // (docs.stripe.com/connect/direct-charges); a charge without connected account has none,
+        // and Stripe refuses the parameter there.
+        ...(request.contribution.providerAccountId ? { refund_application_fee: 'true' } : {}),
         'metadata[refund_id]': request.refundId,
       },
       {
