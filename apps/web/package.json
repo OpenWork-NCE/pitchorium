@@ -3,6 +3,13 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
+  "sideEffects": [
+    "*.css",
+    "./src/lib/zod.ts",
+    "./src/instrumentation.ts",
+    "./src/instrumentation-client.ts",
+    "./src/components/layout/data-provider.tsx"
+  ],
   "scripts": {
     "dev:web": "next dev --port ${WEB_PORT:-3200}",
     "build": "next build",

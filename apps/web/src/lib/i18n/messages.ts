@@ -4,11 +4,28 @@ import { type CatalogTree, catalogs, localeManifest } from '@pitchorium/i18n';
 /** Namespaces of `@pitchorium/i18n` the web app reads on the server. */
 export const WEB_NAMESPACES = ['common', 'errors', 'reference', 'web'] as const;
 
-/** Namespaces serialized to the browser; the others stay on the server until a feature needs them. */
-export const CLIENT_NAMESPACES = ['common', 'web'] as const;
-
 type WebNamespace = (typeof WEB_NAMESPACES)[number];
 export type WebMessages = Record<WebNamespace, CatalogTree>;
+
+/** Messages of every document: the header, the theme, the languages and the error page. */
+const DOCUMENT_MESSAGES = ['web.a11y', 'web.theme', 'web.locale', 'web.error'] as const;
+
+/**
+ * Messages serialized to the browser by each route group: what its client components read,
+ * nothing more (the server components read every namespace). A path is a namespace or a subtree
+ * (`web.home`); the bundle regime is in ADR 0094.
+ */
+export const CLIENT_MESSAGES = {
+  document: DOCUMENT_MESSAGES,
+  marketing: [...DOCUMENT_MESSAGES, 'web.home'],
+  public: DOCUMENT_MESSAGES,
+  auth: DOCUMENT_MESSAGES,
+  member: [...DOCUMENT_MESSAGES, 'web.shell', 'web.nav'],
+  admin: [...DOCUMENT_MESSAGES, 'web.shell', 'web.nav'],
+  dev: [...DOCUMENT_MESSAGES, 'web.health'],
+} as const satisfies Record<string, readonly string[]>;
+
+export type MessageScope = keyof typeof CLIENT_MESSAGES;
 
 const PARAMETER = /\{\{(\w+)\}\}/g;
 
@@ -67,8 +84,30 @@ export function messagesFor(locale: Locale): WebMessages {
   return messages;
 }
 
-export function clientMessages(
-  messages: WebMessages,
-): Pick<WebMessages, (typeof CLIENT_NAMESPACES)[number]> {
-  return { common: messages.common, web: messages.web };
+/** Copy of the subtrees at `paths` (dotted), the rest left out; an unknown path is an error. */
+export function pickMessages(messages: WebMessages, paths: readonly string[]): CatalogTree {
+  const picked: CatalogTree = {};
+  for (const path of paths) {
+    const keys = path.split('.');
+    let source: string | CatalogTree = messages;
+    let target = picked;
+    keys.forEach((key, index) => {
+      const next: string | CatalogTree | undefined =
+        typeof source === 'object' ? source[key] : undefined;
+      if (next === undefined) throw new Error(`Unknown message path: ${path}`);
+      if (index === keys.length - 1) {
+        target[key] = next;
+      } else {
+        const existing = target[key];
+        target = target[key] = typeof existing === 'object' ? existing : {};
+      }
+      source = next;
+    });
+  }
+  return picked;
+}
+
+/** Messages a route group sends to the browser (CLIENT_MESSAGES). */
+export function clientMessages(locale: Locale, scope: MessageScope): CatalogTree {
+  return pickMessages(messagesFor(locale), CLIENT_MESSAGES[scope]);
 }

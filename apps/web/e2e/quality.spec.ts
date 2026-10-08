@@ -28,10 +28,11 @@ test.describe('content security policy', () => {
     const response = await page.goto('/fr');
     const policy = response?.headers()['content-security-policy'] ?? '';
     expect(policy).toMatch(/script-src 'self' 'nonce-[^']+' 'strict-dynamic'/);
-    // Exercise what injects scripts or styles: theme, menu, toast, page transition.
+    // Exercise what injects scripts or styles: theme, language panel, layout animation.
     await page.getByRole('button', { name: 'Passer au thème sombre' }).click();
     await page.getByRole('button', { name: 'Langue' }).click();
     await page.keyboard.press('Escape');
+    await page.getByRole('radio', { name: 'Clair' }).click();
     await page.getByRole('button', { name: 'Vérifier les fondations' }).click();
     await expect(page.getByText('Les fondations répondent.')).toBeVisible();
     await page.mouse.wheel(0, 2000);

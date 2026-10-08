@@ -1,18 +1,17 @@
 'use client';
 
-import en from '@pitchorium/i18n/locales/en/web.json';
-import fr from '@pitchorium/i18n/locales/fr/web.json';
-import { reportError } from '@/lib/observability/report-error';
+import dynamic from 'next/dynamic';
 import { useEffect } from 'react';
-import { StatusView } from '@/components/layout/status-view';
-import { Button } from '@/components/ui/button';
+import { reportError } from '@/lib/observability/report-error';
 import { fontVariables } from '@/styles/fonts';
 import '@/styles/globals.css';
 
-/**
- * Last resort when the layout itself fails: no provider is available, so the texts come from
- * the French and English catalogues directly, in the language of the browser.
- */
+/** The view and its catalogues arrive with the error only: every page carries this boundary. */
+const GlobalErrorView = dynamic(() => import('@/components/layout/global-error-view'), {
+  ssr: false,
+});
+
+/** Last resort when the layout itself fails, in the language of the browser (French or English). */
 export default function GlobalError({
   error,
   reset,
@@ -25,21 +24,12 @@ export default function GlobalError({
   }, [error]);
 
   const english = typeof navigator !== 'undefined' && navigator.language.startsWith('en');
-  const texts = (english ? en : fr).error;
-  const locale = english ? 'en' : 'fr';
 
   return (
-    <html lang={locale} className={fontVariables}>
+    <html lang={english ? 'en' : 'fr'} className={fontVariables}>
       <body>
         <main id="main">
-          <StatusView
-            title={texts.title}
-            body={texts.body}
-            reference={
-              error.digest ? texts.reference.replace('{{reference}}', error.digest) : undefined
-            }
-            actions={<Button onClick={reset}>{texts.retry}</Button>}
-          />
+          <GlobalErrorView english={english} digest={error.digest} reset={reset} />
         </main>
       </body>
     </html>

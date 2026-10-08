@@ -5,6 +5,7 @@ import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { media } from '../../../test/support/setup';
 import { AnimatedNumber } from './animated-number';
+import { IconSwap } from './icon-swap';
 import { Reveal } from './reveal';
 import { DURATION_MS, EASE } from './tokens';
 
@@ -59,6 +60,29 @@ describe('AnimatedNumber', () => {
     act(() => runFrames(DURATION_MS.counter));
     expect(screen.getByText('1250 €')).toBeTruthy();
     expect(frames).toHaveLength(0);
+  });
+});
+
+describe('IconSwap', () => {
+  it('keeps every icon in one cell and shows the one of the state only', () => {
+    const { container, rerender } = render(
+      <IconSwap
+        state="light"
+        icons={{ light: <svg data-icon="sun" />, dark: <svg data-icon="moon" /> }}
+      />,
+    );
+    const [sun, moon] = [...container.querySelectorAll('.icon-swap > span')];
+    expect(sun?.hasAttribute('data-active')).toBe(true);
+    expect(moon?.getAttribute('aria-hidden')).toBe('true');
+    rerender(
+      <IconSwap
+        state="dark"
+        icons={{ light: <svg data-icon="sun" />, dark: <svg data-icon="moon" /> }}
+      />,
+    );
+    expect(sun?.hasAttribute('data-active')).toBe(false);
+    expect(moon?.hasAttribute('data-active')).toBe(true);
+    expect(moon?.getAttribute('aria-hidden')).toBe('false');
   });
 });
 

@@ -65,7 +65,15 @@ sequenceDiagram
 
 ## Fournisseurs
 
-`components/layout/providers.tsx`, dans le document de chaque page : `NextIntlClientProvider` (namespaces `common` et `web` seulement), `ThemeProvider` (script inline avec le nonce, aucun flash), `MotionConfig` (nonce, mouvement réduit) et `LazyMotion`, langues actives, toasts, synchronisation du fuseau. Par groupe : `DataProvider` (TanStack Query) et `UrlStateProvider` (nuqs) dans les coquilles membre, administration et publique ; `RealtimeProvider` dans l'espace membre.
+Chaque groupe ne charge que ce qu'il utilise (ADR 0094) :
+
+- document (`components/layout/providers.tsx`, chaque page) : messages du document (`CLIENT_MESSAGES.document`), `ThemeProvider` (script inline avec le nonce, aucun flash), langues actives, synchronisation du fuseau ;
+- `ScopedMessages` : messages d'un groupe (`CLIENT_MESSAGES` de `lib/i18n/messages.ts`), seuls les sous-arbres que ses composants clients lisent ;
+- `InteractiveRuntime` (coquilles membre, administration, authentification et publique) : messages du groupe, `MotionProvider` (`MotionConfig` avec le nonce, `LazyMotion` strict, animations chargées après la première peinture), toasts ;
+- `DataProvider` (TanStack Query et client de l'api du navigateur) et `UrlStateProvider` (nuqs) : coquilles membre, administration et publique ;
+- `RealtimeProvider` : espace membre seulement.
+
+Les pages éditoriales n'ont ni données du navigateur, ni temps réel, ni client d'authentification, ni fonctions de Motion, ni toasts. `LayoutMotion` (fonctions de mise en page) n'enveloppe que les composants qui animent une mise en page.
 
 ## Proxy
 
@@ -81,9 +89,9 @@ sequenceDiagram
 
 ## Performance
 
-- Budgets (ADR 0090) : JavaScript initial par groupe de routes (Brotli, framework compris, environ 111 kB) : `(marketing)` 240 kB, `(public)` et `(auth)` 260 kB, `(app)` et `(admin)` 300 kB (`pnpm --filter @pitchorium/web check:bundles`) ; Lighthouse mobile : performance 90 ou plus, accessibilité, bonnes pratiques et SEO 100, LCP 2,5 s, CLS 0,1, TBT 300 ms ; INP sous 200 ms mesuré par Playwright sur les gestes principaux (processeur ralenti quatre fois), scripts 360 kB et polices 80 kB transférés (`pnpm --filter @pitchorium/web lighthouse`).
-- Mesures du socle (page éditoriale, 4G lente, processeur ralenti quatre fois) : performance 99, LCP 1,6 s, CLS 0, TBT de 10 à 30 ms sur un poste rapide et de 217 à 229 ms sur un runner GitHub, INP de 40 ms ; 236 kB de JavaScript initial.
-- Ce qui reste hors du premier chargement : GSAP (chargé quand le titre éditorial approche de l'écran), Sentry (chargé après la page, seulement avec un DSN), TanStack Query et nuqs sur les pages éditoriales, la police manuscrite et le repli Noto Sans (téléchargés par les seules pages qui s'en servent).
+- Budgets (ADR 0090, ADR 0094) : JavaScript initial par groupe de routes (Brotli, framework compris, environ 112 kB) : `(marketing)` 190 kB, `(public)` et `(auth)` 220 kB, `(app)` 250 kB, `(admin)` 260 kB, autres pages 190 kB (`pnpm --filter @pitchorium/web check:bundles`, qui liste aussi les primitives Radix de chaque page et refuse GSAP, Socket.IO, le client d'authentification et les outils de développement de requêtes hors des groupes qui les utilisent) ; Lighthouse mobile : performance 90 ou plus, accessibilité, bonnes pratiques et SEO 100, LCP 2,5 s, CLS 0,1, TBT 300 ms ; INP sous 200 ms mesuré par Playwright sur les gestes principaux (processeur ralenti quatre fois), scripts 360 kB et polices 80 kB transférés (`pnpm --filter @pitchorium/web lighthouse`).
+- Mesures (page éditoriale, 4G lente, processeur ralenti quatre fois, mouvement réduit pour juger le contraste au repos) : performance 100, accessibilité 100, LCP 1,5 s, CLS 0, TBT de 2 à 29 ms sur un poste rapide ; 173,4 kB de JavaScript initial (236,1 kB au socle).
+- Ce qui reste hors du premier chargement : GSAP (chargé quand le titre éditorial approche de l'écran), Sentry (chargé après la page, seulement avec un DSN), les fonctions de Motion, les vues d'erreur, Vercel Analytics, le client d'authentification (au clic de déconnexion), TanStack Query et nuqs sur les pages éditoriales, la police manuscrite et le repli Noto Sans (téléchargés par les seules pages qui s'en servent).
 - `preconnect` vers l'api (avec les cookies) et le CDN des fichiers depuis le document ; polices auto-hébergées (`next/font/local`), seules Poppins 400 et Bricolage Grotesque 800 préchargées.
 - Analyse : `pnpm --filter @pitchorium/web exec next analyze` (Turbopack).
 

@@ -1,18 +1,17 @@
-import { Analytics } from '@vercel/analytics/next';
-import { SpeedInsights } from '@vercel/speed-insights/next';
 import type { Metadata, Viewport } from 'next';
 import { hasLocale } from 'next-intl';
 import { getTimeZone, getTranslations, setRequestLocale } from 'next-intl/server';
-import { headers } from 'next/headers';
 import { notFound, redirect } from 'next/navigation';
 import { preconnect } from 'react-dom';
 import { Providers } from '@/components/layout/providers';
 import { SkipLink } from '@/components/layout/skip-link';
+import { VercelInsights } from '@/components/layout/vercel-insights';
 import { SITE_NAME, siteConfig } from '@/config/site';
 import { asLocale, routing } from '@/i18n/routing';
 import { env } from '@/lib/env';
 import { getActiveLocales } from '@/lib/i18n/active-locales';
-import { clientMessages, messagesFor } from '@/lib/i18n/messages';
+import { clientMessages } from '@/lib/i18n/messages';
+import { requestNonce } from '@/lib/security/nonce';
 import { brandColors } from '@/styles/brand';
 import { fontVariables } from '@/styles/fonts';
 import '@/styles/globals.css';
@@ -52,7 +51,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps<'/[
   preconnect(siteConfig.apiUrl, { crossOrigin: 'use-credentials' });
   if (siteConfig.cdnUrl) preconnect(new URL(siteConfig.cdnUrl).origin);
 
-  const nonce = (await headers()).get('x-nonce') ?? undefined;
+  const nonce = await requestNonce();
   const timeZone = await getTimeZone();
 
   return (
@@ -60,7 +59,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps<'/[
       <body>
         <Providers
           locale={locale}
-          messages={clientMessages(messagesFor(locale))}
+          messages={clientMessages(locale, 'document')}
           timeZone={timeZone}
           activeLocales={active.locales}
           nonce={nonce}
@@ -68,12 +67,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps<'/[
           <SkipLink />
           {children}
         </Providers>
-        {env.NEXT_PUBLIC_VERCEL_ANALYTICS ? (
-          <>
-            <Analytics />
-            <SpeedInsights />
-          </>
-        ) : null}
+        {env.NEXT_PUBLIC_VERCEL_ANALYTICS ? <VercelInsights /> : null}
       </body>
     </html>
   );

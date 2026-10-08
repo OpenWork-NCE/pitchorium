@@ -1,20 +1,11 @@
 'use client';
 
 import type { Locale } from '@pitchorium/contracts';
-import { LazyMotion, MotionConfig } from 'motion/react';
 import { type AbstractIntlMessages, NextIntlClientProvider } from 'next-intl';
 import { ThemeProvider } from 'next-themes';
 import type { ReactNode } from 'react';
-import { Toaster } from '@/components/ui';
 import { ActiveLocalesProvider } from '@/features/localization';
-import { configureBrowserApi } from '@/lib/api/browser';
 import { TimeZoneSync } from './time-zone-sync';
-
-configureBrowserApi();
-
-/** Features of Motion, loaded after the first paint: the components use `m`, not `motion`. */
-const loadMotionFeatures = () =>
-  import('@/components/motion/motion-features').then((module) => module.default);
 
 /**
  * The theme script runs from the server HTML, before the first paint. Rendered again in the
@@ -31,11 +22,15 @@ interface ProvidersProps {
   messages: AbstractIntlMessages;
   timeZone: string;
   activeLocales: readonly Locale[];
-  /** CSP nonce of the request, for the inline scripts and styles of the libraries. */
+  /** CSP nonce of the request, for the inline theme script. */
   nonce: string | undefined;
 }
 
-/** Providers of every page (docs/architecture/frontend.md). */
+/**
+ * Providers of every page, kept to what an editorial page needs (ADR 0094): messages of the
+ * document, theme, active locales and the time zone. Data, realtime, motion features and toasts
+ * are mounted by the shells that use them (docs/architecture/frontend.md).
+ */
 export function Providers({
   children,
   locale,
@@ -54,15 +49,10 @@ export function Providers({
         nonce={nonce}
         scriptProps={THEME_SCRIPT_PROPS}
       >
-        <MotionConfig nonce={nonce} reducedMotion="user">
-          <LazyMotion features={loadMotionFeatures} strict>
-            <ActiveLocalesProvider locales={activeLocales}>
-              {children}
-              <Toaster />
-              <TimeZoneSync />
-            </ActiveLocalesProvider>
-          </LazyMotion>
-        </MotionConfig>
+        <ActiveLocalesProvider locales={activeLocales}>
+          {children}
+          <TimeZoneSync />
+        </ActiveLocalesProvider>
       </ThemeProvider>
     </NextIntlClientProvider>
   );

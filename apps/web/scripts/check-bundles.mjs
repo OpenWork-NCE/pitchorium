@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 // Initial JavaScript per route group, compressed (Brotli), from the client reference manifests of
-// a production build (ADR 0090): fails above the budget of a group, or when GSAP reaches a chunk
-// of the member space, the administration, the authentication or the public pages.
+// a production build (ADR 0090, ADR 0094): fails above the budget of a group, or when a library a
+// group must not carry reaches its first load (GSAP outside the editorial pages; realtime, the
+// authentication client or the query devtools on the editorial and public pages). Lists the Radix
+// primitives of each page: only the ones its components use may appear.
 //
 // Usage: node scripts/check-bundles.mjs [build directory, default .next]
 import { readFileSync, readdirSync, statSync } from 'node:fs';
@@ -13,20 +15,47 @@ const appDir = join(buildDir, 'server/app');
 
 /**
  * Kilobytes of Brotli-compressed initial JavaScript per page of each group, framework included
- * (React and the Next.js runtime weigh about 111 kB): docs/architecture/frontend.md.
+ * (React and the Next.js runtime weigh about 112 kB): docs/architecture/frontend.md.
  */
 const BUDGETS_KB = {
-  '(marketing)': 240,
-  '(public)': 260,
-  '(auth)': 260,
-  '(app)': 300,
-  '(admin)': 300,
-  other: 260,
+  '(marketing)': 190,
+  '(public)': 220,
+  '(auth)': 220,
+  '(app)': 250,
+  '(admin)': 260,
+  other: 190,
 };
 
-/** Groups that must never load GSAP (public editorial pages only, ADR 0086). */
-const WITHOUT_GSAP = ['(app)', '(admin)', '(auth)', '(public)'];
-const GSAP_SIGNATURE = /GreenSock|gsap\.registerPlugin|_gsScope/;
+/** Libraries kept out of the first load of some groups, recognised by strings of their code. */
+const FORBIDDEN = [
+  {
+    name: 'GSAP',
+    signature: /GreenSock|gsap\.registerPlugin|_gsScope/,
+    groups: ['(app)', '(admin)', '(auth)', '(public)', 'other'],
+  },
+  {
+    name: 'realtime (Socket.IO)',
+    signature: /"io server disconnect"/,
+    groups: ['(marketing)', '(public)', '(auth)', 'other'],
+  },
+  {
+    name: 'authentication client (Better Auth)',
+    signature: /better-auth:|better-auth\.message/,
+    groups: ['(marketing)', '(public)', 'other'],
+  },
+  {
+    name: 'query devtools',
+    signature: /ReactQueryDevtools|tsqd-/,
+    groups: ['(marketing)', '(public)', '(auth)', '(app)', '(admin)', 'other'],
+  },
+];
+
+/**
+ * Display names Radix gives the parts of its primitives, kept by the minifier: a part name
+ * (`DialogContent`, `SwitchThumb`) is specific enough not to match the framework's own strings.
+ */
+const RADIX_PART =
+  /"(Accordion|AlertDialog|Avatar|Checkbox|Collapsible|ContextMenu|Dialog|DropdownMenu|HoverCard|Menu|NavigationMenu|Popover|Popper|Progress|RadioGroup|RovingFocusGroup|ScrollArea|Select|Slider|Switch|Tabs|ToggleGroup|Toolbar|Tooltip)(Content|Item|List|Thumb|Indicator|Image|Viewport|Button)"|"(Slottable)"/g;
 
 function manifests(dir) {
   return readdirSync(dir).flatMap((name) => {
@@ -48,11 +77,15 @@ function entryFiles(manifestPath) {
   return [...new Set([...rootMainFiles, ...Object.values(manifest.entryJSFiles).flat()])];
 }
 
+const contentCache = new Map();
+function content(file) {
+  if (!contentCache.has(file)) contentCache.set(file, readFileSync(join(buildDir, file)));
+  return contentCache.get(file);
+}
+
 const sizeCache = new Map();
 function compressedSize(file) {
-  if (!sizeCache.has(file)) {
-    sizeCache.set(file, brotliCompressSync(readFileSync(join(buildDir, file))).length);
-  }
+  if (!sizeCache.has(file)) sizeCache.set(file, brotliCompressSync(content(file)).length);
   return sizeCache.get(file);
 }
 
@@ -65,15 +98,21 @@ for (const path of manifests(appDir)) {
   const files = entryFiles(path);
   const kilobytes = files.reduce((sum, file) => sum + compressedSize(file), 0) / 1024;
   const budget = BUDGETS_KB[group];
+  const radix = new Set();
+  for (const file of files) {
+    for (const match of content(file).toString('utf8').matchAll(RADIX_PART)) {
+      radix.add(match[1] ?? 'Slot');
+    }
+  }
   process.stdout.write(
-    `${page}: ${kilobytes.toFixed(1)} kB (budget ${budget} kB, ${files.length} files)\n`,
+    `${page}: ${kilobytes.toFixed(1)} kB (budget ${budget} kB, ${files.length} files)` +
+      `; Radix: ${[...radix].sort().join(', ') || 'none'}\n`,
   );
   if (kilobytes > budget) failures.push(`${page}: ${kilobytes.toFixed(1)} kB > ${budget} kB`);
-  if (WITHOUT_GSAP.includes(group)) {
-    const withGsap = files.filter((file) =>
-      GSAP_SIGNATURE.test(readFileSync(join(buildDir, file), 'utf8')),
-    );
-    if (withGsap.length > 0) failures.push(`${page}: GSAP in ${withGsap.join(', ')}`);
+  for (const { name, signature, groups } of FORBIDDEN) {
+    if (!groups.includes(group)) continue;
+    const found = files.filter((file) => signature.test(content(file).toString('utf8')));
+    if (found.length > 0) failures.push(`${page}: ${name} in ${found.join(', ')}`);
   }
 }
 
@@ -83,4 +122,4 @@ if (failures.length > 0) {
   );
   process.exit(1);
 }
-process.stdout.write('Bundle budgets respected, no GSAP outside the editorial pages.\n');
+process.stdout.write('Bundle budgets respected, no library outside the groups that use it.\n');

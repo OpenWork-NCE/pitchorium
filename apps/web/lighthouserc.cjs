@@ -17,7 +17,9 @@ module.exports = {
       url: ['http://localhost:3201/fr', 'http://localhost:3201/en'],
       numberOfRuns: Number(process.env.LHCI_RUNS ?? 3),
       settings: {
-        chromeFlags: '--no-sandbox --headless=new',
+        // Reduced motion: the accessibility audit judges the contrast at rest, not in the middle
+        // of a reveal (docs/design/motion.md); the loading path is the same.
+        chromeFlags: '--no-sandbox --headless=new --force-prefers-reduced-motion',
         throttlingMethod: 'devtools',
         throttling: {
           rttMs: 150,

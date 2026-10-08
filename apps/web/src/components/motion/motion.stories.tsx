@@ -12,16 +12,14 @@ import { SplitHeading } from './split-heading';
 const meta = { title: 'Motion/Primitives' } satisfies Meta;
 export default meta;
 
-/** scale 0.25 to 1 with a 4 px blur, spring without bounce. */
+/** scale 0.25 to 1 with a 4 px blur that clears, a CSS transition. */
 export const IconSwapStory: StoryObj = {
   name: 'Icon swap',
   render: function Render() {
     const [on, setOn] = useState(true);
     return (
       <Button variant="secondary" size="icon" aria-label="Notifications" onClick={() => setOn(!on)}>
-        <IconSwap state={on ? 'on' : 'off'}>
-          {on ? <Bell aria-hidden /> : <BellOff aria-hidden />}
-        </IconSwap>
+        <IconSwap state={on ? 'on' : 'off'} icons={{ on: <Bell />, off: <BellOff /> }} />
       </Button>
     );
   },

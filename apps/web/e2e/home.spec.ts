@@ -29,20 +29,33 @@ test.describe('provisional home page', () => {
     );
   });
 
-  test('switches language among the active locales only', async ({ page }) => {
-    await page.goto('/fr');
-    await page.getByRole('button', { name: 'Langue' }).click();
-    const options = page.getByRole('menuitemradio');
+  test('switches language among the active locales only, and remembers it', async ({ page }) => {
+    await page.goto('/fr?ref=test');
+    const toggle = page.getByRole('button', { name: 'Langue' });
+    await toggle.click();
+    await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    const options = page
+      .locator(`#${await toggle.getAttribute('aria-controls')}`)
+      .getByRole('link');
     await expect(options).toHaveText(['Français', 'English']);
+    await expect(options.first()).toHaveAttribute('aria-current', 'true');
+    await page.keyboard.press('Escape');
+    await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    await expect(toggle).toBeFocused();
+    await toggle.click();
     await options.filter({ hasText: 'English' }).click();
-    await expect(page).toHaveURL(/\/en$/);
+    await expect(page).toHaveURL(/\/en\?ref=test$/);
     await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+    await page.goto('/');
+    await expect(page).toHaveURL(/\/en$/);
   });
 
-  test('plays the primary button and its toast', async ({ page }) => {
+  test('answers the primary button in place', async ({ page }) => {
     await page.goto('/fr');
     await page.getByRole('button', { name: 'Vérifier les fondations' }).click();
-    await expect(page.getByText('Les fondations répondent.')).toBeVisible();
+    await expect(
+      page.getByRole('status').filter({ hasText: 'Les fondations répondent.' }),
+    ).toBeVisible();
   });
 });
 

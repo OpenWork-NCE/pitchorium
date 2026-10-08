@@ -2,7 +2,7 @@ import type { Preview } from '@storybook/nextjs-vite';
 import { NextIntlClientProvider } from 'next-intl';
 import { ThemeProvider } from 'next-themes';
 import { useEffect } from 'react';
-import { clientMessages, messagesFor } from '../src/lib/i18n/messages';
+import { messagesFor } from '../src/lib/i18n/messages';
 import { fontVariables } from '../src/styles/fonts';
 import '../src/styles/globals.css';
 
@@ -33,11 +33,7 @@ const preview: Preview = {
         document.documentElement.lang = locale;
       }, [theme, locale]);
       return (
-        <NextIntlClientProvider
-          locale={locale}
-          messages={clientMessages(messagesFor(locale))}
-          timeZone="UTC"
-        >
+        <NextIntlClientProvider locale={locale} messages={messagesFor(locale)} timeZone="UTC">
           <ThemeProvider attribute="data-theme" forcedTheme={theme}>
             <div className="bg-background p-6 font-sans text-foreground">
               <Story />

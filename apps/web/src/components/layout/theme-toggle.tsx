@@ -76,9 +76,7 @@ export function ThemeToggle() {
       aria-label={current === 'dark' ? t('toLight') : t('toDark')}
       data-theme-state={current}
     >
-      <IconSwap state={current}>
-        {current === 'dark' ? <Moon aria-hidden /> : <Sun aria-hidden />}
-      </IconSwap>
+      <IconSwap state={current} icons={{ light: <Sun />, dark: <Moon /> }} />
     </Button>
   );
 }
