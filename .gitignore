@@ -14,4 +14,6 @@ coverage/
 
 # Client product documents: confidential, kept locally only
 docs/product/
+# Complete brand kit of the client: kept locally only, the web app versions a selection
+Pitchorium-Identite-Marque/
 infra/production/.env

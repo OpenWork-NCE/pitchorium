@@ -6,6 +6,8 @@ Pitchorium est un réseau professionnel et une plateforme de financement à impa
 
 `docs/product/` (cahier des charges et proposition produit du client) est confidentiel : ignoré par git, absent du dépôt GitHub, présent uniquement en local. Il est requis pour travailler : s'il manque, s'arrêter et le demander. Ne jamais l'ajouter au dépôt (ni par `git add -f`, ni dans un autre dossier) et ne jamais le citer par un lien dans un fichier publié ; citer seulement les numéros de section (§10.7).
 
+`Pitchorium-Identite-Marque/` (kit de marque complet du client, à la racine) suit la même règle : ignoré par git, présent uniquement en local. Seule la sélection utile à la webapp est versionnée, sous `apps/web/public/brand`, `apps/web/public/fonts` et `apps/web/src/components/brand`, et se refait par `pnpm brand:sync` (`docs/design/brand-usage.md`). Ne jamais modifier la géométrie, les proportions ni la palette des logos, ne jamais retaper le logotype, n'ajouter aucun slogan. Référence de mouvement : `docs/design/ELITE-MOTION.md`.
+
 ## Règles absolues
 
 1. Jamais de caractère U+2500 à U+257F ni de séparation décorative (code, commentaires, documentation, sorties de scripts).
