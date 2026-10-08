@@ -2,6 +2,7 @@ import { Global, Module, type OnApplicationShutdown } from '@nestjs/common';
 import { LoggerModule } from 'nestjs-pino';
 import { type CommonConfig, COMMON_CONFIG } from '../config';
 import { resolveRequestId } from '../http/request-id';
+import { LOG_REDACT_CENSOR, LOG_REDACT_PATHS } from './log-redaction';
 import { ErrorReporter, NoopErrorReporter, SentryErrorReporter } from './error-reporter';
 import { Metrics, OpenTelemetryMetrics } from './metrics';
 import { shutdownTelemetry } from './telemetry';
@@ -15,7 +16,7 @@ import { shutdownTelemetry } from './telemetry';
         pinoHttp: {
           level: config.logLevel,
           genReqId: resolveRequestId,
-          redact: ['req.headers.authorization', 'req.headers.cookie', 'res.headers["set-cookie"]'],
+          redact: { paths: [...LOG_REDACT_PATHS], censor: LOG_REDACT_CENSOR },
           autoLogging: { ignore: (request) => request.url?.startsWith('/v1/health') ?? false },
           ...(config.env === 'development'
             ? { transport: { target: 'pino-pretty', options: { singleLine: true } } }
