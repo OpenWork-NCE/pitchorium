@@ -98,3 +98,4 @@ Un fichier par décision, numéroté, au format Contexte / Décision / Conséque
 | [0092](0092-untranslated-url-paths.md)                   | Chemins d'URL non traduits                                   |
 | [0093](0093-web-accessibility-and-react-lint.md)         | Lint d'accessibilité et de React du web                      |
 | [0094](0094-web-bundle-regime.md)                        | Régime du bundle du web                                      |
+| [0095](0095-art-direction.md)                            | Direction artistique                                         |

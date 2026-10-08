@@ -5,6 +5,13 @@ import { ADMIN_SEGMENTS, MEMBER_SEGMENTS } from '@/config/routes';
 
 const root = join(import.meta.dirname, '../..');
 
+/** Source files under a folder of src/, recursively. */
+function sourceFiles(dir: string): string[] {
+  return readdirSync(join(root, 'src', dir), { withFileTypes: true, recursive: true })
+    .filter((entry) => entry.isFile() && /\.(ts|tsx|css)$/.test(entry.name))
+    .map((entry) => join(entry.parentPath, entry.name));
+}
+
 function segmentsOf(group: string): string[] {
   return readdirSync(join(root, 'src/app/[locale]', group), { withFileTypes: true })
     .filter((entry) => entry.isDirectory() && !entry.name.startsWith('_'))
@@ -28,6 +35,18 @@ describe('project rules of the web app', () => {
   it('lets the proxy know every top-level folder of the member space and the administration', () => {
     for (const segment of segmentsOf('(app)')) expect(MEMBER_SEGMENTS).toContain(segment);
     for (const segment of segmentsOf('(admin)')) expect(ADMIN_SEGMENTS).toContain(segment);
+  });
+
+  it('keeps the handwritten font to the editorial pages (docs/design/direction.md)', () => {
+    const allowed = [
+      join('src', 'features', 'marketing'),
+      join('src', 'app', '[locale]', '(marketing)'),
+    ];
+    const offenders = sourceFiles('')
+      .filter((path) => !allowed.some((folder) => path.includes(folder)))
+      .filter((path) => !path.endsWith('.stories.tsx') && !path.endsWith('globals.css'))
+      .filter((path) => /\bfont-hand\b/.test(readFileSync(path, 'utf8')));
+    expect(offenders).toEqual([]);
   });
 
   it('declares the fallback font for exactly the ranges the brand sync subsets', () => {
