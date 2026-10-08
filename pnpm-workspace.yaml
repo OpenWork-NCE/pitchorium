@@ -20,6 +20,9 @@ allowBuilds:
 overrides:
   better-auth>next: '-'
   better-auth>drizzle-kit: '-'
+  # eslint-plugin-boundaries 7.2.0 pins handlebars 4.7.9 (GHSA-8r5x-fm3f-whwj and
+  # GHSA-p8wg-vrv2-v86f, fixed in 4.7.10): to remove once the plugin requires it.
+  handlebars: 4.7.10
 
 # pnpm audit (CI): advisories accepted with their reason, reviewed at each dependency update.
 auditConfig:
