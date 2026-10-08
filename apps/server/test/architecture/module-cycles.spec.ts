@@ -9,7 +9,10 @@ function sources(directory: string): string[] {
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) =>
     entry.isDirectory()
       ? sources(join(directory, entry.name))
-      : entry.name.endsWith('.ts') && !entry.name.endsWith('.spec.ts')
+      : // boundaries.spec.ts writes deliberate violations (arch-test*) while it runs.
+        entry.name.endsWith('.ts') &&
+          !entry.name.endsWith('.spec.ts') &&
+          !entry.name.startsWith('arch-test')
         ? [readFileSync(join(directory, entry.name), 'utf8')]
         : [],
   );
