@@ -13,18 +13,18 @@ L'api doit lister `http://localhost:3200` dans `WEB_APP_URL` et `CORS_ORIGINS` (
 
 ## Commandes
 
-| Commande (dans `apps/web`) | Effet                                                                                                               |
-| -------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| `pnpm dev:web`             | serveur de développement (Turbopack), port `WEB_PORT` (3200)                                                        |
-| `pnpm build`, `pnpm start` | build de production, puis serveur                                                                                   |
-| `pnpm typecheck`           | types des routes (`next typegen`) puis `tsc`                                                                        |
-| `pnpm lint`                | types des routes puis ESLint : règles partagées, Next.js, frontières, texte en dur, `"use client"` des routes, GSAP |
-| `pnpm test`                | Vitest : composants, logique, contraste des tokens, architecture                                                    |
-| `pnpm test:e2e`            | Playwright dans l'image officielle (captures comparées) ; `test:e2e:native` sans captures                           |
-| `pnpm check:bundles`       | JavaScript initial par groupe de routes et absence de GSAP hors des pages éditoriales                               |
-| `pnpm lighthouse`          | Lighthouse CI, profil mobile, budgets de `lighthouserc.cjs`                                                         |
-| `pnpm storybook`           | design system (port 6006) ; `build-storybook` pour la version statique                                              |
-| `pnpm brand:sync`          | resélectionne les fichiers du kit de marque local (`docs/design/brand-usage.md`)                                    |
+| Commande (dans `apps/web`) | Effet                                                                                                                                                         |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pnpm dev:web`             | serveur de développement (Turbopack), port `WEB_PORT` (3200)                                                                                                  |
+| `pnpm build`, `pnpm start` | build de production, puis serveur                                                                                                                             |
+| `pnpm typecheck`           | types des routes (`next typegen`) puis `tsc`                                                                                                                  |
+| `pnpm lint`                | types des routes puis ESLint : règles partagées, Next.js, React et hooks, accessibilité (jsx-a11y), frontières, texte en dur, `"use client"` des routes, GSAP |
+| `pnpm test`                | Vitest : composants, logique, contraste des tokens, architecture                                                                                              |
+| `pnpm test:e2e`            | Playwright dans l'image officielle (captures comparées) ; `test:e2e:native` sans captures                                                                     |
+| `pnpm check:bundles`       | JavaScript initial par groupe de routes et absence de GSAP hors des pages éditoriales                                                                         |
+| `pnpm lighthouse`          | Lighthouse CI, profil mobile, budgets de `lighthouserc.cjs`                                                                                                   |
+| `pnpm storybook`           | design system (port 6006) ; `build-storybook` pour la version statique                                                                                        |
+| `pnpm brand:sync`          | resélectionne les fichiers du kit de marque local (`docs/design/brand-usage.md`)                                                                              |
 
 Captures de référence : après un changement visuel voulu, `pnpm test:e2e --update-snapshots`, puis relire les images de `e2e/__screenshots__`.
 

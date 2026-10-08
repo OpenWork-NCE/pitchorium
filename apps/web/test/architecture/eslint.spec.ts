@@ -104,6 +104,34 @@ describe('architecture rules of the web app', { timeout: 60_000 }, () => {
     expect(punctuation).not.toContain('pitchorium/no-literal-ui-text');
   });
 
+  it('checks accessibility in the JSX (jsx-a11y)', async () => {
+    const rules = await rulesFor(
+      'src/components/ui/violation.tsx',
+      'export function X({ src, go }: { src: string; go: () => void }) {\n  return (\n    <div onClick={go}>\n      <img src={src} />\n    </div>\n  );\n}\n',
+    );
+    expect(rules).toContain('jsx-a11y/alt-text');
+    expect(rules).toContain('jsx-a11y/click-events-have-key-events');
+    expect(rules).toContain('jsx-a11y/no-static-element-interactions');
+  });
+
+  it('checks the React rules', async () => {
+    const rules = await rulesFor(
+      'src/components/ui/violation.tsx',
+      'export function X({ items, href }: { items: string[]; href: string }) {\n  return (\n    <ul>\n      {items.map((item) => (\n        <li>{item}</li>\n      ))}\n      <a href={href} target="_blank" />\n    </ul>\n  );\n}\n',
+    );
+    expect(rules).toContain('react/jsx-key');
+    expect(rules).toContain('react/jsx-no-target-blank');
+  });
+
+  it('checks the rules of hooks', async () => {
+    expect(
+      await rulesFor(
+        'src/components/ui/violation.tsx',
+        "import { useState } from 'react';\nexport function X({ open }: { open: boolean }) {\n  if (open) useState(0);\n  return null;\n}\n",
+      ),
+    ).toContain('react-hooks/rules-of-hooks');
+  });
+
   it('refuses "use client" on a whole page or layout', async () => {
     expect(
       await rulesFor(

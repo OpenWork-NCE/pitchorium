@@ -14,7 +14,7 @@ Le backend vérifie ses frontières par ESLint (ADR 0010). Le web a besoin des m
 - `pitchorium/no-literal-ui-text` : aucun texte (lettres) dans le JSX ni dans les attributs lus par les personnes (`alt`, `title`, `aria-label`, `placeholder`...), hors stories et tests.
 - `pitchorium/no-client-route-file` : `"use client"` interdit sur une page, un layout, un template, `loading` ou `not-found` ; une exception se justifie par un commentaire `eslint-disable`.
 - `test/architecture/eslint.spec.ts` prouve chaque règle sur une violation volontaire.
-- Plugins `eslint-plugin-react` et `eslint-plugin-jsx-a11y` écartés : ils ne déclarent pas ESLint 10 ; l'accessibilité est vérifiée à l'exécution (axe dans Playwright, addon a11y de Storybook, Lighthouse).
+- Plugins `eslint-plugin-react` et `eslint-plugin-jsx-a11y` : écartés au départ (ils ne déclarent pas ESLint 10), réintégrés par l'ADR 0093.
 
 ## Conséquences
 

@@ -1,4 +1,7 @@
+import { fixupPluginRules } from '@eslint/compat';
 import nextPlugin from '@next/eslint-plugin-next';
+import jsxA11y from 'eslint-plugin-jsx-a11y';
+import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import storybook from 'eslint-plugin-storybook';
 import { join } from 'node:path';
@@ -19,8 +22,16 @@ const GSAP_IMPORTS = {
 };
 
 /**
- * ESLint of the web app (apps/web): the shared TypeScript rules, Next.js and React hooks rules,
- * the architecture boundaries and the rules of the design system.
+ * eslint-plugin-react and eslint-plugin-jsx-a11y do not declare ESLint 10 yet: @eslint/compat
+ * restores the context methods ESLint 10 removed (ADR 0093). Both are proved on deliberate
+ * violations by apps/web/test/architecture/eslint.spec.ts.
+ */
+const reactPlugin = fixupPluginRules(react);
+const jsxA11yPlugin = fixupPluginRules(jsxA11y);
+
+/**
+ * ESLint of the web app (apps/web): the shared TypeScript rules, Next.js, React, React hooks and
+ * accessibility (jsx-a11y) rules, the architecture boundaries and the rules of the design system.
  *
  * @param {{ tsconfigRootDir: string, ignores?: string[] }} options
  */
@@ -43,16 +54,24 @@ export function createWebConfig({ tsconfigRootDir, ignores = [] }) {
       files: ['**/*.{ts,tsx}'],
       languageOptions: { globals: { ...globals.browser, ...globals.node } },
       // The rules resolve the app from its own folder, also when ESLint runs from the root.
-      settings: { next: { rootDir: tsconfigRootDir } },
+      settings: { next: { rootDir: tsconfigRootDir }, react: { version: '19.3' } },
       plugins: {
         '@next/next': nextPlugin,
+        react: reactPlugin,
         'react-hooks': reactHooks,
+        'jsx-a11y': jsxA11yPlugin,
         pitchorium,
       },
       rules: {
         ...nextPlugin.configs.recommended.rules,
         ...nextPlugin.configs['core-web-vitals'].rules,
+        ...react.configs.flat.recommended.rules,
+        ...react.configs.flat['jsx-runtime'].rules,
+        // TypeScript types the props; the compiler of React names the components.
+        'react/prop-types': 'off',
+        'react/display-name': 'off',
         ...reactHooks.configs.recommended.rules,
+        ...jsxA11y.flatConfigs.strict.rules,
         'pitchorium/no-client-route-file': 'error',
         'no-restricted-imports': ['error', GSAP_IMPORTS],
       },

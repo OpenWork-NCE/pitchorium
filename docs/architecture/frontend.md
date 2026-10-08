@@ -89,6 +89,6 @@ sequenceDiagram
 
 ## Tests
 
-- `pnpm --filter @pitchorium/web test` : Vitest (composants en jsdom, logique en Node), tests d'architecture (règles ESLint prouvées sur des violations volontaires, listes de routes, plages de la police de repli).
+- `pnpm --filter @pitchorium/web test` : Vitest (composants en jsdom, logique en Node), tests d'architecture (règles ESLint prouvées sur des violations volontaires, dont React, hooks et accessibilité, ADR 0093 ; listes de routes, plages de la police de repli).
 - `pnpm --filter @pitchorium/web test:e2e` : Playwright dans l'image officielle (même rendu que la CI), build de production `.next-e2e` devant `e2e/support/stub-api.mjs` ; captures de référence dans `e2e/__screenshots__`, à mettre à jour par `pnpm --filter @pitchorium/web test:e2e --update-snapshots` après un changement visuel voulu.
 - `pnpm --filter @pitchorium/web build-storybook` : design system.
