@@ -152,6 +152,13 @@ export const SOURCE_EVENT_TYPES: readonly string[] = [
   EngagementAccepted.TYPE,
   EngagementDeclined.TYPE,
   EngagementCompleted.TYPE,
+  ReportCreated.TYPE,
+  ReportResolved.TYPE,
+  DecisionTaken.TYPE,
+  DecisionAppealed.TYPE,
+  AppealResolved.TYPE,
+  SuspensionStarted.TYPE,
+  SuspensionEnded.TYPE,
 ];
 
 const text = (value: unknown): string | null => (typeof value === 'string' ? value : null);
