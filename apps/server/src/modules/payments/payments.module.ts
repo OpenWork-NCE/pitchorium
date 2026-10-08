@@ -46,7 +46,10 @@ import {
 import { SimulatedCheckoutHandler } from './interface/simulated-checkout.handler';
 import { WebhooksHttpHandler } from './interface/webhooks.handler';
 
+import { PaymentsPersonalData } from './infrastructure/payments-personal-data';
+
 const SHARED_PROVIDERS: Provider[] = [
+  PaymentsPersonalData,
   { provide: PaymentsRepository, useClass: DrizzlePaymentsRepository },
   ConfiguredPaymentProviders,
   { provide: PaymentProviders, useExisting: ConfiguredPaymentProviders },

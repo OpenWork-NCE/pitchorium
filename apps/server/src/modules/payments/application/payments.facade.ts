@@ -78,6 +78,8 @@ export class PaymentsFacade implements OnModuleInit {
           .map((project) => ({ projectId: project.id, slug: project.slug, title: project.title }));
       },
     });
+    // Financial proofs are kept, pseudonymized, after the erasure of their owner (ADR 0075).
+    this.media.retainOnErasure([KYC_SUBMISSION_RESOURCE, OFFLINE_CONTRIBUTION_RESOURCE]);
     this.media.registerReadAuthorizer({
       resourceTypes: [KYC_SUBMISSION_RESOURCE, OFFLINE_CONTRIBUTION_RESOURCE],
       canRead: (viewerId, resource) => this.canReadFile(viewerId, resource),

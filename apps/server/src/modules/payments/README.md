@@ -78,3 +78,7 @@ Espèces, virement institutionnel (montant en EUR, XOF ou XAF), engagement de lo
 ## Dépendances
 
 identity (email, nom, langue, double authentification), access (enregistrement KYC et prérequis, rôles des lecteurs de pièces), profiles (pays déclaré, cartes, identifiants publics), organizations (rôle, cartes, projets soutenus), media (pièces privées), projects (projet, contrepartie, réservation, collecté).
+
+## Données personnelles (RGPD)
+
+Export : contributions, contributions reçues comme porteur, compte de versement, vérifications KYC, contributions hors plateforme. Suppression : rien n'est supprimé ni modifié dans les montants (obligations légales) ; l'identité est remplacée par le pseudonyme irréversible dans les contributions, comptes de versement, KYC, contributions hors plateforme, remboursements et écarts ; les pièces KYC et justificatifs restent sous le pseudonyme (ADR 0075). La durée de conservation est une question juridique. Contrats enregistrés auprès du module privacy (`infrastructure/payments-personal-data.ts`, ADR 0074).
