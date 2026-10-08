@@ -20,7 +20,7 @@ Espèces, virement institutionnel (montant en EUR, XOF ou XAF), engagement de lo
 
 ## Compte de versement et KYC (ADR 0044, 0045, 0050)
 
-- Stripe : compte équivalent Standard, onboarding hébergé (`onboardingUrl`), état relu au retour (`POST /v1/me/payout-account/refresh`) et sur `account.updated` ; la vérification Stripe fait foi.
+- Stripe : compte équivalent Standard créé par Accounts v2 sans donnée d'identité (Stripe la collecte, ADR 0044), onboarding hébergé (`onboardingUrl`), état relu au retour (`POST /v1/me/payout-account/refresh`) et sur `account.updated` ; la vérification Stripe fait foi.
 - Flutterwave et simulé : coordonnées bancaires transmises au prestataire (sous-compte), non conservées ; KYC par revue manuelle (pièces `verification_document` privées, décision motivée, audit).
 
 ## Prestataires

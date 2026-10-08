@@ -29,6 +29,12 @@ import {
 /** Tolerance of the signature timestamp, as the official libraries (5 minutes). */
 export const STRIPE_SIGNATURE_TOLERANCE_SECONDS = 300;
 
+/**
+ * Version of the Accounts v2 API (docs.stripe.com/api/v2/core/accounts), pinned: v2 endpoints
+ * require a Stripe-Version header. Checked against the test mode on 2026-10-08.
+ */
+export const STRIPE_V2_API_VERSION = '2026-09-30.endive';
+
 /** Currencies Stripe still writes with two decimals although ISO 4217 gives none. */
 const STRIPE_TWO_DECIMAL_EXCEPTIONS = new Set(['ISK', 'UGX']);
 
@@ -272,25 +278,38 @@ export class StripeProvider implements PaymentProvider, PayoutAccountProvider {
     };
   }
 
+  /**
+   * Accounts v2 (Stripe refuses Accounts v1 for new Connect integrations): merchant
+   * configuration with card and SEPA debit, full Dashboard, Stripe collecting the fees and
+   * bearing the losses. No identity data is sent: a platform based in France may only pass it
+   * through account tokens, and Stripe collects it during the hosted onboarding. The account
+   * is then read through the v1 API, which serves v2 accounts.
+   */
   async createAccount(
     request: CreatePayoutAccountRequest,
   ): Promise<{ providerAccountId: string; state: PayoutAccountState }> {
-    const body = await this.post(
-      '/v1/accounts',
-      {
-        country: request.country,
-        email: request.email,
-        'controller[fees][payer]': 'account',
-        'controller[losses][payments]': 'stripe',
-        'controller[requirement_collection]': 'stripe',
-        'controller[stripe_dashboard][type]': 'full',
-        'metadata[user_id]': request.userId,
-      },
-      { idempotencyKey: `account-${request.userId}` },
+    const body = await this.request(
+      '/v2/core/accounts',
+      'POST',
+      JSON.stringify({
+        identity: { country: request.country.toLowerCase() },
+        configuration: {
+          merchant: {
+            capabilities: {
+              card_payments: { requested: true },
+              sepa_debit_payments: { requested: true },
+            },
+          },
+        },
+        defaults: { responsibilities: { fees_collector: 'stripe', losses_collector: 'stripe' } },
+        dashboard: 'full',
+        metadata: { user_id: request.userId },
+      }),
+      { idempotencyKey: `account-${request.userId}`, json: true },
     );
     const providerAccountId = text(field(body, 'id'));
     if (!providerAccountId) throw unavailable('stripe', 'no account');
-    return { providerAccountId, state: accountState(body) };
+    return { providerAccountId, state: await this.accountState(providerAccountId) };
   }
 
   async onboardingLink(providerAccountId: string, returnUrl: string): Promise<string | null> {
@@ -328,12 +347,17 @@ export class StripeProvider implements PaymentProvider, PayoutAccountProvider {
     path: string,
     method: 'GET' | 'POST',
     body: string | undefined,
-    options: { account?: string | undefined; idempotencyKey?: string },
+    options: { account?: string | undefined; idempotencyKey?: string; json?: boolean },
   ): Promise<ExactJson> {
     const headers: Record<string, string> = {
       authorization: `Bearer ${this.config.secretKey}`,
     };
-    if (body !== undefined) headers['content-type'] = 'application/x-www-form-urlencoded';
+    if (options.json) {
+      headers['content-type'] = 'application/json';
+      headers['stripe-version'] = STRIPE_V2_API_VERSION;
+    } else if (body !== undefined) {
+      headers['content-type'] = 'application/x-www-form-urlencoded';
+    }
     if (options.account) headers['stripe-account'] = options.account;
     if (options.idempotencyKey) headers['idempotency-key'] = options.idempotencyKey;
     const response = await callProvider('stripe', `${this.config.apiBaseUrl}${path}`, {

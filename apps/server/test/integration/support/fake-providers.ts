@@ -150,10 +150,17 @@ export class FakeStripe extends FakeServer {
   ) {
     const form = new URLSearchParams(body);
     const account = String(headers['stripe-account'] ?? '');
-    if (method === 'POST' && path === '/v1/accounts') {
+    // Accounts v2 (JSON, pinned Stripe-Version); the account is then read through v1.
+    if (method === 'POST' && path === '/v2/core/accounts') {
+      if (!headers['stripe-version']) {
+        return {
+          status: 400,
+          body: JSON.stringify({ error: { message: 'Stripe-Version required' } }),
+        };
+      }
       const id = `acct_${(this.sequence += 1)}`;
       this.accounts.set(id, { enabled: false });
-      return ok({ id, charges_enabled: false, payouts_enabled: false, details_submitted: false });
+      return ok({ id, object: 'v2.core.account', applied_configurations: ['merchant'] });
     }
     if (method === 'POST' && path === '/v1/account_links') {
       return ok({ url: `https://connect.stripe.test/setup/${form.get('account')}` });

@@ -132,10 +132,13 @@ describe('payment providers', () => {
     expect((created.body as PayoutAccount).onboardingUrl).toMatch(
       /^https:\/\/connect\.stripe\.test\/setup\/acct_/,
     );
-    const accountRequest = stripe.received.find((entry) => entry.path === '/v1/accounts');
-    expect(
-      new URLSearchParams(accountRequest?.body).get('controller[stripe_dashboard][type]'),
-    ).toBe('full');
+    // Accounts v2: full Dashboard, Stripe collecting the fees and bearing the losses.
+    const accountRequest = stripe.received.find((entry) => entry.path === '/v2/core/accounts');
+    expect(JSON.parse(accountRequest?.body ?? '{}')).toMatchObject({
+      identity: { country: 'fr' },
+      dashboard: 'full',
+      defaults: { responsibilities: { fees_collector: 'stripe', losses_collector: 'stripe' } },
+    });
     const [accountId] = [...stripe.accounts.keys()];
     stripe.completeOnboarding(accountId ?? '');
     const refreshed = await holder.agent.post('/v1/me/payout-account/refresh').expect(200);
