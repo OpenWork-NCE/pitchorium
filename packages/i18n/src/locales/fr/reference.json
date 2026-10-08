@@ -754,5 +754,51 @@
     "editorial": "Sélection éditoriale",
     "upcoming_events": "Événements à venir",
     "open_missions": "Missions ouvertes"
+  },
+  "reportTargetTypes": {
+    "profile": "Profil",
+    "organization": "Organisation",
+    "post": "Publication",
+    "comment": "Commentaire",
+    "project": "Projet",
+    "project_update": "Actualité de projet",
+    "event": "Événement",
+    "mission": "Mission",
+    "message": "Message",
+    "media": "Fichier"
+  },
+  "reportReasons": {
+    "spam": "Spam",
+    "harassment": "Harcèlement",
+    "fraud": "Fraude ou arnaque",
+    "illegal_content": "Contenu illégal",
+    "misleading_information": "Informations trompeuses",
+    "intellectual_property": "Atteinte à la propriété intellectuelle",
+    "other": "Autre"
+  },
+  "reportStatuses": {
+    "received": "Reçu",
+    "resolved": "Traité"
+  },
+  "reportOutcomes": {
+    "action_taken": "Mesure prise",
+    "no_action": "Aucune mesure"
+  },
+  "moderationDecisionKinds": {
+    "dismiss": "Classement sans suite",
+    "hide": "Masquage",
+    "remove": "Retrait",
+    "warn": "Avertissement",
+    "suspend": "Suspension",
+    "freeze_project": "Gel du projet"
+  },
+  "moderationGrounds": {
+    "terms": "Conditions d'utilisation",
+    "law": "Loi applicable"
+  },
+  "appealStatuses": {
+    "pending": "En cours d'examen",
+    "upheld": "Décision maintenue",
+    "overturned": "Décision annulée"
   }
 }

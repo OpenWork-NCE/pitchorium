@@ -754,5 +754,51 @@
     "editorial": "Editorial selection",
     "upcoming_events": "Upcoming events",
     "open_missions": "Open missions"
+  },
+  "reportTargetTypes": {
+    "profile": "Profile",
+    "organization": "Organization",
+    "post": "Post",
+    "comment": "Comment",
+    "project": "Project",
+    "project_update": "Project update",
+    "event": "Event",
+    "mission": "Mission",
+    "message": "Message",
+    "media": "File"
+  },
+  "reportReasons": {
+    "spam": "Spam",
+    "harassment": "Harassment",
+    "fraud": "Fraud or scam",
+    "illegal_content": "Illegal content",
+    "misleading_information": "Misleading information",
+    "intellectual_property": "Intellectual property infringement",
+    "other": "Other"
+  },
+  "reportStatuses": {
+    "received": "Received",
+    "resolved": "Handled"
+  },
+  "reportOutcomes": {
+    "action_taken": "Action taken",
+    "no_action": "No action"
+  },
+  "moderationDecisionKinds": {
+    "dismiss": "No action",
+    "hide": "Hidden",
+    "remove": "Removed",
+    "warn": "Warning",
+    "suspend": "Suspension",
+    "freeze_project": "Project frozen"
+  },
+  "moderationGrounds": {
+    "terms": "Terms of use",
+    "law": "Applicable law"
+  },
+  "appealStatuses": {
+    "pending": "Under review",
+    "upheld": "Decision upheld",
+    "overturned": "Decision overturned"
   }
 }

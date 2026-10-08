@@ -33,6 +33,16 @@ import {
   relationDegreeSchema,
 } from './network.js';
 import {
+  appealOutcomeSchema,
+  appealStatusSchema,
+  moderationDecisionKindSchema,
+  moderationGroundSchema,
+  reportOutcomeSchema,
+  reportReasonSchema,
+  reportStatusSchema,
+  reportTargetTypeSchema,
+} from './trust.js';
+import {
   emailDigestSchema,
   notificationChannelSchema,
   notificationTypeSchema,
@@ -155,6 +165,13 @@ export const LABELLED_ENUMS: Readonly<Record<string, readonly AnyEnum[]>> = {
   discoveryKinds: [discoveryKindSchema],
   suggestionLists: [suggestionListSchema],
   discoverSections: [discoverSectionSchema],
+  reportTargetTypes: [reportTargetTypeSchema],
+  reportReasons: [reportReasonSchema],
+  reportStatuses: [reportStatusSchema],
+  reportOutcomes: [reportOutcomeSchema],
+  moderationDecisionKinds: [moderationDecisionKindSchema],
+  moderationGrounds: [moderationGroundSchema],
+  appealStatuses: [appealStatusSchema, appealOutcomeSchema],
 };
 
 /**
@@ -192,4 +209,7 @@ export const TECHNICAL_ENUMS: readonly string[] = [
   'missionModerationStatusSchema',
   'myEngagementRoleSchema',
   'matchingRuleSchema',
+  'moderationCaseStatusSchema',
+  'moderationCaseOriginSchema',
+  'trustSignalKindSchema',
 ];

@@ -26,3 +26,4 @@ export * from './profiles.js';
 export * from './projects.js';
 export * from './realtime.js';
 export * from './reference-data.js';
+export * from './trust.js';
