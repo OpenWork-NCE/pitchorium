@@ -14,11 +14,16 @@ import { EventsController } from './interface/events.controller';
 import { EventsJobsProcessor } from './interface/events-jobs.processor';
 import { EVENTS_QUEUE } from './interface/events-queue';
 
+import { EventsPersonalData } from './infrastructure/events-personal-data';
+
 const SHARED_PROVIDERS: Provider[] = [
   { provide: EventsRepository, useClass: DrizzleEventsRepository },
   EventEventsRecorder,
   EventReadsService,
+  EventsService,
+  RegistrationsService,
   EventsFacade,
+  EventsPersonalData,
 ];
 
 /**
@@ -32,13 +37,7 @@ export class EventsModule {
       module: EventsModule,
       global: true,
       controllers: [EventsController],
-      providers: [
-        ...SHARED_PROVIDERS,
-        EventsService,
-        RegistrationsService,
-        CalendarService,
-        EventResolver,
-      ],
+      providers: [...SHARED_PROVIDERS, CalendarService, EventResolver],
       exports: [EventsFacade],
     };
   }

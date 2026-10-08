@@ -77,3 +77,7 @@ Aucun.
 ## Dépendances
 
 identity (par le garde d'access), profiles (cartes, page publique, données de référence), organizations (rôle, cartes, organisations gérées), projects (équipe, carte du projet), media (image), network (suivis et blocages), content (source du fil).
+
+## Données personnelles (RGPD)
+
+Export : événements organisés, inscriptions, flux de calendrier. Suppression : places libérées (la liste d'attente avance), événements à venir annulés (inscrits prévenus), brouillons supprimés, événements passés gardés sous le pseudonyme, jeton de calendrier supprimé. Contrats enregistrés auprès du module privacy (`infrastructure/events-personal-data.ts`, ADR 0074).
