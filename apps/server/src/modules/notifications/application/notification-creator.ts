@@ -11,7 +11,7 @@ import { OutboxService } from '../../../platform/outbox';
 import { NetworkFacade } from '../../network';
 import { groupKeyOf, MAX_ACTORS, windowEnd } from '../domain/aggregation';
 import { NOTIFICATION_DEFINITIONS } from '../domain/notification-types';
-import { NotificationCreated } from '../domain/notifications-events';
+import { NotificationBatchCreated } from '../domain/notifications-events';
 import { resolveChannels } from '../domain/preferences';
 import { type NotificationData, type NotificationRecord, NotificationsRepository } from './ports';
 
@@ -31,9 +31,9 @@ export interface Dispatch {
 /**
  * Creates the notifications of one source event, for any number of recipients at once:
  * idempotent per (source, recipient), grouped in the open notification of the same key,
- * capped per member for low priority, with the channels each member chose. Every created or
- * grown notification records `notifications.notification.created.v1` for the push and the
- * immediate email. Joins the caller's transaction.
+ * capped per member for low priority, with the channels each member chose. The created and
+ * grown notifications record one `notifications.batch.created.v1`, delivered by one job (push
+ * and immediate emails, ADR 0064). Joins the caller's transaction.
  */
 @Injectable()
 export class NotificationCreator {
@@ -86,10 +86,20 @@ export class NotificationCreator {
       }
       const records = await this.records(created, dispatch, groupKey, now);
       await this.notifications.insertNotifications(records);
-      await this.outbox.record(
-        ...grown.map((notification) => this.event(notification.id, notification, false, now)),
-        ...records.map((record) => this.event(record.id, record, true, now)),
-      );
+      if (grown.length + records.length > 0) {
+        await this.outbox.record(
+          new NotificationBatchCreated({
+            id: this.ids.next(),
+            aggregateId: this.ids.next(),
+            occurredAt: now,
+            payload: {
+              type: dispatch.type,
+              created: records.map((record) => record.id),
+              grown: grown.map((notification) => notification.id),
+            },
+          }),
+        );
+      }
       return grown.length + records.length;
     });
   }
@@ -144,20 +154,6 @@ export class NotificationCreator {
           updatedAt: now,
         },
       ];
-    });
-  }
-
-  private event(
-    id: string,
-    notification: Pick<NotificationRecord, 'recipientId' | 'type'>,
-    created: boolean,
-    now: Date,
-  ): NotificationCreated {
-    return new NotificationCreated({
-      id: this.ids.next(),
-      aggregateId: id,
-      occurredAt: now,
-      payload: { recipientId: notification.recipientId, type: notification.type, created },
     });
   }
 }

@@ -349,10 +349,10 @@ describe('notifications', () => {
       timeout: 120_000,
       interval: 500,
     });
-    // The 5 000 pushes are left aside: they would only delay the next checks.
+    // The pushes and counters of the 5 000 are left aside: they would only delay the next checks.
     await query(
       `DELETE FROM platform.outbox_events
-       WHERE event_type = 'notifications.notification.created.v1' AND published_at IS NULL`,
+       WHERE event_type = 'notifications.batch.created.v1' AND published_at IS NULL`,
     );
     // A replayed batch delivers nothing twice.
     const [source] = await query<{ source: string }>(

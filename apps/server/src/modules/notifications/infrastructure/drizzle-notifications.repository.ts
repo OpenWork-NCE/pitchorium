@@ -162,6 +162,18 @@ export class DrizzleNotificationsRepository extends NotificationsRepository {
     return row ? toNotification(row) : null;
   }
 
+  async findNotifications(ids: readonly string[]): Promise<NotificationRecord[]> {
+    const found: NotificationRecord[] = [];
+    for (const part of chunks(ids)) {
+      const rows = await this.db
+        .select()
+        .from(notifications)
+        .where(inArray(notifications.id, part));
+      found.push(...rows.map(toNotification));
+    }
+    return found;
+  }
+
   async notifications(
     recipientId: string,
     unreadOnly: boolean,

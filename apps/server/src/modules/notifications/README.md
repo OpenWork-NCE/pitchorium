@@ -13,10 +13,10 @@ Types couverts : `connection_request`, `connection_accepted`, `new_follower` (su
 - Idempotente par couple (source, destinataire) : table `deliveries` ; la source est l'identifiant de l'événement et le type, ou une clé stable pour les sources planifiées (`profile-views:<jour>`).
 - Regroupement : un événement rejoint la notification ouverte (non lue, fenêtre non échue) de même clé ; l'acteur passe en tête, compté une fois (`actorCount`), `eventCount` augmente. Fenêtre `NOTIFICATIONS_AGGREGATION_WINDOW_MINUTES` (24 h, provisoire), ouverte au premier événement. Les créations concurrentes d'un même groupe sont sérialisées par un verrou transactionnel.
 - Jamais pour l'acteur lui-même ni à travers un blocage avec l'acteur.
-- Abonnés d'une cible (publication d'un membre ou d'une organisation suivie, actualités, paliers et échéances d'un projet suivi) : diffusion en lots de `NOTIFICATIONS_FANOUT_BATCH_SIZE` (500) dans le worker, chaque lot dans sa transaction, le suivant mis en file ensuite ; une publication réservée aux connexions ne va qu'aux abonnés connectés à l'auteur.
+- Abonnés d'une cible (publication d'un membre ou d'une organisation suivie, actualités, paliers et échéances d'un projet suivi) : diffusion en lots de `NOTIFICATIONS_FANOUT_BATCH_SIZE` (500) dans le worker, chaque lot dans sa transaction par insertions groupées, le suivant mis en file ensuite ; une publication réservée aux connexions ne va qu'aux abonnés connectés à l'auteur.
 - Faible priorité (`followed_post`) : regroupée, jamais envoyée par email immédiat, au plus `NOTIFICATIONS_LOW_PRIORITY_PER_DAY` nouvelles notifications par membre sur 24 heures (20, provisoire).
 - Vues de profil : tâche quotidienne sur la veille (UTC), une notification par membre consulté ; les visiteurs en visite privée sont comptés, jamais nommés.
-- Chaque notification créée ou regroupée enregistre `notifications.notification.created.v1` (interne) : le worker pousse la notification et les compteurs par Socket.IO, et envoie l'email immédiat d'une notification nouvelle.
+- Livraison par lots (ADR 0064) : les notifications créées ou regroupées d'un appel (un lot d'abonnés, ou les destinataires directs d'un événement) enregistrent un seul `notifications.batch.created.v1` (interne) ; une tâche `deliver` pousse chaque notification et les compteurs par Socket.IO, puis envoie les emails immédiats des notifications nouvelles par groupes de 100 (`Mailer.sendMany`), chaque groupe marqué envoyé dès son envoi : une tâche reprise ne renvoie que les emails non marqués.
 
 ## Canaux et préférences (ADR 0060)
 
@@ -63,16 +63,16 @@ Purge quotidienne des notifications sans activité depuis `NOTIFICATIONS_RETENTI
 
 ## Événements émis
 
-| Type                                    | Payload                                                                      |
-| --------------------------------------- | ---------------------------------------------------------------------------- |
-| `notifications.notification.created.v1` | interne : `recipientId`, `type`, `created`                                   |
-| `notifications.email.sent.v1`           | `recipientId`, `kind` (`notification`, `digest`, `unread_messages`), `items` |
-| `notifications.email.bounced.v1`        | `recipientId` (compte de l'adresse, ou null), `providerEventId`              |
-| `notifications.email.complained.v1`     | `recipientId`, `providerEventId`                                             |
+| Type                                | Payload                                                                                                          |
+| ----------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `notifications.batch.created.v1`    | interne : `type`, `created` et `grown` (identifiants des notifications du lot)                                   |
+| `notifications.email.sent.v2`       | `kind` (`notification`, `digest`, `unread_messages`), `recipientIds`, `items` (un événement par groupe d'emails) |
+| `notifications.email.bounced.v1`    | `recipientId` (compte de l'adresse, ou null), `providerEventId`                                                  |
+| `notifications.email.complained.v1` | `recipientId`, `providerEventId`                                                                                 |
 
 ## Événements consommés
 
-Ceux de la colonne « sources » du registre (handler `notifications.create`, worker) ; `notifications.notification.created.v1` (handler `notifications.deliver`). Tâches de la file `notifications.delivery` : `fanout`, `unread-message-emails` (chaque minute), `digests` (toutes les 15 minutes), `profile-views` (05:10 UTC), `purge` (04:40 UTC).
+Ceux de la colonne « sources » du registre (handler `notifications.create`, worker) ; `notifications.batch.created.v1` (handler `notifications.deliver`, qui met en file la tâche `deliver` du lot). Tâches de la file `notifications.delivery` : `fanout`, `deliver`, `unread-message-emails` (chaque minute), `digests` (toutes les 15 minutes), `profile-views` (05:10 UTC), `purge` (04:40 UTC).
 
 ## Dépendances
 

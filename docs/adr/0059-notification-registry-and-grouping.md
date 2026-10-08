@@ -1,6 +1,6 @@
 # 0059. Registre et regroupement des notifications
 
-Statut : acceptée (2026-10-08).
+Statut : acceptée (2026-10-08), livraison précisée par l'ADR 0064.
 
 ## Contexte
 
@@ -13,7 +13,7 @@ Le §10.5 liste une dizaine d'événements à notifier, et les modules existants
 - Regroupement par clé (`type:cible`, `type`, ou unique) dans une fenêtre fixe ouverte au premier événement : l'acteur passe en tête et n'est compté qu'une fois. Un verrou transactionnel par clé sérialise les événements concurrents d'un même groupe.
 - Abonnés d'une cible : diffusion en lots dans une file du worker, un lot par transaction, le suivant mis en file ensuite ; un lot rejoué ne crée rien deux fois.
 - Faible priorité (publications des membres suivis) : regroupée, plafonnée par membre et par jour, jamais envoyée par email immédiat.
-- Chaque création ou croissance d'une notification enregistre `notifications.notification.created.v1` : la diffusion (Socket.IO, email) se fait hors de la transaction de création.
+- Les notifications créées ou regroupées d'un lot enregistrent un `notifications.batch.created.v1` : la diffusion (Socket.IO, email) se fait hors de la transaction de création, par lot (ADR 0064).
 
 ## Conséquences
 

@@ -9,11 +9,11 @@ import {
 import { WORKER_CONFIG, type WorkerConfig } from '../../../platform/config';
 import { TransactionManager } from '../../../platform/database';
 import { Clock, IdGenerator } from '../../../platform/kernel';
-import { type MailMessage, Mailer } from '../../../platform/mailer';
+import { type MailMessage, Mailer, type MailReceipt } from '../../../platform/mailer';
 import { OutboxService } from '../../../platform/outbox';
 import { IdentityFacade } from '../../identity';
 import { MessagingFacade } from '../../messaging';
-import { ProfilesFacade } from '../../profiles';
+import { type MemberCard, ProfilesFacade } from '../../profiles';
 import { isDigestDue } from '../domain/digest';
 import { NOTIFICATION_DEFINITIONS, pathOf } from '../domain/notification-types';
 import { EmailSent } from '../domain/notifications-events';
@@ -27,12 +27,22 @@ const DIGEST_MAX_ITEMS = 30;
 const UNREAD_EXCERPTS = 5;
 const EXCERPT_LENGTH = 280;
 const BATCH = 200;
+/** Immediate emails rendered and sent together (one call of the Resend batch endpoint). */
+const EMAIL_GROUP = 100;
+
+/** False when every address of the email is suppressed (bounce or complaint). */
+function delivered(receipt: MailReceipt | undefined): boolean {
+  return (
+    receipt !== undefined &&
+    !(receipt.messageId === undefined && (receipt.suppressed?.length ?? 0) > 0)
+  );
+}
 
 /**
  * Emails of the notifications (§10.5, §10.4): one at once, the daily or weekly digest in the
  * time zone of each member, the copy of unread messages after a delay. Non-transactional
  * emails carry the one-click unsubscribe (RFC 8058); suppressed addresses are left out by the
- * mailer. Each sent email records `notifications.email.sent.v1`.
+ * mailer. Sent emails record `notifications.email.sent.v2`, once per group.
  */
 @Injectable()
 export class NotificationEmailsService {
@@ -52,28 +62,56 @@ export class NotificationEmailsService {
     @Inject(WORKER_CONFIG) private readonly config: WorkerConfig,
   ) {}
 
-  /** The email of a notification created with the immediate email mode, sent once. */
-  async immediate(notification: NotificationRecord): Promise<void> {
-    if (notification.emailMode !== 'immediate' || notification.emailedAt) return;
-    const user = await this.identity.findUser(notification.recipientId);
-    if (!user) return;
-    const transactional = NOTIFICATION_DEFINITIONS[notification.type].transactional;
-    const token = transactional ? null : this.links.unsubscribeToken(user.id, notification.type);
-    const email = await renderNotificationEmail({
-      locale: user.locale,
-      name: user.name,
-      type: notification.type,
-      grouped: notification.actorCount > 1 || notification.eventCount > 1,
-      params: await this.params(notification, user.id),
-      actionUrl: this.links.webUrl(pathOf(notification.targetType, notification.targetId)),
-      unsubscribeUrl: token ? this.links.unsubscribePage(token) : null,
-    });
-    const delivered = await this.send({
-      to: user.email,
-      ...email,
-      ...(token ? { headers: this.links.unsubscribeHeaders(token) } : {}),
-    });
-    await this.sent(user.id, 'notification', [notification.id], delivered);
+  /**
+   * Emails of new notifications with the immediate email mode, sent once: users read and
+   * emails sent by groups of EMAIL_GROUP (ADR 0064). Each group is marked as emailed once
+   * sent, so a batch resumed after a failure sends only what was not marked yet.
+   */
+  async immediate(notifications: readonly NotificationRecord[]): Promise<void> {
+    const due = notifications.filter(
+      (notification) => notification.emailMode === 'immediate' && !notification.emailedAt,
+    );
+    if (due.length === 0) return;
+    const [users, cards] = await Promise.all([
+      this.identity.findUsers(due.map((notification) => notification.recipientId)),
+      // The first actor passed the block check of its recipient when the event was notified.
+      this.actorCards(due),
+    ]);
+    for (let start = 0; start < due.length; start += EMAIL_GROUP) {
+      const group = due.slice(start, start + EMAIL_GROUP);
+      const prepared = await Promise.all(
+        group.map(async (notification) => {
+          const user = users.get(notification.recipientId);
+          if (!user) return null;
+          const transactional = NOTIFICATION_DEFINITIONS[notification.type].transactional;
+          const token = transactional
+            ? null
+            : this.links.unsubscribeToken(user.id, notification.type);
+          const email = await renderNotificationEmail({
+            locale: user.locale,
+            name: user.name,
+            type: notification.type,
+            grouped: notification.actorCount > 1 || notification.eventCount > 1,
+            params: this.params(notification, cards),
+            actionUrl: this.links.webUrl(pathOf(notification.targetType, notification.targetId)),
+            unsubscribeUrl: token ? this.links.unsubscribePage(token) : null,
+          });
+          const message: MailMessage = {
+            to: user.email,
+            ...email,
+            ...(token ? { headers: this.links.unsubscribeHeaders(token) } : {}),
+          };
+          return { userId: user.id, message };
+        }),
+      );
+      const ready = prepared.filter((item) => item !== null);
+      const receipts = await this.mailer.sendMany(ready.map((item) => item.message));
+      await this.sent(
+        'notification',
+        ready.filter((_, index) => delivered(receipts[index])).map((item) => item.userId),
+        group.map((notification) => notification.id),
+      );
+    }
   }
 
   /** Digests due now, in the time zone of each member (ADR 0061). */
@@ -115,6 +153,7 @@ export class NotificationEmailsService {
     });
     if (!due || pending.length === 0) return false;
     const token = this.links.unsubscribeToken(user.id, 'digest');
+    const cards = await this.actorCards(pending, user.id);
     const items = [];
     for (const notification of pending) {
       items.push({
@@ -122,7 +161,7 @@ export class NotificationEmailsService {
           user.locale,
           notification.type,
           notification.actorCount > 1 || notification.eventCount > 1,
-          await this.params(notification, user.id),
+          this.params(notification, cards),
         ),
         url: this.links.webUrl(pathOf(notification.targetType, notification.targetId)),
       });
@@ -135,7 +174,7 @@ export class NotificationEmailsService {
       notificationsUrl: this.links.webUrl('/notifications'),
       unsubscribeUrl: this.links.unsubscribePage(token),
     });
-    const delivered = await this.send({
+    const receipt = await this.mailer.send({
       to: user.email,
       ...email,
       headers: this.links.unsubscribeHeaders(token),
@@ -143,10 +182,9 @@ export class NotificationEmailsService {
     await this.transactions.run(async () => {
       await this.notifications.setLastDigestAt(user.id, now);
       await this.sent(
-        user.id,
         'digest',
+        delivered(receipt) ? [user.id] : [],
         pending.map((notification) => notification.id),
-        delivered,
       );
     });
     return true;
@@ -231,21 +269,30 @@ export class NotificationEmailsService {
       conversationUrl: this.links.webUrl(pathOf('conversation', conversationId)),
       unsubscribeUrl: this.links.unsubscribePage(token),
     });
-    const delivered = await this.send({
+    const receipt = await this.mailer.send({
       to: user.email,
       ...email,
       headers: this.links.unsubscribeHeaders(token),
     });
-    await this.sent(user.id, 'unread_messages', [], delivered);
-    return delivered;
+    await this.sent('unread_messages', delivered(receipt) ? [user.id] : [], []);
+    return delivered(receipt);
+  }
+
+  /** Cards of the first actors, for the texts; with a viewer, actors hidden from them are left out. */
+  private actorCards(
+    notifications: readonly NotificationRecord[],
+    viewerId: string | null = null,
+  ): Promise<Map<string, MemberCard>> {
+    return this.profiles.memberCards(
+      [...new Set(notifications.flatMap((notification) => notification.actorIds.slice(0, 1)))],
+      viewerId,
+    );
   }
 
   /** Values of the notification texts: first actor, others, title of the project. */
-  private async params(notification: NotificationRecord, viewerId: string) {
+  private params(notification: NotificationRecord, cards: ReadonlyMap<string, MemberCard>) {
     const firstActor = notification.actorIds[0];
-    const card = firstActor
-      ? (await this.profiles.memberCards([firstActor], viewerId)).get(firstActor)
-      : undefined;
+    const card = firstActor ? cards.get(firstActor) : undefined;
     const title = notification.data['title'];
     const position = notification.data['position'];
     const count = notification.data['count'];
@@ -258,32 +305,32 @@ export class NotificationEmailsService {
     };
   }
 
-  /** False when the address is suppressed (bounce or complaint): nothing left. */
-  private async send(message: MailMessage): Promise<boolean> {
-    const receipt = await this.mailer.send(message);
-    return !(receipt.messageId === undefined && (receipt.suppressed?.length ?? 0) > 0);
-  }
-
-  /** Marks the notifications as emailed (never retried) and records the sent email. */
+  /**
+   * Marks the notifications as emailed (never retried) and records the emails left, in one
+   * transaction.
+   */
   private async sent(
-    recipientId: string,
     kind: string,
-    notificationIds: string[],
-    delivered: boolean,
+    recipientIds: readonly string[],
+    notificationIds: readonly string[],
   ): Promise<void> {
     const now = this.clock.now();
     await this.transactions.run(async () => {
       if (notificationIds.length > 0) await this.notifications.markEmailed(notificationIds, now);
-      if (!delivered) return;
+      if (recipientIds.length === 0) return;
       await this.outbox.record(
         new EmailSent({
           id: this.ids.next(),
-          aggregateId: recipientId,
+          aggregateId: this.ids.next(),
           occurredAt: now,
-          payload: { recipientId, kind, items: Math.max(1, notificationIds.length) },
+          payload: {
+            kind,
+            recipientIds: [...recipientIds],
+            items: Math.max(recipientIds.length, notificationIds.length),
+          },
         }),
       );
     });
-    this.logger.debug(`Email ${kind} sent to ${recipientId}`);
+    this.logger.debug(`${recipientIds.length} email(s) ${kind} sent`);
   }
 }

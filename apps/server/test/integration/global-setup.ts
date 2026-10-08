@@ -68,6 +68,8 @@ export default async function setup(project: TestProject): Promise<() => Promise
     new PostgreSqlContainer(POSTGRES_IMAGE).withDatabase('pitchorium').start(),
     new RedisContainer(VALKEY_IMAGE).start(),
     new GenericContainer(MAILPIT_IMAGE)
+      // No pruning: the fan-out volume test counts 5 000 emails.
+      .withEnvironment({ MP_MAX_MESSAGES: '0' })
       .withExposedPorts(1025, 8025)
       .withWaitStrategy(Wait.forHttp('/readyz', 8025))
       .start(),

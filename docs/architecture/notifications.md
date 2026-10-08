@@ -1,6 +1,6 @@
 # Notifications
 
-Module `notifications` (cahier des charges §10.5, avec §10.4 et §14). Décisions : ADR 0059 (registre et regroupement), 0060 (préférences et types transactionnels), 0061 (digests et fuseaux), 0062 (délivrabilité). Détails du module : `apps/server/src/modules/notifications/README.md`.
+Module `notifications` (cahier des charges §10.5, avec §10.4 et §14). Décisions : ADR 0059 (registre et regroupement), 0064 (livraison par lots), 0060 (préférences et types transactionnels), 0061 (digests et fuseaux), 0062 (délivrabilité). Détails du module : `apps/server/src/modules/notifications/README.md`.
 
 ## Du fait métier à la notification
 
@@ -11,19 +11,22 @@ sequenceDiagram
   participant R as worker (relais outbox)
   participant H as worker (notifications.create)
   participant Q as file notifications.delivery
-  participant D as worker (notifications.deliver)
+  participant D as worker (tâche deliver)
   participant S as Socket.IO (Redis)
   participant E as Mailer
   M->>DB: écriture métier + événement (outbox), même transaction
   R->>H: événement source (BullMQ)
   H->>H: résolveur du type : destinataires par les façades
-  H->>DB: livraisons (source, destinataire), regroupement ou création, notifications.notification.created.v1
-  H->>Q: abonnés d'une cible : lot suivant (fan-out)
-  Q->>DB: lot de 500 abonnés, même logique, dans sa transaction
-  R->>D: notifications.notification.created.v1
-  D->>S: notifications:notification + counters (room user:id)
-  D->>E: email immédiat d'une notification nouvelle (si le canal le prévoit)
+  H->>DB: livraisons (source, destinataire), regroupement ou création, notifications.batch.created.v1
+  H->>Q: abonnés d'une cible : premier lot (fan-out)
+  Q->>DB: lot de 500 abonnés, même logique, insertions groupées, une transaction, un événement
+  Q->>Q: lot suivant
+  R->>Q: notifications.batch.created.v1 (handler notifications.deliver) : tâche deliver du lot
+  D->>S: notifications:notification + counters de chaque destinataire (room user:id)
+  D->>E: emails immédiats du lot par groupes de 100 (sendMany), marqués envoyés groupe par groupe
 ```
+
+Pour 5 000 abonnés qui ont demandé l'email : 82 tâches et 50 s, contre 10 012 tâches et 166 s quand chaque notification et chaque email avaient leur tâche (ADR 0064).
 
 ## Regroupement
 
@@ -97,4 +100,4 @@ Chaque notification porte `target` : un type, une clé et le chemin de l'applica
 
 ## Valeurs provisoires
 
-Canaux par défaut de chaque type, fenêtre de regroupement (24 h), taille des lots (500), plafond de faible priorité (20 par jour), délai de la copie des messages non lus (30 min), heure des digests (8 h locale), jour du digest hebdomadaire (lundi), rétention (90 jours) : `docs/open-questions.md`.
+Canaux par défaut de chaque type, fenêtre de regroupement (24 h), taille des lots de création et de livraison (500), plafond de faible priorité (20 par jour), délai de la copie des messages non lus (30 min), heure des digests (8 h locale), jour du digest hebdomadaire (lundi), rétention (90 jours) : `docs/open-questions.md`.

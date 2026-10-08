@@ -1,5 +1,5 @@
 import { InjectQueue } from '@nestjs/bullmq';
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import type { Queue } from 'bullmq';
 import {
   DomainEventHandler,
@@ -7,16 +7,11 @@ import {
   type OutboxEnvelope,
 } from '../../../platform/outbox';
 import { MessageSent } from '../../messaging';
-import {
-  NOTIFICATION_CHANNEL_ADAPTERS,
-  type NotificationChannelAdapter,
-} from '../application/notification-channels';
 import { NotificationCreator } from '../application/notification-creator';
 import { NotificationEmailsService } from '../application/notification-emails.service';
 import { NotificationSources, SOURCE_EVENT_TYPES } from '../application/notification-sources';
-import type { FanoutJob } from '../application/notifications-maintenance.service';
-import { NotificationsRepository } from '../application/ports';
-import { NotificationCreated } from '../domain/notifications-events';
+import type { DeliverJob, FanoutJob } from '../application/notifications-maintenance.service';
+import { NotificationBatchCreated } from '../domain/notifications-events';
 import { NOTIFICATIONS_JOBS, NOTIFICATIONS_QUEUE } from './notifications-queue';
 
 /**
@@ -61,20 +56,23 @@ export class NotificationSourcesHandler implements DomainEventSubscriber {
   }
 }
 
-/** Delivers a created or grown notification on every channel: push, counters, email. */
+/**
+ * A batch of created or grown notifications becomes one delivery job (ADR 0064): the push and
+ * the emails run in the queue, outside the inbox transaction of the event.
+ */
 @Injectable()
-@DomainEventHandler({ name: 'notifications.deliver', eventTypes: [NotificationCreated.TYPE] })
+@DomainEventHandler({ name: 'notifications.deliver', eventTypes: [NotificationBatchCreated.TYPE] })
 export class NotificationDeliveryHandler implements DomainEventSubscriber {
-  constructor(
-    private readonly notifications: NotificationsRepository,
-    @Inject(NOTIFICATION_CHANNEL_ADAPTERS)
-    private readonly channels: readonly NotificationChannelAdapter[],
-  ) {}
+  constructor(@InjectQueue(NOTIFICATIONS_QUEUE) private readonly queue: Queue) {}
 
   async handle(event: OutboxEnvelope): Promise<void> {
-    const notification = await this.notifications.findNotification(event.aggregateId);
-    if (!notification) return;
-    const created = event.payload['created'] === true;
-    for (const channel of this.channels) await channel.deliver(notification, created);
+    const ids = (key: string) => {
+      const value = event.payload[key];
+      return Array.isArray(value) ? value.filter((id): id is string => typeof id === 'string') : [];
+    };
+    const job: DeliverJob = { created: ids('created'), grown: ids('grown') };
+    await this.queue.add(NOTIFICATIONS_JOBS.deliver, job, {
+      jobId: `${NOTIFICATIONS_JOBS.deliver}-${event.id}`,
+    });
   }
 }

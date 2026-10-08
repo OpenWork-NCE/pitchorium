@@ -6,7 +6,11 @@ import { MessagingFacade } from '../../messaging';
 import { NetworkFacade } from '../../network';
 import { OrganizationsFacade } from '../../organizations';
 import { ProjectsFacade } from '../../projects';
+import { inGroups } from './in-groups';
 import { NotificationsRepository } from './ports';
+
+/** Members whose counters are computed at once (database connections in use). */
+const PARALLEL_MEMBERS = 8;
 
 /**
  * Unified counters (§10.5): unread notifications and messages, message requests and pending
@@ -52,8 +56,8 @@ export class CountersService {
   }
 
   async push(userIds: readonly string[]): Promise<void> {
-    for (const userId of new Set(userIds)) {
+    await inGroups([...new Set(userIds)], PARALLEL_MEMBERS, async (userId) => {
       this.publisher.toUsers([userId], SERVER_EVENTS.counters, { counters: await this.of(userId) });
-    }
+    });
   }
 }

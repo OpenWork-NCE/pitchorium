@@ -76,6 +76,8 @@ export abstract class NotificationsRepository {
     since: Date,
   ): Promise<Map<string, number>>;
   abstract findNotification(id: string): Promise<NotificationRecord | null>;
+  /** Notifications of the given ids that still exist (a batch to deliver). */
+  abstract findNotifications(ids: readonly string[]): Promise<NotificationRecord[]>;
   abstract notifications(
     recipientId: string,
     unreadOnly: boolean,

@@ -20,6 +20,12 @@ export class Mailpit {
     await fetch(`${this.baseUrl}/api/v1/messages`, { method: 'DELETE' });
   }
 
+  /** Number of emails in the mailbox. */
+  async count(): Promise<number> {
+    const response = await fetch(`${this.baseUrl}/api/v1/messages?limit=1`);
+    return ((await response.json()) as { total: number }).total;
+  }
+
   async messagesTo(address: string): Promise<MailpitSummary[]> {
     const response = await fetch(
       `${this.baseUrl}/api/v1/search?query=${encodeURIComponent(`to:"${address}"`)}`,

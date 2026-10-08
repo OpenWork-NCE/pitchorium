@@ -3,6 +3,10 @@ import { WORKER_CONFIG, type WorkerConfig } from '../../../platform/config';
 import { TransactionManager } from '../../../platform/database';
 import { Clock } from '../../../platform/kernel';
 import { NetworkFacade } from '../../network';
+import {
+  NOTIFICATION_CHANNEL_ADAPTERS,
+  type NotificationChannelAdapter,
+} from './notification-channels';
 import { NotificationCreator } from './notification-creator';
 import type { Fanout } from './notification-sources';
 import { NotificationsRepository } from './ports';
@@ -16,9 +20,15 @@ export interface FanoutJob {
   afterFollowerId: string | null;
 }
 
+/** One batch of notifications to push and email (ADR 0064). */
+export interface DeliverJob {
+  created: string[];
+  grown: string[];
+}
+
 /**
  * Scheduled and batched work of the notifications (worker): fan-out to the followers of a
- * target by batches, daily profile views, retention.
+ * target by batches, delivery of each batch on every channel, daily profile views, retention.
  */
 @Injectable()
 export class NotificationsMaintenanceService {
@@ -29,7 +39,23 @@ export class NotificationsMaintenanceService {
     private readonly transactions: TransactionManager,
     private readonly clock: Clock,
     @Inject(WORKER_CONFIG) private readonly config: WorkerConfig,
+    @Inject(NOTIFICATION_CHANNEL_ADAPTERS)
+    private readonly channels: readonly NotificationChannelAdapter[],
   ) {}
+
+  /**
+   * Delivers a batch on every channel. Replayed after a failure, it pushes again (harmless)
+   * and emails only the notifications not marked as emailed yet.
+   */
+  async deliverBatch(job: DeliverJob): Promise<void> {
+    const notifications = await this.notifications.findNotifications([
+      ...job.created,
+      ...job.grown,
+    ]);
+    if (notifications.length === 0) return;
+    const created = new Set(job.created);
+    for (const channel of this.channels) await channel.deliver(notifications, created);
+  }
 
   /**
    * One batch of followers, in one transaction; returns the cursor of the next batch, null at

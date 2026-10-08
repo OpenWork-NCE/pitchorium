@@ -1,25 +1,33 @@
 import { DomainEvent, type DomainEventProps } from '../../../platform/kernel';
 
 /**
- * A notification was created, or grown by a grouped event (`created: false`). Internal: it
- * triggers the realtime push and the immediate email (ADR 0059).
+ * Notifications of one source event created, or grown by a grouped event, for a batch of
+ * recipients (at most NOTIFICATIONS_FANOUT_BATCH_SIZE). Internal: one delivery job pushes them
+ * and sends their immediate emails together (ADR 0064).
  */
-export class NotificationCreated extends DomainEvent<{
-  recipientId: string;
+export class NotificationBatchCreated extends DomainEvent<{
   type: string;
-  created: boolean;
+  created: string[];
+  grown: string[];
 }> {
-  static readonly TYPE = 'notifications.notification.created.v1';
-  readonly type = NotificationCreated.TYPE;
-  readonly aggregateType = 'notification';
-  constructor(props: DomainEventProps<NotificationCreated['payload']>) {
+  static readonly TYPE = 'notifications.batch.created.v1';
+  readonly type = NotificationBatchCreated.TYPE;
+  readonly aggregateType = 'notification_batch';
+  constructor(props: DomainEventProps<NotificationBatchCreated['payload']>) {
     super(props);
   }
 }
 
-/** An email left for a member: `notification`, `digest` or `unread_messages`. */
-export class EmailSent extends DomainEvent<{ recipientId: string; kind: string; items: number }> {
-  static readonly TYPE = 'notifications.email.sent.v1';
+/**
+ * Emails of one kind left together: `notification` (a batch of immediate emails), `digest` or
+ * `unread_messages` (one recipient). Version 2 groups the recipients of a batch (ADR 0064).
+ */
+export class EmailSent extends DomainEvent<{
+  kind: string;
+  recipientIds: string[];
+  items: number;
+}> {
+  static readonly TYPE = 'notifications.email.sent.v2';
   readonly type = EmailSent.TYPE;
   readonly aggregateType = 'email';
   constructor(props: DomainEventProps<EmailSent['payload']>) {

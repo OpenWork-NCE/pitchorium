@@ -5,13 +5,15 @@ import { WORKER_CONFIG, type WorkerConfig } from '../../../platform/config';
 import { repeatEvery } from '../../../platform/queue';
 import { NotificationEmailsService } from '../application/notification-emails.service';
 import {
+  type DeliverJob,
   type FanoutJob,
   NotificationsMaintenanceService,
 } from '../application/notifications-maintenance.service';
 import { NOTIFICATIONS_JOBS, NOTIFICATIONS_QUEUE } from './notifications-queue';
 
 /**
- * Fan-out batches (each enqueues the next one), unread message emails (every minute), digests
+ * Fan-out batches (each enqueues the next one), delivery of the batches (push and grouped
+ * emails, ADR 0064), unread message emails (every minute), digests
  * (every 15 minutes, each member at their local hour), profile views of the previous day
  * (05:10 UTC) and retention (04:40 UTC).
  */
@@ -55,6 +57,9 @@ export class NotificationsJobsProcessor extends WorkerHost implements OnApplicat
         }
         return;
       }
+      case NOTIFICATIONS_JOBS.deliver:
+        await this.maintenance.deliverBatch(job.data as DeliverJob);
+        return;
       case NOTIFICATIONS_JOBS.unreadMessageEmails:
         await this.emails.unreadCopies();
         return;

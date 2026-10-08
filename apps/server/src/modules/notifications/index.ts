@@ -5,6 +5,6 @@ export {
   EmailBounced,
   EmailComplained,
   EmailSent,
-  NotificationCreated,
+  NotificationBatchCreated,
 } from './domain/notifications-events';
 export { NotificationsModule } from './notifications.module';

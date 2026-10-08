@@ -97,7 +97,7 @@ Informations nécessaires au développement et absentes du cahier des charges (d
 ## Notifications
 
 70. Les canaux par défaut de chaque type (`apps/server/src/modules/notifications/domain/notification-types.ts`), dont l'email des messages non lus désactivé par défaut (§10.4 « si le destinataire l'a accepté ») et la liste des types transactionnels (contributions reçues, remboursements, KYC, contributions hors plateforme, sécurité).
-71. La fenêtre de regroupement (provisoirement 24 heures, `NOTIFICATIONS_AGGREGATION_WINDOW_MINUTES`), la taille des lots de diffusion (500, `NOTIFICATIONS_FANOUT_BATCH_SIZE`) et le plafond des notifications de faible priorité (20 par membre et par jour, `NOTIFICATIONS_LOW_PRIORITY_PER_DAY`).
+71. La fenêtre de regroupement (provisoirement 24 heures, `NOTIFICATIONS_AGGREGATION_WINDOW_MINUTES`), la taille des lots de création et de livraison (500, `NOTIFICATIONS_FANOUT_BATCH_SIZE`, ADR 0064) et le plafond des notifications de faible priorité (20 par membre et par jour, `NOTIFICATIONS_LOW_PRIORITY_PER_DAY`).
 72. Le délai avant la copie d'un message non lu (provisoirement 30 minutes), l'heure locale des digests (provisoirement 8 h) et le jour du digest hebdomadaire (provisoirement le lundi), le digest par défaut (provisoirement aucun : un email par notification).
 73. La rétention des notifications (provisoirement 90 jours, `NOTIFICATIONS_RETENTION_DAYS`), la levée d'une adresse supprimée après un rebond (une adresse corrigée ne reçoit plus rien, emails transactionnels compris) et la période des vues de profil notifiées (provisoirement la veille, en UTC).
 
