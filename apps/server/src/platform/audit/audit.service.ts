@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { auditLog } from '@pitchorium/db';
+import { and, desc, eq, gte, lte, sql } from '@pitchorium/db/orm';
 import { replaceIdentifier } from '../compliance/personal-data-sql';
 import { TransactionManager } from '../database';
 import { Clock, IdGenerator } from '../kernel';
@@ -11,6 +12,27 @@ export interface AuditEntry {
   target: { type: string; id: string };
   metadata?: Record<string, unknown>;
   requestId?: string;
+}
+
+export interface AuditFilter {
+  actorId?: string | undefined;
+  action?: string | undefined;
+  targetType?: string | undefined;
+  targetId?: string | undefined;
+  from?: Date | undefined;
+  to?: Date | undefined;
+}
+
+export interface AuditRecord {
+  id: string;
+  actorType: string;
+  actorId: string | null;
+  action: string;
+  targetType: string;
+  targetId: string;
+  metadata: Record<string, unknown>;
+  requestId: string | null;
+  occurredAt: Date;
 }
 
 /** Writes to platform.audit_log, inside the current transaction when there is one. */
@@ -58,5 +80,32 @@ export class AuditService {
       requestId: entry.requestId ?? null,
       occurredAt: this.clock.now(),
     });
+  }
+
+  /** The log, newest first, filtered (administration). */
+  async search(
+    filter: AuditFilter,
+    after: { at: Date; key: string } | null,
+    limit: number,
+  ): Promise<AuditRecord[]> {
+    const rows = await this.transactions.executor
+      .select()
+      .from(auditLog)
+      .where(
+        and(
+          filter.actorId ? eq(auditLog.actorId, filter.actorId) : undefined,
+          filter.action ? eq(auditLog.action, filter.action) : undefined,
+          filter.targetType ? eq(auditLog.targetType, filter.targetType) : undefined,
+          filter.targetId ? eq(auditLog.targetId, filter.targetId) : undefined,
+          filter.from ? gte(auditLog.occurredAt, filter.from) : undefined,
+          filter.to ? lte(auditLog.occurredAt, filter.to) : undefined,
+          after
+            ? sql`(${auditLog.occurredAt}, ${auditLog.id}) < (${after.at}, ${after.key})`
+            : undefined,
+        ),
+      )
+      .orderBy(desc(auditLog.occurredAt), desc(auditLog.id))
+      .limit(limit);
+    return rows;
   }
 }
