@@ -155,6 +155,15 @@ export class DrizzleProjectsRepository extends ProjectRepository {
     return rows.map((row) => row.id);
   }
 
+  async countByStatus(): Promise<Record<string, number>> {
+    const rows = await this.db
+      .select({ status: projectsProjects.status, total: count() })
+      .from(projectsProjects)
+      .where(isNull(projectsProjects.deletedAt))
+      .groupBy(projectsProjects.status);
+    return Object.fromEntries(rows.map((row) => [row.status, row.total]));
+  }
+
   async featuredProjects(limit: number): Promise<{ id: string; featuredAt: Date | null }[]> {
     return this.db
       .select({ id: projectsProjects.id, featuredAt: projectsProjects.featuredAt })

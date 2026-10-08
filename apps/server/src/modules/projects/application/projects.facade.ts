@@ -291,6 +291,10 @@ export class ProjectsFacade implements OnModuleInit {
     return this.writes.setFeatured(projectId, actorId, featured);
   }
 
+  countByStatus(): Promise<Record<string, number>> {
+    return this.projects.countByStatus();
+  }
+
   featuredProjects(limit: number): Promise<{ id: string; featuredAt: Date | null }[]> {
     return this.projects.featuredProjects(limit);
   }

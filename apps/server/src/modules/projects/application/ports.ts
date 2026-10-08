@@ -49,6 +49,8 @@ export abstract class ProjectRepository {
   abstract findProject(id: string): Promise<ProjectRecord | null>;
   abstract findProjects(ids: readonly string[]): Promise<ProjectRecord[]>;
   /** Live featured projects, latest first (administration of the highlights). */
+  /** Live projects by status (administration statistics). */
+  abstract countByStatus(): Promise<Record<string, number>>;
   abstract featuredProjects(limit: number): Promise<{ id: string; featuredAt: Date | null }[]>;
   /** Every project that is not deleted, by ascending id (search index rebuild). */
   abstract idsAfter(after: string | null, limit: number): Promise<string[]>;
