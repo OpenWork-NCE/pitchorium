@@ -11,6 +11,8 @@
   "UNSUPPORTED_MEDIA_TYPE": "Le format du contenu envoyé n'est pas pris en charge.",
   "IDEMPOTENCY_KEY_REUSED": "Cette clé d'idempotence a déjà servi pour une autre requête.",
   "RATE_LIMITED": "Trop de requêtes. Réessayez dans quelques instants.",
+  "CAPTCHA_REQUIRED": "La vérification anti-spam n'a pas pu se faire. Rechargez la page et réessayez.",
+  "CAPTCHA_FAILED": "La vérification anti-spam a échoué. Réessayez.",
   "MESSAGING_CONVERSATION_NOT_FOUND": "Conversation introuvable.",
   "MESSAGING_RECIPIENT_NOT_FOUND": "Ce membre est introuvable.",
   "MESSAGING_SELF_CONVERSATION": "Vous ne pouvez pas vous écrire à vous-même.",

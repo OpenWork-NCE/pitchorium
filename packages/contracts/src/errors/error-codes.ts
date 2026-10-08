@@ -28,6 +28,8 @@ export const errorCodes = {
     title: 'Idempotency-Key was already used with a different request',
   },
   RATE_LIMITED: { status: 429, title: 'Too many requests' },
+  CAPTCHA_REQUIRED: { status: 400, title: 'Anti-spam check response is missing' },
+  CAPTCHA_FAILED: { status: 403, title: 'Anti-spam check failed' },
   IDENTITY_USER_NOT_FOUND: { status: 404, title: 'User not found' },
   IDENTITY_LEGAL_VERSION_OUTDATED: {
     status: 409,

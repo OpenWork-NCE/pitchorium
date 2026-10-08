@@ -11,6 +11,8 @@
   "UNSUPPORTED_MEDIA_TYPE": "The format of the submitted content is not supported.",
   "IDEMPOTENCY_KEY_REUSED": "This idempotency key was already used for another request.",
   "RATE_LIMITED": "Too many requests. Please try again shortly.",
+  "CAPTCHA_REQUIRED": "The anti-spam check could not run. Reload the page and try again.",
+  "CAPTCHA_FAILED": "The anti-spam check failed. Please try again.",
   "MESSAGING_CONVERSATION_NOT_FOUND": "Conversation not found.",
   "MESSAGING_RECIPIENT_NOT_FOUND": "This member cannot be found.",
   "MESSAGING_SELF_CONVERSATION": "You cannot write to yourself.",

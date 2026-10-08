@@ -11,7 +11,7 @@ La demande d'origine exige une protection anti-spam. Les routes qui créent un c
 - Cloudflare Turnstile, sans traceur publicitaire ni puzzle par défaut, avec des clés de test officielles qui interrogent le vrai `siteverify`.
 - Activé par ses deux clés (`TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY`) : les deux ou aucune. Sans clé (local, tests), aucune vérification. En production, l'api refuse de démarrer sans elles.
 - `/v1/auth` : plugin `captcha` de Better Auth, sur `/sign-up/email`, `/sign-in/email`, `/sign-in/magic-link` et `/request-password-reset` (`CAPTCHA_PATHS`). Jeton dans l'en-tête `X-Captcha-Response` ; codes `MISSING_RESPONSE` (400), `VERIFICATION_FAILED` (403), `UNKNOWN_ERROR` (500, Cloudflare injoignable) au format de Better Auth, traduits sous `errors.auth`.
-- La vérification échoue fermée après 10 secondes.
+- Signalement sans compte : `TurnstileVerifier` (`platform/captcha`), même en-tête, vérifié avant toute lecture ; codes RFC 9457 `CAPTCHA_REQUIRED` (400), `CAPTCHA_FAILED` (403), `SERVICE_UNAVAILABLE` (503). Les deux vérifications échouent fermées après 10 secondes.
 - OAuth n'est pas vérifié : le fournisseur porte déjà sa protection, et le bouton doit rester immédiat (§7.2).
 - `GET /v1/auth-configuration` (public, cache 60 s) donne au web ce qu'il affiche avant toute session, sans secret : fournisseurs OAuth activés dans l'ordre des boutons, clé publique et apparence de Turnstile (`TURNSTILE_APPEARANCE` : `interaction-only`, discret, visible seulement quand Cloudflare demande une interaction ; `always`, managé), versions des conditions en vigueur, longueur minimale du mot de passe.
 

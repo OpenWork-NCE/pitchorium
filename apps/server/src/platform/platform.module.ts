@@ -1,5 +1,6 @@
 import { type DynamicModule, Module } from '@nestjs/common';
 import { AuditModule } from './audit';
+import { CaptchaModule } from './captcha';
 import { ConfigModule } from './config';
 import { CoreModule } from './core/core.module';
 import { DatabaseModule } from './database';
@@ -44,6 +45,7 @@ export class PlatformModule {
         ConfigModule.forApi(),
         ...SHARED_MODULES,
         HttpModule,
+        CaptchaModule,
         RealtimeModule,
         HealthModule.forApi(),
       ],
