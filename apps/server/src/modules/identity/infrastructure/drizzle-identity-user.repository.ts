@@ -1,6 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { DEFAULT_LOCALE, type Locale, localeSchema } from '@pitchorium/contracts';
-import { and, count, eq, inArray, ne } from '@pitchorium/db/orm';
+import {
+  and,
+  asc,
+  count,
+  countDistinct,
+  eq,
+  gte,
+  ilike,
+  inArray,
+  ne,
+  or,
+  sql,
+} from '@pitchorium/db/orm';
 import {
   identityLegalAcceptances,
   identitySessions,
@@ -60,6 +72,37 @@ export class DrizzleIdentityUserRepository extends IdentityUserRepository {
   async findByEmail(email: string): Promise<IdentityUser | null> {
     const [row] = await this.db.select().from(identityUsers).where(eq(identityUsers.email, email));
     return row ? toUser(row) : null;
+  }
+
+  async search(
+    text: string,
+    after: { email: string; id: string } | null,
+    limit: number,
+  ): Promise<IdentityUser[]> {
+    const pattern = `%${text.replace(/[\\%_]/g, (match) => `\\${match}`)}%`;
+    const rows = await this.db
+      .select()
+      .from(identityUsers)
+      .where(
+        and(
+          or(ilike(identityUsers.email, pattern), ilike(identityUsers.name, pattern)),
+          after
+            ? sql`(${identityUsers.email}, ${identityUsers.id}) > (${after.email}, ${after.id})`
+            : undefined,
+        ),
+      )
+      .orderBy(asc(identityUsers.email), asc(identityUsers.id))
+      .limit(limit);
+    return rows.map(toUser);
+  }
+
+  async counts(activeSince: Date): Promise<{ total: number; active: number }> {
+    const [users] = await this.db.select({ total: count() }).from(identityUsers);
+    const [active] = await this.db
+      .select({ active: countDistinct(identitySessions.userId) })
+      .from(identitySessions)
+      .where(gte(identitySessions.updatedAt, activeSince));
+    return { total: users?.total ?? 0, active: active?.active ?? 0 };
   }
 
   async updatePreferences(

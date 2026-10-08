@@ -25,6 +25,14 @@ export abstract class IdentityUserRepository {
   abstract findById(id: string): Promise<IdentityUser | null>;
   abstract findByIds(ids: readonly string[]): Promise<IdentityUser[]>;
   abstract findByEmail(email: string): Promise<IdentityUser | null>;
+  /** Accounts whose email or name contains the text, by email then id (administration). */
+  abstract search(
+    text: string,
+    after: { email: string; id: string } | null,
+    limit: number,
+  ): Promise<IdentityUser[]>;
+  /** Accounts, and those with a session used since the date. */
+  abstract counts(activeSince: Date): Promise<{ total: number; active: number }>;
   abstract updatePreferences(
     id: string,
     preferences: { locale: Locale; timeZone: string },

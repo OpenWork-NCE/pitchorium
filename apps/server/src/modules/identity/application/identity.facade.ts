@@ -28,6 +28,20 @@ export class IdentityFacade {
     return new Map(users.map((user) => [user.id, user]));
   }
 
+  /** Accounts whose email or name contains the text (administration), keyset by email. */
+  searchUsers(
+    text: string,
+    after: { email: string; id: string } | null,
+    limit: number,
+  ): Promise<IdentityUser[]> {
+    return this.users.search(text.trim(), after, limit);
+  }
+
+  /** Accounts, and those active (a session used) in the last 30 days. */
+  memberCounts(now: Date): Promise<{ total: number; active: number }> {
+    return this.users.counts(new Date(now.getTime() - 30 * 86_400_000));
+  }
+
   findUserByEmail(email: string): Promise<IdentityUser | null> {
     return this.users.findByEmail(email.trim().toLowerCase());
   }
