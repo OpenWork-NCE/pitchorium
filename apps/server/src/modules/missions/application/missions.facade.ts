@@ -104,6 +104,11 @@ export class MissionsFacade {
   }
 
   /** For the trust module: a hidden or removed mission leaves the lists and the index. */
+  /** Author of a mission, null when unknown (reports, trust module). */
+  async authorOf(missionId: string): Promise<string | null> {
+    return (await this.missions.findMission(missionId))?.authorId ?? null;
+  }
+
   setModerationStatus(missionId: string, status: MissionModerationStatus): Promise<void> {
     return this.transactions.run(async () => {
       await this.missions.setModerationStatus(missionId, status, this.clock.now());

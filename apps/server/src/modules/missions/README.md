@@ -34,7 +34,7 @@ Résolveurs : `MissionResolver` (mission visible du lecteur, rôle `author`), `E
 
 ## Façade publique (`index.ts`)
 
-`MissionsFacade` : `discoverySources`, `idsAfter`, `cards`, `engagementParties` (notifications), `setModerationStatus` ; types `MissionDiscoverySource`, `EngagementParties` ; classes d'événements.
+`MissionsFacade` : `discoverySources`, `idsAfter`, `cards`, `engagementParties` (notifications), `authorOf` (signalements), `setModerationStatus` ; types `MissionDiscoverySource`, `EngagementParties` ; classes d'événements.
 
 ## Événements émis
 
