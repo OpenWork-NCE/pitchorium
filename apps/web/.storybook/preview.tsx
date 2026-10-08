@@ -49,6 +49,10 @@ function StoryProviders({
     document.documentElement.dataset.theme = rootTheme;
     document.documentElement.style.colorScheme = rootTheme;
     document.documentElement.className = fontVariables;
+    // The next/font mock of Storybook ignores `declarations`: the faces of Poppins are declared
+    // under their family name, which the variables must then name as Next.js does.
+    document.documentElement.style.setProperty('--font-poppins', 'Poppins');
+    document.documentElement.style.setProperty('--font-poppins-strong', 'Poppins');
     document.documentElement.lang = locale;
   }, [rootTheme, locale]);
   return (
