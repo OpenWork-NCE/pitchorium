@@ -1,0 +1,94 @@
+# Mouvement de Pitchorium
+
+Application de `ELITE-MOTION.md` (référence, même dossier) à une webapp professionnelle. ADR 0086.
+
+## Doctrine
+
+- **Espace membre** (`(app)`, `(admin)`, `(auth)`, `(public)`) : un document natif plus des micro-interactions. Horloge R1, défilement natif ; ni pin, ni WebGL, ni curseur personnalisé, ni marquee, ni préchargeur, ni détournement de la molette, ni défilement lissé (pas de Lenis).
+- **Pages publiques éditoriales** (`(marketing)`) : dialecte primaire D4 (EDITORIAL_REVEAL), aucun dialecte secondaire à ce stade. Moteurs E0 (transitions CSS), E1 (animations liées au défilement, avec repli par IntersectionObserver) et E3 (GSAP ScrollTrigger avec SplitText, chargés quand un titre éditorial approche de l'écran).
+- **Matière** : le motif d'élévation des fonds de marque (trois figures superposées, en ton sur ton), posé comme sur du papier mat, sans grain animé ni WebGL au lancement.
+- **Sobriété** : seuls `transform`, `opacity`, `filter` et `clip-path` s'animent ; aucun texte ne passe sous le contraste AA pendant un mouvement (une révélation monte et se défloute, sans fondu) ; pas d'élastique, pas de rebond.
+
+## YAML de brief (§15)
+
+```yaml
+brand:
+  name: Pitchorium
+  domain: réseau professionnel et financement à impact (ONG, impact)
+  matter: papier mat au motif d'élévation (overlay des fonds de marque)
+  tokens: { bg: '#F7F7F5', ink: '#121212', accent: '#3E285D', pale: '#EAE4F2' }
+  type: { display: Bricolage Grotesque 800, body: Poppins }
+
+clock: R1
+engines: [E0, E1, E3]
+dialect:
+  primary: D4
+  secondary: null
+
+hero:
+  title: web.home.title
+  lede: web.home.lede
+  ctas: []
+  extras: [{ text: web.home.eyebrow, role: copy }]
+  partners: []
+
+matter:
+  hero: public/brand/overlay-desktop.svg
+  macro: ''
+  webgl: false
+  grain: false
+
+scatter: []
+morph: []
+stagger: []
+horizontal: []
+stack: []
+scrub: null
+flip_grid: []
+observer_slides: []
+infinite: []
+kinetic: null
+
+rest:
+  - { id: foundations, items: [fonts, theme, locales, motion] }
+
+footer: { wordmark: '', links: [], social: [] }
+
+cursor: false
+page_transition: fade
+preloader: false
+velocity_skew: false
+reduced_motion: honor
+```
+
+Les champs vides sont des primitives absentes. Le héros et les sections sont ceux de l'accueil provisoire ; l'accueil éditorial reprendra ce YAML avec ses sections.
+
+## Tokens
+
+Deux courbes seulement : `enter` `cubic-bezier(0.16, 1, 0.3, 1)` (arrivées, micro-interactions, remplissages) et `curtain` `cubic-bezier(0.76, 0, 0.24, 1)` (rideaux, révélation circulaire). Durées : pression 150 ms, micro 200 ms, page 320 ms, révélation 600 ms, remplissage 800 ms, thème 700 ms, compteur 1 400 ms. Source TypeScript `apps/web/src/components/motion/tokens.ts`, variables CSS `--ease-*` et `--duration-*`, courbe GSAP `pitchorium-enter` (CustomEase) : un test vérifie l'égalité.
+
+## Catalogue des micro-interactions
+
+| Geste                         | Primitive                                     | Recette                                                                  | Mouvement réduit           |
+| ----------------------------- | --------------------------------------------- | ------------------------------------------------------------------------ | -------------------------- |
+| Pression d'un bouton          | utilitaire `press`                            | `scale(0.96)`, 150 ms, `enter`                                           | aucune échelle             |
+| Survol du bouton principal    | `Button` (H21), classe `circle-fill`          | disque cuivre depuis le bas, `clip-path: circle()`, 800 ms, `enter`      | état final immédiat        |
+| Échange d'icône               | `IconSwap`                                    | `scale 0.25 vers 1` et flou de 4 px, ressort sans rebond, 320 ms         | état final immédiat        |
+| Nombre animé (H17)            | `AnimatedNumber`                              | comptage à l'entrée dans l'écran, pas de la devise, formateur localisé   | valeur finale, sans compte |
+| Révélation au défilement (E1) | `Reveal`                                      | montée de 24 px et flou de 6 px liés au défilement (`view()`), repli IO  | contenu en place           |
+| Indicateur partagé            | `SharedIndicator` (`layoutId`)                | glissement de l'indicateur actif, ressort sans rebond                    | saut immédiat              |
+| Transition de page (niveau 1) | `PageTransition` (templates des groupes)      | View Transitions : sortie en fondu 200 ms, entrée fondu et montée 320 ms | aucune                     |
+| Bascule de thème (H14, n. 3)  | `ThemeToggle`                                 | nouveau thème en cercle depuis le bouton, 700 ms, `curtain`              | simple fondu de 150 ms     |
+| Titre éditorial (H13)         | `SplitHeading` (GSAP SplitText, à la demande) | lignes masquées montant de 110 %, décalage de 80 ms, rejoué en arrière   | titre immobile             |
+| Apparition du logo            | `animate-brand-enter`                         | opacité et montée de 6 px, 220 ms (règle du guide)                       | aucune                     |
+| Menu                          | `DropdownMenuContent`                         | opacité et `scale(0.96)`, 200 ms                                         | aucune                     |
+| Chargement d'une page         | `PageLoading`                                 | barre indéterminée cuivre                                                | barre immobile             |
+
+Moins de mouvement veut dire `prefers-reduced-motion: reduce`, `prefers-reduced-data: reduce` ou `navigator.connection.saveData` (`useMotionPreference`) : pas de lecture automatique de vidéo, chaque primitive montre son état final. Le rendu serveur montre toujours l'état final : aucune première peinture n'attend une animation.
+
+## Contrôles (QA §14)
+
+- Tests Vitest des primitives en mouvement complet et réduit, de la bascule de thème (cercle, puis fondu).
+- Captures de référence en mouvement réduit (1280x800 et 390x844, deux thèmes).
+- GSAP absent des bundles de l'espace membre : règle ESLint et `scripts/check-bundles.mjs`.
+- Budget §1.4 : un dialecte, aucun pin, aucun WebGL, aucun curseur, aucune marquee.
