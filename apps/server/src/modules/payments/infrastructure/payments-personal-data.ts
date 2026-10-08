@@ -99,6 +99,12 @@ export class PaymentsPersonalData implements OnModuleInit {
               { table: 'payments.refunds', column: 'requested_by' },
               { table: 'payments.discrepancies', column: 'resolved_by' },
               { table: 'payments.simulated_accounts', column: 'user_id' },
+              // Account identifiers of the simulated provider are derived from the member.
+              { table: 'payments.simulated_accounts', column: 'id', kind: 'text' },
+              { table: 'payments.simulated_sessions', column: 'account_id', kind: 'text' },
+              { table: 'payments.contributions', column: 'provider_account_id', kind: 'text' },
+              { table: 'payments.payout_accounts', column: 'provider_account_id', kind: 'text' },
+              { table: 'payments.provider_events', column: 'provider_account_id', kind: 'text' },
             ],
             userId,
             pseudonym,
