@@ -18,7 +18,7 @@ function block(selector: string): Map<string, string> {
 }
 
 const light = block(':root');
-const dark = new Map([...light, ...block(":root[data-theme='dark']")]);
+const dark = new Map([...light, ...block("[data-theme='dark']")]);
 
 function resolve(theme: Map<string, string>, name: string): string {
   let value = theme.get(name);
@@ -74,6 +74,14 @@ const PAIRS: [string, string, number][] = [
   ['warning', 'warning-subtle', TEXT],
   ['danger', 'danger-subtle', TEXT],
   ['info', 'info-subtle', TEXT],
+  ['accent', 'track', NON_TEXT],
+  ['muted', 'track', NON_TEXT],
+  ['on-accent', 'accent', NON_TEXT],
+  ...[1, 2, 3, 4, 5, 6].map((index): [string, string, number] => [
+    `avatar-${index}-fg`,
+    `avatar-${index}-bg`,
+    TEXT,
+  ]),
 ];
 
 describe.each([

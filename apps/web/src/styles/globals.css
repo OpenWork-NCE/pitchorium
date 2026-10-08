@@ -40,6 +40,20 @@
   --color-on-status: var(--on-status);
   --color-focus: var(--focus);
   --color-overlay: var(--overlay);
+  --color-track: var(--track);
+  --color-skeleton: var(--skeleton);
+  --color-avatar-1-bg: var(--avatar-1-bg);
+  --color-avatar-1-fg: var(--avatar-1-fg);
+  --color-avatar-2-bg: var(--avatar-2-bg);
+  --color-avatar-2-fg: var(--avatar-2-fg);
+  --color-avatar-3-bg: var(--avatar-3-bg);
+  --color-avatar-3-fg: var(--avatar-3-fg);
+  --color-avatar-4-bg: var(--avatar-4-bg);
+  --color-avatar-4-fg: var(--avatar-4-fg);
+  --color-avatar-5-bg: var(--avatar-5-bg);
+  --color-avatar-5-fg: var(--avatar-5-fg);
+  --color-avatar-6-bg: var(--avatar-6-bg);
+  --color-avatar-6-fg: var(--avatar-6-fg);
 
   /* Brand colours, for graphic accents only (copper is never body text, brand guide). */
   --color-brand-violet: var(--brand-violet);
@@ -150,6 +164,11 @@
     outline-offset: 2px;
   }
 
+  /* One stroke for every icon (docs/design/direction.md): lucide draws 2 by default. */
+  svg.lucide {
+    stroke-width: 1.75;
+  }
+
   /* Tones of the brand marks (src/components/brand). */
   .brand-ink {
     fill: var(--logo-ink);
@@ -157,6 +176,48 @@
 
   .brand-accent {
     fill: var(--logo-accent);
+  }
+}
+
+/*
+ * Underline of a link (motion catalogue): a faint line at rest, so that a link never relies on
+ * colour alone (WCAG 1.4.1), drawn in full from the left on hover and focus.
+ */
+@utility link-underline {
+  background-image:
+    linear-gradient(currentColor, currentColor),
+    linear-gradient(
+      color-mix(in oklab, currentColor 35%, transparent),
+      color-mix(in oklab, currentColor 35%, transparent)
+    );
+  background-position:
+    0 100%,
+    0 100%;
+  background-repeat: no-repeat;
+  background-size:
+    0% 1px,
+    100% 1px;
+  transition: background-size var(--duration-page) var(--ease-enter);
+
+  &:hover,
+  &:focus-visible {
+    background-size:
+      100% 1px,
+      100% 1px;
+  }
+}
+
+/* Same drawn underline, without the line at rest: navigation and lists of links. */
+@utility link-underline-hover {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  background-size: 0% 1px;
+  transition: background-size var(--duration-page) var(--ease-enter);
+
+  &:hover,
+  &:focus-visible {
+    background-size: 100% 1px;
   }
 }
 
@@ -255,6 +316,105 @@
     [data-counter]:not([data-ready]) {
       visibility: hidden;
     }
+  }
+}
+
+/* Skeleton (loading placeholder): a discreet shine crossing it, still with less motion. */
+@layer components {
+  .skeleton {
+    position: relative;
+    overflow: hidden;
+    background-color: var(--color-skeleton);
+  }
+
+  .skeleton::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background-image: linear-gradient(90deg, transparent, var(--skeleton-shine), transparent);
+    opacity: 0.6;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .skeleton::after {
+      animation: skeleton-shine 1.6s var(--ease-curtain) infinite;
+    }
+  }
+}
+
+@keyframes skeleton-shine {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+/* Drawn stroke of a reached milestone (H18): one line, drawn once, present with less motion. */
+@layer components {
+  .funding-stroke path {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation-delay: inherit;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .funding-stroke[data-drawn] path {
+      animation: draw var(--duration-fill) var(--ease-enter) forwards;
+      animation-delay: inherit;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .funding-stroke[data-drawn] path {
+      stroke-dashoffset: 0;
+    }
+  }
+}
+
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Overlays: backdrop, dialog, side sheets (motion catalogue, level 1). */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+
+@media (min-width: 40rem) {
+  @keyframes dialog-in {
+    from {
+      opacity: 0;
+      transform: translate(-50%, calc(-50% + 12px)) scale(0.98);
+    }
+  }
+}
+
+@keyframes sheet-in-right {
+  from {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes sheet-in-left {
+  from {
+    transform: translateX(-100%);
   }
 }
 

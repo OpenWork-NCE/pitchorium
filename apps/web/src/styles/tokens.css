@@ -84,6 +84,25 @@
   --shadow-color: 18 18 18;
   --shadow-strength: 0.08;
 
+  /* Track of a progress bar, skeletons (loading placeholders). */
+  --track: var(--neutral-200);
+  --skeleton: var(--neutral-100);
+  --skeleton-shine: var(--brand-white);
+
+  /* Avatar initials: a pair chosen from the name, every pair AA in both themes. */
+  --avatar-1-bg: var(--violet-100);
+  --avatar-1-fg: var(--violet-800);
+  --avatar-2-bg: var(--copper-100);
+  --avatar-2-fg: var(--copper-700);
+  --avatar-3-bg: var(--neutral-100);
+  --avatar-3-fg: var(--neutral-700);
+  --avatar-4-bg: var(--success-subtle);
+  --avatar-4-fg: var(--success);
+  --avatar-5-bg: var(--info-subtle);
+  --avatar-5-fg: var(--info);
+  --avatar-6-bg: var(--violet-200);
+  --avatar-6-fg: var(--violet-900);
+
   /* Motion: same values as src/components/motion/tokens.ts (checked by a test). */
   --ease-enter: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-curtain: cubic-bezier(0.76, 0, 0.24, 1);
@@ -106,8 +125,12 @@
   --z-skip-link: 80;
 }
 
-/* Dark theme: the official dark variants of the logo sit on brand black. */
-:root[data-theme='dark'] {
+/*
+ * Dark theme: the official dark variants of the logo sit on brand black. Also applies to a
+ * subtree marked dark (the side-by-side view of the design system).
+ */
+:root[data-theme='dark'],
+[data-theme='dark'] {
   --background: var(--neutral-950);
   --surface: #1a191c;
   --surface-elevated: #232127;
@@ -139,4 +162,21 @@
   --logo-accent: var(--brand-copper);
   --shadow-color: 0 0 0;
   --shadow-strength: 0.4;
+
+  --track: var(--border);
+  --skeleton: var(--neutral-800);
+  --skeleton-shine: #34313a;
+
+  --avatar-1-bg: #2c2438;
+  --avatar-1-fg: var(--violet-200);
+  --avatar-2-bg: var(--copper-900);
+  --avatar-2-fg: var(--copper-200);
+  --avatar-3-bg: var(--neutral-800);
+  --avatar-3-fg: var(--neutral-200);
+  --avatar-4-bg: var(--success-subtle);
+  --avatar-4-fg: var(--success);
+  --avatar-5-bg: var(--info-subtle);
+  --avatar-5-fg: var(--info);
+  --avatar-6-bg: var(--violet-900);
+  --avatar-6-fg: var(--violet-300);
 }
