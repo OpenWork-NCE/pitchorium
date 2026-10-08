@@ -130,7 +130,7 @@ export class RewardsService {
         return existing.status;
       }
       const project = await this.projects.findProject(reward.projectId);
-      if (!project || project.deletedAt || !isOpen(project)) {
+      if (!project || project.deletedAt || !isOpen(project) || project.fundingFrozenAt) {
         throw new DomainError('PROJECTS_NOT_OPEN', 'The project is not open to contributions');
       }
       assertAvailable(reward);

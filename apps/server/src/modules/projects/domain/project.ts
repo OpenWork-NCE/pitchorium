@@ -48,6 +48,8 @@ export interface ProjectRecord {
   impactLevel: ImpactLevel | null;
   impactMethodologyVersion: number | null;
   moderationStatus: ProjectModerationStatus;
+  /** Contributions stopped by moderation (trust module). */
+  fundingFrozenAt: Date | null;
   featuredAt: Date | null;
   featuredBy: string | null;
   publishedAt: Date | null;

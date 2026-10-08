@@ -378,6 +378,8 @@ export const projectSchema = projectCardSchema.extend({
   /** Self-declared assessment with its detail by criterion, null without one. */
   impactAssessment: impactAssessmentSchema.nullable(),
   share: projectShareSchema,
+  /** Contributions stopped by a moderation decision (§13), whatever the status. */
+  fundingFrozen: z.boolean(),
   /** State of the signed-in reader; null for a visitor. */
   viewer: z
     .object({

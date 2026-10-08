@@ -34,7 +34,7 @@ export interface FundableProject {
   /** Label currency of the project (EUR, ADR 0037). */
   currency: string;
   instruments: FundingInstrument[];
-  /** Published, not closed, live and visible: contributions are accepted. */
+  /** Published, not closed, live, visible and not frozen: contributions are accepted. */
   open: boolean;
   /** Published, live and visible: the project shows to members. */
   showable: boolean;
@@ -222,7 +222,7 @@ export class ProjectsFacade implements OnModuleInit {
           status: project.status,
           currency: project.currency,
           instruments: project.instruments,
-          open: isOpen(project) && isShowable(project),
+          open: isOpen(project) && isShowable(project) && !project.fundingFrozenAt,
           showable: isShowable(project),
           endsAt: project.endsAt,
         },
@@ -288,6 +288,20 @@ export class ProjectsFacade implements OnModuleInit {
 
   setModerationStatus(projectId: string, status: ProjectModerationStatus): Promise<void> {
     return this.writes.setModerationStatus(projectId, status);
+  }
+
+  /**
+   * Freeze decided by moderation (trust module): no new contribution while it lasts; the
+   * campaign keeps its status and its end date.
+   */
+  setFundingFrozen(projectId: string, frozen: boolean): Promise<void> {
+    return this.writes.setFundingFrozen(projectId, frozen);
+  }
+
+  /** Project and author of an update, null when unknown (reports, trust module). */
+  async updateAuthor(updateId: string): Promise<{ projectId: string; authorId: string } | null> {
+    const update = await this.projects.findUpdate(updateId);
+    return update ? { projectId: update.projectId, authorId: update.authorId } : null;
   }
 
   async setUpdateModerationStatus(

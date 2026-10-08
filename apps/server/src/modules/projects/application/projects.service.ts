@@ -113,6 +113,7 @@ export class ProjectsService {
           moderationStatus: 'visible',
           featuredAt: null,
           featuredBy: null,
+          fundingFrozenAt: null,
           publishedAt: null,
           endsAt: null,
           fundedAt: null,
@@ -341,6 +342,15 @@ export class ProjectsService {
         visible ? 'public' : 'private',
       );
       await this.events.record(ProjectUpdated, projectId, { fields: ['moderationStatus'] });
+    });
+  }
+
+  async setFundingFrozen(projectId: string, frozen: boolean): Promise<void> {
+    await this.require(projectId);
+    await this.transactions.run(async () => {
+      const now = this.clock.now();
+      await this.projects.updateProject(projectId, { fundingFrozenAt: frozen ? now : null }, now);
+      await this.events.record(ProjectUpdated, projectId, { fields: ['fundingFrozen'] });
     });
   }
 

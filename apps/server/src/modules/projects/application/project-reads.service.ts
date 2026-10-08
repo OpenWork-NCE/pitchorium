@@ -404,6 +404,7 @@ export class ProjectReadsService {
         description: project.summary,
         imageUrl: firstImage ? (gallery.get(firstImage)?.url ?? null) : null,
       },
+      fundingFrozen: project.fundingFrozenAt !== null,
       viewer: viewerId && !preview ? { following, teamRole } : null,
       management: teamRole && !preview ? await this.management(project, teamRole, team) : null,
     };
