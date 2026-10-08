@@ -7,7 +7,7 @@ Application de `ELITE-MOTION.md` (référence, même dossier) à une webapp prof
 - **Espace membre** (`(app)`, `(admin)`, `(auth)`, `(public)`) : un document natif plus des micro-interactions. Horloge R1, défilement natif ; ni pin, ni WebGL, ni curseur personnalisé, ni marquee, ni préchargeur, ni détournement de la molette, ni défilement lissé (pas de Lenis).
 - **Pages publiques éditoriales** (`(marketing)`) : dialecte primaire D4 (EDITORIAL_REVEAL), aucun dialecte secondaire à ce stade. Moteurs E0 (transitions CSS), E1 (animations liées au défilement, avec repli par IntersectionObserver) et E3 (GSAP ScrollTrigger avec SplitText, chargés quand un titre éditorial approche de l'écran).
 - **Matière** : le motif d'élévation des fonds de marque (trois figures superposées, en ton sur ton), posé comme sur du papier mat, sans grain animé ni WebGL au lancement.
-- **Sobriété** : seuls `transform`, `opacity`, `filter` et `clip-path` s'animent ; aucun texte ne passe sous le contraste AA pendant un mouvement (une révélation monte et se défloute, sans fondu) ; pas d'élastique, pas de rebond.
+- **Sobriété** : seuls `transform`, `opacity`, `filter` et `clip-path` s'animent ; pas d'élastique, pas de rebond. Une révélation apparaît en fondu, monte et se défloute ; le contraste AA se juge au repos : les audits d'accessibilité (axe dans Playwright et Storybook) s'exécutent en mouvement réduit, où chaque élément est dans son état final.
 
 ## YAML de brief (§15)
 
@@ -75,7 +75,7 @@ Deux courbes seulement : `enter` `cubic-bezier(0.16, 1, 0.3, 1)` (arrivées, mic
 | Survol du bouton principal    | `Button` (H21), classe `circle-fill`          | disque cuivre depuis le bas, `clip-path: circle()`, 800 ms, `enter`      | état final immédiat        |
 | Échange d'icône               | `IconSwap`                                    | `scale 0.25 vers 1` et flou de 4 px, ressort sans rebond, 320 ms         | état final immédiat        |
 | Nombre animé (H17)            | `AnimatedNumber`                              | comptage à l'entrée dans l'écran, pas de la devise, formateur localisé   | valeur finale, sans compte |
-| Révélation au défilement (E1) | `Reveal`                                      | montée de 24 px et flou de 6 px liés au défilement (`view()`), repli IO  | contenu en place           |
+| Révélation au défilement (E1) | `Reveal`                                      | fondu, montée de 24 px et flou de 6 px liés au défilement, repli IO      | contenu en place           |
 | Indicateur partagé            | `SharedIndicator` (`layoutId`)                | glissement de l'indicateur actif, ressort sans rebond                    | saut immédiat              |
 | Transition de page (niveau 1) | `PageTransition` (templates des groupes)      | View Transitions : sortie en fondu 200 ms, entrée fondu et montée 320 ms | aucune                     |
 | Bascule de thème (H14, n. 3)  | `ThemeToggle`                                 | nouveau thème en cercle depuis le bouton, 700 ms, `curtain`              | simple fondu de 150 ms     |

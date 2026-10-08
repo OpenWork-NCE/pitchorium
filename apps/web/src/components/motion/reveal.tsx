@@ -11,8 +11,9 @@ interface RevealProps {
 
 /**
  * Reveal on scroll (E1): a scroll-driven CSS animation (`animation-timeline: view()`), rewound
- * when scrolling back. Browsers without scroll-driven animations get the same rise through an
- * IntersectionObserver; with less motion the content is simply there. Styles in globals.css.
+ * when scrolling back: fade, rise and sharpen. Browsers without scroll-driven animations get the
+ * same reveal through an IntersectionObserver; with less motion the content is simply there.
+ * Styles in globals.css.
  */
 export function Reveal({ children, className }: RevealProps) {
   const ref = useRef<HTMLDivElement>(null);

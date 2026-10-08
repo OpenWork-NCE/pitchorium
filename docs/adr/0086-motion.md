@@ -13,7 +13,7 @@ La référence `docs/design/ELITE-MOTION.md` décrit un mouvement de niveau stud
 - Motion 14 (`motion/react`, composants `m` sous `LazyMotion`) pour les micro-interactions de l'application ; GSAP 3.15 et `@gsap/react` réservés aux pages éditoriales, jamais dans les bundles de l'espace membre (règle ESLint et contrôle du build, ADR 0089 et 0090).
 - Deux courbes (`enter`, `curtain`) et des durées partagées par le CSS, Motion et GSAP (`components/motion/tokens.ts`, égalité testée).
 - Primitives livrées (`components/motion`) : pression, remplissage circulaire (H21), échange d'icône, nombre animé (H17), révélation au défilement (E1), indicateur partagé (`layoutId`), transition de page de niveau 1 (View Transitions, repli Motion), bascule de thème en cercle (H14) ; catalogue et YAML dans `docs/design/motion.md`.
-- Moins de mouvement (`prefers-reduced-motion`, `prefers-reduced-data`, `Save-Data`) : chaque primitive montre son état final ; la bascule de thème devient un fondu. Seuls `transform`, `opacity`, `filter` et `clip-path` s'animent ; une révélation n'anime jamais l'opacité d'un texte (contraste AA à chaque image).
+- Moins de mouvement (`prefers-reduced-motion`, `prefers-reduced-data`, `Save-Data`) : chaque primitive montre son état final ; la bascule de thème devient un fondu. Seuls `transform`, `opacity`, `filter` et `clip-path` s'animent ; une révélation apparaît en fondu, et le contraste AA se vérifie au repos : les audits d'accessibilité s'exécutent en mouvement réduit (état final), ce qui supprime l'exception du socle, où la révélation se faisait sans fondu.
 
 ## Conséquences
 
