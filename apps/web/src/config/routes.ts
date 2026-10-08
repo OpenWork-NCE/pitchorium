@@ -19,10 +19,11 @@ export const routes = {
   notifications: '/notifications',
   profile: '/profile',
   settings: '/settings',
-  // Pages of a resource, one address for visitors and members.
+  // Pages of a resource, one address for visitors and members (ADR 0101), the showcase included.
   project: (slug: string) => `/projects/${encodeURIComponent(slug)}`,
   member: (handle: string) => `/members/${encodeURIComponent(handle)}`,
   organization: (slug: string) => `/organizations/${encodeURIComponent(slug)}`,
+  event: (slug: string) => `/events/${encodeURIComponent(slug)}`,
   // Contextual actions of the header, opened by their section (PROMPT FRONT 3 and 4).
   compose: '/feed?compose=1',
   createProject: '/projects?create=1',
@@ -36,7 +37,6 @@ export const routes = {
 export const MEMBER_SEGMENTS = [
   'feed',
   'network',
-  'projects',
   'messages',
   'notifications',
   'profile',

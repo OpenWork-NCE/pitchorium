@@ -1,19 +1,8 @@
-import { notificationsControllerCounters } from '@pitchorium/api-client';
 import { redirect } from 'next/navigation';
+import { initialCounters } from '@/components/layout/member/initial-counters';
 import { MemberShell } from '@/components/layout/member/member-shell';
 import { routes } from '@/config/routes';
-import { configureServerApi } from '@/lib/api/server';
 import { getCurrentMember } from '@/lib/auth/session';
-
-/** The counters of the header, read with the member; the client reads them again if missing. */
-async function initialCounters() {
-  configureServerApi();
-  try {
-    return await notificationsControllerCounters({ cache: 'no-store' });
-  } catch {
-    return null;
-  }
-}
 
 /** Member space: a valid session is required (`GET /v1/me`), the realtime channel is open. */
 export default async function MemberLayout({ children, params }: LayoutProps<'/[locale]'>) {

@@ -8,5 +8,5 @@ export default function GroupError(props: {
   error: Error & { digest?: string };
   reset: () => void;
 }) {
-  return <ErrorBoundaryView {...props} home={routes.home} />;
+  return <ErrorBoundaryView {...props} home={routes.home} withMain />;
 }

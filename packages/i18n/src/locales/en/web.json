@@ -497,5 +497,12 @@
       "missing": "To add: {{list}}.",
       "action": "Complete my profile"
     }
+  },
+  "resources": {
+    "member": "Profile",
+    "organization": "Organisation",
+    "project": "Project",
+    "event": "Event",
+    "showcase": "Projects raising funds"
   }
 }

@@ -4,7 +4,10 @@ import { siteConfig } from '@/config/site';
 
 const PRIVATE_SEGMENTS = [...MEMBER_SEGMENTS, ...ADMIN_SEGMENTS, routes.health.slice(1)];
 
-/** Crawlers read the public pages; the member space, the administration and tools are not indexed. */
+/**
+ * Crawlers read the public pages, the pages of resources included (one address, their public
+ * view for a crawler, ADR 0101); the member space, the administration and tools are not indexed.
+ */
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: [

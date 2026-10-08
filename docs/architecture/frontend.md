@@ -12,7 +12,7 @@ apps/web/
         (marketing)/   pages publiques éditoriales (accueil provisoire)
         (auth)/        connexion, inscription, vérification, réinitialisation, onboarding
         (app)/         espace membre (session exigée, temps réel)
-        (public)/      pages publiques indexables (profil, organisation, projet, événement)
+        (public)/      une adresse par ressource (ADR 0101) : membre, organisation, projet, vitrine, événement ; cadre selon la session
         (admin)/       console d'administration (modérateur ou administrateur)
         (dev)/         outils de développement (santé de l'api), 404 en production
         layout.tsx     document : langue, polices, thème, fournisseurs
@@ -78,7 +78,8 @@ Chaque groupe ne charge que ce qu'il utilise (ADR 0094) :
 
 - Espace membre (`components/layout/member`, ADR 0099) : bandeau haut sans barre inférieure, recherche globale, six sections avec compteurs en temps réel, action contextuelle, menu du compte ; sous `lg`, Messages et Notifications restent au bandeau avec leurs compteurs, les autres sections, les projets suivis, l'action et le compte dans un panneau `Drawer` ; bannières de compte et hors ligne sous le bandeau ; `ThreeColumnLayout` (3, 6, 3 à partir de `xl`, colonnes latérales absentes sous `lg`, leur contenu repris par la page) ou `SingleColumnLayout`. Raccourcis : ADR 0098.
 - Administration (`components/layout/admin`) : navigation latérale (une feuille sur un téléphone), fil d'Ariane, rôle vérifié par le layout côté serveur (404 sinon).
-- Authentification : carte centrée sur les fonds discrets de la marque ; pages publiques et éditoriales : en-tête du site.
+- Authentification : carte centrée sur les fonds discrets de la marque ; pages éditoriales : en-tête du site.
+- Pages de ressources (`(public)`, ADR 0101) : une adresse par ressource ; la mise en page suit la session (cadre membre pour un membre, cadre public indexable pour un visiteur) ; `lib/resources/view.ts` lit la vue membre ou la vue publique, et une ressource absente pour le lecteur répond 404.
 - Chaque groupe a son `loading.tsx`, `error.tsx` et `not-found.tsx` (`components/layout/states`) ; le focus passe au contenu après une navigation (`RouteFocus`).
 - Du code reste hors du premier chargement mais doit servir hors ligne (aide des raccourcis, palette, infobulles) : il est préchargé quand la page est inactive (`lib/preload.ts`).
 
@@ -90,7 +91,7 @@ Les pages éditoriales n'ont ni données du navigateur, ni temps réel, ni clien
 
 1. nonce aléatoire et CSP (ADR 0088), transmis au rendu par les en-têtes de la requête ;
 2. langue (chemins identiques dans toutes les langues, seul le préfixe change, ADR 0092) : une langue connue mais inactive redirige vers la même page en français ; next-intl, configuré avec les seules langues actives, détecte la langue d'une première visite (`Accept-Language`) ou la reprend du cookie `NEXT_LOCALE` ;
-3. espace membre (`MEMBER_SEGMENTS`) et administration (`ADMIN_SEGMENTS` de `config/routes.ts`) : sans cookie de session, redirection vers `/<langue>/sign-in?next=...`. Le layout du groupe relit la session par `GET /v1/me` ; l'api reste l'autorité (ADR 0015). Un test vérifie que chaque dossier de `(app)` et `(admin)` figure dans ces listes.
+3. espace membre (`MEMBER_SEGMENTS`) et administration (`ADMIN_SEGMENTS` de `config/routes.ts`) : sans cookie de session, redirection vers `/<langue>/sign-in?next=...`. Les pages de ressources et la vitrine (`/projects`) n'en font pas partie : publiques, elles suivent la session sans l'exiger. Le layout du groupe relit la session par `GET /v1/me` ; l'api reste l'autorité (ADR 0015). Un test vérifie que chaque dossier de `(app)` et `(admin)` figure dans ces listes.
 
 ## Configuration
 

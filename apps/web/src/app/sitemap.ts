@@ -1,18 +1,14 @@
 import type { MetadataRoute } from 'next';
+import { routes } from '@/config/routes';
 import { localizedUrl } from '@/config/seo';
 import { getActiveLocales } from '@/lib/i18n/active-locales';
+import { PUBLIC_SITEMAP_SOURCES } from '@/lib/seo/sitemap-sources';
 
 /**
- * Static public pages, in every active locale with their alternates. The dynamic public pages
- * (profiles, organisations, projects, events) join through PUBLIC_SITEMAP_SOURCES when they
- * exist, each source listing its paths.
+ * Public pages, in every active locale with their alternates: the home page, the showcase of the
+ * projects, then the pages of the public resources, at their one address (ADR 0101).
  */
-const STATIC_PATHS = ['/'] as const;
-
-type SitemapSource = () => Promise<string[]>;
-
-/** Filled by the features of the public pages (PROMPT FRONT 1 onwards). */
-const PUBLIC_SITEMAP_SOURCES: SitemapSource[] = [];
+const STATIC_PATHS = ['/', routes.projects] as const;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const { locales } = await getActiveLocales();
