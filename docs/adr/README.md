@@ -88,3 +88,4 @@ Un fichier par décision, numéroté, au format Contexte / Décision / Conséque
 | [0085](0085-design-tokens-and-theme.md)                  | Tokens de design et thème                                    |
 | [0087](0087-brand-assets-and-fonts.md)                   | Fichiers de marque et polices                                |
 | [0086](0086-motion.md)                                   | Mouvement                                                    |
+| [0082](0082-design-system-radix.md)                      | Design system possédé sur Radix UI                           |
