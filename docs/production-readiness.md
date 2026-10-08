@@ -9,7 +9,7 @@ Liste ordonnée : chaque étape suppose les précédentes faites. Responsables :
 3. **Client** : prestataire pour l'Afrique francophone et le Kenya, confirmation des capacités Stripe et Flutterwave (questions 9, 10, 61, 62).
 4. **Client** : critères, pondérations et paliers du score d'impact, publiés ensuite comme méthodologie par un administrateur (questions 1 à 3).
 5. **Client et juridique** : textes des CGU et de la politique de confidentialité, et leurs versions ; durées de conservation ; obligations DSA (questions 20, 31, 81, 84 à 86 ; `docs/compliance/records-of-processing.md` à finaliser).
-6. **Client** : hébergeur, région, outil de traces et projet Sentry (questions 24, 26).
+6. **Client** : hébergeur, région, outil de traces et projet Sentry (questions 24, 26) ; hébergement de l'application web (question 96).
 
 ## 2. Domaines et DNS (client, puis développeur)
 
@@ -36,7 +36,7 @@ Tous au nom du client (question 90), accès partagés par le gestionnaire de sec
 4. **Resend** : domaine vérifié (étape 2.3), clé `RESEND_API_KEY`, `MAIL_TRANSPORT=resend` ; webhook `<API_PUBLIC_URL>/v1/notifications/webhooks/resend` avec `email.bounced` et `email.complained`, secret `RESEND_WEBHOOK_SECRET`.
 5. **Cloudflare R2 et CDN** : buckets public et privé (`S3_BUCKET_PUBLIC`, `S3_BUCKET_PRIVATE`), clés d'accès limitées à ces buckets, CORS du bucket privé autorisant `PUT` depuis `WEB_APP_URL`, domaine public `S3_PUBLIC_BASE_URL`, jeton d'API limité à la purge du cache de la zone (`CDN_PURGE_PROVIDER=cloudflare`, `CLOUDFLARE_ZONE_ID`, `CLOUDFLARE_API_TOKEN`), règles de cycle de vie et copie de sauvegarde (`docs/operations/backup-and-restore.md`).
 6. **Traduction** : clé DeepL ou Google (`LOCALIZATION_PROVIDERS`, `DEEPL_API_KEY`, `GOOGLE_TRANSLATE_API_KEY`), plafonds (question 88).
-7. **Sentry et traces** : `SENTRY_DSN`, `SENTRY_ENVIRONMENT`, `OTEL_EXPORTER_OTLP_ENDPOINT`.
+7. **Sentry et traces** : `SENTRY_DSN`, `SENTRY_ENVIRONMENT`, `OTEL_EXPORTER_OTLP_ENDPOINT` ; pour le web, un projet Sentry dédié (`NEXT_PUBLIC_SENTRY_DSN`, jeton de build `SENTRY_AUTH_TOKEN` pour les cartes de sources).
 
 ## 4. Secrets et configuration (développeur)
 
@@ -47,6 +47,8 @@ Tous au nom du client (question 90), accès partagés par le gestionnaire de sec
 5. Rotation : `docs/operations/runbooks/secrets-rotation.md`.
 
 ## 5. Première mise en service (développeur)
+
+Application web (`apps/web`, `docs/architecture/frontend.md`) : build par `pnpm --filter @pitchorium/web build` avec les variables de production (section « Web » de `docs/operations/environments.md`, `NEXT_PUBLIC_SITE_URL` en HTTPS pour HSTS et `upgrade-insecure-requests`), puis `next start` derrière le proxy, ou déploiement Vercel. Vérifier : en-têtes de sécurité et CSP (aucune violation dans la console, rapports Sentry), `robots.txt` et `sitemap.xml` sur le domaine définitif, images de partage, langues actives. Les origines de la CSP (`apps/web/src/lib/security/csp.ts`) suivent les domaines retenus.
 
 1. Construire l'image de la version (`v0.1.0` une fois la pull request de release-please fusionnée) et la pousser.
 2. Tâche de release : `dist/main.migrate.js`, puis `dist/main.seed.js` (flags et données de référence, idempotent).

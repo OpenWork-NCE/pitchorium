@@ -27,9 +27,19 @@ Pitchorium est un réseau professionnel et une plateforme de financement à impa
 - Outbox et inbox, argent en unités mineures, UUIDv7 générés par l'application, erreurs RFC 9457 avec codes stables.
 - Références : `docs/architecture/overview.md`, `modules.md`, `conventions.md`, `docs/adr/`.
 
+## Frontend (`apps/web`)
+
+- Next.js 16, App Router, Tailwind 4, Radix UI comme seule couche de primitives, design system possédé dans `src/components/ui` (ADR 0081, 0082).
+- Données : Server Components pour le premier rendu, TanStack Query et hydratation dans le navigateur, aucune Server Action pour une écriture métier : l'api est la seule source des règles (ADR 0083).
+- Frontières vérifiées par ESLint : `components/ui`, `components/motion` et `components/brand` n'importent aucune feature ; une feature (`src/features/<domaine>`, alignée sur le module backend) n'importe une autre feature que par son `index.ts` ; `app/` compose sans logique métier ; `"use client"` jamais sur une page ou un layout (ADR 0089).
+- Aucun texte d'interface en dur : namespace `web` de `packages/i18n` ; aucune couleur en dur : tokens, contraste AA testé (ADR 0084, 0085).
+- Mouvement : `docs/design/motion.md` ; primitives de `components/motion`, état final immédiat avec moins de mouvement ; GSAP réservé aux pages éditoriales (ADR 0086).
+- Marque : uniquement la sélection de `pnpm brand:sync`, jamais un fichier modifié à la main (ADR 0087).
+- Captures de référence : `pnpm --filter @pitchorium/web test:e2e` dans l'image Playwright (Docker requis).
+
 ## Avant toute tâche
 
-Lire les documents concernés dans `docs/`, le `README.md` des modules touchés et `docs/open-questions.md`.
+Lire les documents concernés dans `docs/`, le `README.md` des modules touchés (`apps/web/README.md` pour le frontend) et `docs/open-questions.md`.
 
 ## Avant tout commit
 
@@ -44,7 +54,7 @@ pnpm i18n:check
 pnpm db:check
 ```
 
-Si les schémas changent : `pnpm db:generate`. Si les routes ou contrats changent : `pnpm build && pnpm api-client:generate`, puis commiter `apps/server/openapi` et `packages/api-client/src/generated`.
+Si les schémas changent : `pnpm db:generate`. Si les routes ou contrats changent : `pnpm build && pnpm api-client:generate`, puis commiter `apps/server/openapi` et `packages/api-client/src/generated`. Si le frontend change : `pnpm test:e2e` (captures comprises), `pnpm --filter @pitchorium/web check:bundles` et, pour une page, `pnpm --filter @pitchorium/web lighthouse`.
 
 ## Définition de terminé
 

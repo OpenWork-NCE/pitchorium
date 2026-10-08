@@ -6,6 +6,10 @@
 
 `helmet` (`apps/server/src/platform/http/http-app.ts`) sur toutes les réponses de l'api : `Content-Security-Policy` par défaut de helmet en production (désactivée hors production pour Swagger UI), `Strict-Transport-Security`, `X-Content-Type-Options: nosniff`, `X-Frame-Options: SAMEORIGIN`, `Referrer-Policy: no-referrer`, `Cross-Origin-Opener-Policy`, `Cross-Origin-Resource-Policy: same-origin` ; `X-Powered-By` retiré. Le proxy de référence (Caddy) ajoute HSTS avec `preload`. Vérifié par `test/integration/http.spec.ts`.
 
+## Application web
+
+`apps/web` (ADR 0088) : CSP stricte par nonce régénéré à chaque requête (`src/proxy.ts`), scripts par nonce et `strict-dynamic` sans `unsafe-eval` en production, liste exacte des origines (api, CDN, Sentry et Vercel s'ils sont configurés, YouTube sans cookie et Vimeo, formulaires vers Stripe et Flutterwave), `frame-ancestors 'none'`, `X-Frame-Options`, `nosniff`, `Referrer-Policy`, `Permissions-Policy`, HSTS en HTTPS. Un test de bout en bout parcourt la page (thème, menu, toast, défilement) et exige zéro violation. Aucune écriture métier par Server Action ; Sentry ne reçoit ni cookie, ni en-tête, ni corps, ni donnée d'utilisateur.
+
 ## CORS
 
 Liste blanche `CORS_ORIGINS` (aucune origine si vide), `credentials: true`, en-têtes exposés limités (`X-Request-Id`, `Idempotent-Replayed`, `Retry-After`). Les écritures authentifiées par cookie exigent en plus un `Origin` (à défaut `Referer`) de confiance (`ACCESS_ORIGIN_NOT_ALLOWED`, ADR 0021) : protection CSRF indépendante de CORS.

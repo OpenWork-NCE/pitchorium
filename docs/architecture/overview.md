@@ -1,12 +1,13 @@
 # Vue d'ensemble
 
-Pitchorium est un monolithe modulaire NestJS (`apps/server`) accompagné de packages partagés. Un seul code, deux processus, une base PostgreSQL avec un schéma par module métier.
+Pitchorium est un monolithe modulaire NestJS (`apps/server`) et une application web Next.js (`apps/web`), accompagnés de packages partagés. Côté serveur : un seul code, deux processus, une base PostgreSQL avec un schéma par module métier. Le frontend est décrit dans `frontend.md`.
 
 ## Dépôt
 
 ```text
 apps/
   server/            api et worker NestJS
+  web/               application web Next.js 16 (frontend.md)
 packages/
   config/            presets TypeScript, ESLint (dont frontières), Prettier, Vitest
   contracts/         schémas Zod partagés (erreurs, pagination, argent, identifiants, locale, santé)
@@ -21,7 +22,7 @@ docs/                architecture, ADR, API, exploitation, sécurité, conformit
 Dockerfile           image unique de production (api, worker, migrations)
 ```
 
-Le frontend (`apps/web`) n'existe pas encore. Il consommera `@pitchorium/api-client`, `@pitchorium/contracts` et `@pitchorium/i18n`.
+Le frontend (`apps/web`) consomme `@pitchorium/api-client`, `@pitchorium/contracts` et `@pitchorium/i18n` ; il ne porte aucune règle métier (ADR 0083).
 
 ## Les deux processus
 
@@ -36,7 +37,7 @@ Les deux processus chargent les mêmes modules métier, avec leurs providers pro
 
 ```mermaid
 flowchart LR
-  web[Frontend web, étape ultérieure] -->|HTTPS /v1| api
+  web[Web Next.js, rendu serveur et navigateur] -->|HTTPS /v1| api
   web -->|Socket.IO| api
   subgraph server[apps/server]
     api[api]
@@ -165,7 +166,7 @@ Sur SIGTERM, Nest déclenche les hooks d'arrêt : l'api cesse d'accepter des con
 | Stockage      | Cloudflare R2 : bucket public (domaine personnalisé, `S3_PUBLIC_BASE_URL`) et bucket privé       |
 | Emails        | Resend (`MAIL_TRANSPORT=resend`)                                                                 |
 | Antivirus     | Conteneur ClamAV joignable par le worker (`CLAMAV_HOST`, `CLAMAV_PORT`)                          |
-| Web           | `apps/web`, étape ultérieure, servi séparément de l'api                                          |
+| Web           | `apps/web`, conteneur Node.js (`next start`) ou Vercel, servi séparément de l'api (question 96)  |
 
 Une seule image (`Dockerfile`, distroless, non root) porte les trois commandes : api, worker et tâche de release `dist/main.migrate.js`, appliquée avant le déploiement de l'api et du worker (`docs/operations/deployment.md`, migrations expand et contract). La configuration de production du stockage (buckets, CORS, domaine public) est décrite dans `storage.md`. L'hébergeur n'est pas choisi (voir `docs/open-questions.md`) ; la préparation complète est ordonnée dans `docs/production-readiness.md`.
 

@@ -49,6 +49,7 @@ Sans réponse, la plateforme ne peut pas ouvrir au public : chaque point conditi
 ### Hébergeur et outils d'exploitation
 
 - **24.** Le choix de l'hébergeur (conteneurs api et worker, PostgreSQL et Redis managés) et la région.
+- **96.** L'hébergement de l'application web (`apps/web`) : Vercel (Vercel Analytics et Speed Insights, `NEXT_PUBLIC_VERCEL_ANALYTICS=true`) ou le même hébergeur que l'api (un conteneur Node.js `next start`), et son domaine (`NEXT_PUBLIC_SITE_URL`, voir la question 25).
 - **26.** Le fournisseur de traces OpenTelemetry et le projet Sentry.
 
 ### Domaines
@@ -172,3 +173,13 @@ Valeurs provisoires livrées et documentées : la plateforme fonctionne avec ell
 - **87.** La couverture du wolof : Google Cloud Translation ne le propose pas (documentation du 2026-10-07), contrairement au tableau du §8.2 ; DeepL le propose sans glossaire.
 - **88.** Les limites de la traduction à la demande (provisoires) : 20 000 caractères par membre et par jour, 500 000 caractères par mois pour la plateforme (palier gratuit de DeepL), cache de 30 jours ; le choix du prestataire principal et de son offre (DeepL API Free ou Pro, Google Cloud Translation Basic ou Advanced) ; l'anglais britannique comme variante cible de DeepL.
 - **89.** Les traductions anglaises du glossaire métier (palier, mécène, love money, contrepartie, porteur de projet, equity...), provisoires jusqu'à la relecture professionnelle (voir aussi les questions 21 et 23).
+
+### Frontend
+
+- **93.** Les budgets de performance proposés (ADR 0090, `docs/architecture/frontend.md`) : JavaScript initial compressé par groupe de routes, framework compris (`(marketing)` 240 kB, `(public)` et `(auth)` 260 kB, `(app)` et `(admin)` 300 kB), Lighthouse mobile en 4G lente (performance 90, accessibilité, bonnes pratiques et SEO 100, LCP 2,5 s, CLS 0,1, TBT 200 ms), scripts 360 kB et polices 80 kB transférés sur la page éditoriale ; le profil d'appareil de référence (téléphone milieu de gamme en 4G africaine).
+- **94.** La « matière » du mouvement (`docs/design/motion.md`) : le motif d'élévation des fonds de marque, ton sur ton, comme sur un papier mat, sans grain ni WebGL ; le dialecte éditorial D4 des pages publiques.
+- **95.** La variante d'interface du logo horizontal sur fond sombre : le kit ne la fournit qu'avec son rectangle `#121212` ; la version transparente utilisée par le web est déduite (même dessin, fond retiré, `docs/design/brand-usage.md`). De même, l'icône d'application sombre (fond violet) retenue pour le manifeste et l'icône d'écran d'accueil.
+- **97.** La licence de GSAP (« Standard No Charge License » de Webflow, gratuite, non open source) pour les pages éditoriales, et celle de l'outil `sentry` (FSL-1.1, envoi des cartes de sources au build).
+- **98.** La traduction des chemins d'URL (`/fr/connexion` plutôt que `/fr/sign-in`) : en anglais pour toutes les langues aujourd'hui (ADR 0084).
+- **99.** Les éléments de design dérivés du guide, à valider par la marque : échelles de couleurs et couleurs de statut (`docs/design/tokens.md`), poids 500 et 600 de Poppins et repli Noto Sans pour les caractères absents (`docs/design/typography.md`).
+- **100.** Le texte de l'accueil provisoire et la description du site (`web.home`, `web.metadata.description` de `packages/i18n`), repris du contexte du guide de marque ; ni slogan ni promesse.
