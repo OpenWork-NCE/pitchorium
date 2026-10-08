@@ -76,6 +76,8 @@ jobs:
         run: pnpm turbo run build --filter=@pitchorium/web^...
       - name: Design system (Storybook)
         run: pnpm turbo run build-storybook --filter=@pitchorium/web
+      - name: Stories as tests (play functions, accessibility, both themes)
+        run: pnpm --filter @pitchorium/web test:stories
       - name: Lighthouse CI (mobile profile, budgets of lighthouserc.cjs)
         run: pnpm --filter @pitchorium/web lighthouse
       - name: Initial JavaScript per route group, no GSAP outside the editorial pages
