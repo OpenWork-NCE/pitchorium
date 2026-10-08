@@ -93,4 +93,5 @@ Un fichier par décision, numéroté, au format Contexte / Décision / Conséque
 | [0087](0087-brand-assets-and-fonts.md)                   | Fichiers de marque et polices                                |
 | [0088](0088-web-security-headers-and-csp.md)             | Sécurité du web : CSP à nonce et en-têtes                    |
 | [0089](0089-web-boundaries-and-lint.md)                  | Frontières et règles du web                                  |
+| [0090](0090-web-tests-and-budgets.md)                    | Tests et budgets du web                                      |
 | [0091](0091-web-observability.md)                        | Observabilité du web                                         |

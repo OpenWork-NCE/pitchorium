@@ -10,6 +10,12 @@
     "typecheck": "next typegen && tsc",
     "lint": "eslint .",
     "test": "vitest run",
+    "test:e2e": "sh scripts/e2e-docker.sh",
+    "test:e2e:native": "playwright test",
+    "check:bundles": "node scripts/check-bundles.mjs",
+    "lighthouse": "sh scripts/lighthouse.sh",
+    "storybook": "storybook dev --port 6006",
+    "build-storybook": "storybook build --quiet",
     "brand:sync": "node scripts/brand-sync.mjs"
   },
   "dependencies": {

@@ -1,6 +1,7 @@
 import nextPlugin from '@next/eslint-plugin-next';
 import reactHooks from 'eslint-plugin-react-hooks';
 import storybook from 'eslint-plugin-storybook';
+import { join } from 'node:path';
 import globals from 'globals';
 import { createConfig } from './eslint.js';
 import { webBoundaries } from './eslint-boundaries.js';
@@ -41,6 +42,8 @@ export function createWebConfig({ tsconfigRootDir, ignores = [] }) {
     {
       files: ['**/*.{ts,tsx}'],
       languageOptions: { globals: { ...globals.browser, ...globals.node } },
+      // The rules resolve the app from its own folder, also when ESLint runs from the root.
+      settings: { next: { rootDir: tsconfigRootDir } },
       plugins: {
         '@next/next': nextPlugin,
         'react-hooks': reactHooks,
@@ -71,5 +74,14 @@ export function createWebConfig({ tsconfigRootDir, ignores = [] }) {
     },
     ...webBoundaries({ rootDir: tsconfigRootDir }),
     ...storybook.configs['flat/recommended'],
+    {
+      files: ['.storybook/main.ts'],
+      rules: {
+        'storybook/no-uninstalled-addons': [
+          'error',
+          { packageJsonLocation: join(tsconfigRootDir, 'package.json') },
+        ],
+      },
+    },
   ];
 }
