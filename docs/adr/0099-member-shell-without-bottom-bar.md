@@ -23,5 +23,5 @@ Le cahier des charges (§6.1, §6.2) écarte la barre d'onglets basse du prototy
 
 ## Mesures
 
-- JavaScript initial compressé (Brotli, framework compris) : 233,9 kB pour un budget de 250 kB (ADR 0094) ; 308 kB dans la première version du cadre, avant de sortir du premier chargement la palette, l'aide des raccourcis, les infobulles, le panneau mobile et sonner.
-- Lighthouse mobile sur `/fr/feed` (session de l'api simulée, 4G lente, processeur ralenti quatre fois) : performance 100, accessibilité 100, bonnes pratiques 100, LCP 1,5 s, TBT 55 ms.
+- JavaScript initial compressé (Brotli, framework compris) : 201,8 kB pour un budget de 250 kB (ADR 0094) ; 308 kB dans la première version du cadre, 233,9 kB après avoir sorti du premier chargement la palette, l'aide des raccourcis, les infobulles, le panneau mobile et sonner, puis le menu du compte et les schémas du temps réel. Sur l'exécuteur de la CI GitHub, environ huit fois plus lent qu'un poste rapide, la version à 233,9 kB dépassait le TBT de 300 ms (de 413 à 421 ms) : d'où ce dernier report.
+- Lighthouse mobile sur `/fr/feed` (session de l'api simulée, 4G lente, processeur ralenti quatre fois) : performance 100, accessibilité 100, bonnes pratiques 100, LCP 1,5 s, TBT de 11 à 24 ms (55 ms avant le dernier report).

@@ -1,145 +1,53 @@
 'use client';
 
-import {
-  CircleUser,
-  Keyboard,
-  Languages,
-  LogOut,
-  Monitor,
-  Moon,
-  Settings,
-  Sun,
-} from 'lucide-react';
-import { useLocale, useTranslations } from 'next-intl';
-import { useTheme } from 'next-themes';
-import { useTransition } from 'react';
-import {
-  Avatar,
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuSeparator,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
-  DropdownMenuTrigger,
-  useShortcutsHelp,
-} from '@/components/ui';
-import { routes } from '@/config/routes';
-import { useMemberLocaleChange } from '@/features/localization';
-import { Link } from '@/i18n/navigation';
-import { useCurrentMember } from './current-member';
-import { useSignOut } from './sign-out-button';
+import { type ComponentType, useCallback, useEffect, useRef, useState } from 'react';
+import { preloadWhenIdle } from '@/lib/preload';
+import { AccountButton } from './account-button';
+import type { UserMenuPanel } from './user-menu-panel';
+
+/** The menu (Radix DropdownMenu and its positioning) stays out of the first load (ADR 0094). */
+const loadPanel = () => import('./user-menu-panel');
 
 /**
- * Menu of the account (§6.1): profile, settings, theme, language, keyboard shortcuts and sign
- * out. The avatar of the member is its trigger; the theme and the language are radio groups.
+ * Menu of the account: the avatar renders first as a plain button; the menu loads when the page
+ * is idle or at the first use, then takes its place. A use before it arrived opens it once
+ * loaded.
  */
 export function UserMenu() {
-  const member = useCurrentMember();
-  const t = useTranslations('web.nav');
-  const theme = useTranslations('web.theme');
-  const localeT = useTranslations('web.locale');
-  const locale = useLocale();
-  const { theme: current, setTheme } = useTheme();
-  const { locales, change } = useMemberLocaleChange();
-  const openHelp = useShortcutsHelp();
-  const signOut = useSignOut();
-  const [pending, startTransition] = useTransition();
+  const [Panel, setPanel] = useState<ComponentType<Parameters<typeof UserMenuPanel>[0]> | null>(
+    null,
+  );
+  const [request, setRequest] = useState({ open: false, keyboard: false });
+  const focused = useRef(false);
+  const load = useCallback(
+    () => loadPanel().then((module) => setPanel(() => module.UserMenuPanel)),
+    [],
+  );
+  useEffect(() => preloadWhenIdle(load), [load]);
 
+  if (Panel)
+    return <Panel defaultOpen={request.open} keyboard={request.keyboard} focused={focused} />;
+  const open = (keyboard: boolean) => {
+    setRequest({ open: true, keyboard });
+    void load().catch(() => undefined);
+  };
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <button
-          type="button"
-          className="inline-flex size-11 cursor-pointer items-center justify-center rounded-full outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
-        >
-          <Avatar
-            name={member.profile.displayName}
-            src={member.profile.avatarUrl}
-            size="sm"
-            decorative
-          />
-          {/* The name comes from this text, the initials being decorative (label in name). */}
-          <span className="sr-only">{t('account', { name: member.profile.displayName })}</span>
-        </button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-64">
-        <DropdownMenuLabel className="grid gap-0.5 py-2">
-          <span className="truncate text-sm font-semibold text-foreground">
-            {member.profile.displayName}
-          </span>
-          <span className="truncate text-xs">@{member.profile.handle}</span>
-        </DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <DropdownMenuItem asChild>
-            <Link href={routes.profile}>
-              <CircleUser aria-hidden />
-              {t('profile')}
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <Link href={routes.settings}>
-              <Settings aria-hidden />
-              {t('settings')}
-            </Link>
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        <DropdownMenuSub>
-          <DropdownMenuSubTrigger>
-            <Sun aria-hidden />
-            {theme('label')}
-          </DropdownMenuSubTrigger>
-          <DropdownMenuSubContent>
-            <DropdownMenuRadioGroup value={current ?? 'system'} onValueChange={setTheme}>
-              <DropdownMenuRadioItem value="light">
-                <Sun aria-hidden />
-                {theme('light')}
-              </DropdownMenuRadioItem>
-              <DropdownMenuRadioItem value="dark">
-                <Moon aria-hidden />
-                {theme('dark')}
-              </DropdownMenuRadioItem>
-              <DropdownMenuRadioItem value="system">
-                <Monitor aria-hidden />
-                {theme('system')}
-              </DropdownMenuRadioItem>
-            </DropdownMenuRadioGroup>
-          </DropdownMenuSubContent>
-        </DropdownMenuSub>
-        {locales.length > 1 ? (
-          <DropdownMenuSub>
-            <DropdownMenuSubTrigger>
-              <Languages aria-hidden />
-              {localeT('label')}
-            </DropdownMenuSubTrigger>
-            <DropdownMenuSubContent>
-              <DropdownMenuRadioGroup value={locale} onValueChange={(next) => void change(next)}>
-                {locales.map((code) => (
-                  <DropdownMenuRadioItem key={code} value={code} lang={code}>
-                    {localeT(`names.${code}`)}
-                  </DropdownMenuRadioItem>
-                ))}
-              </DropdownMenuRadioGroup>
-            </DropdownMenuSubContent>
-          </DropdownMenuSub>
-        ) : null}
-        <DropdownMenuItem onSelect={openHelp}>
-          <Keyboard aria-hidden />
-          {t('shortcuts')}
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem disabled={pending} onSelect={() => startTransition(signOut)}>
-          <LogOut aria-hidden />
-          {t('signOut')}
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <AccountButton
+      aria-haspopup="menu"
+      aria-expanded={false}
+      onFocus={() => {
+        focused.current = true;
+      }}
+      onBlur={() => {
+        focused.current = false;
+      }}
+      // Enter and Space click with no pointer (detail 0).
+      onClick={(event) => open(event.detail === 0)}
+      onKeyDown={(event) => {
+        if (event.key !== 'ArrowDown') return;
+        event.preventDefault();
+        open(true);
+      }}
+    />
   );
 }

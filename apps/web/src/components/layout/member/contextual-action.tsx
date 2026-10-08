@@ -2,7 +2,7 @@
 
 import { FolderPlus, PenSquare } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { Button, IconButton, Tooltip } from '@/components/ui';
+import { Button, IconButton } from '@/components/ui';
 import { routes } from '@/config/routes';
 import { Can } from '@/features/access';
 import { Link, usePathname } from '@/i18n/navigation';
@@ -37,13 +37,7 @@ export function ContextualAction({ display }: { display: 'button' | 'icon' }) {
             </Button>
           )
         ) : display === 'icon' ? (
-          <Tooltip content={label}>
-            <Button size="icon" asChild>
-              <Link href={href} aria-label={label}>
-                {icon}
-              </Link>
-            </Button>
-          </Tooltip>
+          <IconButton label={label} icon={icon} variant="primary" link={<Link href={href} />} />
         ) : (
           <Button size="sm" asChild>
             <Link href={href}>
