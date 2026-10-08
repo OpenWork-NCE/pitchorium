@@ -2,6 +2,7 @@
 export {
   type FundableProject,
   type FundableReward,
+  type ProjectDiscoverySource,
   ProjectsFacade,
 } from './application/projects.facade';
 export type { FundingReversal, FundingSnapshot } from './application/funding.service';

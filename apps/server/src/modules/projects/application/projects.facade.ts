@@ -51,6 +51,27 @@ export interface FundableReward {
   available: number | null;
 }
 
+/** What the discovery module indexes of a project (ADR 0065). */
+export interface ProjectDiscoverySource {
+  id: string;
+  slug: string;
+  title: string;
+  summary: string | null;
+  description: string | null;
+  impactArea: string | null;
+  sectorCode: string | null;
+  countryCodes: string[];
+  status: ProjectStatus;
+  impactScore: number | null;
+  instruments: FundingInstrument[];
+  goalMinor: bigint | null;
+  currency: string;
+  ownerId: string;
+  publishedAt: Date | null;
+  endsAt: Date | null;
+  featuredAt: Date | null;
+}
+
 /**
  * Public facade of the projects module: collected amounts and reward reservations for the
  * payments module, moderation for trust. At startup it registers projects with network (follow
@@ -126,6 +147,40 @@ export class ProjectsFacade implements OnModuleInit {
       resourceTypes: [PROJECT_RESOURCE, PROJECT_UPDATE_RESOURCE, PROJECT_INTEREST_RESOURCE],
       canRead: (viewerId, resource) => this.canReadFile(viewerId, resource),
     });
+  }
+
+  /** Published, visible and live projects (others are absent: the index drops them). */
+  async discoverySources(ids: readonly string[]): Promise<ProjectDiscoverySource[]> {
+    return (await this.projects.findProjects(ids)).filter(isShowable).map((project) => ({
+      id: project.id,
+      slug: project.slug,
+      title: project.title,
+      summary: project.summary,
+      description: project.description,
+      impactArea: project.impactArea,
+      sectorCode: project.sectorCode,
+      countryCodes: project.countryCodes,
+      status: project.status,
+      impactScore: project.impactScore,
+      instruments: project.instruments,
+      goalMinor: project.goalMinor,
+      currency: project.currency,
+      ownerId: project.ownerId,
+      publishedAt: project.publishedAt,
+      endsAt: project.endsAt,
+      featuredAt: project.featuredAt,
+    }));
+  }
+
+  /** Ids of the projects, by ascending id, for a full rebuild of the search index. */
+  idsAfter(after: string | null, limit: number): Promise<string[]> {
+    return this.projects.idsAfter(after, limit);
+  }
+
+  /** Cover image of showable projects (first image of the gallery), by id. */
+  async coverImages(ids: readonly string[]): Promise<Map<string, string | null>> {
+    const cards = await this.reads.cards(await this.showable(ids));
+    return new Map(cards.map((card) => [card.id, card.coverImageUrl]));
   }
 
   /** Applies a paid contribution, once per contribution (PROMPT 5, payments module). */

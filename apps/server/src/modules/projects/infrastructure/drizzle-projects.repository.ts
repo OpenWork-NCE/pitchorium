@@ -15,6 +15,7 @@ import {
   count,
   desc,
   eq,
+  gt,
   gte,
   inArray,
   isNull,
@@ -139,6 +140,18 @@ export class DrizzleProjectsRepository extends ProjectRepository {
   async findProject(id: string): Promise<ProjectRecord | null> {
     const [row] = await this.db.select().from(projectsProjects).where(eq(projectsProjects.id, id));
     return row ? toProject(row) : null;
+  }
+
+  async idsAfter(after: string | null, limit: number): Promise<string[]> {
+    const rows = await this.db
+      .select({ id: projectsProjects.id })
+      .from(projectsProjects)
+      .where(
+        and(isNull(projectsProjects.deletedAt), after ? gt(projectsProjects.id, after) : undefined),
+      )
+      .orderBy(asc(projectsProjects.id))
+      .limit(limit);
+    return rows.map((row) => row.id);
   }
 
   async findProjects(ids: readonly string[]): Promise<ProjectRecord[]> {

@@ -326,6 +326,7 @@ export class ProjectsService {
         action: featured ? 'projects.project-featured' : 'projects.project-unfeatured',
         target: { type: PROJECT_RESOURCE, id: projectId },
       });
+      await this.events.record(ProjectUpdated, projectId, { fields: ['featured'] });
     });
   }
 
@@ -339,6 +340,7 @@ export class ProjectsService {
         { type: PROJECT_RESOURCE, id: projectId },
         visible ? 'public' : 'private',
       );
+      await this.events.record(ProjectUpdated, projectId, { fields: ['moderationStatus'] });
     });
   }
 

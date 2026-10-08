@@ -48,6 +48,8 @@ export abstract class ProjectRepository {
   abstract insertProject(project: ProjectRecord): Promise<boolean>;
   abstract findProject(id: string): Promise<ProjectRecord | null>;
   abstract findProjects(ids: readonly string[]): Promise<ProjectRecord[]>;
+  /** Every project that is not deleted, by ascending id (search index rebuild). */
+  abstract idsAfter(after: string | null, limit: number): Promise<string[]>;
   /** Locks the row until the end of the transaction (SELECT ... FOR UPDATE). */
   abstract lockProject(id: string): Promise<ProjectRecord | null>;
   abstract updateProject(id: string, patch: ProjectPatch, now: Date): Promise<void>;

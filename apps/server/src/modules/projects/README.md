@@ -71,31 +71,31 @@ Les routes `:projectId` passent par `ProjectResolver` : un projet supprimé, ou 
 
 ## Façade publique (`index.ts`)
 
-`ProjectsFacade` : `applyFunding`, `reverseFunding`, `fundingSnapshot`, `fundable` et `fundables` (statut, porteur, instruments, ouverture aux contributions), `reward` (montant minimum, instruments, unités restantes), `teamRoleOf`, `teamMemberIds`, `pendingInvitations`, `ownedProjectIds`, `reserve`, `confirm`, `release`, `setModerationStatus`, `setUpdateModerationStatus` ; `PROJECT_FOLLOW_TARGET` ; types `FundableProject`, `FundableReward`, `FundingReversal`, `FundingSnapshot`, `ReservationStatus` ; classes d'événements. Au démarrage, la façade enregistre : le type de cible de suivi `project` (network), le validateur de rattachement des publications et la source d'actualités du fil (content), les projets portés (organizations ; les projets soutenus viendront du module payments), et les règles de lecture des fichiers privés de `project`, `project_update` et `project_interest` (media).
+`ProjectsFacade` : `discoverySources` (projets publiés, visibles et non supprimés, pour l'index du module discovery), `idsAfter`, `coverImages`, `applyFunding`, `reverseFunding`, `fundingSnapshot`, `fundable` et `fundables` (statut, porteur, instruments, ouverture aux contributions), `reward` (montant minimum, instruments, unités restantes), `teamRoleOf`, `teamMemberIds`, `pendingInvitations`, `ownedProjectIds`, `reserve`, `confirm`, `release`, `setModerationStatus`, `setUpdateModerationStatus` ; `PROJECT_FOLLOW_TARGET` ; types `FundableProject`, `FundableReward`, `FundingReversal`, `FundingSnapshot`, `ReservationStatus` ; classes d'événements. Au démarrage, la façade enregistre : le type de cible de suivi `project` (network), le validateur de rattachement des publications et la source d'actualités du fil (content), les projets portés (organizations ; les projets soutenus viendront du module payments), et les règles de lecture des fichiers privés de `project`, `project_update` et `project_interest` (media).
 
 ## Événements émis
 
-| Type                                   | Payload                                                  |
-| -------------------------------------- | -------------------------------------------------------- |
-| `projects.project.created.v1`          | `ownerId`, `organizationId`                              |
-| `projects.project.updated.v1`          | `fields`                                                 |
-| `projects.project.published.v1`        | `ownerId`, `endsAt`, `goalMinor`, `currency`             |
-| `projects.project.funded.v1`           | `collectedMinor`, `goalMinor`, `currency`                |
-| `projects.project.ending-soon.v1`      | `endsAt`                                                 |
-| `projects.project.closed.v1`           | `collectedMinor`, `goalMinor`, `currency`, `goalReached` |
-| `projects.project.deleted.v1`          | `deletedBy`                                              |
-| `projects.tier.unlocked.v1`            | `tierId`, `position`, `thresholdMinor`, `currency`       |
-| `projects.update.published.v1`         | `updateId`, `authorId`                                   |
-| `projects.reward.created.v1`           | `rewardId`                                               |
-| `projects.reward.updated.v1`           | `rewardId`, `fields` (`deleted` pour une suppression)    |
-| `projects.reward.sold-out.v1`          | `rewardId`                                               |
-| `projects.team.member-invited.v1`      | `userId`, `role`, `invitedBy`                            |
-| `projects.team.invitation-declined.v1` | `userId`, `invitedBy`                                    |
-| `projects.team.member-added.v1`        | `userId`, `role`                                         |
-| `projects.team.member-removed.v1`      | `userId`, `reason` (`left`, `removed`), `by`             |
-| `projects.interest.expressed.v1`       | `interestId`, `userId`, `kind`                           |
+| Type                                   | Payload                                                       |
+| -------------------------------------- | ------------------------------------------------------------- |
+| `projects.project.created.v1`          | `ownerId`, `organizationId`                                   |
+| `projects.project.updated.v1`          | `fields` (dont `featured`, `moderationStatus`, `impactScore`) |
+| `projects.project.published.v1`        | `ownerId`, `endsAt`, `goalMinor`, `currency`                  |
+| `projects.project.funded.v1`           | `collectedMinor`, `goalMinor`, `currency`                     |
+| `projects.project.ending-soon.v1`      | `endsAt`                                                      |
+| `projects.project.closed.v1`           | `collectedMinor`, `goalMinor`, `currency`, `goalReached`      |
+| `projects.project.deleted.v1`          | `deletedBy`                                                   |
+| `projects.tier.unlocked.v1`            | `tierId`, `position`, `thresholdMinor`, `currency`            |
+| `projects.update.published.v1`         | `updateId`, `authorId`                                        |
+| `projects.reward.created.v1`           | `rewardId`                                                    |
+| `projects.reward.updated.v1`           | `rewardId`, `fields` (`deleted` pour une suppression)         |
+| `projects.reward.sold-out.v1`          | `rewardId`                                                    |
+| `projects.team.member-invited.v1`      | `userId`, `role`, `invitedBy`                                 |
+| `projects.team.invitation-declined.v1` | `userId`, `invitedBy`                                         |
+| `projects.team.member-added.v1`        | `userId`, `role`                                              |
+| `projects.team.member-removed.v1`      | `userId`, `reason` (`left`, `removed`), `by`                  |
+| `projects.interest.expressed.v1`       | `interestId`, `userId`, `kind`                                |
 
-L'agrégat de chaque événement est le projet. Le module notifications les consomme (invitations d'équipe, contributions, paliers, actualités, fin de campagne, financement, clôture, manifestations d'intérêt) ; la découverte viendra plus tard.
+L'agrégat de chaque événement est le projet. Le module notifications les consomme (invitations d'équipe, contributions, paliers, actualités, fin de campagne, financement, clôture, manifestations d'intérêt), le module discovery ceux qui changent un projet indexé.
 
 ## Événements consommés
 

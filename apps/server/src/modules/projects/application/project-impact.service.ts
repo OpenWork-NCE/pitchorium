@@ -3,6 +3,8 @@ import type { ImpactAssessment, SubmitImpactAssessmentRequest } from '@pitchoriu
 import { TransactionManager } from '../../../platform/database';
 import { Clock } from '../../../platform/kernel';
 import { ImpactFacade } from '../../impact';
+import { ProjectUpdated } from '../domain/project-events';
+import { ProjectEventsRecorder } from './project-events.recorder';
 import { ProjectRepository } from './ports';
 
 /**
@@ -14,6 +16,7 @@ export class ProjectImpactService {
   constructor(
     private readonly projects: ProjectRepository,
     private readonly impact: ImpactFacade,
+    private readonly events: ProjectEventsRecorder,
     private readonly transactions: TransactionManager,
     private readonly clock: Clock,
   ) {}
@@ -39,6 +42,7 @@ export class ProjectImpactService {
         },
         this.clock.now(),
       );
+      await this.events.record(ProjectUpdated, projectId, { fields: ['impactScore'] });
       return assessment;
     });
   }
