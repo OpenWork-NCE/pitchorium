@@ -219,6 +219,24 @@ export const USAGE_RULES: Readonly<Record<MediaUsage, UsageRule>> = {
     visibility: 'private',
   },
   // Image of a link preview, imported by the worker from the linked site (never hotlinked).
+  /** Image of an event (events module): public while the event is public and published. */
+  event_image: {
+    contentTypes: IMAGE_CONTENT_TYPES,
+    maxBytes: 10 * MB,
+    image: {
+      minWidth: 600,
+      minHeight: 300,
+      maxWidth: 10_000,
+      maxHeight: 10_000,
+      variants: [
+        ...FEED_IMAGE.variants,
+        { name: 'thumbnail', width: 400, height: 225, fit: 'cover' },
+      ],
+    },
+    pdf: null,
+    maxPerResource: 1,
+    visibility: 'resource',
+  },
   link_preview: {
     contentTypes: IMAGE_CONTENT_TYPES,
     maxBytes: 5 * MB,

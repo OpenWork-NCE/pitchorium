@@ -1,6 +1,6 @@
 # Module media
 
-Fichiers et leurs métadonnées (cahier des charges §10.1, §10.3, §11.1, §13) : photos de profil et de couverture, logos et couvertures d'organisation, images et documents de publication, galerie, documents et images d'actualité de projet, pièces d'une manifestation d'intérêt, pièces jointes de message, pièces justificatives (vérification d'organisation, KYC des porteurs et contributions hors plateforme, module payments). Les autres modules ne manipulent qu'un `mediaId`, par la façade. Pas d'hébergement vidéo (ADR 0024).
+Fichiers et leurs métadonnées (cahier des charges §10.1, §10.3, §11.1, §13) : photos de profil et de couverture, logos et couvertures d'organisation, images et documents de publication, galerie, documents et images d'actualité de projet, pièces d'une manifestation d'intérêt, pièces jointes de message, pièces justificatives (vérification d'organisation, KYC des porteurs et contributions hors plateforme, module payments), image d'un événement (module events). Les autres modules ne manipulent qu'un `mediaId`, par la façade. Pas d'hébergement vidéo (ADR 0024).
 
 ## Cycle de vie (ADR 0022)
 
@@ -20,21 +20,22 @@ Motifs de rejet : `upload_missing`, `type_not_allowed`, `type_mismatch`, `size_e
 
 ## Usages (`domain/usages.ts`, valeurs provisoires)
 
-| Usage                       | Types                | Taille max | Dimensions (min / max) | Pages max | Par ressource | Visibilité | Variantes                                         |
-| --------------------------- | -------------------- | ---------- | ---------------------- | --------- | ------------- | ---------- | ------------------------------------------------- |
-| `avatar`                    | JPEG, PNG, WebP      | 5 Mo       | 200x200 / 8000x8000    |           | 1             | ressource  | `large` 400x400, `small` 128x128 (recadrées)      |
-| `profile_cover`             | JPEG, PNG, WebP      | 8 Mo       | 1200x300 / 10000x10000 |           | 1             | ressource  | `large` 1584x396, `small` 792x198 (recadrées)     |
-| `organization_logo`         | JPEG, PNG, WebP      | 5 Mo       | 200x200 / 8000x8000    |           | 1             | public     | `large` 400x400, `small` 128x128 (sans recadrage) |
-| `organization_cover`        | JPEG, PNG, WebP      | 8 Mo       | 1200x300 / 10000x10000 |           | 1             | public     | comme `profile_cover`                             |
-| `post_image`                | JPEG, PNG, WebP      | 10 Mo      | 200x200 / 10000x10000  |           | 9             | ressource  | `large` 1600, `medium` 800 de large               |
-| `post_document`             | PDF                  | 20 Mo      |                        | 50        | 5             | privé      | miniature `thumbnail` 800 de large                |
-| `project_gallery`           | JPEG, PNG, WebP      | 10 Mo      | 600x400 / 10000x10000  |           | 20            | ressource  | `large`, `medium`, `thumbnail` 400x300            |
-| `project_document`          | PDF                  | 20 Mo      |                        | 50        | 10            | privé      | miniature                                         |
-| `project_update_image`      | JPEG, PNG, WebP      | 10 Mo      | 200x200 / 10000x10000  |           | 6             | ressource  | `large` 1600, `medium` 800 de large               |
-| `project_interest_document` | PDF                  | 20 Mo      |                        | 50        | 3             | privé      | miniature                                         |
-| `message_attachment`        | JPEG, PNG, WebP, PDF | 10 Mo      | 1x1 / 10000x10000      | 50        | 5             | privé      | `large` 1600, `thumbnail` 400 ; miniature (PDF)   |
-| `verification_document`     | JPEG, PNG, PDF       | 10 Mo      | 600x600 / 10000x10000  | 100       | 10            | privé      | `large` 2000 ; miniature (PDF)                    |
-| `link_preview`              | JPEG, PNG, WebP      | 5 Mo       | 100x100 / 10000x10000  |           | 1             | ressource  | `large` 1200, `small` 400 de large                |
+| Usage                       | Types                | Taille max | Dimensions (min / max) | Pages max | Par ressource | Visibilité | Variantes                                                |
+| --------------------------- | -------------------- | ---------- | ---------------------- | --------- | ------------- | ---------- | -------------------------------------------------------- |
+| `avatar`                    | JPEG, PNG, WebP      | 5 Mo       | 200x200 / 8000x8000    |           | 1             | ressource  | `large` 400x400, `small` 128x128 (recadrées)             |
+| `profile_cover`             | JPEG, PNG, WebP      | 8 Mo       | 1200x300 / 10000x10000 |           | 1             | ressource  | `large` 1584x396, `small` 792x198 (recadrées)            |
+| `organization_logo`         | JPEG, PNG, WebP      | 5 Mo       | 200x200 / 8000x8000    |           | 1             | public     | `large` 400x400, `small` 128x128 (sans recadrage)        |
+| `organization_cover`        | JPEG, PNG, WebP      | 8 Mo       | 1200x300 / 10000x10000 |           | 1             | public     | comme `profile_cover`                                    |
+| `post_image`                | JPEG, PNG, WebP      | 10 Mo      | 200x200 / 10000x10000  |           | 9             | ressource  | `large` 1600, `medium` 800 de large                      |
+| `post_document`             | PDF                  | 20 Mo      |                        | 50        | 5             | privé      | miniature `thumbnail` 800 de large                       |
+| `project_gallery`           | JPEG, PNG, WebP      | 10 Mo      | 600x400 / 10000x10000  |           | 20            | ressource  | `large`, `medium`, `thumbnail` 400x300                   |
+| `project_document`          | PDF                  | 20 Mo      |                        | 50        | 10            | privé      | miniature                                                |
+| `project_update_image`      | JPEG, PNG, WebP      | 10 Mo      | 200x200 / 10000x10000  |           | 6             | ressource  | `large` 1600, `medium` 800 de large                      |
+| `project_interest_document` | PDF                  | 20 Mo      |                        | 50        | 3             | privé      | miniature                                                |
+| `message_attachment`        | JPEG, PNG, WebP, PDF | 10 Mo      | 1x1 / 10000x10000      | 50        | 5             | privé      | `large` 1600, `thumbnail` 400 ; miniature (PDF)          |
+| `verification_document`     | JPEG, PNG, PDF       | 10 Mo      | 600x600 / 10000x10000  | 100       | 10            | privé      | `large` 2000 ; miniature (PDF)                           |
+| `event_image`               | JPEG, PNG, WebP      | 10 Mo      | 600x300 / 10000x10000  |           | 1             | ressource  | `large` 1600, `medium` 800 de large, `thumbnail` 400x225 |
+| `link_preview`              | JPEG, PNG, WebP      | 5 Mo       | 100x100 / 10000x10000  |           | 1             | ressource  | `large` 1200, `small` 400 de large                       |
 
 `GET /v1/media/usages` publie ces limites. Les SVG, GIF et HEIC ne sont pas acceptés.
 

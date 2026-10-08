@@ -15,6 +15,7 @@ export const MEDIA_USAGES = [
   'message_attachment',
   'verification_document',
   'link_preview',
+  'event_image',
 ] as const;
 export const mediaUsageSchema = z.enum(MEDIA_USAGES);
 
