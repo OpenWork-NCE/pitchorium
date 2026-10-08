@@ -1307,6 +1307,51 @@
         "x-access": "localization.manage"
       }
     },
+    "/v1/locales": {
+      "get": {
+        "operationId": "AccountController_activeLocales",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActiveLocalesDto_Output"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error (RFC 9457 problem details)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "RATE_LIMITED": {
+                    "$ref": "#/components/examples/RATE_LIMITED"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "account"
+        ],
+        "summary": "Active locales",
+        "description": "Public: no session needed.\n\nErrors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.",
+        "x-error-codes": [
+          "RATE_LIMITED",
+          "IDENTITY_USER_NOT_FOUND",
+          "IDENTITY_LEGAL_VERSION_OUTDATED",
+          "IDENTITY_LOCALE_NOT_ACTIVE"
+        ],
+        "x-access": "public"
+      }
+    },
     "/v1/legal-documents/current": {
       "get": {
         "operationId": "AccountController_current",
@@ -34392,6 +34437,39 @@
         },
         "required": [
           "items"
+        ],
+        "additionalProperties": false
+      },
+      "ActiveLocalesDto_Output": {
+        "type": "object",
+        "properties": {
+          "defaultLocale": {
+            "type": "string",
+            "enum": [
+              "fr",
+              "en",
+              "sw",
+              "wo",
+              "ln"
+            ]
+          },
+          "locales": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "fr",
+                "en",
+                "sw",
+                "wo",
+                "ln"
+              ]
+            }
+          }
+        },
+        "required": [
+          "defaultLocale",
+          "locales"
         ],
         "additionalProperties": false
       },

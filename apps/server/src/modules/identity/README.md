@@ -19,7 +19,7 @@ Comptes et authentification (cahier des charges §7) avec Better Auth 1.7, mont�
 ## Routes
 
 - `/v1/auth/*` : Better Auth (format d'erreur Better Auth `{ code, message }`, hors OpenAPI). Principales : `sign-up/email`, `sign-in/email`, `sign-in/social`, `callback/:provider`, `sign-in/magic-link`, `magic-link/verify`, `verify-email`, `send-verification-email`, `request-password-reset`, `reset-password`, `change-password`, `set-password`, `list-sessions`, `revoke-session`, `revoke-sessions`, `revoke-other-sessions`, `list-accounts`, `link-social`, `unlink-account`, `two-factor/*`, `sign-out`.
-- `GET /v1/legal-documents/current` (public), `POST /v1/me/legal-acceptances`, `PUT /v1/me/preferences`.
+- `GET /v1/legal-documents/current` (public), `GET /v1/locales` (public, langues actives selon les flags `locale.<code>`, `Cache-Control: public, max-age=60`), `POST /v1/me/legal-acceptances`, `PUT /v1/me/preferences`.
 
 ## Schéma `identity`
 

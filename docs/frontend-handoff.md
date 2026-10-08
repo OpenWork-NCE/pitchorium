@@ -27,7 +27,7 @@ Ce que l'application web (`apps/web`, à venir) doit savoir pour consommer l'api
 
 - Toute erreur hors `/v1/auth` suit RFC 9457 (`application/problem+json`) avec un `code` stable : afficher `errors.<code>` de `@pitchorium/i18n`, jamais `title` ni `detail` (techniques, en anglais). Erreurs de validation : `errors: [{ pointer, code }]` (JSON Pointer, code Zod) pour placer le message sur le champ.
 - L'api ne renvoie jamais de texte traduit : statuts, types, motifs sont des codes à libeller par le namespace `reference` (`reference.<groupe>.<valeur>`).
-- Langues actives : `activeLocales` de `GET /v1/me` (FR et EN au lancement) ; ne jamais proposer une langue absente de cette liste.
+- Langues actives : `GET /v1/locales` (public, pour un visiteur) et `activeLocales` de `GET /v1/me` (FR et EN au lancement) ; ne jamais proposer une langue absente de cette liste.
 
 ## Pagination
 
@@ -46,7 +46,7 @@ Socket.IO sur le namespace `/` (même origine de confiance et même cookie), pro
 
 ## Feature flags
 
-Le client ne lit pas les flags : leurs effets passent par les réponses (langues actives dans `GET /v1/me`, moyens de paiement proposés par le devis, codes d'erreur). L'equity et les prêts restent une « intention » affichée (« nous ouvrons le capital » et un contact), jamais un paiement (§15).
+Le client ne lit pas les flags : leurs effets passent par les réponses (langues actives dans `GET /v1/locales` et `GET /v1/me`, moyens de paiement proposés par le devis, codes d'erreur). L'equity et les prêts restent une « intention » affichée (« nous ouvrons le capital » et un contact), jamais un paiement (§15).
 
 ## Comptes de démonstration
 

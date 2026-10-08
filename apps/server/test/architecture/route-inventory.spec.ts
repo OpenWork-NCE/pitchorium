@@ -28,6 +28,7 @@ const PUBLIC_ROUTES = [
   'GET /v1/health/live',
   'GET /v1/health/ready',
   'GET /v1/legal-documents/current',
+  'GET /v1/locales',
   'GET /v1/reference-data',
   'GET /v1/media/usages',
   'GET /v1/impact/methodology',

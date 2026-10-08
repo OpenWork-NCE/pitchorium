@@ -374,6 +374,33 @@ export interface LocaleStatusListDtoOutput {
   items: LocaleStatusListDtoOutputItemsItem[];
 }
 
+export type ActiveLocalesDtoOutputDefaultLocale =
+  (typeof ActiveLocalesDtoOutputDefaultLocale)[keyof typeof ActiveLocalesDtoOutputDefaultLocale];
+
+export const ActiveLocalesDtoOutputDefaultLocale = {
+  fr: 'fr',
+  en: 'en',
+  sw: 'sw',
+  wo: 'wo',
+  ln: 'ln',
+} as const;
+
+export type ActiveLocalesDtoOutputLocalesItem =
+  (typeof ActiveLocalesDtoOutputLocalesItem)[keyof typeof ActiveLocalesDtoOutputLocalesItem];
+
+export const ActiveLocalesDtoOutputLocalesItem = {
+  fr: 'fr',
+  en: 'en',
+  sw: 'sw',
+  wo: 'wo',
+  ln: 'ln',
+} as const;
+
+export interface ActiveLocalesDtoOutput {
+  defaultLocale: ActiveLocalesDtoOutputDefaultLocale;
+  locales: ActiveLocalesDtoOutputLocalesItem[];
+}
+
 export interface LegalVersionsDtoOutput {
   termsVersion: string;
   privacyVersion: string;

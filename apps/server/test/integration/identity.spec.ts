@@ -88,6 +88,14 @@ describe('identity', () => {
     await query('UPDATE identity.users SET email_verified = true WHERE email = $1', [email]);
   }
 
+  describe('active locales', () => {
+    it('tells an anonymous visitor which locales are enabled, with a short shared cache', async () => {
+      const response = await request(app.getHttpServer()).get('/v1/locales').expect(200);
+      expect(response.body).toEqual({ defaultLocale: 'fr', locales: ['fr', 'en'] });
+      expect(response.headers['cache-control']).toBe('public, max-age=60');
+    });
+  });
+
   describe('email and password', () => {
     it('signs up, verifies the email from the received link and opens a session', async () => {
       const agent = browser(app)

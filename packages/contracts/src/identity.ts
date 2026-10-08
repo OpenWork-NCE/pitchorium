@@ -62,6 +62,13 @@ export const updatePreferencesRequestSchema = z.object({
   timeZone: timeZoneSchema.optional(),
 });
 
+/** GET /v1/locales: interface locales whose `locale.<code>` flag is on (§8.3, ADR 0077). */
+export const activeLocalesSchema = z.object({
+  defaultLocale: localeSchema,
+  /** Never empty: the default locale is the last resort when every flag is off. */
+  locales: z.array(localeSchema),
+});
+
 export const SIGN_IN_PROVIDERS = ['credential', 'google', 'linkedin', 'microsoft'] as const;
 export const signInProviderSchema = z.enum(SIGN_IN_PROVIDERS);
 
@@ -72,3 +79,4 @@ export type LegalStatus = z.infer<typeof legalStatusSchema>;
 export type Preferences = z.infer<typeof preferencesSchema>;
 export type UpdatePreferencesRequest = z.infer<typeof updatePreferencesRequestSchema>;
 export type SignInProvider = z.infer<typeof signInProviderSchema>;
+export type ActiveLocales = z.infer<typeof activeLocalesSchema>;
