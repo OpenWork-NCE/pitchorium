@@ -295,6 +295,15 @@ export class FlutterwaveProvider implements PaymentProvider, PayoutAccountProvid
       // Default split, overridden by the flat commission of each payment.
       split_type: 'percentage',
       split_value: new DecimalLiteral(basisPointsAsFraction(request.commissionRateBps)),
+      // Set at creation only: an update of the subaccount erases it.
+      ...(request.metadata
+        ? {
+            meta: Object.entries(request.metadata).map(([name, value]) => ({
+              meta_name: name,
+              meta_value: value,
+            })),
+          }
+        : {}),
     });
     const providerAccountId = text(field(data, 'subaccount_id'));
     if (!providerAccountId) throw unavailable('flutterwave', 'no subaccount');

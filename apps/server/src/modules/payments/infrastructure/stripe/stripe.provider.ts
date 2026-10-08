@@ -305,7 +305,7 @@ export class StripeProvider implements PaymentProvider, PayoutAccountProvider {
         },
         defaults: { responsibilities: { fees_collector: 'stripe', losses_collector: 'stripe' } },
         dashboard: 'full',
-        metadata: { user_id: request.userId },
+        metadata: { ...request.metadata, user_id: request.userId },
       }),
       { idempotencyKey: `account-${request.userId}`, json: true },
     );

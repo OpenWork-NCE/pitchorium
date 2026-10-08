@@ -139,6 +139,8 @@ export interface CreatePayoutAccountRequest {
     | { bankCode: string; accountNumber: string; accountName: string; mobileNumber?: string }
     | undefined;
   commissionRateBps: number;
+  /** Labels set on the account at the provider (the provider tests mark what they create). */
+  metadata?: Readonly<Record<string, string>>;
 }
 
 /** Port: the payout account of a holder at a provider (section 9.5). */
