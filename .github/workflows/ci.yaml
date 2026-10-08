@@ -59,6 +59,7 @@ jobs:
         with:
           name: playwright-report
           path: apps/web/playwright-report
+          include-hidden-files: true
           if-no-files-found: ignore
 
   web-quality:
@@ -84,6 +85,7 @@ jobs:
         with:
           name: lighthouse
           path: apps/web/.lighthouseci
+          include-hidden-files: true
           if-no-files-found: ignore
 
   security:
