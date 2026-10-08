@@ -1,0 +1,79 @@
+{
+  "metadata": {
+    "description": "Réseau professionnel et plateforme de financement à impact entre l’Afrique, les Caraïbes et la diaspora européenne."
+  },
+  "a11y": {
+    "skipToContent": "Aller au contenu",
+    "homeLink": "Accueil de Pitchorium",
+    "loading": "Chargement en cours"
+  },
+  "nav": {
+    "primary": "Navigation principale",
+    "account": "Compte",
+    "signOut": "Se déconnecter"
+  },
+  "theme": {
+    "label": "Thème",
+    "toLight": "Passer au thème clair",
+    "toDark": "Passer au thème sombre",
+    "light": "Clair",
+    "dark": "Sombre",
+    "system": "Système"
+  },
+  "locale": {
+    "label": "Langue",
+    "names": {
+      "fr": "Français",
+      "en": "English",
+      "sw": "Kiswahili",
+      "wo": "Wolof",
+      "ln": "Lingála"
+    }
+  },
+  "home": {
+    "eyebrow": "Version provisoire",
+    "title": "Un réseau professionnel à impact entre l’Afrique, les Caraïbes et la diaspora européenne.",
+    "lede": "Cette page vérifie les fondations de l’application avant l’arrivée des premiers parcours : marque, thème, langues et mouvement.",
+    "foundations": "Fondations",
+    "fonts": "Polices de la marque",
+    "fontsValue": "Bricolage Grotesque, Poppins",
+    "theme": "Thème actif",
+    "locale": "Langue de la page : {{name}}",
+    "activeLocales": "Langues actives",
+    "motion": "Mouvement",
+    "motionFull": "Complet",
+    "motionReduced": "Réduit",
+    "check": "Vérifier les fondations",
+    "checked": "Les fondations répondent."
+  },
+  "notFound": {
+    "code": "404",
+    "title": "Cette page n’existe pas.",
+    "body": "Le lien est peut-être incomplet, ou le contenu n’est plus disponible pour vous.",
+    "home": "Revenir à l’accueil"
+  },
+  "error": {
+    "title": "Une erreur est survenue.",
+    "body": "Le problème a été signalé. Vous pouvez réessayer dans un instant.",
+    "retry": "Réessayer",
+    "reference": "Référence : {{reference}}",
+    "home": "Revenir à l’accueil"
+  },
+  "health": {
+    "title": "État de l’api",
+    "description": "Page de développement : elle n’existe pas en production.",
+    "api": "Origine de l’api",
+    "status": "Statut",
+    "up": "Disponible",
+    "down": "Indisponible",
+    "checks": "Vérifications",
+    "latency": "Temps de réponse : {{milliseconds}} ms",
+    "activeLocales": "Langues actives",
+    "refresh": "Actualiser"
+  },
+  "shell": {
+    "member": "Espace membre",
+    "admin": "Administration",
+    "public": "Pages publiques"
+  }
+}

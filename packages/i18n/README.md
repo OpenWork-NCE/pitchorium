@@ -1,8 +1,8 @@
 # @pitchorium/i18n
 
-Catalogues de traduction partagés par le serveur (emails) et le futur frontend.
+Catalogues de traduction partagés par le serveur (emails) et l'application web.
 
-- `src/locales/<locale>/<namespace>.json` : un fichier par namespace (`common`, `errors`, `emails`, `reference`, `notifications`, `discovery`). Les clés imbriquées se lisent avec des points (`technicalTest.subject`), les paramètres s'écrivent `{{nom}}`.
+- `src/locales/<locale>/<namespace>.json` : un fichier par namespace (`common`, `errors`, `emails`, `reference`, `notifications`, `discovery`, `web`). Les clés imbriquées se lisent avec des points (`technicalTest.subject`), les paramètres s'écrivent `{{nom}}`.
 - Le français est la source de vérité ; l'anglais est aligné clé pour clé. Le swahili, le wolof et le lingala sont présents mais vides.
 - `src/locales/manifest.json` donne le statut de relecture de chaque langue : `source`, `reviewed`, `pending-review` ou `empty`, avec le relecteur et la date. Une langue n'est activée côté produit (feature flag `locale.<code>`) qu'au statut `reviewed`.
 - Le namespace `errors` contient une entrée par code du registre `@pitchorium/contracts` : l'API renvoie des codes, les clients les traduisent. Le sous-arbre `errors.auth` traduit les codes des routes `/v1/auth` (`AUTH_ERROR_CODES`, ADR 0020).
@@ -10,6 +10,7 @@ Catalogues de traduction partagés par le serveur (emails) et le futur frontend.
 - Chaque enum exporté par `@pitchorium/contracts` est soit libellé, soit technique : `LABELLED_ENUMS` (`packages/contracts/src/labels.ts`) associe un groupe du namespace `reference` aux enums qu'il libelle (`reference.<groupe>.<valeur>`), `TECHNICAL_ENUMS` liste ceux qui ne s'affichent jamais tels quels (codes d'erreur, actions, locales, états techniques et de modération).
 - Le namespace `discovery` porte les raisons des suggestions (`reasons.<règle>`, avec une variante par point de vue) et les phrases qui les assemblent (`sentences.one`, `sentences.two`) ; `suggestionSentenceText(locale, sentence)` donne la phrase complète en libellant les codes (besoin, casquette, secteur, instrument, pays, langue).
 - Le namespace `notifications` porte le texte de chaque type de notification (`types.<type>.one` pour un seul acteur ou événement, `types.<type>.many` pour une notification regroupée, paramètres `actor`, `others`, `count`, `title`, `position`), utilisé par les clients et par les emails.
+- Le namespace `web` porte les textes de l'application web (`web.*` : en-têtes, thème, langues, pages d'erreur, accueil provisoire...) ; l'application convertit les paramètres `{{nom}}` en arguments ICU pour next-intl et tape les clés depuis les fichiers français, exportés tels quels (`@pitchorium/i18n/locales/<locale>/<namespace>.json`).
 - `translate(locale, namespace, key, params)` retombe sur le français si une clé manque.
 - `catalogCompleteness(locale)` compte les clés françaises absentes ou vides d'une langue : le module localization refuse d'activer une langue incomplète ou sans relecture humaine approuvée (relecteur et date dans le manifeste).
 

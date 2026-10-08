@@ -1,0 +1,79 @@
+{
+  "metadata": {
+    "description": "Professional network and impact funding platform between Africa, the Caribbean and the European diaspora."
+  },
+  "a11y": {
+    "skipToContent": "Skip to content",
+    "homeLink": "Pitchorium home",
+    "loading": "Loading"
+  },
+  "nav": {
+    "primary": "Main navigation",
+    "account": "Account",
+    "signOut": "Sign out"
+  },
+  "theme": {
+    "label": "Theme",
+    "toLight": "Switch to the light theme",
+    "toDark": "Switch to the dark theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "locale": {
+    "label": "Language",
+    "names": {
+      "fr": "Français",
+      "en": "English",
+      "sw": "Kiswahili",
+      "wo": "Wolof",
+      "ln": "Lingála"
+    }
+  },
+  "home": {
+    "eyebrow": "Provisional version",
+    "title": "A professional impact network between Africa, the Caribbean and the European diaspora.",
+    "lede": "This page checks the foundations of the application before the first journeys arrive: brand, theme, languages and motion.",
+    "foundations": "Foundations",
+    "fonts": "Brand typefaces",
+    "fontsValue": "Bricolage Grotesque, Poppins",
+    "theme": "Active theme",
+    "locale": "Page language: {{name}}",
+    "activeLocales": "Active languages",
+    "motion": "Motion",
+    "motionFull": "Full",
+    "motionReduced": "Reduced",
+    "check": "Check the foundations",
+    "checked": "The foundations respond."
+  },
+  "notFound": {
+    "code": "404",
+    "title": "This page does not exist.",
+    "body": "The link may be incomplete, or the content is no longer available to you.",
+    "home": "Back to the home page"
+  },
+  "error": {
+    "title": "Something went wrong.",
+    "body": "The problem has been reported. You can try again in a moment.",
+    "retry": "Try again",
+    "reference": "Reference: {{reference}}",
+    "home": "Back to the home page"
+  },
+  "health": {
+    "title": "Api status",
+    "description": "Development page: it does not exist in production.",
+    "api": "Api origin",
+    "status": "Status",
+    "up": "Available",
+    "down": "Unavailable",
+    "checks": "Checks",
+    "latency": "Response time: {{milliseconds}} ms",
+    "activeLocales": "Active languages",
+    "refresh": "Refresh"
+  },
+  "shell": {
+    "member": "Member space",
+    "admin": "Administration",
+    "public": "Public pages"
+  }
+}
