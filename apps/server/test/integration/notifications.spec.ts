@@ -553,6 +553,21 @@ describe('notifications', () => {
     const freshNotification = async () => {
       await kofi.agent.post('/v1/me/notifications/read-all').expect(200);
     };
+    /**
+     * Every delivery job of the notifications, emails included, has run, a retried one too; the
+     * next runs of the schedulers (`repeat:` ids) are not deliveries.
+     */
+    const notificationJobsDone = () =>
+      vi.waitFor(
+        async () => {
+          await deliver();
+          const jobs = await worker
+            .get<Queue>(getQueueToken(NOTIFICATIONS_QUEUE), { strict: false })
+            .getJobs(['active', 'waiting', 'prioritized', 'delayed']);
+          expect(jobs.filter((job) => !job.id?.startsWith('repeat:'))).toEqual([]);
+        },
+        { timeout: 30_000, interval: 200 },
+      );
 
     // Emailed by the notifications module, with the one-click unsubscribe.
     await joins(awa);
@@ -576,6 +591,9 @@ describe('notifications', () => {
       },
       { timeout: 30_000, interval: 200 },
     );
+    // The email job reads the suppression list when it sends: it must have run before the
+    // address is released, or it would send the email the suppression held back.
+    await notificationJobsDone();
     await query(`DELETE FROM notifications.suppressions`);
 
     // The member turned the email of the type off: in the app only.
@@ -593,12 +611,7 @@ describe('notifications', () => {
       },
       { timeout: 30_000, interval: 200 },
     );
-    await vi.waitFor(async () => {
-      const counts = await worker
-        .get<Queue>(getQueueToken(NOTIFICATIONS_QUEUE), { strict: false })
-        .getJobCounts('active', 'waiting');
-      expect((counts['active'] ?? 0) + (counts['waiting'] ?? 0)).toBe(0);
-    });
+    await notificationJobsDone();
     expect(await joinedEmails('Ama Owusu')).toEqual([]);
     expect(await joinedEmails('Awa Ndiaye')).toHaveLength(1);
 
