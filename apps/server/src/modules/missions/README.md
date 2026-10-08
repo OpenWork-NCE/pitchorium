@@ -58,3 +58,7 @@ Aucun.
 ## Dépendances
 
 identity (par le garde d'access), profiles (casquettes, volet entrepreneur, cartes, page publique, données de référence), projects (équipe, carte du projet), engagement (journal du temps), network (blocages).
+
+## Données personnelles (RGPD)
+
+Export : missions publiées et engagements comme expert ou bénéficiaire. Suppression : missions ouvertes fermées, engagements en cours annulés, historique gardé sous le pseudonyme (les heures restent à l'autre partie). Contrats enregistrés auprès du module privacy (`infrastructure/missions-personal-data.ts`, ADR 0074).

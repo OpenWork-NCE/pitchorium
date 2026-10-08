@@ -8,7 +8,10 @@ import { DrizzleMissionsRepository } from './infrastructure/drizzle-missions.rep
 import { EngagementResolver, MissionResolver } from './interface/mission.resolvers';
 import { MissionsController } from './interface/missions.controller';
 
+import { MissionsPersonalData } from './infrastructure/missions-personal-data';
+
 const SHARED_PROVIDERS: Provider[] = [
+  MissionsPersonalData,
   { provide: MissionsRepository, useClass: DrizzleMissionsRepository },
   MissionEventsRecorder,
   MissionReadsService,
