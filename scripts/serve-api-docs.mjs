@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 // Serves the API reference (docs/api/index.html) and the OpenAPI document it reads, read only,
-// on 127.0.0.1. Usage: pnpm docs:api [port], then open http://127.0.0.1:3200/.
+// on 127.0.0.1. Usage: pnpm docs:api [port], then open http://127.0.0.1:3300/.
 import { createReadStream, existsSync, statSync } from 'node:fs';
 import { createServer } from 'node:http';
 import { extname, join, normalize, resolve } from 'node:path';
 
 const root = resolve(import.meta.dirname, '..');
-const port = Number(process.argv[2] ?? 3200);
+const port = Number(process.argv[2] ?? 3300);
 const allowed = ['/docs/api/index.html', '/apps/server/openapi/openapi.json'];
 const types = { '.html': 'text/html; charset=utf-8', '.json': 'application/json' };
 

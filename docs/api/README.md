@@ -1,6 +1,6 @@
 # Référence de l'api
 
-- `index.html` : référence interactive (Scalar 1.71.0) du document `apps/server/openapi/openapi.json`, servie en local par `pnpm docs:api` (http://127.0.0.1:3200/). Le document est généré par `pnpm openapi:generate` et vérifié à chaque CI (identique au code).
+- `index.html` : référence interactive (Scalar 1.71.0) du document `apps/server/openapi/openapi.json`, servie en local par `pnpm docs:api` (http://127.0.0.1:3300/). Le document est généré par `pnpm openapi:generate` et vérifié à chaque CI (identique au code).
 - Chaque opération porte un résumé, une description de ses règles d'accès (action, rôles, prérequis, session récente, idempotence), la liste `x-error-codes` des codes stables qu'elle peut renvoyer (codes communs et codes de son module) et un exemple de problème RFC 9457 par code commun (`components.examples`). `x-access` donne l'action ou `public`.
 - Client typé : `@pitchorium/api-client` (Orval) ; passation au frontend : `docs/frontend-handoff.md`.
 
