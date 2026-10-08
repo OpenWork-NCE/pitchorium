@@ -40,6 +40,15 @@ export interface PutObjectRequest {
   cacheControl?: string;
 }
 
+/** A local file streamed to the bucket (an archive too large to be held in memory). */
+export interface PutFileRequest {
+  visibility: BucketVisibility;
+  key: string;
+  path: string;
+  size: number;
+  contentType: string;
+}
+
 export interface CopyObjectRequest {
   from: BucketVisibility;
   to: BucketVisibility;
@@ -77,6 +86,8 @@ export abstract class ObjectStorage {
     maxBytes: number,
   ): Promise<Buffer | null>;
   abstract putObject(request: PutObjectRequest): Promise<void>;
+  /** Streams a local file in one PutObject (up to 5 GB on R2). */
+  abstract putFile(request: PutFileRequest): Promise<void>;
   /** Copies an object to the same key of another bucket, server side. */
   abstract copyObject(request: CopyObjectRequest): Promise<void>;
   /** Deleting a missing object is not an error. */

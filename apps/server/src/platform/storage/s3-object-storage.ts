@@ -10,6 +10,7 @@ import {
   S3Client,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { createReadStream } from 'node:fs';
 import type { CommonConfig } from '../config';
 import type { Clock } from '../kernel';
 import {
@@ -18,6 +19,7 @@ import {
   ObjectStorage,
   ObjectTooLargeError,
   type PresignedDownloadRequest,
+  type PutFileRequest,
   type PresignedUploadRequest,
   type PresignedUrl,
   type PutObjectRequest,
@@ -145,6 +147,18 @@ export class S3ObjectStorage extends ObjectStorage {
         Body: request.body,
         ContentType: request.contentType,
         CacheControl: request.cacheControl,
+      }),
+    );
+  }
+
+  async putFile(request: PutFileRequest): Promise<void> {
+    await this.client.send(
+      new PutObjectCommand({
+        Bucket: this.bucket(request.visibility),
+        Key: request.key,
+        Body: createReadStream(request.path),
+        ContentLength: request.size,
+        ContentType: request.contentType,
       }),
     );
   }

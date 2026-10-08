@@ -1,9 +1,11 @@
+import { readFile } from 'node:fs/promises';
 import {
   type BucketVisibility,
   type CopyObjectRequest,
   ObjectStorage,
   ObjectTooLargeError,
   type PresignedUrl,
+  type PutFileRequest,
   type PutObjectRequest,
   type StoredObject,
 } from '../../../src/platform/storage';
@@ -56,6 +58,13 @@ export class FakeObjectStorage extends ObjectStorage {
       contentType: request.contentType,
     });
     return Promise.resolve();
+  }
+
+  async putFile(request: PutFileRequest): Promise<void> {
+    this.objects.set(`${request.visibility}/${request.key}`, {
+      body: await readFile(request.path),
+      contentType: request.contentType,
+    });
   }
 
   copyObject(request: CopyObjectRequest): Promise<void> {
