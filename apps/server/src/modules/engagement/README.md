@@ -13,6 +13,7 @@ Tableau de bord d'impact et journal du temps partagé (cahier des charges §6.3,
 
 - Le contributeur déclare des minutes (1 à 1 440) de mentorat ou d'expertise, à une date passée ou du jour, pour un projet visible (qu'il ne possède pas) ou pour un entrepreneur par identifiant public (pas lui-même) : `ENGAGEMENT_BENEFICIARY_INVALID`.
 - Le bénéficiaire (l'entrepreneur, ou un propriétaire du projet) confirme ou conteste, une fois (`ENGAGEMENT_TIME_ENTRY_ALREADY_ANSWERED`).
+- Une mission terminée (module missions) déclare son temps par la façade (`EngagementFacade.declareTime`), dans la transaction de la mission, avec les mêmes règles : pas de double saisie, le bénéficiaire confirme ou conteste comme pour toute déclaration ; l'événement porte alors `missionEngagementId`.
 
 ## Routes
 
@@ -27,15 +28,15 @@ Tableau de bord d'impact et journal du temps partagé (cahier des charges §6.3,
 
 ## Façade publique (`index.ts`)
 
-`EngagementModule` et les classes d'événements.
+`EngagementFacade` (`declareTime`, `timeEntries` : minutes et réponse d'une déclaration), types `DeclaredTime` et `TimeBeneficiary`, `EngagementModule` (global) et les classes d'événements.
 
 ## Événements émis
 
-| Type                                 | Payload                                                           |
-| ------------------------------------ | ----------------------------------------------------------------- |
-| `engagement.time-entry.declared.v1`  | `contributorId`, `projectId`, `entrepreneurId`, `kind`, `minutes` |
-| `engagement.time-entry.confirmed.v1` | `by`, `minutes`, `contributorId`                                  |
-| `engagement.time-entry.disputed.v1`  | `by`, `contributorId`                                             |
+| Type                                 | Payload                                                                                                              |
+| ------------------------------------ | -------------------------------------------------------------------------------------------------------------------- |
+| `engagement.time-entry.declared.v1`  | `contributorId`, `projectId`, `entrepreneurId`, `kind`, `minutes`, `missionEngagementId` (mission d'origine ou null) |
+| `engagement.time-entry.confirmed.v1` | `by`, `minutes`, `contributorId`                                                                                     |
+| `engagement.time-entry.disputed.v1`  | `by`, `contributorId`                                                                                                |
 
 ## Événements consommés
 

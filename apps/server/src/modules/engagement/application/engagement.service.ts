@@ -34,6 +34,12 @@ import { EngagementRepository, type GiverRef } from './ports';
 
 const REBUILD_BATCH = 500;
 
+/** Exactly one of a project and an entrepreneur. */
+export interface TimeBeneficiary {
+  projectId: string | null;
+  entrepreneurId: string | null;
+}
+
 const notFound = () => new DomainError('ENGAGEMENT_TIME_ENTRY_NOT_FOUND', 'Time entry not found');
 
 /** CSV cell (RFC 4180) protected against formula injection. */
@@ -149,23 +155,45 @@ export class EngagementService {
   }
 
   async declare(contributorId: string, request: DeclareTimeEntryRequest): Promise<TimeEntry> {
+    let beneficiary: TimeBeneficiary = { projectId: null, entrepreneurId: null };
+    if (request.projectId) {
+      beneficiary = { projectId: request.projectId, entrepreneurId: null };
+    } else if (request.entrepreneurHandle) {
+      const entrepreneurId = await this.profiles.userIdOf(
+        request.entrepreneurHandle,
+        contributorId,
+      );
+      if (!entrepreneurId) throw invalidBeneficiary();
+      beneficiary = { projectId: null, entrepreneurId };
+    }
+    return this.view(await this.declareFor(contributorId, beneficiary, request, null));
+  }
+
+  /**
+   * Declares time for a project (that the contributor does not own) or an entrepreneur (not
+   * the contributor), on a day that already happened. `missionEngagementId` names the mission
+   * that produced it (missions module): its own notification replaces the declared one. Joins
+   * the caller's transaction.
+   */
+  async declareFor(
+    contributorId: string,
+    beneficiary: TimeBeneficiary,
+    request: Pick<DeclareTimeEntryRequest, 'kind' | 'minutes' | 'date' | 'description'>,
+    missionEngagementId: string | null,
+  ): Promise<TimeEntryRecord> {
     const now = this.clock.now();
     assertPastDate(request.date, now);
-    let projectId: string | null = null;
-    let entrepreneurId: string | null = null;
-    if (request.projectId) {
-      const project = await this.projects.fundable(request.projectId);
+    if (beneficiary.projectId) {
+      const project = await this.projects.fundable(beneficiary.projectId);
       if (!project?.showable || project.ownerId === contributorId) throw invalidBeneficiary();
-      projectId = project.id;
-    } else if (request.entrepreneurHandle) {
-      entrepreneurId = await this.profiles.userIdOf(request.entrepreneurHandle, contributorId);
-      if (!entrepreneurId || entrepreneurId === contributorId) throw invalidBeneficiary();
+    } else if (!beneficiary.entrepreneurId || beneficiary.entrepreneurId === contributorId) {
+      throw invalidBeneficiary();
     }
     const entry: TimeEntryRecord = {
       id: this.ids.next(),
       contributorId,
-      projectId,
-      entrepreneurId,
+      projectId: beneficiary.projectId,
+      entrepreneurId: beneficiary.projectId ? null : beneficiary.entrepreneurId,
       kind: request.kind,
       minutes: request.minutes,
       date: request.date,
@@ -185,15 +213,26 @@ export class EngagementService {
           occurredAt: now,
           payload: {
             contributorId,
-            projectId,
-            entrepreneurId,
+            projectId: entry.projectId,
+            entrepreneurId: entry.entrepreneurId,
             kind: entry.kind,
             minutes: entry.minutes,
+            missionEngagementId,
           },
         }),
       );
     });
-    return this.view(entry);
+    return entry;
+  }
+
+  /** Time entries by id (minutes and answer), for the missions module. */
+  async entries(ids: readonly string[]): Promise<Map<string, TimeEntryRecord>> {
+    const found = new Map<string, TimeEntryRecord>();
+    for (const id of new Set(ids)) {
+      const entry = await this.engagement.findTimeEntry(id);
+      if (entry) found.set(id, entry);
+    }
+    return found;
   }
 
   /** The beneficiary (the entrepreneur, or an owner of the project) confirms or disputes. */

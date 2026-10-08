@@ -11,6 +11,8 @@ export class TimeEntryDeclared extends TimeEntryEvent<{
   entrepreneurId: string | null;
   kind: string;
   minutes: number;
+  /** Engagement of the missions module that produced the entry, null when declared directly. */
+  missionEngagementId: string | null;
 }> {
   static readonly TYPE = 'engagement.time-entry.declared.v1';
   readonly type = TimeEntryDeclared.TYPE;
