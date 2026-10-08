@@ -36,6 +36,7 @@
     "infra:down": "docker compose -f infra/docker/compose.yaml down",
     "docs:api": "node scripts/serve-api-docs.mjs",
     "ops:restore-drill": "bash scripts/restore-drill.sh",
+    "check:licenses": "node scripts/check-licenses.mjs",
     "check:box-drawing": "sh scripts/check-box-drawing.sh",
     "verify:clean": "bash scripts/verify-clean.sh",
     "prepare": "husky"

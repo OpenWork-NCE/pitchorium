@@ -13,6 +13,19 @@ allowBuilds:
   protobufjs: false
   ssh2: false
 
+# better-auth lists Next.js and drizzle-kit as optional peers: present in the workspace (React
+# Email preview, migrations), they would be resolved into the runtime of the server.
+overrides:
+  better-auth>next: '-'
+  better-auth>drizzle-kit: '-'
+
+# pnpm audit (CI): advisories accepted with their reason, reviewed at each dependency update.
+auditConfig:
+  ignoreGhsas:
+    # braces, through eslint-plugin-boundaries (lint tooling, never in the image); no fix
+    # published. Patterns come from the repository configuration only.
+    - GHSA-vfj7-8cjw-p6xm
+
 minimumReleaseAgeExclude:
   - react-email@6.11.1
   - '@react-email/ui@6.11.1'

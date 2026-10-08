@@ -54,6 +54,43 @@ jobs:
       # Built api and worker as processes, containers started by Testcontainers.
       - run: pnpm test:e2e
 
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+      - name: Secrets in the history (gitleaks)
+        run: >-
+          docker run --rm -v "$PWD:/repo" ghcr.io/gitleaks/gitleaks:v8.30.1
+          git /repo --redact --no-banner --exit-code 1
+      - uses: ./.github/actions/setup
+      - name: Vulnerable production dependencies (high and above)
+        run: pnpm audit --prod --audit-level high
+      - name: No GPL or AGPL production dependency
+        run: pnpm check:licenses
+
+  image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - name: Build the image (api, worker, migrate)
+        run: docker build -t pitchorium:ci .
+      - name: Vulnerabilities of the image (Trivy, high and above, fixable)
+        run: >-
+          docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:0.74.0
+          image --quiet --scanners vuln --severity HIGH,CRITICAL --ignore-unfixed --exit-code 1
+          pitchorium:ci
+      - name: Software bill of materials (CycloneDX)
+        run: >-
+          docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD:/out"
+          aquasec/trivy:0.74.0 image --quiet --format cyclonedx --output /out/sbom.cdx.json
+          pitchorium:ci
+      - uses: actions/upload-artifact@v7.0.1
+        with:
+          name: sbom-cyclonedx
+          path: sbom.cdx.json
+
   provider-sandboxes:
     runs-on: ubuntu-latest
     # Secrets cannot gate a job: each step runs only when a test key exists.

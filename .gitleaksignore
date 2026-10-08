@@ -1,0 +1,3 @@
+# Fake values of the tests, not secrets (docs/security/review.md): commit:file:rule:line.
+798dd60c06857cc71c64a55bc34a5f9c06dcb6e1:apps/server/test/integration/payments-providers.spec.ts:stripe-access-token:73
+9ce7c1e187a5203a0d34a88c1cec541e3f7d48c5:apps/server/test/integration/support/environment.ts:generic-api-key:33
