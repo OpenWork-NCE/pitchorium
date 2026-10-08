@@ -45,7 +45,7 @@ Chaque lecture d'une publication par un autre membre (fil ou page) ajoute le lec
 
 - `GET /v1/feed` (`content.feed.read`)
 - `POST /v1/posts` (`content.post.create`, `Idempotency-Key`), `GET /v1/posts/{postId}` (`content.post.read`), `GET /v1/public/posts/{postId}` (public, `Cache-Control: public, max-age=60`)
-- `PATCH /v1/posts/{postId}` (`content.post.update`), `DELETE /v1/posts/{postId}` (`content.post.delete`) : auteur (`PostResolver`)
+- `PATCH /v1/posts/{postId}` (`content.post.update`), `DELETE /v1/posts/{postId}` (`content.post.delete`) : auteur (`PostResolver` ; une publication que le membre ne peut pas lire répond `404`, comme une absente, `test/integration/idor.spec.ts`)
 - `POST /v1/posts/{postId}/reposts` (`content.post.repost`, `Idempotency-Key`)
 - `PUT|DELETE /v1/posts/{postId}/reaction`, `PUT|DELETE /v1/comments/{commentId}/reaction` (`content.reaction.set`)
 - `POST /v1/posts/{postId}/comments` (`content.comment.create`, `Idempotency-Key`), `GET /v1/posts/{postId}/comments`, `GET /v1/comments/{commentId}/replies` (`content.post.read`), `PATCH /v1/comments/{commentId}` (`content.comment.update`, auteur), `DELETE /v1/comments/{commentId}` (`content.comment.delete`, auteur du commentaire ou de la publication, `CommentResolver`)

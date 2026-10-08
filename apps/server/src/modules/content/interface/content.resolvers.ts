@@ -4,17 +4,30 @@ import type { Request } from 'express';
 import type { Principal, ProtectedResource, ResourceResolver } from '../../../platform/http';
 import { commentRoles } from '../domain/comment';
 import { ContentRepository } from '../application/ports';
+import { PostPresenter } from '../application/post-presenter';
 
-/** Resource of the `:postId` routes reserved to the author: a live publication. Unknown: 404. */
+/**
+ * Resource of the `:postId` routes reserved to the author: a live publication. Unknown, or
+ * hidden from the principal: 404, so that its existence does not leak (ASVS V4.2.1).
+ */
 @Injectable()
 export class PostResolver implements ResourceResolver {
-  constructor(private readonly content: ContentRepository) {}
+  constructor(
+    private readonly content: ContentRepository,
+    private readonly presenter: PostPresenter,
+  ) {}
 
-  async resolve(request: Request): Promise<ProtectedResource | null> {
+  async resolve(request: Request, principal: Principal): Promise<ProtectedResource | null> {
     const id = uuidV7Schema.safeParse(request.params['postId']);
     if (!id.success) return null;
     const post = await this.content.findPost(id.data);
     if (!post || post.deletedAt) return null;
+    if (
+      post.authorId !== principal.userId &&
+      !(await this.presenter.canRead(await this.presenter.reader(principal.userId), post))
+    ) {
+      return null;
+    }
     return { type: 'post', id: post.id, ownerId: post.authorId };
   }
 }
