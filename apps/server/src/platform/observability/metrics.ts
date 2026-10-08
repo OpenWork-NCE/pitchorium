@@ -9,6 +9,8 @@ export type MetricAttributes = Readonly<Record<string, string>>;
 export abstract class Metrics {
   /** Adds one to the counter `name` (`pitchorium.<module>.<subject>`), with its attributes. */
   abstract increment(name: string, attributes?: MetricAttributes): void;
+  /** Adds a quantity to the counter `name` (characters sent to a provider, for example). */
+  abstract add(name: string, value: number, attributes?: MetricAttributes): void;
 }
 
 export class OpenTelemetryMetrics extends Metrics {
@@ -16,11 +18,15 @@ export class OpenTelemetryMetrics extends Metrics {
   private readonly counters = new Map<string, Counter>();
 
   increment(name: string, attributes: MetricAttributes = {}): void {
+    this.add(name, 1, attributes);
+  }
+
+  add(name: string, value: number, attributes: MetricAttributes = {}): void {
     let counter = this.counters.get(name);
     if (!counter) {
       counter = this.meter.createCounter(name);
       this.counters.set(name, counter);
     }
-    counter.add(1, attributes);
+    counter.add(value, attributes);
   }
 }
