@@ -120,14 +120,15 @@ export const identityTwoFactors = identitySchema.table(
   ],
 );
 
-/** Append-only history of legal acceptances (terms, privacy policy, age declaration). */
+/**
+ * Append-only history of legal acceptances (terms, privacy policy, age declaration). Kept as
+ * proof after the erasure of the account, pseudonymized: no foreign key to the user.
+ */
 export const identityLegalAcceptances = identitySchema.table(
   'legal_acceptances',
   {
     id: uuid('id').primaryKey(),
-    userId: uuid('user_id')
-      .notNull()
-      .references(() => identityUsers.id, { onDelete: 'cascade' }),
+    userId: uuid('user_id').notNull(),
     document: text('document').notNull(),
     version: text('version').notNull(),
     acceptedAt: timestamptz('accepted_at').notNull(),
