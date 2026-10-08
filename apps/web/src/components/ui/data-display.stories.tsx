@@ -142,7 +142,9 @@ export const Figures: Story = {
           <Stat label="Heures de mentorat" value={36} format={(value) => count.format(value)} />
         </dl>
         <div className="grid gap-2">
+          {/* On display, no zero decimals; in a financial context, every decimal. */}
           <Money amount={{ amountMinor: '125000', currency: 'EUR' }} />
+          <Money amount={{ amountMinor: '125000', currency: 'EUR' }} precision="financial" />
           <Money
             amount={{ amountMinor: '500000', currency: 'XAF' }}
             euroEquivalent={{ amountMinor: '76224', currency: 'EUR' }}
@@ -154,6 +156,7 @@ export const Figures: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
+    await expect(canvas.getByText(/^1\s250\s€$/)).toBeVisible();
     await expect(canvas.getByText(/^1\s250,00\s€$/)).toBeVisible();
     await expect(canvas.getByText(/soit 762,24/)).toBeVisible();
     await expect(canvas.getByText(/^90\s071\s992\s547\s409,93\s€$/)).toBeVisible();

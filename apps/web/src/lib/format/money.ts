@@ -16,11 +16,27 @@ export function minorStep(currency: string): number {
 }
 
 /**
- * Intl options of a currency amount: as many decimals as the minor unit (XAF none, EUR two),
- * whatever the defaults of the browser.
+ * How an amount is written: `display` (cards, totals, progress) drops the decimals when the minor
+ * part is zero (12 500 €, but 12 500,50 €); `financial` (tables, quotes, receipts) always writes
+ * every decimal of the currency (12 500,00 €).
  */
-export function moneyFormatOptions(currency: string): Intl.NumberFormatOptions {
-  const digits = exponentOf(currency);
+export type MoneyPrecision = 'display' | 'financial';
+
+/** True when an amount has no minor part (`"1250000"` EUR is 12 500,00). */
+export function isWholeAmount({ amountMinor, currency }: MoneyDto): boolean {
+  const exponent = exponentOf(currency);
+  return exponent === 0 || BigInt(amountMinor) % 10n ** BigInt(exponent) === 0n;
+}
+
+/**
+ * Intl options of a currency amount: as many decimals as the minor unit (XAF none, EUR two),
+ * whatever the defaults of the browser; none at all for a whole amount on display.
+ */
+export function moneyFormatOptions(
+  currency: string,
+  { whole = false }: { whole?: boolean } = {},
+): Intl.NumberFormatOptions {
+  const digits = whole ? 0 : exponentOf(currency);
   return {
     style: 'currency',
     currency,
@@ -42,9 +58,17 @@ export function toDecimalString({ amountMinor, currency }: MoneyDto): `${number}
   return `${negative ? '-' : ''}${whole}${exponent > 0 ? `.${fraction}` : ''}` as `${number}`;
 }
 
-/** An amount in the language of the page, with the decimals of its currency. */
-export function formatMoney(money: MoneyDto, locale: string): string {
-  return new Intl.NumberFormat(locale, moneyFormatOptions(money.currency)).format(
+/**
+ * An amount in the language of the page: on display without decimals when they are zero, in a
+ * financial context with every decimal of its currency.
+ */
+export function formatMoney(
+  money: MoneyDto,
+  locale: string,
+  precision: MoneyPrecision = 'display',
+): string {
+  const whole = precision === 'display' && isWholeAmount(money);
+  return new Intl.NumberFormat(locale, moneyFormatOptions(money.currency, { whole })).format(
     toDecimalString(money),
   );
 }
