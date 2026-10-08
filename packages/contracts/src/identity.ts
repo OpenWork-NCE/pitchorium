@@ -45,7 +45,10 @@ export function isTimeZone(value: string): boolean {
 
 export const DEFAULT_TIME_ZONE = 'UTC';
 
-export const timeZoneSchema = z.string().refine(isTimeZone, { message: 'Unknown IANA time zone' });
+export const timeZoneSchema = z
+  .string()
+  .max(64)
+  .refine(isTimeZone, { message: 'Unknown IANA time zone' });
 
 export const preferencesSchema = z.object({
   locale: localeSchema,

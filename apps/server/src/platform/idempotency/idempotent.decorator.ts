@@ -9,6 +9,7 @@ export function Idempotent(): MethodDecorator & ClassDecorator {
     ApiHeader({
       name: 'Idempotency-Key',
       required: true,
+      schema: { type: 'string', minLength: 1, maxLength: 255, pattern: '^[\\x21-\\x7E]+$' },
       description:
         'Client-generated unique key (UUIDv7 recommended). Replays return the stored response.',
     }),

@@ -84,6 +84,8 @@ Par curseur : requête `?cursor=&limit=` (`cursorPageQuerySchema`, limite 1 à 1
 
 Les schémas Zod partagés vivent dans `packages/contracts` ; les DTO NestJS sont créés avec `createZodDto`. Ne pas ajouter `.meta({ id })` sur un schéma utilisé comme DTO racine : `nestjs-zod` 5 échoue alors à nettoyer le document OpenAPI. Le document est en OpenAPI 3.1 (champs nullables en `type: [T, "null"]`). `pnpm openapi:generate` puis `pnpm api-client:generate` mettent à jour le document et le client ; la CI échoue s'ils ne sont pas commités.
 
+Entrées strictes (ADR 0079) : un corps portant une clé inconnue du contrat est refusé (`unrecognized_keys`) ; chaque chaîne d'entrée a un `max`, une énumération, un format ou un motif, chaque liste un `max` (`test/architecture/contracts.spec.ts`).
+
 ## Événements et outbox
 
 - Un use case qui émet un événement écrit dans l'outbox dans la même transaction que son écriture métier : `transactions.run(async () => { ...; await outbox.record(event); })`. `OutboxService.record` refuse d'écrire hors transaction.
