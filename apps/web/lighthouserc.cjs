@@ -3,8 +3,10 @@
  * Lighthouse (Moto G class screen, slow 4G: 150 ms RTT, 1.6 Mbit/s, CPU slowed 4 times), median
  * of three runs per page. The throttling is applied to the browser ('devtools') rather than
  * simulated: on a local server the simulation ties the LCP of a server-rendered title to every
- * script run before the first paint. INP needs a real interaction: Total Blocking Time is its
- * laboratory proxy. The initial JavaScript per route group is checked on the build by
+ * script run before the first paint. The slowdown follows the CPU of the host (LHCI_CPU_SLOWDOWN,
+ * 4 by default, as Lighthouse recommends for a desktop-class runner). Total Blocking Time measures
+ * the start of React and Next.js; INP itself is measured on real interactions by Playwright
+ * (e2e/responsiveness.spec.ts). The initial JavaScript per route group is checked on the build by
  * scripts/check-bundles.mjs; the script budget below also counts the chunks loaded on demand.
  */
 module.exports = {
@@ -23,7 +25,7 @@ module.exports = {
           requestLatencyMs: 562.5,
           downloadThroughputKbps: 1474.56,
           uploadThroughputKbps: 675,
-          cpuSlowdownMultiplier: 4,
+          cpuSlowdownMultiplier: Number(process.env.LHCI_CPU_SLOWDOWN ?? 4),
         },
       },
     },
@@ -35,7 +37,7 @@ module.exports = {
         'categories:seo': ['error', { minScore: 1 }],
         'largest-contentful-paint': ['error', { maxNumericValue: 2500 }],
         'cumulative-layout-shift': ['error', { maxNumericValue: 0.1 }],
-        'total-blocking-time': ['error', { maxNumericValue: 200 }],
+        'total-blocking-time': ['error', { maxNumericValue: 300 }],
         // Every script of the editorial page, transferred: initial chunks plus GSAP and the Motion
         // features loaded on demand.
         'resource-summary:script:size': ['error', { maxNumericValue: 360000 }],

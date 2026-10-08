@@ -81,8 +81,8 @@ sequenceDiagram
 
 ## Performance
 
-- Budgets (ADR 0090) : JavaScript initial par groupe de routes (Brotli, framework compris, environ 111 kB) : `(marketing)` 240 kB, `(public)` et `(auth)` 260 kB, `(app)` et `(admin)` 300 kB (`pnpm --filter @pitchorium/web check:bundles`) ; Lighthouse mobile : performance 90 ou plus, accessibilité, bonnes pratiques et SEO 100, LCP 2,5 s, CLS 0,1, TBT 200 ms (indicateur de l'INP), scripts 360 kB et polices 80 kB transférés (`pnpm --filter @pitchorium/web lighthouse`).
-- Mesures du socle (page éditoriale, 4G lente et processeur ralenti) : performance 99, LCP 1,6 s, CLS 0, TBT 10 à 30 ms ; 236 kB de JavaScript initial.
+- Budgets (ADR 0090) : JavaScript initial par groupe de routes (Brotli, framework compris, environ 111 kB) : `(marketing)` 240 kB, `(public)` et `(auth)` 260 kB, `(app)` et `(admin)` 300 kB (`pnpm --filter @pitchorium/web check:bundles`) ; Lighthouse mobile : performance 90 ou plus, accessibilité, bonnes pratiques et SEO 100, LCP 2,5 s, CLS 0,1, TBT 300 ms ; INP sous 200 ms mesuré par Playwright sur les gestes principaux (processeur ralenti quatre fois), scripts 360 kB et polices 80 kB transférés (`pnpm --filter @pitchorium/web lighthouse`).
+- Mesures du socle (page éditoriale, 4G lente, processeur ralenti quatre fois) : performance 99, LCP 1,6 s, CLS 0, TBT de 10 à 30 ms sur un poste rapide et de 217 à 229 ms sur un runner GitHub, INP de 40 ms ; 236 kB de JavaScript initial.
 - Ce qui reste hors du premier chargement : GSAP (chargé quand le titre éditorial approche de l'écran), Sentry (chargé après la page, seulement avec un DSN), TanStack Query et nuqs sur les pages éditoriales, la police manuscrite et le repli Noto Sans (téléchargés par les seules pages qui s'en servent).
 - `preconnect` vers l'api (avec les cookies) et le CDN des fichiers depuis le document ; polices auto-hébergées (`next/font/local`), seules Poppins 400 et Bricolage Grotesque 800 préchargées.
 - Analyse : `pnpm --filter @pitchorium/web exec next analyze` (Turbopack).
