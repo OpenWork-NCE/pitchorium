@@ -16,7 +16,10 @@ import { EVENTS_QUEUE } from './interface/events-queue';
 
 import { EventsPersonalData } from './infrastructure/events-personal-data';
 
+import { EventsTranslatable } from './infrastructure/events-translatable';
+
 const SHARED_PROVIDERS: Provider[] = [
+  EventsTranslatable,
   { provide: EventsRepository, useClass: DrizzleEventsRepository },
   EventEventsRecorder,
   EventReadsService,
