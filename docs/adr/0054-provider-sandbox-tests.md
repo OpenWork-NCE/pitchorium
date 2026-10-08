@@ -14,7 +14,8 @@ Les adaptateurs Stripe et Flutterwave lisent des champs précis des réponses (s
 - Flutterwave : sous-compte (supprimé à la fin) et lien de paiement Standard partagé, liste et vérification des transactions existantes, liste des rétrofacturations et des remboursements, taux indicatif, notification documentée vérifiée par `verif-hash`.
 - Marquage : tout objet créé par la suite chez un prestataire (compte connecté, endpoint de webhook, paiement Stripe, sous-compte Flutterwave) porte la métadonnée `pitchorium_test=provider-tests` (`test/providers/marker.ts`), posée à la création (Flutterwave efface `meta` à toute modification d'un sous-compte). `pnpm providers:cleanup` ferme ou supprime ces objets, et eux seuls, après un arrêt brutal de la suite.
 - Compte connecté de test : `pnpm providers:stripe-test-account` le crée par Accounts v2 avec la même configuration que l'adaptateur et la métadonnée `pitchorium_test=checkout-account` (jamais nettoyé), affiche le lien d'onboarding hébergé avec les données de test officielles de Stripe, puis `--check <acct>` vérifie que les paiements sont activés avant de le déclarer dans `STRIPE_TEST_CONNECTED_ACCOUNT` (`apps/server/.env` et secret GitHub).
-- CI : job `provider-sandboxes`, dont les étapes ne s'exécutent que si le secret GitHub `STRIPE_TEST_SECRET_KEY` ou `FLUTTERWAVE_TEST_SECRET_KEY` existe (un secret ne peut pas conditionner un job entier).
+- Resend : envoi d'un lot par l'adaptateur (`ResendMailer.sendMany`, endpoint batch) vers les adresses de test de Resend (`delivered@`, `bounced@`, `complained@resend.dev`) depuis `onboarding@resend.dev`, un identifiant par email et dans l'ordre ; clé `RESEND_TEST_API_KEY`.
+- CI : job `provider-sandboxes`, dont les étapes ne s'exécutent que si l'un des secrets GitHub `STRIPE_TEST_SECRET_KEY`, `FLUTTERWAVE_TEST_SECRET_KEY` ou `RESEND_TEST_API_KEY` existe (un secret ne peut pas conditionner un job entier).
 
 ## Conséquences
 
@@ -34,3 +35,4 @@ Clés de test Stripe et Flutterwave disponibles (sans compte connecté de test `
 
 - La fermeture d'un compte v2 exige `applied_configurations` (`merchant`, ou `customer` et `merchant`) : sans elle, Stripe refuse et les comptes créés par les exécutions précédentes restaient ouverts. La suite et `providers:cleanup` la transmettent ; les comptes restants ont été fermés.
 - Une plateforme établie en France ne peut pas fixer `display_name` à la création d'un compte v2 (jetons de compte exigés), comme les autres données d'identité.
+- Resend : aucune clé `RESEND_TEST_API_KEY` fournie, l'envoi par lot n'est pas vérifié contre l'API réelle.

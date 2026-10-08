@@ -1,8 +1,8 @@
 import { type CreateEmailOptions, Resend } from 'resend';
+import { type MailMessage, Mailer, type MailReceipt } from './mailer';
 
 /** Emails per call of the batch endpoint of Resend. */
 const RESEND_BATCH_SIZE = 100;
-import { type MailMessage, Mailer, type MailReceipt } from './mailer';
 
 export class ResendMailer extends Mailer {
   private readonly client: Resend;

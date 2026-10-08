@@ -53,17 +53,18 @@ jobs:
       STRIPE_TEST_SECRET_KEY: ${{ secrets.STRIPE_TEST_SECRET_KEY }}
       STRIPE_TEST_CONNECTED_ACCOUNT: ${{ secrets.STRIPE_TEST_CONNECTED_ACCOUNT }}
       FLUTTERWAVE_TEST_SECRET_KEY: ${{ secrets.FLUTTERWAVE_TEST_SECRET_KEY }}
+      RESEND_TEST_API_KEY: ${{ secrets.RESEND_TEST_API_KEY }}
     steps:
-      - if: env.STRIPE_TEST_SECRET_KEY != '' || env.FLUTTERWAVE_TEST_SECRET_KEY != ''
+      - if: env.STRIPE_TEST_SECRET_KEY != '' || env.FLUTTERWAVE_TEST_SECRET_KEY != '' || env.RESEND_TEST_API_KEY != ''
         uses: actions/checkout@v7.0.1
-      - if: env.STRIPE_TEST_SECRET_KEY != '' || env.FLUTTERWAVE_TEST_SECRET_KEY != ''
+      - if: env.STRIPE_TEST_SECRET_KEY != '' || env.FLUTTERWAVE_TEST_SECRET_KEY != '' || env.RESEND_TEST_API_KEY != ''
         uses: ./.github/actions/setup
       - name: Real test APIs of Stripe and Flutterwave
-        if: env.STRIPE_TEST_SECRET_KEY != '' || env.FLUTTERWAVE_TEST_SECRET_KEY != ''
+        if: env.STRIPE_TEST_SECRET_KEY != '' || env.FLUTTERWAVE_TEST_SECRET_KEY != '' || env.RESEND_TEST_API_KEY != ''
         run: pnpm test:providers
       - name: No test key
-        if: env.STRIPE_TEST_SECRET_KEY == '' && env.FLUTTERWAVE_TEST_SECRET_KEY == ''
-        run: echo "STRIPE_TEST_SECRET_KEY and FLUTTERWAVE_TEST_SECRET_KEY are not set; provider sandboxes skipped."
+        if: env.STRIPE_TEST_SECRET_KEY == '' && env.FLUTTERWAVE_TEST_SECRET_KEY == '' && env.RESEND_TEST_API_KEY == ''
+        run: echo "No provider test key is set; provider sandboxes skipped."
 
   build:
     runs-on: ubuntu-latest

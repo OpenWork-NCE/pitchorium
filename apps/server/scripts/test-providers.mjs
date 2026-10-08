@@ -1,4 +1,5 @@
-// Runs the provider sandbox suite (test/providers) when test keys are present, and stops
+// Runs the provider sandbox suite (test/providers) when test keys are present (Stripe,
+// Flutterwave, Resend), and stops
 // cleanly otherwise. Live keys are refused: the suite creates and deletes objects.
 import { spawnSync } from 'node:child_process';
 import { createRequire } from 'node:module';
@@ -6,6 +7,7 @@ import { dirname, join } from 'node:path';
 
 const stripe = process.env.STRIPE_TEST_SECRET_KEY ?? '';
 const flutterwave = process.env.FLUTTERWAVE_TEST_SECRET_KEY ?? '';
+const resend = process.env.RESEND_TEST_API_KEY ?? '';
 
 if (stripe && !stripe.startsWith('sk_test_')) {
   process.stderr.write(
@@ -19,16 +21,17 @@ if (flutterwave && !flutterwave.startsWith('FLWSECK_TEST')) {
   );
   process.exit(1);
 }
-if (!stripe && !flutterwave) {
+if (!stripe && !flutterwave && !resend) {
   process.stdout.write(
-    'test:providers: neither STRIPE_TEST_SECRET_KEY nor FLUTTERWAVE_TEST_SECRET_KEY is set; ' +
-      'the provider sandbox suite is skipped.\n',
+    'test:providers: none of STRIPE_TEST_SECRET_KEY, FLUTTERWAVE_TEST_SECRET_KEY and ' +
+      'RESEND_TEST_API_KEY is set; the provider sandbox suite is skipped.\n',
   );
   process.exit(0);
 }
 process.stdout.write(
   `test:providers: Stripe ${stripe ? 'enabled' : 'skipped (no key)'}, ` +
-    `Flutterwave ${flutterwave ? 'enabled' : 'skipped (no key)'}.\n`,
+    `Flutterwave ${flutterwave ? 'enabled' : 'skipped (no key)'}, ` +
+    `Resend ${resend ? 'enabled' : 'skipped (no key)'}.\n`,
 );
 const vitest = join(
   dirname(createRequire(import.meta.url).resolve('vitest/package.json')),
