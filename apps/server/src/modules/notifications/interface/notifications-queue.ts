@@ -11,4 +11,6 @@ export const NOTIFICATIONS_JOBS = {
   digests: 'digests',
   profileViews: 'profile-views',
   purge: 'purge',
+  eventReminders: 'event-reminders',
+  newSuggestions: 'new-suggestions',
 } as const;

@@ -141,6 +141,8 @@ export interface WorkerConfig extends CommonConfig {
     unreadMessageEmailDelayMs: number;
     /** Local hour of the digests in the time zone of each member. */
     digestHour: number;
+    /** Delay before the start of an event at which its attendees are reminded. */
+    eventReminderMs: number;
   };
   /** Purge of the CDN in front of the public bucket (ADR 0026). */
   cdn:
@@ -320,6 +322,7 @@ export function parseWorkerConfig(rawEnv: RawEnv): WorkerConfig {
       fanoutBatchSize: env.NOTIFICATIONS_FANOUT_BATCH_SIZE,
       unreadMessageEmailDelayMs: env.NOTIFICATIONS_UNREAD_MESSAGE_EMAIL_DELAY_MINUTES * 60_000,
       digestHour: env.NOTIFICATIONS_DIGEST_HOUR,
+      eventReminderMs: env.NOTIFICATIONS_EVENT_REMINDER_HOURS * 3_600_000,
     },
     worker: { healthPort: env.WORKER_HEALTH_PORT },
     outbox: {

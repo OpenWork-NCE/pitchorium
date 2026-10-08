@@ -72,8 +72,8 @@ Purge quotidienne des notifications sans activité depuis `NOTIFICATIONS_RETENTI
 
 ## Événements consommés
 
-Ceux de la colonne « sources » du registre (handler `notifications.create`, worker) ; `notifications.batch.created.v1` (handler `notifications.deliver`, qui met en file la tâche `deliver` du lot). Tâches de la file `notifications.delivery` : `fanout`, `deliver`, `unread-message-emails` (chaque minute), `digests` (toutes les 15 minutes), `profile-views` (05:10 UTC), `purge` (04:40 UTC).
+Ceux de la colonne « sources » du registre (handler `notifications.create`, worker) ; `notifications.batch.created.v1` (handler `notifications.deliver`, qui met en file la tâche `deliver` du lot). Tâches de la file `notifications.delivery` : `fanout`, `deliver`, `unread-message-emails` (chaque minute), `digests` (toutes les 15 minutes), `profile-views` (05:10 UTC), `event-reminders` (toutes les 15 minutes : événements qui commencent dans `NOTIFICATIONS_EVENT_REMINDER_HOURS`, 24 h provisoires, une fois par événement et inscrit), `new-suggestions` (06:20 UTC : nouvelles suggestions de la veille, module discovery), `purge` (04:40 UTC). Une déclaration de temps née d'une mission (`missionEngagementId`) n'a pas de notification `time_entry_declared` : `mission_completed` la remplace.
 
 ## Dépendances
 
-identity (adresse, langue, fuseau), profiles (cartes des acteurs), network (abonnés, connexions, blocages, demandes, vues de profil), content (publication d'un commentaire), messaging (conversations, non lus, compteurs), projects (équipe, projet, invitations), organizations (membres, invitations), payments (contributeurs, contributions, hors plateforme).
+identity (adresse, langue, fuseau), profiles (cartes des acteurs), network (abonnés, connexions, blocages, demandes, vues de profil), content (publication d'un commentaire), messaging (conversations, non lus, compteurs), projects (équipe, projet, invitations), organizations (membres, invitations), payments (contributeurs, contributions, hors plateforme), events (inscrits, événements qui commencent), missions (côtés d'un engagement), discovery (nouvelles suggestions).

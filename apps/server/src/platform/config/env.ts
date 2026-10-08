@@ -159,6 +159,7 @@ const workerEnvSchema = commonEnvSchema.extend({
     .max(10_080)
     .default(30),
   NOTIFICATIONS_DIGEST_HOUR: z.coerce.number().int().min(0).max(23).default(8),
+  NOTIFICATIONS_EVENT_REMINDER_HOURS: z.coerce.number().int().min(1).max(336).default(24),
   PAYMENTS_RECONCILIATION_LOOKBACK_DAYS: z.coerce.number().int().min(1).max(90).default(3),
   CDN_PURGE_PROVIDER: z.enum(['none', 'cloudflare']).default('none'),
   CLOUDFLARE_ZONE_ID: z

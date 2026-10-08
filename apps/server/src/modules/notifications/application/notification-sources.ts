@@ -9,6 +9,12 @@ import {
   ReactionAdded,
 } from '../../content';
 import { TimeEntryConfirmed, TimeEntryDeclared, TimeEntryDisputed } from '../../engagement';
+import {
+  EventCanceled,
+  EventsFacade,
+  RegistrationCreated,
+  RegistrationPromoted,
+} from '../../events';
 import { AccountLinked, AccountUnlinked, IdentityFacade, PasswordChanged } from '../../identity';
 import {
   ConversationCreated,
@@ -19,6 +25,13 @@ import {
   MessageSent,
   MessagingFacade,
 } from '../../messaging';
+import {
+  EngagementAccepted,
+  EngagementCompleted,
+  EngagementDeclined,
+  EngagementRequested,
+  MissionsFacade,
+} from '../../missions';
 import { ConnectionAccepted, ConnectionRequested, FollowCreated } from '../../network';
 import {
   MemberInvited,
@@ -122,6 +135,13 @@ export const SOURCE_EVENT_TYPES: readonly string[] = [
   AccountLinked.TYPE,
   AccountUnlinked.TYPE,
   PasswordChanged.TYPE,
+  RegistrationCreated.TYPE,
+  RegistrationPromoted.TYPE,
+  EventCanceled.TYPE,
+  EngagementRequested.TYPE,
+  EngagementAccepted.TYPE,
+  EngagementDeclined.TYPE,
+  EngagementCompleted.TYPE,
 ];
 
 const text = (value: unknown): string | null => (typeof value === 'string' ? value : null);
@@ -142,6 +162,8 @@ export class NotificationSources {
     private readonly organizations: OrganizationsFacade,
     private readonly payments: PaymentsFacade,
     private readonly identity: IdentityFacade,
+    private readonly events: EventsFacade,
+    private readonly missions: MissionsFacade,
   ) {}
 
   async resolve(event: OutboxEnvelope): Promise<Resolution> {
@@ -325,6 +347,8 @@ export class NotificationSources {
       case OfflineContributionRejected.TYPE:
         return this.offline(id, event.type, text(p['by']));
       case TimeEntryDeclared.TYPE: {
+        // The time of a mission is announced by `mission_completed`, not twice.
+        if (text(p['missionEngagementId'])) return none;
         const projectId = text(p['projectId']);
         const beneficiaries = projectId
           ? await this.projects.teamMemberIds(projectId, ['owner'])
@@ -353,8 +377,79 @@ export class NotificationSources {
           { type: 'account_security', key: 'security' },
           { change: event.type.split('.')[2] ?? null, provider: text(p['provider']) },
         );
+      case RegistrationCreated.TYPE:
+        return this.toEventMembers(id, 'event_registration_confirmed', [text(p['userId'])], {
+          waitlisted: p['status'] === 'waitlisted',
+        });
+      case RegistrationPromoted.TYPE:
+        return this.toEventMembers(id, 'event_waitlist_promoted', [text(p['userId'])]);
+      case EventCanceled.TYPE:
+        return this.toEventMembers(
+          id,
+          'event_canceled',
+          await this.events.attendeeIds(id, ['registered', 'waitlisted']),
+        );
+      case EngagementRequested.TYPE:
+        return this.missionEngagement(id, 'mission_engagement_requested', 'responder');
+      case EngagementAccepted.TYPE:
+      case EngagementDeclined.TYPE:
+        return this.missionEngagement(id, 'mission_engagement_answered', 'requester', {
+          answer: event.type === EngagementAccepted.TYPE ? 'accepted' : 'declined',
+        });
+      case EngagementCompleted.TYPE:
+        return this.missionEngagement(id, 'mission_completed', 'beneficiary');
       default:
         return none;
+    }
+  }
+
+  /** Members of an event: the registrant, or the attendees of a canceled event. */
+  private async toEventMembers(
+    eventId: string,
+    type: NotificationType,
+    recipients: readonly (string | null)[],
+    data: NotificationData = {},
+  ): Promise<Resolution> {
+    const event = (await this.events.summaries([eventId])).get(eventId);
+    if (!event) return none;
+    return this.direct(
+      type,
+      recipients,
+      null,
+      { type: 'event', key: event.slug },
+      { title: event.title, ...data },
+    );
+  }
+
+  /**
+   * One side of a mission engagement, the other side as actor: the author who must answer, the
+   * member who asked, or the beneficiary who confirms the hours (owners of the project).
+   */
+  private async missionEngagement(
+    engagementId: string,
+    type: NotificationType,
+    to: 'responder' | 'requester' | 'beneficiary',
+    data: NotificationData = {},
+  ): Promise<Resolution> {
+    const parties = await this.missions.engagementParties(engagementId);
+    if (!parties) return none;
+    const target = { type: 'mission_engagement' as const, key: engagementId };
+    const withTitle = { title: parties.title, ...data };
+    switch (to) {
+      case 'responder':
+        return this.direct(type, [parties.responderId], parties.requesterId, target, withTitle);
+      case 'requester':
+        return this.direct(type, [parties.requesterId], parties.responderId, target, withTitle);
+      case 'beneficiary':
+        return this.direct(
+          type,
+          parties.projectId
+            ? await this.projects.teamMemberIds(parties.projectId, ['owner'])
+            : [parties.beneficiaryId],
+          parties.expertId,
+          target,
+          withTitle,
+        );
     }
   }
 

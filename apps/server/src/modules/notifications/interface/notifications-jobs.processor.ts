@@ -15,7 +15,8 @@ import { NOTIFICATIONS_JOBS, NOTIFICATIONS_QUEUE } from './notifications-queue';
  * Fan-out batches (each enqueues the next one), delivery of the batches (push and grouped
  * emails, ADR 0064), unread message emails (every minute), digests
  * (every 15 minutes, each member at their local hour), profile views of the previous day
- * (05:10 UTC) and retention (04:40 UTC).
+ * (05:10 UTC), event reminders (every 15 minutes), new suggestions of the previous day
+ * (06:20 UTC) and retention (04:40 UTC).
  */
 @Processor(NOTIFICATIONS_QUEUE, { concurrency: 4 })
 export class NotificationsJobsProcessor extends WorkerHost implements OnApplicationBootstrap {
@@ -37,6 +38,8 @@ export class NotificationsJobsProcessor extends WorkerHost implements OnApplicat
       [NOTIFICATIONS_JOBS.digests, '*/15 * * * *'],
       [NOTIFICATIONS_JOBS.profileViews, '10 5 * * *'],
       [NOTIFICATIONS_JOBS.purge, '40 4 * * *'],
+      [NOTIFICATIONS_JOBS.eventReminders, '*/15 * * * *'],
+      [NOTIFICATIONS_JOBS.newSuggestions, '20 6 * * *'],
     ];
     for (const [name, pattern] of schedules) {
       await this.queue.upsertJobScheduler(name, repeatEvery(pattern, every), { name });
@@ -68,6 +71,12 @@ export class NotificationsJobsProcessor extends WorkerHost implements OnApplicat
         return;
       case NOTIFICATIONS_JOBS.profileViews:
         await this.maintenance.profileViews();
+        return;
+      case NOTIFICATIONS_JOBS.eventReminders:
+        await this.maintenance.eventReminders();
+        return;
+      case NOTIFICATIONS_JOBS.newSuggestions:
+        await this.maintenance.newSuggestions();
         return;
       case NOTIFICATIONS_JOBS.purge:
         await this.maintenance.purge();

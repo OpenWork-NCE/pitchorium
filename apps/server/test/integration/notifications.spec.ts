@@ -19,11 +19,14 @@ import {
 } from 'vitest';
 import { AccessModule } from '../../src/modules/access';
 import { ContentModule } from '../../src/modules/content';
+import { DiscoveryModule } from '../../src/modules/discovery';
 import { EngagementModule } from '../../src/modules/engagement';
+import { EventsModule } from '../../src/modules/events';
 import { IdentityModule } from '../../src/modules/identity';
 import { ImpactModule } from '../../src/modules/impact';
 import { MediaModule } from '../../src/modules/media';
 import { MessagingModule } from '../../src/modules/messaging';
+import { MissionsModule } from '../../src/modules/missions';
 import { NetworkModule } from '../../src/modules/network';
 import { NotificationsFacade, NotificationsModule } from '../../src/modules/notifications';
 import { NotificationEmailsService } from '../../src/modules/notifications/application/notification-emails.service';
@@ -154,6 +157,9 @@ describe('notifications', () => {
         PaymentsModule.forWorker(),
         EngagementModule.forWorker(),
         MessagingModule.forWorker(),
+        EventsModule.forWorker(),
+        MissionsModule.forWorker(),
+        DiscoveryModule.forWorker(),
         NotificationsModule.forWorker(),
       ],
       (builder) => builder.overrideProvider(Clock).useValue(clock),

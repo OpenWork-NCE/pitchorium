@@ -2,6 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { WORKER_CONFIG, type WorkerConfig } from '../../../platform/config';
 import { TransactionManager } from '../../../platform/database';
 import { Clock } from '../../../platform/kernel';
+import { DiscoveryFacade } from '../../discovery';
+import { EventsFacade } from '../../events';
 import { NetworkFacade } from '../../network';
 import {
   NOTIFICATION_CHANNEL_ADAPTERS,
@@ -36,6 +38,8 @@ export class NotificationsMaintenanceService {
     private readonly notifications: NotificationsRepository,
     private readonly creator: NotificationCreator,
     private readonly network: NetworkFacade,
+    private readonly events: EventsFacade,
+    private readonly discovery: DiscoveryFacade,
     private readonly transactions: TransactionManager,
     private readonly clock: Clock,
     @Inject(WORKER_CONFIG) private readonly config: WorkerConfig,
@@ -108,6 +112,47 @@ export class NotificationsMaintenanceService {
       if (views.length < 500) return created;
       after = views.at(-1)?.viewedId ?? null;
     }
+  }
+
+  /**
+   * Reminders of the events starting within NOTIFICATIONS_EVENT_REMINDER_HOURS, to the
+   * registered members; once per event and member, members registered late included.
+   */
+  async eventReminders(): Promise<number> {
+    const now = this.clock.now();
+    const soon = await this.events.startingBetween(
+      now,
+      new Date(now.getTime() + this.config.notifications.eventReminderMs),
+    );
+    let created = 0;
+    for (const event of soon) {
+      created += await this.creator.deliver(`event-reminder:${event.id}`, {
+        type: 'event_reminder',
+        recipientIds: await this.events.attendeeIds(event.id, ['registered']),
+        actorId: null,
+        target: { type: 'event', key: event.slug },
+        data: { title: event.title, startsAt: event.startsAt.toISOString() },
+      });
+    }
+    return created;
+  }
+
+  /** New suggestions of the previous UTC day, low priority and grouped (discovery module). */
+  async newSuggestions(): Promise<number> {
+    const today = new Date(this.clock.now().toISOString().slice(0, 10));
+    const yesterday = new Date(today.getTime() - DAY_MS);
+    const day = yesterday.toISOString().slice(0, 10);
+    let created = 0;
+    for (const { userId, count } of await this.discovery.newSuggestionCounts(yesterday, today)) {
+      created += await this.creator.deliver(`suggestions:${day}`, {
+        type: 'new_suggestions',
+        recipientIds: [userId],
+        actorId: null,
+        target: { type: 'suggestions', key: day },
+        data: { count },
+      });
+    }
+    return created;
   }
 
   /** Retention (NOTIFICATIONS_RETENTION_DAYS, provisional). */
