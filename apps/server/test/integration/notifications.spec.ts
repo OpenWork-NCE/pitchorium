@@ -319,11 +319,18 @@ describe('notifications', () => {
       data: { count: 2 },
     });
 
-    // Pushed in real time, with the unified counters.
+    // Pushed in real time, with the unified counters. The last push of a notification is sent by
+    // its delivery job, after the notification is readable: it may still be on its way.
     expect(amaDevice.received.get('notifications:notification')?.length).toBeGreaterThan(0);
-    const counters = (await ama.agent.get('/v1/me/counters').expect(200)).body;
-    expect(counters).toMatchObject({ messages: { unread: 1, conversations: 1 } });
-    expect(amaDevice.received.get('counters')?.at(-1)).toEqual({ counters });
+    await vi.waitFor(
+      async () => {
+        await deliver();
+        const counters = (await ama.agent.get('/v1/me/counters').expect(200)).body;
+        expect(counters).toMatchObject({ messages: { unread: 1, conversations: 1 } });
+        expect(amaDevice.received.get('counters')?.at(-1)).toEqual({ counters });
+      },
+      { timeout: 30_000, interval: 200 },
+    );
 
     // Read one, read all, delete.
     const [first] = await notificationsOf(ama);
