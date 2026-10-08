@@ -9,7 +9,7 @@
   },
   "nav": {
     "primary": "Navigation principale",
-    "account": "Compte",
+    "account": "Compte de {{name}}",
     "signIn": "Se connecter",
     "signOut": "Se déconnecter",
     "signingOut": "Déconnexion en cours",
@@ -363,10 +363,5 @@
       "members": "Membres",
       "flags": "Fonctionnalités"
     }
-  },
-  "shell": {
-    "member": "Espace membre",
-    "admin": "Administration",
-    "public": "Pages publiques"
   }
 }

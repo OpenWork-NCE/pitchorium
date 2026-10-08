@@ -18,11 +18,11 @@ apps/web/
         layout.tsx     document : langue, polices, thème, fournisseurs
         not-found.tsx, error.tsx, [...rest]/page.tsx
       sitemap.ts, robots.ts, manifest.ts, global-error.tsx, not-found.tsx
-    features/<domaine>/   un dossier par domaine, façade index.ts (identity, localization, marketing, dev)
+    features/<domaine>/   un dossier par domaine, façade index.ts (access, discovery, identity, localization, marketing, notifications, dev)
     components/ui/        primitives du design system, sans métier
     components/motion/    primitives de mouvement et tokens
     components/brand/     logos générés depuis le kit
-    components/layout/    coquilles des groupes, en-tête, fournisseurs
+    components/layout/    coquilles des groupes (member/, admin/), mises en page, états (states/), fournisseurs
     lib/                  api, auth, query, realtime, i18n, sécurité, formats, observabilité
     i18n/                 routage, navigation, configuration par requête de next-intl
     config/               site, routes, SEO, redirections
@@ -73,6 +73,14 @@ Chaque groupe ne charge que ce qu'il utilise (ADR 0094) :
 - `DataProvider` (TanStack Query et client de l'api du navigateur) et `UrlStateProvider` (nuqs) : coquilles membre, administration et publique ;
 - `RealtimeProvider` : espace membre seulement.
 
+## Coquilles
+
+- Espace membre (`components/layout/member`, ADR 0099) : bandeau haut sans barre inférieure, recherche globale, six sections avec compteurs en temps réel, action contextuelle, menu du compte ; sous `lg`, un panneau `Drawer` ; bannières de compte et hors ligne sous le bandeau ; `ThreeColumnLayout` (3, 6, 3 à partir de `xl`) ou `SingleColumnLayout`. Raccourcis : ADR 0098.
+- Administration (`components/layout/admin`) : navigation latérale (une feuille sur un téléphone), fil d'Ariane, rôle vérifié par le layout côté serveur (404 sinon).
+- Authentification : carte centrée sur les fonds discrets de la marque ; pages publiques et éditoriales : en-tête du site.
+- Chaque groupe a son `loading.tsx`, `error.tsx` et `not-found.tsx` (`components/layout/states`) ; le focus passe au contenu après une navigation (`RouteFocus`).
+- Du code reste hors du premier chargement mais doit servir hors ligne (aide des raccourcis, palette, infobulles) : il est préchargé quand la page est inactive (`lib/preload.ts`).
+
 Les pages éditoriales n'ont ni données du navigateur, ni temps réel, ni client d'authentification, ni fonctions de Motion, ni toasts. `LayoutMotion` (fonctions de mise en page) n'enveloppe que les composants qui animent une mise en page.
 
 ## Proxy
@@ -90,7 +98,7 @@ Les pages éditoriales n'ont ni données du navigateur, ni temps réel, ni clien
 ## Performance
 
 - Budgets (ADR 0090, ADR 0094) : JavaScript initial par groupe de routes (Brotli, framework compris, environ 112 kB) : `(marketing)` 190 kB, `(public)` et `(auth)` 220 kB, `(app)` 250 kB, `(admin)` 260 kB, autres pages 190 kB (`pnpm --filter @pitchorium/web check:bundles`, qui liste aussi les primitives Radix de chaque page et refuse GSAP, Socket.IO, le client d'authentification et les outils de développement de requêtes hors des groupes qui les utilisent) ; Lighthouse mobile : performance 90 ou plus, accessibilité, bonnes pratiques et SEO 100, LCP 2,5 s, CLS 0,1, TBT 300 ms ; INP sous 200 ms mesuré par Playwright sur les gestes principaux (processeur ralenti quatre fois), scripts 360 kB et polices 80 kB transférés (`pnpm --filter @pitchorium/web lighthouse`).
-- Mesures (page éditoriale, 4G lente, processeur ralenti quatre fois, mouvement réduit pour juger le contraste au repos) : performance 100, accessibilité 100, LCP 1,5 s, CLS 0, TBT de 2 à 29 ms sur un poste rapide ; 173,4 kB de JavaScript initial (236,1 kB au socle).
+- Mesures (4G lente, processeur ralenti quatre fois, mouvement réduit pour juger le contraste au repos, poste rapide) : page éditoriale, performance 99 à 100, accessibilité 100, LCP 1,5 s, CLS 0, TBT de 7 à 32 ms, 180,1 kB de JavaScript initial (236,1 kB au socle) ; espace membre (`/fr/feed`, session de l'api simulée), performance 100, accessibilité 100, LCP 1,5 s, TBT 55 ms, 233,9 kB (308 kB avant le régime) ; administration 194,4 kB.
 - Ce qui reste hors du premier chargement : GSAP (chargé quand le titre éditorial approche de l'écran), Sentry (chargé après la page, seulement avec un DSN), les fonctions de Motion, les vues d'erreur, Vercel Analytics, le client d'authentification (au clic de déconnexion), TanStack Query et nuqs sur les pages éditoriales, la police manuscrite et le repli Noto Sans (téléchargés par les seules pages qui s'en servent).
 - `preconnect` vers l'api (avec les cookies) et le CDN des fichiers depuis le document ; polices auto-hébergées (`next/font/local`), seules Poppins 400 et Bricolage Grotesque 800 préchargées.
 - Analyse : `pnpm --filter @pitchorium/web exec next analyze` (Turbopack).

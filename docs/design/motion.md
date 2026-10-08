@@ -77,6 +77,7 @@ Deux courbes seulement : `enter` `cubic-bezier(0.16, 1, 0.3, 1)` (arrivées, mic
 | Nombre animé (H17)            | `AnimatedNumber`                               | comptage à l'entrée dans l'écran, pas de la devise, formateur localisé               | valeur finale, sans compte |
 | Révélation au défilement (E1) | `Reveal`                                       | fondu, montée de 24 px et flou de 6 px liés au défilement, repli IO                  | contenu en place           |
 | Indicateur partagé            | `SharedIndicator` (`layoutId`, `LayoutMotion`) | glissement de l'indicateur actif, ressort sans rebond                                | saut immédiat              |
+| Compteur qui change           | `CountBadge` (classe `count-roll`)             | la nouvelle valeur monte du bas en fondu, courbe `enter`, 320 ms                     | aucune                     |
 | Transition de page (niveau 1) | `PageTransition` (templates des groupes)       | View Transitions (repli CSS) : sortie en fondu 200 ms, entrée fondu et montée 320 ms | aucune                     |
 | Bascule de thème (H14, n. 3)  | `ThemeToggle`                                  | nouveau thème en cercle depuis le bouton, 700 ms, `curtain`                          | simple fondu de 150 ms     |
 | Titre éditorial (H13)         | `SplitHeading` (GSAP SplitText, à la demande)  | lignes masquées montant de 110 %, décalage de 80 ms, rejoué en arrière               | titre immobile             |

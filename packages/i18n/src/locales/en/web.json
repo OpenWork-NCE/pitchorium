@@ -9,7 +9,7 @@
   },
   "nav": {
     "primary": "Main navigation",
-    "account": "Account",
+    "account": "{{name}}’s account",
     "signIn": "Sign in",
     "signOut": "Sign out",
     "signingOut": "Signing out",
@@ -363,10 +363,5 @@
       "members": "Members",
       "flags": "Features"
     }
-  },
-  "shell": {
-    "member": "Member space",
-    "admin": "Administration",
-    "public": "Public pages"
   }
 }

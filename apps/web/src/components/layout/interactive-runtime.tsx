@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { MotionProvider } from '@/components/motion';
-import { Toaster } from '@/components/ui';
+import { ToasterLoader } from '@/components/ui';
 import { type MessageScope } from '@/lib/i18n/messages';
 import { requestNonce } from '@/lib/security/nonce';
 import { ScopedMessages } from './scoped-messages';
@@ -24,7 +24,7 @@ export async function InteractiveRuntime({
       <StyleNonce nonce={nonce} />
       <MotionProvider nonce={nonce}>
         {children}
-        <Toaster />
+        <ToasterLoader />
       </MotionProvider>
     </ScopedMessages>
   );

@@ -124,7 +124,7 @@ Système `Field` : libellé, description, contrôle, erreur et compteur liés pa
 
 - `features/access` : `Can` et `useAccess`, prérequis et autorisations indicatifs d'une action (`patterns.md`).
 - `lib/query/offline.ts` : `useOnline`, `usePausedMutations`, `useIdempotentMutation` (ADR 0097).
-- `components/layout` : coquilles, `RouteFocus`, `StyleNonce`, bannières de compte (`docs/architecture/frontend.md`).
+- `components/layout` : coquilles (cadre membre `member/`, ADR 0099 ; administration `admin/`), mises en page (`Main`, `ThreeColumnLayout`, `SingleColumnLayout`), états de chargement, d'erreur et d'absence par groupe (`states/`), `RouteFocus`, `StyleNonce` (`docs/architecture/frontend.md`).
 
 ## Tests
 

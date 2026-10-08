@@ -1,14 +1,5 @@
-import type { ReactNode } from 'react';
 import { BrandMicro } from '@/components/brand';
 import { Container } from '../container';
-
-export function Main({ children }: { children: ReactNode }) {
-  return (
-    <main id="main" tabIndex={-1} className="flex-1 outline-none">
-      {children}
-    </main>
-  );
-}
 
 export function Footer() {
   return (

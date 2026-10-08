@@ -1,24 +1,12 @@
 'use client';
 
-import dynamic from 'next/dynamic';
-import { useEffect } from 'react';
-import { reportError } from '@/lib/observability/report-error';
+import { ErrorBoundaryView } from '@/components/layout/states/error-boundary';
+import { routes } from '@/config/routes';
 
-/** The view arrives with the error only: every page carries this boundary (ADR 0094). */
-const LocaleErrorView = dynamic(() => import('@/components/layout/locale-error-view'), {
-  ssr: false,
-});
-
-/** Unexpected error of a page: reported to Sentry when configured, then a retry. */
-export default function LocaleError({
-  error,
-  reset,
-}: {
+/** Unexpected error of a page outside the route groups. */
+export default function LocaleError(props: {
   error: Error & { digest?: string };
   reset: () => void;
 }) {
-  useEffect(() => {
-    reportError(error);
-  }, [error]);
-  return <LocaleErrorView digest={error.digest} reset={reset} />;
+  return <ErrorBoundaryView {...props} home={routes.home} />;
 }

@@ -1,3 +1,3 @@
-import { PageLoading } from '@/components/layout/page-loading';
+import { MemberLoading } from '@/components/layout/states/member-loading';
 
-export default PageLoading;
+export default MemberLoading;

@@ -10,27 +10,31 @@ import { useRouter } from '@/i18n/navigation';
 
 /**
  * Ends the session on the api, forgets the cached data of the member, back to the home page. The
- * authentication client loads on the click only: it is not part of the first load (ADR 0094).
+ * authentication client loads on demand: it is not part of the first load (ADR 0094).
  */
-export function SignOutButton() {
-  const t = useTranslations('web.nav');
+export function useSignOut(): () => Promise<void> {
   const queryClient = useQueryClient();
   const router = useRouter();
-  const [pending, startTransition] = useTransition();
+  return async () => {
+    const { authClient } = await import('@/lib/auth/client');
+    await authClient.signOut();
+    queryClient.clear();
+    router.replace(routes.home);
+  };
+}
 
+/** Sign-out button of the administration header. */
+export function SignOutButton() {
+  const t = useTranslations('web.nav');
+  const signOut = useSignOut();
+  const [pending, startTransition] = useTransition();
   return (
     <Button
       variant="ghost"
       size="sm"
-      disabled={pending}
-      onClick={() =>
-        startTransition(async () => {
-          const { authClient } = await import('@/lib/auth/client');
-          await authClient.signOut();
-          queryClient.clear();
-          router.replace(routes.home);
-        })
-      }
+      loading={pending}
+      loadingLabel={t('signingOut')}
+      onClick={() => startTransition(signOut)}
     >
       <LogOut aria-hidden />
       {t('signOut')}
