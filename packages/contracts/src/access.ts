@@ -141,6 +141,11 @@ export const ACTIONS = [
   'trust.suspension.lift',
   'trust.project.refund',
   'trust.transparency.read',
+  'privacy.read',
+  'privacy.export.request',
+  'privacy.erasure.request',
+  'privacy.erasure.cancel',
+  'privacy.requests.read',
 ] as const;
 export const actionSchema = z.enum(ACTIONS);
 

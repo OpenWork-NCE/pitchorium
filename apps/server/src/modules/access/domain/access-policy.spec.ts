@@ -324,6 +324,11 @@ const MATRIX: Record<Action, Record<Scenario, Expected>> = {
   'trust.suspension.lift': moderatorsAndAdminsWith2fa,
   'trust.project.refund': adminsWith2fa,
   'trust.transparency.read': adminsWith2fa,
+  'privacy.read': everyoneSignedIn,
+  'privacy.export.request': everyoneSignedIn,
+  'privacy.erasure.request': everyoneSignedIn,
+  'privacy.erasure.cancel': everyoneSignedIn,
+  'privacy.requests.read': adminsWith2fa,
 };
 
 function outcome(action: Action, scenario: Scenario): Expected {
@@ -555,6 +560,7 @@ describe('access policies', () => {
       'access.roles.manage',
       'trust.project.refund',
       'payment.refund',
+      'privacy.erasure.request',
     ] as const) {
       expect(decide(action, stale)).toEqual({
         allowed: false,

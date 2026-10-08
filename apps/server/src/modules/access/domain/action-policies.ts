@@ -221,4 +221,16 @@ export const ACTION_POLICIES: Readonly<Record<Action, ActionPolicy>> = {
   'trust.suspension.lift': { roles: ['moderator', 'admin'], sensitive: true },
   'trust.project.refund': { roles: ['admin'], sensitive: true, recentAuthentication: true },
   'trust.transparency.read': { roles: ['admin'], sensitive: true },
+  // Rights of the GDPR (§13): open to every member, even suspended or behind on the terms; the
+  // erasure asks for a recent session. Administrators follow the requests and their delays.
+  'privacy.read': { requiresLegalAcceptance: false, allowWhenSuspended: true },
+  'privacy.export.request': { requiresLegalAcceptance: false, allowWhenSuspended: true },
+  'privacy.erasure.request': {
+    requiresLegalAcceptance: false,
+    allowWhenSuspended: true,
+    sensitive: true,
+    recentAuthentication: true,
+  },
+  'privacy.erasure.cancel': { requiresLegalAcceptance: false, allowWhenSuspended: true },
+  'privacy.requests.read': { roles: ['admin'], sensitive: true },
 };
