@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { Bell, MoreHorizontal, Settings } from 'lucide-react';
+import NextLink from 'next/link';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
 import { IconButton } from './icon-button';
 
@@ -46,4 +47,17 @@ export const Variants: Story = {
       />
     </div>
   ),
+};
+
+/** A link with an icon only (`link`): the same name and tooltip, on an anchor. */
+export const AsLink: Story = {
+  args: { label: 'Paramètres', icon: <Settings />, link: <NextLink href="#settings" /> },
+  play: async ({ canvasElement }) => {
+    const link = within(canvasElement).getByRole('link', { name: 'Paramètres' });
+    await expect(link).toHaveAttribute('href', '#settings');
+    await userEvent.tab();
+    await expect(link).toHaveFocus();
+    const tooltip = () => document.querySelector('[data-radix-popper-content-wrapper]');
+    await waitFor(() => expect(tooltip()).toHaveTextContent('Paramètres'));
+  },
 };

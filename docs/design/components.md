@@ -24,13 +24,13 @@ Règles communes :
 
 ## Actions
 
-| Composant                      | Usage                                                                                                    | À faire, à éviter                                                                                  | Story                                 |
-| ------------------------------ | -------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | ------------------------------------- |
-| `Button`                       | `primary` (remplissage cuivre H21), `secondary`, `outline`, `ghost`, `danger`, `link` ; `sm`, `md`, `lg` | un seul `primary` par vue ; `loading` garde la largeur ; `disabledReason` plutôt qu'un bouton muet | Design system/Actions/Button          |
-| `IconButton`                   | bouton à icône seule : libellé obligatoire, infobulle au survol (400 ms) et au focus, fermée par Échap   | jamais sans `label`                                                                                | Design system/Actions/Icon button     |
-| `ToggleGroup`                  | `single` : contrôle segmenté à indicateur glissant ; `multiple` : bascules de filtres                    | trois à cinq options ; au-delà, un `Select`                                                        | Design system/Actions/Toggle group    |
-| `CopyButton`                   | copie dans le presse-papiers, résultat annoncé                                                           |                                                                                                    | Design system/Actions/Copy button     |
-| `ThemeToggle`, `ThemeSelector` | bascule clair et sombre (cercle H14), choix explicite avec le système                                    |                                                                                                    | Design system/Navigation/Theme toggle |
+| Composant                      | Usage                                                                                                                        | À faire, à éviter                                                                                  | Story                                 |
+| ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | ------------------------------------- |
+| `Button`                       | `primary` (remplissage cuivre H21), `secondary`, `outline`, `ghost`, `danger`, `link` ; `sm`, `md`, `lg`                     | un seul `primary` par vue ; `loading` garde la largeur ; `disabledReason` plutôt qu'un bouton muet | Design system/Actions/Button          |
+| `IconButton`                   | bouton à icône seule : libellé obligatoire, infobulle au survol (400 ms) et au focus, fermée par Échap ; `link` pour un lien | jamais sans `label`                                                                                | Design system/Actions/Icon button     |
+| `ToggleGroup`                  | `single` : contrôle segmenté à indicateur glissant ; `multiple` : bascules de filtres                                        | trois à cinq options ; au-delà, un `Select`                                                        | Design system/Actions/Toggle group    |
+| `CopyButton`                   | copie dans le presse-papiers, résultat annoncé                                                                               |                                                                                                    | Design system/Actions/Copy button     |
+| `ThemeToggle`, `ThemeSelector` | bascule clair et sombre (cercle H14), choix explicite avec le système                                                        |                                                                                                    | Design system/Navigation/Theme toggle |
 
 ## Formulaires
 

@@ -1,8 +1,10 @@
 'use client';
 
 import {
+  cloneElement,
   type ComponentProps,
   lazy,
+  type ReactElement,
   type ReactNode,
   Suspense,
   useEffect,
@@ -28,6 +30,8 @@ type IconButtonProps = Omit<ComponentProps<typeof Button>, 'children' | 'size' |
   /** Tooltip text, the label by default. */
   tooltip?: ReactNode;
   tooltipSide?: 'top' | 'bottom' | 'left' | 'right';
+  /** An element rendered as the button, a link most often (`<Link href={...} />`); the icon goes in it. */
+  link?: ReactElement<{ children?: ReactNode }>;
 };
 
 /**
@@ -42,6 +46,7 @@ export function IconButton({
   variant = 'ghost',
   tooltip,
   tooltipSide = 'bottom',
+  link,
   onPointerEnter,
   onPointerLeave,
   onFocus,
@@ -73,6 +78,7 @@ export function IconButton({
         variant={variant}
         size={size === 'sm' ? 'icon-sm' : 'icon'}
         aria-label={label}
+        asChild={link !== undefined}
         onPointerEnter={(event) => {
           if (event.pointerType === 'mouse') show(DELAY_MS);
           onPointerEnter?.(event);
@@ -95,7 +101,7 @@ export function IconButton({
         }}
         {...props}
       >
-        {icon}
+        {link ? cloneElement(link, undefined, icon) : icon}
       </Button>
       {armed ? (
         <Suspense fallback={null}>
