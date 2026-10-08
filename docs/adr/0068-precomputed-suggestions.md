@@ -16,4 +16,4 @@ Calculer les suggestions à la lecture parcourrait tous les membres, projets, mi
 ## Conséquences
 
 - Les plafonds sont provisoires (`docs/open-questions.md`) : au-delà de 2 000 sujets concernés par un même candidat, les listes des autres se mettent à jour à la reconstruction ou à leur prochain recalcul.
-- Volumétrie mesurée par `discovery-volume.spec.ts` (temps de calcul d'un membre, index utilisés vérifiés par `EXPLAIN`).
+- Mesure (test `discovery-volume.spec.ts`, 5 000 fiches de matching, 31 600 documents) : calcul complet des cinq listes d'un membre en 75 à 480 ms (médiane observée d'environ 130 ms) ; la requête de candidats s'arrête au plafond (`Limit`) après un `BitmapOr` d'index (`match_profiles_company_country_idx`, `match_profiles_entrepreneur_sector_idx`, index GIN selon le profil) en moins de 1 ms, vérifié par `EXPLAIN`. Seuil vérifié en CI : 3 s.

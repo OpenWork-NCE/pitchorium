@@ -40,7 +40,7 @@ flowchart LR
 ```
 
 - Index : GIN sur le `tsvector`, GIN `gin_trgm_ops` sur le nom normalisé, GIN sur étiquettes, pays et secteurs, B-tree des sections (date de publication, date de fin, date de début).
-- Volumétrie mesurée (`test/integration/discovery-volume.spec.ts`) : seuils dans l'ADR 0066 et 0068.
+- Volumétrie mesurée (`test/integration/discovery-volume.spec.ts`, 31 600 documents, 5 000 fiches) : recherche en 17 ms de médiane, calcul des suggestions d'un membre en environ 130 ms ; détails et seuils dans les ADR 0066 et 0068.
 
 ## Matching
 
