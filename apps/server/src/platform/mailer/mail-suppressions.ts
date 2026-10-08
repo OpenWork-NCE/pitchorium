@@ -35,14 +35,33 @@ export class SuppressingMailer extends Mailer {
   }
 
   async send(message: MailMessage): Promise<MailReceipt> {
-    const recipients = Array.isArray(message.to) ? message.to : [message.to];
-    const suppressed = await this.suppressions.suppressed(
-      recipients.map((email) => email.toLowerCase()),
+    const [receipt] = await this.sendMany([message]);
+    return receipt ?? { messageId: undefined };
+  }
+
+  /** One lookup of the suppression list for the whole batch, then one grouped sending. */
+  override async sendMany(messages: readonly MailMessage[]): Promise<MailReceipt[]> {
+    const recipientsOf = (message: MailMessage) =>
+      Array.isArray(message.to) ? message.to : [message.to];
+    const suppressed = await this.suppressions.suppressed([
+      ...new Set(messages.flatMap((message) => recipientsOf(message).map((e) => e.toLowerCase()))),
+    ]);
+    const plans = messages.map((message) => {
+      const recipients = recipientsOf(message);
+      return {
+        message,
+        kept: recipients.filter((email) => !suppressed.has(email.toLowerCase())),
+        left: recipients.filter((email) => suppressed.has(email.toLowerCase())),
+      };
+    });
+    const sendable = plans.filter((plan) => plan.kept.length > 0);
+    const sent = await this.transport.sendMany(
+      sendable.map((plan) => ({ ...plan.message, to: plan.kept })),
     );
-    const kept = recipients.filter((email) => !suppressed.has(email.toLowerCase()));
-    const left = recipients.filter((email) => suppressed.has(email.toLowerCase()));
-    if (kept.length === 0) return { messageId: undefined, suppressed: left };
-    const receipt = await this.transport.send({ ...message, to: kept });
-    return left.length > 0 ? { ...receipt, suppressed: left } : receipt;
+    return plans.map((plan): MailReceipt => {
+      if (plan.kept.length === 0) return { messageId: undefined, suppressed: plan.left };
+      const receipt = sent[sendable.indexOf(plan)] ?? { messageId: undefined };
+      return plan.left.length > 0 ? { ...receipt, suppressed: plan.left } : receipt;
+    });
   }
 }
