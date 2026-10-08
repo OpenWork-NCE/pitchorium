@@ -150,14 +150,14 @@ describe('access', () => {
       const agent = browser(app);
       await signIn(agent, 'admin@example.com');
 
-      const refused = await agent.get(`/v1/access/users/${target.userId}/roles`).expect(403);
+      const refused = await agent.get(`/v1/admin/members/${target.userId}/roles`).expect(403);
       expect(refused.body).toMatchObject({
         code: 'ACCESS_PREREQUISITES_MISSING',
         missing: ['two_factor'],
       });
 
       const uri = await enableTwoFactor(agent);
-      await agent.get(`/v1/access/users/${target.userId}/roles`).expect(200);
+      await agent.get(`/v1/admin/members/${target.userId}/roles`).expect(200);
 
       // A new sign-in now needs the second factor before any session exists.
       const laptop = browser(app);
@@ -173,7 +173,7 @@ describe('access', () => {
       expect(second.status).toBe(200);
 
       const granted = await laptop
-        .post(`/v1/access/users/${target.userId}/roles`)
+        .post(`/v1/admin/members/${target.userId}/roles`)
         .set('Idempotency-Key', 'grant-1')
         .send({ role: 'moderator' })
         .expect(201);
@@ -183,7 +183,7 @@ describe('access', () => {
       await target.agent.get('/v1/me').expect(401);
 
       const lastAdmin = await laptop
-        .delete(`/v1/access/users/${admin.userId}/roles/admin`)
+        .delete(`/v1/admin/members/${admin.userId}/roles/admin`)
         .expect(409);
       expect(lastAdmin.body.code).toBe('ACCESS_LAST_ADMIN');
     });
@@ -191,7 +191,7 @@ describe('access', () => {
     it('forbids role management to members', async () => {
       const member = await createMember(app, 'member@example.com');
       const response = await member.agent
-        .get(`/v1/access/users/${member.userId}/roles`)
+        .get(`/v1/admin/members/${member.userId}/roles`)
         .expect(403);
       expect(response.body.code).toBe('FORBIDDEN');
     });

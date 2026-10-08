@@ -51,7 +51,7 @@ export class AccessController {
     return this.access.prerequisitesOf(actor, params.action);
   }
 
-  @Get('access/users/:userId/roles')
+  @Get('admin/members/:userId/roles')
   @RequireAction('access.roles.read')
   @ZodSerializerDto(UserRolesDto)
   @ApiOkResponse({ type: UserRolesDto.Output })
@@ -59,7 +59,7 @@ export class AccessController {
     return this.roles.list(params.userId);
   }
 
-  @Post('access/users/:userId/roles')
+  @Post('admin/members/:userId/roles')
   @RequireAction('access.roles.manage')
   @Idempotent()
   @ZodSerializerDto(UserRolesDto)
@@ -77,7 +77,7 @@ export class AccessController {
     });
   }
 
-  @Delete('access/users/:userId/roles/:role')
+  @Delete('admin/members/:userId/roles/:role')
   @RequireAction('access.roles.manage')
   @ZodSerializerDto(UserRolesDto)
   @ApiOkResponse({ type: UserRolesDto.Output })
