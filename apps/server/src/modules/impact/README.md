@@ -48,3 +48,7 @@ Aucun.
 ## Dépendances
 
 Aucun module métier. Le prérequis `profile.entrepreneur_facet` des routes `/v1/me/impact` est appliqué par le module access.
+
+## Données personnelles (RGPD)
+
+Export : évaluations du volet entrepreneur et évaluations soumises pour un projet. Suppression : évaluations du membre supprimées, celles d'un projet gardées sous le pseudonyme. Contrats enregistrés auprès du module privacy (`infrastructure/impact-personal-data.ts`, ADR 0074).

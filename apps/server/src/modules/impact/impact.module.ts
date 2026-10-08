@@ -8,7 +8,10 @@ import { DrizzleImpactRepository } from './infrastructure/drizzle-impact.reposit
 import { MethodologiesController } from './interface/methodologies.controller';
 import { MyAssessmentsController } from './interface/my-assessments.controller';
 
+import { ImpactPersonalData } from './infrastructure/impact-personal-data';
+
 const PROVIDERS: Provider[] = [
+  ImpactPersonalData,
   { provide: ImpactRepository, useClass: DrizzleImpactRepository },
   ImpactEventsRecorder,
   AssessmentsService,
