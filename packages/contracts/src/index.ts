@@ -22,6 +22,7 @@ export * from './notifications.js';
 export * from './organizations.js';
 export * from './pagination.js';
 export * from './payments.js';
+export * from './privacy.js';
 export * from './profiles.js';
 export * from './projects.js';
 export * from './realtime.js';

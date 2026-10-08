@@ -32,6 +32,7 @@ import {
   connectionStateSchema,
   relationDegreeSchema,
 } from './network.js';
+import { erasureStatusSchema, exportStatusSchema, rightsRequestKindSchema } from './privacy.js';
 import {
   appealOutcomeSchema,
   appealStatusSchema,
@@ -172,6 +173,9 @@ export const LABELLED_ENUMS: Readonly<Record<string, readonly AnyEnum[]>> = {
   moderationDecisionKinds: [moderationDecisionKindSchema],
   moderationGrounds: [moderationGroundSchema],
   appealStatuses: [appealStatusSchema, appealOutcomeSchema],
+  exportStatuses: [exportStatusSchema],
+  erasureStatuses: [erasureStatusSchema],
+  rightsRequestKinds: [rightsRequestKindSchema],
 };
 
 /**

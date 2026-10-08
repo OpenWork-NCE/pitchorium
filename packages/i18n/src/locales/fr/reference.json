@@ -807,5 +807,23 @@
     "pending": "En cours d'examen",
     "upheld": "Décision maintenue",
     "overturned": "Décision annulée"
+  },
+  "exportStatuses": {
+    "pending": "En préparation",
+    "ready": "Prête",
+    "failed": "Échec",
+    "expired": "Expirée"
+  },
+  "erasureStatuses": {
+    "scheduled": "Programmée",
+    "canceled": "Annulée",
+    "blocked": "Bloquée",
+    "running": "En cours",
+    "completed": "Effectuée",
+    "failed": "Échec"
+  },
+  "rightsRequestKinds": {
+    "export": "Export des données",
+    "erasure": "Suppression du compte"
   }
 }

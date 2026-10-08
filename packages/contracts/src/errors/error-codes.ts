@@ -451,6 +451,19 @@ export const errorCodes = {
   TRUST_SAME_MODERATOR: { status: 403, title: 'Appeal reviewed by the author of the decision' },
   TRUST_SUSPENSION_NOT_FOUND: { status: 404, title: 'Suspension not found' },
   TRUST_PROJECT_NOT_FROZEN: { status: 409, title: 'Project not frozen by this decision' },
+  PRIVACY_EXPORT_RATE_LIMITED: { status: 429, title: 'An export was requested too recently' },
+  PRIVACY_EXPORT_NOT_FOUND: { status: 404, title: 'Export not found' },
+  PRIVACY_EXPORT_NOT_READY: { status: 409, title: 'Export not ready or expired' },
+  PRIVACY_ERASURE_PENDING: { status: 409, title: 'An erasure is already scheduled' },
+  PRIVACY_ERASURE_NOT_FOUND: { status: 404, title: 'No erasure to cancel' },
+  PRIVACY_CAMPAIGN_IN_PROGRESS: {
+    status: 409,
+    title: 'A campaign of the member is collecting contributions',
+  },
+  PRIVACY_SOLE_OWNER: {
+    status: 409,
+    title: 'The member is the only owner of an organization with members',
+  },
   INTERNAL_ERROR: { status: 500, title: 'Internal error' },
   SERVICE_UNAVAILABLE: { status: 503, title: 'Service unavailable' },
 } as const satisfies Record<string, ErrorCodeDefinition>;

@@ -807,5 +807,23 @@
     "pending": "Under review",
     "upheld": "Decision upheld",
     "overturned": "Decision overturned"
+  },
+  "exportStatuses": {
+    "pending": "Being prepared",
+    "ready": "Ready",
+    "failed": "Failed",
+    "expired": "Expired"
+  },
+  "erasureStatuses": {
+    "scheduled": "Scheduled",
+    "canceled": "Canceled",
+    "blocked": "Blocked",
+    "running": "In progress",
+    "completed": "Completed",
+    "failed": "Failed"
+  },
+  "rightsRequestKinds": {
+    "export": "Data export",
+    "erasure": "Account deletion"
   }
 }
