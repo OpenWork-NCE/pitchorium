@@ -108,12 +108,18 @@ Informations nécessaires au développement et absentes du cahier des charges (d
 76. Le délai des rappels avant un événement (provisoirement 24 heures, `NOTIFICATIONS_EVENT_REMINDER_HOURS`) et la fermeture des inscriptions (provisoirement au début de l'événement).
 77. La billetterie payante : hors périmètre (ADR 0070), les événements sont gratuits.
 
+## Missions
+
+78. Le périmètre proposé (ADR 0071) : offres des mentors et experts, demandes des entrepreneurs et équipes de projet, candidature ou sollicitation, réponse, achèvement avec heures confirmées, sans rémunération ni avis. À valider.
+79. Les bornes d'une mission (provisoirement session de 8 heures et mission courte de 80 heures au plus, capacité de 20 missions en cours, titre 120 caractères, description 5 000, message 2 000), la liste des domaines d'expertise (texte libre aujourd'hui) et la liste des termes refusés comme vocabulaire d'offre d'emploi (`apps/server/src/modules/missions/domain/mission.ts`).
+80. L'absence d'avis et de notation des missions (non prévus par le cahier des charges).
+
 ## Produit
 
 15. La décision sur les stories (refus, ou « actualités éphémères de projet » en V2 selon le §15).
 16. La vérification d'organisation (badge) : critères et processus de validation.
 17. Le module « Événements » (§14, V3) : aucune description fonctionnelle. Un périmètre provisoire est livré (ADR 0069, section « Événements » ci-dessous) et doit être validé.
-18. Les missions d'expertise packagées : contenu, déroulé, éventuelle rémunération.
+18. Les missions d'expertise packagées : contenu, déroulé, éventuelle rémunération. Un périmètre provisoire bénévole est livré (ADR 0071, section « Missions » ci-dessous).
 19. Les permissions du rôle `moderator` et la composition de l'équipe de modération (les rôles `member`, `moderator` et `admin` existent ; aucune action n'est encore réservée aux modérateurs).
 20. Les durées de conservation (messages, signalements, journal d'audit, comptes supprimés) et la procédure RGPD de suppression.
 
