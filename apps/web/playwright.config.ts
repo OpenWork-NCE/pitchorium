@@ -5,24 +5,50 @@ const API_PORT = 3299;
 const webOrigin = `http://localhost:${WEB_PORT}`;
 const apiOrigin = `http://localhost:${API_PORT}`;
 
+/** Measures of the rendering engine of Chromium (screenshots, CPU throttling through CDP). */
+const CHROMIUM_ONLY = [/visual\.spec\.ts/, /responsiveness\.spec\.ts/];
+
 /**
  * End-to-end tests of the web app (ADR 0090): a production build in its own directory against
- * a stub api, Chromium only. `test:e2e` runs in the official Playwright image (same fonts and
- * rendering locally and in CI) where the screenshots are compared; `test:e2e:native` skips them.
+ * a stub api, in Chromium, Firefox and WebKit, and in WebKit as an iPhone for the journeys on a
+ * phone (tag `@phone`): part of the diaspora reads Pitchorium in Safari on an iPhone. `test:e2e`
+ * runs in the official Playwright image (same engines, fonts and rendering locally and in CI)
+ * where the screenshots of Chromium are compared; `test:e2e:native` skips them. One worker: the
+ * stub api keeps one state (sessions, counters, log of the writes) for every test.
  */
 export default defineConfig({
   testDir: 'e2e',
   fullyParallel: true,
+  workers: 1,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
   reporter: process.env.CI ? [['github'], ['html', { open: 'never' }]] : 'list',
   snapshotPathTemplate: '{testDir}/__screenshots__/{testFilePath}/{arg}{ext}',
   expect: { toHaveScreenshot: { maxDiffPixelRatio: 0.01, animations: 'disabled' } },
-  use: {
-    baseURL: webOrigin,
-    trace: 'retain-on-failure',
-    ...devices['Desktop Chrome'],
-  },
+  use: { baseURL: webOrigin, trace: 'retain-on-failure' },
+  projects: [
+    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
+    {
+      name: 'firefox',
+      use: {
+        ...devices['Desktop Firefox'],
+        // The page opts into its own process (Cross-Origin-Opener-Policy): Firefox then drops
+        // the emulated colour scheme of the context. Kept in one process, the dark theme of the
+        // system reaches the page as it does for a member.
+        launchOptions: {
+          firefoxUserPrefs: { 'browser.tabs.remote.useCrossOriginOpenerPolicy': false },
+        },
+      },
+      testIgnore: CHROMIUM_ONLY,
+    },
+    { name: 'webkit', use: { ...devices['Desktop Safari'] }, testIgnore: CHROMIUM_ONLY },
+    {
+      name: 'iphone',
+      use: { ...devices['iPhone 15'] },
+      grep: /@phone/,
+      testIgnore: CHROMIUM_ONLY,
+    },
+  ],
   webServer: [
     {
       command: 'node e2e/support/stub-api.mjs',

@@ -38,7 +38,7 @@ Pitchorium est un réseau professionnel et une plateforme de financement à impa
 - Marque : uniquement la sélection de `pnpm brand:sync`, jamais un fichier modifié à la main (ADR 0087).
 - Coquilles : `components/layout/member` (bandeau haut, jamais de barre inférieure, ADR 0099) et `components/layout/admin` ; une page se pose dans `ThreeColumnLayout` ou `SingleColumnLayout`. Usages : `docs/design/patterns.md`.
 - Code sorti du premier chargement mais utile hors ligne : préchargé à l'inactivité (`lib/preload.ts`) ; budgets par groupe (ADR 0094).
-- Tests : chaque story est un test, dans les deux thèmes (`pnpm --filter @pitchorium/web test:stories`) ; les parcours e2e ouvrent une session sur l'api simulée (`e2e/support/stub-api.mjs`, comptes de démonstration).
+- Tests : chaque story est un test, dans les deux thèmes (`pnpm --filter @pitchorium/web test:stories`) ; les parcours e2e ouvrent une session sur l'api simulée (`e2e/support/stub-api.mjs`, comptes de démonstration), dans Chromium, Firefox, WebKit et en iPhone (parcours `@phone`).
 - Captures de référence : `pnpm --filter @pitchorium/web test:e2e` dans l'image Playwright (Docker requis) ; captures de revue : `review:captures` (`docs/design/review`).
 
 ## Avant toute tâche

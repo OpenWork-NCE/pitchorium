@@ -204,65 +204,72 @@ test.describe('member shell', () => {
     await api.dispose();
   });
 
-  test('keeps a reaction made offline after the tab closes, and sends it once', async ({
-    context,
-  }) => {
-    const api = await playwrightRequest.newContext({ baseURL: API_ORIGIN });
-    const first = await context.newPage();
-    await signIn(first, AISSATOU);
-    await first.goto('/fr/feed');
-    await first.waitForLoadState('networkidle');
+  test(
+    'keeps a reaction made offline after the tab closes, and sends it once',
+    {
+      tag: '@phone',
+    },
+    async ({ context }) => {
+      const api = await playwrightRequest.newContext({ baseURL: API_ORIGIN });
+      const first = await context.newPage();
+      await signIn(first, AISSATOU);
+      await first.goto('/fr/feed');
+      await first.waitForLoadState('networkidle');
 
-    await context.setOffline(true);
-    const like = first.getByRole('article').first().getByRole('button', { name: "J'aime" });
-    await like.click();
-    await expect(like).toHaveAttribute('aria-pressed', 'true');
-    await expect(first.getByText('1 action en attente.')).toBeVisible();
-    // Kept on the device (IndexedDB) before the tab closes.
-    await expect
-      .poll(() =>
-        first.evaluate(
-          () =>
-            new Promise<number>((resolve) => {
-              const opening = indexedDB.open('pitchorium', 1);
-              opening.onsuccess = () => {
-                const read = opening.result
-                  .transaction('paused-mutations', 'readonly')
-                  .objectStore('paused-mutations')
-                  .get('record');
-                read.onsuccess = () =>
-                  resolve(
-                    (read.result as { state?: { mutations?: unknown[] } } | undefined)?.state
-                      ?.mutations?.length ?? 0,
-                  );
-              };
-            }),
-        ),
-      )
-      .toBe(1);
-    await first.close();
-    expect(await stub(api).writes()).toEqual([]);
+      await context.setOffline(true);
+      const like = first.getByRole('article').first().getByRole('button', { name: "J'aime" });
+      await like.click();
+      await expect(like).toHaveAttribute('aria-pressed', 'true');
+      await expect(first.getByText('1 action en attente.')).toBeVisible();
+      // Kept on the device (IndexedDB) before the tab closes.
+      await expect
+        .poll(() =>
+          first.evaluate(
+            () =>
+              new Promise<number>((resolve) => {
+                const opening = indexedDB.open('pitchorium', 1);
+                opening.onsuccess = () => {
+                  const read = opening.result
+                    .transaction('paused-mutations', 'readonly')
+                    .objectStore('paused-mutations')
+                    .get('record');
+                  read.onsuccess = () =>
+                    resolve(
+                      (read.result as { state?: { mutations?: unknown[] } } | undefined)?.state
+                        ?.mutations?.length ?? 0,
+                    );
+                };
+              }),
+          ),
+        )
+        .toBe(1);
+      await first.close();
+      expect(await stub(api).writes()).toEqual([]);
 
-    // Back online, the member space opens again: the reaction leaves, once, with its key.
-    await context.setOffline(false);
-    const second = await context.newPage();
-    await second.goto('/fr/feed');
-    await expect.poll(async () => (await stub(api).writes()).length).toBe(1);
-    const [write] = await stub(api).writes();
-    expect(write).toMatchObject({ route: 'reaction', replay: false });
-    expect(write?.key).toMatch(/^[0-9a-f-]{36}$/);
-    // Opened again, nothing is sent twice.
-    await second.reload();
-    await second.waitForLoadState('networkidle');
-    expect(await stub(api).writes()).toHaveLength(1);
-    await api.dispose();
-  });
+      // Back online, the member space opens again: the reaction leaves, once, with its key.
+      await context.setOffline(false);
+      const second = await context.newPage();
+      await second.goto('/fr/feed');
+      await expect.poll(async () => (await stub(api).writes()).length).toBe(1);
+      const [write] = await stub(api).writes();
+      expect(write).toMatchObject({ route: 'reaction', replay: false });
+      expect(write?.key).toMatch(/^[0-9a-f-]{36}$/);
+      // Opened again, nothing is sent twice.
+      await second.reload();
+      await second.waitForLoadState('networkidle');
+      expect(await stub(api).writes()).toHaveLength(1);
+      await api.dispose();
+    },
+  );
+});
+
+/** The member space on a phone: in every engine, and as an iPhone in WebKit (project `iphone`). */
+test.describe('member shell on a phone', { tag: '@phone' }, () => {
+  test.use({ viewport: { width: 390, height: 844 } });
 
   test('keeps Messages and Notifications in the header of a phone, the rest in the panel', async ({
-    browser,
+    page,
   }) => {
-    const context = await browser.newContext({ viewport: { width: 390, height: 844 } });
-    const page = await context.newPage();
     await signIn(page, AISSATOU);
     await page.goto('/fr/feed');
     const header = page.getByRole('banner');
@@ -281,12 +288,9 @@ test.describe('member shell', () => {
     await page.keyboard.press('Escape');
     await expect(panel).toBeHidden();
     await expect(menu).toBeFocused();
-    await context.close();
   });
 
-  test('carries the side columns in the flow of the feed on a phone', async ({ browser }) => {
-    const context = await browser.newContext({ viewport: { width: 390, height: 844 } });
-    const page = await context.newPage();
+  test('carries the side columns in the flow of the feed on a phone', async ({ page }) => {
     await signIn(page, AISSATOU);
     await page.goto('/fr/feed');
     const main = page.getByRole('main');
@@ -313,9 +317,10 @@ test.describe('member shell', () => {
     await expect(
       main.getByText('Suggéré parce que Ifeoma Okafor propose du mentorat'),
     ).toBeVisible();
-    await context.close();
   });
+});
 
+test.describe('member shell, its accessibility', () => {
   for (const colorScheme of ['light', 'dark'] as const) {
     test(`has no axe violation in the ${colorScheme} theme`, async ({ browser }) => {
       const context = await browser.newContext({ colorScheme, reducedMotion: 'reduce' });
