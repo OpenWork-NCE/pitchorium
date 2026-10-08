@@ -26,6 +26,8 @@ function storiesProject(theme: 'light' | 'dark') {
         enabled: true,
         headless: true,
         provider: playwright({ contextOptions: { reducedMotion: 'reduce', locale: 'fr-FR' } }),
+        // The reference screen of the product is a computer (§4).
+        viewport: { width: 1280, height: 800 },
         instances: [{ browser: 'chromium' as const }],
       },
     },

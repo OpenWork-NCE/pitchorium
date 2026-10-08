@@ -10,6 +10,7 @@ Comment assembler les composants (`components.md`) pour les situations récurren
 - Validation au premier départ du champ (`onTouched`), puis à chaque saisie ; à l'envoi, le premier champ invalide prend le focus et un résumé (« Le formulaire contient 2 erreurs ») est annoncé (`role=alert`).
 - Réponse de l'api : `useApplyProblem(form)(error)` place chaque erreur de champ (`errors[].pointer` du RFC 9457) sous son champ, traduite depuis son code ; tout autre problème devient l'erreur du formulaire (`errors.<code>`), avec sa référence `X-Request-Id`. Un problème réseau reste à l'appelant (hors ligne : plus bas).
 - Le bouton d'envoi passe en `loading` (même largeur) pendant l'appel ; il n'est jamais désactivé pour cause de champs invalides : l'envoi montre les erreurs.
+- Les actions du formulaire sont alignées à droite, l'action principale en dernier ; leur rangée passe à la ligne (`flex-wrap`) quand la largeur manque, sur un téléphone notamment.
 
 ## Chargement
 

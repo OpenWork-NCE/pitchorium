@@ -36,7 +36,10 @@ Pitchorium est un réseau professionnel et une plateforme de financement à impa
 - Aucun texte d'interface en dur : namespace `web` de `packages/i18n` ; aucune couleur en dur : tokens, contraste AA testé (ADR 0084, 0085).
 - Mouvement : `docs/design/motion.md` ; primitives de `components/motion`, état final immédiat avec moins de mouvement ; GSAP réservé aux pages éditoriales (ADR 0086).
 - Marque : uniquement la sélection de `pnpm brand:sync`, jamais un fichier modifié à la main (ADR 0087).
-- Captures de référence : `pnpm --filter @pitchorium/web test:e2e` dans l'image Playwright (Docker requis).
+- Coquilles : `components/layout/member` (bandeau haut, jamais de barre inférieure, ADR 0099) et `components/layout/admin` ; une page se pose dans `ThreeColumnLayout` ou `SingleColumnLayout`. Usages : `docs/design/patterns.md`.
+- Code sorti du premier chargement mais utile hors ligne : préchargé à l'inactivité (`lib/preload.ts`) ; budgets par groupe (ADR 0094).
+- Tests : chaque story est un test, dans les deux thèmes (`pnpm --filter @pitchorium/web test:stories`) ; les parcours e2e ouvrent une session sur l'api simulée (`e2e/support/stub-api.mjs`, comptes de démonstration).
+- Captures de référence : `pnpm --filter @pitchorium/web test:e2e` dans l'image Playwright (Docker requis) ; captures de revue : `review:captures` (`docs/design/review`).
 
 ## Avant toute tâche
 
@@ -55,7 +58,7 @@ pnpm i18n:check
 pnpm db:check
 ```
 
-Si les schémas changent : `pnpm db:generate`. Si les routes ou contrats changent : `pnpm build && pnpm api-client:generate`, puis commiter `apps/server/openapi` et `packages/api-client/src/generated`. Si le frontend change : `pnpm test:e2e` (captures comprises), `pnpm --filter @pitchorium/web check:bundles` et, pour une page, `pnpm --filter @pitchorium/web lighthouse`.
+Si les schémas changent : `pnpm db:generate`. Si les routes ou contrats changent : `pnpm build && pnpm api-client:generate`, puis commiter `apps/server/openapi` et `packages/api-client/src/generated`. Si le frontend change : `pnpm test:e2e` (captures comprises), `pnpm --filter @pitchorium/web test:stories`, `pnpm --filter @pitchorium/web check:bundles` et, pour une page, `pnpm --filter @pitchorium/web lighthouse`.
 
 ## Définition de terminé
 

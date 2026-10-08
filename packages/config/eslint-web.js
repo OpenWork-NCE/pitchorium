@@ -78,7 +78,8 @@ export function createWebConfig({ tsconfigRootDir, ignores = [] }) {
     },
     {
       files: ['src/**/*.tsx'],
-      ignores: ['**/*.stories.tsx', '**/*.spec.tsx'],
+      // Stories and their reference compositions (src/stories) hold mock-up texts.
+      ignores: ['**/*.stories.tsx', '**/*.spec.tsx', 'src/stories/**'],
       rules: { 'pitchorium/no-literal-ui-text': 'error' },
     },
     {

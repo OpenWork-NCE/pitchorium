@@ -25,6 +25,7 @@
     "lighthouse": "sh scripts/lighthouse.sh",
     "storybook": "storybook dev --port 6006",
     "build-storybook": "storybook build --quiet",
+    "review:captures": "sh scripts/review-captures.sh",
     "brand:sync": "node scripts/brand-sync.mjs"
   },
   "dependencies": {

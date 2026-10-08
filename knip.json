@@ -31,6 +31,8 @@
         "scripts/*.mjs",
         "e2e/support/*.mjs",
         "lighthouserc.cjs",
+        "playwright.review.config.ts",
+        "e2e/review/*.review.ts",
         "src/components/ui/index.ts",
         "src/features/*/index.ts"
       ],

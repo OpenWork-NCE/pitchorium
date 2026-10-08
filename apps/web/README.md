@@ -21,10 +21,11 @@ L'api doit lister `http://localhost:3200` dans `WEB_APP_URL` et `CORS_ORIGINS` (
 | `pnpm lint`                | types des routes puis ESLint : règles partagées, Next.js, React et hooks, accessibilité (jsx-a11y), frontières, texte en dur, `"use client"` des routes, GSAP                      |
 | `pnpm test`                | Vitest : composants, logique, contraste des tokens, architecture                                                                                                                   |
 | `pnpm test:stories`        | chaque story comme un test (fonction `play` et addon d'accessibilité, les deux thèmes, mouvement réduit) dans l'image Playwright ; `test:stories:native` avec le Chromium local    |
-| `pnpm test:e2e`            | Playwright dans l'image officielle (captures comparées) ; `test:e2e:native` sans captures                                                                                          |
+| `pnpm test:e2e`            | Playwright dans l'image officielle (captures comparées), session ouverte sur l'api simulée avec les comptes de démonstration ; `test:e2e:native` sans captures                     |
 | `pnpm check:bundles`       | JavaScript initial par groupe de routes (budgets de l'ADR 0094), primitives Radix de chaque page, bibliothèques hors de leurs groupes (GSAP, Socket.IO, client d'authentification) |
 | `pnpm lighthouse`          | Lighthouse CI, profil mobile, budgets de `lighthouserc.cjs`                                                                                                                        |
 | `pnpm storybook`           | design system (port 6006) ; `build-storybook` pour la version statique                                                                                                             |
+| `pnpm review:captures`     | captures des compositions de référence, deux thèmes, 1280x800 et 390x844, dans l'image Playwright (`docs/design/review`)                                                           |
 | `pnpm brand:sync`          | resélectionne les fichiers du kit de marque local (`docs/design/brand-usage.md`)                                                                                                   |
 
 Storybook prégroupe les packages du dépôt (`.storybook/main.ts`) : après une modification de `@pitchorium/i18n` ou des contrats, supprimer `node_modules/.cache/storybook` avant `test:stories:native`.
