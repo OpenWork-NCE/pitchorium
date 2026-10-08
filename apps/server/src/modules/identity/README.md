@@ -52,3 +52,7 @@ L'agrégat est l'utilisateur (`aggregateId`). Chaque écriture de Better Auth es
 ## Dépendances
 
 Aucun module métier.
+
+## Données personnelles (RGPD)
+
+Export : compte, méthodes de connexion (jamais un secret ni un jeton), sessions avec appareil et adresse, acceptations des conditions. Suppression (en dernier) : compte, sessions, comptes liés, double authentification et jetons de vérification supprimés ; les acceptations légales gardées comme preuve sous le pseudonyme (plus de clé étrangère vers le compte). Enregistre aussi l'annuaire des comptes du module privacy (adresse, nom et langue de la confirmation). Contrats enregistrés auprès du module privacy (`infrastructure/identity-personal-data.ts`, ADR 0074).

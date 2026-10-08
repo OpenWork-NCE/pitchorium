@@ -16,7 +16,10 @@ import { IdentityMailer } from './infrastructure/identity-mailer';
 import { AccountController } from './interface/account.controller';
 import { SignInMethodEmailHandler } from './interface/sign-in-method-email.handler';
 
+import { IdentityPersonalData } from './infrastructure/identity-personal-data';
+
 const SHARED_PROVIDERS: Provider[] = [
+  IdentityPersonalData,
   { provide: IdentityUserRepository, useClass: DrizzleIdentityUserRepository },
   ActiveLocalesService,
   IdentityEventsRecorder,
