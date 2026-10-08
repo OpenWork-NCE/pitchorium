@@ -58,6 +58,8 @@ export const projectsProjects = projectsSchema.table(
     impactLevel: text('impact_level'),
     impactMethodologyVersion: integer('impact_methodology_version'),
     moderationStatus: text('moderation_status').notNull(),
+    /** Contributions stopped by a moderation decision (trust module), until it is lifted. */
+    fundingFrozenAt: timestamptz('funding_frozen_at'),
     featuredAt: timestamptz('featured_at'),
     featuredBy: uuid('featured_by'),
     publishedAt: timestamptz('published_at'),

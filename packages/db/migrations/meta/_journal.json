@@ -127,6 +127,13 @@
       "when": 1791421912700,
       "tag": "0017_discovery_events_missions",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1791438235935,
+      "tag": "0018_trust",
+      "breakpoints": true
     }
   ]
 }
