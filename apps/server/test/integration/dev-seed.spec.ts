@@ -14,6 +14,7 @@ import {
 import { sampleSuggestions, seedDevDiscovery } from '../../scripts/dev-seed/seed-dev-discovery';
 import { seedDevMessaging } from '../../scripts/dev-seed/seed-dev-messaging';
 import { createSeedContext, seedDevProjects } from '../../scripts/dev-seed/seed-dev-projects';
+import { seedDevTrust } from '../../scripts/dev-seed/seed-dev-trust';
 import { MethodologiesService } from '../../src/modules/impact/application/methodologies.service';
 import { ReconciliationService } from '../../src/modules/payments/application/reconciliation.service';
 import { FixedClock } from '../../src/platform/kernel';
@@ -240,6 +241,16 @@ describe('development data', () => {
         missionEngagements: 0,
       });
       expect(await counts()).toEqual(withDiscovery);
+      // Reports, an appealed decision, an export and translations, once.
+      expect(await seedDevTrust(context, clock)).toEqual({
+        moderators: 2,
+        reports: 2,
+        decisions: 1,
+        appeals: 1,
+        exports: 1,
+        translations: 1,
+      });
+      expect(await seedDevTrust(context, clock)).toMatchObject({ reports: 0, exports: 0 });
       // ensureDemo is idempotent: it returns the existing DEMO version.
       await expect(
         context.get(MethodologiesService, { strict: false }).ensureDemo({

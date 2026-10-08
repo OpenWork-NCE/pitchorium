@@ -6,6 +6,7 @@ import { DEMO_EMAIL_DOMAIN, DEMO_PASSWORD, seedDevData } from './dev-seed/seed-d
 import { sampleSuggestions, seedDevDiscovery } from './dev-seed/seed-dev-discovery';
 import { seedDevMessaging } from './dev-seed/seed-dev-messaging';
 import { createSeedContext, seedDevProjects } from './dev-seed/seed-dev-projects';
+import { DEMO_MODERATORS, seedDevTrust } from './dev-seed/seed-dev-trust';
 
 /** pnpm db:seed:dev: demonstration data for the development of the web application. */
 async function main(): Promise<void> {
@@ -32,7 +33,8 @@ async function main(): Promise<void> {
         const messaging = await seedDevMessaging(context, clock, now);
         const discovery = await seedDevDiscovery(context, clock, now);
         samples = await sampleSuggestions(context);
-        return { ...projects, ...messaging, ...discovery };
+        const trust = await seedDevTrust(context, clock, now);
+        return { ...projects, ...messaging, ...discovery, ...trust };
       } finally {
         await context.close();
       }
@@ -45,6 +47,7 @@ async function main(): Promise<void> {
         `Demo accounts: <handle with dots>@${DEMO_EMAIL_DOMAIN} (for example ` +
         `aissatou.ba@${DEMO_EMAIL_DOMAIN}), password ${DEMO_PASSWORD}.\n` +
         'Images are processed by the worker (pnpm dev). Impact methodology: DEMO, not contractual.\n' +
+        `Demo moderators (enable two-factor authentication first): ${DEMO_MODERATORS.join(', ')}.\n` +
         `Explained suggestions:\n${samples.map((line) => `- ${line}`).join('\n')}\n`,
     );
   } finally {
