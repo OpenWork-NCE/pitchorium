@@ -40,6 +40,10 @@ export abstract class ProfileRepository {
   /** Insert unless a profile exists for this user; false when nothing was inserted. */
   abstract insertIfAbsent(profile: BaseProfile): Promise<boolean>;
   abstract updateBase(userId: string, patch: BaseProfilePatch, now: Date): Promise<void>;
+  /** Editorial highlight (null: none), by a moderator or an administrator. */
+  abstract setFeatured(userId: string, featuredBy: string | null, at: Date | null): Promise<void>;
+  /** Featured public profiles, latest first. */
+  abstract featuredProfiles(limit: number): Promise<{ handle: string; featuredAt: Date | null }[]>;
   abstract setIntention(userId: string, intention: Intention | null, now: Date): Promise<void>;
   abstract setVisibility(userId: string, visibility: ProfileVisibility, now: Date): Promise<void>;
   abstract setImage(

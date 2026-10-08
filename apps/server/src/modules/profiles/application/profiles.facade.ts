@@ -14,6 +14,7 @@ import { ProfileAccessRegistry } from './profile-access.registry';
 import { ProfileViewRegistry } from './profile-view.registry';
 import { ProfileDisplayService } from './profile-display.service';
 import { ProfileEventsRecorder } from './profile-events.recorder';
+import { ProfileHighlightsService } from './profile-highlights.service';
 import { ReferenceDataService } from './reference-data.service';
 
 /** How a member appears on another module's page (organization members, for example). */
@@ -58,12 +59,22 @@ export class ProfilesFacade {
     private readonly transactions: TransactionManager,
     private readonly views: ProfileViewRegistry,
     private readonly access: ProfileAccessRegistry,
+    private readonly highlights: ProfileHighlightsService,
   ) {}
 
   /**
    * User id behind a current or former handle, null when unknown. With a viewer, a member
    * hidden from them (block in either direction) is unknown too.
    */
+  /** Editorial highlight of a public profile (administration). */
+  setProfileFeatured(handle: string, actorId: string, featured: boolean): Promise<void> {
+    return this.highlights.setFeatured(handle, actorId, featured);
+  }
+
+  featuredProfiles(limit: number): Promise<{ handle: string; featuredAt: Date | null }[]> {
+    return this.highlights.featured(limit);
+  }
+
   async userIdOf(handle: string, viewerId: string | null = null): Promise<string | null> {
     const userId = (await this.profiles.resolveHandle(handle))?.userId ?? null;
     if (!userId || (await this.access.isHidden(viewerId, userId))) return null;

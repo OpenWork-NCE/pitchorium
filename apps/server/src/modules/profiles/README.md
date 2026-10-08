@@ -60,6 +60,10 @@ Profils personne (cahier des charges §5, §7.2, §10.1) : profil de base, volet
 
 identity (nom, photo, locale), access (rôles, niveaux de confiance, enregistrement des prérequis), media (photo, couverture, import).
 
+## Mise en avant
+
+Un profil à page publique peut être mis en avant par un `moderator` ou un `admin` par l'interface unique de l'administration (`/v1/admin/highlights/profile/{handle}`, `ProfilesFacade.setProfileFeatured`, auditée, `profiles.profile.updated.v1` avec `featured`).
+
 ## Données personnelles (RGPD)
 
 Export : profil, volets entrepreneur et contributeur, anciens identifiants publics. Suppression : profil supprimé (volets et historique par cascade) ; le membre apparaît ensuite comme « Membre supprimé » là où son identifiant est conservé. Contrats enregistrés auprès du module privacy (`infrastructure/profiles-personal-data.ts`, ADR 0074).

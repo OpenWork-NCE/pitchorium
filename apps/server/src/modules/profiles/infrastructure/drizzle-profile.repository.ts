@@ -12,7 +12,7 @@ import {
   structureTypeSchema,
   visibilityLevelSchema,
 } from '@pitchorium/contracts';
-import { and, asc, eq, gt, inArray, ne } from '@pitchorium/db/orm';
+import { and, asc, desc, eq, gt, inArray, isNotNull, ne } from '@pitchorium/db/orm';
 import {
   profilesContributorFacets,
   profilesEntrepreneurFacets,
@@ -307,6 +307,24 @@ export class DrizzleProfileRepository extends ProfileRepository {
         updatedAt: now,
       })
       .where(eq(profilesProfiles.userId, userId));
+  }
+
+  async setFeatured(userId: string, featuredBy: string | null, at: Date | null): Promise<void> {
+    await this.db
+      .update(profilesProfiles)
+      .set({ featuredAt: at, featuredBy })
+      .where(eq(profilesProfiles.userId, userId));
+  }
+
+  async featuredProfiles(limit: number): Promise<{ handle: string; featuredAt: Date | null }[]> {
+    return this.db
+      .select({ handle: profilesProfiles.handle, featuredAt: profilesProfiles.featuredAt })
+      .from(profilesProfiles)
+      .where(
+        and(isNotNull(profilesProfiles.featuredAt), eq(profilesProfiles.publicPageEnabled, true)),
+      )
+      .orderBy(desc(profilesProfiles.featuredAt))
+      .limit(limit);
   }
 
   async setIntention(userId: string, intention: Intention | null, now: Date): Promise<void> {

@@ -25,7 +25,10 @@ import { ProfilesPersonalData } from './infrastructure/profiles-personal-data';
 
 import { ProfilesTranslatable } from './infrastructure/profiles-translatable';
 
+import { ProfileHighlightsService } from './application/profile-highlights.service';
+
 const SHARED_PROVIDERS: Provider[] = [
+  ProfileHighlightsService,
   ProfilesTranslatable,
   ProfilesPersonalData,
   { provide: ProfileRepository, useClass: DrizzleProfileRepository },
