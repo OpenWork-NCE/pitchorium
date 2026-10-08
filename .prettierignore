@@ -6,6 +6,7 @@ packages/api-client/src/generated
 packages/db/migrations/meta
 apps/server/openapi/openapi.json
 apps/web/.next
+apps/web/next-env.d.ts
 apps/web/.next-e2e
 apps/web/.next-analyze
 apps/web/storybook-static
