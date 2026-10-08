@@ -2,6 +2,8 @@
 export const DISCOVERY_QUEUE = 'discovery.matching';
 
 export const DISCOVERY_JOBS = {
+  /** Reindexes an entity, then queues its matching jobs once the index is committed. */
+  index: 'index',
   /** Every list of a member, from scratch. */
   member: 'member',
   /** Potential contributors of a project, from scratch. */
@@ -14,4 +16,6 @@ export const DISCOVERY_JOBS = {
 export interface MatchingJob {
   kind: 'person' | 'organization' | 'project' | 'event' | 'mission';
   id: string;
+  /** Source event: the follow-up jobs take their id from it (one per event). */
+  eventId?: string;
 }

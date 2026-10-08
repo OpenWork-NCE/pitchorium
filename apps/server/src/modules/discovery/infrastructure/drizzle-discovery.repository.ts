@@ -261,11 +261,15 @@ export class DrizzleDiscoveryRepository extends DiscoveryRepository {
   async search(criteria: SearchCriteria): Promise<SearchHit[]> {
     const { normalized, tsQuery } = criteria;
     const query = tsQuery ? sql`to_tsquery('simple', ${tsQuery})` : null;
+    // Constants of the domain, written in the query: typed parameters would be `unknown`.
+    const rankWeights = sql.raw(`'${RANK_WEIGHTS_ARRAY}'::float4[]`);
+    const similarityWeight = sql.raw(String(NAME_SIMILARITY_WEIGHT));
+    const prefixBonus = sql.raw(String(NAME_PREFIX_BONUS));
     const score =
       normalized && query
-        ? sql<number>`(case when ${documents.document} @@ ${query} then ts_rank_cd(${RANK_WEIGHTS_ARRAY}::float4[], ${documents.document}, ${query}) else 0 end)
-            + ${NAME_SIMILARITY_WEIGHT} * word_similarity(${normalized}, ${documents.nameNormalized})
-            + (case when ${documents.nameNormalized} like ${`${likeEscape(normalized)}%`} then ${NAME_PREFIX_BONUS} else 0 end)`
+        ? sql<number>`(case when ${documents.document} @@ ${query} then ts_rank_cd(${rankWeights}, ${documents.document}, ${query}) else 0 end)
+            + ${similarityWeight} * word_similarity(${normalized}::text, ${documents.nameNormalized})
+            + (case when ${documents.nameNormalized} like ${`${likeEscape(normalized)}%`} then ${prefixBonus} else 0 end)`
         : sql<number>`0`;
     return this.transactions.run(async () => {
       if (normalized) {
@@ -281,7 +285,7 @@ export class DrizzleDiscoveryRepository extends DiscoveryRepository {
             eq(documents.audience, criteria.audience),
             inArray(documents.kind, [...criteria.kinds]),
             normalized && query
-              ? sql`(${documents.document} @@ ${query} or ${normalized} <% ${documents.nameNormalized})`
+              ? sql`(${documents.document} @@ ${query} or ${normalized}::text <% ${documents.nameNormalized})`
               : undefined,
             ...this.filters(criteria),
             notHidden(criteria.hiddenOwnerIds),
@@ -355,14 +359,14 @@ export class DrizzleDiscoveryRepository extends DiscoveryRepository {
           and(
             eq(documents.audience, criteria.audience),
             inArray(documents.kind, [...criteria.kinds]),
-            sql`(${documents.nameNormalized} like ${prefix} or ${documents.nameNormalized} like ${wordPrefix} or ${criteria.normalized} <% ${documents.nameNormalized})`,
+            sql`(${documents.nameNormalized} like ${prefix} or ${documents.nameNormalized} like ${wordPrefix} or ${criteria.normalized}::text <% ${documents.nameNormalized})`,
             notHidden(criteria.hiddenOwnerIds),
             sql`(${documents.kind} <> 'event' or ${documents.endsAt} > now())`,
           ),
         )
         .orderBy(
           sql`(${documents.nameNormalized} like ${prefix}) desc`,
-          sql`word_similarity(${criteria.normalized}, ${documents.nameNormalized}) desc`,
+          sql`word_similarity(${criteria.normalized}::text, ${documents.nameNormalized}) desc`,
           asc(documents.name),
         )
         .limit(criteria.limit);

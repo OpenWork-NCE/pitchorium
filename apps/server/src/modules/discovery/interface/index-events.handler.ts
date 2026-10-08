@@ -31,7 +31,6 @@ import {
   ProjectPublished,
   ProjectUpdated,
 } from '../../projects';
-import { IndexerService } from '../application/indexer.service';
 import { DISCOVERY_JOBS, DISCOVERY_QUEUE, type MatchingJob } from './discovery-queue';
 
 /** Source events of the projection, by the kind of entity their aggregate is (ADR 0065). */
@@ -62,29 +61,23 @@ const KINDS: Readonly<Record<string, DiscoveryKind>> = {
 };
 
 /**
- * Keeps the search projection up to date (worker): the entity is read again through the facade
- * of its module and reindexed in the inbox transaction of the event; the suggestions follow in
- * the matching queue (the subject's lists, and the candidate's row in the lists of others).
+ * Keeps the search projection up to date (worker): each source event queues the `index` job of
+ * its entity, which reads it again through the facade of its module, rewrites its documents,
+ * then, once they are committed, queues the suggestions (the subject's lists, and the
+ * candidate's row in the lists of others). A job queued inside the inbox transaction could run
+ * before its commit: the reindex is therefore not done here.
  */
 @Injectable()
 @DomainEventHandler({ name: 'discovery.index', eventTypes: Object.keys(KINDS) })
 export class IndexEventsHandler implements DomainEventSubscriber {
-  constructor(
-    private readonly indexer: IndexerService,
-    @InjectQueue(DISCOVERY_QUEUE) private readonly queue: Queue,
-  ) {}
+  constructor(@InjectQueue(DISCOVERY_QUEUE) private readonly queue: Queue) {}
 
   async handle(event: OutboxEnvelope): Promise<void> {
     const kind = KINDS[event.type];
     if (!kind) return;
-    const id = event.aggregateId;
-    await this.indexer.reindex(kind, [id]);
-    const job: MatchingJob = { kind, id };
-    const jobs: string[] = [DISCOVERY_JOBS.candidate];
-    if (kind === 'person') jobs.push(DISCOVERY_JOBS.member);
-    if (kind === 'project') jobs.push(DISCOVERY_JOBS.project);
-    for (const name of jobs) {
-      await this.queue.add(name, job, { jobId: `${name}-${event.id}` });
-    }
+    const job: MatchingJob = { kind, id: event.aggregateId, eventId: event.id };
+    await this.queue.add(DISCOVERY_JOBS.index, job, {
+      jobId: `${DISCOVERY_JOBS.index}-${event.id}`,
+    });
   }
 }

@@ -4,16 +4,21 @@ import type { Job, Queue } from 'bullmq';
 import { WORKER_CONFIG, type WorkerConfig } from '../../../platform/config';
 import { repeatEvery } from '../../../platform/queue';
 import { IndexMaintenanceService } from '../application/index-maintenance.service';
+import { IndexerService } from '../application/indexer.service';
 import { MatchingService } from '../application/matching.service';
 import { DISCOVERY_JOBS, DISCOVERY_QUEUE, type MatchingJob } from './discovery-queue';
 
-/** Suggestions after a change, and the daily drift check of the projection (03:50 UTC). */
+/**
+ * Reindex of an entity after a source event, then its suggestions; the daily drift check of the
+ * projection (03:50 UTC).
+ */
 @Processor(DISCOVERY_QUEUE, { concurrency: 4 })
 export class DiscoveryJobsProcessor extends WorkerHost implements OnApplicationBootstrap {
   private readonly logger = new Logger(DiscoveryJobsProcessor.name);
 
   constructor(
     @InjectQueue(DISCOVERY_QUEUE) private readonly queue: Queue,
+    private readonly indexer: IndexerService,
     private readonly matching: MatchingService,
     private readonly maintenance: IndexMaintenanceService,
     @Inject(WORKER_CONFIG) private readonly config: WorkerConfig,
@@ -32,6 +37,17 @@ export class DiscoveryJobsProcessor extends WorkerHost implements OnApplicationB
   async process(job: Job): Promise<void> {
     const data = job.data as MatchingJob;
     switch (job.name) {
+      case DISCOVERY_JOBS.index: {
+        await this.indexer.reindex(data.kind, [data.id]);
+        // The index is committed: the suggestions read it.
+        const next: string[] = [DISCOVERY_JOBS.candidate];
+        if (data.kind === 'person') next.push(DISCOVERY_JOBS.member);
+        if (data.kind === 'project') next.push(DISCOVERY_JOBS.project);
+        for (const name of next) {
+          await this.queue.add(name, data, { jobId: `${name}-${data.eventId ?? job.id}` });
+        }
+        return;
+      }
       case DISCOVERY_JOBS.member:
         await this.matching.recomputeMember(data.id);
         return;
