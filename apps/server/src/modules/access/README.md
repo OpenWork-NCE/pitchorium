@@ -43,3 +43,7 @@ Aucun.
 ## Dépendances
 
 identity (session, utilisateur, révocation des sessions).
+
+## Données personnelles (RGPD)
+
+Export : rôles de plateforme. Suppression : rôles retirés, `granted_by` pseudonymisé. Contrats enregistrés auprès du module privacy (`infrastructure/access-personal-data.ts`, ADR 0074).

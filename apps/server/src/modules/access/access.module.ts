@@ -14,7 +14,10 @@ import { SessionHandshakeGuard } from './infrastructure/session-handshake.guard'
 import { AccessController } from './interface/access.controller';
 import { AuthenticationGuard } from './interface/authentication.guard';
 
+import { AccessPersonalData } from './infrastructure/access-personal-data';
+
 const SHARED_PROVIDERS: Provider[] = [
+  AccessPersonalData,
   { provide: RoleRepository, useClass: DrizzleRoleRepository },
   RegisteredKycStatusProvider,
   { provide: KycStatusProvider, useExisting: RegisteredKycStatusProvider },
