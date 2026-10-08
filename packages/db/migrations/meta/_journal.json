@@ -148,6 +148,13 @@
       "when": 1791440013313,
       "tag": "0020_privacy",
       "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1791444024655,
+      "tag": "0021_localization",
+      "breakpoints": true
     }
   ]
 }
