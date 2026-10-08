@@ -3,7 +3,9 @@
 import { useTranslations } from 'next-intl';
 import {
   createContext,
+  lazy,
   type ReactNode,
+  Suspense,
   use,
   useCallback,
   useEffect,
@@ -11,9 +13,12 @@ import {
   useState,
   useSyncExternalStore,
 } from 'react';
-import { displayKeys, isApple, isTypingTarget, matches, parseBinding } from '@/lib/shortcuts/keys';
-import { Dialog, DialogContent } from './dialog';
-import { Kbd } from './kbd';
+import { preloadWhenIdle } from '@/lib/preload';
+import { isApple, isTypingTarget, matches, parseBinding } from '@/lib/shortcuts/keys';
+
+/** The help and its dialog stay out of the first load; they arrive when the page is idle. */
+const loadHelp = () => import('./shortcuts-help');
+const ShortcutsHelp = lazy(loadHelp);
 
 export interface ShortcutDefinition {
   /** `mod+k`, `?`, `g h` (lib/shortcuts/keys.ts). */
@@ -61,6 +66,7 @@ function createRegistry(): Registry {
 }
 
 const ShortcutsContext = createContext<Registry | null>(null);
+const HelpContext = createContext<() => void>(() => undefined);
 
 const subscribeNothing = () => () => {};
 
@@ -83,6 +89,8 @@ export function ShortcutsProvider({ children }: { children: ReactNode }) {
   const apple = useIsApple();
   const [helpOpen, setHelpOpen] = useState(false);
   const [registry] = useState(createRegistry);
+  const openHelp = useCallback(() => setHelpOpen(true), []);
+  useEffect(() => preloadWhenIdle(loadHelp), []);
 
   const registered = useSyncExternalStore(registry.subscribe, registry.list, () => NONE);
 
@@ -146,33 +154,16 @@ export function ShortcutsProvider({ children }: { children: ReactNode }) {
 
   return (
     <ShortcutsContext value={registry}>
-      {children}
-      <Dialog open={helpOpen} onOpenChange={setHelpOpen}>
-        <DialogContent title={t('title')} description={t('description')} size="md">
-          <div className="grid gap-6">
-            {[...groups.entries()].map(([group, items]) => (
-              <section key={group} className="grid gap-2">
-                <h3 className="text-sm font-semibold">{group}</h3>
-                <dl className="grid gap-1.5">
-                  {items.map((item) => (
-                    <div
-                      key={item.keys}
-                      className="flex items-center justify-between gap-4 text-sm"
-                    >
-                      <dt>{item.label}</dt>
-                      <dd className="flex items-center gap-1">
-                        {displayKeys(item.keys, apple).map((part, index) => (
-                          <Kbd key={index}>{part}</Kbd>
-                        ))}
-                      </dd>
-                    </div>
-                  ))}
-                </dl>
-              </section>
-            ))}
-          </div>
-        </DialogContent>
-      </Dialog>
+      <HelpContext value={openHelp}>{children}</HelpContext>
+      {helpOpen ? (
+        <Suspense fallback={null}>
+          <ShortcutsHelp
+            groups={[...groups.entries()]}
+            apple={apple}
+            onClose={() => setHelpOpen(false)}
+          />
+        </Suspense>
+      ) : null}
     </ShortcutsContext>
   );
 }
@@ -194,4 +185,33 @@ export function useShortcut(definition: ShortcutDefinition): void {
       run: stableRun,
     });
   }, [registry, definition.keys, definition.label, definition.group, stableRun]);
+}
+
+/** Opens the help of the shortcuts (from a menu): the `?` key does the same. */
+export function useShortcutsHelp(): () => void {
+  return use(HelpContext);
+}
+
+/**
+ * Registers several shortcuts at once while mounted (the sections of a navigation); the list is
+ * compared by its keys and labels, its actions are always the latest.
+ */
+export function useShortcuts(definitions: readonly ShortcutDefinition[]): void {
+  const registry = use(ShortcutsContext);
+  const latest = useRef(definitions);
+  useEffect(() => {
+    latest.current = definitions;
+  });
+  const signature = definitions
+    .map((definition) => `${definition.keys}|${definition.label}|${definition.group}`)
+    .join('\n');
+  useEffect(() => {
+    if (!registry) return;
+    const removals = latest.current.map((definition, index) =>
+      registry.register({ ...definition, run: () => latest.current[index]?.run() }),
+    );
+    return () => {
+      for (const remove of removals) remove();
+    };
+  }, [registry, signature]);
 }

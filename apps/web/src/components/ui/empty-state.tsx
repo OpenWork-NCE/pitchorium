@@ -1,5 +1,9 @@
 import type { ReactNode } from 'react';
+import { preload } from 'react-dom';
 import { cn } from '@/lib/cn';
+
+/** The motif of the kit (public/brand, pnpm brand:sync), the same file at every size. */
+const MOTIF = '/brand/overlay-mobile.svg';
 
 interface EmptyStateProps {
   /** What is missing ("Aucune conversation pour l'instant"). */
@@ -31,6 +35,8 @@ export function EmptyState({
   className,
 }: EmptyStateProps) {
   const Heading = `h${headingLevel}` as const;
+  // Announced in the head: a background found late in the styles would delay the page.
+  if (size === 'page') preload(MOTIF, { as: 'image', fetchPriority: 'high' });
   return (
     <div
       className={cn(

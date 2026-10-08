@@ -18,11 +18,11 @@ export const Default: Story = {
     const button = within(canvasElement).getByRole('button', { name: 'Notifications' });
     await userEvent.tab();
     await expect(button).toHaveFocus();
-    await waitFor(() =>
-      expect(within(document.body).getByRole('tooltip')).toHaveTextContent('Notifications'),
-    );
+    // The button names itself: the tooltip only shows its label (aria-hidden).
+    const tooltip = () => document.querySelector('[data-radix-popper-content-wrapper]');
+    await waitFor(() => expect(tooltip()).toHaveTextContent('Notifications'));
     await userEvent.keyboard('{Escape}');
-    await waitFor(() => expect(within(document.body).queryByRole('tooltip')).toBeNull());
+    await waitFor(() => expect(tooltip()).toBeNull());
   },
 };
 

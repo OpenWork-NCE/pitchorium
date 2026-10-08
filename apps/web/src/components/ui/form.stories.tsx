@@ -30,6 +30,7 @@ function ConnectionForm({ answer }: { answer: (attempt: number) => ApiProblemErr
       }}
     >
       <FormField
+        control={form.control}
         name="handle"
         label="Identifiant du membre"
         description="Celui de son adresse de profil."
@@ -37,6 +38,7 @@ function ConnectionForm({ answer }: { answer: (attempt: number) => ApiProblemErr
         render={({ field }) => <Input {...field} autoComplete="off" />}
       />
       <FormField
+        control={form.control}
         name="note"
         label="Note"
         optional

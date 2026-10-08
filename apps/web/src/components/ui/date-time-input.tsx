@@ -52,7 +52,7 @@ export function DateTimeInput({
   const describedBy = cn(control['aria-describedby'], zoneId) || undefined;
   return (
     <div role="group" aria-labelledby={labelId} className="grid gap-2">
-      <div className="grid grid-cols-[1fr_8rem] gap-2">
+      <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,8rem)] gap-2">
         <input
           id={control.id}
           type="date"
@@ -64,7 +64,7 @@ export function DateTimeInput({
           min={minDate}
           value={wall.date}
           onChange={(event) => update({ ...wall, date: event.target.value })}
-          className={cn(controlClasses, 'h-11 px-3')}
+          className={cn(controlClasses, 'h-11 min-w-0 px-3')}
         />
         <input
           type="time"
@@ -76,7 +76,7 @@ export function DateTimeInput({
           step={300}
           value={wall.time}
           onChange={(event) => update({ ...wall, time: event.target.value })}
-          className={cn(controlClasses, 'h-11 px-3 tabular-nums')}
+          className={cn(controlClasses, 'h-11 min-w-0 px-3 tabular-nums')}
         />
       </div>
       <p id={zoneId} className="inline-flex items-center gap-1.5 text-xs text-muted">

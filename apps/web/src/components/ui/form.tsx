@@ -8,6 +8,7 @@ import { CircleAlert } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { type ComponentProps, type ReactNode, useCallback } from 'react';
 import {
+  type Control,
   type ControllerFieldState,
   type ControllerRenderProps,
   type FieldPath,
@@ -149,6 +150,8 @@ function FormSummary() {
 }
 
 interface FormFieldProps<Values extends FieldValues, Name extends FieldPath<Values>> {
+  /** The form (`form.control`): types the name and the value; the enclosing Form otherwise. */
+  control?: Control<Values, unknown, unknown>;
   name: Name;
   label: ReactNode;
   hideLabel?: boolean;
@@ -165,6 +168,7 @@ interface FormFieldProps<Values extends FieldValues, Name extends FieldPath<Valu
 
 /** A field of a Form: its label, description, translated error and counter, bound by name. */
 export function FormField<Values extends FieldValues, Name extends FieldPath<Values>>({
+  control: own,
   name,
   label,
   hideLabel,
@@ -174,8 +178,8 @@ export function FormField<Values extends FieldValues, Name extends FieldPath<Val
   maxLength,
   render,
 }: FormFieldProps<Values, Name>) {
-  const { control } = useFormContext<Values>();
-  const { field, fieldState } = useController({ name, control });
+  const context = useFormContext<Values>();
+  const { field, fieldState } = useController({ name, control: own ?? context.control });
   const value: unknown = field.value;
   const length = typeof value === 'string' ? value.length : 0;
   return (

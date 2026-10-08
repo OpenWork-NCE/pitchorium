@@ -13,6 +13,7 @@ export { Checkbox } from './checkbox';
 export { Combobox, type ComboboxOption } from './combobox';
 export { type CommandAction, CommandPalette } from './command-palette';
 export { CopyButton } from './copy-button';
+export { CountBadge } from './count-badge';
 export { DateTimeInput } from './date-time-input';
 export { DescriptionList } from './description-list';
 export { Dialog, DialogClose, DialogContent, DialogTrigger } from './dialog';
@@ -61,7 +62,13 @@ export { RelativeTime } from './relative-time';
 export { Select } from './select';
 export { Separator } from './separator';
 export { Sheet, SheetClose, SheetContent, SheetTrigger } from './sheet';
-export { ShortcutsProvider, useIsApple, useShortcut } from './shortcuts';
+export {
+  ShortcutsProvider,
+  useIsApple,
+  useShortcut,
+  useShortcuts,
+  useShortcutsHelp,
+} from './shortcuts';
 export { Loading, Skeleton } from './skeleton';
 export { Slider } from './slider';
 export { Spinner } from './spinner';
@@ -76,6 +83,7 @@ export { Textarea } from './textarea';
 export { ThemeSelector } from './theme-selector';
 export { ThemeToggle } from './theme-toggle';
 export { Timeline, type TimelineEntry } from './timeline';
+export { notify, ToasterLoader } from './toast';
 export { Toaster } from './toaster';
 export { ToggleGroup } from './toggle-group';
 export { Tooltip } from './tooltip';

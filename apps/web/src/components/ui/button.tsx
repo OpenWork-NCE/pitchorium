@@ -5,20 +5,14 @@ import {
   cloneElement,
   type ComponentProps,
   isValidElement,
-  lazy,
   type MouseEvent,
   type ReactElement,
   type ReactNode,
-  Suspense,
   useId,
 } from 'react';
 import { cn } from '@/lib/cn';
+import { ReasonTooltip } from './reason-tooltip';
 import { Spinner } from './spinner';
-
-/** The tooltip of a disabled reason loads with the first button that has one. */
-const ReasonTooltip = lazy(() =>
-  import('./tooltip').then((module) => ({ default: module.Tooltip })),
-);
 
 export const buttonVariants = cva(
   'relative isolate inline-flex shrink-0 press cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-full font-medium whitespace-nowrap select-none disabled:pointer-events-none disabled:opacity-50 aria-disabled:cursor-not-allowed aria-disabled:opacity-50 [&_svg]:shrink-0',
@@ -159,9 +153,7 @@ export function Button({
   if (!disabledReason) return button;
   return (
     <>
-      <Suspense fallback={button}>
-        <ReasonTooltip content={disabledReason}>{button}</ReasonTooltip>
-      </Suspense>
+      <ReasonTooltip reason={disabledReason}>{button}</ReasonTooltip>
       <span id={reasonId} className="sr-only">
         {disabledReason}
       </span>

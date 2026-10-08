@@ -27,7 +27,7 @@ Règles communes :
 | Composant                      | Usage                                                                                                    | À faire, à éviter                                                                                  | Story                                 |
 | ------------------------------ | -------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | ------------------------------------- |
 | `Button`                       | `primary` (remplissage cuivre H21), `secondary`, `outline`, `ghost`, `danger`, `link` ; `sm`, `md`, `lg` | un seul `primary` par vue ; `loading` garde la largeur ; `disabledReason` plutôt qu'un bouton muet | Design system/Actions/Button          |
-| `IconButton`                   | bouton à icône seule : libellé obligatoire, infobulle                                                    | jamais sans `label`                                                                                | Design system/Actions/Icon button     |
+| `IconButton`                   | bouton à icône seule : libellé obligatoire, infobulle au survol (400 ms) et au focus, fermée par Échap   | jamais sans `label`                                                                                | Design system/Actions/Icon button     |
 | `ToggleGroup`                  | `single` : contrôle segmenté à indicateur glissant ; `multiple` : bascules de filtres                    | trois à cinq options ; au-delà, un `Select`                                                        | Design system/Actions/Toggle group    |
 | `CopyButton`                   | copie dans le presse-papiers, résultat annoncé                                                           |                                                                                                    | Design system/Actions/Copy button     |
 | `ThemeToggle`, `ThemeSelector` | bascule clair et sombre (cercle H14), choix explicite avec le système                                    |                                                                                                    | Design system/Navigation/Theme toggle |
@@ -60,6 +60,7 @@ Système `Field` : libellé, description, contrôle, erreur et compteur liés pa
 | `Avatar`                                 | photo ou initiales sur couleur dérivée du nom (AA) ; personnes en cercle, organisations en carré | `decorative` quand le nom est écrit à côté | Design system/Data display                  |
 | `AvatarGroup`                            | quelques personnes en chevauchement, résumé parlé                                                | toujours un `label` qui nomme le groupe    | idem                                        |
 | `Badge`                                  | état ou catégorie en un mot ; `count` pour un nombre à traiter                                   | pas de compteur sans action à faire        | idem                                        |
+| `CountBadge`                             | nombre à traiter sur une entrée de navigation, `99+` au-delà ; la nouvelle valeur roule          | décoratif : le lien dit le nombre          | Compositions/Member shell loaded            |
 | `Tag`                                    | valeur parmi d'autres, retirable                                                                 |                                            | idem                                        |
 | `Card`                                   | `default`, `sunken`, `interactive` (une carte lien entière)                                      | pas de carte dans une carte                | idem                                        |
 | `Stat`                                   | chiffre clé qui compte une fois à l'écran (H17)                                                  | la valeur finale est rendue par le serveur | idem                                        |
@@ -96,17 +97,17 @@ Système `Field` : libellé, description, contrôle, erreur et compteur liés pa
 
 ## Retour
 
-| Composant             | Usage                                                          | À faire, à éviter                                   | Story                  |
-| --------------------- | -------------------------------------------------------------- | --------------------------------------------------- | ---------------------- |
-| `Toaster`             | confirmation brève (sonner), annoncée                          | jamais le seul endroit d'une erreur à traiter       | Design system/Feedback |
-| `Alert`               | état d'une page ou d'une action, avec ce qu'il faut faire      | `live` seulement s'il apparaît après une action     | idem                   |
-| `Callout`             | explication en marge                                           | jamais une erreur                                   | idem                   |
-| `Banner`              | message du compte ou du site en haut de l'espace membre        | une ligne, une action                               | idem                   |
-| `Skeleton`, `Loading` | squelettes fidèles à la mise en page, région annoncée occupée  | même hauteur que le contenu final                   | idem                   |
-| `Spinner`, `Progress` | action en cours dans un bouton ; progression connue ou attente |                                                     | idem                   |
-| `EmptyState`          | motif de la marque, titre, texte, action                       | jamais d'image générique                            | idem                   |
-| `ErrorState`          | échec d'un chargement, reprise et référence                    | texte du code d'erreur, jamais le message technique | idem                   |
-| `AnnouncerProvider`   | régions `aria-live` partagées (`useAnnounce`)                  |                                                     | (coquille)             |
+| Composant             | Usage                                                                                                      | À faire, à éviter                                   | Story                  |
+| --------------------- | ---------------------------------------------------------------------------------------------------------- | --------------------------------------------------- | ---------------------- |
+| `Toaster`, `notify`   | confirmation brève (sonner), annoncée ; `ToasterLoader` et `notify` chargent sonner après le premier rendu | jamais le seul endroit d'une erreur à traiter       | Design system/Feedback |
+| `Alert`               | état d'une page ou d'une action, avec ce qu'il faut faire                                                  | `live` seulement s'il apparaît après une action     | idem                   |
+| `Callout`             | explication en marge                                                                                       | jamais une erreur                                   | idem                   |
+| `Banner`              | message du compte ou du site en haut de l'espace membre                                                    | une ligne, une action                               | idem                   |
+| `Skeleton`, `Loading` | squelettes fidèles à la mise en page, région annoncée occupée                                              | même hauteur que le contenu final                   | idem                   |
+| `Spinner`, `Progress` | action en cours dans un bouton ; progression connue ou attente                                             |                                                     | idem                   |
+| `EmptyState`          | motif de la marque, titre, texte, action                                                                   | jamais d'image générique                            | idem                   |
+| `ErrorState`          | échec d'un chargement, reprise et référence                                                                | texte du code d'erreur, jamais le message technique | idem                   |
+| `AnnouncerProvider`   | régions `aria-live` partagées (`useAnnounce`)                                                              |                                                     | (coquille)             |
 
 ## Navigation
 
