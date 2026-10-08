@@ -55,8 +55,6 @@ export const ACTION_POLICIES: Readonly<Record<Action, ActionPolicy>> = {
   'project.interest.express': { requires: ['email_verified'] },
   'project.interest.read': { resourceRoles: ['owner', 'editor'] },
   'project.impact.assess': { resourceRoles: ['owner', 'editor'] },
-  // Editorial highlight of the showcase.
-  'project.feature': { roles: ['moderator', 'admin'], sensitive: true },
   // Impact (section 12): versions of the methodology are managed by administrators only.
   'impact.methodology.manage': { roles: ['admin'], sensitive: true },
   'impact.assessment.submit': { ownership: 'self', requires: ['profile.entrepreneur_facet'] },
@@ -102,8 +100,6 @@ export const ACTION_POLICIES: Readonly<Record<Action, ActionPolicy>> = {
   'content.post.repost': { requires: ['email_verified'] },
   'content.post.save': {},
   'content.post.hide': {},
-  // Editorial highlight of the « découverte éditorialisée » (§10.3).
-  'content.post.feature': { roles: ['moderator', 'admin'], sensitive: true },
   'content.post.stats.read': { ownership: 'self' },
   'content.reaction.set': {},
   'content.comment.create': { requires: ['email_verified'] },
