@@ -225,7 +225,11 @@ describe('notifications', () => {
     expect(reactions).toHaveLength(1);
     expect(reactions[0]).toMatchObject({
       eventCount: 2,
-      actors: [{ handle: await handleOf(awa) }, { handle: await handleOf(kofi) }],
+      // Events are processed in any order: both actors, the latest first.
+      actors: expect.arrayContaining([
+        expect.objectContaining({ handle: await handleOf(awa) }),
+        expect.objectContaining({ handle: await handleOf(kofi) }),
+      ]),
       target: { type: 'post', key: post.body.id, path: `/posts/${post.body.id}` },
     });
     await kofi.agent
