@@ -55,6 +55,3 @@ export async function replaceIdentifier(
     }
   }
 }
-
-/** Value written in place of an erased email or text. */
-export const ERASED = '[erased]';

@@ -6,5 +6,3 @@ export const QUEUE_NAMES = {
   domainEvents: 'platform.domain-events',
   maintenance: 'platform.maintenance',
 } as const;
-
-export type QueueName = (typeof QUEUE_NAMES)[keyof typeof QUEUE_NAMES];

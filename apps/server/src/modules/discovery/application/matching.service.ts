@@ -16,7 +16,6 @@ import {
   matchPerson,
   matchProject,
   type MissionProfile,
-  type PersonProfile,
   type ProjectProfile,
   REVERSE_CAP,
   SUGGESTIONS_PER_LIST,
@@ -335,5 +334,3 @@ interface Update {
 }
 
 const member = (id: string): SubjectRef => ({ type: 'member', id });
-
-export type { PersonProfile };

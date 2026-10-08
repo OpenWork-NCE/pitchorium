@@ -160,15 +160,3 @@ export function assertEditable(
     throw new DomainError('MESSAGING_EDIT_WINDOW_CLOSED', 'The edit window is closed');
   }
 }
-
-/** Unread messages of a participant: received after their read position. */
-export function isUnreadFor(
-  message: Pick<MessageRecord, 'sequence' | 'senderId' | 'deletedAt'>,
-  participant: Pick<ParticipantRecord, 'participantId' | 'lastReadSequence'>,
-): boolean {
-  return (
-    message.sequence > participant.lastReadSequence &&
-    message.senderId !== participant.participantId &&
-    message.deletedAt === null
-  );
-}

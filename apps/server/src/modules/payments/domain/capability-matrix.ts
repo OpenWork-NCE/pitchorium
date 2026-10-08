@@ -5,6 +5,7 @@ import type { PaymentMethod } from '@pitchorium/contracts';
  * the official documentation it was checked against on the date below; an entry whose
  * capability could not be confirmed there is `verified: false` and never offered (ADR 0043).
  * Changing an entry means checking the source again and bumping the version.
+ * @public Recorded in docs/architecture/payments.md.
  */
 export const CAPABILITY_MATRIX_VERSION = '2026-10-07';
 

@@ -1,0 +1,34 @@
+{
+  "$schema": "https://unpkg.com/knip@6.38.0/schema.json",
+  "workspaces": {
+    "apps/server": {
+      "entry": [
+        "src/main.*.ts",
+        "scripts/**/*.{ts,mts,mjs}",
+        "test/**/*.ts",
+        "vitest.*.config.mts",
+        "src/modules/*/index.ts"
+      ],
+      "project": ["src/**/*.ts", "scripts/**/*.{ts,mts}", "test/**/*.ts"],
+      "ignoreDependencies": ["pino-pretty"]
+    },
+    ".": {
+      "entry": ["scripts/*.mjs", "perf/k6/*.js", "commitlint.config.js"],
+      "ignoreDependencies": ["@commitlint/types", "k6"]
+    },
+    "packages/db": {
+      "entry": [
+        "src/index.ts",
+        "src/orm.ts",
+        "src/schemas/*.ts",
+        "src/cli/*.ts",
+        "src/migrate.ts",
+        "src/seed.ts"
+      ]
+    }
+  },
+  "ignoreExportsUsedInFile": true,
+  "rules": {
+    "duplicates": "off"
+  }
+}

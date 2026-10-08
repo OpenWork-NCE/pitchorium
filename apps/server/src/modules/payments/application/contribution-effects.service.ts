@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { type DiscrepancyKind, uuidV7Schema } from '@pitchorium/contracts';
 import { TransactionManager } from '../../../platform/database';
-import { Clock, DomainError, IdGenerator, Money } from '../../../platform/kernel';
+import { Clock, IdGenerator, Money } from '../../../platform/kernel';
 import { Metrics } from '../../../platform/observability';
 import { ProjectsFacade } from '../../projects';
 import { commissionRefundFor, eurPartFor } from '../domain/commission';
@@ -619,11 +619,5 @@ export class ContributionEffectsService {
       id: this.ids.next(),
       recordedAt: this.clock.now(),
     });
-  }
-}
-
-export function assertSameCurrency(contribution: ContributionRecord, amount: Money): void {
-  if (amount.currency !== contribution.currency) {
-    throw new DomainError('PAYMENTS_REFUND_INVALID', 'A refund is in the paid currency');
   }
 }
