@@ -4,15 +4,15 @@ Captures des compositions de référence de Storybook (`apps/web/src/stories/com
 
 ## Contenu
 
-Fichiers `<composition>-<format>-<thème>.png` : format `desktop` (1280x800) ou `mobile` (390x844), thème `light` ou `dark`, page entière, mouvement réduit, langue française.
+Fichiers `<composition>-<format>-<thème>.png` : format `desktop` (1280x800) ou `mobile` (390x844), thème `light` ou `dark`, page entière, mouvement réduit, langue française, polices de la marque, anticrénelage en niveaux de gris (`--disable-lcd-text` : l'anticrénelage sous-pixel de l'image dessinait des liserés colorés sur les grands textes gras, un artefact de la capture, pas un effet de la page).
 
 - `member-shell-loading` : cadre membre (bandeau, compteurs, trois colonnes), fil en squelettes.
-- `member-shell-loaded` : le même cadre, fil chargé, carte de profil, carte de projet, suggestions.
+- `member-shell-loaded` : le même cadre, fil chargé, carte de profil, carte de projet compacte, suggestions avec leur raison.
 - `profile-card-story` : carte de profil avec force du profil.
-- `project-card-story` : carte de projet avec `FundingProgress` (paliers) et `ImpactBadge`.
+- `project-card-story` : `ProjectCard` en variantes `full` (paliers et leur état) et `compact`, montants sans décimales, impact teinté.
 - `notifications-list` : liste de notifications, lues et non lues.
 - `conversation` : fil de messages et zone de saisie.
-- `form-with-server-errors` : formulaire complet après une réponse RFC 9457 de l'api (résumé, erreurs placées sous leurs champs).
+- `form-with-server-errors` : formulaire complet (dates en segments, fuseau dit une fois) après une règle vérifiée dans le navigateur puis une réponse RFC 9457 de l'api : résumé focalisé avec un lien par erreur, messages précis sous les champs, actions empilées sur téléphone.
 - `admin-table` : cadre d'administration, fil d'Ariane, tableau triable.
 
 ## Régénérer

@@ -12,7 +12,13 @@ export default defineConfig({
   testMatch: '*.review.ts',
   fullyParallel: true,
   reporter: 'list',
-  use: { baseURL: `http://localhost:${PORT}`, ...devices['Desktop Chrome'] },
+  use: {
+    baseURL: `http://localhost:${PORT}`,
+    ...devices['Desktop Chrome'],
+    // Greyscale antialiasing: the subpixel one of the image draws coloured fringes on large bold
+    // text, a rendering of the capture, not of the page (docs/design/review/README.md).
+    launchOptions: { args: ['--disable-lcd-text'] },
+  },
   webServer: {
     command: `node e2e/support/serve-static.mjs storybook-static ${PORT}`,
     url: `http://localhost:${PORT}/index.json`,

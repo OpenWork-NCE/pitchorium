@@ -61,6 +61,16 @@ describe('AnimatedNumber', () => {
     expect(screen.getByText('1250 €')).toBeTruthy();
     expect(frames).toHaveLength(0);
   });
+
+  it('leaves no filter, shadow nor blur on the amount once counted (H17)', () => {
+    vi.spyOn(performance, 'now').mockReturnValue(0);
+    render(<AnimatedNumber value={1250} format={format} />);
+    act(() => runFrames(DURATION_MS.counter));
+    const counter = screen.getByText('1250 €');
+    // Only its text changes while it counts: no style is ever written on it.
+    expect(counter.getAttribute('style')).toBeNull();
+    expect(['', 'none']).toContain(getComputedStyle(counter).filter);
+  });
 });
 
 describe('IconSwap', () => {
