@@ -575,7 +575,7 @@ export const AdminTable: Story = {
               },
               {
                 key: 'verified',
-                header: 'Email',
+                header: 'Email vérifié',
                 cell: (row) => (
                   <Badge tone={row.emailVerified ? 'success' : 'warning'}>
                     {row.emailVerified ? 'Vérifié' : 'À vérifier'}
@@ -596,6 +596,7 @@ export const AdminTable: Story = {
                 key: 'actions',
                 header: <span className="sr-only">Actions</span>,
                 headerLabel: 'Actions',
+                actions: true,
                 align: 'end',
                 cell: (row) => (
                   <IconButton size="sm" label={`Inviter ${row.name}`} icon={<UserPlus />} />
@@ -613,4 +614,19 @@ export const AdminTable: Story = {
       </Main>
     </div>
   ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const table = canvas.getByRole('table');
+    // Each column has a label of its own.
+    await expect(within(table).getByRole('columnheader', { name: 'Email' })).toBeVisible();
+    await expect(within(table).getByRole('columnheader', { name: 'Email vérifié' })).toBeVisible();
+    // An action with an icon only shows its name in a tooltip, on hover and on focus (the
+    // button names itself, the tooltip is hidden from assistive technologies).
+    await userEvent.hover(within(table).getByRole('button', { name: 'Inviter Aïssatou Ba' }));
+    await waitFor(() =>
+      expect(document.querySelector('[data-radix-popper-content-wrapper]')).toHaveTextContent(
+        'Inviter Aïssatou Ba',
+      ),
+    );
+  },
 };
