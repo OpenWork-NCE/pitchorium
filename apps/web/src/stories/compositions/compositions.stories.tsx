@@ -2,13 +2,14 @@ import {
   getAccessControllerPrerequisitesQueryKey,
   getNotificationsControllerCountersQueryKey,
 } from '@pitchorium/api-client';
-import { createEventRequestSchema } from '@pitchorium/contracts';
+import { createEventRequestSchema, EVENT_MAX_DURATION_DAYS } from '@pitchorium/contracts';
 import { ApiProblemError } from '@pitchorium/api-client';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Download, Filter, Send, UserPlus } from 'lucide-react';
 import { type ReactNode, useRef, useState } from 'react';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
+import { endsAfterStart } from '@/lib/forms/rules';
 import { MemberHeader } from '@/components/layout/member/member-header';
 import { Main, ThreeColumnLayout } from '@/components/layout/page-layouts';
 import { AdminPage } from '@/components/layout/admin/admin-page';
@@ -22,6 +23,7 @@ import {
   DateTimeField,
   FileDrop,
   Form,
+  FormActions,
   FormField,
   Heading,
   IconButton,
@@ -265,8 +267,11 @@ const SECTORS = [
   { value: 'health', label: 'Santé' },
 ];
 
+/** The schema of the api, and the rule it checks as a whole: the end follows the start. */
+const eventSchema = endsAfterStart(createEventRequestSchema);
+
 function EventForm() {
-  const form = useZodForm(createEventRequestSchema, {
+  const form = useZodForm(eventSchema, {
     defaultValues: {
       title: '',
       description: '',
@@ -278,7 +283,11 @@ function EventForm() {
       onlineUrl: 'https://example.org/atelier',
     },
   });
-  const applyProblem = useApplyProblem(form);
+  const applyProblem = useApplyProblem(form, {
+    fields: {
+      EVENTS_SCHEDULE_INVALID: { field: 'endsAt', values: { days: EVENT_MAX_DURATION_DAYS } },
+    },
+  });
   const attempt = useRef(0);
   const timeZone = form.watch('timeZone');
   return (
@@ -296,7 +305,7 @@ function EventForm() {
                   status: 400,
                   code: 'VALIDATION_FAILED',
                   errors: [
-                    { pointer: '/endsAt', code: 'too_small' },
+                    { pointer: '/description', code: 'too_big' },
                     { pointer: '/onlineUrl', code: 'invalid_format' },
                   ],
                 },
@@ -421,10 +430,10 @@ function EventForm() {
         items={[]}
         onFiles={() => undefined}
       />
-      <div className="flex flex-wrap justify-end gap-2">
-        <Button variant="outline">Enregistrer le brouillon</Button>
+      <FormActions>
         <Button type="submit">Publier l’événement</Button>
-      </div>
+        <Button variant="outline">Enregistrer le brouillon</Button>
+      </FormActions>
     </Form>
   );
 }
@@ -446,11 +455,25 @@ export const FormWithServerErrors: Story = {
     const end = within(canvas.getByRole('group', { name: 'Fin' }));
     await userEvent.click(end.getByRole('spinbutton', { name: 'Jour' }));
     await userEvent.keyboard('201120261700');
+    // The browser checks the rule first: the summary takes the focus, its link leads to the end.
     await userEvent.click(canvas.getByRole('button', { name: 'Publier l’événement' }));
-    await waitFor(() =>
-      expect(canvas.getByRole('alert')).toHaveTextContent('Le formulaire contient 2 erreurs.'),
+    const first = await canvas.findByRole('group', { name: 'Le formulaire contient 1 erreur.' });
+    await waitFor(() => expect(first).toHaveFocus());
+    await userEvent.click(
+      within(first).getByRole('link', { name: 'Fin : La fin doit être après le début.' }),
     );
+    await expect(end.getByRole('spinbutton', { name: 'Jour' })).toHaveFocus();
+    await userEvent.click(end.getByRole('spinbutton', { name: 'Heures' }));
+    await userEvent.keyboard('19');
+    // Then the api: each error says the rule its field expects.
+    await userEvent.click(canvas.getByRole('button', { name: 'Publier l’événement' }));
+    const summary = await canvas.findByRole('group', { name: 'Le formulaire contient 2 erreurs.' });
+    await waitFor(() => expect(summary).toHaveFocus());
+    await expect(within(summary).getAllByRole('link')).toHaveLength(2);
     await expect(canvas.getByRole('textbox', { name: 'Lien de la visioconférence' })).toBeInvalid();
+    await expect(
+      canvas.getByRole('textbox', { name: 'Lien de la visioconférence' }),
+    ).toHaveAccessibleDescription(/commençant par https:\/\//);
   },
 };
 

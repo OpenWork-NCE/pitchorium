@@ -98,7 +98,10 @@
     "field": {
       "optional": "(optional)",
       "counter": "{{count}} of {{max}} characters",
-      "counterOver": "{{count}} characters too many"
+      "counterOver": {
+        "one": "{{count}} character too many",
+        "other": "{{count}} characters too many"
+      }
     },
     "password": {
       "show": "Show password",
@@ -265,43 +268,77 @@
   "forms": {
     "summary": {
       "one": "The form has {{count}} error.",
-      "other": "The form has {{count}} errors."
+      "other": "The form has {{count}} errors.",
+      "form": "The form could not be sent.",
+      "separator": ": "
     },
     "unexpected": "The operation did not go through. Try again in a moment.",
     "reference": "(reference: {{reference}})",
     "issues": {
-      "required": "This field is required.",
-      "invalid_type": "This value is not valid.",
-      "invalid": "This value is not valid.",
+      "required": "Fill in this field.",
+      "invalid_type": "Enter a valid value for this field.",
+      "invalid": "Correct this value: it does not follow the rule of this field.",
       "too_small": {
-        "string": "At least {{minimum}} characters.",
-        "number": "At least {{minimum}}.",
-        "array": "At least {{minimum}} items.",
-        "set": "At least {{minimum}} items.",
-        "file": "File too small.",
-        "generic": "Value too small."
+        "string": "Enter at least {{minimum}} characters.",
+        "number": "Enter a number of {{minimum}} or more.",
+        "array": "Choose at least {{minimum}} items.",
+        "set": "Choose at least {{minimum}} items.",
+        "one": "Choose at least one item.",
+        "file": "Choose a larger file.",
+        "generic": "Enter a larger value."
       },
       "too_big": {
-        "string": "At most {{maximum}} characters.",
-        "number": "At most {{maximum}}.",
-        "array": "At most {{maximum}} items.",
-        "set": "At most {{maximum}} items.",
-        "file": "File too large.",
-        "generic": "Value too large."
+        "string": "Shorten this text to {{maximum}} characters or fewer.",
+        "number": "Enter a number of {{maximum}} or less.",
+        "array": "Choose {{maximum}} items or fewer.",
+        "set": "Choose {{maximum}} items or fewer.",
+        "one": "Choose a single item.",
+        "file": "Choose a lighter file.",
+        "generic": "Enter a smaller value."
       },
       "invalid_format": {
-        "email": "Enter a valid email address.",
-        "url": "Enter a valid web address (https://…).",
-        "uuid": "Invalid identifier.",
-        "date": "Enter a valid date.",
-        "datetime": "Enter a valid date and time.",
-        "time": "Enter a valid time.",
-        "generic": "The format is not valid."
+        "email": "Enter a full email address, for example name@example.org.",
+        "url": "Enter a full web address, starting with https://.",
+        "uuid": "This identifier is not recognised: copy it again from its page.",
+        "date": "Enter a full date: day, month and year.",
+        "datetime": "Enter a full date and time.",
+        "time": "Enter a full time: hours and minutes.",
+        "generic": "Correct the format of this value."
       },
-      "invalid_value": "Choose one of the proposed values.",
-      "invalid_union": "This value is not valid.",
-      "not_multiple_of": "This value does not follow the expected step.",
-      "unrecognized_keys": "This form has unknown fields."
+      "invalid_value": "Choose one of the options offered.",
+      "invalid_union": "Correct this value: it matches none of the expected forms.",
+      "not_multiple_of": "Enter a value that follows the expected step.",
+      "unrecognized_keys": "Reload the page: this form has unknown fields."
+    },
+    "fields": {
+      "handle": {
+        "invalid_format": "Use 3 to 30 characters: lowercase letters without accents, digits and hyphens, with no hyphen at the start, at the end or twice in a row."
+      },
+      "linkedin": {
+        "custom": "Enter the address of a profile on linkedin.com, for example https://www.linkedin.com/in/your-name.",
+        "invalid_format": "Enter the address of a profile on linkedin.com, for example https://www.linkedin.com/in/your-name."
+      },
+      "website": {
+        "invalid_format": "Enter the full address of the site, starting with https:// (http:// is not accepted)."
+      },
+      "onlineUrl": {
+        "invalid_format": "Enter the full link of the video call, starting with https:// (http:// is not accepted).",
+        "required": "Add the link of the video call: it is required for an online or hybrid event."
+      },
+      "startsAt": {
+        "required": "Enter the date and time of the start.",
+        "invalid_format": "Enter the date and time of the start."
+      },
+      "endsAt": {
+        "required": "Enter the date and time of the end.",
+        "invalid_format": "Enter the date and time of the end."
+      }
+    },
+    "rules": {
+      "endsAfterStart": "The end must be after the start."
+    },
+    "problems": {
+      "EVENTS_SCHEDULE_INVALID": "Check the dates: the end must be after the start, the event lasts {{days}} days at most and cannot be over already."
     }
   },
   "access": {

@@ -36,7 +36,7 @@ export { EmptyState } from './empty-state';
 export { ErrorState } from './error-state';
 export { Field, useFieldControl } from './field';
 export { FileDrop, type FileDropItem, type FileDropState } from './file-drop';
-export { Form, FormField, useApplyProblem, useZodForm } from './form';
+export { Form, FormActions, FormField, useApplyProblem, useZodForm } from './form';
 export { FundingProgress, type FundingMilestone } from './funding-progress';
 export { Heading } from './heading';
 export { HoverCard } from './hover-card';

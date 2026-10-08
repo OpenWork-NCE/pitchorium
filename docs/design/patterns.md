@@ -4,13 +4,15 @@ Comment assembler les composants (`components.md`) pour les situations récurren
 
 ## Formulaires et erreurs (ADR 0096)
 
-- Un formulaire repose sur un schéma de `@pitchorium/contracts` : `useZodForm(schema)` le valide dans le navigateur avec les messages de `web.forms.issues` (jamais les textes anglais de Zod), l'api le valide à nouveau.
+- Un formulaire repose sur un schéma de `@pitchorium/contracts` : `useZodForm(schema)` le valide dans le navigateur avec les messages de `web.forms` (jamais les textes anglais de Zod), l'api le valide à nouveau. Une règle que l'api vérifie sur l'ensemble (la fin d'un événement suit son début) est reprise par un raffinement de `lib/forms/rules.ts` (`endsAfterStart`), qui nomme son message.
 - Chaque champ est un `FormField` (libellé, description, erreur, compteur) ; les champs sont obligatoires sauf mention « facultatif » (`optional`), et le formulaire le dit une fois en tête quand il en a plusieurs.
 - Une valeur facultative laissée vide est absente (`undefined`), pas une chaîne vide : le schéma de l'api refuse souvent une chaîne vide (`min(1)`).
-- Validation au premier départ du champ (`onTouched`), puis à chaque saisie ; à l'envoi, le premier champ invalide prend le focus et un résumé (« Le formulaire contient 2 erreurs ») est annoncé (`role=alert`).
-- Réponse de l'api : `useApplyProblem(form)(error)` place chaque erreur de champ (`errors[].pointer` du RFC 9457) sous son champ, traduite depuis son code ; tout autre problème devient l'erreur du formulaire (`errors.<code>`), avec sa référence `X-Request-Id`. Un problème réseau reste à l'appelant (hors ligne : plus bas).
+- Validation au premier départ du champ (`onTouched`), puis à chaque saisie. À l'envoi en échec, un résumé apparaît en tête du formulaire et prend le focus : son titre compte les erreurs (« Le formulaire contient 2 erreurs. »), puis chaque erreur est un lien « Libellé : message » qui place le focus sur son champ (le premier segment d'un groupe).
+- Messages précis et actionnables, du plus précis au plus général : message du champ (`web.forms.fields.<champ>.<code>` : la règle attendue, les domaines autorisés, comme `linkedin.com` ou `https://` seulement), message de la règle d'un raffinement (`web.forms.rules.<règle>`, « La fin doit être après le début. »), puis message du code avec ses bornes formatées dans la langue de la page (`web.forms.issues`, « Raccourcissez ce texte à 10 000 caractères au plus. »). Un texte vide qui échoue à un motif est un champ à renseigner.
+- Réponse de l'api : `useApplyProblem(form, { fields })` place chaque erreur de champ (`errors[].pointer` du RFC 9457) sous son champ, avec les bornes et le format que le schéma du formulaire donne pour ce champ (l'api ne transmet que le code) ; un code de l'api qui concerne un champ (`EVENTS_SCHEDULE_INVALID` pour `endsAt`) va sous ce champ avec son message (`web.forms.problems.<code>`) ; tout autre problème devient l'erreur du formulaire (`errors.<code>`), avec sa référence `X-Request-Id`. Le résumé reprend alors le focus. Un problème réseau reste à l'appelant (hors ligne : plus bas).
+- Compteur de caractères : affiché à partir de 80 % de la limite, ou tant que le focus est dans le champ ; nombres formatés dans la langue de la page ; annoncé (`aria-live` poli) seulement près de la limite.
 - Le bouton d'envoi passe en `loading` (même largeur) pendant l'appel ; il n'est jamais désactivé pour cause de champs invalides : l'envoi montre les erreurs.
-- Les actions du formulaire sont alignées à droite, l'action principale en dernier ; leur rangée passe à la ligne (`flex-wrap`) quand la largeur manque, sur un téléphone notamment.
+- Actions du formulaire (`FormActions`) : l'action principale d'abord dans le document ; sur un téléphone, empilées en pleine largeur, l'action principale en haut ; à partir de `sm`, en ligne, alignées à droite, l'action principale à droite.
 
 ## Chargement
 

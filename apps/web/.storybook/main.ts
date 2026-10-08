@@ -13,6 +13,7 @@ const WORKSPACE_PACKAGES = ['@pitchorium/i18n', '@pitchorium/contracts', '@pitch
  */
 const LIBRARIES = [
   '@hookform/resolvers/zod',
+  '@internationalized/date',
   '@tanstack/react-query',
   'class-variance-authority',
   'clsx',
@@ -23,6 +24,7 @@ const LIBRARIES = [
   'next-intl',
   'next-themes',
   'radix-ui',
+  'react-day-picker',
   'react-hook-form',
   'sonner',
   'storybook/test',

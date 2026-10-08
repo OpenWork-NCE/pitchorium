@@ -4,7 +4,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { useRef } from 'react';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
 import { Button } from './button';
-import { Form, FormField, useApplyProblem, useZodForm } from './form';
+import { Form, FormActions, FormField, useApplyProblem, useZodForm } from './form';
 import { Input } from './input';
 import { Textarea } from './textarea';
 
@@ -54,9 +54,10 @@ function ConnectionForm({ answer }: { answer: (attempt: number) => ApiProblemErr
           />
         )}
       />
-      <div>
+      <FormActions>
         <Button type="submit">Envoyer la demande</Button>
-      </div>
+        <Button variant="outline">Annuler</Button>
+      </FormActions>
     </Form>
   );
 }
@@ -76,18 +77,23 @@ const limit = new ApiProblemError(
   '01JD7Q2XA0B4',
 );
 
-/** Zod in the browser, with the messages of the catalogues; the first invalid field is focused. */
+/**
+ * Zod in the browser, with the messages of the catalogues: the summary takes the focus and lists
+ * each error with a link that puts the focus on its field.
+ */
 export const ClientValidation: Story = {
   render: () => <ConnectionForm answer={() => validation} />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await userEvent.click(canvas.getByRole('button', { name: 'Envoyer la demande' }));
-    const handle = canvas.getByRole('textbox', { name: 'Identifiant du membre' });
-    await waitFor(() => expect(handle).toHaveFocus());
-    await expect(handle).toBeInvalid();
-    await waitFor(() =>
-      expect(canvas.getByRole('alert')).toHaveTextContent('Le formulaire contient 1 erreur.'),
+    const summary = await canvas.findByRole('group', { name: 'Le formulaire contient 1 erreur.' });
+    await waitFor(() => expect(summary).toHaveFocus());
+    await userEvent.click(
+      within(summary).getByRole('link', { name: /^Identifiant du membre : Renseignez ce champ/ }),
     );
+    const handle = canvas.getByRole('textbox', { name: 'Identifiant du membre' });
+    await expect(handle).toHaveFocus();
+    await expect(handle).toBeInvalid();
   },
 };
 
@@ -101,11 +107,22 @@ export const ServerErrors: Story = {
       'kofi-mensah',
     );
     await userEvent.type(canvas.getByRole('textbox', { name: /Note/ }), 'Rencontrés à Lomé.');
+    // Far from the limit, the counter shows only while the field has the focus.
+    await expect(canvas.getByText('18 sur 300 caractères')).toBeVisible();
+    await userEvent.tab();
+    await expect(canvas.getByText('18 sur 300 caractères')).not.toBeVisible();
     await userEvent.click(canvas.getByRole('button', { name: 'Envoyer la demande' }));
     const note = canvas.getByRole('textbox', { name: /Note/ });
     await waitFor(() => expect(note).toBeInvalid());
-    await expect(note).toHaveAccessibleDescription(/Valeur trop grande/);
+    // The api gives the code only; the schema of the form gives the bound, in French digits.
+    await expect(note).toHaveAccessibleDescription(
+      /Raccourcissez ce texte à 300 caractères au plus/,
+    );
     await userEvent.click(canvas.getByRole('button', { name: 'Envoyer la demande' }));
-    await waitFor(() => expect(canvas.getByRole('alert')).toHaveTextContent(/01JD7Q2XA0B4/));
+    await waitFor(() =>
+      expect(canvas.getByRole('group', { name: 'L’envoi n’a pas abouti.' })).toHaveTextContent(
+        /01JD7Q2XA0B4/,
+      ),
+    );
   },
 };

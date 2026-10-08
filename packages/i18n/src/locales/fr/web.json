@@ -98,7 +98,10 @@
     "field": {
       "optional": "(facultatif)",
       "counter": "{{count}} sur {{max}} caractères",
-      "counterOver": "{{count}} caractères en trop"
+      "counterOver": {
+        "one": "{{count}} caractère en trop",
+        "other": "{{count}} caractères en trop"
+      }
     },
     "password": {
       "show": "Afficher le mot de passe",
@@ -265,43 +268,77 @@
   "forms": {
     "summary": {
       "one": "Le formulaire contient {{count}} erreur.",
-      "other": "Le formulaire contient {{count}} erreurs."
+      "other": "Le formulaire contient {{count}} erreurs.",
+      "form": "L’envoi n’a pas abouti.",
+      "separator": " : "
     },
     "unexpected": "L’opération n’a pas abouti. Réessayez dans un instant.",
     "reference": "(référence : {{reference}})",
     "issues": {
-      "required": "Ce champ est obligatoire.",
-      "invalid_type": "Cette valeur n’est pas valide.",
-      "invalid": "Cette valeur n’est pas valide.",
+      "required": "Renseignez ce champ.",
+      "invalid_type": "Saisissez une valeur valide pour ce champ.",
+      "invalid": "Corrigez cette valeur : elle ne respecte pas la règle de ce champ.",
       "too_small": {
-        "string": "Au moins {{minimum}} caractères.",
-        "number": "Au moins {{minimum}}.",
-        "array": "Au moins {{minimum}} éléments.",
-        "set": "Au moins {{minimum}} éléments.",
-        "file": "Fichier trop petit.",
-        "generic": "Valeur trop petite."
+        "string": "Saisissez au moins {{minimum}} caractères.",
+        "number": "Saisissez un nombre supérieur ou égal à {{minimum}}.",
+        "array": "Choisissez au moins {{minimum}} éléments.",
+        "set": "Choisissez au moins {{minimum}} éléments.",
+        "one": "Choisissez au moins un élément.",
+        "file": "Choisissez un fichier plus grand.",
+        "generic": "Saisissez une valeur plus grande."
       },
       "too_big": {
-        "string": "Au plus {{maximum}} caractères.",
-        "number": "Au plus {{maximum}}.",
-        "array": "Au plus {{maximum}} éléments.",
-        "set": "Au plus {{maximum}} éléments.",
-        "file": "Fichier trop volumineux.",
-        "generic": "Valeur trop grande."
+        "string": "Raccourcissez ce texte à {{maximum}} caractères au plus.",
+        "number": "Saisissez un nombre inférieur ou égal à {{maximum}}.",
+        "array": "Choisissez {{maximum}} éléments au plus.",
+        "set": "Choisissez {{maximum}} éléments au plus.",
+        "one": "Choisissez un seul élément.",
+        "file": "Choisissez un fichier plus léger.",
+        "generic": "Saisissez une valeur plus petite."
       },
       "invalid_format": {
-        "email": "Saisissez une adresse email valide.",
-        "url": "Saisissez une adresse web valide (https://…).",
-        "uuid": "Identifiant invalide.",
-        "date": "Saisissez une date valide.",
-        "datetime": "Saisissez une date et une heure valides.",
-        "time": "Saisissez une heure valide.",
-        "generic": "Le format n’est pas valide."
+        "email": "Saisissez une adresse email complète, par exemple nom@exemple.org.",
+        "url": "Saisissez une adresse web complète, commençant par https://.",
+        "uuid": "Cet identifiant n’est pas reconnu : reprenez-le depuis sa page.",
+        "date": "Saisissez une date complète : jour, mois et année.",
+        "datetime": "Saisissez une date et une heure complètes.",
+        "time": "Saisissez une heure complète : heures et minutes.",
+        "generic": "Corrigez le format de cette valeur."
       },
-      "invalid_value": "Choisissez une des valeurs proposées.",
-      "invalid_union": "Cette valeur n’est pas valide.",
-      "not_multiple_of": "Cette valeur ne respecte pas le pas attendu.",
-      "unrecognized_keys": "Ce formulaire contient des champs inconnus."
+      "invalid_value": "Choisissez l’une des options proposées.",
+      "invalid_union": "Corrigez cette valeur : elle ne correspond à aucune des formes attendues.",
+      "not_multiple_of": "Saisissez une valeur qui respecte le pas attendu.",
+      "unrecognized_keys": "Rechargez la page : ce formulaire contient des champs inconnus."
+    },
+    "fields": {
+      "handle": {
+        "invalid_format": "Utilisez de 3 à 30 caractères : lettres minuscules sans accent, chiffres et tirets, sans tiret au début, à la fin ni deux de suite."
+      },
+      "linkedin": {
+        "custom": "Saisissez l’adresse d’un profil sur linkedin.com, par exemple https://www.linkedin.com/in/votre-nom.",
+        "invalid_format": "Saisissez l’adresse d’un profil sur linkedin.com, par exemple https://www.linkedin.com/in/votre-nom."
+      },
+      "website": {
+        "invalid_format": "Saisissez l’adresse complète du site, commençant par https:// (http:// n’est pas accepté)."
+      },
+      "onlineUrl": {
+        "invalid_format": "Saisissez le lien complet de la visioconférence, commençant par https:// (http:// n’est pas accepté).",
+        "required": "Ajoutez le lien de la visioconférence : il est obligatoire pour un événement en ligne ou hybride."
+      },
+      "startsAt": {
+        "required": "Indiquez la date et l’heure de début.",
+        "invalid_format": "Indiquez la date et l’heure de début."
+      },
+      "endsAt": {
+        "required": "Indiquez la date et l’heure de fin.",
+        "invalid_format": "Indiquez la date et l’heure de fin."
+      }
+    },
+    "rules": {
+      "endsAfterStart": "La fin doit être après le début."
+    },
+    "problems": {
+      "EVENTS_SCHEDULE_INVALID": "Vérifiez les dates : la fin doit être après le début, l’événement dure {{days}} jours au plus et ne peut pas être déjà terminé."
     }
   },
   "access": {
