@@ -27,7 +27,7 @@ Comptes et authentification (cahier des charges §7) avec Better Auth 1.7, mont�
 
 ## Façade publique (`index.ts`)
 
-- `IdentityFacade` : `findUser` (avec `locale` et `timeZone`), `findUserByEmail`, `activeLocales`, `legalStatus`, `revokeAllSessions(userId, reason)`, `requestAccountDeletion(userId)`.
+- `IdentityFacade` : `findUser` (avec `locale` et `timeZone`), `findUsers` (par lots, emails des notifications), `findUserByEmail`, `activeLocales`, `legalStatus`, `revokeAllSessions(userId, reason)`, `requestAccountDeletion(userId)`.
 - `SessionAuthenticator` (api) : session portée par les cookies d'une requête HTTP ou d'un handshake Socket.IO.
 - Classes d'événements ci-dessous (constante `TYPE`).
 

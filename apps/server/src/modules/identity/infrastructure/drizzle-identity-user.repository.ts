@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { DEFAULT_LOCALE, type Locale, localeSchema } from '@pitchorium/contracts';
-import { and, count, eq, ne } from '@pitchorium/db/orm';
+import { and, count, eq, inArray, ne } from '@pitchorium/db/orm';
 import {
   identityLegalAcceptances,
   identitySessions,
@@ -46,6 +46,15 @@ export class DrizzleIdentityUserRepository extends IdentityUserRepository {
   async findById(id: string): Promise<IdentityUser | null> {
     const [row] = await this.db.select().from(identityUsers).where(eq(identityUsers.id, id));
     return row ? toUser(row) : null;
+  }
+
+  async findByIds(ids: readonly string[]): Promise<IdentityUser[]> {
+    if (ids.length === 0) return [];
+    const rows = await this.db
+      .select()
+      .from(identityUsers)
+      .where(inArray(identityUsers.id, [...ids]));
+    return rows.map(toUser);
   }
 
   async findByEmail(email: string): Promise<IdentityUser | null> {

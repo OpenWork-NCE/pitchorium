@@ -22,6 +22,12 @@ export class IdentityFacade {
     return this.users.findById(userId);
   }
 
+  /** Users of the given ids that exist, by id (batches of notification emails). */
+  async findUsers(userIds: readonly string[]): Promise<Map<string, IdentityUser>> {
+    const users = await this.users.findByIds([...new Set(userIds)]);
+    return new Map(users.map((user) => [user.id, user]));
+  }
+
   findUserByEmail(email: string): Promise<IdentityUser | null> {
     return this.users.findByEmail(email.trim().toLowerCase());
   }

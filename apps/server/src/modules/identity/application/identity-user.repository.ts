@@ -23,6 +23,7 @@ export interface LegalAcceptanceRow {
 /** Port: identity data outside of what Better Auth manages through its own adapter. */
 export abstract class IdentityUserRepository {
   abstract findById(id: string): Promise<IdentityUser | null>;
+  abstract findByIds(ids: readonly string[]): Promise<IdentityUser[]>;
   abstract findByEmail(email: string): Promise<IdentityUser | null>;
   abstract updatePreferences(
     id: string,
