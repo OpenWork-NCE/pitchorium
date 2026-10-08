@@ -40,6 +40,7 @@ pnpm dev
 | `pnpm typecheck`                     | Vérification TypeScript sans émission                                                                                                                                                             |
 | `pnpm test`                          | Tests unitaires et tests HTTP sans dépendance externe                                                                                                                                             |
 | `pnpm test:integration`              | Tests d'intégration (Testcontainers, Docker requis)                                                                                                                                               |
+| `pnpm test:e2e`                      | Bout en bout : api et worker construits lancés comme processus sur des conteneurs semés, scénarios porteur, contributeur, social, modération, RGPD, événement et mission                          |
 | `pnpm test:providers`                | Formes des réponses des vraies API de test de Stripe, Flutterwave et Resend (clés `STRIPE_TEST_SECRET_KEY`, `FLUTTERWAVE_TEST_SECRET_KEY`, `RESEND_TEST_API_KEY` ; sans clé, s'arrête proprement) |
 | `pnpm providers:stripe-test-account` | Crée le compte connecté Stripe de test activé qu'exige le test Checkout et affiche son lien d'onboarding (`--link`, `--check <acct>`)                                                             |
 | `pnpm providers:cleanup`             | Ferme ou supprime chez Stripe et Flutterwave les objets marqués par les tests des prestataires                                                                                                    |
@@ -57,10 +58,16 @@ pnpm dev
 | `pnpm api-client:generate`           | Régénère le client Orval à partir de l'OpenAPI                                                                                                                                                    |
 | `pnpm infra:up` / `pnpm infra:down`  | Démarre ou arrête l'infrastructure locale                                                                                                                                                         |
 | `pnpm check:box-drawing`             | Échoue si un fichier suivi contient un caractère U+2500 à U+257F                                                                                                                                  |
+| `pnpm check:dead-code`               | knip : fichiers, exports et dépendances inutilisés (les façades `index.ts` des modules sont des surfaces publiques)                                                                               |
+| `pnpm check:licenses`                | Refuse une dépendance de production sous GPL ou AGPL                                                                                                                                              |
+| `pnpm docs:api`                      | Sert la référence de l'api (Scalar) sur http://127.0.0.1:3200/                                                                                                                                    |
+| `pnpm perf:load`                     | Scénarios de charge k6 contre `API_URL` (`docs/operations/performance.md`)                                                                                                                        |
+| `pnpm ops:restore-drill`             | Exercice réel de sauvegarde et de restauration de la base locale (`docs/operations/backup-and-restore.md`)                                                                                        |
 | `pnpm verify:clean`                  | Définition de terminé depuis zéro : clone propre, projet Docker isolé sur des ports dédiés, toutes les vérifications, puis suppression des conteneurs et volumes (ADR 0063)                       |
 
 ## Documentation
 
+- [Prise en main](docs/onboarding.md)
 - Cahier des charges et lecture du périmètre : `docs/product/`, document client confidentiel conservé hors du dépôt (ignoré par git)
 - [Vue d'ensemble de l'architecture](docs/architecture/overview.md)
 - [Modules métier](docs/architecture/modules.md)
@@ -73,5 +80,9 @@ pnpm dev
 - [Temps réel : protocole Socket.IO](docs/architecture/realtime.md)
 - [Notifications](docs/architecture/notifications.md) et [délivrabilité des emails](docs/architecture/email-deliverability.md)
 - [Décisions d'architecture (ADR)](docs/adr/README.md)
+- [Référence de l'api et politique de version](docs/api/README.md), [passation au frontend](docs/frontend-handoff.md)
+- Exploitation : [déploiement](docs/operations/deployment.md), [environnements](docs/operations/environments.md), [SLO et alertes](docs/operations/slo-and-alerts.md), [sauvegardes](docs/operations/backup-and-restore.md), [performance](docs/operations/performance.md), [résilience](docs/operations/resilience.md), [runbooks](docs/operations/runbooks/)
+- Sécurité : [revue](docs/security/review.md), [ASVS niveau 2](docs/security/asvs.md) ; conformité : [conservation](docs/compliance/retention.md), [registre des traitements](docs/compliance/records-of-processing.md)
+- [Préparation de la mise en production](docs/production-readiness.md)
 - [Questions ouvertes](docs/open-questions.md)
 - [Infrastructure locale](infra/docker/README.md), [serveur](apps/server/README.md), [base de données](packages/db/README.md), [i18n](packages/i18n/README.md), [emails](packages/emails/README.md), [client d'API](packages/api-client/README.md)

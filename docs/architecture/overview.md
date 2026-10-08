@@ -15,7 +15,10 @@ packages/
   emails/            templates React Email
   api-client/        client fetch et hooks TanStack Query générés par Orval
 infra/docker/        infrastructure locale (Compose)
-docs/                produit, architecture, ADR, questions ouvertes
+infra/production/    référence de déploiement sur une machine virtuelle (Compose, Caddy)
+perf/k6/             scénarios de charge
+docs/                architecture, ADR, API, exploitation, sécurité, conformité, questions ouvertes
+Dockerfile           image unique de production (api, worker, migrations)
 ```
 
 Le frontend (`apps/web`) n'existe pas encore. Il consommera `@pitchorium/api-client`, `@pitchorium/contracts` et `@pitchorium/i18n`.
@@ -58,7 +61,7 @@ flowchart LR
 
 Les prestataires de paiement sont appelés hors transaction (ADR 0019) ; leurs webhooks arrivent sur `/v1/payments/webhooks/<prestataire>`, servi comme `/v1/auth` avant les analyseurs de corps pour vérifier la signature sur le corps brut (`payments.md`).
 
-Redis sert au rate limiting, à l'adaptateur Socket.IO et à BullMQ. L'api et le worker poussent aux appareils d'un membre (room `user:<id>`) par le canal Redis de l'adaptateur (`@socket.io/redis-emitter`) : protocole dans `realtime.md`, notifications dans `notifications.md`, délivrabilité des emails dans `email-deliverability.md`. La recherche et les suggestions lisent une projection propre au module discovery, nourrie par les événements des autres modules et reconstruite par leurs façades (`discovery.md`, ADR 0065). Les traces, les métriques (port `Metrics` de `platform/observability`, compteurs OpenTelemetry exportés en OTLP) et Sentry ne sont actifs que si `OTEL_EXPORTER_OTLP_ENDPOINT` ou `SENTRY_DSN` sont définis.
+Redis sert au rate limiting, à l'adaptateur Socket.IO et à BullMQ. L'api et le worker poussent aux appareils d'un membre (room `user:<id>`) par le canal Redis de l'adaptateur (`@socket.io/redis-emitter`) : protocole dans `realtime.md`, notifications dans `notifications.md`, délivrabilité des emails dans `email-deliverability.md`. La recherche et les suggestions lisent une projection propre au module discovery, nourrie par les événements des autres modules et reconstruite par leurs façades (`discovery.md`, ADR 0065). Les traces, les métriques (port `Metrics` de `platform/observability` : compteurs, histogrammes et jauges OpenTelemetry exportés en OTLP, liste dans `docs/operations/slo-and-alerts.md`) et Sentry ne sont actifs que si `OTEL_EXPORTER_OTLP_ENDPOINT` ou `SENTRY_DSN` sont définis.
 
 ## Flux d'une écriture avec outbox
 
@@ -164,4 +167,11 @@ Sur SIGTERM, Nest déclenche les hooks d'arrêt : l'api cesse d'accepter des con
 | Antivirus     | Conteneur ClamAV joignable par le worker (`CLAMAV_HOST`, `CLAMAV_PORT`)                          |
 | Web           | `apps/web`, étape ultérieure, servi séparément de l'api                                          |
 
-La configuration de production du stockage (buckets, CORS, domaine public) est décrite dans `storage.md`. L'hébergeur n'est pas choisi (voir `docs/open-questions.md`). Les migrations s'appliquent avant le déploiement de l'api et du worker avec `pnpm db:migrate`.
+Une seule image (`Dockerfile`, distroless, non root) porte les trois commandes : api, worker et tâche de release `dist/main.migrate.js`, appliquée avant le déploiement de l'api et du worker (`docs/operations/deployment.md`, migrations expand et contract). La configuration de production du stockage (buckets, CORS, domaine public) est décrite dans `storage.md`. L'hébergeur n'est pas choisi (voir `docs/open-questions.md`) ; la préparation complète est ordonnée dans `docs/production-readiness.md`.
+
+## Qualité et sécurité vérifiées
+
+- Tests unitaires, d'architecture (frontières, cycles, données personnelles, inventaire des routes, bornes des entrées, variables d'environnement), d'intégration (Testcontainers) et de bout en bout (`pnpm test:e2e` : api et worker construits lancés comme processus, API publique et Socket.IO).
+- Entrées strictes : clés inconnues refusées (`StrictValidationPipe`), chaînes et listes bornées ; journaux masqués (`log-redaction.ts`).
+- CI : lint, types, tests, cohérence des générations, e2e, gitleaks, `pnpm audit`, licences, CodeQL, image construite et analysée par Trivy, SBOM CycloneDX ; release-please pour les versions.
+- Performance, résilience et exploitation : `docs/operations/` ; sécurité : `docs/security/`.
