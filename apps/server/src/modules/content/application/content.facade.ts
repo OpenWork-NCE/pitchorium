@@ -81,6 +81,12 @@ export class ContentFacade implements OnModuleInit {
     return post && !post.deletedAt ? post.authorId : null;
   }
 
+  /** Author of a live comment, null when unknown or deleted (reports, trust module). */
+  async commentAuthorId(commentId: string): Promise<string | null> {
+    const comment = await this.content.findComment(commentId);
+    return comment && !comment.deletedAt ? comment.authorId : null;
+  }
+
   /** Publication of a live comment, null when unknown or deleted (reactions to a comment). */
   async commentPostId(commentId: string): Promise<string | null> {
     const comment = await this.content.findComment(commentId);

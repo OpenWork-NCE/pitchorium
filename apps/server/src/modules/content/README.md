@@ -59,7 +59,7 @@ Chaque lecture d'une publication par un autre membre (fil ou page) ajoute le lec
 
 ## Façade publique (`index.ts`)
 
-`ContentFacade` : `setPostModerationStatus`, `setCommentModerationStatus`, `registerProjectLinkValidator`, `registerProjectUpdatesFeedSource`, `registerEventsFeedSource`, `registerFeedSuggestionSource`, `projectPosts`, `visiblePosts` (publications telles qu'un lecteur les voit, pour une publication partagée en message), `postAuthorId`, `commentPostId` ; interfaces `ProjectLinkValidator`, `ProjectUpdatesFeedSource`, `EventsFeedSource`, `FeedSuggestionSource`, type `FeedEntry` ; classes d'événements.
+`ContentFacade` : `setPostModerationStatus`, `setCommentModerationStatus`, `registerProjectLinkValidator`, `registerProjectUpdatesFeedSource`, `registerEventsFeedSource`, `registerFeedSuggestionSource`, `projectPosts`, `visiblePosts` (publications telles qu'un lecteur les voit, pour une publication partagée en message), `postAuthorId`, `commentAuthorId`, `commentPostId` ; interfaces `ProjectLinkValidator`, `ProjectUpdatesFeedSource`, `EventsFeedSource`, `FeedSuggestionSource`, type `FeedEntry` ; classes d'événements.
 
 ## Événements émis
 
