@@ -16,7 +16,10 @@ import { DISCOVERY_QUEUE } from './interface/discovery-queue';
 import { IndexEventsHandler } from './interface/index-events.handler';
 import { ProjectTeamResolver } from './interface/project-team.resolver';
 
+import { DiscoveryPersonalData } from './infrastructure/discovery-personal-data';
+
 const SHARED_PROVIDERS: Provider[] = [
+  DiscoveryPersonalData,
   { provide: DiscoveryRepository, useClass: DrizzleDiscoveryRepository },
   CardsService,
   SuggestionsService,

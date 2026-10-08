@@ -70,3 +70,7 @@ Recherche, matching expliqué et page Découvrir (cahier des charges §2.1, §10
 ## Dépendances
 
 profiles, organizations, projects, events, missions (sources de l'index et images des cartes), network (connexions et blocages), content (source des suggestions du fil), identity (par le garde d'access).
+
+## Données personnelles (RGPD)
+
+Export : profil de matching, suggestions reçues avec leurs raisons, suggestions écartées. Suppression : document de recherche et profil de matching supprimés, membre retiré de toutes les listes de suggestions (les siennes et celles des autres) et des suggestions écartées ; les documents qu'il possède gardent le pseudonyme comme propriétaire. Contrats enregistrés auprès du module privacy (`infrastructure/discovery-personal-data.ts`, ADR 0074).
