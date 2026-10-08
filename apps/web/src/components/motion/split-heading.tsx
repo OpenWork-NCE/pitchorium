@@ -7,7 +7,7 @@ import { useMotionPreference } from './use-motion-preference';
 /** GSAP is never part of the first load: the animator arrives when the heading comes near. */
 const SplitAnimator = dynamic(() => import('./split-animator'), { ssr: false });
 
-/** True once the element is within a viewport height of the screen: time to load GSAP. */
+/** True once the element is within a viewport height of the screen and the browser is idle. */
 function useNearViewport(ref: { current: Element | null }, disabled: boolean): boolean {
   const [near, setNear] = useState(false);
   useEffect(() => {
@@ -16,8 +16,11 @@ function useNearViewport(ref: { current: Element | null }, disabled: boolean): b
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (!entry?.isIntersecting) return;
-        setNear(true);
         observer.disconnect();
+        // GSAP loads when the main thread is idle, never during the hydration of the page.
+        if ('requestIdleCallback' in window)
+          requestIdleCallback(() => setNear(true), { timeout: 2000 });
+        else setTimeout(() => setNear(true), 200);
       },
       { rootMargin: '0px 0px 100% 0px' },
     );
