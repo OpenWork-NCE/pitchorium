@@ -24,6 +24,12 @@ export const SONNER_STYLE_HASHES = [
   "'sha256-StEaX+se6YS7pqjzrzMIA0KaX9zF/8zAhvQXZAe5epY='",
 ];
 
+/**
+ * vaul (mobile drawers) inserts its stylesheet the same way, at the load of its module: its text
+ * is allowed by hash too, recomputed by the same test.
+ */
+export const VAUL_STYLE_HASHES = ["'sha256-YIjArHm2rkb5J7hX9lUM1bnQ3Kp61MTfluMGkuyKwDw='"];
+
 /** Embedded videos, in their privacy-respecting variants (ADR 0042). */
 const VIDEO_FRAMES = ['https://www.youtube-nocookie.com', 'https://player.vimeo.com'];
 
@@ -77,7 +83,7 @@ export function buildCsp(options: CspOptions): string {
     // A nonce disables 'unsafe-inline': the development server keeps it for its HMR styles.
     'style-src': options.development
       ? ["'self'", "'unsafe-inline'"]
-      : ["'self'", nonce, ...SONNER_STYLE_HASHES],
+      : ["'self'", nonce, ...SONNER_STYLE_HASHES, ...VAUL_STYLE_HASHES],
     // Inline style attributes (React, Radix, next/image) cannot carry a nonce.
     'style-src-attr': ["'unsafe-inline'"],
     'img-src': ["'self'", 'data:', 'blob:', api, ...cdn],

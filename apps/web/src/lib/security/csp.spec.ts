@@ -2,7 +2,7 @@ import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { describe, expect, it } from 'vitest';
-import { buildCsp, sentryTarget, SONNER_STYLE_HASHES } from './csp';
+import { buildCsp, sentryTarget, SONNER_STYLE_HASHES, VAUL_STYLE_HASHES } from './csp';
 
 const base = {
   nonce: 'abc',
@@ -65,5 +65,16 @@ describe('content security policy', () => {
     const stylesheet = JSON.parse(`"${literal}"`) as string;
     const hash = (text: string) => `'sha256-${createHash('sha256').update(text).digest('base64')}'`;
     expect(SONNER_STYLE_HASHES).toEqual([hash(''), hash(stylesheet)]);
+  });
+
+  it('allows the stylesheet vaul inserts, hashed from the installed version', () => {
+    const entry = createRequire(import.meta.url)
+      .resolve('vaul')
+      .replace(/index\.js$/, 'index.mjs');
+    const source = readFileSync(entry, 'utf8');
+    const literal = /__insertCSS\("((?:[^"\\]|\\.)*)"\)/.exec(source)?.[1];
+    const stylesheet = JSON.parse(`"${literal}"`) as string;
+    const hash = (text: string) => `'sha256-${createHash('sha256').update(text).digest('base64')}'`;
+    expect(VAUL_STYLE_HASHES).toEqual([hash(stylesheet)]);
   });
 });
