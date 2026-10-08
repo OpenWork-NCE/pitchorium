@@ -33,15 +33,15 @@ Comptes et authentification (cahier des charges §7) avec Better Auth 1.7, mont�
 
 ## Événements émis
 
-| Type                                  | Payload                                    |
-| ------------------------------------- | ------------------------------------------ |
-| `identity.user.registered.v1`         | `method`, `locale`, `emailVerified`        |
-| `identity.user.email-verified.v1`     | aucun                                      |
-| `identity.account.linked.v1`          | `provider`                                 |
-| `identity.account.unlinked.v1`        | `provider`                                 |
-| `identity.user.password-changed.v1`   | `reason` (`changed`, `reset`)              |
-| `identity.user.sessions-revoked.v1`   | `scope` (`one`, `others`, `all`), `reason` |
-| `identity.user.deletion-requested.v1` | aucun                                      |
+| Type                                  | Payload                                                                                                         |
+| ------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `identity.user.registered.v1`         | `method`, `locale`, `emailVerified`                                                                             |
+| `identity.user.email-verified.v1`     | aucun                                                                                                           |
+| `identity.account.linked.v1`          | `provider`                                                                                                      |
+| `identity.account.unlinked.v1`        | `provider`                                                                                                      |
+| `identity.user.password-changed.v1`   | `reason` (`changed`, `reset`)                                                                                   |
+| `identity.user.sessions-revoked.v1`   | `scope` (`one`, `others`, `all`), `reason` (`user_request`, `password_reset`, `privilege_change`, `suspension`) |
+| `identity.user.deletion-requested.v1` | aucun                                                                                                           |
 
 L'agrégat est l'utilisateur (`aggregateId`). Chaque écriture de Better Auth est validée avec son événement dans une transaction courte (`withIdentityEvents`, ADR 0019) ; aucune transaction ne couvre un appel réseau (fournisseur OAuth, Have I Been Pwned).
 
