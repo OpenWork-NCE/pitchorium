@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AccessModule, AdminBootstrapService } from './modules/access';
 import { IdentityModule } from './modules/identity';
+import { PrivacyModule } from './modules/privacy';
 import { AuditModule } from './platform/audit';
 import { ConfigModule, loadConfigOrExit, parseWorkerConfig } from './platform/config';
 import { CoreModule } from './platform/core/core.module';
@@ -20,6 +21,8 @@ import { OutboxModule } from './platform/outbox';
     AuditModule,
     FeatureFlagsModule,
     MailerModule,
+    // Identity and access register their personal data: the registry is enough here.
+    PrivacyModule.forRegistrations(),
     IdentityModule.forWorker(),
     AccessModule.forWorker(),
   ],

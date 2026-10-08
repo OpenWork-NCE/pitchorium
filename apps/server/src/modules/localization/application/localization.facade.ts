@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Optional } from '@nestjs/common';
 import type { Locale, LocaleStatus } from '@pitchorium/contracts';
 import { LocalesService } from './locales.service';
 import {
@@ -14,8 +14,13 @@ import {
 export class LocalizationFacade {
   constructor(
     private readonly sources: TranslatableSourcesRegistry,
-    private readonly locales: LocalesService,
+    @Optional() private readonly locales?: LocalesService,
   ) {}
+
+  private get localeAdministration(): LocalesService {
+    if (!this.locales) throw new Error('Locale administration is not part of this assembly');
+    return this.locales;
+  }
 
   registerTranslatableSource(source: TranslatableSource): void {
     this.sources.register(source);
@@ -23,10 +28,10 @@ export class LocalizationFacade {
 
   /** Refused (LOCALIZATION_LOCALE_NOT_READY) for an incomplete or unreviewed locale. */
   setLocaleEnabled(locale: Locale, enabled: boolean, actorId: string): Promise<LocaleStatus> {
-    return this.locales.setEnabled(locale, enabled, actorId);
+    return this.localeAdministration.setEnabled(locale, enabled, actorId);
   }
 
   localeStatuses(): Promise<LocaleStatus[]> {
-    return this.locales.statuses();
+    return this.localeAdministration.statuses();
   }
 }

@@ -41,6 +41,19 @@ export class PrivacyModule {
     };
   }
 
+  /**
+   * Registry only, for an assembly of a few modules (the `admin:create` command, tests): the
+   * modules register their contracts, nothing is exported or erased.
+   */
+  static forRegistrations(): DynamicModule {
+    return {
+      module: PrivacyModule,
+      global: true,
+      providers: [PersonalDataRegistry, PrivacyFacade],
+      exports: [PrivacyFacade],
+    };
+  }
+
   static forWorker(): DynamicModule {
     return {
       module: PrivacyModule,

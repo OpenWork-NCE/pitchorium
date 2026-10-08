@@ -47,6 +47,16 @@ export class LocalizationModule {
     };
   }
 
+  /** Registry only, for an assembly of a few modules (commands, tests). */
+  static forRegistrations(): DynamicModule {
+    return {
+      module: LocalizationModule,
+      global: true,
+      providers: [TranslatableSourcesRegistry, LocalizationFacade],
+      exports: [LocalizationFacade],
+    };
+  }
+
   static forWorker(): DynamicModule {
     return {
       module: LocalizationModule,

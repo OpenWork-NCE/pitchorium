@@ -7,6 +7,8 @@ import { InboxModule } from '../../../src/platform/inbox';
 import { OutboundModule } from '../../../src/platform/outbound';
 import { OutboxModule, OutboxRelayModule, OutboxRelayService } from '../../../src/platform/outbox';
 import { RedisModule } from '../../../src/platform/redis';
+import { LocalizationModule } from '../../../src/modules/localization';
+import { PrivacyModule } from '../../../src/modules/privacy';
 import { CdnModule } from '../../../src/platform/storage';
 import { truncateAllTables } from './database';
 import { useTestEnvironment } from './environment';
@@ -25,6 +27,16 @@ export async function createWorkerTestingModule(
   // The relay runs one batch at startup: events left by a previous test file must not reach the
   // handlers while the next test truncates the tables.
   await truncateAllTables();
+  // Business modules register their personal data and translatable sources: a partial
+  // assembly gets the registries, unless the full modules are there.
+  const full = imports.some(
+    (entry) =>
+      'module' in entry && (entry.module === PrivacyModule || entry.module === LocalizationModule),
+  );
+  const registrations =
+    imports.length > 0 && !full
+      ? [PrivacyModule.forRegistrations(), LocalizationModule.forRegistrations()]
+      : [];
   const moduleRef = await configure(
     Test.createTestingModule({
       imports: [
@@ -37,6 +49,7 @@ export async function createWorkerTestingModule(
         OutboxRelayModule,
         OutboundModule,
         CdnModule,
+        ...registrations,
         ...imports,
       ],
       providers,
