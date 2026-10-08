@@ -98,7 +98,9 @@ const stored = {
   fingerprint: documents.fingerprint,
 };
 
-const textArray = (values: readonly string[]) => sql`${[...values]}::text[]`;
+/** One array parameter (a bare JS array would expand to a list of parameters). */
+const textArray = (values: readonly string[]) => sql`${sql.param([...values])}::text[]`;
+const uuidArray = (values: readonly string[]) => sql`${sql.param([...values])}::uuid[]`;
 const normalize = (value: SQL | string) => sql`lower(unaccent(${value}))`;
 /** Weighted vector of the `simple` configuration without accents (ADR 0066). */
 const weighted = (text: string, weight: 'A' | 'B' | 'C' | 'D') =>
@@ -106,7 +108,7 @@ const weighted = (text: string, weight: 'A' | 'B' | 'C' | 'D') =>
 
 const notHidden = (hidden: readonly string[]) =>
   hidden.length > 0
-    ? sql`(${documents.ownerId} is null or ${documents.ownerId} <> all(${[...hidden]}::uuid[]))`
+    ? sql`(${documents.ownerId} is null or ${documents.ownerId} <> all(${uuidArray(hidden)}))`
     : undefined;
 
 /** Open projects (in funding or funded): those a contributor may still support. */
@@ -772,7 +774,7 @@ export class DrizzleDiscoveryRepository extends DiscoveryRepository {
         and(
           this.ofList(subject, list),
           options.excludedIds.length > 0
-            ? sql`${suggestions.candidateId} <> all(${[...options.excludedIds]}::uuid[])`
+            ? sql`${suggestions.candidateId} <> all(${uuidArray(options.excludedIds)})`
             : undefined,
           options.dismissedBy
             ? sql`not exists (select 1 from ${dismissals} where ${dismissals.userId} = ${options.dismissedBy}
