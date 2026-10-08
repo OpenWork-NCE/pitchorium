@@ -44,6 +44,14 @@ export const NOTIFICATION_TYPES = [
   'time_entry_declared',
   'time_entry_answered',
   'security_alert',
+  'event_registration_confirmed',
+  'event_waitlist_promoted',
+  'event_reminder',
+  'event_canceled',
+  'mission_engagement_requested',
+  'mission_engagement_answered',
+  'mission_completed',
+  'new_suggestions',
 ] as const;
 export const notificationTypeSchema = z.enum(NOTIFICATION_TYPES);
 
@@ -76,6 +84,9 @@ export const NOTIFICATION_TARGET_TYPES = [
   'profile_views',
   'connection_requests',
   'account_security',
+  'event',
+  'mission_engagement',
+  'suggestions',
 ] as const;
 export const notificationTargetTypeSchema = z.enum(NOTIFICATION_TARGET_TYPES);
 

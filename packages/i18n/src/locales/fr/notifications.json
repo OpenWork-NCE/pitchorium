@@ -143,6 +143,38 @@
     "security_alert": {
       "one": "Activité de sécurité sur votre compte",
       "many": "Activité de sécurité sur votre compte"
+    },
+    "event_registration_confirmed": {
+      "one": "Votre inscription à {{title}} est confirmée",
+      "many": "Votre inscription à {{title}} est confirmée"
+    },
+    "event_waitlist_promoted": {
+      "one": "Une place s'est libérée : vous êtes inscrit à {{title}}",
+      "many": "Une place s'est libérée : vous êtes inscrit à {{title}}"
+    },
+    "event_reminder": {
+      "one": "Rappel : {{title}} commence bientôt",
+      "many": "Rappel : {{title}} commence bientôt"
+    },
+    "event_canceled": {
+      "one": "{{title}} est annulé",
+      "many": "{{title}} est annulé"
+    },
+    "mission_engagement_requested": {
+      "one": "{{actor}} vous a écrit au sujet de la mission {{title}}",
+      "many": "{{actor}} vous a écrit au sujet de la mission {{title}}"
+    },
+    "mission_engagement_answered": {
+      "one": "{{actor}} a répondu au sujet de la mission {{title}}",
+      "many": "{{actor}} a répondu au sujet de la mission {{title}}"
+    },
+    "mission_completed": {
+      "one": "{{actor}} a terminé la mission {{title}} : confirmez les heures",
+      "many": "{{actor}} a terminé la mission {{title}} : confirmez les heures"
+    },
+    "new_suggestions": {
+      "one": "Nouvelle suggestion pour vous",
+      "many": "{{count}} nouvelles suggestions pour vous"
     }
   }
 }

@@ -93,6 +93,9 @@ Chaque notification porte `target` : un type, une clé et le chemin de l'applica
 | `profile_views`            | `/me/profile-views`              |
 | `connection_requests`      | `/network/requests`              |
 | `account_security`         | `/me/security`                   |
+| `event`                    | `/events/<slug>`                 |
+| `mission_engagement`       | `/missions/engagements/<id>`     |
+| `suggestions`              | `/discover`                      |
 
 ## Compteurs unifiés
 

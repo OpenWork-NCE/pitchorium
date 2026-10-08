@@ -353,6 +353,73 @@ export const NOTIFICATION_DEFINITIONS: Readonly<
     grouping: 'none',
     target: 'account_security',
   },
+  // Events (§14, scope to validate): registration, waiting list, reminder, cancellation.
+  event_registration_confirmed: {
+    sources: ['events.registration.created.v1'],
+    transactional: false,
+    priority: 'normal',
+    defaults: on,
+    grouping: 'none',
+    target: 'event',
+  },
+  event_waitlist_promoted: {
+    sources: ['events.registration.promoted.v1'],
+    transactional: false,
+    priority: 'normal',
+    defaults: on,
+    grouping: 'none',
+    target: 'event',
+  },
+  event_reminder: {
+    sources: ['scheduled: events starting within NOTIFICATIONS_EVENT_REMINDER_HOURS'],
+    transactional: false,
+    priority: 'normal',
+    defaults: on,
+    grouping: 'none',
+    target: 'event',
+  },
+  event_canceled: {
+    sources: ['events.event.canceled.v1'],
+    transactional: false,
+    priority: 'normal',
+    defaults: on,
+    grouping: 'none',
+    target: 'event',
+  },
+  // Missions (§6.3, §14): application or solicitation, answer, completion to confirm.
+  mission_engagement_requested: {
+    sources: ['missions.engagement.requested.v1'],
+    transactional: false,
+    priority: 'normal',
+    defaults: on,
+    grouping: 'none',
+    target: 'mission_engagement',
+  },
+  mission_engagement_answered: {
+    sources: ['missions.engagement.accepted.v1', 'missions.engagement.declined.v1'],
+    transactional: false,
+    priority: 'normal',
+    defaults: on,
+    grouping: 'none',
+    target: 'mission_engagement',
+  },
+  mission_completed: {
+    sources: ['missions.engagement.completed.v1'],
+    transactional: false,
+    priority: 'normal',
+    defaults: on,
+    grouping: 'none',
+    target: 'mission_engagement',
+  },
+  // Discovery: new explained suggestions, low priority and grouped.
+  new_suggestions: {
+    sources: ['scheduled: suggestions that appeared on the previous UTC day'],
+    transactional: false,
+    priority: 'low',
+    defaults: inApp,
+    grouping: 'type',
+    target: 'suggestions',
+  },
 };
 
 /** Route of the web app a notification opens (docs/architecture/notifications.md). */
@@ -390,5 +457,11 @@ export function pathOf(type: NotificationTargetType, key: string): string {
       return '/network/requests';
     case 'account_security':
       return '/me/security';
+    case 'event':
+      return `/events/${key}`;
+    case 'mission_engagement':
+      return `/missions/engagements/${key}`;
+    case 'suggestions':
+      return '/discover';
   }
 }

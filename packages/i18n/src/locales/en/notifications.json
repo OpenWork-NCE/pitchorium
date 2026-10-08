@@ -143,6 +143,38 @@
     "security_alert": {
       "one": "Security activity on your account",
       "many": "Security activity on your account"
+    },
+    "event_registration_confirmed": {
+      "one": "Your registration to {{title}} is confirmed",
+      "many": "Your registration to {{title}} is confirmed"
+    },
+    "event_waitlist_promoted": {
+      "one": "A seat freed up: you are registered to {{title}}",
+      "many": "A seat freed up: you are registered to {{title}}"
+    },
+    "event_reminder": {
+      "one": "Reminder: {{title}} starts soon",
+      "many": "Reminder: {{title}} starts soon"
+    },
+    "event_canceled": {
+      "one": "{{title}} is canceled",
+      "many": "{{title}} is canceled"
+    },
+    "mission_engagement_requested": {
+      "one": "{{actor}} wrote to you about the mission {{title}}",
+      "many": "{{actor}} wrote to you about the mission {{title}}"
+    },
+    "mission_engagement_answered": {
+      "one": "{{actor}} answered about the mission {{title}}",
+      "many": "{{actor}} answered about the mission {{title}}"
+    },
+    "mission_completed": {
+      "one": "{{actor}} completed the mission {{title}}: confirm the hours",
+      "many": "{{actor}} completed the mission {{title}}: confirm the hours"
+    },
+    "new_suggestions": {
+      "one": "New suggestion for you",
+      "many": "{{count}} new suggestions for you"
     }
   }
 }
