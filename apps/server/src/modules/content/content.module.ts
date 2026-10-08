@@ -33,7 +33,10 @@ import { PostsController } from './interface/posts.controller';
 
 import { ContentPersonalData } from './infrastructure/content-personal-data';
 
+import { ContentTranslatable } from './infrastructure/content-translatable';
+
 const SHARED_PROVIDERS: Provider[] = [
+  ContentTranslatable,
   ContentPersonalData,
   { provide: ContentRepository, useClass: DrizzleContentRepository },
   { provide: PostViewCounter, useClass: RedisPostViewCounter },
