@@ -10,6 +10,8 @@ export interface NotificationTextParams {
   count?: number;
   title?: string;
   position?: number;
+  /** Text shown under the notification: the statement of reasons of a moderation decision. */
+  detail?: string;
 }
 
 export interface NotificationEmailProps {
@@ -46,12 +48,13 @@ export function notificationSubject(props: NotificationEmailProps): string {
 
 /** One notification sent at once (§10.5). */
 export default function NotificationEmail(props: NotificationEmailProps) {
-  const { locale, name, actionUrl, unsubscribeUrl } = props;
+  const { locale, name, actionUrl, unsubscribeUrl, params } = props;
   const text = notificationSubject(props);
   return (
     <Layout locale={locale} preview={text} unsubscribeUrl={unsubscribeUrl}>
       <Title>{translate(locale, 'emails', 'notification.greeting', { name })}</Title>
       <Paragraph>{text}</Paragraph>
+      {params.detail ? <Paragraph>{params.detail}</Paragraph> : null}
       <ActionLink href={actionUrl} label={translate(locale, 'emails', 'notification.action')} />
     </Layout>
   );
