@@ -18,6 +18,7 @@ Pitchorium est un réseau professionnel et une plateforme de financement à impa
 6. Dernières versions stables compatibles avec le socle, figées exactement (voir ADR 0012).
 7. Frontières : un module n'écrit que dans son schéma PostgreSQL, ne lit un autre module que via son `index.ts`, communique en asynchrone via l'outbox ; son `domain/` n'importe ni NestJS ni Drizzle.
 8. Rien n'est déclaré terminé sans avoir été exécuté et vérifié.
+9. Ne jamais arrêter un processus que l'on n'a pas lancé soi-même : enregistrer le PID de chaque processus démarré et n'arrêter que ceux-là (jamais de `pkill`, `pgrep`, `killall` ni de `kill` sur un motif ou un port) ; vérifier qu'un port est libre avant d'y démarrer un serveur, et en choisir un autre s'il est pris.
 
 ## Architecture
 
