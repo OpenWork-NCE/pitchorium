@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { outboxEvents } from '@pitchorium/db';
+import { and, isNotNull, lt } from '@pitchorium/db/orm';
 import { TransactionManager } from '../database';
 import { type DomainEvent, isValidEventType } from '../kernel';
 
@@ -39,5 +40,17 @@ export class OutboxService {
         nextAttemptAt: event.occurredAt,
       })),
     );
+  }
+
+  /**
+   * Deletes the events published before the date: their jobs are long gone, and their
+   * payloads hold member identifiers (retention, docs/compliance/retention.md).
+   */
+  async purgePublished(before: Date): Promise<number> {
+    const deleted = await this.transactions.executor
+      .delete(outboxEvents)
+      .where(and(isNotNull(outboxEvents.publishedAt), lt(outboxEvents.publishedAt, before)))
+      .returning({ id: outboxEvents.id });
+    return deleted.length;
   }
 }

@@ -137,7 +137,13 @@ export interface ApiConfig extends CommonConfig {
 
 export interface WorkerConfig extends CommonConfig {
   worker: { healthPort: number };
-  outbox: { pollIntervalMs: number; batchSize: number; maxBackoffMs: number };
+  outbox: {
+    pollIntervalMs: number;
+    batchSize: number;
+    maxBackoffMs: number;
+    /** Published events and processed inbox messages are deleted after this delay. */
+    retentionMs: number;
+  };
   clamav: { host: string; port: number; timeoutMs: number };
   media: { orphanTtlMs: number; importTimeoutMs: number };
   /** Fixed interval replacing the cron pattern of every scheduled task (tests only). */
@@ -351,6 +357,7 @@ export function parseWorkerConfig(rawEnv: RawEnv): WorkerConfig {
       pollIntervalMs: env.OUTBOX_POLL_INTERVAL_MS,
       batchSize: env.OUTBOX_BATCH_SIZE,
       maxBackoffMs: env.OUTBOX_MAX_BACKOFF_MS,
+      retentionMs: env.OUTBOX_RETENTION_DAYS * 86_400_000,
     },
     clamav: { host: env.CLAMAV_HOST, port: env.CLAMAV_PORT, timeoutMs: env.CLAMAV_TIMEOUT_MS },
     media: {

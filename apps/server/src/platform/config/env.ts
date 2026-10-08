@@ -147,6 +147,7 @@ const workerEnvSchema = commonEnvSchema.extend({
   OUTBOX_POLL_INTERVAL_MS: z.coerce.number().int().positive().default(1000),
   OUTBOX_BATCH_SIZE: z.coerce.number().int().positive().max(1000).default(100),
   OUTBOX_MAX_BACKOFF_MS: z.coerce.number().int().positive().default(300_000),
+  OUTBOX_RETENTION_DAYS: z.coerce.number().int().min(2).max(3650).default(30),
   CLAMAV_HOST: z.string().min(1).default('localhost'),
   CLAMAV_PORT: z.coerce.number().int().min(1).max(65535).default(3310),
   CLAMAV_TIMEOUT_MS: z.coerce.number().int().positive().default(60_000),

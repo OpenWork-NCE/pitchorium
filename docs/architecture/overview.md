@@ -88,6 +88,7 @@ sequenceDiagram
 - L'événement existe si et seulement si l'écriture métier est validée.
 - Le relais peut tourner sur plusieurs workers (`SKIP LOCKED`). Un échec de publication incrémente `attempts` et repousse `next_attempt_at` (backoff exponentiel plafonné par `OUTBOX_MAX_BACKOFF_MS`).
 - Un événement republié après un arrêt brutal ne crée pas de second job tant que le job est conservé (24 h) ; au-delà, l'inbox empêche un handler de s'exécuter deux fois.
+- Les événements publiés et les messages traités de l'inbox sont supprimés après `OUTBOX_RETENTION_DAYS` (30 jours, tâche de maintenance quotidienne) : leurs payloads portent des identifiants de membres.
 - L'ordre de traitement entre événements n'est pas garanti.
 
 ## Téléversement et traitement d'un fichier

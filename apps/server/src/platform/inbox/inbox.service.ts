@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { inboxMessages } from '@pitchorium/db';
-import { and, eq } from '@pitchorium/db/orm';
+import { and, eq, isNotNull, lt } from '@pitchorium/db/orm';
 import { TransactionManager } from '../database';
 import { Clock, IdGenerator } from '../kernel';
 
@@ -37,5 +37,14 @@ export class InboxService {
         .where(and(eq(inboxMessages.source, source), eq(inboxMessages.externalId, externalId)));
       return { status: 'processed', result };
     });
+  }
+
+  /** Deletes the messages processed before the date, past any redelivery of their source. */
+  async purgeProcessed(before: Date): Promise<number> {
+    const deleted = await this.transactions.executor
+      .delete(inboxMessages)
+      .where(and(isNotNull(inboxMessages.processedAt), lt(inboxMessages.processedAt, before)))
+      .returning({ id: inboxMessages.id });
+    return deleted.length;
   }
 }
