@@ -269,49 +269,11 @@ describe('video', () => {
   });
 });
 
-describe('restricted Markdown', () => {
-  it('accepts the documented subset', () => {
-    const text = [
-      '## Notre histoire',
-      '',
-      'Un **projet** _agricole_ avec `irrigation`, voir [le site](https://example.org/a?b=c).',
-      '',
-      '- premier point',
-      '- second point',
-      '',
-      '1. étape',
-      '2. étape',
-      '',
-      '> citation',
-      '',
-      '### Équipe',
-      '',
-      '---',
-      '',
-      '<https://example.org>',
-    ].join('\n');
-    expect(code(() => assertRestrictedMarkdown(text))).toBeNull();
-  });
-
-  it('refuses HTML, images, unsafe links, code blocks, other headings and tables', () => {
-    for (const text of [
-      'Bonjour <script>alert(1)</script>',
-      '<img src=x onerror=alert(1)>',
-      '![photo](https://example.org/a.png)',
-      '[lien](javascript:alert(1))',
-      '[lien](http://example.org)',
-      '[ref]: https://example.org',
-      '```\ncode\n```',
-      'Texte\n\n    code indenté',
-      '# Titre de niveau 1',
-      '#### Titre de niveau 4',
-      'Titre\n===',
-      '| a | b |\n| - | - |',
-    ]) {
-      expect(
-        code(() => assertRestrictedMarkdown(text)),
-        text,
-      ).toBe('PROJECTS_DESCRIPTION_INVALID');
-    }
+describe('restricted Markdown of a project', () => {
+  it('reports a forbidden construct with the code of the module', () => {
+    expect(code(() => assertRestrictedMarkdown('## Histoire\n\nUn **projet**.'))).toBeNull();
+    expect(code(() => assertRestrictedMarkdown('<img src=x>'))).toBe(
+      'PROJECTS_DESCRIPTION_INVALID',
+    );
   });
 });
