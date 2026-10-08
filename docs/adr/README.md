@@ -79,3 +79,5 @@ Un fichier par décision, numéroté, au format Contexte / Décision / Conséque
 | [0073](0073-suspension.md)                               | Suspension d'un compte                                       |
 | [0074](0074-export-and-erasure.md)                       | Export et suppression des données personnelles               |
 | [0075](0075-financial-pseudonymization.md)               | Pseudonymisation des données conservées                      |
+| [0076](0076-translation-on-demand.md)                    | Traduction à la demande des contenus                         |
+| [0077](0077-locale-activation-guardrails.md)             | Garde-fous de l'activation des langues                       |

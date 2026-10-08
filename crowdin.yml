@@ -1,0 +1,12 @@
+# Crowdin (§8.3): French source catalogues, translations written back next to them. No account
+# is set up yet (open question 22); the token and the project id come from the environment.
+project_id_env: CROWDIN_PROJECT_ID
+api_token_env: CROWDIN_PERSONAL_TOKEN
+base_path: .
+preserve_hierarchy: true
+files:
+  - source: /packages/i18n/src/locales/fr/*.json
+    translation: /packages/i18n/src/locales/%two_letters_code%/%original_file_name%
+    # Placeholders {{name}} are kept as they are.
+    type: json
+    update_option: update_as_unapproved

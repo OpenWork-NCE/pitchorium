@@ -156,6 +156,18 @@ export const RETENTION_REGISTER: readonly RetentionEntry[] = [
   },
   { module: 'trust', data: 'Activity counted by the signals', retention: '7 days', end: 'Deleted' },
   {
+    module: 'localization',
+    data: 'Machine translations in cache',
+    retention: '30 days (LOCALIZATION_CACHE_TTL_DAYS), invalidated by a modification',
+    end: 'Deleted; the one of a profile at the erasure',
+  },
+  {
+    module: 'localization',
+    data: 'Characters translated per member and day',
+    retention: 'Until the erasure',
+    end: 'Deleted',
+  },
+  {
     module: 'privacy',
     data: 'Export archives',
     retention: '72 hours (PRIVACY_EXPORT_TTL_HOURS)',

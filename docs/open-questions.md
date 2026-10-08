@@ -145,6 +145,12 @@ Informations nécessaires au développement et absentes du cahier des charges (d
 22. L'outil de traduction retenu (Crowdin ou Lokalise).
 23. Le relecteur professionnel de la version anglaise (statut `pending-review` dans le manifeste).
 
+### Traduction à la demande
+
+87. La couverture du wolof : Google Cloud Translation ne le propose pas (documentation du 2026-10-07), contrairement au tableau du §8.2 ; DeepL le propose sans glossaire.
+88. Les limites de la traduction à la demande (provisoires) : 20 000 caractères par membre et par jour, 500 000 caractères par mois pour la plateforme (palier gratuit de DeepL), cache de 30 jours ; le choix du prestataire principal et de son offre (DeepL API Free ou Pro, Google Cloud Translation Basic ou Advanced) ; l'anglais britannique comme variante cible de DeepL.
+89. Les traductions anglaises du glossaire métier (palier, mécène, love money, contrepartie, porteur de projet, equity...), provisoires jusqu'à la relecture professionnelle (voir aussi les questions 21 et 23).
+
 ## Exploitation
 
 24. Le choix de l'hébergeur (conteneurs api et worker, PostgreSQL et Redis managés) et la région.

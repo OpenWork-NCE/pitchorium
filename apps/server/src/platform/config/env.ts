@@ -66,6 +66,23 @@ const commonEnvSchema = z.object({
   TRUST_SIGNAL_MESSAGE_REQUESTS_PER_DAY: z.coerce.number().int().min(1).max(10_000).default(15),
   TRUST_SIGNAL_CONNECTION_REQUESTS_PER_DAY: z.coerce.number().int().min(1).max(10_000).default(50),
   TRUST_SIGNAL_REPORTS_RECEIVED_PER_WEEK: z.coerce.number().int().min(1).max(10_000).default(3),
+  /** Unset: simulated outside production, none in production (translation unavailable). */
+  LOCALIZATION_PROVIDERS: z
+    .string()
+    .transform((value) =>
+      value
+        .split(',')
+        .map((entry) => entry.trim())
+        .filter(Boolean),
+    )
+    .pipe(z.array(z.enum(['deepl', 'google', 'simulated'])))
+    .optional(),
+  DEEPL_API_KEY: z.string().min(1).optional(),
+  DEEPL_API_BASE_URL: z.url().default('https://api-free.deepl.com'),
+  GOOGLE_TRANSLATE_API_KEY: z.string().min(1).optional(),
+  LOCALIZATION_MEMBER_DAILY_CHARACTERS: z.coerce.number().int().min(0).default(20_000),
+  LOCALIZATION_MONTHLY_CHARACTERS_CAP: z.coerce.number().int().min(0).default(500_000),
+  LOCALIZATION_CACHE_TTL_DAYS: z.coerce.number().int().min(1).max(365).default(30),
   PRIVACY_ERASURE_GRACE_DAYS: z.coerce.number().int().min(0).max(365).default(30),
   PRIVACY_ERASURE_REMINDER_DAYS: z.coerce.number().int().min(0).max(365).default(7),
   PRIVACY_EXPORT_MIN_INTERVAL_HOURS: z.coerce.number().int().min(0).max(8760).default(24),
@@ -243,6 +260,33 @@ function requirePaymentProviders(env: z.infer<typeof commonEnvSchema>, ctx: z.Re
   }
 }
 
+/** A listed provider needs its key; the simulated one is refused in production. */
+function requireTranslationProviders(
+  env: z.infer<typeof commonEnvSchema>,
+  ctx: z.RefinementCtx,
+): void {
+  const missing = [
+    ['deepl', env.DEEPL_API_KEY, 'DEEPL_API_KEY'],
+    ['google', env.GOOGLE_TRANSLATE_API_KEY, 'GOOGLE_TRANSLATE_API_KEY'],
+  ] as const;
+  for (const [provider, key, name] of missing) {
+    if (env.LOCALIZATION_PROVIDERS?.includes(provider) && key === undefined) {
+      ctx.addIssue({
+        code: 'custom',
+        path: [name],
+        message: `Required by LOCALIZATION_PROVIDERS=${provider}`,
+      });
+    }
+  }
+  if (env.NODE_ENV === 'production' && env.LOCALIZATION_PROVIDERS?.includes('simulated')) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['LOCALIZATION_PROVIDERS'],
+      message: 'The simulated translation provider is refused in production',
+    });
+  }
+}
+
 /** The signing secret of the email links must be a real secret in production. */
 function refuseDevelopmentEmailSecret(
   env: z.infer<typeof commonEnvSchema>,
@@ -281,6 +325,7 @@ export const apiEnv = apiEnvSchema
   .superRefine(requireMailCredentials)
   .superRefine(refuseDevelopmentEmailSecret)
   .superRefine(requirePaymentProviders)
+  .superRefine(requireTranslationProviders)
   .superRefine(requireCompleteOAuthCredentials);
 /** The interval override replaces every cron pattern: tests and local debugging only. */
 function refuseScheduleOverrideInProduction(
@@ -324,6 +369,7 @@ export const workerEnv = workerEnvSchema
   .superRefine(requireMailCredentials)
   .superRefine(refuseDevelopmentEmailSecret)
   .superRefine(requirePaymentProviders)
+  .superRefine(requireTranslationProviders)
   .superRefine(refuseScheduleOverrideInProduction)
   .superRefine(requireCdnPurge);
 

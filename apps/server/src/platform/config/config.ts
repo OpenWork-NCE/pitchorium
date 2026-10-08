@@ -8,6 +8,15 @@ export interface CommonConfig {
   env: Environment;
   /** Age of a session beyond which a sensitive action asks to sign in again. */
   access: { reauthenticationMaxAgeMs: number };
+  /** Translation on demand (§8.3); provisional limits, docs/open-questions.md. */
+  localization: {
+    providers: ('deepl' | 'google' | 'simulated')[];
+    deepl: { apiKey: string; baseUrl: string } | undefined;
+    google: { apiKey: string } | undefined;
+    memberDailyCharacters: number;
+    monthlyCharactersCap: number;
+    cacheTtlMs: number;
+  };
   /** Rights of the GDPR (§13); provisional delays, docs/open-questions.md. */
   privacy: {
     erasureGraceMs: number;
@@ -206,6 +215,16 @@ function toCommonConfig(env: CommonEnv): CommonConfig {
     env: env.NODE_ENV,
     logLevel: env.LOG_LEVEL,
     access: { reauthenticationMaxAgeMs: env.ACCESS_REAUTHENTICATION_MAX_AGE_MINUTES * 60_000 },
+    localization: {
+      providers: env.LOCALIZATION_PROVIDERS ?? (env.NODE_ENV === 'production' ? [] : ['simulated']),
+      deepl: env.DEEPL_API_KEY
+        ? { apiKey: env.DEEPL_API_KEY, baseUrl: withoutTrailingSlash(env.DEEPL_API_BASE_URL) }
+        : undefined,
+      google: env.GOOGLE_TRANSLATE_API_KEY ? { apiKey: env.GOOGLE_TRANSLATE_API_KEY } : undefined,
+      memberDailyCharacters: env.LOCALIZATION_MEMBER_DAILY_CHARACTERS,
+      monthlyCharactersCap: env.LOCALIZATION_MONTHLY_CHARACTERS_CAP,
+      cacheTtlMs: env.LOCALIZATION_CACHE_TTL_DAYS * 86_400_000,
+    },
     privacy: {
       erasureGraceMs: env.PRIVACY_ERASURE_GRACE_DAYS * 86_400_000,
       erasureReminderMs: env.PRIVACY_ERASURE_REMINDER_DAYS * 86_400_000,
