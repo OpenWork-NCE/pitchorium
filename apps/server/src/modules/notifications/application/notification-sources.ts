@@ -54,6 +54,7 @@ import {
   OfflineContributionValidated,
   PaymentsFacade,
 } from '../../payments';
+import { ErasureReminderDue, ErasureRequested, ExportReady } from '../../privacy';
 import { ProfilesFacade } from '../../profiles';
 import {
   AppealResolved,
@@ -152,6 +153,9 @@ export const SOURCE_EVENT_TYPES: readonly string[] = [
   EngagementAccepted.TYPE,
   EngagementDeclined.TYPE,
   EngagementCompleted.TYPE,
+  ExportReady.TYPE,
+  ErasureRequested.TYPE,
+  ErasureReminderDue.TYPE,
   ReportCreated.TYPE,
   ReportResolved.TYPE,
   DecisionTaken.TYPE,
@@ -418,6 +422,23 @@ export class NotificationSources {
         });
       case EngagementCompleted.TYPE:
         return this.missionEngagement(id, 'mission_completed', 'beneficiary');
+      case ExportReady.TYPE:
+        return this.direct(
+          'export_ready',
+          [text(p['userId'])],
+          null,
+          { type: 'privacy', key: id },
+          { expiresAt: text(p['expiresAt']) },
+        );
+      case ErasureRequested.TYPE:
+      case ErasureReminderDue.TYPE:
+        return this.direct(
+          event.type === ErasureRequested.TYPE ? 'erasure_scheduled' : 'erasure_reminder',
+          [text(p['userId'])],
+          null,
+          { type: 'privacy', key: id },
+          { scheduledFor: text(p['scheduledFor']) },
+        );
       case ReportCreated.TYPE:
         return this.direct(
           'report_received',

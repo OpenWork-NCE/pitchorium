@@ -203,6 +203,18 @@
     "appeal_decided": {
       "one": "Your appeal was decided: here are the reasons",
       "many": "Your appeals were decided"
+    },
+    "export_ready": {
+      "one": "Your data export is ready to download",
+      "many": "Your data exports are ready"
+    },
+    "erasure_scheduled": {
+      "one": "The deletion of your account is scheduled: you can cancel it until then",
+      "many": "The deletion of your account is scheduled"
+    },
+    "erasure_reminder": {
+      "one": "Your account will be deleted soon: cancel if you changed your mind",
+      "many": "Your account will be deleted soon"
     }
   }
 }

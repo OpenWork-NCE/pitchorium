@@ -683,7 +683,10 @@
     "suspension_started": "Suspension du compte",
     "suspension_ended": "Fin de suspension",
     "appeal_received": "Appel reçu",
-    "appeal_decided": "Appel tranché"
+    "appeal_decided": "Appel tranché",
+    "export_ready": "Export de données prêt",
+    "erasure_scheduled": "Suppression du compte programmée",
+    "erasure_reminder": "Rappel avant suppression"
   },
   "notificationChannels": {
     "in_app": "Dans l'application",

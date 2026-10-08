@@ -203,6 +203,18 @@
     "appeal_decided": {
       "one": "Votre appel a été tranché : en voici les motifs",
       "many": "Vos appels ont été tranchés"
+    },
+    "export_ready": {
+      "one": "Votre export de données est prêt à être téléchargé",
+      "many": "Vos exports de données sont prêts"
+    },
+    "erasure_scheduled": {
+      "one": "La suppression de votre compte est programmée : vous pouvez l'annuler d'ici là",
+      "many": "La suppression de votre compte est programmée"
+    },
+    "erasure_reminder": {
+      "one": "Votre compte sera bientôt supprimé : annulez si vous changez d'avis",
+      "many": "Votre compte sera bientôt supprimé"
     }
   }
 }

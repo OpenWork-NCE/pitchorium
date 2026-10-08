@@ -478,6 +478,32 @@ export const NOTIFICATION_DEFINITIONS: Readonly<
     grouping: 'none',
     target: 'moderation_decision',
   },
+  // Rights of the GDPR (§13): archive ready, erasure scheduled, reminder before it. The
+  // confirmation of the erasure is emailed by the privacy module, the account being gone.
+  export_ready: {
+    sources: ['privacy.export.ready.v1'],
+    transactional: true,
+    priority: 'normal',
+    defaults: on,
+    grouping: 'none',
+    target: 'privacy',
+  },
+  erasure_scheduled: {
+    sources: ['privacy.erasure.requested.v1'],
+    transactional: true,
+    priority: 'normal',
+    defaults: on,
+    grouping: 'none',
+    target: 'privacy',
+  },
+  erasure_reminder: {
+    sources: ['privacy.erasure.reminder-due.v1'],
+    transactional: true,
+    priority: 'normal',
+    defaults: on,
+    grouping: 'none',
+    target: 'privacy',
+  },
 };
 
 /** Route of the web app a notification opens (docs/architecture/notifications.md). */
@@ -527,5 +553,7 @@ export function pathOf(type: NotificationTargetType, key: string): string {
       return `/me/moderation/decisions/${key}`;
     case 'moderation':
       return '/me/moderation';
+    case 'privacy':
+      return '/me/privacy';
   }
 }

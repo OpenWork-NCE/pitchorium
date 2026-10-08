@@ -683,7 +683,10 @@
     "suspension_started": "Account suspension",
     "suspension_ended": "End of suspension",
     "appeal_received": "Appeal received",
-    "appeal_decided": "Appeal decided"
+    "appeal_decided": "Appeal decided",
+    "export_ready": "Data export ready",
+    "erasure_scheduled": "Account deletion scheduled",
+    "erasure_reminder": "Reminder before deletion"
   },
   "notificationChannels": {
     "in_app": "In the app",

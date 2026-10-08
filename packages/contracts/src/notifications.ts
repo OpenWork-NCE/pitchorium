@@ -59,6 +59,9 @@ export const NOTIFICATION_TYPES = [
   'suspension_ended',
   'appeal_received',
   'appeal_decided',
+  'export_ready',
+  'erasure_scheduled',
+  'erasure_reminder',
 ] as const;
 export const notificationTypeSchema = z.enum(NOTIFICATION_TYPES);
 
@@ -97,6 +100,7 @@ export const NOTIFICATION_TARGET_TYPES = [
   'reports',
   'moderation_decision',
   'moderation',
+  'privacy',
 ] as const;
 export const notificationTargetTypeSchema = z.enum(NOTIFICATION_TARGET_TYPES);
 
