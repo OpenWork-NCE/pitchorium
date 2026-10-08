@@ -36,6 +36,7 @@
     "infra:up": "docker compose -f infra/docker/compose.yaml up -d --wait postgres valkey minio mailpit clamav && docker compose -f infra/docker/compose.yaml run --rm minio-init",
     "infra:down": "docker compose -f infra/docker/compose.yaml down",
     "docs:api": "node scripts/serve-api-docs.mjs",
+    "perf:load": "docker run --rm --network host -v ./perf/k6:/scripts -e API_URL -e RATE_FACTOR -e DURATION grafana/k6:2.2.0 run /scripts/scenarios.js",
     "ops:restore-drill": "bash scripts/restore-drill.sh",
     "check:dead-code": "pnpm dlx knip@6.38.0 --no-progress",
     "check:licenses": "node scripts/check-licenses.mjs",

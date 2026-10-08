@@ -8,11 +8,16 @@ import { query, truncateAllTables } from './support/database';
 import { createMember, type Member } from './support/members';
 import { handleOf } from './support/messaging';
 
-const MEMBERS = 5000;
-const PROJECTS = 2000;
-const EVENTS = 500;
-const MISSIONS = 500;
-const ORGANIZATIONS = 300;
+/**
+ * DISCOVERY_VOLUME_SCALE multiplies the volume: 20 gives 332 000 search documents, the
+ * measurement of docs/operations/performance.md; CI keeps 1.
+ */
+const SCALE = Number(process.env['DISCOVERY_VOLUME_SCALE'] ?? 1);
+const MEMBERS = 5000 * SCALE;
+const PROJECTS = 2000 * SCALE;
+const EVENTS = 500 * SCALE;
+const MISSIONS = 500 * SCALE;
+const ORGANIZATIONS = 300 * SCALE;
 /**
  * Bounds checked on CI runners; the medians measured on a development machine are written in
  * ADR 0066 and 0068.
