@@ -15,7 +15,7 @@ Statut : acceptée (2026-10-08).
 - Seuls `common` et `web` partent au navigateur ; `errors` et `reference` restent côté serveur jusqu'à ce qu'une feature en ait besoin.
 - Dates et nombres par `next-intl` dans la langue et le fuseau (cookie `pitchorium.tz` écrit par le navigateur, préférences du membre ensuite) ; montants à l'exposant de leur devise (`CURRENCY_EXPONENTS` de `@pitchorium/contracts`, XAF sans décimale).
 - Aucun texte d'interface dans le JSX : règle ESLint `pitchorium/no-literal-ui-text`.
-- Chemins d'URL en anglais pour toutes les langues (`/fr/sign-in`) ; leur traduction est une question ouverte.
+- Chemins d'URL en anglais pour toutes les langues (`/fr/sign-in`), jamais traduits : seul le préfixe de langue change (ADR 0092).
 
 ## Conséquences
 

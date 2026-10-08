@@ -1,5 +1,6 @@
 /**
- * Paths of the web app, without the locale prefix. The member space and the administration are
+ * Paths of the web app, without the locale prefix: in English for every locale, never translated
+ * (ADR 0092), so that only the prefix changes with the language. The member space and the administration are
  * listed by their first segment: the proxy only checks that a session cookie is present there,
  * the api remains the authority (ADR 0015). A test keeps these lists in line with the folders of
  * `(app)` and `(admin)`.

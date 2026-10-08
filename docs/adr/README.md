@@ -95,4 +95,5 @@ Un fichier par décision, numéroté, au format Contexte / Décision / Conséque
 | [0089](0089-web-boundaries-and-lint.md)                  | Frontières et règles du web                                  |
 | [0090](0090-web-tests-and-budgets.md)                    | Tests et budgets du web                                      |
 | [0091](0091-web-observability.md)                        | Observabilité du web                                         |
+| [0092](0092-untranslated-url-paths.md)                   | Chemins d'URL non traduits                                   |
 | [0093](0093-web-accessibility-and-react-lint.md)         | Lint d'accessibilité et de React du web                      |
