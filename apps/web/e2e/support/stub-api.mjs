@@ -205,8 +205,10 @@ const routes = {
         if (state.counters.has(email)) Object.assign(state.counters.get(email), payload.counters);
       }
     }
+    // Counted before the emit, in the namespace: a socket counted here has received the event.
+    const sockets = io.of('/').sockets.size;
     io.emit(event, payload);
-    return { status: 200, body: { emitted: event, sockets: io.engine.clientsCount } };
+    return { status: 200, body: { emitted: event, sockets } };
   },
   'GET /__test/writes': () => ({ status: 200, body: state.writes }),
   'POST /__test/reset': () => {
