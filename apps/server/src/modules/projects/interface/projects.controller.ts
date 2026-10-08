@@ -305,25 +305,4 @@ export class ProjectsController {
   }
 
   /** Editorial highlight of the showcase (moderator or administrator, audited). */
-  @Put('projects/:projectId/feature')
-  @RequireAction('project.feature', { resource: ProjectResolver })
-  @HttpCode(HttpStatus.NO_CONTENT)
-  @ApiNoContentResponse()
-  async feature(
-    @CurrentPrincipal() principal: Principal,
-    @Param() params: ProjectIdParamsDto,
-  ): Promise<void> {
-    await this.projects.setFeatured(params.projectId, principal.userId, true);
-  }
-
-  @Delete('projects/:projectId/feature')
-  @RequireAction('project.feature', { resource: ProjectResolver })
-  @HttpCode(HttpStatus.NO_CONTENT)
-  @ApiNoContentResponse()
-  async unfeature(
-    @CurrentPrincipal() principal: Principal,
-    @Param() params: ProjectIdParamsDto,
-  ): Promise<void> {
-    await this.projects.setFeatured(params.projectId, principal.userId, false);
-  }
 }

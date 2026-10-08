@@ -46,7 +46,7 @@ Rôles `owner` et `editor`, fonction affichée. Invitation par identifiant publi
 
 - Vitrine paginée par curseur : projets publiés, visibles et non supprimés ; filtres `countryCode`, `sectorCode`, `status`, `minImpact`, `featured` ; tris `recent` (publication) et `ending_soon` (fin la plus proche, projets ouverts). La recherche plein texte relève du module discovery.
 - Page (§11.2) : bloc principal, financement (collecté, objectif, progression, jours restants, instruments), résumé, histoire, vidéo, galerie, paliers avec leur état, contreparties avec leur disponibilité, dernières actualités, équipe, impact avec la mention auto-déclarée, champs de partage (`share`), état du lecteur (`viewer`) et données de gestion pour l'équipe (`management`). Documents listés aux membres connectés.
-- Mise en avant éditoriale par un `moderator` ou un `admin` (`project.feature`, auditée). `moderation_status` (`visible`, `hidden`, `removed`) sur les projets et les actualités, modifiable par la façade (module trust).
+- Mise en avant éditoriale par un `moderator` ou un `admin`, par l'interface unique de l'administration (`/v1/admin/highlights/project/{projectId}`, `ProjectsFacade.setProjectFeatured`, auditée). `moderation_status` (`visible`, `hidden`, `removed`) sur les projets et les actualités, modifiable par la façade (module trust).
 
 ## Routes
 
@@ -55,7 +55,6 @@ Rôles `owner` et `editor`, fonction affichée. Invitation par identifiant publi
 - `GET /v1/projects/{projectId}`, `GET /v1/projects/{projectId}/preview` (équipe), `PATCH /v1/projects/{projectId}`, `PUT /v1/projects/{projectId}/slug`, `DELETE /v1/projects/{projectId}` (brouillon, propriétaire)
 - `PUT /v1/projects/{projectId}/tiers`, `PUT /v1/projects/{projectId}/gallery`, `PUT /v1/projects/{projectId}/documents`
 - `POST /v1/projects/{projectId}/publish` (`project.publish`)
-- `PUT|DELETE /v1/projects/{projectId}/feature` (`project.feature`)
 - `POST /v1/projects/{projectId}/rewards` (`Idempotency-Key`), `PATCH|DELETE /v1/projects/{projectId}/rewards/{rewardId}`
 - `POST /v1/projects/{projectId}/team/invitations` (`Idempotency-Key`), `PATCH|DELETE /v1/projects/{projectId}/team/{handle}`, `POST /v1/projects/{projectId}/team/leave`, `GET /v1/me/project-invitations`, `POST /v1/me/project-invitations/{projectId}/accept`, `POST /v1/me/project-invitations/{projectId}/decline`
 - `POST /v1/projects/{projectId}/updates` (`project.updates.publish`, `Idempotency-Key`), `GET /v1/projects/{projectId}/updates`, `GET /v1/public/projects/{projectId}/updates`, `PATCH|DELETE /v1/projects/{projectId}/updates/{updateId}`

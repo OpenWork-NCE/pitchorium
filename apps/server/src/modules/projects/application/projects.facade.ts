@@ -286,6 +286,15 @@ export class ProjectsFacade implements OnModuleInit {
     return this.rewards.release(contributionId);
   }
 
+  /** Editorial highlight of a published and visible project (administration). */
+  setProjectFeatured(projectId: string, actorId: string, featured: boolean): Promise<void> {
+    return this.writes.setFeatured(projectId, actorId, featured);
+  }
+
+  featuredProjects(limit: number): Promise<{ id: string; featuredAt: Date | null }[]> {
+    return this.projects.featuredProjects(limit);
+  }
+
   setModerationStatus(projectId: string, status: ProjectModerationStatus): Promise<void> {
     return this.writes.setModerationStatus(projectId, status);
   }

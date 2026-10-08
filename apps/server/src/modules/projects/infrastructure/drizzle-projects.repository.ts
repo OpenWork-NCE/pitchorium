@@ -18,6 +18,7 @@ import {
   gt,
   gte,
   inArray,
+  isNotNull,
   isNull,
   lt,
   lte,
@@ -152,6 +153,15 @@ export class DrizzleProjectsRepository extends ProjectRepository {
       .orderBy(asc(projectsProjects.id))
       .limit(limit);
     return rows.map((row) => row.id);
+  }
+
+  async featuredProjects(limit: number): Promise<{ id: string; featuredAt: Date | null }[]> {
+    return this.db
+      .select({ id: projectsProjects.id, featuredAt: projectsProjects.featuredAt })
+      .from(projectsProjects)
+      .where(and(isNotNull(projectsProjects.featuredAt), isNull(projectsProjects.deletedAt)))
+      .orderBy(desc(projectsProjects.featuredAt))
+      .limit(limit);
   }
 
   async findProjects(ids: readonly string[]): Promise<ProjectRecord[]> {
