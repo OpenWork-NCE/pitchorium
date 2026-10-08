@@ -58,6 +58,11 @@ export const ERASURE_ORDER = {
   profile: 90,
   /** The requests of the member themself. */
   privacy: 95,
+  /**
+   * Projections rebuilt from the other modules (search index): last before the account, so
+   * that a reindex running meanwhile reads data already erased.
+   */
+  projections: 97,
   /** The account, last. */
   account: 100,
 } as const;

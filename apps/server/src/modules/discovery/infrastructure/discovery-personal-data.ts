@@ -35,7 +35,7 @@ export class DiscoveryPersonalData implements OnModuleInit {
       module: 'discovery',
       description:
         'What the matching knows of you (sectors, countries, hats, needs), the suggestions made to you with their reasons, and the suggestions you dismissed.',
-      order: ERASURE_ORDER.activity,
+      order: ERASURE_ORDER.projections,
       exporter: {
         export: async (userId) => ({
           data: {
