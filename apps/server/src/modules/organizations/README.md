@@ -74,3 +74,7 @@ Les siens, par le worker (handler `organizations.send-emails`), emails transacti
 ## Dépendances
 
 identity (emails des membres et des invités), access (rôles de plateforme des relecteurs), profiles (données de référence, cartes des membres, lien du volet contributeur), media (logo, couverture, pièces justificatives), network (enregistrement du type de cible de suivi `organization` au démarrage : une organisation se suit par son identifiant, ADR 0027).
+
+## Données personnelles (RGPD)
+
+Export : appartenances et rôles, invitations envoyées, organisations créées. Suppression : refusée tant que le membre est le seul `owner` d'une organisation qui a d'autres membres (`PRIVACY_SOLE_OWNER`) ; une organisation dont il est le seul membre est supprimée (événement `organizations.organization.deleted.v1`) ; sinon son appartenance est retirée ; les invitations adressées à son email sont supprimées ; les traces (`created_by`, `invited_by`, revues de vérification) pseudonymisées. Contrats enregistrés auprès du module privacy (`infrastructure/organizations-personal-data.ts`, ADR 0074).

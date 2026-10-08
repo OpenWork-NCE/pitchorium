@@ -18,7 +18,10 @@ import { OrganizationResolver } from './interface/organization.resolver';
 import { OrganizationsController } from './interface/organizations.controller';
 import { VerificationController } from './interface/verification.controller';
 
+import { OrganizationsPersonalData } from './infrastructure/organizations-personal-data';
+
 const SHARED_PROVIDERS: Provider[] = [
+  OrganizationsPersonalData,
   { provide: OrganizationRepository, useClass: DrizzleOrganizationRepository },
   OrganizationEventsRecorder,
   OrganizationProjectsRegistry,
