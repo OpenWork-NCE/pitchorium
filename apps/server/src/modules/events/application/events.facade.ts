@@ -33,6 +33,7 @@ export interface EventDiscoverySource {
   language: string;
   startsAt: Date;
   endsAt: Date;
+  timeZone: string;
   publishedAt: Date | null;
 }
 
@@ -124,6 +125,7 @@ export class EventsFacade implements OnModuleInit {
         language: event.language,
         startsAt: event.startsAt,
         endsAt: event.endsAt,
+        timeZone: event.timeZone,
         publishedAt: event.publishedAt,
       });
     }
