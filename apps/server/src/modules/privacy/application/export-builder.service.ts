@@ -42,7 +42,15 @@ export class ExportBuilderService {
     @Inject(COMMON_CONFIG) private readonly config: CommonConfig,
   ) {}
 
-  async build(exportId: string): Promise<void> {
+  /**
+   * Builds the archive of a pending export. A failure leaves the export pending and throws, so
+   * that the queue tries again after its backoff (a storage or a database that hiccups); only the
+   * last attempt marks it failed, and the member may then ask again.
+   */
+  async build(
+    exportId: string,
+    { lastAttempt = true }: { lastAttempt?: boolean } = {},
+  ): Promise<void> {
     const found = await this.privacy.findExport(exportId);
     if (!found || found.status !== 'pending' || !found.userId) return;
     const userId = found.userId;
@@ -58,13 +66,18 @@ export class ExportBuilderService {
         contentType: 'application/zip',
       });
     } catch (error) {
-      this.logger.error(`Export ${exportId} failed: ${String(error)}`);
-      await this.privacy.updateExport(exportId, {
-        status: 'failed',
-        error: 'build_failed',
-        completedAt: this.clock.now(),
-      });
-      this.metrics.increment('pitchorium.privacy.export.failed');
+      this.logger.error(
+        error,
+        `Export ${exportId} failed${lastAttempt ? '' : ', to be tried again'}`,
+      );
+      if (lastAttempt) {
+        await this.privacy.updateExport(exportId, {
+          status: 'failed',
+          error: 'build_failed',
+          completedAt: this.clock.now(),
+        });
+        this.metrics.increment('pitchorium.privacy.export.failed');
+      }
       throw error;
     } finally {
       if (archive) await rm(dirname(archive.path), { recursive: true, force: true });

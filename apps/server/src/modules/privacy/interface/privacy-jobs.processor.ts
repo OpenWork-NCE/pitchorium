@@ -60,7 +60,10 @@ export class PrivacyJobsProcessor extends WorkerHost implements OnApplicationBoo
   async process(job: Job): Promise<void> {
     switch (job.name) {
       case PRIVACY_JOBS.buildExport:
-        await this.exports.build((job.data as { exportId: string }).exportId);
+        // Only the last attempt of the queue marks the export failed: the others retry it.
+        await this.exports.build((job.data as { exportId: string }).exportId, {
+          lastAttempt: job.attemptsMade + 1 >= (job.opts.attempts ?? 1),
+        });
         return;
       case PRIVACY_JOBS.executeErasures:
         await this.erasures.runDue();

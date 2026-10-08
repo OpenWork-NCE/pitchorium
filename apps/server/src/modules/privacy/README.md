@@ -15,7 +15,7 @@ identity enregistre en plus l'annuaire des comptes (`registerAccountDirectory`) 
 ## Export
 
 - `POST /v1/me/privacy/exports` : une demande par `PRIVACY_EXPORT_MIN_INTERVAL_HOURS` (24 h, provisoire ; `PRIVACY_EXPORT_RATE_LIMITED` sinon, sauf si la précédente a échoué).
-- Le worker construit l'archive ZIP (fflate, écrite en flux sur le disque puis envoyée dans le bucket privé `privacy/exports/<id>.zip`) : `README.txt`, un `<module>.json` par module (`module`, `description`, `exportedAt`, `data`), les fichiers du membre sous `files/` (au plus 200 Mio chacun, au-delà listés dans `README.txt`).
+- Le worker construit l'archive ZIP (fflate, écrite en flux sur le disque puis envoyée dans le bucket privé `privacy/exports/<id>.zip`) : `README.txt`, un `<module>.json` par module (`module`, `description`, `exportedAt`, `data`), les fichiers du membre sous `files/` (au plus 200 Mio chacun, au-delà listés dans `README.txt`). Un échec de construction (stockage ou base indisponible un instant) laisse l'export `pending` et la file le reprend après son délai ; seule la dernière tentative de la file (`attempts`, 8) le marque `failed` (`build_failed`), avec l'erreur journalisée.
 - Notification transactionnelle `export_ready` ; `POST /v1/me/privacy/exports/{exportId}/download-url` donne un lien présigné de `PRIVACY_EXPORT_URL_TTL_SECONDS` (300 s) ; l'archive est supprimée après `PRIVACY_EXPORT_TTL_HOURS` (72 h, tâche horaire).
 
 ## Suppression
