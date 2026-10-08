@@ -13,6 +13,7 @@ import {
 } from './application/ports';
 import { PostPresenter } from './application/post-presenter';
 import { PostsService } from './application/posts.service';
+import { FeedSourcesRegistry } from './application/feed-sources.registry';
 import { ProjectLinkRegistry } from './application/project-link.registry';
 import { ReactionsService } from './application/reactions.service';
 import { DrizzleContentRepository } from './infrastructure/drizzle-content.repository';
@@ -35,6 +36,7 @@ const SHARED_PROVIDERS: Provider[] = [
   { provide: PostViewCounter, useClass: RedisPostViewCounter },
   ContentEventsRecorder,
   ProjectLinkRegistry,
+  FeedSourcesRegistry,
   PostPresenter,
   ContentFacade,
 ];

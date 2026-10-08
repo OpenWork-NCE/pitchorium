@@ -1,6 +1,11 @@
 /** Public facade of the content module: the only file other modules may import. */
 export { ContentFacade } from './application/content.facade';
-export type { ProjectLinkValidator, ProjectUpdatesFeedSource } from './application/ports';
+export type { EventsFeedSource, FeedSuggestionSource } from './application/feed-sources.registry';
+export type {
+  FeedEntry,
+  ProjectLinkValidator,
+  ProjectUpdatesFeedSource,
+} from './application/ports';
 export {
   CommentCreated,
   CommentDeleted,

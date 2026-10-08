@@ -4,11 +4,13 @@ import {
   FEED_SCHEMA_VERSION,
   type FeedItem,
   type FeedPage,
+  type FeedSuggestion,
 } from '@pitchorium/contracts';
 import { API_CONFIG, type ApiConfig } from '../../../platform/config';
 import {
   Clock,
   decodeCursor,
+  encodeCursor,
   encodeKeyset,
   type KeysetPosition,
   keysetFrom,
@@ -18,10 +20,14 @@ import { ORGANIZATION_FOLLOW_TARGET } from '../../organizations';
 import { dayOf } from '../domain/views';
 import { ContentRepository, type FeedEntry, type NetworkFeedQuery, PostViewCounter } from './ports';
 import { PostPresenter } from './post-presenter';
+import { FeedSourcesRegistry } from './feed-sources.registry';
 import { ProjectLinkRegistry } from './project-link.registry';
 
-type Phase = 'network' | 'featured';
-type Entry = { id: string; type: 'post' | 'featured' | 'project_update' };
+type Phase = 'network' | 'featured' | 'suggestion';
+type Entry = { id: string; type: 'post' | 'featured' | 'project_update' | 'event' };
+
+/** Suggestions at most at the end of a small feed (provisional, docs/open-questions.md). */
+export const FEED_SUGGESTIONS_MAX = 10;
 
 /** Newest first, the id breaking ties, as the SQL keyset order. */
 const newestFirst = (a: FeedEntry, b: FeedEntry) =>
@@ -30,9 +36,10 @@ const newestFirst = (a: FeedEntry, b: FeedEntry) =>
 /**
  * Feed of a member (§10.3, ADR 0032): fan-out on read of the publications and reposts of the
  * followed members and organizations and of the member, merged with the updates of the
- * followed projects (projects module), newest first. When the network
- * produces fewer items than CONTENT_FEED_EDITORIAL_THRESHOLD, the feed goes on with editorial
- * highlights; there is no anonymous global feed.
+ * followed projects (projects module) and the events of the followed organizers (events
+ * module), newest first. When the network produces fewer items than
+ * CONTENT_FEED_EDITORIAL_THRESHOLD, the feed goes on with editorial highlights, then with
+ * explained suggestions (discovery module); there is no anonymous global feed.
  */
 @Injectable()
 export class FeedService {
@@ -42,6 +49,7 @@ export class FeedService {
     private readonly presenter: PostPresenter,
     private readonly network: NetworkFacade,
     private readonly projects: ProjectLinkRegistry,
+    private readonly sources: FeedSourcesRegistry,
     private readonly views: PostViewCounter,
     private readonly clock: Clock,
   ) {}
@@ -62,31 +70,37 @@ export class FeedService {
       blockedUserIds: blocked,
     };
     const cursor = page.cursor ? decodeCursor(page.cursor) : null;
-    const phase: Phase = cursor?.['phase'] === 'featured' ? 'featured' : 'network';
+    const phase: Phase =
+      cursor?.['phase'] === 'featured' || cursor?.['phase'] === 'suggestion'
+        ? cursor['phase']
+        : 'network';
     const after: KeysetPosition | null = cursor && cursor['at'] ? keysetFrom(cursor) : null;
     const threshold = this.config.content.feedEditorialThreshold;
     const small =
       cursor !== null
         ? cursor['small'] === '1'
         : (await this.content.countNetworkFeed(query, threshold)) +
-            (await this.projects.updateEntries(viewerId, null, threshold)).length <
+            (await this.projects.updateEntries(viewerId, null, threshold)).length +
+            (await this.sources.eventEntries(viewerId, null, threshold)).length <
           threshold;
 
     const entries: Entry[] = [];
     let nextCursor: string | null = null;
     let featuredAfter: KeysetPosition | null = phase === 'featured' ? after : null;
     if (phase === 'network') {
-      const [posts, updates] = await Promise.all([
+      const [posts, updates, events] = await Promise.all([
         this.content.networkFeed(query, after, page.limit + 1),
         this.projects.updateEntries(viewerId, after, page.limit + 1),
+        this.sources.eventEntries(viewerId, after, page.limit + 1),
       ]);
       const updateIds = new Set(updates.map((update) => update.id));
-      const rows = [...posts, ...updates].sort(newestFirst);
+      const eventIds = new Set(events.map((event) => event.id));
+      const rows = [...posts, ...updates, ...events].sort(newestFirst);
       const shown = rows.slice(0, page.limit);
       entries.push(
         ...shown.map((row): Entry => ({
           id: row.id,
-          type: updateIds.has(row.id) ? 'project_update' : 'post',
+          type: updateIds.has(row.id) ? 'project_update' : eventIds.has(row.id) ? 'event' : 'post',
         })),
       );
       const last = shown.at(-1);
@@ -98,8 +112,8 @@ export class FeedService {
       }
       featuredAfter = null;
     }
-    const remaining = page.limit - entries.length;
-    if (nextCursor === null && small && remaining > 0) {
+    let remaining = page.limit - entries.length;
+    if (phase !== 'suggestion' && nextCursor === null && small && remaining > 0) {
       const rows = await this.content.featuredFeed(query, featuredAfter, remaining + 1);
       const shown = rows.slice(0, remaining);
       entries.push(...shown.map((row) => ({ id: row.id, type: 'featured' as const })));
@@ -110,22 +124,46 @@ export class FeedService {
           { phase: 'featured', small: '1' },
         );
       }
+      remaining = page.limit - entries.length;
+    }
+    // Suggestions close a small feed; their cursor is an offset in the ranked suggestions.
+    const suggestions: { id: string; suggestion: FeedSuggestion }[] = [];
+    if (nextCursor === null && small && remaining > 0) {
+      const offset = phase === 'suggestion' ? Math.max(0, Number(cursor?.['offset']) || 0) : 0;
+      const wanted = Math.min(remaining, FEED_SUGGESTIONS_MAX - offset);
+      if (wanted > 0) {
+        const rows = await this.sources.suggestions(viewerId, offset, wanted + 1);
+        suggestions.push(...rows.slice(0, wanted));
+        if (rows.length > wanted && offset + wanted < FEED_SUGGESTIONS_MAX) {
+          nextCursor = encodeCursor({
+            phase: 'suggestion',
+            small: '1',
+            offset: String(offset + wanted),
+          });
+        }
+      }
     }
 
     const reader = await this.presenter.reader(viewerId);
-    const postIds = entries.flatMap((entry) => (entry.type === 'project_update' ? [] : [entry.id]));
+    const postIds = entries.flatMap((entry) =>
+      entry.type === 'project_update' || entry.type === 'event' ? [] : [entry.id],
+    );
     const records = await this.content.findPosts(postIds);
     const ordered = postIds.flatMap((id) => {
       const record = records.find((post) => post.id === id);
       return record ? [record] : [];
     });
-    const [posts, updates] = await Promise.all([
+    const [posts, updates, events] = await Promise.all([
       this.presenter
         .present(reader, ordered)
         .then((views) => new Map(views.map((post) => [post.id, post]))),
       this.projects.presentUpdates(
         viewerId,
         entries.flatMap((entry) => (entry.type === 'project_update' ? [entry.id] : [])),
+      ),
+      this.sources.presentEvents(
+        viewerId,
+        entries.flatMap((entry) => (entry.type === 'event' ? [entry.id] : [])),
       ),
     ]);
     const items = entries.flatMap((entry): FeedItem[] => {
@@ -135,6 +173,10 @@ export class FeedService {
           ? [{ type: 'project_update', id: `project_update:${update.id}`, update }]
           : [];
       }
+      if (entry.type === 'event') {
+        const event = events.get(entry.id);
+        return event ? [{ type: 'event', id: `event:${event.id}`, event }] : [];
+      }
       const post = posts.get(entry.id);
       if (!post) return [];
       if (entry.type === 'featured') return [{ type: 'featured', id: `featured:${post.id}`, post }];
@@ -142,10 +184,20 @@ export class FeedService {
         ? [{ type: 'repost', id: `repost:${post.id}`, post }]
         : [{ type: 'post', id: `post:${post.id}`, post }];
     });
+    items.push(
+      ...suggestions.map((row): FeedItem => ({
+        type: 'suggestion',
+        id: `suggestion:${row.id}`,
+        suggestion: row.suggestion,
+      })),
+    );
     this.views.record(
       viewerId,
       items.flatMap((item) =>
-        item.type !== 'project_update' && !item.post.viewerIsAuthor ? [item.post.id] : [],
+        (item.type === 'post' || item.type === 'repost' || item.type === 'featured') &&
+        !item.post.viewerIsAuthor
+          ? [item.post.id]
+          : [],
       ),
       dayOf(this.clock.now()),
     );

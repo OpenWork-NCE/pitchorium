@@ -28,7 +28,7 @@ import { createMember, grantRoleWith2fa, type Member } from './support/members';
 import { createWorkerTestingModule } from './support/worker-testing-module';
 
 /** Publications, reposts, reactions, comments, blocks, feed and statistics (§10.3). */
-type PostFeedItem = Exclude<FeedItem, { type: 'project_update' }>;
+type PostFeedItem = Extract<FeedItem, { type: 'post' | 'repost' | 'featured' }>;
 
 describe('content', () => {
   let app: NestExpressApplication;
@@ -69,7 +69,10 @@ describe('content', () => {
     const page = (await reader.agent.get('/v1/feed').expect(200)).body as FeedPage;
     return {
       ...page,
-      items: page.items.filter((item): item is PostFeedItem => item.type !== 'project_update'),
+      items: page.items.filter(
+        (item): item is PostFeedItem =>
+          item.type === 'post' || item.type === 'repost' || item.type === 'featured',
+      ),
     };
   };
 

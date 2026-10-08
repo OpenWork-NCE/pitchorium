@@ -28,9 +28,10 @@ Fil d'actualité (cahier des charges §10.3) : publications, repartages, mention
 ## Fil (ADR 0032)
 
 - Fan-out à la lecture : publications et repartages des membres suivis (les connexions créent un suivi mutuel) et du lecteur, publications des organisations suivies, du plus récent au plus ancien, pagination par curseur ; filtres de visibilité, blocages, publications masquées et modération.
-- Complément éditorial : si le réseau produit moins de `CONTENT_FEED_EDITORIAL_THRESHOLD` publications (10, provisoire), le fil continue avec les publications mises en avant par un `moderator` ou un `admin` (`public` ou `members`, hors réseau du lecteur). Jamais de fil mondial anonyme.
+- Complément éditorial : si le réseau produit moins de `CONTENT_FEED_EDITORIAL_THRESHOLD` publications (10, provisoire), le fil continue avec les publications mises en avant par un `moderator` ou un `admin` (`public` ou `members`, hors réseau du lecteur), puis avec au plus `FEED_SUGGESTIONS_MAX` (10, provisoire) suggestions expliquées du module discovery (éléments `suggestion`, source enregistrée par `registerFeedSuggestionSource`, curseur par rang). Jamais de fil mondial anonyme.
 - Actualités des projets suivis : éléments `project_update`, fournis par le module projects (`registerProjectUpdatesFeedSource`) et fusionnés avec les publications du réseau, du plus récent au plus ancien.
-- Contrat versionné (`schemaVersion: 1`) et polymorphe : éléments `post`, `repost`, `featured`, `project_update` ; `project` et `suggestion` sont réservés (modules projects et discovery) et le client ignore un type inconnu.
+- Événements des organisateurs suivis (membres et organisations) : éléments `event`, fournis par le module events (`registerEventsFeedSource`) et fusionnés de même ; le constat « réseau trop maigre » les compte aussi.
+- Contrat versionné (`schemaVersion: 1`) et polymorphe : éléments `post`, `repost`, `featured`, `project_update`, `event` et `suggestion` (ajoutés sans changer de version : le client ignore un type inconnu) ; `project` reste réservé au module projects.
 
 ## Statistiques (ADR 0034)
 
@@ -58,7 +59,7 @@ Chaque lecture d'une publication par un autre membre (fil ou page) ajoute le lec
 
 ## Façade publique (`index.ts`)
 
-`ContentFacade` : `setPostModerationStatus`, `setCommentModerationStatus`, `registerProjectLinkValidator`, `registerProjectUpdatesFeedSource`, `projectPosts`, `visiblePosts` (publications telles qu'un lecteur les voit, pour une publication partagée en message), `postAuthorId`, `commentPostId` ; interfaces `ProjectLinkValidator`, `ProjectUpdatesFeedSource` ; classes d'événements.
+`ContentFacade` : `setPostModerationStatus`, `setCommentModerationStatus`, `registerProjectLinkValidator`, `registerProjectUpdatesFeedSource`, `registerEventsFeedSource`, `registerFeedSuggestionSource`, `projectPosts`, `visiblePosts` (publications telles qu'un lecteur les voit, pour une publication partagée en message), `postAuthorId`, `commentPostId` ; interfaces `ProjectLinkValidator`, `ProjectUpdatesFeedSource`, `EventsFeedSource`, `FeedSuggestionSource`, type `FeedEntry` ; classes d'événements.
 
 ## Événements émis
 

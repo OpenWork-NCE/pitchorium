@@ -14,6 +14,11 @@ import {
 } from './ports';
 import { ANONYMOUS_READER, PostPresenter } from './post-presenter';
 import { POST_RESOURCE } from './posts.service';
+import {
+  type EventsFeedSource,
+  type FeedSuggestionSource,
+  FeedSourcesRegistry,
+} from './feed-sources.registry';
 import { ProjectLinkRegistry } from './project-link.registry';
 
 /**
@@ -28,6 +33,7 @@ export class ContentFacade implements OnModuleInit {
     private readonly presenter: PostPresenter,
     private readonly media: MediaFacade,
     private readonly projects: ProjectLinkRegistry,
+    private readonly feedSources: FeedSourcesRegistry,
   ) {}
 
   onModuleInit(): void {
@@ -89,6 +95,16 @@ export class ContentFacade implements OnModuleInit {
   /** Called at startup by the projects module: `project_update` items of the feed. */
   registerProjectUpdatesFeedSource(source: ProjectUpdatesFeedSource): void {
     this.projects.registerUpdatesSource(source);
+  }
+
+  /** Called at startup by the events module: `event` items of the feed. */
+  registerEventsFeedSource(source: EventsFeedSource): void {
+    this.feedSources.registerEvents(source);
+  }
+
+  /** Called at startup by the discovery module: `suggestion` items closing a small feed. */
+  registerFeedSuggestionSource(source: FeedSuggestionSource): void {
+    this.feedSources.registerSuggestions(source);
   }
 
   /**

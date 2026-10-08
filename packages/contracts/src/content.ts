@@ -3,6 +3,8 @@ import { uuidV7Schema } from './ids.js';
 import { mediaVariantSchema } from './media.js';
 import { cursorPageSchema } from './pagination.js';
 import { languageCodeSchema, memberCardSchema } from './profiles.js';
+import { feedSuggestionSchema } from './discovery.js';
+import { eventCardSchema } from './events.js';
 import { projectUpdateFeedEntrySchema } from './projects.js';
 
 /** Limits of a publication (§10.3). */
@@ -160,12 +162,19 @@ export const postSchema = z.object({
 });
 
 /**
- * Types of feed items. `post`, `repost`, `featured` and `project_update` exist; the others are
- * reserved for the projects and discovery modules: clients must ignore a type they do not know
- * (ADR 0032).
+ * Types of feed items. `post`, `repost`, `featured`, `project_update`, `event` and `suggestion`
+ * exist; `project` is reserved for the projects module: clients must ignore a type they do not
+ * know, so adding a type keeps the schema version (ADR 0032).
  */
-export const FEED_ITEM_TYPES = ['post', 'repost', 'featured', 'project_update'] as const;
-export const RESERVED_FEED_ITEM_TYPES = ['project', 'suggestion'] as const;
+export const FEED_ITEM_TYPES = [
+  'post',
+  'repost',
+  'featured',
+  'project_update',
+  'event',
+  'suggestion',
+] as const;
+export const RESERVED_FEED_ITEM_TYPES = ['project'] as const;
 export const FEED_SCHEMA_VERSION = 1;
 
 export const feedItemSchema = z.discriminatedUnion('type', [
@@ -179,6 +188,10 @@ export const feedItemSchema = z.discriminatedUnion('type', [
     id: z.string(),
     update: projectUpdateFeedEntrySchema,
   }),
+  /** Event published by a member or an organization the reader follows (events module). */
+  z.object({ type: z.literal('event'), id: z.string(), event: eventCardSchema }),
+  /** Suggestion completing a small network, with its reason (discovery module). */
+  z.object({ type: z.literal('suggestion'), id: z.string(), suggestion: feedSuggestionSchema }),
 ]);
 
 export const feedPageSchema = z.object({
