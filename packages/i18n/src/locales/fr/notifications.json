@@ -175,6 +175,34 @@
     "new_suggestions": {
       "one": "Nouvelle suggestion pour vous",
       "many": "{{count}} nouvelles suggestions pour vous"
+    },
+    "report_received": {
+      "one": "Nous avons reçu votre signalement : il sera examiné",
+      "many": "Nous avons reçu vos signalements : ils seront examinés"
+    },
+    "report_resolved": {
+      "one": "Votre signalement a été traité",
+      "many": "Vos signalements ont été traités"
+    },
+    "moderation_decision": {
+      "one": "Une décision de modération vous concerne : en voici les motifs",
+      "many": "Des décisions de modération vous concernent"
+    },
+    "suspension_started": {
+      "one": "Votre compte est suspendu : consultez l'avis et vos recours",
+      "many": "Votre compte est suspendu : consultez l'avis et vos recours"
+    },
+    "suspension_ended": {
+      "one": "La suspension de votre compte a pris fin",
+      "many": "La suspension de votre compte a pris fin"
+    },
+    "appeal_received": {
+      "one": "Votre appel a été reçu : il sera réexaminé par une autre personne",
+      "many": "Vos appels ont été reçus"
+    },
+    "appeal_decided": {
+      "one": "Votre appel a été tranché : en voici les motifs",
+      "many": "Vos appels ont été tranchés"
     }
   }
 }

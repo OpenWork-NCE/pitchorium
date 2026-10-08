@@ -175,6 +175,34 @@
     "new_suggestions": {
       "one": "New suggestion for you",
       "many": "{{count}} new suggestions for you"
+    },
+    "report_received": {
+      "one": "We received your report: it will be reviewed",
+      "many": "We received your reports: they will be reviewed"
+    },
+    "report_resolved": {
+      "one": "Your report was handled",
+      "many": "Your reports were handled"
+    },
+    "moderation_decision": {
+      "one": "A moderation decision concerns you: here are its reasons",
+      "many": "Moderation decisions concern you"
+    },
+    "suspension_started": {
+      "one": "Your account is suspended: read the notice and your remedies",
+      "many": "Your account is suspended: read the notice and your remedies"
+    },
+    "suspension_ended": {
+      "one": "The suspension of your account has ended",
+      "many": "The suspension of your account has ended"
+    },
+    "appeal_received": {
+      "one": "Your appeal was received: someone else will review the decision",
+      "many": "Your appeals were received"
+    },
+    "appeal_decided": {
+      "one": "Your appeal was decided: here are the reasons",
+      "many": "Your appeals were decided"
     }
   }
 }

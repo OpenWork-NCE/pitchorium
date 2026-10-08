@@ -296,12 +296,14 @@ export class NotificationEmailsService {
     const title = notification.data['title'];
     const position = notification.data['position'];
     const count = notification.data['count'];
+    const detail = notification.data['detail'];
     return {
       actor: card?.displayName ?? '',
       others: Math.max(0, notification.actorCount - 1),
       count: typeof count === 'number' ? count : notification.eventCount,
       ...(typeof title === 'string' ? { title } : {}),
       ...(typeof position === 'number' ? { position } : {}),
+      ...(typeof detail === 'string' ? { detail } : {}),
     };
   }
 

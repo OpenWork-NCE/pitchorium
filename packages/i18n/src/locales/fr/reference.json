@@ -676,7 +676,14 @@
     "mission_engagement_requested": "Candidature ou sollicitation de mission reçue",
     "mission_engagement_answered": "Réponse à une mission",
     "mission_completed": "Mission terminée à confirmer",
-    "new_suggestions": "Nouvelles suggestions"
+    "new_suggestions": "Nouvelles suggestions",
+    "report_received": "Signalement reçu",
+    "report_resolved": "Signalement traité",
+    "moderation_decision": "Décision de modération",
+    "suspension_started": "Suspension du compte",
+    "suspension_ended": "Fin de suspension",
+    "appeal_received": "Appel reçu",
+    "appeal_decided": "Appel tranché"
   },
   "notificationChannels": {
     "in_app": "Dans l'application",

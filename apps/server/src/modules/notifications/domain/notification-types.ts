@@ -420,6 +420,64 @@ export const NOTIFICATION_DEFINITIONS: Readonly<
     grouping: 'type',
     target: 'suggestions',
   },
+  // Trust and safety (§13): receipt and outcome of a report, statement of reasons of a
+  // decision, suspension, appeal. Transactional: the member cannot turn them off.
+  report_received: {
+    sources: ['trust.report.created.v1'],
+    transactional: true,
+    priority: 'normal',
+    defaults: on,
+    grouping: 'none',
+    target: 'reports',
+  },
+  report_resolved: {
+    sources: ['trust.report.resolved.v1'],
+    transactional: true,
+    priority: 'normal',
+    defaults: on,
+    grouping: 'none',
+    target: 'reports',
+  },
+  moderation_decision: {
+    sources: ['trust.decision.taken.v1'],
+    transactional: true,
+    priority: 'normal',
+    defaults: on,
+    grouping: 'none',
+    target: 'moderation_decision',
+  },
+  suspension_started: {
+    sources: ['trust.suspension.started.v1'],
+    transactional: true,
+    priority: 'normal',
+    defaults: on,
+    grouping: 'none',
+    target: 'moderation',
+  },
+  suspension_ended: {
+    sources: ['trust.suspension.ended.v1'],
+    transactional: true,
+    priority: 'normal',
+    defaults: on,
+    grouping: 'none',
+    target: 'moderation',
+  },
+  appeal_received: {
+    sources: ['trust.decision.appealed.v1'],
+    transactional: true,
+    priority: 'normal',
+    defaults: on,
+    grouping: 'none',
+    target: 'moderation_decision',
+  },
+  appeal_decided: {
+    sources: ['trust.decision.appeal-resolved.v1'],
+    transactional: true,
+    priority: 'normal',
+    defaults: on,
+    grouping: 'none',
+    target: 'moderation_decision',
+  },
 };
 
 /** Route of the web app a notification opens (docs/architecture/notifications.md). */
@@ -463,5 +521,11 @@ export function pathOf(type: NotificationTargetType, key: string): string {
       return `/missions/engagements/${key}`;
     case 'suggestions':
       return '/discover';
+    case 'reports':
+      return '/me/reports';
+    case 'moderation_decision':
+      return `/me/moderation/decisions/${key}`;
+    case 'moderation':
+      return '/me/moderation';
   }
 }

@@ -56,6 +56,16 @@ import {
 } from '../../payments';
 import { ProfilesFacade } from '../../profiles';
 import {
+  AppealResolved,
+  DecisionAppealed,
+  DecisionTaken,
+  ReportCreated,
+  ReportResolved,
+  SuspensionEnded,
+  SuspensionStarted,
+  TrustFacade,
+} from '../../trust';
+import {
   InterestExpressed,
   PROJECT_FOLLOW_TARGET,
   ProjectClosed,
@@ -152,6 +162,8 @@ const none: Resolution = { dispatches: [], fanouts: [] };
  * to notify, read through the facades of the emitting modules. Followers of a target are
  * notified by batches (fan-out), everything else at once.
  */
+const nullable = (value: unknown): string | null => (typeof value === 'string' ? value : null);
+
 @Injectable()
 export class NotificationSources {
   constructor(
@@ -164,6 +176,7 @@ export class NotificationSources {
     private readonly identity: IdentityFacade,
     private readonly events: EventsFacade,
     private readonly missions: MissionsFacade,
+    private readonly trust: TrustFacade,
   ) {}
 
   async resolve(event: OutboxEnvelope): Promise<Resolution> {
@@ -398,9 +411,83 @@ export class NotificationSources {
         });
       case EngagementCompleted.TYPE:
         return this.missionEngagement(id, 'mission_completed', 'beneficiary');
+      case ReportCreated.TYPE:
+        return this.direct(
+          'report_received',
+          [nullable(p['reporterId'])],
+          null,
+          {
+            type: 'reports',
+            key: id,
+          },
+          { targetType: text(p['targetType']), reason: text(p['reason']) },
+        );
+      case ReportResolved.TYPE:
+        return this.direct(
+          'report_resolved',
+          [nullable(p['reporterId'])],
+          null,
+          {
+            type: 'reports',
+            key: id,
+          },
+          { outcome: text(p['outcome']) },
+        );
+      case DecisionTaken.TYPE:
+        return this.decision(id);
+      case DecisionAppealed.TYPE:
+        return this.direct('appeal_received', [text(p['appellantId'])], null, {
+          type: 'moderation_decision',
+          key: id,
+        });
+      case AppealResolved.TYPE:
+        return this.direct(
+          'appeal_decided',
+          [text(p['appellantId'])],
+          null,
+          { type: 'moderation_decision', key: id },
+          { outcome: text(p['outcome']), detail: await this.trust.appealOutcome(id) },
+        );
+      case SuspensionStarted.TYPE:
+        return this.direct(
+          'suspension_started',
+          [text(p['userId'])],
+          null,
+          { type: 'moderation', key: 'standing' },
+          { decisionId: text(p['decisionId']), endsAt: nullable(p['endsAt']) },
+        );
+      case SuspensionEnded.TYPE:
+        return this.direct(
+          'suspension_ended',
+          [text(p['userId'])],
+          null,
+          { type: 'moderation', key: 'standing' },
+          { cause: text(p['cause']) },
+        );
       default:
         return none;
     }
+  }
+
+  /**
+   * Statement of reasons of a decision for the member concerned, in the notification and its
+   * email; a dismissal restricts nothing and is not notified to them.
+   */
+  private async decision(decisionId: string): Promise<Resolution> {
+    const notice = await this.trust.decisionNotice(decisionId);
+    if (!notice || notice.kind === 'dismiss') return none;
+    return this.direct(
+      'moderation_decision',
+      [notice.subjectId],
+      null,
+      { type: 'moderation_decision', key: decisionId },
+      {
+        kind: notice.kind,
+        reason: notice.reason,
+        detail: notice.statement,
+        appealableUntil: notice.appealableUntil?.toISOString() ?? null,
+      },
+    );
   }
 
   /** Members of an event: the registrant, or the attendees of a canceled event. */

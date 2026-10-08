@@ -52,6 +52,13 @@ export const NOTIFICATION_TYPES = [
   'mission_engagement_answered',
   'mission_completed',
   'new_suggestions',
+  'report_received',
+  'report_resolved',
+  'moderation_decision',
+  'suspension_started',
+  'suspension_ended',
+  'appeal_received',
+  'appeal_decided',
 ] as const;
 export const notificationTypeSchema = z.enum(NOTIFICATION_TYPES);
 
@@ -87,6 +94,9 @@ export const NOTIFICATION_TARGET_TYPES = [
   'event',
   'mission_engagement',
   'suggestions',
+  'reports',
+  'moderation_decision',
+  'moderation',
 ] as const;
 export const notificationTargetTypeSchema = z.enum(NOTIFICATION_TARGET_TYPES);
 
