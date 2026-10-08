@@ -47,6 +47,9 @@ const nextFrame = () => act(() => new Promise((resolve) => requestAnimationFrame
 describe('Form', () => {
   it('lists every error with a link to its field, and gives the summary the focus', async () => {
     renderWithProviders(<EventForm />);
+    fireEvent.change(screen.getByRole('textbox', { name: 'Site' }), {
+      target: { value: 'http://example.org' },
+    });
     fireEvent.click(screen.getByRole('button', { name: 'Publier' }));
     const summary = await screen.findByRole('group', { name: 'Le formulaire contient 2 erreurs.' });
     await nextFrame();

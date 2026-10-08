@@ -378,8 +378,8 @@ export function DateTimeField({
               }}
               onPaste={(event) => event.preventDefault()}
               className={cn(
-                'rounded-xs px-0.5 text-center caret-transparent outline-none focus:bg-accent focus:text-on-accent',
-                type === 'year' ? 'min-w-[4.5ch]' : 'min-w-[2.5ch]',
+                'rounded-xs px-px text-center caret-transparent outline-none focus:bg-accent focus:text-on-accent',
+                type === 'year' ? 'min-w-[4ch]' : 'min-w-[2ch]',
                 shown.empty && 'text-muted focus:text-on-accent',
               )}
             >

@@ -304,10 +304,7 @@ function EventForm() {
                   title: 'Validation failed',
                   status: 400,
                   code: 'VALIDATION_FAILED',
-                  errors: [
-                    { pointer: '/description', code: 'too_big' },
-                    { pointer: '/onlineUrl', code: 'invalid_format' },
-                  ],
+                  errors: [{ pointer: '/onlineUrl', code: 'invalid_format' }],
                 },
                 '01JD7Q2XC5D6',
               )
@@ -467,9 +464,9 @@ export const FormWithServerErrors: Story = {
     await userEvent.keyboard('19');
     // Then the api: each error says the rule its field expects.
     await userEvent.click(canvas.getByRole('button', { name: 'Publier l’événement' }));
-    const summary = await canvas.findByRole('group', { name: 'Le formulaire contient 2 erreurs.' });
+    const summary = await canvas.findByRole('group', { name: 'Le formulaire contient 1 erreur.' });
     await waitFor(() => expect(summary).toHaveFocus());
-    await expect(within(summary).getAllByRole('link')).toHaveLength(2);
+    await expect(within(summary).getAllByRole('link')).toHaveLength(1);
     await expect(canvas.getByRole('textbox', { name: 'Lien de la visioconférence' })).toBeInvalid();
     await expect(
       canvas.getByRole('textbox', { name: 'Lien de la visioconférence' }),

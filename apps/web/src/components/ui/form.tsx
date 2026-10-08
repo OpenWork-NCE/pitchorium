@@ -261,7 +261,12 @@ function FormSummary() {
     const message = (get(errors, name) as FieldError | undefined)?.message;
     return message ? [{ name, field, message }] : [];
   });
-  const count = Object.keys(errors).filter((name) => name !== 'root').length;
+  // An error of a field the form does not show (set by hand): said, without a link.
+  const others = Object.keys(errors).flatMap((name) => {
+    const message = (get(errors, name) as FieldError | undefined)?.message;
+    return name === 'root' || registry?.has(name) || !message ? [] : [{ name, message }];
+  });
+  const count = listed.length + others.length;
   if (!formState.isSubmitted || (!root && count === 0)) return null;
 
   return (
@@ -276,7 +281,7 @@ function FormSummary() {
         <CircleAlert aria-hidden className="mt-0.5 size-4 shrink-0" />
         {count > 0 ? t(`summary.${plural(count)}`, { count }) : t('summary.form')}
       </p>
-      {listed.length > 0 ? (
+      {count > 0 ? (
         <ul className="grid gap-1 pl-6">
           {listed.map(({ name, field, message }) => (
             <li key={name}>
@@ -293,6 +298,9 @@ function FormSummary() {
                 {message}
               </a>
             </li>
+          ))}
+          {others.map(({ name, message }) => (
+            <li key={name}>{message}</li>
           ))}
         </ul>
       ) : null}
