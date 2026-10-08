@@ -379,7 +379,10 @@ export function DateTimeField({
               onPaste={(event) => event.preventDefault()}
               className={cn(
                 'rounded-xs px-px text-center caret-transparent outline-none focus:bg-accent focus:text-on-accent',
-                type === 'year' ? 'min-w-[4ch]' : 'min-w-[2ch]',
+                // A value takes the width of its digits; a placeholder or a typed digit keeps the
+                // width of the segment, so that nothing moves while typing.
+                (shown.empty || focusedIndex === segmentIndex) &&
+                  (type === 'year' ? 'min-w-[4ch]' : 'min-w-[2ch]'),
                 shown.empty && 'text-muted focus:text-on-accent',
               )}
             >
