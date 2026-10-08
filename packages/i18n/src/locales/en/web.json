@@ -10,7 +10,21 @@
   "nav": {
     "primary": "Main navigation",
     "account": "Account",
-    "signOut": "Sign out"
+    "signIn": "Sign in",
+    "signOut": "Sign out",
+    "signingOut": "Signing out",
+    "home": "Home",
+    "network": "Network",
+    "projects": "Projects",
+    "messages": "Messages",
+    "notifications": "Notifications",
+    "profile": "Profile",
+    "settings": "Settings",
+    "publish": "Publish",
+    "createProject": "Create a project",
+    "menu": "Menu",
+    "menuWithCount": "Menu, {{count}} to handle",
+    "shortcuts": "Keyboard shortcuts"
   },
   "theme": {
     "label": "Theme",
@@ -70,11 +84,6 @@
     "latency": "Response time: {{milliseconds}} ms",
     "activeLocales": "Active languages",
     "refresh": "Refresh"
-  },
-  "shell": {
-    "member": "Member space",
-    "admin": "Administration",
-    "public": "Public pages"
   },
   "ui": {
     "close": "Close",
@@ -272,5 +281,92 @@
   "access": {
     "missing": "To complete first: {{list}}.",
     "denied": "This action is not open to you."
+  },
+  "counters": {
+    "messages": {
+      "one": "{{count}} unread message",
+      "other": "{{count}} unread messages"
+    },
+    "notifications": {
+      "one": "{{count}} unread notification",
+      "other": "{{count}} unread notifications"
+    }
+  },
+  "banners": {
+    "suspended": {
+      "body": "Your account is suspended: you can read, but neither publish nor write. The decision and how to appeal are in your settings.",
+      "action": "See the decision"
+    },
+    "legal": {
+      "body": "The terms of use or the privacy policy have changed. Accept them to keep publishing and contributing.",
+      "action": "Read and accept"
+    },
+    "email": {
+      "body": "Verify your address {{email}} to publish, write and contribute.",
+      "action": "Send the email again",
+      "sending": "Sending",
+      "sent": "Email sent.",
+      "failed": "Sending failed, try again in a moment."
+    },
+    "twoFactor": {
+      "body": "Turn on two-factor authentication to use the moderation and administration tools.",
+      "action": "Turn on"
+    },
+    "offline": {
+      "title": "You are offline.",
+      "body": "Pages already loaded stay readable; your actions will leave when the connection is back.",
+      "pending": {
+        "one": "{{count}} action waiting.",
+        "other": "{{count}} actions waiting."
+      },
+      "sent": {
+        "one": "Back online: {{count}} action sent.",
+        "other": "Back online: {{count}} actions sent."
+      },
+      "back": "Back online."
+    }
+  },
+  "search": {
+    "placeholder": "Search Pitchorium",
+    "shortcut": "Open the search",
+    "group": "Search"
+  },
+  "actions": {
+    "goTo": "Go to: {{section}}",
+    "markAllRead": "Mark all notifications as read",
+    "markAllReadDone": "Notifications marked as read.",
+    "queued": "Offline: the action will leave when the connection is back.",
+    "toDark": "Switch to the dark theme",
+    "toLight": "Switch to the light theme",
+    "shortcuts": "Show the keyboard shortcuts"
+  },
+  "shortcuts": {
+    "goTo": "Go to: {{section}}",
+    "navigation": "Navigation"
+  },
+  "placeholder": {
+    "title": "This page is being prepared.",
+    "body": "It comes with the next steps of Pitchorium.",
+    "aside": "Coming soon."
+  },
+  "layout": {
+    "left": "Suggestions",
+    "right": "Projects and people to follow"
+  },
+  "admin": {
+    "label": "Administration",
+    "nav": {
+      "label": "Administration",
+      "open": "Open the navigation",
+      "dashboard": "Dashboard",
+      "moderation": "Moderation",
+      "members": "Members",
+      "flags": "Features"
+    }
+  },
+  "shell": {
+    "member": "Member space",
+    "admin": "Administration",
+    "public": "Public pages"
   }
 }

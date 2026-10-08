@@ -10,7 +10,21 @@
   "nav": {
     "primary": "Navigation principale",
     "account": "Compte",
-    "signOut": "Se déconnecter"
+    "signIn": "Se connecter",
+    "signOut": "Se déconnecter",
+    "signingOut": "Déconnexion en cours",
+    "home": "Accueil",
+    "network": "Réseau",
+    "projects": "Projets",
+    "messages": "Messages",
+    "notifications": "Notifications",
+    "profile": "Profil",
+    "settings": "Paramètres",
+    "publish": "Publier",
+    "createProject": "Créer un projet",
+    "menu": "Menu",
+    "menuWithCount": "Menu, {{count}} à traiter",
+    "shortcuts": "Raccourcis clavier"
   },
   "theme": {
     "label": "Thème",
@@ -70,11 +84,6 @@
     "latency": "Temps de réponse : {{milliseconds}} ms",
     "activeLocales": "Langues actives",
     "refresh": "Actualiser"
-  },
-  "shell": {
-    "member": "Espace membre",
-    "admin": "Administration",
-    "public": "Pages publiques"
   },
   "ui": {
     "close": "Fermer",
@@ -272,5 +281,92 @@
   "access": {
     "missing": "À compléter d’abord : {{list}}.",
     "denied": "Cette action ne vous est pas ouverte."
+  },
+  "counters": {
+    "messages": {
+      "one": "{{count}} message non lu",
+      "other": "{{count}} messages non lus"
+    },
+    "notifications": {
+      "one": "{{count}} notification non lue",
+      "other": "{{count}} notifications non lues"
+    }
+  },
+  "banners": {
+    "suspended": {
+      "body": "Votre compte est suspendu : vous pouvez lire, mais ni publier ni écrire. La décision et la voie d’appel sont dans vos paramètres.",
+      "action": "Voir la décision"
+    },
+    "legal": {
+      "body": "Les conditions d’utilisation ou la politique de confidentialité ont changé. Acceptez-les pour continuer à publier et à contribuer.",
+      "action": "Lire et accepter"
+    },
+    "email": {
+      "body": "Vérifiez votre adresse {{email}} pour publier, écrire et contribuer.",
+      "action": "Renvoyer l’email",
+      "sending": "Envoi en cours",
+      "sent": "Email envoyé.",
+      "failed": "L’envoi a échoué, réessayez dans un instant."
+    },
+    "twoFactor": {
+      "body": "Activez la double authentification pour utiliser les outils de modération et d’administration.",
+      "action": "Activer"
+    },
+    "offline": {
+      "title": "Vous êtes hors ligne.",
+      "body": "Les pages déjà chargées restent consultables ; vos actions partiront au retour de la connexion.",
+      "pending": {
+        "one": "{{count}} action en attente.",
+        "other": "{{count}} actions en attente."
+      },
+      "sent": {
+        "one": "Connexion rétablie : {{count}} action envoyée.",
+        "other": "Connexion rétablie : {{count}} actions envoyées."
+      },
+      "back": "Connexion rétablie."
+    }
+  },
+  "search": {
+    "placeholder": "Rechercher sur Pitchorium",
+    "shortcut": "Ouvrir la recherche",
+    "group": "Recherche"
+  },
+  "actions": {
+    "goTo": "Aller à : {{section}}",
+    "markAllRead": "Marquer toutes les notifications comme lues",
+    "markAllReadDone": "Notifications marquées comme lues.",
+    "queued": "Hors ligne : l’action partira au retour de la connexion.",
+    "toDark": "Passer au thème sombre",
+    "toLight": "Passer au thème clair",
+    "shortcuts": "Afficher les raccourcis clavier"
+  },
+  "shortcuts": {
+    "goTo": "Aller à : {{section}}",
+    "navigation": "Navigation"
+  },
+  "placeholder": {
+    "title": "Cette page est en préparation.",
+    "body": "Elle arrive avec les prochaines étapes de Pitchorium.",
+    "aside": "Bientôt disponible."
+  },
+  "layout": {
+    "left": "Suggestions",
+    "right": "Projets et personnes à suivre"
+  },
+  "admin": {
+    "label": "Administration",
+    "nav": {
+      "label": "Administration",
+      "open": "Ouvrir la navigation",
+      "dashboard": "Tableau de bord",
+      "moderation": "Modération",
+      "members": "Membres",
+      "flags": "Fonctionnalités"
+    }
+  },
+  "shell": {
+    "member": "Espace membre",
+    "admin": "Administration",
+    "public": "Pages publiques"
   }
 }
