@@ -2,7 +2,7 @@
 
 import { ToggleGroup as Primitive } from 'radix-ui';
 import { type ReactNode, useId } from 'react';
-import { LayoutMotion, SharedIndicator } from '@/components/motion';
+import { SharedIndicator } from '@/components/motion';
 import { cn } from '@/lib/cn';
 
 export interface ToggleOption<T extends string> {
@@ -29,8 +29,7 @@ const ITEM =
 
 /**
  * Choice among a few options (Radix ToggleGroup, arrows to move, Space to press). `single`: a
- * segmented control, the active option marked by an indicator that glides (layout animation,
- * LayoutMotion); `multiple`: toggles that stay pressed, for filters.
+ * segmented control, the active option marked by an indicator that glides (layout animation); `multiple`: toggles that stay pressed, for filters.
  */
 export function ToggleGroup<T extends string>(props: ToggleGroupProps<T>) {
   const layoutId = useId();
@@ -62,20 +61,18 @@ export function ToggleGroup<T extends string>(props: ToggleGroupProps<T>) {
 
   if (props.type === 'single') {
     return (
-      <LayoutMotion>
-        <Primitive.Root
-          type="single"
-          value={props.value}
-          onValueChange={(next) => {
-            // Radix lets the pressed option be released; a segmented control always has one.
-            if (next) props.onValueChange(next as T);
-          }}
-          aria-label={label}
-          className={root}
-        >
-          {items((value) => value === props.value, true)}
-        </Primitive.Root>
-      </LayoutMotion>
+      <Primitive.Root
+        type="single"
+        value={props.value}
+        onValueChange={(next) => {
+          // Radix lets the pressed option be released; a segmented control always has one.
+          if (next) props.onValueChange(next as T);
+        }}
+        aria-label={label}
+        className={root}
+      >
+        {items((value) => value === props.value, true)}
+      </Primitive.Root>
     );
   }
   return (

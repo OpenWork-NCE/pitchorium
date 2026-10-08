@@ -12,9 +12,10 @@ import { NAV_ITEMS } from './member-nav';
 
 /**
  * Quick actions of the command palette: create, the sections, mark the notifications as read
- * (sent once even offline, ADR 0097), the theme and the help of the shortcuts.
+ * (sent once even offline, ADR 0097), the theme and the help of the shortcuts. Given as a
+ * function: their labels are formatted when the palette opens, not while the page starts.
  */
-export function useQuickActions(): CommandAction[] {
+export function useQuickActions(): () => CommandAction[] {
   const t = useTranslations('web.actions');
   const nav = useTranslations('web.nav');
   const router = useRouter();
@@ -23,7 +24,7 @@ export function useQuickActions(): CommandAction[] {
   const openHelp = useShortcutsHelp();
   const markAllRead = useMarkAllNotificationsRead();
 
-  return [
+  return () => [
     {
       id: 'publish',
       label: nav('publish'),

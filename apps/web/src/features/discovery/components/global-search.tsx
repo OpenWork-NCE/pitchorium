@@ -16,8 +16,8 @@ const CommandPalette = dynamic(() => loadPalette().then((module) => module.Comma
 });
 
 interface GlobalSearchProps {
-  /** Quick actions of the shell (publish, create a project, go to a section). */
-  actions: readonly CommandAction[];
+  /** Quick actions of the shell (publish, create a project, go to a section), built on use. */
+  actions: () => readonly CommandAction[];
   /** `field`: the search field of a wide header; `icon`: a button on a narrow one. */
   display: 'field' | 'icon';
 }
@@ -74,7 +74,7 @@ export function GlobalSearch({ actions, display }: GlobalSearchProps) {
         <CommandPalette
           open={open}
           onOpenChange={setOpen}
-          actions={actions}
+          actions={actions()}
           recent={recent}
           onSearch={remember}
           onClearRecent={clear}

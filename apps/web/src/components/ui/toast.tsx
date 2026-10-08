@@ -1,9 +1,16 @@
 'use client';
 
 import dynamic from 'next/dynamic';
+import { idle } from '@/lib/preload';
 
-/** sonner and its stylesheet arrive after the first render of the interactive shells (ADR 0094). */
-const Toaster = dynamic(() => import('./toaster').then((module) => module.Toaster), { ssr: false });
+/** sonner and its stylesheet arrive once the interactive shells are idle (ADR 0094). */
+const Toaster = dynamic(
+  () =>
+    idle()
+      .then(() => import('./toaster'))
+      .then((module) => module.Toaster),
+  { ssr: false },
+);
 
 /** Toasts of a shell, mounted once the page has rendered. */
 export function ToasterLoader() {

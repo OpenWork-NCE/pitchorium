@@ -2,7 +2,7 @@
 
 import { getPostsControllerReadQueryKey } from '@pitchorium/api-client';
 import type { Post } from '@pitchorium/contracts';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { MutationObserver, useQueryClient } from '@tanstack/react-query';
 import { ThumbsUp } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
@@ -24,12 +24,17 @@ export function ReactionButton({ post }: { post: Post }) {
   const t = useTranslations('reference.reactionTypes');
   const queryClient = useQueryClient();
   const [reaction, setReaction] = useState(post.reactions.viewerReaction);
-  const react = useMutation<unknown, unknown, Intent<ReactionInput>>({
-    mutationKey,
-    mutationFn,
-    scope: { id: `reaction:${post.id}` },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: getPostsControllerReadQueryKey() }),
-  });
+  // The mutation is built at the gesture: a feed of dozens of buttons hydrates no observer.
+  const react = (variables: Intent<ReactionInput>) =>
+    new MutationObserver<unknown, unknown, Intent<ReactionInput>>(queryClient, {
+      mutationKey,
+      mutationFn,
+      scope: { id: `reaction:${post.id}` },
+      onSuccess: () =>
+        queryClient.invalidateQueries({ queryKey: getPostsControllerReadQueryKey() }),
+    })
+      .mutate(variables)
+      .catch(() => undefined);
   const liked = reaction === 'like';
   return (
     <Button
@@ -40,7 +45,7 @@ export function ReactionButton({ post }: { post: Post }) {
       onClick={() => {
         const next = liked ? null : 'like';
         setReaction(next);
-        react.mutate({ input: { postId: post.id, type: next }, key: crypto.randomUUID() });
+        void react({ input: { postId: post.id, type: next }, key: crypto.randomUUID() });
       }}
     >
       <ThumbsUp aria-hidden />

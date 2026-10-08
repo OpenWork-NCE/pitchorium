@@ -60,7 +60,7 @@ module.exports = {
             ...THRESHOLDS,
             'categories:seo': ['error', { minScore: 1 }],
             // Every script of the editorial page, transferred: initial chunks plus GSAP and the
-            // Motion features loaded on demand.
+            // chunks loaded on demand.
             'resource-summary:script:size': ['error', { maxNumericValue: 360000 }],
             'resource-summary:font:size': ['error', { maxNumericValue: 80000 }],
           },
@@ -68,8 +68,15 @@ module.exports = {
         {
           // Shell of the member space: the same thresholds, without SEO (its pages are not
           // indexed, `noindex` by design); its initial JavaScript is budgeted by check:bundles.
+          // Total Blocking Time under 250 ms on every run, not on the median.
           matchingUrlPattern: 'localhost:3201/fr/feed$',
-          assertions: THRESHOLDS,
+          assertions: {
+            ...THRESHOLDS,
+            'total-blocking-time': [
+              'error',
+              { maxNumericValue: 250, aggregationMethod: 'pessimistic' },
+            ],
+          },
         },
       ],
     },

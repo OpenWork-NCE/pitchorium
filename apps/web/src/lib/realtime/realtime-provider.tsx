@@ -2,6 +2,7 @@
 
 import { useQueryClient } from '@tanstack/react-query';
 import { type ReactNode, useEffect } from 'react';
+import { idle } from '@/lib/preload';
 
 /**
  * Realtime channel of the member space: the connection (Socket.IO, realtime-connection.ts) loads
@@ -13,9 +14,12 @@ export function RealtimeProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     let disconnect: (() => void) | undefined;
     let cancelled = false;
-    void import('./realtime-connection').then(({ connect }) => {
-      if (!cancelled) disconnect = connect(queryClient);
-    });
+    // The counters of the first view come with the page: the channel opens once it is idle.
+    void idle()
+      .then(() => import('./realtime-connection'))
+      .then(({ connect }) => {
+        if (!cancelled) disconnect = connect(queryClient);
+      });
     return () => {
       cancelled = true;
       disconnect?.();

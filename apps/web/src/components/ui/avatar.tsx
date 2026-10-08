@@ -1,7 +1,5 @@
-'use client';
-
-import { Avatar as Primitive } from 'radix-ui';
 import { cn } from '@/lib/cn';
+import { AvatarPhoto } from './avatar-photo';
 
 const SIZES = {
   xs: 'size-6 text-[0.625rem]',
@@ -49,8 +47,9 @@ interface AvatarProps {
 }
 
 /**
- * Photo of a person or logo of an organisation (Radix Avatar): initials on a colour derived from
- * the name while the image loads, or without one.
+ * Photo of a person or logo of an organisation: initials on a colour derived from the name
+ * without a photo, rendered by the server with nothing to hydrate (a feed shows dozens); with a
+ * photo, the initials while it loads (Radix Avatar, AvatarPhoto).
  */
 export function Avatar({
   name,
@@ -60,27 +59,30 @@ export function Avatar({
   decorative = false,
   className,
 }: AvatarProps) {
-  return (
-    <Primitive.Root
-      role={decorative ? undefined : 'img'}
-      aria-label={decorative ? undefined : name}
-      aria-hidden={decorative || undefined}
-      className={cn(
-        'relative inline-flex shrink-0 overflow-hidden bg-surface-sunken select-none',
-        shape === 'circle' ? 'rounded-full' : 'rounded-md',
-        SIZES[size],
-        className,
-      )}
-    >
-      {src ? <Primitive.Image src={src} alt="" className="size-full object-cover" /> : null}
-      <Primitive.Fallback
-        delayMs={src ? 400 : 0}
-        className={cn('flex size-full items-center justify-center font-semibold', toneOf(name))}
-      >
-        {initialsOf(name)}
-      </Primitive.Fallback>
-    </Primitive.Root>
+  const classes = cn(
+    'relative inline-flex shrink-0 overflow-hidden bg-surface-sunken select-none',
+    shape === 'circle' ? 'rounded-full' : 'rounded-md',
+    SIZES[size],
+    className,
   );
+  const label = {
+    role: decorative ? undefined : 'img',
+    'aria-label': decorative ? undefined : name,
+    'aria-hidden': decorative || undefined,
+  } as const;
+  const initials = (
+    <span className={cn('flex size-full items-center justify-center font-semibold', toneOf(name))}>
+      {initialsOf(name)}
+    </span>
+  );
+  if (!src) {
+    return (
+      <span {...label} className={classes}>
+        {initials}
+      </span>
+    );
+  }
+  return <AvatarPhoto {...label} className={classes} src={src} fallback={initials} />;
 }
 
 interface AvatarGroupProps {

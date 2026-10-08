@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { type ReactNode, useId, useLayoutEffect, useRef, useState } from 'react';
+import { type ReactNode, useEffect, useId, useRef, useState } from 'react';
 import { cn } from '@/lib/cn';
 
 interface TruncateProps {
@@ -29,12 +29,14 @@ export function Truncate({ children, lines = 3, className }: TruncateProps) {
   const ref = useRef<HTMLDivElement>(null);
   const id = useId();
 
-  useLayoutEffect(() => {
+  // Measured by a ResizeObserver, which reports once at once and on every change: never inside
+  // the hydration of a page that shows many cut texts (a feed).
+  useEffect(() => {
     const element = ref.current;
     if (!element || expanded) return;
-    const measure = () => setClamped(element.scrollHeight > element.clientHeight + 1);
-    measure();
-    const observer = new ResizeObserver(measure);
+    const observer = new ResizeObserver(() =>
+      setClamped(element.scrollHeight > element.clientHeight + 1),
+    );
     observer.observe(element);
     return () => observer.disconnect();
   }, [expanded, children]);

@@ -26,6 +26,7 @@ export function SuggestionItem({ person, reason, className }: SuggestionItemProp
       <div className="grid min-w-0 flex-1 gap-0.5">
         <Link
           href={routes.member(person.key)}
+          prefetch={false}
           className="w-fit max-w-full truncate rounded-xs text-sm font-semibold outline-none hover:underline focus-visible:outline-2 focus-visible:outline-focus"
         >
           {person.title}

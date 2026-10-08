@@ -18,4 +18,4 @@ La référence `docs/design/ELITE-MOTION.md` décrit un mouvement de niveau stud
 ## Conséquences
 
 - La matière nommée dans le YAML (le motif d'élévation des fonds de marque) reste à valider (question 94).
-- Motion pesait environ 42 kB compressés au premier chargement du socle, fonctions de mise en page comprises ; l'ADR 0094 les sort du premier chargement (composants `m` de `motion/react-m`, fonctions chargées après la première peinture, mise en page seulement par `LayoutMotion`).
+- Motion pesait environ 42 kB compressés au premier chargement du socle, fonctions de mise en page comprises ; l'ADR 0094 le sort du premier chargement : seul l'indicateur partagé l'utilise, chargé à l'inactivité de la page.

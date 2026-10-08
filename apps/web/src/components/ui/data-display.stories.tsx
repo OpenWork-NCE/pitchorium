@@ -175,7 +175,17 @@ export const Time: Story = {
     const time = within(canvasElement).getByText(/il y a 5 minutes/);
     await userEvent.tab();
     await expect(time).toHaveFocus();
-    await waitFor(() => expect(within(document.body).getByRole('tooltip')).toBeVisible());
+    // The full date describes the date, and shows in a tooltip loaded on the first focus.
+    await expect(time).toHaveAccessibleDescription(/2026/);
+    await waitFor(() =>
+      expect(document.querySelector('[data-radix-popper-content-wrapper]')).toHaveTextContent(
+        /2026/,
+      ),
+    );
+    await userEvent.keyboard('{Escape}');
+    await waitFor(() =>
+      expect(document.querySelector('[data-radix-popper-content-wrapper]')).toBeNull(),
+    );
   },
 };
 

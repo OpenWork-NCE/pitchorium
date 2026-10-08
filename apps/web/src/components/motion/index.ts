@@ -1,7 +1,6 @@
 // SplitHeading is imported from './split-heading' by the public editorial pages only (GSAP).
 export { AnimatedNumber } from './animated-number';
 export { IconSwap } from './icon-swap';
-export { LayoutMotion, MotionProvider } from './motion-provider';
 export { PageTransition } from './page-transition';
 export { Reveal } from './reveal';
 export { SharedIndicator } from './shared-indicator';

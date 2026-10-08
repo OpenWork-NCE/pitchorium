@@ -47,6 +47,8 @@ export function PostCard({ post, actions, className }: PostCardProps) {
           <div className="grid min-w-0 flex-1">
             <Link
               href={author.href}
+              // A feed lists dozens of authors: their pages are not fetched in advance.
+              prefetch={false}
               className="w-fit max-w-full truncate rounded-xs font-semibold outline-none hover:underline focus-visible:outline-2 focus-visible:outline-focus"
             >
               {author.name}

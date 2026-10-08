@@ -2,7 +2,6 @@ import type { Decorator, Preview } from '@storybook/nextjs-vite';
 import { NextIntlClientProvider } from 'next-intl';
 import { ThemeProvider } from 'next-themes';
 import { type ReactNode, useEffect } from 'react';
-import { MotionProvider } from '../src/components/motion/motion-provider';
 import { messagesFor } from '../src/lib/i18n/messages';
 import { STORY_NOW } from '../src/stories/compositions/fixtures';
 import { fontVariables } from '../src/styles/fonts';
@@ -30,7 +29,7 @@ function Canvas({
 }
 
 /**
- * Theme, language and the providers of an interactive shell (messages, Motion). `side-by-side`
+ * Theme, language and the providers of an interactive shell (messages). `side-by-side`
  * shows the story in both themes at once (the dark tokens apply to a subtree marked dark); the
  * tests run each theme on its own (vitest.config.mts).
  */
@@ -66,22 +65,20 @@ function StoryProviders({
       now={STORY_NOW}
     >
       <ThemeProvider attribute="data-theme" forcedTheme={rootTheme}>
-        <MotionProvider nonce={undefined}>
-          {theme === 'side-by-side' ? (
-            <div className="grid min-h-dvh lg:grid-cols-2">
-              <Canvas theme="light" padded={padded}>
-                {children}
-              </Canvas>
-              <Canvas theme="dark" padded={padded}>
-                {children}
-              </Canvas>
-            </div>
-          ) : (
-            <Canvas theme={rootTheme} padded={padded}>
+        {theme === 'side-by-side' ? (
+          <div className="grid min-h-dvh lg:grid-cols-2">
+            <Canvas theme="light" padded={padded}>
               {children}
             </Canvas>
-          )}
-        </MotionProvider>
+            <Canvas theme="dark" padded={padded}>
+              {children}
+            </Canvas>
+          </div>
+        ) : (
+          <Canvas theme={rootTheme} padded={padded}>
+            {children}
+          </Canvas>
+        )}
       </ThemeProvider>
     </NextIntlClientProvider>
   );

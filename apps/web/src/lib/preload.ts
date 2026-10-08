@@ -7,9 +7,17 @@ const AFTER_LOAD_MS = 200;
  * shortly after the load of the page instead. A failed preload is retried at first use.
  */
 export function preloadWhenIdle(load: () => Promise<unknown>): () => void {
+  return whenIdle(() => void load().catch(() => undefined));
+}
+
+/**
+ * Runs a task once the page is idle (after the load in Safari): work that does not change the
+ * first view (a cookie, the realtime channel, the features of the animations) never lengthens
+ * the start of the page (Total Blocking Time, ADR 0094).
+ */
+export function whenIdle(run: () => void): () => void {
   if (typeof window === 'undefined') return () => undefined;
   const page: Window = window;
-  const run = () => void load().catch(() => undefined);
   if ('requestIdleCallback' in window) {
     const handle = requestIdleCallback(run, { timeout: 2000 });
     return () => cancelIdleCallback(handle);
@@ -24,4 +32,11 @@ export function preloadWhenIdle(load: () => Promise<unknown>): () => void {
     page.removeEventListener('load', schedule);
     clearTimeout(handle);
   };
+}
+
+/** A promise of the next idle moment of the page. */
+export function idle(): Promise<void> {
+  return new Promise((resolve) => {
+    whenIdle(resolve);
+  });
 }

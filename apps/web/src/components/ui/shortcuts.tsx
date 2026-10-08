@@ -23,8 +23,11 @@ const ShortcutsHelp = lazy(loadHelp);
 export interface ShortcutDefinition {
   /** `mod+k`, `?`, `g h` (lib/shortcuts/keys.ts). */
   keys: string;
-  /** What it does, shown in the help. */
-  label: string;
+  /**
+   * What it does, shown in the help: a function when it is formatted (a message with values),
+   * formatted only when the help opens, not while the page starts.
+   */
+  label: string | (() => string);
   /** Group of the help ("Général", "Navigation"). */
   group: string;
   run: () => void;
@@ -168,6 +171,16 @@ export function ShortcutsProvider({ children }: { children: ReactNode }) {
   );
 }
 
+/** What a label adds to the identity of a shortcut: its text, or nothing for a function. */
+function labelKey(label: ShortcutDefinition['label']): string {
+  return typeof label === 'string' ? label : '';
+}
+
+/** The text of a label, formatted now if it is a function. */
+export function labelText(label: ShortcutDefinition['label']): string {
+  return typeof label === 'string' ? label : label();
+}
+
 /** Registers a shortcut while the component is mounted (inside a ShortcutsProvider). */
 export function useShortcut(definition: ShortcutDefinition): void {
   const registry = use(ShortcutsContext);
@@ -184,7 +197,9 @@ export function useShortcut(definition: ShortcutDefinition): void {
       group: definition.group,
       run: stableRun,
     });
-  }, [registry, definition.keys, definition.label, definition.group, stableRun]);
+    // A label given as a function is read by the help: its identity does not matter here.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [registry, definition.keys, labelKey(definition.label), definition.group, stableRun]);
 }
 
 /** Opens the help of the shortcuts (from a menu): the `?` key does the same. */
@@ -203,7 +218,7 @@ export function useShortcuts(definitions: readonly ShortcutDefinition[]): void {
     latest.current = definitions;
   });
   const signature = definitions
-    .map((definition) => `${definition.keys}|${definition.label}|${definition.group}`)
+    .map((definition) => `${definition.keys}|${labelKey(definition.label)}|${definition.group}`)
     .join('\n');
   useEffect(() => {
     if (!registry) return;

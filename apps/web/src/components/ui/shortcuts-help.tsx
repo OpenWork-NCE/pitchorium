@@ -4,9 +4,10 @@ import { useTranslations } from 'next-intl';
 import { displayKeys } from '@/lib/shortcuts/keys';
 import { Dialog, DialogContent } from './dialog';
 import { Kbd } from './kbd';
+import { labelText, type ShortcutDefinition } from './shortcuts';
 
 interface ShortcutsHelpProps {
-  groups: [string, readonly { keys: string; label: string }[]][];
+  groups: [string, readonly { keys: string; label: ShortcutDefinition['label'] }[]][];
   apple: boolean;
   onClose: () => void;
 }
@@ -29,7 +30,7 @@ export default function ShortcutsHelp({ groups, apple, onClose }: ShortcutsHelpP
               <dl className="grid gap-1.5">
                 {items.map((item) => (
                   <div key={item.keys} className="flex items-center justify-between gap-4 text-sm">
-                    <dt>{item.label}</dt>
+                    <dt>{labelText(item.label)}</dt>
                     <dd className="flex items-center gap-1">
                       {displayKeys(item.keys, apple).map((part) => (
                         <Kbd key={part}>{part}</Kbd>

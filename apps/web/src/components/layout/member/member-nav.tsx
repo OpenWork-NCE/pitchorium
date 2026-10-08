@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useEffect, useId, useRef } from 'react';
-import { LayoutMotion, SharedIndicator } from '@/components/motion';
+import { SharedIndicator } from '@/components/motion';
 import { CountBadge, useAnnounce, useShortcuts } from '@/components/ui';
 import { routes } from '@/config/routes';
 import { Link, usePathname, useRouter } from '@/i18n/navigation';
@@ -88,7 +88,7 @@ export function MemberNav({ counters }: { counters: CountersDtoOutput | undefine
   useShortcuts(
     NAV_ITEMS.map((item) => ({
       keys: `g ${item.shortcut}`,
-      label: shortcuts('goTo', { section: t(item.key) }),
+      label: () => shortcuts('goTo', { section: t(item.key) }),
       group: shortcuts('navigation'),
       run: () => router.push(item.href),
     })),
@@ -109,40 +109,38 @@ export function MemberNav({ counters }: { counters: CountersDtoOutput | undefine
 
   return (
     <nav aria-label={t('primary')} className="h-full">
-      <LayoutMotion>
-        <ul className="flex h-full items-stretch">
-          {NAV_ITEMS.map((item) => {
-            const isActive = item.key === active;
-            const count = countOf(item.key, counters);
-            const Icon = item.icon;
-            return (
-              <li key={item.key} className="relative flex">
-                <Link
-                  href={item.href}
-                  aria-current={isActive ? 'page' : undefined}
-                  className={cn(
-                    'relative flex min-w-[4.5rem] flex-col items-center justify-center gap-1 rounded-md px-2 text-xs font-medium outline-none focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-focus',
-                    isActive ? 'text-foreground' : 'text-muted hover:text-foreground',
-                  )}
-                >
-                  <Icon aria-hidden className="size-5" />
-                  <span>
-                    {t(item.key)}
-                    <span className="sr-only">{countText(item.key, count)}</span>
-                  </span>
-                  <CountBadge count={count} className="absolute top-1.5 left-1/2 ml-1" />
-                </Link>
-                {isActive ? (
-                  <SharedIndicator
-                    layoutId={layoutId}
-                    className="inset-x-2 -bottom-px h-0.5 rounded-full bg-accent"
-                  />
-                ) : null}
-              </li>
-            );
-          })}
-        </ul>
-      </LayoutMotion>
+      <ul className="flex h-full items-stretch">
+        {NAV_ITEMS.map((item) => {
+          const isActive = item.key === active;
+          const count = countOf(item.key, counters);
+          const Icon = item.icon;
+          return (
+            <li key={item.key} className="relative flex">
+              <Link
+                href={item.href}
+                aria-current={isActive ? 'page' : undefined}
+                className={cn(
+                  'relative flex min-w-[4.5rem] flex-col items-center justify-center gap-1 rounded-md px-2 text-xs font-medium outline-none focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-focus',
+                  isActive ? 'text-foreground' : 'text-muted hover:text-foreground',
+                )}
+              >
+                <Icon aria-hidden className="size-5" />
+                <span>
+                  {t(item.key)}
+                  <span className="sr-only">{countText(item.key, count)}</span>
+                </span>
+                <CountBadge count={count} className="absolute top-1.5 left-1/2 ml-1" />
+              </Link>
+              {isActive ? (
+                <SharedIndicator
+                  layoutId={layoutId}
+                  className="inset-x-2 -bottom-px h-0.5 rounded-full bg-accent"
+                />
+              ) : null}
+            </li>
+          );
+        })}
+      </ul>
     </nav>
   );
 }

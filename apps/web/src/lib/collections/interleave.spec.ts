@@ -18,6 +18,15 @@ describe('interleave', () => {
     expect(shape(interleave([1, 2, 3, 4], [], { first: 3, every: 10 }))).toBe('1 2 3 4');
   });
 
+  it('goes on counting on the next page of the list', () => {
+    expect(shape(interleave([14, 15, 16, 17], ['B'], { first: 3, every: 10 }, 13))).toBe(
+      '14 15 16 17',
+    );
+    expect(shape(interleave([11, 12, 13, 14], ['B'], { first: 3, every: 10 }, 10))).toBe(
+      '11 12 13 B 14',
+    );
+  });
+
   it('slices values', () => {
     expect(chunk([1, 2, 3, 4, 5, 6, 7], 3)).toEqual([[1, 2, 3], [4, 5, 6], [7]]);
   });
