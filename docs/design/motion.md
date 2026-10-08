@@ -69,25 +69,25 @@ Deux courbes seulement : `enter` `cubic-bezier(0.16, 1, 0.3, 1)` (arrivées, mic
 
 ## Catalogue des micro-interactions
 
-| Geste                         | Primitive                                      | Recette                                                                              | Mouvement réduit           |
-| ----------------------------- | ---------------------------------------------- | ------------------------------------------------------------------------------------ | -------------------------- |
-| Pression d'un bouton          | utilitaire `press`                             | `scale(0.96)`, 150 ms, `enter`                                                       | aucune échelle             |
-| Survol du bouton principal    | `Button` (H21), classe `circle-fill`           | disque cuivre depuis le bas, `clip-path: circle()`, 800 ms, `enter`                  | état final immédiat        |
-| Échange d'icône               | `IconSwap` (transition CSS)                    | `scale 0.25 vers 1` et flou de 4 px, courbe `enter`, 320 ms                          | état final immédiat        |
-| Nombre animé (H17)            | `AnimatedNumber`                               | comptage à l'entrée dans l'écran, pas de la devise, formateur localisé               | valeur finale, sans compte |
-| Révélation au défilement (E1) | `Reveal`                                       | fondu, montée de 24 px et flou de 6 px liés au défilement, repli IO                  | contenu en place           |
-| Indicateur partagé            | `SharedIndicator` (`layoutId`, `LayoutMotion`) | glissement de l'indicateur actif, ressort sans rebond                                | saut immédiat              |
-| Compteur qui change           | `CountBadge` (classe `count-roll`)             | la nouvelle valeur monte du bas en fondu, courbe `enter`, 320 ms                     | aucune                     |
-| Transition de page (niveau 1) | `PageTransition` (templates des groupes)       | View Transitions (repli CSS) : sortie en fondu 200 ms, entrée fondu et montée 320 ms | aucune                     |
-| Bascule de thème (H14, n. 3)  | `ThemeToggle`                                  | nouveau thème en cercle depuis le bouton, 700 ms, `curtain`                          | simple fondu de 150 ms     |
-| Titre éditorial (H13)         | `SplitHeading` (GSAP SplitText, à la demande)  | lignes masquées montant de 110 %, décalage de 80 ms, rejoué en arrière               | titre immobile             |
-| Apparition du logo            | `animate-brand-enter`                          | opacité et montée de 6 px, 220 ms (règle du guide)                                   | aucune                     |
-| Panneau de langue             | `LanguageSwitcher`                             | opacité et `scale(0.96)`, 200 ms                                                     | aucune                     |
-| Chargement d'une page         | `PageLoading`                                  | barre indéterminée cuivre                                                            | barre immobile             |
-| Palier atteint (H18 puis H17) | `FundingProgress`                              | trait dessiné sous « atteint » (800 ms), puis le montant compte                      | état final                 |
-| Squelette                     | `Skeleton`                                     | reflet discret qui traverse (1,6 s, `curtain`)                                       | squelette immobile         |
-| Dialogue, panneaux            | `DialogContent`, `SheetContent`, `Drawer`      | fondu et montée de 16 px, glissement latéral, tirage du bas (vaul)                   | aucune                     |
-| Voile d'une superposition     | `backdrop`                                     | fondu 320 ms, sortie 200 ms                                                          | aucune                     |
+| Geste                         | Primitive                                      | Recette                                                                                       | Mouvement réduit           |
+| ----------------------------- | ---------------------------------------------- | --------------------------------------------------------------------------------------------- | -------------------------- |
+| Pression d'un bouton          | utilitaire `press`                             | `scale(0.96)`, 150 ms, `enter`                                                                | aucune échelle             |
+| Survol du bouton principal    | `Button` (H21), classe `circle-fill`           | disque violet soutenu (`accent-strong`) depuis le bas, `clip-path: circle()`, 800 ms, `enter` | état final immédiat        |
+| Échange d'icône               | `IconSwap` (transition CSS)                    | `scale 0.25 vers 1` et flou de 4 px, courbe `enter`, 320 ms                                   | état final immédiat        |
+| Nombre animé (H17)            | `AnimatedNumber`                               | comptage à l'entrée dans l'écran, pas de la devise, formateur localisé                        | valeur finale, sans compte |
+| Révélation au défilement (E1) | `Reveal`                                       | fondu, montée de 24 px et flou de 6 px liés au défilement, repli IO                           | contenu en place           |
+| Indicateur partagé            | `SharedIndicator` (`layoutId`, `LayoutMotion`) | glissement de l'indicateur actif, ressort sans rebond                                         | saut immédiat              |
+| Compteur qui change           | `CountBadge` (classe `count-roll`)             | la nouvelle valeur monte du bas en fondu, courbe `enter`, 320 ms                              | aucune                     |
+| Transition de page (niveau 1) | `PageTransition` (templates des groupes)       | View Transitions (repli CSS) : sortie en fondu 200 ms, entrée fondu et montée 320 ms          | aucune                     |
+| Bascule de thème (H14, n. 3)  | `ThemeToggle`                                  | nouveau thème en cercle depuis le bouton, 700 ms, `curtain`                                   | simple fondu de 150 ms     |
+| Titre éditorial (H13)         | `SplitHeading` (GSAP SplitText, à la demande)  | lignes masquées montant de 110 %, décalage de 80 ms, rejoué en arrière                        | titre immobile             |
+| Apparition du logo            | `animate-brand-enter`                          | opacité et montée de 6 px, 220 ms (règle du guide)                                            | aucune                     |
+| Panneau de langue             | `LanguageSwitcher`                             | opacité et `scale(0.96)`, 200 ms                                                              | aucune                     |
+| Chargement d'une page         | `PageLoading`                                  | barre indéterminée violette (`accent`)                                                        | barre immobile             |
+| Palier atteint (H18 puis H17) | `FundingProgress`                              | trait dessiné sous « atteint » (800 ms), puis le montant compte                               | état final                 |
+| Squelette                     | `Skeleton`                                     | reflet discret qui traverse (1,6 s, `curtain`)                                                | squelette immobile         |
+| Dialogue, panneaux            | `DialogContent`, `SheetContent`, `Drawer`      | fondu et montée de 16 px, glissement latéral, tirage du bas (vaul)                            | aucune                     |
+| Voile d'une superposition     | `backdrop`                                     | fondu 320 ms, sortie 200 ms                                                                   | aucune                     |
 
 Moins de mouvement veut dire `prefers-reduced-motion: reduce`, `prefers-reduced-data: reduce` ou `navigator.connection.saveData` (`useMotionPreference`) : pas de lecture automatique de vidéo, chaque primitive montre son état final. Le rendu serveur montre toujours l'état final : aucune première peinture n'attend une animation.
 

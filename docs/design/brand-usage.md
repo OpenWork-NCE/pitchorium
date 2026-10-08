@@ -28,7 +28,7 @@ Optimisation : les SVG copiés perdent leur description et les blancs entre bali
 - **Placement** : logo horizontal aligné à gauche dans les en-têtes ; symbole sous 640 px.
 - **Tailles minimales du dessin visible** : horizontal 224 px, symbole couleur 48 px, micro 16 px. Les fichiers incluent la marge de protection (le dessin visible occupe 94,7 % de la largeur du logo horizontal, 75,8 % du symbole) : rendus au moins à 240 px et 64 px (`BRAND_MIN_WIDTH`, imposé par les composants). Sous 32 px, seul le micro monochrome est employé.
 - **Protection** : la marge transparente des fichiers est conservée ; l'alignement sur la masse visible compense 4 px à gauche.
-- **Cuivre** : jamais en texte courant (2,73:1 sur blanc) ; il sert de surlignage (bouton principal au survol, focus en sombre) avec un texte noir (6,39:1).
+- **Cuivre** : jamais en texte courant (2,73:1 sur blanc), jamais un bouton, un focus ni un indicateur d'état ; il reste dans le logo et le motif d'élévation (`direction.md`).
 - **Animation du logo** : seulement l'apparition autorisée (opacité 0 à 1 en 220 ms, montée de 6 px), désactivée avec le mouvement réduit ; les figures restent solidaires (`animate-brand-enter`).
 - **Fonds** : les fonds discrets réservent la majorité du cadre au texte ; les overlays ne remplacent jamais un logo officiel ; aucun fond ne masque le dessin.
 - **Photographie** : sur une image, les cartouches clair et sombre du dossier `photographie` (aucun visuel tiers fourni).

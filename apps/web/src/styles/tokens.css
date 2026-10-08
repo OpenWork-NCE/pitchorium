@@ -156,7 +156,7 @@
   --info: #8db2ee;
   --info-subtle: #162238;
   --on-status: var(--brand-black);
-  --focus: var(--brand-copper);
+  --focus: var(--violet-200);
   --overlay: rgb(0 0 0 / 0.64);
   --logo-ink: var(--brand-white);
   --logo-accent: var(--brand-copper);

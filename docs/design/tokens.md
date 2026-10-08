@@ -4,7 +4,7 @@ Source : `apps/web/src/styles/tokens.css` (valeurs), `apps/web/src/styles/global
 
 ## Couleurs de marque
 
-Guide de marque et `palette-et-typographies.json` : violet `#3E285D`, cuivre `#CA8764`, noir `#121212`, blanc `#F7F7F5`. Le cuivre (2,73:1 sur le blanc) reste un accent graphique, jamais un texte courant.
+Guide de marque et `palette-et-typographies.json` : violet `#3E285D`, cuivre `#CA8764`, noir `#121212`, blanc `#F7F7F5`. Le cuivre (2,73:1 sur le blanc) reste une touche graphique de la marque : jamais un texte courant, un bouton, un focus ni un indicateur d'état (`direction.md`).
 
 ## Échelles dérivées
 
@@ -39,7 +39,7 @@ Dérivées en OKLCH à teinte constante, les valeurs de marque servant d'ancres 
 | `danger`           | `#b42318` | `#f28b80` |
 | `info`             | `#2457a6` | `#8db2ee` |
 | `on-status`        | `#ffffff` | `#121212` |
-| `focus`            | `#614b83` | `#ca8764` |
+| `focus`            | `#614b83` | `#d6cce6` |
 | `overlay`          | noir 56 % | noir 64 % |
 
 Tokens des composants : `track` (rail d'une barre de progression), `skeleton` et `skeleton-shine` (squelettes), et six paires `avatar-N-bg` et `avatar-N-fg` pour les initiales des avatars, choisies par le nom, chacune à 4,5:1 au moins dans les deux thèmes. Le thème sombre s'applique aussi à un sous-arbre marqué `data-theme="dark"` (vue côte à côte du design system).
@@ -55,12 +55,12 @@ Chaque statut a sa variante `-subtle` (fond d'un message). Le thème sombre repo
 - `muted` sur `background` : 6,30:1 en clair, 7,93:1 en sombre
 - `muted` sur `surface-sunken` : 5,82:1 en clair, 8,28:1 en sombre
 - `link` sur `background` : 11,75:1 en clair, 10,50:1 en sombre
-- `on-accent` sur `accent` : 11,75:1 en clair, 8,61:1 en sombre
+- `on-accent` sur `accent` : 11,75:1 en clair, 8,61:1 en sombre ; sur `accent-strong` (remplissage H21) : 14,43:1 en clair, 12,17:1 en sombre
 - `on-highlight` sur `highlight` : 6,39:1 dans les deux thèmes
 - `success`, `warning`, `danger`, `info` sur `background` : de 4,96:1 à 6,55:1 en clair, de 7,83:1 à 8,76:1 en sombre
 - statuts sur leur fond `-subtle` : de 4,60:1 à 5,91:1 en clair, de 6,87:1 à 7,38:1 en sombre
 - `border-strong` sur `background` : 3,29:1 en clair, 4,22:1 en sombre
-- `focus` sur `background` : 6,89:1 en clair, 6,39:1 en sombre
+- `focus` sur `background` : 6,89:1 en clair, 12,17:1 en sombre
 
 ## Typographie
 

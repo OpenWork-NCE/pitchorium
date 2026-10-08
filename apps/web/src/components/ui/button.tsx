@@ -19,7 +19,7 @@ export const buttonVariants = cva(
   {
     variants: {
       variant: {
-        /** The main action of a view, once per view: violet, copper fill on hover (H21). */
+        /** The main action of a view, once per view: violet, a stronger violet fills it on hover (H21). */
         primary: 'bg-accent text-on-accent',
         /** A second action next to the primary one. */
         secondary: 'bg-accent-subtle text-on-accent-subtle hover:bg-accent-subtle/70',
@@ -85,7 +85,7 @@ function withSpinner(children: ReactNode, label: string | undefined): ReactNode 
 }
 
 /**
- * Button of the design system: press scale on every variant; the primary one fills with copper
+ * Button of the design system: press scale on every variant; the primary one fills with violet
  * from the bottom on hover (H21), animating `clip-path` only. Styles of `.press` and
  * `.circle-fill` in globals.css; catalogue in docs/design/components.md.
  */

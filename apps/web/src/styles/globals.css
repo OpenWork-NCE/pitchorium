@@ -231,7 +231,10 @@
 }
 
 @layer components {
-  /* Circle fill of the primary button (H21): copper disc from the bottom, clip-path only. */
+  /*
+   * Circle fill of the primary button (H21): a disc of the strong violet from the bottom,
+   * clip-path only. Never copper: copper is a touch, never a button nor a state.
+   */
   .circle-fill {
     position: absolute;
     inset: 0;
@@ -241,8 +244,8 @@
     justify-content: center;
     gap: inherit;
     border-radius: inherit;
-    background-color: var(--color-highlight);
-    color: var(--color-on-highlight);
+    background-color: var(--color-accent-strong);
+    color: var(--color-on-accent);
     pointer-events: none;
     clip-path: circle(0% at 50% 100%);
     transition: clip-path var(--duration-fill) var(--ease-enter);
