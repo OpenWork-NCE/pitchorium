@@ -1,5 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import { strFromU8, unzipSync } from 'fflate';
+import { Redis } from 'ioredis';
 import type { Socket } from 'socket.io-client';
 import { afterAll, describe, expect, inject, it } from 'vitest';
 import { query } from '../integration/support/database';
@@ -54,6 +55,29 @@ async function newMember(name: string): Promise<Browser & { email: string; handl
   expect(accepted.status, JSON.stringify(accepted.body)).toBe(201);
   const profile = await browser.get('/v1/me/profile');
   return Object.assign(browser, { email, handle: profile.body.handle as string });
+}
+
+/** No event left in the outbox and no job waiting or running, twice in a row. */
+async function workerIdle(): Promise<void> {
+  const redis = new Redis(inject('redisUrl'));
+  try {
+    let quiet = 0;
+    await eventually(
+      async () => {
+        const [outbox] = await query<{ pending: string }>(
+          'SELECT count(*) AS pending FROM platform.outbox_events WHERE published_at IS NULL',
+        );
+        let jobs = 0;
+        for (const key of await redis.keys('e2e:*:wait')) jobs += await redis.llen(key);
+        for (const key of await redis.keys('e2e:*:active')) jobs += await redis.llen(key);
+        quiet = Number(outbox?.pending) === 0 && jobs === 0 ? quiet + 1 : 0;
+        return quiet;
+      },
+      (count) => count >= 2,
+    );
+  } finally {
+    redis.disconnect();
+  }
 }
 
 afterAll(() => {
@@ -216,18 +240,22 @@ describe('gdpr', () => {
 
     const erasure = await member.post('/v1/me/privacy/erasure', { confirm: true });
     expect(erasure.status, JSON.stringify(erasure.body)).toBe(201);
-    // The grace period (30 days) is shortened; the worker runs it on its next pass.
+    // The grace period (30 days) is shortened: the projections of the sign-up must be written
+    // first, as they are long before a real erasure, or the residue check finds them later.
+    await workerIdle();
     await query('UPDATE privacy.erasures SET scheduled_for = now() WHERE id = $1', [
       erasure.body.id,
     ]);
-    await eventually(
+    const [erased] = await eventually(
       () =>
-        query<{ status: string }>('SELECT status FROM privacy.erasures WHERE id = $1', [
-          erasure.body.id,
-        ]),
-      ([row]) => row?.status === 'completed',
+        query<{ status: string; residues: string[] | null }>(
+          'SELECT status, residues FROM privacy.erasures WHERE id = $1',
+          [erasure.body.id],
+        ),
+      ([row]) => row?.status === 'completed' || row?.status === 'failed',
       60_000,
     );
+    expect(erased?.status, `residues: ${JSON.stringify(erased?.residues)}`).toBe('completed');
     const again = await new Browser().post('/v1/auth/sign-in/email', {
       email: member.email,
       password: 'end-to-end password 2026',
