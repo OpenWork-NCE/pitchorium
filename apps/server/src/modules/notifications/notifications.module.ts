@@ -27,7 +27,10 @@ import { NotificationsJobsProcessor } from './interface/notifications-jobs.proce
 import { NOTIFICATIONS_QUEUE } from './interface/notifications-queue';
 import { ResendWebhookHandler } from './interface/resend-webhook.handler';
 
+import { NotificationsPersonalData } from './infrastructure/notifications-personal-data';
+
 const SHARED_PROVIDERS: Provider[] = [
+  NotificationsPersonalData,
   { provide: NotificationsRepository, useClass: DrizzleNotificationsRepository },
   NotificationCreator,
   NotificationPresenter,

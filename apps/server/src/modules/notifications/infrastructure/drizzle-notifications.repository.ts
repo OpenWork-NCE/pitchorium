@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { Injectable } from '@nestjs/common';
 import type {
   EmailDigest,
@@ -48,6 +49,11 @@ function chunks<T>(items: readonly T[]): T[][] {
     result.push(items.slice(index, index + CHUNK));
   }
   return result;
+}
+
+/** SHA-256 of the lower-cased address, prefixed: what the list keeps of an erased member. */
+export function suppressionFingerprint(email: string): string {
+  return `sha256:${createHash('sha256').update(email.trim().toLowerCase()).digest('hex')}`;
 }
 
 @Injectable()
@@ -354,13 +360,15 @@ export class DrizzleNotificationsRepository extends NotificationsRepository {
       .where(eq(settings.userId, userId));
   }
 
+  /** Plain addresses, and the fingerprints kept for erased members (ADR 0075). */
   async suppressed(emails: readonly string[]): Promise<Set<string>> {
     if (emails.length === 0) return new Set();
+    const byFingerprint = new Map(emails.map((email) => [suppressionFingerprint(email), email]));
     const rows = await this.db
       .select({ email: notificationsSuppressions.email })
       .from(notificationsSuppressions)
-      .where(inArray(notificationsSuppressions.email, [...emails]));
-    return new Set(rows.map((row) => row.email));
+      .where(inArray(notificationsSuppressions.email, [...emails, ...byFingerprint.keys()]));
+    return new Set(rows.map((row) => byFingerprint.get(row.email) ?? row.email));
   }
 
   async suppress(

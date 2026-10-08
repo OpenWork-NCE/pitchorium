@@ -77,3 +77,7 @@ Ceux de la colonne « sources » du registre (handler `notifications.create`, wo
 ## Dépendances
 
 identity (adresse, langue, fuseau), profiles (cartes des acteurs), network (abonnés, connexions, blocages, demandes, vues de profil), content (publication d'un commentaire), messaging (conversations, non lus, compteurs), projects (équipe, projet, invitations), organizations (membres, invitations), payments (contributeurs, contributions, hors plateforme), events (inscrits, événements qui commencent), missions (côtés d'un engagement), discovery (nouvelles suggestions), trust (exposé des motifs d'une décision et motivation d'un appel).
+
+## Données personnelles (RGPD)
+
+Export : notifications reçues, préférences, réglage du digest. Suppression : notifications, livraisons, préférences, réglage et emails en attente supprimés ; le membre remplacé par le pseudonyme parmi les acteurs des notifications des autres ; de son adresse dans la liste de suppression, seule l'empreinte `sha256:` est gardée, consultée avant chaque envoi. Contrats enregistrés auprès du module privacy (`infrastructure/notifications-personal-data.ts`, ADR 0074).
