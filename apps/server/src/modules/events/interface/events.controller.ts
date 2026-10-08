@@ -63,7 +63,7 @@ class EventRegistrationDto extends createZodDto(eventRegistrationSchema) {}
 class CalendarFeedDto extends createZodDto(calendarFeedSchema) {}
 class CreateEventDto extends createZodDto(createEventRequestSchema) {}
 class UpdateEventDto extends createZodDto(updateEventRequestSchema) {}
-class ChangeSlugDto extends createZodDto(changeEventSlugRequestSchema) {}
+class ChangeEventSlugDto extends createZodDto(changeEventSlugRequestSchema) {}
 class CancelEventDto extends createZodDto(cancelEventRequestSchema) {}
 class RegisterDto extends createZodDto(registerToEventRequestSchema) {}
 class EventListQueryDto extends createZodDto(eventListQuerySchema) {}
@@ -260,7 +260,7 @@ export class EventsController {
   async changeSlug(
     @CurrentPrincipal() principal: Principal,
     @Param() params: EventIdParamsDto,
-    @Body() body: ChangeSlugDto,
+    @Body() body: ChangeEventSlugDto,
   ): Promise<EventView> {
     await this.writes.changeSlug(params.eventId, body.slug);
     return this.view(params.eventId, principal.userId);

@@ -1515,7 +1515,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UpdatePreferencesDto"
+                "$ref": "#/components/schemas/UpdateAccountPreferencesDto"
               }
             }
           }
@@ -1526,7 +1526,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PreferencesDto_Output"
+                  "$ref": "#/components/schemas/AccountPreferencesDto_Output"
                 }
               }
             }
@@ -4856,7 +4856,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ChangeSlugDto"
+                "$ref": "#/components/schemas/ChangeOrganizationSlugDto"
               }
             }
           }
@@ -5953,7 +5953,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/InvitationsDto_Output"
+                  "$ref": "#/components/schemas/OrganizationInvitationsDto_Output"
                 }
               }
             }
@@ -13911,7 +13911,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ChangeSlugDto"
+                "$ref": "#/components/schemas/ChangeProjectSlugDto"
               }
             }
           }
@@ -15046,7 +15046,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/InvitationsDto_Output"
+                  "$ref": "#/components/schemas/ProjectInvitationsDto_Output"
                 }
               }
             }
@@ -25648,7 +25648,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ChangeSlugDto"
+                "$ref": "#/components/schemas/ChangeEventSlugDto"
               }
             }
           }
@@ -30413,7 +30413,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PreferencesDto_Output"
+                  "$ref": "#/components/schemas/NotificationPreferencesDto_Output"
                 }
               }
             }
@@ -30481,7 +30481,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UpdatePreferencesDto"
+                "$ref": "#/components/schemas/UpdateNotificationPreferencesDto"
               }
             }
           }
@@ -30492,7 +30492,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PreferencesDto_Output"
+                  "$ref": "#/components/schemas/NotificationPreferencesDto_Output"
                 }
               }
             }
@@ -34579,210 +34579,49 @@
         ],
         "additionalProperties": false
       },
-      "UpdatePreferencesDto": {
+      "UpdateAccountPreferencesDto": {
         "type": "object",
         "properties": {
-          "emailDigest": {
+          "locale": {
             "type": "string",
             "enum": [
-              "off",
-              "daily",
-              "weekly"
+              "fr",
+              "en",
+              "sw",
+              "wo",
+              "ln"
             ]
           },
-          "changes": {
-            "default": [],
-            "maxItems": 108,
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "type": {
-                  "type": "string",
-                  "enum": [
-                    "connection_request",
-                    "connection_accepted",
-                    "new_follower",
-                    "reaction",
-                    "comment",
-                    "mention",
-                    "followed_post",
-                    "message",
-                    "message_request",
-                    "message_request_accepted",
-                    "introduction_proposed",
-                    "introduction_completed",
-                    "introduction_declined",
-                    "profile_views",
-                    "project_contribution",
-                    "tier_unlocked",
-                    "project_update",
-                    "project_ending_soon",
-                    "project_funded",
-                    "project_closed",
-                    "project_interest",
-                    "project_team_invitation",
-                    "project_team_joined",
-                    "project_team_invitation_declined",
-                    "organization_invitation",
-                    "organization_member_joined",
-                    "organization_role_changed",
-                    "organization_ownership_transferred",
-                    "organization_verification_decided",
-                    "kyc_decided",
-                    "contribution_refunded",
-                    "offline_contribution_declared",
-                    "offline_contribution_decided",
-                    "time_entry_declared",
-                    "time_entry_answered",
-                    "security_alert",
-                    "event_registration_confirmed",
-                    "event_waitlist_promoted",
-                    "event_reminder",
-                    "event_canceled",
-                    "mission_engagement_requested",
-                    "mission_engagement_answered",
-                    "mission_completed",
-                    "new_suggestions",
-                    "report_received",
-                    "report_resolved",
-                    "moderation_decision",
-                    "suspension_started",
-                    "suspension_ended",
-                    "appeal_received",
-                    "appeal_decided",
-                    "export_ready",
-                    "erasure_scheduled",
-                    "erasure_reminder"
-                  ]
-                },
-                "channel": {
-                  "type": "string",
-                  "enum": [
-                    "in_app",
-                    "email"
-                  ]
-                },
-                "enabled": {
-                  "type": "boolean"
-                }
-              },
-              "required": [
-                "type",
-                "channel",
-                "enabled"
-              ]
-            }
-          }
-        }
-      },
-      "PreferencesDto_Output": {
-        "type": "object",
-        "properties": {
-          "emailDigest": {
+          "timeZone": {
             "type": "string",
-            "enum": [
-              "off",
-              "daily",
-              "weekly"
-            ]
-          },
-          "types": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "type": {
-                  "type": "string",
-                  "enum": [
-                    "connection_request",
-                    "connection_accepted",
-                    "new_follower",
-                    "reaction",
-                    "comment",
-                    "mention",
-                    "followed_post",
-                    "message",
-                    "message_request",
-                    "message_request_accepted",
-                    "introduction_proposed",
-                    "introduction_completed",
-                    "introduction_declined",
-                    "profile_views",
-                    "project_contribution",
-                    "tier_unlocked",
-                    "project_update",
-                    "project_ending_soon",
-                    "project_funded",
-                    "project_closed",
-                    "project_interest",
-                    "project_team_invitation",
-                    "project_team_joined",
-                    "project_team_invitation_declined",
-                    "organization_invitation",
-                    "organization_member_joined",
-                    "organization_role_changed",
-                    "organization_ownership_transferred",
-                    "organization_verification_decided",
-                    "kyc_decided",
-                    "contribution_refunded",
-                    "offline_contribution_declared",
-                    "offline_contribution_decided",
-                    "time_entry_declared",
-                    "time_entry_answered",
-                    "security_alert",
-                    "event_registration_confirmed",
-                    "event_waitlist_promoted",
-                    "event_reminder",
-                    "event_canceled",
-                    "mission_engagement_requested",
-                    "mission_engagement_answered",
-                    "mission_completed",
-                    "new_suggestions",
-                    "report_received",
-                    "report_resolved",
-                    "moderation_decision",
-                    "suspension_started",
-                    "suspension_ended",
-                    "appeal_received",
-                    "appeal_decided",
-                    "export_ready",
-                    "erasure_scheduled",
-                    "erasure_reminder"
-                  ]
-                },
-                "transactional": {
-                  "type": "boolean"
-                },
-                "channels": {
-                  "type": "object",
-                  "properties": {
-                    "in_app": {
-                      "type": "boolean"
-                    },
-                    "email": {
-                      "type": "boolean"
-                    }
-                  },
-                  "required": [
-                    "in_app",
-                    "email"
-                  ],
-                  "additionalProperties": false
-                }
-              },
-              "required": [
-                "type",
-                "transactional",
-                "channels"
-              ],
-              "additionalProperties": false
-            }
+            "maxLength": 64
           }
         },
         "required": [
-          "emailDigest",
-          "types"
+          "locale"
+        ]
+      },
+      "AccountPreferencesDto_Output": {
+        "type": "object",
+        "properties": {
+          "locale": {
+            "type": "string",
+            "enum": [
+              "fr",
+              "en",
+              "sw",
+              "wo",
+              "ln"
+            ]
+          },
+          "timeZone": {
+            "type": "string",
+            "maxLength": 64
+          }
+        },
+        "required": [
+          "locale",
+          "timeZone"
         ],
         "additionalProperties": false
       },
@@ -38658,12 +38497,12 @@
           }
         }
       },
-      "ChangeSlugDto": {
+      "ChangeOrganizationSlugDto": {
         "type": "object",
         "properties": {
           "slug": {
             "type": "string",
-            "pattern": "^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,79}$"
+            "pattern": "^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,59}$"
           }
         },
         "required": [
@@ -38776,7 +38615,7 @@
         ],
         "additionalProperties": false
       },
-      "InvitationsDto_Output": {
+      "OrganizationInvitationsDto_Output": {
         "type": "object",
         "properties": {
           "items": {
@@ -38784,381 +38623,55 @@
             "items": {
               "type": "object",
               "properties": {
-                "project": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "format": "uuid",
-                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$"
-                    },
-                    "slug": {
-                      "type": "string",
-                      "pattern": "^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,79}$"
-                    },
-                    "title": {
-                      "type": "string"
-                    },
-                    "summary": {
-                      "type": [
-                        "string",
-                        "null"
-                      ]
-                    },
-                    "status": {
-                      "type": "string",
-                      "enum": [
-                        "draft",
-                        "funding",
-                        "funded",
-                        "closed"
-                      ]
-                    },
-                    "sectorCode": {
-                      "type": [
-                        "string",
-                        "null"
-                      ]
-                    },
-                    "countryCodes": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      }
-                    },
-                    "coverImageUrl": {
-                      "type": [
-                        "string",
-                        "null"
-                      ]
-                    },
-                    "owner": {
-                      "anyOf": [
-                        {
-                          "type": "object",
-                          "properties": {
-                            "handle": {
-                              "type": "string",
-                              "pattern": "^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$"
-                            },
-                            "displayName": {
-                              "type": "string"
-                            },
-                            "headline": {
-                              "type": [
-                                "string",
-                                "null"
-                              ]
-                            },
-                            "avatarUrl": {
-                              "type": [
-                                "string",
-                                "null"
-                              ]
-                            }
-                          },
-                          "required": [
-                            "handle",
-                            "displayName",
-                            "headline",
-                            "avatarUrl"
-                          ],
-                          "additionalProperties": false
-                        },
-                        {
-                          "type": "null"
-                        }
-                      ]
-                    },
-                    "organization": {
-                      "anyOf": [
-                        {
-                          "type": "object",
-                          "properties": {
-                            "id": {
-                              "type": "string",
-                              "format": "uuid",
-                              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$"
-                            },
-                            "slug": {
-                              "type": "string"
-                            },
-                            "name": {
-                              "type": "string"
-                            },
-                            "logoUrl": {
-                              "type": [
-                                "string",
-                                "null"
-                              ]
-                            },
-                            "verified": {
-                              "type": "boolean"
-                            }
-                          },
-                          "required": [
-                            "id",
-                            "slug",
-                            "name",
-                            "logoUrl",
-                            "verified"
-                          ],
-                          "additionalProperties": false
-                        },
-                        {
-                          "type": "null"
-                        }
-                      ]
-                    },
-                    "funding": {
-                      "type": "object",
-                      "properties": {
-                        "goal": {
-                          "anyOf": [
-                            {
-                              "type": "object",
-                              "properties": {
-                                "amountMinor": {
-                                  "type": "string",
-                                  "pattern": "^-?(0|[1-9]\\d*)$"
-                                },
-                                "currency": {
-                                  "type": "string",
-                                  "pattern": "^[A-Z]{3}$"
-                                }
-                              },
-                              "required": [
-                                "amountMinor",
-                                "currency"
-                              ],
-                              "additionalProperties": false
-                            },
-                            {
-                              "type": "null"
-                            }
-                          ]
-                        },
-                        "collected": {
-                          "type": "object",
-                          "properties": {
-                            "amountMinor": {
-                              "type": "string",
-                              "pattern": "^-?(0|[1-9]\\d*)$"
-                            },
-                            "currency": {
-                              "type": "string",
-                              "pattern": "^[A-Z]{3}$"
-                            }
-                          },
-                          "required": [
-                            "amountMinor",
-                            "currency"
-                          ],
-                          "additionalProperties": false
-                        },
-                        "progressPercent": {
-                          "type": "integer",
-                          "minimum": 0,
-                          "maximum": 9007199254740991
-                        },
-                        "contributionCount": {
-                          "type": "integer",
-                          "minimum": -9007199254740991,
-                          "maximum": 9007199254740991
-                        },
-                        "daysLeft": {
-                          "anyOf": [
-                            {
-                              "type": "integer",
-                              "minimum": 0,
-                              "maximum": 9007199254740991
-                            },
-                            {
-                              "type": "null"
-                            }
-                          ]
-                        },
-                        "instruments": {
-                          "type": "array",
-                          "items": {
-                            "type": "string",
-                            "enum": [
-                              "donation",
-                              "reward_crowdfunding",
-                              "love_money",
-                              "grant",
-                              "honor_loan",
-                              "equity",
-                              "convertible_bonds"
-                            ]
-                          }
-                        },
-                        "opensCapital": {
-                          "type": "boolean"
-                        }
-                      },
-                      "required": [
-                        "goal",
-                        "collected",
-                        "progressPercent",
-                        "contributionCount",
-                        "daysLeft",
-                        "instruments",
-                        "opensCapital"
-                      ],
-                      "additionalProperties": false
-                    },
-                    "impact": {
-                      "anyOf": [
-                        {
-                          "type": "object",
-                          "properties": {
-                            "selfDeclared": {
-                              "type": "boolean",
-                              "const": true
-                            },
-                            "score": {
-                              "type": "integer",
-                              "minimum": 0,
-                              "maximum": 100
-                            },
-                            "level": {
-                              "type": "string",
-                              "enum": [
-                                "emerging",
-                                "moderate",
-                                "strong"
-                              ]
-                            },
-                            "methodologyVersion": {
-                              "type": "integer",
-                              "exclusiveMinimum": 0,
-                              "maximum": 9007199254740991
-                            }
-                          },
-                          "required": [
-                            "selfDeclared",
-                            "score",
-                            "level",
-                            "methodologyVersion"
-                          ],
-                          "additionalProperties": false
-                        },
-                        {
-                          "type": "null"
-                        }
-                      ]
-                    },
-                    "featured": {
-                      "type": "boolean"
-                    },
-                    "publishedAt": {
-                      "anyOf": [
-                        {
-                          "type": "string",
-                          "format": "date-time",
-                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
-                        },
-                        {
-                          "type": "null"
-                        }
-                      ]
-                    },
-                    "endsAt": {
-                      "anyOf": [
-                        {
-                          "type": "string",
-                          "format": "date-time",
-                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
-                        },
-                        {
-                          "type": "null"
-                        }
-                      ]
-                    }
-                  },
-                  "required": [
-                    "id",
-                    "slug",
-                    "title",
-                    "summary",
-                    "status",
-                    "sectorCode",
-                    "countryCodes",
-                    "coverImageUrl",
-                    "owner",
-                    "organization",
-                    "funding",
-                    "impact",
-                    "featured",
-                    "publishedAt",
-                    "endsAt"
-                  ],
-                  "additionalProperties": false
+                "id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$"
+                },
+                "organizationId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$"
+                },
+                "email": {
+                  "type": "string"
                 },
                 "role": {
                   "type": "string",
                   "enum": [
-                    "owner",
-                    "editor"
+                    "admin",
+                    "member"
                   ]
                 },
-                "function": {
-                  "type": [
-                    "string",
-                    "null"
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "pending",
+                    "accepted",
+                    "declined",
+                    "revoked",
+                    "expired"
                   ]
                 },
-                "invitedBy": {
-                  "anyOf": [
-                    {
-                      "type": "object",
-                      "properties": {
-                        "handle": {
-                          "type": "string",
-                          "pattern": "^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$"
-                        },
-                        "displayName": {
-                          "type": "string"
-                        },
-                        "headline": {
-                          "type": [
-                            "string",
-                            "null"
-                          ]
-                        },
-                        "avatarUrl": {
-                          "type": [
-                            "string",
-                            "null"
-                          ]
-                        }
-                      },
-                      "required": [
-                        "handle",
-                        "displayName",
-                        "headline",
-                        "avatarUrl"
-                      ],
-                      "additionalProperties": false
-                    },
-                    {
-                      "type": "null"
-                    }
-                  ]
+                "expiresAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
                 },
-                "invitedAt": {
+                "createdAt": {
                   "type": "string",
                   "format": "date-time",
                   "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
                 }
               },
               "required": [
-                "project",
+                "id",
+                "organizationId",
+                "email",
                 "role",
-                "function",
-                "invitedBy",
-                "invitedAt"
+                "status",
+                "expiresAt",
+                "createdAt"
               ],
               "additionalProperties": false
             }
@@ -50518,6 +50031,18 @@
           }
         }
       },
+      "ChangeProjectSlugDto": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "pattern": "^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,79}$"
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      },
       "ReplaceTiersDto": {
         "type": "object",
         "properties": {
@@ -50656,6 +50181,399 @@
             ]
           }
         }
+      },
+      "ProjectInvitationsDto_Output": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "project": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$"
+                    },
+                    "slug": {
+                      "type": "string",
+                      "pattern": "^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,79}$"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "summary": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "draft",
+                        "funding",
+                        "funded",
+                        "closed"
+                      ]
+                    },
+                    "sectorCode": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "countryCodes": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "coverImageUrl": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "owner": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "handle": {
+                              "type": "string",
+                              "pattern": "^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$"
+                            },
+                            "displayName": {
+                              "type": "string"
+                            },
+                            "headline": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "avatarUrl": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "handle",
+                            "displayName",
+                            "headline",
+                            "avatarUrl"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "organization": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "format": "uuid",
+                              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$"
+                            },
+                            "slug": {
+                              "type": "string"
+                            },
+                            "name": {
+                              "type": "string"
+                            },
+                            "logoUrl": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "verified": {
+                              "type": "boolean"
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "slug",
+                            "name",
+                            "logoUrl",
+                            "verified"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "funding": {
+                      "type": "object",
+                      "properties": {
+                        "goal": {
+                          "anyOf": [
+                            {
+                              "type": "object",
+                              "properties": {
+                                "amountMinor": {
+                                  "type": "string",
+                                  "pattern": "^-?(0|[1-9]\\d*)$"
+                                },
+                                "currency": {
+                                  "type": "string",
+                                  "pattern": "^[A-Z]{3}$"
+                                }
+                              },
+                              "required": [
+                                "amountMinor",
+                                "currency"
+                              ],
+                              "additionalProperties": false
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "collected": {
+                          "type": "object",
+                          "properties": {
+                            "amountMinor": {
+                              "type": "string",
+                              "pattern": "^-?(0|[1-9]\\d*)$"
+                            },
+                            "currency": {
+                              "type": "string",
+                              "pattern": "^[A-Z]{3}$"
+                            }
+                          },
+                          "required": [
+                            "amountMinor",
+                            "currency"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "progressPercent": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        "contributionCount": {
+                          "type": "integer",
+                          "minimum": -9007199254740991,
+                          "maximum": 9007199254740991
+                        },
+                        "daysLeft": {
+                          "anyOf": [
+                            {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 9007199254740991
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "instruments": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "enum": [
+                              "donation",
+                              "reward_crowdfunding",
+                              "love_money",
+                              "grant",
+                              "honor_loan",
+                              "equity",
+                              "convertible_bonds"
+                            ]
+                          }
+                        },
+                        "opensCapital": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "goal",
+                        "collected",
+                        "progressPercent",
+                        "contributionCount",
+                        "daysLeft",
+                        "instruments",
+                        "opensCapital"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "impact": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "selfDeclared": {
+                              "type": "boolean",
+                              "const": true
+                            },
+                            "score": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 100
+                            },
+                            "level": {
+                              "type": "string",
+                              "enum": [
+                                "emerging",
+                                "moderate",
+                                "strong"
+                              ]
+                            },
+                            "methodologyVersion": {
+                              "type": "integer",
+                              "exclusiveMinimum": 0,
+                              "maximum": 9007199254740991
+                            }
+                          },
+                          "required": [
+                            "selfDeclared",
+                            "score",
+                            "level",
+                            "methodologyVersion"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "featured": {
+                      "type": "boolean"
+                    },
+                    "publishedAt": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "date-time",
+                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "endsAt": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "date-time",
+                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "slug",
+                    "title",
+                    "summary",
+                    "status",
+                    "sectorCode",
+                    "countryCodes",
+                    "coverImageUrl",
+                    "owner",
+                    "organization",
+                    "funding",
+                    "impact",
+                    "featured",
+                    "publishedAt",
+                    "endsAt"
+                  ],
+                  "additionalProperties": false
+                },
+                "role": {
+                  "type": "string",
+                  "enum": [
+                    "owner",
+                    "editor"
+                  ]
+                },
+                "function": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "invitedBy": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "handle": {
+                          "type": "string",
+                          "pattern": "^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$"
+                        },
+                        "displayName": {
+                          "type": "string"
+                        },
+                        "headline": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "avatarUrl": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "handle",
+                        "displayName",
+                        "headline",
+                        "avatarUrl"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "invitedAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                }
+              },
+              "required": [
+                "project",
+                "role",
+                "function",
+                "invitedBy",
+                "invitedAt"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "additionalProperties": false
       },
       "AcceptDto": {
         "type": "object",
@@ -62236,6 +62154,18 @@
           }
         }
       },
+      "ChangeEventSlugDto": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "pattern": "^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,79}$"
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      },
       "CancelEventDto": {
         "type": "object",
         "properties": {
@@ -66140,6 +66070,213 @@
           "invitations"
         ],
         "additionalProperties": false
+      },
+      "NotificationPreferencesDto_Output": {
+        "type": "object",
+        "properties": {
+          "emailDigest": {
+            "type": "string",
+            "enum": [
+              "off",
+              "daily",
+              "weekly"
+            ]
+          },
+          "types": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "connection_request",
+                    "connection_accepted",
+                    "new_follower",
+                    "reaction",
+                    "comment",
+                    "mention",
+                    "followed_post",
+                    "message",
+                    "message_request",
+                    "message_request_accepted",
+                    "introduction_proposed",
+                    "introduction_completed",
+                    "introduction_declined",
+                    "profile_views",
+                    "project_contribution",
+                    "tier_unlocked",
+                    "project_update",
+                    "project_ending_soon",
+                    "project_funded",
+                    "project_closed",
+                    "project_interest",
+                    "project_team_invitation",
+                    "project_team_joined",
+                    "project_team_invitation_declined",
+                    "organization_invitation",
+                    "organization_member_joined",
+                    "organization_role_changed",
+                    "organization_ownership_transferred",
+                    "organization_verification_decided",
+                    "kyc_decided",
+                    "contribution_refunded",
+                    "offline_contribution_declared",
+                    "offline_contribution_decided",
+                    "time_entry_declared",
+                    "time_entry_answered",
+                    "security_alert",
+                    "event_registration_confirmed",
+                    "event_waitlist_promoted",
+                    "event_reminder",
+                    "event_canceled",
+                    "mission_engagement_requested",
+                    "mission_engagement_answered",
+                    "mission_completed",
+                    "new_suggestions",
+                    "report_received",
+                    "report_resolved",
+                    "moderation_decision",
+                    "suspension_started",
+                    "suspension_ended",
+                    "appeal_received",
+                    "appeal_decided",
+                    "export_ready",
+                    "erasure_scheduled",
+                    "erasure_reminder"
+                  ]
+                },
+                "transactional": {
+                  "type": "boolean"
+                },
+                "channels": {
+                  "type": "object",
+                  "properties": {
+                    "in_app": {
+                      "type": "boolean"
+                    },
+                    "email": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "in_app",
+                    "email"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "type",
+                "transactional",
+                "channels"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "emailDigest",
+          "types"
+        ],
+        "additionalProperties": false
+      },
+      "UpdateNotificationPreferencesDto": {
+        "type": "object",
+        "properties": {
+          "emailDigest": {
+            "type": "string",
+            "enum": [
+              "off",
+              "daily",
+              "weekly"
+            ]
+          },
+          "changes": {
+            "default": [],
+            "maxItems": 108,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "connection_request",
+                    "connection_accepted",
+                    "new_follower",
+                    "reaction",
+                    "comment",
+                    "mention",
+                    "followed_post",
+                    "message",
+                    "message_request",
+                    "message_request_accepted",
+                    "introduction_proposed",
+                    "introduction_completed",
+                    "introduction_declined",
+                    "profile_views",
+                    "project_contribution",
+                    "tier_unlocked",
+                    "project_update",
+                    "project_ending_soon",
+                    "project_funded",
+                    "project_closed",
+                    "project_interest",
+                    "project_team_invitation",
+                    "project_team_joined",
+                    "project_team_invitation_declined",
+                    "organization_invitation",
+                    "organization_member_joined",
+                    "organization_role_changed",
+                    "organization_ownership_transferred",
+                    "organization_verification_decided",
+                    "kyc_decided",
+                    "contribution_refunded",
+                    "offline_contribution_declared",
+                    "offline_contribution_decided",
+                    "time_entry_declared",
+                    "time_entry_answered",
+                    "security_alert",
+                    "event_registration_confirmed",
+                    "event_waitlist_promoted",
+                    "event_reminder",
+                    "event_canceled",
+                    "mission_engagement_requested",
+                    "mission_engagement_answered",
+                    "mission_completed",
+                    "new_suggestions",
+                    "report_received",
+                    "report_resolved",
+                    "moderation_decision",
+                    "suspension_started",
+                    "suspension_ended",
+                    "appeal_received",
+                    "appeal_decided",
+                    "export_ready",
+                    "erasure_scheduled",
+                    "erasure_reminder"
+                  ]
+                },
+                "channel": {
+                  "type": "string",
+                  "enum": [
+                    "in_app",
+                    "email"
+                  ]
+                },
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "type",
+                "channel",
+                "enabled"
+              ]
+            }
+          }
+        }
       },
       "UnsubscribeResultDto_Output": {
         "type": "object",

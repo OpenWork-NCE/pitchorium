@@ -58,7 +58,7 @@ class MyProjectsDto extends createZodDto(z.object({ items: z.array(myProjectSche
 class PostPageDto extends createZodDto(cursorPageSchema(postSchema)) {}
 class CreateProjectDto extends createZodDto(createProjectRequestSchema) {}
 class UpdateProjectDto extends createZodDto(updateProjectRequestSchema) {}
-class ChangeSlugDto extends createZodDto(changeProjectSlugRequestSchema) {}
+class ChangeProjectSlugDto extends createZodDto(changeProjectSlugRequestSchema) {}
 class ReplaceTiersDto extends createZodDto(replaceTiersRequestSchema) {}
 class SetGalleryDto extends createZodDto(setProjectGalleryRequestSchema) {}
 class SetDocumentsDto extends createZodDto(setProjectDocumentsRequestSchema) {}
@@ -66,7 +66,7 @@ class PublishDto extends createZodDto(publishProjectRequestSchema) {}
 class ShowcaseQueryDto extends createZodDto(projectShowcaseQuerySchema) {}
 class PageQueryDto extends createZodDto(cursorPageQuerySchema) {}
 class ProjectIdParamsDto extends createZodDto(projectIdParamsSchema) {}
-class SlugParamsDto extends createZodDto(projectSlugParamsSchema) {}
+class ProjectSlugParamsDto extends createZodDto(projectSlugParamsSchema) {}
 
 /** Short shared cache: a change of the page, or its withdrawal, must show quickly. */
 const PUBLIC_PROJECT_CACHE = 'public, max-age=60';
@@ -140,7 +140,7 @@ export class ProjectsController {
   @ApiMovedPermanentlyResponse({ description: 'Former slug: Location gives the current one.' })
   async forMember(
     @CurrentPrincipal() principal: Principal,
-    @Param() params: SlugParamsDto,
+    @Param() params: ProjectSlugParamsDto,
     @Res() response: Response,
   ): Promise<void> {
     const lookup = await this.reads.bySlug(params.slug, {
@@ -155,7 +155,7 @@ export class ProjectsController {
   @Public()
   @ApiOkResponse({ type: ProjectDto.Output })
   @ApiMovedPermanentlyResponse({ description: 'Former slug: Location gives the current one.' })
-  async forPublic(@Param() params: SlugParamsDto, @Res() response: Response): Promise<void> {
+  async forPublic(@Param() params: ProjectSlugParamsDto, @Res() response: Response): Promise<void> {
     const lookup = await this.reads.bySlug(params.slug, { kind: 'public' });
     response.setHeader('Cache-Control', PUBLIC_PROJECT_CACHE);
     reply(response, lookup, '/v1/public/projects');
@@ -229,7 +229,7 @@ export class ProjectsController {
   async changeSlug(
     @CurrentPrincipal() principal: Principal,
     @Param() params: ProjectIdParamsDto,
-    @Body() body: ChangeSlugDto,
+    @Body() body: ChangeProjectSlugDto,
   ): Promise<Project> {
     await this.projects.changeSlug(params.projectId, principal.userId, body.slug);
     return this.reads.byId(params.projectId, principal.userId);

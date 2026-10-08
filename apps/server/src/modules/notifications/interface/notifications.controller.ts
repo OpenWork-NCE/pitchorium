@@ -35,8 +35,10 @@ class NotificationPageDto extends createZodDto(notificationPageSchema) {}
 class NotificationListQueryDto extends createZodDto(notificationListQuerySchema) {}
 class NotificationIdParamsDto extends createZodDto(notificationIdParamsSchema) {}
 class CountersDto extends createZodDto(countersSchema) {}
-class PreferencesDto extends createZodDto(notificationPreferencesSchema) {}
-class UpdatePreferencesDto extends createZodDto(updateNotificationPreferencesRequestSchema) {}
+class NotificationPreferencesDto extends createZodDto(notificationPreferencesSchema) {}
+class UpdateNotificationPreferencesDto extends createZodDto(
+  updateNotificationPreferencesRequestSchema,
+) {}
 class UnsubscribeQueryDto extends createZodDto(unsubscribeQuerySchema) {}
 class UnsubscribeResultDto extends createZodDto(unsubscribeResultSchema) {}
 class ReadAllDto extends createZodDto(z.object({ read: z.number().int() })) {}
@@ -100,19 +102,19 @@ export class NotificationsController {
 
   @Get('me/notification-preferences')
   @RequireAction('notifications.read')
-  @ZodSerializerDto(PreferencesDto)
-  @ApiOkResponse({ type: PreferencesDto.Output })
+  @ZodSerializerDto(NotificationPreferencesDto)
+  @ApiOkResponse({ type: NotificationPreferencesDto.Output })
   preferences(@CurrentPrincipal() principal: Principal): Promise<NotificationPreferences> {
     return this.reads.preferences(principal.userId);
   }
 
   @Patch('me/notification-preferences')
   @RequireAction('notifications.preferences.update')
-  @ZodSerializerDto(PreferencesDto)
-  @ApiOkResponse({ type: PreferencesDto.Output })
+  @ZodSerializerDto(NotificationPreferencesDto)
+  @ApiOkResponse({ type: NotificationPreferencesDto.Output })
   updatePreferences(
     @CurrentPrincipal() principal: Principal,
-    @Body() body: UpdatePreferencesDto,
+    @Body() body: UpdateNotificationPreferencesDto,
   ): Promise<NotificationPreferences> {
     return this.reads.updatePreferences(principal.userId, body);
   }

@@ -25,8 +25,8 @@ class ActiveLocalesDto extends createZodDto(activeLocalesSchema) {}
 class LegalVersionsDto extends createZodDto(legalVersionsSchema) {}
 class LegalAcceptanceRequestDto extends createZodDto(legalAcceptanceRequestSchema) {}
 class LegalStatusDto extends createZodDto(legalStatusSchema) {}
-class PreferencesDto extends createZodDto(preferencesSchema) {}
-class UpdatePreferencesDto extends createZodDto(updatePreferencesRequestSchema) {}
+class AccountPreferencesDto extends createZodDto(preferencesSchema) {}
+class UpdateAccountPreferencesDto extends createZodDto(updatePreferencesRequestSchema) {}
 
 /** Shared cache, a little longer than the cache of the flags (10 s). */
 const ACTIVE_LOCALES_CACHE = 'public, max-age=60';
@@ -73,11 +73,11 @@ export class AccountController {
 
   @Put('me/preferences')
   @RequireAction('account.preferences.update')
-  @ZodSerializerDto(PreferencesDto)
-  @ApiOkResponse({ type: PreferencesDto.Output })
+  @ZodSerializerDto(AccountPreferencesDto)
+  @ApiOkResponse({ type: AccountPreferencesDto.Output })
   updatePreferences(
     @CurrentPrincipal() principal: Principal,
-    @Body() body: UpdatePreferencesDto,
+    @Body() body: UpdateAccountPreferencesDto,
   ): Promise<Preferences> {
     return this.preferences.update(principal.userId, body);
   }

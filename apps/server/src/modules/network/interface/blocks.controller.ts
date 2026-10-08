@@ -12,7 +12,7 @@ import { CurrentPrincipal, type Principal, RequireAction } from '../../../platfo
 import { BlocksService } from '../application/blocks.service';
 
 class BlockPageDto extends createZodDto(blockPageSchema) {}
-class HandleParamsDto extends createZodDto(memberHandleParamsSchema) {}
+class MemberHandleParamsDto extends createZodDto(memberHandleParamsSchema) {}
 class PageQueryDto extends createZodDto(cursorPageQuerySchema) {}
 
 /** Blocking (ADR 0029). Reporting belongs to the trust module. */
@@ -27,7 +27,7 @@ export class BlocksController {
   @ApiNoContentResponse()
   async block(
     @CurrentPrincipal() principal: Principal,
-    @Param() params: HandleParamsDto,
+    @Param() params: MemberHandleParamsDto,
   ): Promise<void> {
     await this.blocks.block(principal.userId, params.handle);
   }
@@ -38,7 +38,7 @@ export class BlocksController {
   @ApiNoContentResponse()
   async unblock(
     @CurrentPrincipal() principal: Principal,
-    @Param() params: HandleParamsDto,
+    @Param() params: MemberHandleParamsDto,
   ): Promise<void> {
     await this.blocks.unblock(principal.userId, params.handle);
   }

@@ -23,6 +23,7 @@ import type {
 
 import type {
   AcceptDto,
+  AccountPreferencesDtoOutput,
   ActionPrerequisitesDtoOutput,
   ActiveLocalesDtoOutput,
   AdminContributionDtoOutput,
@@ -49,9 +50,11 @@ import type {
   CancelEventDto,
   CaseDetailDtoOutput,
   CasePageDtoOutput,
+  ChangeEventSlugDto,
   ChangeHandleDto,
+  ChangeOrganizationSlugDto,
+  ChangeProjectSlugDto,
   ChangeRoleDto,
-  ChangeSlugDto,
   CommentDtoOutput,
   CommentPageDtoOutput,
   CommentsControllerListParams,
@@ -154,7 +157,6 @@ import type {
   IntroductionPageDtoOutput,
   InvitationDtoOutput,
   InvitationTokenDto,
-  InvitationsDtoOutput,
   InviteDto,
   JobRetryDtoOutput,
   KycDecisionDto,
@@ -202,6 +204,7 @@ import type {
   MyProjectsDtoOutput,
   NetworkSettingsDtoOutput,
   NotificationPageDtoOutput,
+  NotificationPreferencesDtoOutput,
   NotificationsControllerListParams,
   NotificationsControllerUnsubscribeParams,
   OfflineContributionsControllerMineParams,
@@ -210,6 +213,7 @@ import type {
   OfflineDtoOutput,
   OfflinePageDtoOutput,
   OrganizationDtoOutput,
+  OrganizationInvitationsDtoOutput,
   OverviewDtoOutput,
   OwnProfileDtoOutput,
   PaymentOptionsDtoOutput,
@@ -219,7 +223,6 @@ import type {
   PostStatsDtoOutput,
   PostsControllerReadParams,
   PostsControllerSavedParams,
-  PreferencesDtoOutput,
   PrefillDtoOutput,
   PrivacyControllerRightsRequestsParams,
   ProblemDetails,
@@ -230,6 +233,7 @@ import type {
   ProjectCardPageDtoOutput,
   ProjectContributionPageDtoOutput,
   ProjectDtoOutput,
+  ProjectInvitationsDtoOutput,
   ProjectsControllerPostsParams,
   ProjectsControllerPublicPostsParams,
   ProjectsControllerPublicShowcaseParams,
@@ -287,6 +291,7 @@ import type {
   TranslationDtoOutput,
   TransparencyDtoOutput,
   UnsubscribeResultDtoOutput,
+  UpdateAccountPreferencesDto,
   UpdateBaseProfileDto,
   UpdateCommentDto,
   UpdateContributorFacetDto,
@@ -299,10 +304,10 @@ import type {
   UpdateMethodologyDto,
   UpdateMissionDto,
   UpdateNetworkSettingsDto,
+  UpdateNotificationPreferencesDto,
   UpdateOrganizationDto,
   UpdatePageDtoOutput,
   UpdatePostDto,
-  UpdatePreferencesDto,
   UpdateProjectDto,
   UpdateRewardDto,
   UpdateVisibilityDto,
@@ -2493,9 +2498,9 @@ export const getAccountControllerUpdatePreferencesUrl = () => {
  * @summary Update preferences
  */
 export const accountControllerUpdatePreferences = async (
-  updatePreferencesDto: UpdatePreferencesDto,
+  updateAccountPreferencesDto: UpdateAccountPreferencesDto,
   options?: Parameters<typeof apiFetch>[1],
-): Promise<PreferencesDtoOutput> => {
+): Promise<AccountPreferencesDtoOutput> => {
   const getHeaders = (
     h?: NonNullable<RequestInit['headers']>,
   ): Record<string, string | readonly string[]> => {
@@ -2515,11 +2520,11 @@ export const accountControllerUpdatePreferences = async (
     }
     return headers;
   };
-  return apiFetch<PreferencesDtoOutput>(getAccountControllerUpdatePreferencesUrl(), {
+  return apiFetch<AccountPreferencesDtoOutput>(getAccountControllerUpdatePreferencesUrl(), {
     ...options,
     method: 'PUT',
     headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
-    body: JSON.stringify(updatePreferencesDto),
+    body: JSON.stringify(updateAccountPreferencesDto),
   });
 };
 
@@ -2565,9 +2570,11 @@ export const getAccountControllerUpdatePreferencesMutationOptions = <
 export type AccountControllerUpdatePreferencesMutationResult = NonNullable<
   Awaited<ReturnType<typeof accountControllerUpdatePreferences>>
 >;
-export type AccountControllerUpdatePreferencesMutationBody = UpdatePreferencesDto;
+export type AccountControllerUpdatePreferencesMutationBody = UpdateAccountPreferencesDto;
 export type AccountControllerUpdatePreferencesMutationError = ErrorType<ProblemDetails>;
-export type AccountControllerUpdatePreferencesMutationVariables = { data: UpdatePreferencesDto };
+export type AccountControllerUpdatePreferencesMutationVariables = {
+  data: UpdateAccountPreferencesDto;
+};
 
 /**
  * @summary Update preferences
@@ -7814,7 +7821,7 @@ export const getOrganizationsControllerChangeSlugUrl = (organizationId: string) 
  */
 export const organizationsControllerChangeSlug = async (
   organizationId: string,
-  changeSlugDto: ChangeSlugDto,
+  changeOrganizationSlugDto: ChangeOrganizationSlugDto,
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<OrganizationDtoOutput> => {
   const getHeaders = (
@@ -7840,7 +7847,7 @@ export const organizationsControllerChangeSlug = async (
     ...options,
     method: 'PUT',
     headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
-    body: JSON.stringify(changeSlugDto),
+    body: JSON.stringify(changeOrganizationSlugDto),
   });
 };
 
@@ -7886,11 +7893,11 @@ export const getOrganizationsControllerChangeSlugMutationOptions = <
 export type OrganizationsControllerChangeSlugMutationResult = NonNullable<
   Awaited<ReturnType<typeof organizationsControllerChangeSlug>>
 >;
-export type OrganizationsControllerChangeSlugMutationBody = ChangeSlugDto;
+export type OrganizationsControllerChangeSlugMutationBody = ChangeOrganizationSlugDto;
 export type OrganizationsControllerChangeSlugMutationError = ErrorType<ProblemDetails>;
 export type OrganizationsControllerChangeSlugMutationVariables = {
   organizationId: string;
-  data: ChangeSlugDto;
+  data: ChangeOrganizationSlugDto;
 };
 
 /**
@@ -8888,11 +8895,14 @@ export const getInvitationsControllerPendingUrl = (organizationId: string) => {
 export const invitationsControllerPending = async (
   organizationId: string,
   options?: Parameters<typeof apiFetch>[1],
-): Promise<InvitationsDtoOutput> => {
-  return apiFetch<InvitationsDtoOutput>(getInvitationsControllerPendingUrl(organizationId), {
-    ...options,
-    method: 'GET',
-  });
+): Promise<OrganizationInvitationsDtoOutput> => {
+  return apiFetch<OrganizationInvitationsDtoOutput>(
+    getInvitationsControllerPendingUrl(organizationId),
+    {
+      ...options,
+      method: 'GET',
+    },
+  );
 };
 
 export const getInvitationsControllerPendingQueryKey = (organizationId: string) => {
@@ -18436,7 +18446,7 @@ export const getProjectsControllerChangeSlugUrl = (projectId: string) => {
  */
 export const projectsControllerChangeSlug = async (
   projectId: string,
-  changeSlugDto: ChangeSlugDto,
+  changeProjectSlugDto: ChangeProjectSlugDto,
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<ProjectDtoOutput> => {
   const getHeaders = (
@@ -18462,7 +18472,7 @@ export const projectsControllerChangeSlug = async (
     ...options,
     method: 'PUT',
     headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
-    body: JSON.stringify(changeSlugDto),
+    body: JSON.stringify(changeProjectSlugDto),
   });
 };
 
@@ -18508,11 +18518,11 @@ export const getProjectsControllerChangeSlugMutationOptions = <
 export type ProjectsControllerChangeSlugMutationResult = NonNullable<
   Awaited<ReturnType<typeof projectsControllerChangeSlug>>
 >;
-export type ProjectsControllerChangeSlugMutationBody = ChangeSlugDto;
+export type ProjectsControllerChangeSlugMutationBody = ChangeProjectSlugDto;
 export type ProjectsControllerChangeSlugMutationError = ErrorType<ProblemDetails>;
 export type ProjectsControllerChangeSlugMutationVariables = {
   projectId: string;
-  data: ChangeSlugDto;
+  data: ChangeProjectSlugDto;
 };
 
 /**
@@ -19429,8 +19439,8 @@ export const getTeamControllerInvitationsUrl = () => {
  */
 export const teamControllerInvitations = async (
   options?: Parameters<typeof apiFetch>[1],
-): Promise<InvitationsDtoOutput> => {
-  return apiFetch<InvitationsDtoOutput>(getTeamControllerInvitationsUrl(), {
+): Promise<ProjectInvitationsDtoOutput> => {
+  return apiFetch<ProjectInvitationsDtoOutput>(getTeamControllerInvitationsUrl(), {
     ...options,
     method: 'GET',
   });
@@ -30737,7 +30747,7 @@ export const getEventsControllerChangeSlugUrl = (eventId: string) => {
  */
 export const eventsControllerChangeSlug = async (
   eventId: string,
-  changeSlugDto: ChangeSlugDto,
+  changeEventSlugDto: ChangeEventSlugDto,
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<EventDtoOutput> => {
   const getHeaders = (
@@ -30763,7 +30773,7 @@ export const eventsControllerChangeSlug = async (
     ...options,
     method: 'PUT',
     headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
-    body: JSON.stringify(changeSlugDto),
+    body: JSON.stringify(changeEventSlugDto),
   });
 };
 
@@ -30809,9 +30819,12 @@ export const getEventsControllerChangeSlugMutationOptions = <
 export type EventsControllerChangeSlugMutationResult = NonNullable<
   Awaited<ReturnType<typeof eventsControllerChangeSlug>>
 >;
-export type EventsControllerChangeSlugMutationBody = ChangeSlugDto;
+export type EventsControllerChangeSlugMutationBody = ChangeEventSlugDto;
 export type EventsControllerChangeSlugMutationError = ErrorType<ProblemDetails>;
-export type EventsControllerChangeSlugMutationVariables = { eventId: string; data: ChangeSlugDto };
+export type EventsControllerChangeSlugMutationVariables = {
+  eventId: string;
+  data: ChangeEventSlugDto;
+};
 
 /**
  * @summary Change slug
@@ -36370,8 +36383,8 @@ export const getNotificationsControllerPreferencesUrl = () => {
  */
 export const notificationsControllerPreferences = async (
   options?: Parameters<typeof apiFetch>[1],
-): Promise<PreferencesDtoOutput> => {
-  return apiFetch<PreferencesDtoOutput>(getNotificationsControllerPreferencesUrl(), {
+): Promise<NotificationPreferencesDtoOutput> => {
+  return apiFetch<NotificationPreferencesDtoOutput>(getNotificationsControllerPreferencesUrl(), {
     ...options,
     method: 'GET',
   });
@@ -36498,9 +36511,9 @@ export const getNotificationsControllerUpdatePreferencesUrl = () => {
  * @summary Update preferences
  */
 export const notificationsControllerUpdatePreferences = async (
-  updatePreferencesDto: UpdatePreferencesDto,
+  updateNotificationPreferencesDto: UpdateNotificationPreferencesDto,
   options?: Parameters<typeof apiFetch>[1],
-): Promise<PreferencesDtoOutput> => {
+): Promise<NotificationPreferencesDtoOutput> => {
   const getHeaders = (
     h?: NonNullable<RequestInit['headers']>,
   ): Record<string, string | readonly string[]> => {
@@ -36520,12 +36533,15 @@ export const notificationsControllerUpdatePreferences = async (
     }
     return headers;
   };
-  return apiFetch<PreferencesDtoOutput>(getNotificationsControllerUpdatePreferencesUrl(), {
-    ...options,
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
-    body: JSON.stringify(updatePreferencesDto),
-  });
+  return apiFetch<NotificationPreferencesDtoOutput>(
+    getNotificationsControllerUpdatePreferencesUrl(),
+    {
+      ...options,
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+      body: JSON.stringify(updateNotificationPreferencesDto),
+    },
+  );
 };
 
 export const getNotificationsControllerUpdatePreferencesMutationKey = () =>
@@ -36570,10 +36586,10 @@ export const getNotificationsControllerUpdatePreferencesMutationOptions = <
 export type NotificationsControllerUpdatePreferencesMutationResult = NonNullable<
   Awaited<ReturnType<typeof notificationsControllerUpdatePreferences>>
 >;
-export type NotificationsControllerUpdatePreferencesMutationBody = UpdatePreferencesDto;
+export type NotificationsControllerUpdatePreferencesMutationBody = UpdateNotificationPreferencesDto;
 export type NotificationsControllerUpdatePreferencesMutationError = ErrorType<ProblemDetails>;
 export type NotificationsControllerUpdatePreferencesMutationVariables = {
-  data: UpdatePreferencesDto;
+  data: UpdateNotificationPreferencesDto;
 };
 
 /**

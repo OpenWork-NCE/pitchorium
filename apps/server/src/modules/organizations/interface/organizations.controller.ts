@@ -46,10 +46,10 @@ class OrganizationDto extends createZodDto(organizationSchema) {}
 class MyOrganizationsDto extends createZodDto(z.object({ items: z.array(myOrganizationSchema) })) {}
 class CreateOrganizationDto extends createZodDto(createOrganizationRequestSchema) {}
 class UpdateOrganizationDto extends createZodDto(updateOrganizationRequestSchema) {}
-class ChangeSlugDto extends createZodDto(changeOrganizationSlugRequestSchema) {}
+class ChangeOrganizationSlugDto extends createZodDto(changeOrganizationSlugRequestSchema) {}
 class AttachMediaDto extends createZodDto(attachMediaRequestSchema) {}
 class OrganizationIdParamsDto extends createZodDto(organizationIdParamsSchema) {}
-class SlugParamsDto extends createZodDto(organizationSlugParamsSchema) {}
+class OrganizationSlugParamsDto extends createZodDto(organizationSlugParamsSchema) {}
 
 /** Short shared cache: a change of the page must show quickly. */
 const PUBLIC_ORGANIZATION_CACHE = 'public, max-age=60';
@@ -100,7 +100,7 @@ export class OrganizationsController {
   @ApiMovedPermanentlyResponse({ description: 'Former slug: Location gives the current one.' })
   async forMember(
     @CurrentPrincipal() principal: Principal,
-    @Param() params: SlugParamsDto,
+    @Param() params: OrganizationSlugParamsDto,
     @Res() response: Response,
   ): Promise<void> {
     reply(
@@ -115,7 +115,10 @@ export class OrganizationsController {
   @Public()
   @ApiOkResponse({ type: OrganizationDto.Output })
   @ApiMovedPermanentlyResponse({ description: 'Former slug: Location gives the current one.' })
-  async forPublic(@Param() params: SlugParamsDto, @Res() response: Response): Promise<void> {
+  async forPublic(
+    @Param() params: OrganizationSlugParamsDto,
+    @Res() response: Response,
+  ): Promise<void> {
     const lookup = await this.reads.bySlug(params.slug, null);
     response.setHeader('Cache-Control', PUBLIC_ORGANIZATION_CACHE);
     reply(response, lookup, '/v1/public/organizations');
@@ -141,7 +144,7 @@ export class OrganizationsController {
   async changeSlug(
     @CurrentPrincipal() principal: Principal,
     @Param() params: OrganizationIdParamsDto,
-    @Body() body: ChangeSlugDto,
+    @Body() body: ChangeOrganizationSlugDto,
   ): Promise<Organization> {
     await this.organizations.changeSlug(params.organizationId, body.slug);
     return this.reads.byId(params.organizationId, principal.userId);

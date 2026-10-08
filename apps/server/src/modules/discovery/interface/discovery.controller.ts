@@ -54,7 +54,7 @@ class DiscoverPageDto extends createZodDto(discoverPageSchema) {}
 class DiscoverSectionPageDto extends createZodDto(discoverSectionPageSchema) {}
 class DiscoverSectionParamsDto extends createZodDto(discoverSectionParamsSchema) {}
 class PageQueryDto extends createZodDto(cursorPageQuerySchema) {}
-class ProjectIdParamsDto extends createZodDto(projectIdForSuggestionsParamsSchema) {}
+class SuggestionProjectIdParamsDto extends createZodDto(projectIdForSuggestionsParamsSchema) {}
 
 /** Short shared cache for the public reads. */
 const PUBLIC_CACHE = 'public, max-age=60';
@@ -159,7 +159,7 @@ export class DiscoveryController {
   @ApiOkResponse({ type: SuggestionPageDto.Output })
   projectContributors(
     @CurrentPrincipal() principal: Principal,
-    @Param() params: ProjectIdParamsDto,
+    @Param() params: SuggestionProjectIdParamsDto,
     @Query() query: PageQueryDto,
   ): Promise<CursorPage<Suggestion>> {
     return this.suggestions.projectContributors(params.projectId, principal.userId, query);

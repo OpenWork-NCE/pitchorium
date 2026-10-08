@@ -18,7 +18,9 @@ import { InvitationsService } from '../application/invitations.service';
 import { OrganizationResolver } from './organization.resolver';
 
 class InvitationDto extends createZodDto(invitationSchema) {}
-class InvitationsDto extends createZodDto(z.object({ items: z.array(invitationSchema) })) {}
+class OrganizationInvitationsDto extends createZodDto(
+  z.object({ items: z.array(invitationSchema) }),
+) {}
 class CreateInvitationDto extends createZodDto(createInvitationRequestSchema) {}
 class InvitationTokenDto extends createZodDto(invitationTokenRequestSchema) {}
 class MyOrganizationDto extends createZodDto(myOrganizationSchema) {}
@@ -49,8 +51,8 @@ export class InvitationsController {
 
   @Get('organizations/:organizationId/invitations')
   @RequireAction('organization.member.invite', { resource: OrganizationResolver })
-  @ZodSerializerDto(InvitationsDto)
-  @ApiOkResponse({ type: InvitationsDto.Output })
+  @ZodSerializerDto(OrganizationInvitationsDto)
+  @ApiOkResponse({ type: OrganizationInvitationsDto.Output })
   async pending(@Param() params: OrganizationIdParamsDto): Promise<{ items: Invitation[] }> {
     return { items: await this.invitations.pending(params.organizationId) };
   }

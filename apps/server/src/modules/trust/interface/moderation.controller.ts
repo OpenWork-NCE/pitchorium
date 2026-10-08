@@ -42,7 +42,7 @@ class DecisionDetailPageDto extends createZodDto(moderationDecisionDetailPageSch
 class SuspensionDto extends createZodDto(suspensionSchema) {}
 class TransparencyDto extends createZodDto(transparencyReportSchema) {}
 class RefundsResultDto extends createZodDto(projectRefundsResultSchema) {}
-class QueueQueryDto extends createZodDto(moderationQueueQuerySchema) {}
+class ModerationQueueQueryDto extends createZodDto(moderationQueueQuerySchema) {}
 class PageQueryDto extends createZodDto(cursorPageQuerySchema) {}
 class TransparencyQueryDto extends createZodDto(transparencyQuerySchema) {}
 class AssignDto extends createZodDto(assignModerationCaseRequestSchema) {}
@@ -53,7 +53,7 @@ class RefundsDto extends createZodDto(projectRefundsRequestSchema) {}
 class CaseIdParamsDto extends createZodDto(moderationCaseIdParamsSchema) {}
 class AppealIdParamsDto extends createZodDto(appealIdParamsSchema) {}
 class SuspensionIdParamsDto extends createZodDto(suspensionIdParamsSchema) {}
-class ProjectIdParamsDto extends createZodDto(z.object({ projectId: uuidV7Schema })) {}
+class ReportedProjectIdParamsDto extends createZodDto(z.object({ projectId: uuidV7Schema })) {}
 
 /**
  * Moderation tools (§13), under the administration convention `/v1/admin/<area>`: queue,
@@ -76,7 +76,7 @@ export class ModerationController {
   @ApiOkResponse({ type: CasePageDto.Output })
   queue(
     @CurrentPrincipal() principal: Principal,
-    @Query() query: QueueQueryDto,
+    @Query() query: ModerationQueueQueryDto,
   ): Promise<CursorPage<ModerationCase>> {
     return this.moderation.queue(principal.userId, query);
   }
@@ -176,7 +176,7 @@ export class ModerationController {
   @ApiAcceptedResponse({ type: RefundsResultDto.Output })
   refunds(
     @CurrentPrincipal() principal: Principal,
-    @Param() params: ProjectIdParamsDto,
+    @Param() params: ReportedProjectIdParamsDto,
     @Body() body: RefundsDto,
   ): Promise<{ queued: number }> {
     return this.moderation.refundFrozenProject(

@@ -437,178 +437,38 @@ export interface LegalStatusDtoOutput {
   current: LegalStatusDtoOutputCurrent;
 }
 
-export type UpdatePreferencesDtoEmailDigest =
-  (typeof UpdatePreferencesDtoEmailDigest)[keyof typeof UpdatePreferencesDtoEmailDigest];
+export type UpdateAccountPreferencesDtoLocale =
+  (typeof UpdateAccountPreferencesDtoLocale)[keyof typeof UpdateAccountPreferencesDtoLocale];
 
-export const UpdatePreferencesDtoEmailDigest = {
-  off: 'off',
-  daily: 'daily',
-  weekly: 'weekly',
+export const UpdateAccountPreferencesDtoLocale = {
+  fr: 'fr',
+  en: 'en',
+  sw: 'sw',
+  wo: 'wo',
+  ln: 'ln',
 } as const;
 
-export type UpdatePreferencesDtoChangesItemType =
-  (typeof UpdatePreferencesDtoChangesItemType)[keyof typeof UpdatePreferencesDtoChangesItemType];
-
-export const UpdatePreferencesDtoChangesItemType = {
-  connection_request: 'connection_request',
-  connection_accepted: 'connection_accepted',
-  new_follower: 'new_follower',
-  reaction: 'reaction',
-  comment: 'comment',
-  mention: 'mention',
-  followed_post: 'followed_post',
-  message: 'message',
-  message_request: 'message_request',
-  message_request_accepted: 'message_request_accepted',
-  introduction_proposed: 'introduction_proposed',
-  introduction_completed: 'introduction_completed',
-  introduction_declined: 'introduction_declined',
-  profile_views: 'profile_views',
-  project_contribution: 'project_contribution',
-  tier_unlocked: 'tier_unlocked',
-  project_update: 'project_update',
-  project_ending_soon: 'project_ending_soon',
-  project_funded: 'project_funded',
-  project_closed: 'project_closed',
-  project_interest: 'project_interest',
-  project_team_invitation: 'project_team_invitation',
-  project_team_joined: 'project_team_joined',
-  project_team_invitation_declined: 'project_team_invitation_declined',
-  organization_invitation: 'organization_invitation',
-  organization_member_joined: 'organization_member_joined',
-  organization_role_changed: 'organization_role_changed',
-  organization_ownership_transferred: 'organization_ownership_transferred',
-  organization_verification_decided: 'organization_verification_decided',
-  kyc_decided: 'kyc_decided',
-  contribution_refunded: 'contribution_refunded',
-  offline_contribution_declared: 'offline_contribution_declared',
-  offline_contribution_decided: 'offline_contribution_decided',
-  time_entry_declared: 'time_entry_declared',
-  time_entry_answered: 'time_entry_answered',
-  security_alert: 'security_alert',
-  event_registration_confirmed: 'event_registration_confirmed',
-  event_waitlist_promoted: 'event_waitlist_promoted',
-  event_reminder: 'event_reminder',
-  event_canceled: 'event_canceled',
-  mission_engagement_requested: 'mission_engagement_requested',
-  mission_engagement_answered: 'mission_engagement_answered',
-  mission_completed: 'mission_completed',
-  new_suggestions: 'new_suggestions',
-  report_received: 'report_received',
-  report_resolved: 'report_resolved',
-  moderation_decision: 'moderation_decision',
-  suspension_started: 'suspension_started',
-  suspension_ended: 'suspension_ended',
-  appeal_received: 'appeal_received',
-  appeal_decided: 'appeal_decided',
-  export_ready: 'export_ready',
-  erasure_scheduled: 'erasure_scheduled',
-  erasure_reminder: 'erasure_reminder',
-} as const;
-
-export type UpdatePreferencesDtoChangesItemChannel =
-  (typeof UpdatePreferencesDtoChangesItemChannel)[keyof typeof UpdatePreferencesDtoChangesItemChannel];
-
-export const UpdatePreferencesDtoChangesItemChannel = {
-  in_app: 'in_app',
-  email: 'email',
-} as const;
-
-export type UpdatePreferencesDtoChangesItem = {
-  type: UpdatePreferencesDtoChangesItemType;
-  channel: UpdatePreferencesDtoChangesItemChannel;
-  enabled: boolean;
-};
-
-export interface UpdatePreferencesDto {
-  emailDigest?: UpdatePreferencesDtoEmailDigest;
-  /** @maxItems 108 */
-  changes?: UpdatePreferencesDtoChangesItem[];
+export interface UpdateAccountPreferencesDto {
+  locale: UpdateAccountPreferencesDtoLocale;
+  /** @maxLength 64 */
+  timeZone?: string;
 }
 
-export type PreferencesDtoOutputEmailDigest =
-  (typeof PreferencesDtoOutputEmailDigest)[keyof typeof PreferencesDtoOutputEmailDigest];
+export type AccountPreferencesDtoOutputLocale =
+  (typeof AccountPreferencesDtoOutputLocale)[keyof typeof AccountPreferencesDtoOutputLocale];
 
-export const PreferencesDtoOutputEmailDigest = {
-  off: 'off',
-  daily: 'daily',
-  weekly: 'weekly',
+export const AccountPreferencesDtoOutputLocale = {
+  fr: 'fr',
+  en: 'en',
+  sw: 'sw',
+  wo: 'wo',
+  ln: 'ln',
 } as const;
 
-export type PreferencesDtoOutputTypesItemType =
-  (typeof PreferencesDtoOutputTypesItemType)[keyof typeof PreferencesDtoOutputTypesItemType];
-
-export const PreferencesDtoOutputTypesItemType = {
-  connection_request: 'connection_request',
-  connection_accepted: 'connection_accepted',
-  new_follower: 'new_follower',
-  reaction: 'reaction',
-  comment: 'comment',
-  mention: 'mention',
-  followed_post: 'followed_post',
-  message: 'message',
-  message_request: 'message_request',
-  message_request_accepted: 'message_request_accepted',
-  introduction_proposed: 'introduction_proposed',
-  introduction_completed: 'introduction_completed',
-  introduction_declined: 'introduction_declined',
-  profile_views: 'profile_views',
-  project_contribution: 'project_contribution',
-  tier_unlocked: 'tier_unlocked',
-  project_update: 'project_update',
-  project_ending_soon: 'project_ending_soon',
-  project_funded: 'project_funded',
-  project_closed: 'project_closed',
-  project_interest: 'project_interest',
-  project_team_invitation: 'project_team_invitation',
-  project_team_joined: 'project_team_joined',
-  project_team_invitation_declined: 'project_team_invitation_declined',
-  organization_invitation: 'organization_invitation',
-  organization_member_joined: 'organization_member_joined',
-  organization_role_changed: 'organization_role_changed',
-  organization_ownership_transferred: 'organization_ownership_transferred',
-  organization_verification_decided: 'organization_verification_decided',
-  kyc_decided: 'kyc_decided',
-  contribution_refunded: 'contribution_refunded',
-  offline_contribution_declared: 'offline_contribution_declared',
-  offline_contribution_decided: 'offline_contribution_decided',
-  time_entry_declared: 'time_entry_declared',
-  time_entry_answered: 'time_entry_answered',
-  security_alert: 'security_alert',
-  event_registration_confirmed: 'event_registration_confirmed',
-  event_waitlist_promoted: 'event_waitlist_promoted',
-  event_reminder: 'event_reminder',
-  event_canceled: 'event_canceled',
-  mission_engagement_requested: 'mission_engagement_requested',
-  mission_engagement_answered: 'mission_engagement_answered',
-  mission_completed: 'mission_completed',
-  new_suggestions: 'new_suggestions',
-  report_received: 'report_received',
-  report_resolved: 'report_resolved',
-  moderation_decision: 'moderation_decision',
-  suspension_started: 'suspension_started',
-  suspension_ended: 'suspension_ended',
-  appeal_received: 'appeal_received',
-  appeal_decided: 'appeal_decided',
-  export_ready: 'export_ready',
-  erasure_scheduled: 'erasure_scheduled',
-  erasure_reminder: 'erasure_reminder',
-} as const;
-
-export type PreferencesDtoOutputTypesItemChannels = {
-  in_app: boolean;
-  email: boolean;
-};
-
-export type PreferencesDtoOutputTypesItem = {
-  type: PreferencesDtoOutputTypesItemType;
-  transactional: boolean;
-  channels: PreferencesDtoOutputTypesItemChannels;
-};
-
-export interface PreferencesDtoOutput {
-  emailDigest: PreferencesDtoOutputEmailDigest;
-  types: PreferencesDtoOutputTypesItem[];
+export interface AccountPreferencesDtoOutput {
+  locale: AccountPreferencesDtoOutputLocale;
+  /** @maxLength 64 */
+  timeZone: string;
 }
 
 export type ActionPrerequisitesDtoOutputAction =
@@ -2572,8 +2432,8 @@ export interface UpdateOrganizationDto {
   foundedYear?: number | null;
 }
 
-export interface ChangeSlugDto {
-  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,79}$ */
+export interface ChangeOrganizationSlugDto {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,59}$ */
   slug: string;
 }
 
@@ -2644,158 +2504,41 @@ export interface InvitationDtoOutput {
   createdAt: string;
 }
 
-export type InvitationsDtoOutputItemsItemProjectStatus =
-  (typeof InvitationsDtoOutputItemsItemProjectStatus)[keyof typeof InvitationsDtoOutputItemsItemProjectStatus];
+export type OrganizationInvitationsDtoOutputItemsItemRole =
+  (typeof OrganizationInvitationsDtoOutputItemsItemRole)[keyof typeof OrganizationInvitationsDtoOutputItemsItemRole];
 
-export const InvitationsDtoOutputItemsItemProjectStatus = {
-  draft: 'draft',
-  funding: 'funding',
-  funded: 'funded',
-  closed: 'closed',
+export const OrganizationInvitationsDtoOutputItemsItemRole = {
+  admin: 'admin',
+  member: 'member',
 } as const;
 
-export type InvitationsDtoOutputItemsItemProjectOwner = {
-  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
-  handle: string;
-  displayName: string;
-  /** @nullable */
-  headline: string | null;
-  /** @nullable */
-  avatarUrl: string | null;
-} | null;
+export type OrganizationInvitationsDtoOutputItemsItemStatus =
+  (typeof OrganizationInvitationsDtoOutputItemsItemStatus)[keyof typeof OrganizationInvitationsDtoOutputItemsItemStatus];
 
-export type InvitationsDtoOutputItemsItemProjectOrganization = {
+export const OrganizationInvitationsDtoOutputItemsItemStatus = {
+  pending: 'pending',
+  accepted: 'accepted',
+  declined: 'declined',
+  revoked: 'revoked',
+  expired: 'expired',
+} as const;
+
+export type OrganizationInvitationsDtoOutputItemsItem = {
   /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
   id: string;
-  slug: string;
-  name: string;
-  /** @nullable */
-  logoUrl: string | null;
-  verified: boolean;
-} | null;
-
-export type InvitationsDtoOutputItemsItemProjectFundingGoal = {
-  /** @pattern ^-?(0|[1-9]\d*)$ */
-  amountMinor: string;
-  /** @pattern ^[A-Z]{3}$ */
-  currency: string;
-} | null;
-
-export type InvitationsDtoOutputItemsItemProjectFundingCollected = {
-  /** @pattern ^-?(0|[1-9]\d*)$ */
-  amountMinor: string;
-  /** @pattern ^[A-Z]{3}$ */
-  currency: string;
-};
-
-export type InvitationsDtoOutputItemsItemProjectFundingInstrumentsItem =
-  (typeof InvitationsDtoOutputItemsItemProjectFundingInstrumentsItem)[keyof typeof InvitationsDtoOutputItemsItemProjectFundingInstrumentsItem];
-
-export const InvitationsDtoOutputItemsItemProjectFundingInstrumentsItem = {
-  donation: 'donation',
-  reward_crowdfunding: 'reward_crowdfunding',
-  love_money: 'love_money',
-  grant: 'grant',
-  honor_loan: 'honor_loan',
-  equity: 'equity',
-  convertible_bonds: 'convertible_bonds',
-} as const;
-
-export type InvitationsDtoOutputItemsItemProjectFunding = {
-  goal: InvitationsDtoOutputItemsItemProjectFundingGoal;
-  collected: InvitationsDtoOutputItemsItemProjectFundingCollected;
-  /**
-   * @minimum 0
-   * @maximum 9007199254740991
-   */
-  progressPercent: number;
-  /**
-   * @minimum -9007199254740991
-   * @maximum 9007199254740991
-   */
-  contributionCount: number;
-  daysLeft: number | null;
-  instruments: InvitationsDtoOutputItemsItemProjectFundingInstrumentsItem[];
-  opensCapital: boolean;
-};
-
-export type InvitationsDtoOutputItemsItemProjectImpactLevel =
-  (typeof InvitationsDtoOutputItemsItemProjectImpactLevel)[keyof typeof InvitationsDtoOutputItemsItemProjectImpactLevel];
-
-export const InvitationsDtoOutputItemsItemProjectImpactLevel = {
-  emerging: 'emerging',
-  moderate: 'moderate',
-  strong: 'strong',
-} as const;
-
-export type InvitationsDtoOutputItemsItemProjectImpact = {
-  selfDeclared: true;
-  /**
-   * @minimum 0
-   * @maximum 100
-   */
-  score: number;
-  level: InvitationsDtoOutputItemsItemProjectImpactLevel;
-  /**
-   * @maximum 9007199254740991
-   * @exclusiveMinimum 0
-   */
-  methodologyVersion: number;
-} | null;
-
-export type InvitationsDtoOutputItemsItemProject = {
   /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
-  id: string;
-  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,79}$ */
-  slug: string;
-  title: string;
-  /** @nullable */
-  summary: string | null;
-  status: InvitationsDtoOutputItemsItemProjectStatus;
-  /** @nullable */
-  sectorCode: string | null;
-  countryCodes: string[];
-  /** @nullable */
-  coverImageUrl: string | null;
-  owner: InvitationsDtoOutputItemsItemProjectOwner;
-  organization: InvitationsDtoOutputItemsItemProjectOrganization;
-  funding: InvitationsDtoOutputItemsItemProjectFunding;
-  impact: InvitationsDtoOutputItemsItemProjectImpact;
-  featured: boolean;
-  publishedAt: string | null;
-  endsAt: string | null;
-};
-
-export type InvitationsDtoOutputItemsItemRole =
-  (typeof InvitationsDtoOutputItemsItemRole)[keyof typeof InvitationsDtoOutputItemsItemRole];
-
-export const InvitationsDtoOutputItemsItemRole = {
-  owner: 'owner',
-  editor: 'editor',
-} as const;
-
-export type InvitationsDtoOutputItemsItemInvitedBy = {
-  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
-  handle: string;
-  displayName: string;
-  /** @nullable */
-  headline: string | null;
-  /** @nullable */
-  avatarUrl: string | null;
-} | null;
-
-export type InvitationsDtoOutputItemsItem = {
-  project: InvitationsDtoOutputItemsItemProject;
-  role: InvitationsDtoOutputItemsItemRole;
-  /** @nullable */
-  function: string | null;
-  invitedBy: InvitationsDtoOutputItemsItemInvitedBy;
+  organizationId: string;
+  email: string;
+  role: OrganizationInvitationsDtoOutputItemsItemRole;
+  status: OrganizationInvitationsDtoOutputItemsItemStatus;
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
-  invitedAt: string;
+  expiresAt: string;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
 };
 
-export interface InvitationsDtoOutput {
-  items: InvitationsDtoOutputItemsItem[];
+export interface OrganizationInvitationsDtoOutput {
+  items: OrganizationInvitationsDtoOutputItemsItem[];
 }
 
 export interface InvitationTokenDto {
@@ -7134,6 +6877,11 @@ export interface UpdateProjectDto {
   durationDays?: number | null;
 }
 
+export interface ChangeProjectSlugDto {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,79}$ */
+  slug: string;
+}
+
 export type ReplaceTiersDtoTiersItemThreshold = {
   /** @pattern ^[1-9]\d{0,17}$ */
   amountMinor: string;
@@ -7207,6 +6955,160 @@ export const UpdateMemberDtoRole = {
 export interface UpdateMemberDto {
   role?: UpdateMemberDtoRole;
   function?: string | null;
+}
+
+export type ProjectInvitationsDtoOutputItemsItemProjectStatus =
+  (typeof ProjectInvitationsDtoOutputItemsItemProjectStatus)[keyof typeof ProjectInvitationsDtoOutputItemsItemProjectStatus];
+
+export const ProjectInvitationsDtoOutputItemsItemProjectStatus = {
+  draft: 'draft',
+  funding: 'funding',
+  funded: 'funded',
+  closed: 'closed',
+} as const;
+
+export type ProjectInvitationsDtoOutputItemsItemProjectOwner = {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  displayName: string;
+  /** @nullable */
+  headline: string | null;
+  /** @nullable */
+  avatarUrl: string | null;
+} | null;
+
+export type ProjectInvitationsDtoOutputItemsItemProjectOrganization = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  slug: string;
+  name: string;
+  /** @nullable */
+  logoUrl: string | null;
+  verified: boolean;
+} | null;
+
+export type ProjectInvitationsDtoOutputItemsItemProjectFundingGoal = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+} | null;
+
+export type ProjectInvitationsDtoOutputItemsItemProjectFundingCollected = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+};
+
+export type ProjectInvitationsDtoOutputItemsItemProjectFundingInstrumentsItem =
+  (typeof ProjectInvitationsDtoOutputItemsItemProjectFundingInstrumentsItem)[keyof typeof ProjectInvitationsDtoOutputItemsItemProjectFundingInstrumentsItem];
+
+export const ProjectInvitationsDtoOutputItemsItemProjectFundingInstrumentsItem = {
+  donation: 'donation',
+  reward_crowdfunding: 'reward_crowdfunding',
+  love_money: 'love_money',
+  grant: 'grant',
+  honor_loan: 'honor_loan',
+  equity: 'equity',
+  convertible_bonds: 'convertible_bonds',
+} as const;
+
+export type ProjectInvitationsDtoOutputItemsItemProjectFunding = {
+  goal: ProjectInvitationsDtoOutputItemsItemProjectFundingGoal;
+  collected: ProjectInvitationsDtoOutputItemsItemProjectFundingCollected;
+  /**
+   * @minimum 0
+   * @maximum 9007199254740991
+   */
+  progressPercent: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  contributionCount: number;
+  daysLeft: number | null;
+  instruments: ProjectInvitationsDtoOutputItemsItemProjectFundingInstrumentsItem[];
+  opensCapital: boolean;
+};
+
+export type ProjectInvitationsDtoOutputItemsItemProjectImpactLevel =
+  (typeof ProjectInvitationsDtoOutputItemsItemProjectImpactLevel)[keyof typeof ProjectInvitationsDtoOutputItemsItemProjectImpactLevel];
+
+export const ProjectInvitationsDtoOutputItemsItemProjectImpactLevel = {
+  emerging: 'emerging',
+  moderate: 'moderate',
+  strong: 'strong',
+} as const;
+
+export type ProjectInvitationsDtoOutputItemsItemProjectImpact = {
+  selfDeclared: true;
+  /**
+   * @minimum 0
+   * @maximum 100
+   */
+  score: number;
+  level: ProjectInvitationsDtoOutputItemsItemProjectImpactLevel;
+  /**
+   * @maximum 9007199254740991
+   * @exclusiveMinimum 0
+   */
+  methodologyVersion: number;
+} | null;
+
+export type ProjectInvitationsDtoOutputItemsItemProject = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,79}$ */
+  slug: string;
+  title: string;
+  /** @nullable */
+  summary: string | null;
+  status: ProjectInvitationsDtoOutputItemsItemProjectStatus;
+  /** @nullable */
+  sectorCode: string | null;
+  countryCodes: string[];
+  /** @nullable */
+  coverImageUrl: string | null;
+  owner: ProjectInvitationsDtoOutputItemsItemProjectOwner;
+  organization: ProjectInvitationsDtoOutputItemsItemProjectOrganization;
+  funding: ProjectInvitationsDtoOutputItemsItemProjectFunding;
+  impact: ProjectInvitationsDtoOutputItemsItemProjectImpact;
+  featured: boolean;
+  publishedAt: string | null;
+  endsAt: string | null;
+};
+
+export type ProjectInvitationsDtoOutputItemsItemRole =
+  (typeof ProjectInvitationsDtoOutputItemsItemRole)[keyof typeof ProjectInvitationsDtoOutputItemsItemRole];
+
+export const ProjectInvitationsDtoOutputItemsItemRole = {
+  owner: 'owner',
+  editor: 'editor',
+} as const;
+
+export type ProjectInvitationsDtoOutputItemsItemInvitedBy = {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  displayName: string;
+  /** @nullable */
+  headline: string | null;
+  /** @nullable */
+  avatarUrl: string | null;
+} | null;
+
+export type ProjectInvitationsDtoOutputItemsItem = {
+  project: ProjectInvitationsDtoOutputItemsItemProject;
+  role: ProjectInvitationsDtoOutputItemsItemRole;
+  /** @nullable */
+  function: string | null;
+  invitedBy: ProjectInvitationsDtoOutputItemsItemInvitedBy;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  invitedAt: string;
+};
+
+export interface ProjectInvitationsDtoOutput {
+  items: ProjectInvitationsDtoOutputItemsItem[];
 }
 
 export const AcceptDtoValue = {
@@ -12193,6 +12095,11 @@ export interface UpdateEventDto {
   visibility?: UpdateEventDtoVisibility;
 }
 
+export interface ChangeEventSlugDto {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,79}$ */
+  slug: string;
+}
+
 export interface CancelEventDto {
   reason?: string | null;
 }
@@ -13713,6 +13620,180 @@ export interface CountersDtoOutput {
    */
   messageRequests: number;
   invitations: CountersDtoOutputInvitations;
+}
+
+export type NotificationPreferencesDtoOutputEmailDigest =
+  (typeof NotificationPreferencesDtoOutputEmailDigest)[keyof typeof NotificationPreferencesDtoOutputEmailDigest];
+
+export const NotificationPreferencesDtoOutputEmailDigest = {
+  off: 'off',
+  daily: 'daily',
+  weekly: 'weekly',
+} as const;
+
+export type NotificationPreferencesDtoOutputTypesItemType =
+  (typeof NotificationPreferencesDtoOutputTypesItemType)[keyof typeof NotificationPreferencesDtoOutputTypesItemType];
+
+export const NotificationPreferencesDtoOutputTypesItemType = {
+  connection_request: 'connection_request',
+  connection_accepted: 'connection_accepted',
+  new_follower: 'new_follower',
+  reaction: 'reaction',
+  comment: 'comment',
+  mention: 'mention',
+  followed_post: 'followed_post',
+  message: 'message',
+  message_request: 'message_request',
+  message_request_accepted: 'message_request_accepted',
+  introduction_proposed: 'introduction_proposed',
+  introduction_completed: 'introduction_completed',
+  introduction_declined: 'introduction_declined',
+  profile_views: 'profile_views',
+  project_contribution: 'project_contribution',
+  tier_unlocked: 'tier_unlocked',
+  project_update: 'project_update',
+  project_ending_soon: 'project_ending_soon',
+  project_funded: 'project_funded',
+  project_closed: 'project_closed',
+  project_interest: 'project_interest',
+  project_team_invitation: 'project_team_invitation',
+  project_team_joined: 'project_team_joined',
+  project_team_invitation_declined: 'project_team_invitation_declined',
+  organization_invitation: 'organization_invitation',
+  organization_member_joined: 'organization_member_joined',
+  organization_role_changed: 'organization_role_changed',
+  organization_ownership_transferred: 'organization_ownership_transferred',
+  organization_verification_decided: 'organization_verification_decided',
+  kyc_decided: 'kyc_decided',
+  contribution_refunded: 'contribution_refunded',
+  offline_contribution_declared: 'offline_contribution_declared',
+  offline_contribution_decided: 'offline_contribution_decided',
+  time_entry_declared: 'time_entry_declared',
+  time_entry_answered: 'time_entry_answered',
+  security_alert: 'security_alert',
+  event_registration_confirmed: 'event_registration_confirmed',
+  event_waitlist_promoted: 'event_waitlist_promoted',
+  event_reminder: 'event_reminder',
+  event_canceled: 'event_canceled',
+  mission_engagement_requested: 'mission_engagement_requested',
+  mission_engagement_answered: 'mission_engagement_answered',
+  mission_completed: 'mission_completed',
+  new_suggestions: 'new_suggestions',
+  report_received: 'report_received',
+  report_resolved: 'report_resolved',
+  moderation_decision: 'moderation_decision',
+  suspension_started: 'suspension_started',
+  suspension_ended: 'suspension_ended',
+  appeal_received: 'appeal_received',
+  appeal_decided: 'appeal_decided',
+  export_ready: 'export_ready',
+  erasure_scheduled: 'erasure_scheduled',
+  erasure_reminder: 'erasure_reminder',
+} as const;
+
+export type NotificationPreferencesDtoOutputTypesItemChannels = {
+  in_app: boolean;
+  email: boolean;
+};
+
+export type NotificationPreferencesDtoOutputTypesItem = {
+  type: NotificationPreferencesDtoOutputTypesItemType;
+  transactional: boolean;
+  channels: NotificationPreferencesDtoOutputTypesItemChannels;
+};
+
+export interface NotificationPreferencesDtoOutput {
+  emailDigest: NotificationPreferencesDtoOutputEmailDigest;
+  types: NotificationPreferencesDtoOutputTypesItem[];
+}
+
+export type UpdateNotificationPreferencesDtoEmailDigest =
+  (typeof UpdateNotificationPreferencesDtoEmailDigest)[keyof typeof UpdateNotificationPreferencesDtoEmailDigest];
+
+export const UpdateNotificationPreferencesDtoEmailDigest = {
+  off: 'off',
+  daily: 'daily',
+  weekly: 'weekly',
+} as const;
+
+export type UpdateNotificationPreferencesDtoChangesItemType =
+  (typeof UpdateNotificationPreferencesDtoChangesItemType)[keyof typeof UpdateNotificationPreferencesDtoChangesItemType];
+
+export const UpdateNotificationPreferencesDtoChangesItemType = {
+  connection_request: 'connection_request',
+  connection_accepted: 'connection_accepted',
+  new_follower: 'new_follower',
+  reaction: 'reaction',
+  comment: 'comment',
+  mention: 'mention',
+  followed_post: 'followed_post',
+  message: 'message',
+  message_request: 'message_request',
+  message_request_accepted: 'message_request_accepted',
+  introduction_proposed: 'introduction_proposed',
+  introduction_completed: 'introduction_completed',
+  introduction_declined: 'introduction_declined',
+  profile_views: 'profile_views',
+  project_contribution: 'project_contribution',
+  tier_unlocked: 'tier_unlocked',
+  project_update: 'project_update',
+  project_ending_soon: 'project_ending_soon',
+  project_funded: 'project_funded',
+  project_closed: 'project_closed',
+  project_interest: 'project_interest',
+  project_team_invitation: 'project_team_invitation',
+  project_team_joined: 'project_team_joined',
+  project_team_invitation_declined: 'project_team_invitation_declined',
+  organization_invitation: 'organization_invitation',
+  organization_member_joined: 'organization_member_joined',
+  organization_role_changed: 'organization_role_changed',
+  organization_ownership_transferred: 'organization_ownership_transferred',
+  organization_verification_decided: 'organization_verification_decided',
+  kyc_decided: 'kyc_decided',
+  contribution_refunded: 'contribution_refunded',
+  offline_contribution_declared: 'offline_contribution_declared',
+  offline_contribution_decided: 'offline_contribution_decided',
+  time_entry_declared: 'time_entry_declared',
+  time_entry_answered: 'time_entry_answered',
+  security_alert: 'security_alert',
+  event_registration_confirmed: 'event_registration_confirmed',
+  event_waitlist_promoted: 'event_waitlist_promoted',
+  event_reminder: 'event_reminder',
+  event_canceled: 'event_canceled',
+  mission_engagement_requested: 'mission_engagement_requested',
+  mission_engagement_answered: 'mission_engagement_answered',
+  mission_completed: 'mission_completed',
+  new_suggestions: 'new_suggestions',
+  report_received: 'report_received',
+  report_resolved: 'report_resolved',
+  moderation_decision: 'moderation_decision',
+  suspension_started: 'suspension_started',
+  suspension_ended: 'suspension_ended',
+  appeal_received: 'appeal_received',
+  appeal_decided: 'appeal_decided',
+  export_ready: 'export_ready',
+  erasure_scheduled: 'erasure_scheduled',
+  erasure_reminder: 'erasure_reminder',
+} as const;
+
+export type UpdateNotificationPreferencesDtoChangesItemChannel =
+  (typeof UpdateNotificationPreferencesDtoChangesItemChannel)[keyof typeof UpdateNotificationPreferencesDtoChangesItemChannel];
+
+export const UpdateNotificationPreferencesDtoChangesItemChannel = {
+  in_app: 'in_app',
+  email: 'email',
+} as const;
+
+export type UpdateNotificationPreferencesDtoChangesItem = {
+  type: UpdateNotificationPreferencesDtoChangesItemType;
+  channel: UpdateNotificationPreferencesDtoChangesItemChannel;
+  enabled: boolean;
+};
+
+export interface UpdateNotificationPreferencesDto {
+  emailDigest?: UpdateNotificationPreferencesDtoEmailDigest;
+  /** @maxItems 108 */
+  changes?: UpdateNotificationPreferencesDtoChangesItem[];
 }
 
 export interface UnsubscribeResultDtoOutput {

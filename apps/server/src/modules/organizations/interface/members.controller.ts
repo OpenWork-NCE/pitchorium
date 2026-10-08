@@ -18,7 +18,7 @@ class OrganizationDto extends createZodDto(organizationSchema) {}
 class ChangeRoleDto extends createZodDto(changeMemberRoleRequestSchema) {}
 class TransferOwnershipDto extends createZodDto(transferOwnershipRequestSchema) {}
 class OrganizationIdParamsDto extends createZodDto(organizationIdParamsSchema) {}
-class MemberParamsDto extends createZodDto(organizationMemberParamsSchema) {}
+class OrganizationMemberParamsDto extends createZodDto(organizationMemberParamsSchema) {}
 
 /** Internal roles: owners manage everyone, admins manage admins and members. */
 @ApiTags('organizations')
@@ -35,7 +35,7 @@ export class MembersController {
   @ApiOkResponse({ type: OrganizationDto.Output })
   async changeRole(
     @CurrentPrincipal() principal: Principal,
-    @Param() params: MemberParamsDto,
+    @Param() params: OrganizationMemberParamsDto,
     @Body() body: ChangeRoleDto,
   ): Promise<Organization> {
     await this.members.changeRole(
@@ -53,7 +53,7 @@ export class MembersController {
   @ApiNoContentResponse()
   async remove(
     @CurrentPrincipal() principal: Principal,
-    @Param() params: MemberParamsDto,
+    @Param() params: OrganizationMemberParamsDto,
   ): Promise<void> {
     await this.members.remove(params.organizationId, principal.userId, params.userId);
   }

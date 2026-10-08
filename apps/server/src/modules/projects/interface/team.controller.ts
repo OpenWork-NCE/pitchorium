@@ -30,9 +30,11 @@ import { ProjectResolver } from './project.resolver';
 class InviteDto extends createZodDto(inviteTeamMemberRequestSchema) {}
 class AcceptDto extends createZodDto(acceptProjectInvitationRequestSchema) {}
 class UpdateMemberDto extends createZodDto(updateTeamMemberRequestSchema) {}
-class InvitationsDto extends createZodDto(z.object({ items: z.array(projectInvitationSchema) })) {}
+class ProjectInvitationsDto extends createZodDto(
+  z.object({ items: z.array(projectInvitationSchema) }),
+) {}
 class ProjectIdParamsDto extends createZodDto(projectIdParamsSchema) {}
-class MemberParamsDto extends createZodDto(projectTeamMemberParamsSchema) {}
+class ProjectTeamMemberParamsDto extends createZodDto(projectTeamMemberParamsSchema) {}
 
 /** Team of a project: invitations by handle, roles `owner` and `editor`, functions. */
 @ApiTags('projects')
@@ -60,7 +62,10 @@ export class TeamController {
   @RequireAction('project.team.manage', { resource: ProjectResolver })
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiNoContentResponse()
-  async update(@Param() params: MemberParamsDto, @Body() body: UpdateMemberDto): Promise<void> {
+  async update(
+    @Param() params: ProjectTeamMemberParamsDto,
+    @Body() body: UpdateMemberDto,
+  ): Promise<void> {
     await this.team.update(params.projectId, params.handle, body);
   }
 
@@ -71,7 +76,7 @@ export class TeamController {
   @ApiNoContentResponse()
   async remove(
     @CurrentPrincipal() principal: Principal,
-    @Param() params: MemberParamsDto,
+    @Param() params: ProjectTeamMemberParamsDto,
   ): Promise<void> {
     await this.team.remove(params.projectId, principal.userId, params.handle);
   }
@@ -89,8 +94,8 @@ export class TeamController {
 
   @Get('me/project-invitations')
   @RequireAction('project.invitation.respond')
-  @ZodSerializerDto(InvitationsDto)
-  @ApiOkResponse({ type: InvitationsDto.Output })
+  @ZodSerializerDto(ProjectInvitationsDto)
+  @ApiOkResponse({ type: ProjectInvitationsDto.Output })
   async invitations(
     @CurrentPrincipal() principal: Principal,
   ): Promise<{ items: ProjectInvitation[] }> {

@@ -30,8 +30,8 @@ import { NetworkReadsService } from '../application/network-reads.service';
 class ConnectionRequestDto extends createZodDto(connectionRequestSchema) {}
 class ConnectionRequestPageDto extends createZodDto(connectionRequestPageSchema) {}
 class CreateConnectionRequestDto extends createZodDto(createConnectionRequestSchema) {}
-class RequestParamsDto extends createZodDto(connectionRequestParamsSchema) {}
-class HandleParamsDto extends createZodDto(memberHandleParamsSchema) {}
+class ConnectionRequestParamsDto extends createZodDto(connectionRequestParamsSchema) {}
+class MemberHandleParamsDto extends createZodDto(memberHandleParamsSchema) {}
 class RequestsQueryDto extends createZodDto(
   cursorPageQuerySchema.extend(connectionRequestsQuerySchema.shape),
 ) {}
@@ -77,7 +77,7 @@ export class ConnectionsController {
   @ApiOkResponse({ type: ConnectionRequestDto.Output })
   accept(
     @CurrentPrincipal() principal: Principal,
-    @Param() params: RequestParamsDto,
+    @Param() params: ConnectionRequestParamsDto,
   ): Promise<ConnectionRequest> {
     return this.connections.accept(principal.userId, params.requestId);
   }
@@ -88,7 +88,7 @@ export class ConnectionsController {
   @ApiNoContentResponse()
   async decline(
     @CurrentPrincipal() principal: Principal,
-    @Param() params: RequestParamsDto,
+    @Param() params: ConnectionRequestParamsDto,
   ): Promise<void> {
     await this.connections.decline(principal.userId, params.requestId);
   }
@@ -100,7 +100,7 @@ export class ConnectionsController {
   @ApiNoContentResponse()
   async withdraw(
     @CurrentPrincipal() principal: Principal,
-    @Param() params: RequestParamsDto,
+    @Param() params: ConnectionRequestParamsDto,
   ): Promise<void> {
     await this.connections.withdraw(principal.userId, params.requestId);
   }
@@ -111,7 +111,7 @@ export class ConnectionsController {
   @ApiNoContentResponse()
   async remove(
     @CurrentPrincipal() principal: Principal,
-    @Param() params: HandleParamsDto,
+    @Param() params: MemberHandleParamsDto,
   ): Promise<void> {
     await this.connections.remove(principal.userId, params.handle);
   }

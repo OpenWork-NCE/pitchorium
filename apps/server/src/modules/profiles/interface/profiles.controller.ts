@@ -14,7 +14,7 @@ import { type ProfileLookup, ProfileReadsService } from '../application/profile-
 import { ReferenceDataService } from '../application/reference-data.service';
 
 class ProfileViewDto extends createZodDto(profileViewSchema) {}
-class HandleParamsDto extends createZodDto(z.object({ handle: handleSchema })) {}
+class ProfileHandleParamsDto extends createZodDto(z.object({ handle: handleSchema })) {}
 class ReferenceDataDto extends createZodDto(referenceDataSchema) {}
 
 /** Short shared cache: disabling a public page must take effect quickly. */
@@ -45,7 +45,7 @@ export class ProfilesController {
   @ApiMovedPermanentlyResponse({ description: 'Former handle: Location gives the current one.' })
   async forMember(
     @CurrentPrincipal() principal: Principal,
-    @Param() params: HandleParamsDto,
+    @Param() params: ProfileHandleParamsDto,
     @Res() response: Response,
   ): Promise<void> {
     reply(response, await this.reads.forMember(params.handle, principal.userId), '/v1/profiles');
@@ -56,7 +56,10 @@ export class ProfilesController {
   @Public()
   @ApiOkResponse({ type: ProfileViewDto.Output })
   @ApiMovedPermanentlyResponse({ description: 'Former handle: Location gives the current one.' })
-  async forPublic(@Param() params: HandleParamsDto, @Res() response: Response): Promise<void> {
+  async forPublic(
+    @Param() params: ProfileHandleParamsDto,
+    @Res() response: Response,
+  ): Promise<void> {
     const lookup = await this.reads.forPublic(params.handle);
     response.setHeader('Cache-Control', PUBLIC_PROFILE_CACHE);
     reply(response, lookup, '/v1/public/profiles');

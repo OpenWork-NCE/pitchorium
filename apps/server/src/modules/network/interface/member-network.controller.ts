@@ -23,7 +23,7 @@ class FollowerPageDto extends createZodDto(followerPageSchema) {}
 class FollowPageDto extends createZodDto(followPageSchema) {}
 class ConnectionPageDto extends createZodDto(connectionPageSchema) {}
 class RelationshipDto extends createZodDto(relationshipSchema) {}
-class HandleParamsDto extends createZodDto(memberHandleParamsSchema) {}
+class MemberHandleParamsDto extends createZodDto(memberHandleParamsSchema) {}
 class PageQueryDto extends createZodDto(cursorPageQuerySchema) {}
 class FollowingQueryDto extends createZodDto(
   cursorPageQuerySchema.extend(followingQuerySchema.shape),
@@ -47,7 +47,7 @@ export class MemberNetworkController {
   @ApiOkResponse({ type: FollowerPageDto.Output })
   followers(
     @CurrentPrincipal() principal: Principal,
-    @Param() params: HandleParamsDto,
+    @Param() params: MemberHandleParamsDto,
     @Query() query: PageQueryDto,
   ): Promise<CursorPage<Follower>> {
     return this.reads.followersOfMember({ viewerId: principal.userId }, params.handle, query);
@@ -59,7 +59,7 @@ export class MemberNetworkController {
   @ApiOkResponse({ type: FollowPageDto.Output })
   following(
     @CurrentPrincipal() principal: Principal,
-    @Param() params: HandleParamsDto,
+    @Param() params: MemberHandleParamsDto,
     @Query() query: FollowingQueryDto,
   ): Promise<CursorPage<Follow>> {
     return this.reads.followingOfMember(
@@ -76,7 +76,7 @@ export class MemberNetworkController {
   @ApiOkResponse({ type: ConnectionPageDto.Output })
   connections(
     @CurrentPrincipal() principal: Principal,
-    @Param() params: HandleParamsDto,
+    @Param() params: MemberHandleParamsDto,
     @Query() query: PageQueryDto,
   ): Promise<CursorPage<Connection>> {
     return this.reads.connectionsOfMember({ viewerId: principal.userId }, params.handle, query);
@@ -89,7 +89,7 @@ export class MemberNetworkController {
   @ApiOkResponse({ type: RelationshipDto.Output })
   relationship(
     @CurrentPrincipal() principal: Principal,
-    @Param() params: HandleParamsDto,
+    @Param() params: MemberHandleParamsDto,
   ): Promise<Relationship> {
     return this.reads.relationship(principal.userId, params.handle);
   }
@@ -100,7 +100,7 @@ export class MemberNetworkController {
   @ZodSerializerDto(FollowerPageDto)
   @ApiOkResponse({ type: FollowerPageDto.Output })
   publicFollowers(
-    @Param() params: HandleParamsDto,
+    @Param() params: MemberHandleParamsDto,
     @Query() query: PageQueryDto,
     @Res({ passthrough: true }) response: Response,
   ): Promise<CursorPage<Follower>> {
@@ -113,7 +113,7 @@ export class MemberNetworkController {
   @ZodSerializerDto(FollowPageDto)
   @ApiOkResponse({ type: FollowPageDto.Output })
   publicFollowing(
-    @Param() params: HandleParamsDto,
+    @Param() params: MemberHandleParamsDto,
     @Query() query: FollowingQueryDto,
     @Res({ passthrough: true }) response: Response,
   ): Promise<CursorPage<Follow>> {
@@ -126,7 +126,7 @@ export class MemberNetworkController {
   @ZodSerializerDto(ConnectionPageDto)
   @ApiOkResponse({ type: ConnectionPageDto.Output })
   publicConnections(
-    @Param() params: HandleParamsDto,
+    @Param() params: MemberHandleParamsDto,
     @Query() query: PageQueryDto,
     @Res({ passthrough: true }) response: Response,
   ): Promise<CursorPage<Connection>> {

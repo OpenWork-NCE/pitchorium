@@ -23,9 +23,9 @@ class VerificationQueueDto extends createZodDto(verificationQueueSchema) {}
 class CreateVerificationRequestDto extends createZodDto(createVerificationRequestSchema) {}
 class DecisionDto extends createZodDto(verificationDecisionRequestSchema) {}
 class RevocationDto extends createZodDto(verificationRevocationRequestSchema) {}
-class QueueQueryDto extends createZodDto(verificationQueueQuerySchema) {}
+class VerificationQueueQueryDto extends createZodDto(verificationQueueQuerySchema) {}
 class OrganizationIdParamsDto extends createZodDto(organizationIdParamsSchema) {}
-class RequestParamsDto extends createZodDto(verificationRequestParamsSchema) {}
+class VerificationRequestParamsDto extends createZodDto(verificationRequestParamsSchema) {}
 
 /**
  * Verification badge (ADR 0025): requested by an owner, reviewed by a moderator or an
@@ -54,7 +54,7 @@ export class VerificationController {
   @RequireAction('organization.verification.review')
   @ZodSerializerDto(VerificationQueueDto)
   @ApiOkResponse({ type: VerificationQueueDto.Output })
-  queue(@Query() query: QueueQueryDto): Promise<VerificationQueue> {
+  queue(@Query() query: VerificationQueueQueryDto): Promise<VerificationQueue> {
     return this.verification.queue(query.status);
   }
 
@@ -62,7 +62,7 @@ export class VerificationController {
   @RequireAction('organization.verification.review')
   @ZodSerializerDto(VerificationRequestDto)
   @ApiOkResponse({ type: VerificationRequestDto.Output })
-  get(@Param() params: RequestParamsDto): Promise<VerificationRequest> {
+  get(@Param() params: VerificationRequestParamsDto): Promise<VerificationRequest> {
     return this.verification.get(params.requestId);
   }
 
@@ -73,7 +73,7 @@ export class VerificationController {
   @ApiOkResponse({ type: VerificationRequestDto.Output })
   decide(
     @CurrentPrincipal() principal: Principal,
-    @Param() params: RequestParamsDto,
+    @Param() params: VerificationRequestParamsDto,
     @Body() body: DecisionDto,
   ): Promise<VerificationRequest> {
     return this.verification.decide(params.requestId, principal.userId, body);
