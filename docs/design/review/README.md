@@ -13,7 +13,7 @@ Fichiers `<composition>-<format>-<thème>.png` : format `desktop` (1280x800) ou 
 - `notifications-list` : `NotificationItem`, lues et non lues : colonne média fixe, pastille du type, extrait de la publication, demande de connexion à accepter ou ignorer sur place.
 - `conversation` : `ConversationThread` sur deux jours (séparateurs, groupes, heure courte, « Lu ») et `MessageComposer` (hauteur automatique, pièce jointe).
 - `form-with-server-errors` : formulaire complet (dates en segments, fuseau dit une fois) après une règle vérifiée dans le navigateur puis une réponse RFC 9457 de l'api : résumé focalisé avec un lien par erreur, messages précis sous les champs, actions empilées sur téléphone.
-- `admin-table` : cadre d'administration, fil d'Ariane, tableau triable.
+- `admin-table` : cadre d'administration, fil d'Ariane, tableau triable : première colonne collante, libellés uniques (« Email », « Email vérifié »), infobulle d'une action en icône seule ; sur téléphone, une carte par ligne.
 
 ## Régénérer
 
