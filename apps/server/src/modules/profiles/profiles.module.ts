@@ -23,7 +23,10 @@ import { UserRegisteredHandler } from './interface/user-registered.handler';
 
 import { ProfilesPersonalData } from './infrastructure/profiles-personal-data';
 
+import { ProfilesTranslatable } from './infrastructure/profiles-translatable';
+
 const SHARED_PROVIDERS: Provider[] = [
+  ProfilesTranslatable,
   ProfilesPersonalData,
   { provide: ProfileRepository, useClass: DrizzleProfileRepository },
   { provide: ReferenceDataRepository, useClass: DrizzleReferenceDataRepository },
