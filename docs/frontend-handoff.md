@@ -1,6 +1,6 @@
 # Passation au frontend
 
-Ce que l'application web (`apps/web`, à venir) doit savoir pour consommer l'api. Référence complète des routes : `docs/api/index.html` (générée depuis `apps/server/openapi/openapi.json`) ; client typé : `@pitchorium/api-client` (fetch et hooks TanStack Query, Orval) ; contrats Zod : `@pitchorium/contracts` ; textes : `@pitchorium/i18n`.
+Ce que l'application web (`apps/web`, `docs/architecture/frontend.md`) doit savoir pour consommer l'api. Référence complète des routes : `docs/api/index.html` (générée depuis `apps/server/openapi/openapi.json`) ; client typé : `@pitchorium/api-client` (fetch et hooks TanStack Query, Orval) ; contrats Zod : `@pitchorium/contracts` ; textes : `@pitchorium/i18n`.
 
 ## Authentification (Better Auth)
 

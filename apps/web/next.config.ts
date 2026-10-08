@@ -1,5 +1,6 @@
 import { withSentryConfig } from '@sentry/nextjs/config';
 import type { NextConfig } from 'next';
+import createNextIntlPlugin from 'next-intl/plugin';
 import { redirects } from './src/config/redirects';
 import { env } from './src/lib/env';
 
@@ -56,7 +57,9 @@ const nextConfig: NextConfig = {
   headers: () => Promise.resolve([{ source: '/:path*', headers: SECURITY_HEADERS }]),
 };
 
-export default withSentryConfig(nextConfig, {
+const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
+
+export default withSentryConfig(withNextIntl(nextConfig), {
   // Source maps are uploaded only when the build has a token (CI of a deployment).
   authToken: process.env.SENTRY_AUTH_TOKEN,
   org: process.env.SENTRY_ORG,

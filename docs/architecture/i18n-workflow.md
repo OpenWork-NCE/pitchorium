@@ -4,7 +4,7 @@ Langues de l'interface (§8) : le français est la source, l'anglais une traduct
 
 ## Catalogues
 
-`packages/i18n/src/locales/<locale>/<namespace>.json`, clés imbriquées, paramètres `{{nom}}`. `pnpm i18n:check` vérifie l'alignement des langues commencées sur le français (README de `@pitchorium/i18n`).
+`packages/i18n/src/locales/<locale>/<namespace>.json`, clés imbriquées, paramètres `{{nom}}`. Le namespace `web` contient les textes de l'application web, convertis en messages ICU au chargement (ADR 0084) ; il compte dans la complétude d'une langue avant son activation. `pnpm i18n:check` vérifie l'alignement des langues commencées sur le français (README de `@pitchorium/i18n`).
 
 ## Outil (Crowdin, sans compte à ce jour)
 
@@ -18,7 +18,7 @@ Langues de l'interface (§8) : le français est la source, l'anglais une traduct
 
 ## Activation
 
-Un administrateur active une langue par son flag `locale.<code>` (`PATCH /v1/admin/feature-flags/locale.<code>`). Le module localization refuse (`LOCALIZATION_LOCALE_NOT_READY`) tant que le catalogue n'est pas complet à 100 % par rapport au français ou que le manifeste ne porte pas une relecture approuvée avec relecteur et date (ADR 0077). `GET /v1/admin/localization/locales` montre, pour chaque langue, le flag, les clés manquantes et l'état de la relecture.
+Un administrateur active une langue par son flag `locale.<code>` (`PATCH /v1/admin/feature-flags/locale.<code>`). L'application web la propose dans la minute (`GET /v1/locales`, sélecteur, hreflang, sitemap) ; une langue inactive redirige vers le français. Le module localization refuse (`LOCALIZATION_LOCALE_NOT_READY`) tant que le catalogue n'est pas complet à 100 % par rapport au français ou que le manifeste ne porte pas une relecture approuvée avec relecteur et date (ADR 0077). `GET /v1/admin/localization/locales` montre, pour chaque langue, le flag, les clés manquantes et l'état de la relecture.
 
 ## Contenus des membres
 

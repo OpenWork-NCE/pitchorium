@@ -85,7 +85,12 @@ Un fichier par décision, numéroté, au format Contexte / Décision / Conséque
 | [0079](0079-strict-inputs.md)                            | Entrées strictes                                             |
 | [0080](0080-delivery.md)                                 | Livraison : image, analyses et versions                      |
 | [0081](0081-web-app-next-16.md)                          | Application web Next.js 16                                   |
-| [0085](0085-design-tokens-and-theme.md)                  | Tokens de design et thème                                    |
-| [0087](0087-brand-assets-and-fonts.md)                   | Fichiers de marque et polices                                |
-| [0086](0086-motion.md)                                   | Mouvement                                                    |
 | [0082](0082-design-system-radix.md)                      | Design system possédé sur Radix UI                           |
+| [0083](0083-web-data-flow.md)                            | Flux de données du web                                       |
+| [0084](0084-web-internationalisation.md)                 | Internationalisation du web                                  |
+| [0085](0085-design-tokens-and-theme.md)                  | Tokens de design et thème                                    |
+| [0086](0086-motion.md)                                   | Mouvement                                                    |
+| [0087](0087-brand-assets-and-fonts.md)                   | Fichiers de marque et polices                                |
+| [0088](0088-web-security-headers-and-csp.md)             | Sécurité du web : CSP à nonce et en-têtes                    |
+| [0089](0089-web-boundaries-and-lint.md)                  | Frontières et règles du web                                  |
+| [0091](0091-web-observability.md)                        | Observabilité du web                                         |
