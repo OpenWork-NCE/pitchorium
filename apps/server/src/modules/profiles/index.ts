@@ -8,7 +8,7 @@ export {
   ProfileUpdated,
   VisibilityChanged,
 } from './domain/profile-events';
-export { type MemberCard, ProfilesFacade } from './application/profiles.facade';
+export { type MemberCard, ProfilesFacade, type ProfileSource } from './application/profiles.facade';
 export type {
   OrganizationDirectory,
   OrganizationSummary,

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import type { ProfileVisibility } from '@pitchorium/contracts';
+import type { ContributorFacet, EntrepreneurFacet, ProfileVisibility } from '@pitchorium/contracts';
 import { TransactionManager } from '../../../platform/database';
 import { isEligibleCompanyCountry } from '../domain/facet-rules';
 import { ProfileUpdated } from '../domain/profile-events';
@@ -25,6 +25,25 @@ export interface MemberCard {
   avatarUrl: string | null;
   /** Whether the member enabled their public profile page. */
   publicPageEnabled: boolean;
+}
+
+/**
+ * A member with both facets and the visibility of their details, for the discovery projection
+ * (which applies the visibility per audience) and the missions module (hats, entrepreneur
+ * facet). Never shown as such to another member.
+ */
+export interface ProfileSource {
+  userId: string;
+  handle: string;
+  displayName: string;
+  headline: string | null;
+  bio: string | null;
+  countryCode: string | null;
+  city: string | null;
+  languages: string[];
+  visibility: ProfileVisibility;
+  entrepreneur: EntrepreneurFacet | null;
+  contributor: ContributorFacet | null;
 }
 
 /** Public facade of the profiles module, for the other modules. */
@@ -59,6 +78,28 @@ export class ProfilesFacade {
     const found = await this.profiles.userIdsByHandles(handles);
     const hidden = await this.access.hiddenFrom(viewerId, [...found.values()]);
     return new Map([...found].filter(([, userId]) => !hidden.has(userId)));
+  }
+
+  /** Profiles with their facets (discovery projection, missions), in no particular order. */
+  async sources(userIds: readonly string[]): Promise<ProfileSource[]> {
+    return (await this.profiles.findProfiles([...new Set(userIds)])).map((profile) => ({
+      userId: profile.base.userId,
+      handle: profile.base.handle,
+      displayName: profile.base.displayName,
+      headline: profile.base.headline,
+      bio: profile.base.bio,
+      countryCode: profile.base.countryCode,
+      city: profile.base.city,
+      languages: profile.base.languages,
+      visibility: profile.base.visibility,
+      entrepreneur: profile.entrepreneur,
+      contributor: profile.contributor,
+    }));
+  }
+
+  /** Members with a profile, by ascending id, for a full rebuild of the search index. */
+  userIdsAfter(after: string | null, limit: number): Promise<string[]> {
+    return this.profiles.userIdsAfter(after, limit);
   }
 
   /** Country of residence declared on the profile (ISO 3166-1), null when not given. */

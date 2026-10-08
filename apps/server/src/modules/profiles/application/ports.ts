@@ -23,6 +23,10 @@ export interface BaseProfilePatch {
 export abstract class ProfileRepository {
   abstract findByUserId(userId: string): Promise<Profile | null>;
   abstract findBaseProfiles(userIds: readonly string[]): Promise<BaseProfile[]>;
+  /** Base profiles and facets of the given members (search index, missions). */
+  abstract findProfiles(userIds: readonly string[]): Promise<Profile[]>;
+  /** Members with a profile, by ascending id (search index rebuild). */
+  abstract userIdsAfter(after: string | null, limit: number): Promise<string[]>;
   /** Clears the link of a contributor facet to this organization; false when there was none. */
   abstract clearContributorOrganization(userId: string, organizationId: string): Promise<boolean>;
   /** User ids of the given current handles, by handle. */

@@ -12,7 +12,7 @@ import {
   structureTypeSchema,
   visibilityLevelSchema,
 } from '@pitchorium/contracts';
-import { and, eq, inArray, ne } from '@pitchorium/db/orm';
+import { and, asc, eq, gt, inArray, ne } from '@pitchorium/db/orm';
 import {
   profilesContributorFacets,
   profilesEntrepreneurFacets,
@@ -129,6 +129,43 @@ export class DrizzleProfileRepository extends ProfileRepository {
       entrepreneur: entrepreneur ? toEntrepreneur(entrepreneur) : null,
       contributor: contributor ? toContributor(contributor) : null,
     };
+  }
+
+  async findProfiles(userIds: readonly string[]): Promise<Profile[]> {
+    if (userIds.length === 0) return [];
+    const ids = [...userIds];
+    const [bases, entrepreneurs, contributors] = await Promise.all([
+      this.db.select().from(profilesProfiles).where(inArray(profilesProfiles.userId, ids)),
+      this.db
+        .select()
+        .from(profilesEntrepreneurFacets)
+        .where(inArray(profilesEntrepreneurFacets.userId, ids)),
+      this.db
+        .select()
+        .from(profilesContributorFacets)
+        .where(inArray(profilesContributorFacets.userId, ids)),
+    ]);
+    const entrepreneurOf = new Map(entrepreneurs.map((row) => [row.userId, row]));
+    const contributorOf = new Map(contributors.map((row) => [row.userId, row]));
+    return bases.map((base) => {
+      const entrepreneur = entrepreneurOf.get(base.userId);
+      const contributor = contributorOf.get(base.userId);
+      return {
+        base: toBase(base),
+        entrepreneur: entrepreneur ? toEntrepreneur(entrepreneur) : null,
+        contributor: contributor ? toContributor(contributor) : null,
+      };
+    });
+  }
+
+  async userIdsAfter(after: string | null, limit: number): Promise<string[]> {
+    const rows = await this.db
+      .select({ userId: profilesProfiles.userId })
+      .from(profilesProfiles)
+      .where(after ? gt(profilesProfiles.userId, after) : undefined)
+      .orderBy(asc(profilesProfiles.userId))
+      .limit(limit);
+    return rows.map((row) => row.userId);
   }
 
   async findBaseProfiles(userIds: readonly string[]): Promise<BaseProfile[]> {
