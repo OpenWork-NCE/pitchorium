@@ -1,9 +1,11 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
+import { RETENTION_REGISTER } from '../../src/modules/privacy/domain/retention-register';
 
 const SCHEMAS = join(__dirname, '../../../../packages/db/src/schemas');
 const MODULES = join(__dirname, '../../src/modules');
+const RETENTION_DOCUMENT = join(__dirname, '../../../../docs/compliance/retention.md');
 
 /**
  * Columns that hold a member or their contact (GDPR). A module whose schema declares one must
@@ -51,5 +53,23 @@ describe('personal data', () => {
   it('has every module holding personal data register its exporter and its eraser', () => {
     const missing = modulesWithPersonalData().filter((module) => !registers(module));
     expect(missing, 'modules without PersonalDataExporter and PersonalDataEraser').toEqual([]);
+  });
+
+  it('gives every module holding personal data its retention rules', () => {
+    const registered = new Set(RETENTION_REGISTER.map((entry) => entry.module));
+    expect(modulesWithPersonalData().filter((module) => !registered.has(module))).toEqual([]);
+  });
+
+  it('consolidates every line of the retention register in docs/compliance/retention.md', () => {
+    // Rows of the table: module, data, retention, end, open question.
+    const rows = readFileSync(RETENTION_DOCUMENT, 'utf8')
+      .split('\n')
+      .filter((line) => /^\| [a-z]+ +\|/.test(line))
+      .map((line) => line.split('|').map((cell) => cell.trim()))
+      .map((cells) => `${cells[1]} ${cells[5] ?? ''}`.trim());
+    const register = RETENTION_REGISTER.map((entry) =>
+      `${entry.module} ${entry.openQuestion ?? ''}`.trim(),
+    );
+    expect(rows).toEqual(register);
   });
 });
