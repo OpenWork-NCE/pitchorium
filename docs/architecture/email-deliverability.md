@@ -2,6 +2,26 @@
 
 Emails transactionnels (identity, organizations, payments) et emails de notification (notifications) partent par Resend en production (`MAIL_TRANSPORT=resend`), par Mailpit en local. Décision : ADR 0062.
 
+## Inventaire des emails
+
+Audit du 2026-10-08. Transactionnel : lié à la sécurité du compte, à une démarche que le destinataire a engagée, à ses droits ou à un paiement ; il part toujours (sauf adresse supprimée), sans lien de désinscription. Non transactionnel : il suit les préférences du module notifications (type et canal, digest), la liste de suppression et porte les en-têtes RFC 8058. Tous passent par le mailer de la plateforme, qui écarte les adresses supprimées.
+
+Transactionnels :
+
+- identity : vérification de l'adresse, lien magique, réinitialisation du mot de passe, nouvelle connexion, changement de méthode de connexion (`email-verification`, `magic-link`, `password-reset`, `new-sign-in`, `sign-in-method-changed`).
+- payments : confirmation d'une contribution payée (`contribution-confirmation`).
+- organizations (`organization-notice`) : invitation à jeton, changement de rôle, transfert de propriété, demande, décision et retrait de vérification. Leurs notifications in-app sont transactionnelles et jamais envoyées par email une seconde fois (`EMAILED_BY_EMITTING_MODULE`).
+- notifications, types transactionnels du registre (`notification`) : contribution reçue (`project_contribution`), décision KYC, remboursement, contributions hors plateforme déclarées et décidées. Email selon les canaux par défaut du type, non désactivable.
+
+Non transactionnels (module notifications seulement) :
+
+- email immédiat d'une notification (`notification`) de tout type non transactionnel dont l'email est activé, dont l'arrivée d'un membre dans une organisation (`organization_member_joined`), auparavant envoyée par le module organizations sans préférence ni désinscription (écart corrigé le 2026-10-08) ;
+- digest quotidien ou hebdomadaire (`notification-digest`) ;
+- copie des messages non lus (`unread-messages`).
+- Les emails des modules events et missions passeront par des types de notification, jamais par un envoi direct.
+
+L'email de test technique (`technical-test`) n'est envoyé par aucune route ni tâche de la plateforme.
+
 ## Désinscription en un clic (RFC 8058)
 
 - Tout email non transactionnel (notification, digest, copie des messages non lus) porte :
@@ -41,4 +61,4 @@ sequenceDiagram
 4. Webhook Resend : endpoint `<API_PUBLIC_URL>/v1/notifications/webhooks/resend`, événements `email.bounced` et `email.complained`, secret de signature dans `RESEND_WEBHOOK_SECRET`.
 5. `EMAIL_LINK_SECRET` : secret aléatoire de 32 caractères au moins, propre à chaque environnement ; le changer invalide les liens de désinscription déjà envoyés.
 
-Les gros volumes (digests, diffusion à de nombreux abonnés) devront respecter les limites d'envoi du compte Resend retenu.
+Les gros volumes (digests, diffusion à de nombreux abonnés) devront respecter les limites d'envoi du compte Resend retenu ; les emails d'un lot de notifications partent par le point d'accès batch de Resend, 100 par appel (ADR 0064).

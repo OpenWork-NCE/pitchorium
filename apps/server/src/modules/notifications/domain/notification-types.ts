@@ -32,6 +32,18 @@ export interface NotificationTypeDefinition {
 const on = { in_app: true, email: true } as const;
 const inApp = { in_app: true, email: false } as const;
 
+/**
+ * Types whose email is sent by the emitting module (transactional emails with a token or
+ * about the account): the notification stays in the app, so the email is never sent twice.
+ */
+export const EMAILED_BY_EMITTING_MODULE: readonly NotificationType[] = [
+  'organization_invitation',
+  'organization_role_changed',
+  'organization_ownership_transferred',
+  'organization_verification_decided',
+  'security_alert',
+];
+
 /** Registry of the notification types: one entry per type of the contracts. */
 export const NOTIFICATION_DEFINITIONS: Readonly<
   Record<NotificationType, NotificationTypeDefinition>
@@ -229,26 +241,28 @@ export const NOTIFICATION_DEFINITIONS: Readonly<
     grouping: 'target',
     target: 'project',
   },
-  // Organizations send their own emails (invitation token, decisions): in-app only.
+  // Organizations send these transactional emails themselves (invitation token, rights,
+  // verification): in-app only here, never turned off, never emailed twice.
   organization_invitation: {
     sources: ['organizations.member.invited.v1'],
-    transactional: false,
+    transactional: true,
     priority: 'normal',
     defaults: inApp,
     grouping: 'none',
     target: 'organization_invitations',
   },
+  // Not transactional: emailed here, with the preferences and the one-click unsubscribe.
   organization_member_joined: {
     sources: ['organizations.member.joined.v1'],
     transactional: false,
     priority: 'normal',
-    defaults: inApp,
+    defaults: on,
     grouping: 'target',
     target: 'organization',
   },
   organization_role_changed: {
     sources: ['organizations.member.role-changed.v1'],
-    transactional: false,
+    transactional: true,
     priority: 'normal',
     defaults: inApp,
     grouping: 'none',
@@ -256,7 +270,7 @@ export const NOTIFICATION_DEFINITIONS: Readonly<
   },
   organization_ownership_transferred: {
     sources: ['organizations.ownership.transferred.v1'],
-    transactional: false,
+    transactional: true,
     priority: 'normal',
     defaults: inApp,
     grouping: 'none',
@@ -268,7 +282,7 @@ export const NOTIFICATION_DEFINITIONS: Readonly<
       'organizations.verification.rejected.v1',
       'organizations.verification.revoked.v1',
     ],
-    transactional: false,
+    transactional: true,
     priority: 'normal',
     defaults: inApp,
     grouping: 'none',

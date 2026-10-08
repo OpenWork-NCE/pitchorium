@@ -22,7 +22,7 @@ Types couverts : `connection_request`, `connection_accepted`, `new_follower` (su
 
 - Canaux : `in_app` (temps réel) et `email` (immédiat ou digest), derrière le port `NotificationChannelAdapter` ; un canal push s'ajoutera par ce port, il n'est pas implémenté.
 - Préférences par type et par canal (`GET|PATCH /v1/me/notification-preferences`) ; sans choix, les canaux par défaut du type. Un type transactionnel (sécurité, paiements, KYC, conditions) garde ses canaux par défaut, envoyé aussitôt : le modifier répond `NOTIFICATIONS_PREFERENCE_LOCKED`.
-- Les emails d'organisation (invitation à jeton, décisions) et de sécurité restent envoyés par leurs modules : ces types sont in-app par défaut.
+- Les emails transactionnels envoyés par leur module (invitation à jeton, rôle, propriété et vérification d'une organisation ; sécurité du compte) gardent leur notification in-app, transactionnelle elle aussi, sans email ici (`EMAILED_BY_EMITTING_MODULE`) : jamais deux emails pour un même fait. L'arrivée d'un membre dans une organisation, non transactionnelle, est envoyée ici seulement (`organization_member_joined`, email par défaut). Inventaire : `docs/architecture/email-deliverability.md`.
 
 ## Digests (ADR 0061)
 

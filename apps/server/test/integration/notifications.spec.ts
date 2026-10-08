@@ -509,6 +509,86 @@ describe('notifications', () => {
     ).toHaveLength(0);
   });
 
+  it('emails a non-transactional event of another module with the preferences, the suppression list and RFC 8058', async () => {
+    const organization = await kofi.agent
+      .post('/v1/organizations')
+      .set('Idempotency-Key', randomUUID())
+      .send({ name: 'Fondation Teranga', structureType: 'foundation', countryCodes: ['SN'] })
+      .expect(201);
+    /** The arrival of a member, as the organizations module records it. */
+    const joins = (member: Member) =>
+      query(
+        `INSERT INTO platform.outbox_events
+           (id, aggregate_type, aggregate_id, event_type, payload, occurred_at, next_attempt_at)
+         VALUES ($1, 'organization', $2, 'organizations.member.joined.v1', $3, now(), now())`,
+        [
+          randomUUID(),
+          organization.body.id,
+          JSON.stringify({ userId: member.userId, role: 'member', invitationId: randomUUID() }),
+        ],
+      );
+    const joinedEmails = async (name: string) =>
+      (await mailpit.messagesTo(kofi.email)).filter((m) => m.Subject.includes(`${name} a rejoint`));
+    const freshNotification = async () => {
+      await kofi.agent.post('/v1/me/notifications/read-all').expect(200);
+    };
+
+    // Emailed by the notifications module, with the one-click unsubscribe.
+    await joins(awa);
+    await emailTo(kofi.email, 'Awa Ndiaye a rejoint Fondation Teranga');
+    const headers = await headersOf(kofi.email, 'Awa Ndiaye a rejoint');
+    expect(headers['List-Unsubscribe']?.[0]).toContain('/v1/notifications/unsubscribe?token=');
+    expect(headers['List-Unsubscribe-Post']).toEqual(['List-Unsubscribe=One-Click']);
+
+    // A suppressed address receives nothing; the notification stays in the app.
+    await freshNotification();
+    await query(
+      `INSERT INTO notifications.suppressions (email, reason, created_at) VALUES ($1, 'bounce', now())`,
+      [kofi.email],
+    );
+    await joins(ama);
+    await vi.waitFor(
+      async () => {
+        await deliver();
+        const unread = (await kofi.agent.get('/v1/me/notifications?unread=true').expect(200)).body;
+        expect(unread.items).toHaveLength(1);
+      },
+      { timeout: 30_000, interval: 200 },
+    );
+    await query(`DELETE FROM notifications.suppressions`);
+
+    // The member turned the email of the type off: in the app only.
+    await kofi.agent
+      .patch('/v1/me/notification-preferences')
+      .send({ changes: [{ type: 'organization_member_joined', channel: 'email', enabled: false }] })
+      .expect(200);
+    await freshNotification();
+    await joins(awa);
+    await vi.waitFor(
+      async () => {
+        await deliver();
+        const unread = (await kofi.agent.get('/v1/me/notifications?unread=true').expect(200)).body;
+        expect(unread.items).toHaveLength(1);
+      },
+      { timeout: 30_000, interval: 200 },
+    );
+    await vi.waitFor(async () => {
+      const counts = await worker
+        .get<Queue>(getQueueToken(NOTIFICATIONS_QUEUE), { strict: false })
+        .getJobCounts('active', 'waiting');
+      expect((counts['active'] ?? 0) + (counts['waiting'] ?? 0)).toBe(0);
+    });
+    expect(await joinedEmails('Ama Owusu')).toEqual([]);
+    expect(await joinedEmails('Awa Ndiaye')).toHaveLength(1);
+
+    // The transactional emails of organizations are never doubled by a notification email.
+    const locked = await kofi.agent
+      .patch('/v1/me/notification-preferences')
+      .send({ changes: [{ type: 'organization_role_changed', channel: 'email', enabled: true }] })
+      .expect(422);
+    expect(locked.body.code).toBe('NOTIFICATIONS_PREFERENCE_LOCKED');
+  });
+
   it('purges the notifications past the retention', async () => {
     await worker.get(NotificationsFacade).notify(`test-${randomUUID()}`, {
       type: 'mention',

@@ -2,12 +2,34 @@ import { NOTIFICATION_TYPES } from '@pitchorium/contracts';
 import { describe, expect, it } from 'vitest';
 import { groupKeyOf, MAX_ACTORS, mergeActor } from './aggregation';
 import { isDigestDue, localTime } from './digest';
-import { NOTIFICATION_DEFINITIONS } from './notification-types';
+import { EMAILED_BY_EMITTING_MODULE, NOTIFICATION_DEFINITIONS } from './notification-types';
 import { assertEditable, resolveChannels, wantsUnreadCopy } from './preferences';
 
 describe('notification registry', () => {
   it('defines every type of the contracts', () => {
     expect(Object.keys(NOTIFICATION_DEFINITIONS).sort()).toEqual([...NOTIFICATION_TYPES].sort());
+  });
+
+  it('never emails twice what another module emails as a transactional email', () => {
+    for (const type of EMAILED_BY_EMITTING_MODULE) {
+      expect(NOTIFICATION_DEFINITIONS[type], type).toMatchObject({
+        transactional: true,
+        defaults: { email: false },
+      });
+      // Transactional: the member cannot turn the email on.
+      expect(resolveChannels(type, new Map([['email', true]]), 'daily').email, type).toBe('off');
+    }
+  });
+
+  it('emails the arrival of a member of an organization as a non-transactional email', () => {
+    expect(NOTIFICATION_DEFINITIONS.organization_member_joined).toMatchObject({
+      transactional: false,
+      defaults: { email: true },
+    });
+    expect(resolveChannels('organization_member_joined', new Map(), 'off').email).toBe('immediate');
+    expect(
+      resolveChannels('organization_member_joined', new Map([['email', false]]), 'off').email,
+    ).toBe('off');
   });
 });
 
