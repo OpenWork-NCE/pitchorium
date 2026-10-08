@@ -82,3 +82,7 @@ Aucun.
 ## Dépendances
 
 identity (indirectement, par le garde d'access), profiles (identifiants publics, cartes, réglages de confidentialité, secteurs, signalement des vues).
+
+## Données personnelles (RGPD)
+
+Export : abonnements, connexions, demandes envoyées et reçues, membres bloqués, réglages, vues du profil (les visites privées restent anonymes). Suppression : toutes les relations du membre, dans les deux sens. Contrats enregistrés auprès du module privacy (`infrastructure/network-personal-data.ts`, ADR 0074).

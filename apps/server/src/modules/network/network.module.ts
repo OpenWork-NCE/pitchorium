@@ -22,7 +22,10 @@ import { NetworkJobsProcessor } from './interface/network-jobs.processor';
 import { NETWORK_QUEUE } from './interface/network-queue';
 import { ProfileViewsController } from './interface/profile-views.controller';
 
+import { NetworkPersonalData } from './infrastructure/network-personal-data';
+
 const SHARED_PROVIDERS: Provider[] = [
+  NetworkPersonalData,
   { provide: NetworkRepository, useClass: DrizzleNetworkRepository },
   { provide: ProfileViewBuffer, useClass: RedisProfileViewBuffer },
   FollowTargetRegistry,
