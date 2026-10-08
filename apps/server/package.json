@@ -55,6 +55,7 @@
     "better-call": "1.4.0",
     "bullmq": "6.3.11",
     "bullmq-otel": "2.0.1",
+    "fflate": "0.8.3",
     "file-type": "22.1.1",
     "franc-min": "6.2.0",
     "helmet": "8.3.0",

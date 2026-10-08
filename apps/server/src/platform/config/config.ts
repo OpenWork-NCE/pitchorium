@@ -8,6 +8,14 @@ export interface CommonConfig {
   env: Environment;
   /** Age of a session beyond which a sensitive action asks to sign in again. */
   access: { reauthenticationMaxAgeMs: number };
+  /** Rights of the GDPR (§13); provisional delays, docs/open-questions.md. */
+  privacy: {
+    erasureGraceMs: number;
+    erasureReminderMs: number;
+    exportMinIntervalMs: number;
+    exportTtlMs: number;
+    exportUrlTtlSeconds: number;
+  };
   /** Moderation (§13); provisional values, docs/open-questions.md. */
   trust: {
     moderatorMaxSuspensionDays: number;
@@ -198,6 +206,13 @@ function toCommonConfig(env: CommonEnv): CommonConfig {
     env: env.NODE_ENV,
     logLevel: env.LOG_LEVEL,
     access: { reauthenticationMaxAgeMs: env.ACCESS_REAUTHENTICATION_MAX_AGE_MINUTES * 60_000 },
+    privacy: {
+      erasureGraceMs: env.PRIVACY_ERASURE_GRACE_DAYS * 86_400_000,
+      erasureReminderMs: env.PRIVACY_ERASURE_REMINDER_DAYS * 86_400_000,
+      exportMinIntervalMs: env.PRIVACY_EXPORT_MIN_INTERVAL_HOURS * 3_600_000,
+      exportTtlMs: env.PRIVACY_EXPORT_TTL_HOURS * 3_600_000,
+      exportUrlTtlSeconds: env.PRIVACY_EXPORT_URL_TTL_SECONDS,
+    },
     trust: {
       moderatorMaxSuspensionDays: env.TRUST_MODERATOR_MAX_SUSPENSION_DAYS,
       appealWindowMs: env.TRUST_APPEAL_WINDOW_DAYS * 86_400_000,

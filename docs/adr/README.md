@@ -77,3 +77,5 @@ Un fichier par décision, numéroté, au format Contexte / Décision / Conséque
 | [0071](0071-volunteer-missions-no-job-board.md)          | Missions bénévoles, pas de job board                         |
 | [0072](0072-moderation-compatible-with-the-dsa.md)       | Modération compatible avec le DSA                            |
 | [0073](0073-suspension.md)                               | Suspension d'un compte                                       |
+| [0074](0074-export-and-erasure.md)                       | Export et suppression des données personnelles               |
+| [0075](0075-financial-pseudonymization.md)               | Pseudonymisation des données conservées                      |
