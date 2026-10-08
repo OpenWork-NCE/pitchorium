@@ -4,6 +4,7 @@ import { ConfigModule } from '../../../src/platform/config';
 import { CoreModule } from '../../../src/platform/core/core.module';
 import { DatabaseModule } from '../../../src/platform/database';
 import { InboxModule } from '../../../src/platform/inbox';
+import { ObservabilityModule } from '../../../src/platform/observability';
 import { OutboundModule } from '../../../src/platform/outbound';
 import { OutboxModule, OutboxRelayModule, OutboxRelayService } from '../../../src/platform/outbox';
 import { RedisModule } from '../../../src/platform/redis';
@@ -42,6 +43,8 @@ export async function createWorkerTestingModule(
       imports: [
         ConfigModule.forWorker(),
         CoreModule,
+        // Metrics and error reports, read by the outbox relay and the handlers.
+        ObservabilityModule,
         DatabaseModule,
         RedisModule,
         InboxModule,
