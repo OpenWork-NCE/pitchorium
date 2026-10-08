@@ -2,10 +2,10 @@
 
 import type { MoneyDto } from '@pitchorium/contracts';
 import { useLocale, useTranslations } from 'next-intl';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { type CSSProperties, useCallback, useEffect, useRef, useState } from 'react';
 import { AnimatedNumber, DURATION_MS, useMotionPreference } from '@/components/motion';
 import { cn } from '@/lib/cn';
-import { formatMoney, minorStep, toMajor } from '@/lib/format/money';
+import { formatMoney, isWholeAmount, minorStep, toMajor } from '@/lib/format/money';
 import { usePlural } from '@/lib/i18n/plural';
 
 export interface FundingMilestone {
@@ -24,6 +24,8 @@ interface FundingProgressProps {
   daysLeft: number | null;
   /** Accessible name of the bar ("Financement de Ferme solaire de Thiès"). */
   label: string;
+  /** `compact` (side columns): a smaller amount and no list of milestones. */
+  size?: 'full' | 'compact';
   className?: string;
 }
 
@@ -33,10 +35,70 @@ function ratio(part: string, whole: string): number {
 }
 
 /**
+ * State of a milestone: a circle with a check drawn in the colour of success once reached (H18),
+ * an empty circle while to come. Decorative: the state is written next to it.
+ */
+function MilestoneIcon({
+  reached,
+  drawn,
+  delay,
+}: {
+  reached: boolean;
+  drawn: boolean;
+  delay: number;
+}) {
+  if (!reached) {
+    return (
+      <svg aria-hidden viewBox="0 0 24 24" className="mt-0.5 size-5 shrink-0 text-muted">
+        <circle
+          cx="12"
+          cy="12"
+          r="9"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.75"
+          strokeDasharray="3 3"
+        />
+      </svg>
+    );
+  }
+  return (
+    <svg
+      aria-hidden
+      viewBox="0 0 24 24"
+      className="drawn-stroke mt-0.5 size-5 shrink-0 text-success"
+      data-drawn={drawn ? '' : undefined}
+      style={{ '--draw-delay': `${delay}ms` } as CSSProperties}
+    >
+      <circle
+        cx="12"
+        cy="12"
+        r="9"
+        pathLength={1}
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        transform="rotate(-90 12 12)"
+      />
+      <path
+        d="m8.5 12.5 2.5 2.5 4.5-5"
+        pathLength={1}
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+/**
  * Progress of a campaign: amount raised, goal, percentage and days left as text, a bar with the
- * markers of its milestones. When it comes into view, the bar fills, each reached milestone is
- * confirmed by a drawn stroke (H18), then the amount counts up (H17); with less motion, the final
- * state at once. A milestone reached is not a promise of success (frontend handoff).
+ * markers of its milestones, then each milestone with its state. When it comes into view, the
+ * bar fills, each reached milestone draws its check (H18), then the amount counts up (H17); with
+ * less motion, the final state at once. Amounts on display, without zero decimals. A milestone
+ * reached is not a promise of success (frontend handoff).
  */
 export function FundingProgress({
   raised,
@@ -44,6 +106,7 @@ export function FundingProgress({
   milestones = [],
   daysLeft,
   label,
+  size = 'full',
   className,
 }: FundingProgressProps) {
   const t = useTranslations('web.ui.funding');
@@ -54,14 +117,18 @@ export function FundingProgress({
   const [shown, setShown] = useState(false);
   const percent = Math.floor(ratio(raised.amountMinor, goal.amountMinor) * 100);
   const fill = Math.min(1, ratio(raised.amountMinor, goal.amountMinor));
+  // A whole amount counts in whole units: no decimals appear and vanish while it counts.
+  const whole = isWholeAmount(raised);
+  const step = whole ? 1 : minorStep(raised.currency);
   const format = useCallback(
     (value: number) =>
       new Intl.NumberFormat(locale, {
         style: 'currency',
         currency: raised.currency,
-        maximumFractionDigits: minorStep(raised.currency) < 1 ? 2 : 0,
+        minimumFractionDigits: whole ? 0 : undefined,
+        maximumFractionDigits: whole ? 0 : minorStep(raised.currency) < 1 ? 2 : 0,
       }).format(value),
-    [locale, raised.currency],
+    [locale, raised.currency, whole],
   );
 
   useEffect(() => {
@@ -85,21 +152,28 @@ export function FundingProgress({
   const reached = milestones.filter(
     (milestone) => BigInt(raised.amountMinor) >= BigInt(milestone.amountMinor),
   );
+  const remaining =
+    daysLeft === null ? t('ended') : t(`daysLeft.${plural(daysLeft)}`, { count: daysLeft });
   const summary = [
     t('raised', { amount: formatMoney(raised, locale), goal: formatMoney(goal, locale) }),
     t('percent', { percent }),
-    daysLeft === null ? t('ended') : t(`daysLeft.${plural(daysLeft)}`, { count: daysLeft }),
+    remaining,
   ].join(', ');
 
   return (
     <div ref={ref} data-shown={shown ? '' : undefined} className={cn('grid gap-3', className)}>
       <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-        <p className="font-display text-3xl font-extrabold tabular-nums">
+        <p
+          className={cn(
+            'font-display font-extrabold tabular-nums',
+            size === 'full' ? 'text-3xl' : 'text-xl',
+          )}
+        >
           <AnimatedNumber
             value={toMajor(raised)}
             format={format}
-            step={minorStep(raised.currency)}
-            delay={reached.length > 0 ? DURATION_MS.fill : 0}
+            step={step}
+            delay={reached.length > 0 && size === 'full' ? DURATION_MS.fill : 0}
           />
         </p>
         <p className="text-sm text-muted">{t('goal', { goal: formatMoney(goal, locale) })}</p>
@@ -135,44 +209,32 @@ export function FundingProgress({
       <p className="text-sm text-muted tabular-nums">
         {t('percent', { percent })}
         <span aria-hidden> · </span>
-        {daysLeft === null ? t('ended') : t(`daysLeft.${plural(daysLeft)}`, { count: daysLeft })}
+        {remaining}
       </p>
-      {milestones.length > 0 ? (
-        <ol aria-label={t('milestones')} className="grid gap-1.5">
+      {size === 'full' && milestones.length > 0 ? (
+        <ol aria-label={t('milestones')} className="grid gap-3">
           {milestones.map((milestone, index) => {
             const done = reached.includes(milestone);
             return (
               <li
                 key={milestone.amountMinor}
-                className="flex items-center justify-between gap-3 text-sm"
+                className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-start gap-x-3 text-sm"
               >
-                <span className={cn(done ? 'font-medium' : 'text-muted')}>
-                  {milestone.label ?? t('milestone', { index: index + 1 })}
-                  {done ? (
-                    <span className="relative ml-2 inline-block text-xs font-medium text-success">
-                      {t('reached')}
-                      {/* H18: one stroke drawn under the word, decorative (copper touch). */}
-                      <svg
-                        aria-hidden
-                        viewBox="0 0 100 8"
-                        preserveAspectRatio="none"
-                        className="funding-stroke absolute -bottom-1 left-0 h-1.5 w-full text-highlight"
-                        data-drawn={shown ? '' : undefined}
-                        style={{ animationDelay: `${index * 120}ms` }}
-                      >
-                        <path
-                          d="M2 6 C 30 2, 70 2, 98 5"
-                          pathLength={1}
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2.5"
-                          strokeLinecap="round"
-                        />
-                      </svg>
-                    </span>
-                  ) : null}
+                <MilestoneIcon reached={done} drawn={shown} delay={index * 120} />
+                <span className="grid min-w-0 gap-0.5">
+                  <span className={cn('text-pretty', done ? 'font-medium' : 'text-muted')}>
+                    {milestone.label ?? t('milestone', { index: index + 1 })}
+                  </span>
+                  <span
+                    className={cn(
+                      'text-xs font-medium whitespace-nowrap',
+                      done ? 'text-success' : 'text-muted',
+                    )}
+                  >
+                    {done ? t('reached') : t('upcoming')}
+                  </span>
                 </span>
-                <span className="tabular-nums">
+                <span className="whitespace-nowrap tabular-nums">
                   {formatMoney(
                     { amountMinor: milestone.amountMinor, currency: goal.currency },
                     locale,

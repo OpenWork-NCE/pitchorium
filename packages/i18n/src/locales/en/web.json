@@ -210,7 +210,8 @@
       "ended": "Campaign ended",
       "milestones": "Milestones",
       "milestone": "Milestone {{index}}",
-      "reached": "reached"
+      "reached": "Reached",
+      "upcoming": "To come"
     },
     "impact": {
       "title": "Impact score",

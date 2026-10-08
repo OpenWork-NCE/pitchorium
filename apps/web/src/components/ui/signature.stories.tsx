@@ -16,7 +16,10 @@ const milestones = [
   { amountMinor: '2000000' },
 ];
 
-/** Bar, milestones, amount, percentage and days left as text; H18 then H17 when in view. */
+/**
+ * Bar, milestones, amount, percentage and days left as text; when in view, the check of each
+ * reached milestone is drawn (H18), then the amount counts (H17). Whole amounts without decimals.
+ */
 export const Funding: Story = {
   render: () => (
     <div className="grid max-w-md gap-10">
@@ -45,7 +48,13 @@ export const Funding: Story = {
       'aria-valuetext',
       expect.stringContaining('12 jours restants'),
     );
-    await expect(canvas.getAllByText('atteint')).toHaveLength(2);
+    await expect(canvas.getAllByText('Atteint')).toHaveLength(2);
+    await expect(canvas.getByText('À venir')).toBeVisible();
+    await expect(
+      canvas.getByText('sur un objectif de 20 000 €', {
+        normalizer: (text) => text.replace(/\s/g, ' '),
+      }),
+    ).toBeVisible();
     await expect(canvas.getByRole('progressbar', { name: /Jacmel/ })).toHaveAttribute(
       'aria-valuenow',
       '100',
@@ -54,7 +63,10 @@ export const Funding: Story = {
   },
 };
 
-/** "Self-declared" always visible; the detail per criterion in a Popover. */
+/**
+ * Tinted by default (never competing with the main action), "self-declared" said once next to
+ * the badge; the detail per criterion and the full mention in a Popover. `solid` for a heading.
+ */
 export const Impact: Story = {
   render: () => (
     <div className="flex flex-col items-start gap-4">
@@ -83,12 +95,20 @@ export const Impact: Story = {
         mention="Score auto-déclaré."
         criteria={[]}
       />
+      <ImpactBadge
+        variant="solid"
+        level="strong"
+        levelLabel="Fort"
+        score={78}
+        mention="Score auto-déclaré."
+        criteria={[]}
+      />
     </div>
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getAllByText('auto-déclaré')).toHaveLength(3);
-    await userEvent.click(canvas.getByRole('button', { name: /Impact Fort.*78 sur 100/ }));
+    await expect(canvas.getAllByText('auto-déclaré')).toHaveLength(4);
+    await userEvent.click(canvas.getAllByRole('button', { name: /Impact Fort.*78 sur 100/ })[0]!);
     const dialog = await within(document.body).findByRole('dialog');
     await waitFor(() => expect(within(dialog).getByText('Emploi local')).toBeVisible());
     await expect(within(dialog).getByText(/pas une certification/)).toBeVisible();

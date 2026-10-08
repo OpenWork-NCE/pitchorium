@@ -352,23 +352,29 @@
   }
 }
 
-/* Drawn stroke of a reached milestone (H18): one line, drawn once, present with less motion. */
+/*
+ * Drawn stroke (H18): the check of a reached milestone, its circle then its tick, drawn once in
+ * the colour of success; present at once with less motion.
+ */
 @layer components {
-  .funding-stroke path {
+  .drawn-stroke :is(path, circle) {
     stroke-dasharray: 1;
     stroke-dashoffset: 1;
-    animation-delay: inherit;
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    .funding-stroke[data-drawn] path {
+    .drawn-stroke[data-drawn] :is(path, circle) {
       animation: draw var(--duration-fill) var(--ease-enter) forwards;
-      animation-delay: inherit;
+      animation-delay: var(--draw-delay, 0ms);
+    }
+
+    .drawn-stroke[data-drawn] path {
+      animation-delay: calc(var(--draw-delay, 0ms) + var(--duration-fill) / 2);
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .funding-stroke[data-drawn] path {
+    .drawn-stroke :is(path, circle) {
       stroke-dashoffset: 0;
     }
   }

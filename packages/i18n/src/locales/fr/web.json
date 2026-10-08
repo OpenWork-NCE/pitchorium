@@ -210,7 +210,8 @@
       "ended": "Campagne terminée",
       "milestones": "Paliers",
       "milestone": "Palier {{index}}",
-      "reached": "atteint"
+      "reached": "Atteint",
+      "upcoming": "À venir"
     },
     "impact": {
       "title": "Score d’impact",
