@@ -171,6 +171,21 @@ const holdersReadyToCollect: Record<Scenario, Expected> = {
   moderator: ['kyc_verified', 'payout_account', 'profile.entrepreneur_facet'],
 };
 
+/** Volunteer offers of missions: a contributor with a verified email (ADR 0071). */
+const contributorsWithVerifiedEmail: Record<Scenario, Expected> = {
+  anonymous: 'UNAUTHENTICATED',
+  newcomer: ['email_verified', 'legal_acceptance', 'profile.contributor_facet'],
+  member: ['profile.contributor_facet'],
+  entrepreneur: ['profile.contributor_facet'],
+  suspended: 'SUSPENDED',
+  adminWithout2fa: ['profile.contributor_facet'],
+  admin: ['profile.contributor_facet'],
+  moderator: ['profile.contributor_facet'],
+};
+
+/** Actions on an event or a mission, here without any role on it (see the tests below). */
+const resourceRoleRequired = organizationRoleRequired;
+
 /** The complete matrix: every registered action against every kind of actor. */
 const MATRIX: Record<Action, Record<Scenario, Expected>> = {
   'account.read': everyoneSignedIn,
@@ -265,6 +280,30 @@ const MATRIX: Record<Action, Record<Scenario, Expected>> = {
   'notifications.read': membersWithAcceptedTerms,
   'notifications.manage': membersWithAcceptedTerms,
   'notifications.preferences.update': membersWithAcceptedTerms,
+  'discovery.search': membersWithAcceptedTerms,
+  'discovery.page.read': membersWithAcceptedTerms,
+  'discovery.suggestions.read': membersWithAcceptedTerms,
+  'discovery.suggestions.dismiss': membersWithAcceptedTerms,
+  'discovery.project-suggestions.read': projectRoleRequired,
+  'event.read': membersWithAcceptedTerms,
+  'event.create': membersWithVerifiedEmail,
+  'event.update': resourceRoleRequired,
+  'event.publish': resourceRoleRequired,
+  'event.cancel': resourceRoleRequired,
+  'event.delete': resourceRoleRequired,
+  'event.register': membersWithVerifiedEmail,
+  'event.attendees.read': resourceRoleRequired,
+  'event.calendar.manage': membersWithAcceptedTerms,
+  'mission.read': membersWithAcceptedTerms,
+  'mission.offer.create': contributorsWithVerifiedEmail,
+  'mission.request.create': membersWithVerifiedEmail,
+  'mission.update': resourceRoleRequired,
+  'mission.close': resourceRoleRequired,
+  'mission.engage': membersWithVerifiedEmail,
+  'mission.engagement.read': resourceRoleRequired,
+  'mission.engagement.respond': resourceRoleRequired,
+  'mission.engagement.complete': resourceRoleRequired,
+  'mission.engagement.cancel': resourceRoleRequired,
 };
 
 function outcome(action: Action, scenario: Scenario): Expected {
@@ -428,6 +467,48 @@ describe('access policies', () => {
     expect(
       allowed('messaging.conversation.participate', 'conversation', ['participant'], 'suspended'),
     ).toMatchObject({ code: 'ACCESS_ACCOUNT_SUSPENDED' });
+  });
+
+  it('grants event actions to the organizer and the attendees, publication with prerequisites', () => {
+    const event = (roles: string[]) => ({ type: 'event', id: 'e-1', ownerId: null, roles });
+    const allowed = (action: Action, roles: string[], scenario: Scenario = 'member') =>
+      decide(action, { ...facts(scenario), resource: event(roles) });
+    expect(allowed('event.update', ['organizer'])).toEqual({ allowed: true });
+    expect(allowed('event.update', ['attendee'])).toMatchObject({ code: 'FORBIDDEN' });
+    expect(allowed('event.publish', ['organizer'], 'newcomer')).toMatchObject({
+      code: 'ACCESS_PREREQUISITES_MISSING',
+      missing: ['email_verified', 'legal_acceptance'],
+    });
+    expect(allowed('event.attendees.read', ['attendee'])).toEqual({ allowed: true });
+    expect(allowed('event.cancel', [])).toMatchObject({ code: 'FORBIDDEN' });
+  });
+
+  it('grants mission actions by the side held on the mission or the engagement', () => {
+    const resource = (roles: string[]) => ({ type: 'mission', id: 'm-1', ownerId: null, roles });
+    const allowed = (action: Action, roles: string[]) =>
+      decide(action, { ...facts('member'), resource: resource(roles) });
+    expect(allowed('mission.update', ['author'])).toEqual({ allowed: true });
+    expect(allowed('mission.engagement.respond', ['responder'])).toEqual({ allowed: true });
+    expect(allowed('mission.engagement.respond', ['expert'])).toMatchObject({ code: 'FORBIDDEN' });
+    expect(allowed('mission.engagement.complete', ['expert'])).toEqual({ allowed: true });
+    expect(allowed('mission.engagement.complete', ['beneficiary'])).toMatchObject({
+      code: 'FORBIDDEN',
+    });
+    expect(allowed('mission.engagement.cancel', ['beneficiary'])).toEqual({ allowed: true });
+    expect(allowed('mission.engagement.read', ['responder'])).toEqual({ allowed: true });
+  });
+
+  it('shows the potential contributors of a project to its team only', () => {
+    const project = (roles: string[]) => ({ type: 'project', id: 'p-1', ownerId: null, roles });
+    expect(
+      decide('discovery.project-suggestions.read', {
+        ...facts('member'),
+        resource: project(['editor']),
+      }),
+    ).toEqual({ allowed: true });
+    expect(
+      decide('discovery.project-suggestions.read', { ...facts('member'), resource: project([]) }),
+    ).toMatchObject({ code: 'FORBIDDEN' });
   });
 
   it('opens collected contributions once KYC and payout account are complete', () => {

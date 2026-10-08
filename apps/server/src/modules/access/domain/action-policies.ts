@@ -168,4 +168,37 @@ export const ACTION_POLICIES: Readonly<Record<Action, ActionPolicy>> = {
   'notifications.read': {},
   'notifications.manage': {},
   'notifications.preferences.update': {},
+  // Discovery (§10.2, §10.6, §11.4): search, suggestions and the Discover page for members; the
+  // potential contributors of a project for its team. Anonymous search has its public routes.
+  'discovery.search': {},
+  'discovery.page.read': {},
+  'discovery.suggestions.read': {},
+  'discovery.suggestions.dismiss': {},
+  'discovery.project-suggestions.read': { resourceRoles: ['owner', 'editor'] },
+  // Events (§14, scope to validate, ADR 0069): free events. `organizer` is the member who
+  // created the event, or an owner or admin of its organization; `attendee` a registered member.
+  'event.read': {},
+  'event.create': { requires: ['email_verified'] },
+  'event.update': { resourceRoles: ['organizer'] },
+  'event.publish': { resourceRoles: ['organizer'], requires: ['email_verified'] },
+  'event.cancel': { resourceRoles: ['organizer'], sensitive: true },
+  'event.delete': { resourceRoles: ['organizer'] },
+  // A registration reaches the organizer: a verified email first.
+  'event.register': { requires: ['email_verified'] },
+  'event.attendees.read': { resourceRoles: ['organizer', 'attendee'] },
+  'event.calendar.manage': {},
+  // Missions (§6.3, §14, ADR 0071): volunteer offers by experts and mentors (contributor facet,
+  // hat checked by the module), requests by entrepreneurs or project teams. `author` publishes
+  // the mission; on an engagement, `responder` is the author who answers, `expert` gives the
+  // time, `beneficiary` receives it.
+  'mission.read': {},
+  'mission.offer.create': { requires: ['email_verified', 'profile.contributor_facet'] },
+  'mission.request.create': { requires: ['email_verified'] },
+  'mission.update': { resourceRoles: ['author'] },
+  'mission.close': { resourceRoles: ['author'] },
+  'mission.engage': { requires: ['email_verified'] },
+  'mission.engagement.read': { resourceRoles: ['expert', 'beneficiary', 'responder'] },
+  'mission.engagement.respond': { resourceRoles: ['responder'] },
+  'mission.engagement.complete': { resourceRoles: ['expert'] },
+  'mission.engagement.cancel': { resourceRoles: ['expert', 'beneficiary'] },
 };
