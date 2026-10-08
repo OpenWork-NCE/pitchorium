@@ -120,6 +120,13 @@
       "when": 1791415644604,
       "tag": "0016_notifications_channels",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1791421912700,
+      "tag": "0017_discovery_events_missions",
+      "breakpoints": true
     }
   ]
 }
