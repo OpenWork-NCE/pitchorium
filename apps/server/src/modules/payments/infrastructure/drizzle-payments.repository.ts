@@ -272,6 +272,36 @@ export class DrizzlePaymentsRepository extends PaymentsRepository {
     return rows.map(toContribution);
   }
 
+  async statistics(): Promise<{
+    succeeded: number;
+    collectedEurMinor: bigint;
+    kycPending: number;
+    offlinePending: number;
+  }> {
+    const paid = ['succeeded', 'partially_refunded', 'disputed', 'dispute_won'];
+    const [contributions] = await this.db
+      .select({
+        succeeded: sql<number>`count(*)::int`,
+        collected: sql<string>`coalesce(sum(${paymentsContributions.eurMinor} - ${paymentsContributions.refundedEurMinor} - ${paymentsContributions.lostEurMinor}), 0)::text`,
+      })
+      .from(paymentsContributions)
+      .where(inArray(paymentsContributions.status, paid));
+    const [kyc] = await this.db
+      .select({ pending: sql<number>`count(*)::int` })
+      .from(paymentsKycSubmissions)
+      .where(eq(paymentsKycSubmissions.status, 'pending'));
+    const [offline] = await this.db
+      .select({ pending: sql<number>`count(*)::int` })
+      .from(paymentsOfflineContributions)
+      .where(eq(paymentsOfflineContributions.status, 'confirmed'));
+    return {
+      succeeded: contributions?.succeeded ?? 0,
+      collectedEurMinor: BigInt(contributions?.collected ?? '0'),
+      kycPending: kyc?.pending ?? 0,
+      offlinePending: offline?.pending ?? 0,
+    };
+  }
+
   async refundableIdsOf(projectId: string): Promise<string[]> {
     const rows = await this.db
       .select({ id: paymentsContributions.id })

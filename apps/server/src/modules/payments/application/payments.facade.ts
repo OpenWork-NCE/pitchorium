@@ -122,6 +122,16 @@ export class PaymentsFacade implements OnModuleInit {
       : null;
   }
 
+  /** Platform statistics for the administration: paid contributions, reviews waiting. */
+  statistics(): Promise<{
+    succeeded: number;
+    collectedEurMinor: bigint;
+    kycPending: number;
+    offlinePending: number;
+  }> {
+    return this.payments.statistics();
+  }
+
   /** Paid contributions of a project a refund may still reach (frozen project, trust). */
   refundableContributionIds(projectId: string): Promise<string[]> {
     return this.payments.refundableIdsOf(projectId);

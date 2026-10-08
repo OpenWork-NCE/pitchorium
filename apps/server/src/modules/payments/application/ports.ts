@@ -277,6 +277,13 @@ export abstract class PaymentsRepository {
   abstract contributorIdsOf(projectId: string): Promise<string[]>;
   /** Paid contributions of a project that a refund may still reach. */
   abstract refundableIdsOf(projectId: string): Promise<string[]>;
+  /** Platform statistics: paid contributions, net EUR collected, reviews waiting. */
+  abstract statistics(): Promise<{
+    succeeded: number;
+    collectedEurMinor: bigint;
+    kycPending: number;
+    offlinePending: number;
+  }>;
   /** Projects supported by an organization through paid contributions. */
   abstract projectsSupportedBy(organizationId: string): Promise<string[]>;
   /** Every contribution, oldest first, by keyset (rebuild of the engagement projection). */
