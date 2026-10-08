@@ -1,4 +1,4 @@
-import { errorCodeSchema, type ProblemDetails, problemDetailsSchema } from '@pitchorium/contracts';
+import type { ProblemDetails } from '@pitchorium/contracts';
 
 /** What a header provider knows about the request being sent. */
 export interface ApiRequestInfo {
@@ -42,7 +42,22 @@ export type ErrorType<_Error> = ApiProblemError;
 
 function fallbackProblem(status: number): ProblemDetails {
   const code = status >= 500 ? 'INTERNAL_ERROR' : 'BAD_REQUEST';
-  return { type: 'about:blank', title: errorCodeSchema.parse(code), status, code };
+  return { type: 'about:blank', title: code, status, code };
+}
+
+/**
+ * Shape of an RFC 9457 document of the api. Checked by hand rather than with the Zod schema of
+ * the contracts: the client stays free of a validation library in the browser bundles.
+ */
+function isProblem(body: unknown): body is ProblemDetails {
+  if (typeof body !== 'object' || body === null) return false;
+  const { type, title, status, code } = body as Record<string, unknown>;
+  return (
+    typeof type === 'string' &&
+    typeof title === 'string' &&
+    typeof status === 'number' &&
+    typeof code === 'string'
+  );
 }
 
 async function readBody(response: Response): Promise<unknown> {
@@ -70,9 +85,8 @@ export async function apiFetch<T>(url: string, init: RequestInit): Promise<T> {
   });
   const body = await readBody(response);
   if (!response.ok) {
-    const parsed = problemDetailsSchema.safeParse(body);
     throw new ApiProblemError(
-      parsed.success ? parsed.data : fallbackProblem(response.status),
+      isProblem(body) ? body : fallbackProblem(response.status),
       response.headers.get('x-request-id'),
     );
   }
