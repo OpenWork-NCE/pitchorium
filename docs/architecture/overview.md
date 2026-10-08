@@ -58,7 +58,7 @@ flowchart LR
 
 Les prestataires de paiement sont appelés hors transaction (ADR 0019) ; leurs webhooks arrivent sur `/v1/payments/webhooks/<prestataire>`, servi comme `/v1/auth` avant les analyseurs de corps pour vérifier la signature sur le corps brut (`payments.md`).
 
-Redis sert au rate limiting, à l'adaptateur Socket.IO et à BullMQ. L'api et le worker poussent aux appareils d'un membre (room `user:<id>`) par le canal Redis de l'adaptateur (`@socket.io/redis-emitter`) : protocole dans `realtime.md`, notifications dans `notifications.md`, délivrabilité des emails dans `email-deliverability.md`. Les traces, les métriques (port `Metrics` de `platform/observability`, compteurs OpenTelemetry exportés en OTLP) et Sentry ne sont actifs que si `OTEL_EXPORTER_OTLP_ENDPOINT` ou `SENTRY_DSN` sont définis.
+Redis sert au rate limiting, à l'adaptateur Socket.IO et à BullMQ. L'api et le worker poussent aux appareils d'un membre (room `user:<id>`) par le canal Redis de l'adaptateur (`@socket.io/redis-emitter`) : protocole dans `realtime.md`, notifications dans `notifications.md`, délivrabilité des emails dans `email-deliverability.md`. La recherche et les suggestions lisent une projection propre au module discovery, nourrie par les événements des autres modules et reconstruite par leurs façades (`discovery.md`, ADR 0065). Les traces, les métriques (port `Metrics` de `platform/observability`, compteurs OpenTelemetry exportés en OTLP) et Sentry ne sont actifs que si `OTEL_EXPORTER_OTLP_ENDPOINT` ou `SENTRY_DSN` sont définis.
 
 ## Flux d'une écriture avec outbox
 

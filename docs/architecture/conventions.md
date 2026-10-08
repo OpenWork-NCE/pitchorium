@@ -89,6 +89,7 @@ Les schémas Zod partagés vivent dans `packages/contracts` ; les DTO NestJS son
 - Le payload est JSON, sans donnée personnelle superflue (identifiants et codes plutôt que noms ou emails ; un handler relit les données par la façade du module émetteur), et versionné par le suffixe `.vN` du type.
 - Les événements dont le nom de fait comporte plusieurs mots les relient par un tiret : `identity.user.email-verified.v1`.
 - Un handler est un provider décoré par `@DomainEventHandler({ name, eventTypes })`, enregistré côté worker. Le `name` est stable : il sert de source d'idempotence dans l'inbox.
+- Un handler s'exécute dans la transaction de l'inbox : un job qu'il met en file peut démarrer avant la validation. Un job qui doit lire ce que le handler écrit n'est donc pas mis en file par le handler ; le handler met en file un job qui écrit, puis celui-ci met en file la suite une fois sa propre transaction validée (exemple : `discovery.index`).
 
 ## Idempotence
 
