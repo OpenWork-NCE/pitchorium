@@ -93,3 +93,7 @@ Usage `link_preview` : le module content demande l'import (`requestImport`) de l
 ## Dépendances
 
 Aucun module métier. Les modules propriétaires de ressources appellent la façade et enregistrent leurs autorisations de lecture.
+
+## Données personnelles (RGPD)
+
+Export : métadonnées des fichiers et les fichiers eux-mêmes (variante la plus grande d'une image, PDF) dans `files/` de l'archive. Suppression : fichiers marqués supprimés (objets effacés et purgés du CDN par la tâche de purge, toutes les 5 minutes), sauf ceux que la loi conserve (`MediaFacade.retainOnErasure`, enregistré par payments : pièces KYC et justificatifs hors plateforme), gardés sous le pseudonyme ; `owner_id` pseudonymisé. Contrats enregistrés auprès du module privacy (`infrastructure/media-personal-data.ts`, ADR 0074).

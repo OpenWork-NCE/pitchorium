@@ -18,6 +18,7 @@ import {
 import { MediaRequested, MediaVisibilityRequested } from '../domain/media-events';
 import { initialVisibility, USAGE_RULES, visibilityFor } from '../domain/usages';
 import { MediaEventsRecorder } from './media-events.recorder';
+import { MediaRetentionRegistry } from './media-retention.registry';
 import { MediaReadRegistry } from './media-read.registry';
 import { signedVariantsOf, variantsOf } from './media-views';
 import { type MediaReadAuthorizer, MediaRepository } from './ports';
@@ -69,6 +70,7 @@ export class MediaFacade {
     private readonly assets: MediaRepository,
     private readonly storage: ObjectStorage,
     private readonly readers: MediaReadRegistry,
+    private readonly retention: MediaRetentionRegistry,
     private readonly events: MediaEventsRecorder,
     private readonly transactions: TransactionManager,
     private readonly ids: IdGenerator,
@@ -251,5 +253,13 @@ export class MediaFacade {
 
   registerReadAuthorizer(authorizer: MediaReadAuthorizer): void {
     this.readers.register(authorizer);
+  }
+
+  /**
+   * Called at startup by a module whose files the law keeps after the erasure of their owner
+   * (payments: KYC documents, proofs of off-platform contributions).
+   */
+  retainOnErasure(resourceTypes: readonly string[]): void {
+    this.retention.register(resourceTypes);
   }
 }

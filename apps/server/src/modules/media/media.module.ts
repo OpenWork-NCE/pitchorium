@@ -29,11 +29,16 @@ import { MediaJobsProcessor } from './interface/media-jobs.processor';
 import { MediaProcessingHandler } from './interface/media-processing.handler';
 import { MEDIA_QUEUE } from './interface/media-queue';
 
+import { MediaRetentionRegistry } from './application/media-retention.registry';
+import { MediaPersonalData } from './infrastructure/media-personal-data';
+
 const SHARED_PROVIDERS: Provider[] = [
   { provide: MediaRepository, useClass: DrizzleMediaRepository },
   MediaReadRegistry,
+  MediaRetentionRegistry,
   MediaEventsRecorder,
   MediaFacade,
+  MediaPersonalData,
 ];
 
 /**

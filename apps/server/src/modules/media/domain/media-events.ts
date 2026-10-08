@@ -62,7 +62,7 @@ export class MediaRejected extends DomainEvent<{
 export class MediaDeleted extends DomainEvent<{
   usage: MediaUsage;
   ownerId: string;
-  reason: 'owner_request' | 'orphan_cleanup';
+  reason: 'owner_request' | 'orphan_cleanup' | 'erasure';
 }> {
   static readonly TYPE = 'media.asset.deleted.v1';
   readonly type = MediaDeleted.TYPE;
