@@ -3,6 +3,7 @@ import { loadConfigOrExit, parseWorkerConfig } from '../src/platform/config/conf
 import { FixedClock, SystemClock } from '../src/platform/kernel/clock';
 import { S3ObjectStorage } from '../src/platform/storage/s3-object-storage';
 import { DEMO_EMAIL_DOMAIN, DEMO_PASSWORD, seedDevData } from './dev-seed/seed-dev-data';
+import { sampleSuggestions, seedDevDiscovery } from './dev-seed/seed-dev-discovery';
 import { seedDevMessaging } from './dev-seed/seed-dev-messaging';
 import { createSeedContext, seedDevProjects } from './dev-seed/seed-dev-projects';
 
@@ -24,10 +25,14 @@ async function main(): Promise<void> {
     // New data goes through the application services and facades (ADR 0035).
     const clock = new FixedClock(now);
     const context = await createSeedContext(clock);
+    let samples: string[] = [];
     const services = await (async () => {
       try {
         const projects = await seedDevProjects(context, clock, now);
-        return { ...projects, ...(await seedDevMessaging(context, clock, now)) };
+        const messaging = await seedDevMessaging(context, clock, now);
+        const discovery = await seedDevDiscovery(context, clock, now);
+        samples = await sampleSuggestions(context);
+        return { ...projects, ...messaging, ...discovery };
       } finally {
         await context.close();
       }
@@ -39,7 +44,8 @@ async function main(): Promise<void> {
       `Inserted: ${inserted}.\n` +
         `Demo accounts: <handle with dots>@${DEMO_EMAIL_DOMAIN} (for example ` +
         `aissatou.ba@${DEMO_EMAIL_DOMAIN}), password ${DEMO_PASSWORD}.\n` +
-        'Images are processed by the worker (pnpm dev). Impact methodology: DEMO, not contractual.\n',
+        'Images are processed by the worker (pnpm dev). Impact methodology: DEMO, not contractual.\n' +
+        `Explained suggestions:\n${samples.map((line) => `- ${line}`).join('\n')}\n`,
     );
   } finally {
     storage.close();

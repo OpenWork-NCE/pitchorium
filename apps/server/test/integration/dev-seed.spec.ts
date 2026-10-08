@@ -11,6 +11,7 @@ import {
   type DevSeedResult,
   seedDevData,
 } from '../../scripts/dev-seed/seed-dev-data';
+import { sampleSuggestions, seedDevDiscovery } from '../../scripts/dev-seed/seed-dev-discovery';
 import { seedDevMessaging } from '../../scripts/dev-seed/seed-dev-messaging';
 import { createSeedContext, seedDevProjects } from '../../scripts/dev-seed/seed-dev-projects';
 import { MethodologiesService } from '../../src/modules/impact/application/methodologies.service';
@@ -43,6 +44,11 @@ const COUNTED_TABLES = [
   'payments.contributions',
   'payments.ledger_entries',
   'payments.payout_accounts',
+  'events.events',
+  'events.registrations',
+  'missions.missions',
+  'missions.engagements',
+  'engagement.time_entries',
   'platform.outbox_events',
 ];
 
@@ -196,6 +202,44 @@ describe('development data', () => {
         notifications: 0,
       });
       expect(await counts()).toEqual(withMessaging);
+      // Events, missions and the search index, through the services and the facades.
+      expect(await seedDevDiscovery(context, clock)).toMatchObject({
+        events: 3,
+        registrations: 10,
+        missions: 3,
+        missionEngagements: 2,
+      });
+      const registrations = await query<{ status: string; count: string }>(
+        `SELECT status, count(*) FROM events.registrations GROUP BY status ORDER BY status`,
+      );
+      expect(registrations.map((row) => [row.status, Number(row.count)])).toEqual([
+        ['registered', 8],
+        ['waitlisted', 2],
+      ]);
+      const [past] = await query<{ status: string }>(
+        `SELECT status FROM events.events WHERE ends_at < now()`,
+      );
+      expect(past?.status).toBe('completed');
+      const [hours] = await query<{ status: string; minutes: number }>(
+        `SELECT status, minutes FROM engagement.time_entries ORDER BY created_at DESC LIMIT 1`,
+      );
+      expect(hours).toEqual({ status: 'confirmed', minutes: 120 });
+      const [indexed] = await query<{ count: string }>(
+        `SELECT count(DISTINCT (kind, entity_id)) FROM discovery.search_documents`,
+      );
+      expect(Number(indexed?.count)).toBeGreaterThan(20);
+      const samples = await sampleSuggestions(context);
+      expect(samples.filter((line) => line.includes('Suggéré parce que'))).toHaveLength(
+        samples.length,
+      );
+      const withDiscovery = await counts();
+      expect(await seedDevDiscovery(context, clock)).toMatchObject({
+        events: 0,
+        registrations: 0,
+        missions: 0,
+        missionEngagements: 0,
+      });
+      expect(await counts()).toEqual(withDiscovery);
       // ensureDemo is idempotent: it returns the existing DEMO version.
       await expect(
         context.get(MethodologiesService, { strict: false }).ensureDemo({
