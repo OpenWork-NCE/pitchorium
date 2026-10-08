@@ -46,6 +46,14 @@ jobs:
       # Testcontainers starts Postgres and Valkey through the runner's Docker daemon.
       - run: pnpm test:integration
 
+  e2e-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: ./.github/actions/setup
+      # Built api and worker as processes, containers started by Testcontainers.
+      - run: pnpm test:e2e
+
   provider-sandboxes:
     runs-on: ubuntu-latest
     # Secrets cannot gate a job: each step runs only when a test key exists.

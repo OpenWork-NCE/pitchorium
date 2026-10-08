@@ -26,6 +26,11 @@
       "cache": false,
       "passThroughEnv": ["DOCKER_HOST", "DOCKER_*", "TESTCONTAINERS_*"]
     },
+    "test:e2e": {
+      "dependsOn": ["build"],
+      "cache": false,
+      "passThroughEnv": ["DOCKER_HOST", "DOCKER_*", "TESTCONTAINERS_*"]
+    },
     "test:providers": {
       "dependsOn": ["^build"],
       "cache": false,

@@ -98,6 +98,7 @@ step 'pnpm typecheck' pnpm typecheck
 step 'pnpm test' pnpm test
 step 'pnpm test:integration' pnpm test:integration
 step 'pnpm build' pnpm build
+step 'pnpm test:e2e' pnpm test:e2e
 step 'pnpm openapi:generate' pnpm openapi:generate
 step 'pnpm api-client:generate' pnpm api-client:generate
 step 'pnpm format:check' pnpm format:check

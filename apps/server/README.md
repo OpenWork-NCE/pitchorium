@@ -24,25 +24,28 @@ src/
     http/ observability/ health/ openapi/
   modules/           un dossier par module métier (domain, application, infrastructure, interface)
 test/
-  architecture/      règles de frontières
+  architecture/      frontières, cycles, données personnelles, routes, entrées, environnement
   integration/       Testcontainers et Supertest
+  e2e/               api et worker construits lancés comme processus (scénarios de bout en bout)
+  providers/         API de test réelles des prestataires
 scripts/             outils de développement
 ```
 
-| Commande                                                                           | Effet                                                                                                                                                                           |
-| ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `pnpm dev:api` / `pnpm dev:worker`                                                 | Lance un processus en watch (SWC), avec `.env`                                                                                                                                  |
-| `pnpm build` puis `pnpm start:api` / `pnpm start:worker`                           | Exécution compilée                                                                                                                                                              |
-| `pnpm test`                                                                        | Tests unitaires et d'architecture, couverture du kernel à 100 %                                                                                                                 |
-| `pnpm test:integration`                                                            | Tests d'intégration et HTTP (Docker requis : PostgreSQL, Valkey, Mailpit et MinIO pour tous, ClamAV pour les tests media)                                                       |
-| `pnpm test:providers`                                                              | Sandboxes Stripe, Flutterwave et Resend (ADR 0054) : `STRIPE_TEST_SECRET_KEY`, `FLUTTERWAVE_TEST_SECRET_KEY`, `RESEND_TEST_API_KEY`, facultatif `STRIPE_TEST_CONNECTED_ACCOUNT` |
-| `pnpm providers:stripe-test-account [--create \| --link <acct> \| --check <acct>]` | Compte connecté Stripe de test pour le test Checkout : création (métadonnée `pitchorium_test=checkout-account`), lien d'onboarding et données de test, état                     |
-| `pnpm providers:cleanup`                                                           | Ferme les comptes connectés Stripe, supprime les endpoints de webhook Stripe et les sous-comptes Flutterwave marqués `pitchorium_test=provider-tests`                           |
-| `pnpm openapi:generate`                                                            | Écrit `openapi/openapi.json` à partir de `dist/`                                                                                                                                |
-| `pnpm outbox:ping`                                                                 | Insère un événement `platform.ping.v1` relayé par le worker                                                                                                                     |
-| `pnpm admin:create --email <email>`                                                | Attribue le rôle admin à un compte existant (idempotent)                                                                                                                        |
-| `pnpm payments:reconcile [--days N]`                                               | Rapprochement des paiements, écarts listés, code de sortie 1 s'il y en a ; ne corrige rien                                                                                      |
-| `pnpm discovery:reindex [--check]`                                                 | Reconstruit l'index de recherche et les suggestions depuis les façades, ou vérifie et répare la dérive (`--check`, code de sortie 1 s'il y en a une)                            |
-| `pnpm db:seed:dev`                                                                 | Données de démonstration (`scripts/dev-seed/`), idempotentes, refusées en production                                                                                            |
+| Commande                                                                           | Effet                                                                                                                                                                                 |
+| ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pnpm dev:api` / `pnpm dev:worker`                                                 | Lance un processus en watch (SWC), avec `.env`                                                                                                                                        |
+| `pnpm build` puis `pnpm start:api` / `pnpm start:worker`                           | Exécution compilée                                                                                                                                                                    |
+| `pnpm test`                                                                        | Tests unitaires et d'architecture, couverture du kernel à 100 %                                                                                                                       |
+| `pnpm test:integration`                                                            | Tests d'intégration et HTTP (Docker requis : PostgreSQL, Valkey, Mailpit et MinIO pour tous, ClamAV pour les tests media)                                                             |
+| `pnpm test:e2e`                                                                    | Bout en bout après `pnpm build` : conteneurs, données de démonstration, api et worker en processus ; parcours porteur et contributeur, social, modération, RGPD, événement et mission |
+| `pnpm test:providers`                                                              | Sandboxes Stripe, Flutterwave et Resend (ADR 0054) : `STRIPE_TEST_SECRET_KEY`, `FLUTTERWAVE_TEST_SECRET_KEY`, `RESEND_TEST_API_KEY`, facultatif `STRIPE_TEST_CONNECTED_ACCOUNT`       |
+| `pnpm providers:stripe-test-account [--create \| --link <acct> \| --check <acct>]` | Compte connecté Stripe de test pour le test Checkout : création (métadonnée `pitchorium_test=checkout-account`), lien d'onboarding et données de test, état                           |
+| `pnpm providers:cleanup`                                                           | Ferme les comptes connectés Stripe, supprime les endpoints de webhook Stripe et les sous-comptes Flutterwave marqués `pitchorium_test=provider-tests`                                 |
+| `pnpm openapi:generate`                                                            | Écrit `openapi/openapi.json` à partir de `dist/`                                                                                                                                      |
+| `pnpm outbox:ping`                                                                 | Insère un événement `platform.ping.v1` relayé par le worker                                                                                                                           |
+| `pnpm admin:create --email <email>`                                                | Attribue le rôle admin à un compte existant (idempotent)                                                                                                                              |
+| `pnpm payments:reconcile [--days N]`                                               | Rapprochement des paiements, écarts listés, code de sortie 1 s'il y en a ; ne corrige rien                                                                                            |
+| `pnpm discovery:reindex [--check]`                                                 | Reconstruit l'index de recherche et les suggestions depuis les façades, ou vérifie et répare la dérive (`--check`, code de sortie 1 s'il y en a une)                                  |
+| `pnpm db:seed:dev`                                                                 | Données de démonstration (`scripts/dev-seed/`), idempotentes, refusées en production                                                                                                  |
 
 Toutes les variables d'environnement sont décrites dans `.env.example`.

@@ -8,8 +8,14 @@ export default mergeConfig(
     // SWC emits decorator metadata, which esbuild does not.
     plugins: [swc.vite({ module: { type: 'es6' } })],
     test: {
-      // The provider sandboxes run apart, with their keys (pnpm test:providers).
-      exclude: ['**/node_modules/**', '**/dist/**', 'test/integration/**', 'test/providers/**'],
+      // Provider sandboxes (pnpm test:providers) and end-to-end tests (pnpm test:e2e) run apart.
+      exclude: [
+        '**/node_modules/**',
+        '**/dist/**',
+        'test/integration/**',
+        'test/providers/**',
+        'test/e2e/**',
+      ],
       testTimeout: 60_000,
       coverage: {
         include: ['src/platform/kernel/**/*.ts'],

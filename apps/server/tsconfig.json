@@ -10,6 +10,7 @@
     "scripts",
     "vitest.config.mts",
     "vitest.integration.config.mts",
+    "vitest.e2e.config.mts",
     "vitest.providers.config.mts"
   ]
 }

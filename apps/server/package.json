@@ -10,6 +10,7 @@
     "test": "vitest run --coverage",
     "test:integration": "vitest run -c vitest.integration.config.mts",
     "test:providers": "node scripts/test-providers.mjs",
+    "test:e2e": "vitest run -c vitest.e2e.config.mts",
     "providers:stripe-test-account": "node --env-file-if-exists=.env -r @swc-node/register scripts/providers/stripe-test-account.ts",
     "providers:cleanup": "node --env-file-if-exists=.env -r @swc-node/register scripts/providers/cleanup.ts",
     "dev:api": "node --env-file-if-exists=.env --watch -r @swc-node/register src/main.api.ts",

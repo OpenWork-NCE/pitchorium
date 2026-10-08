@@ -16,6 +16,7 @@
     "test": "turbo run test",
     "test:integration": "turbo run test:integration",
     "test:providers": "turbo run test:providers",
+    "test:e2e": "turbo run test:e2e",
     "providers:stripe-test-account": "pnpm --filter @pitchorium/server providers:stripe-test-account",
     "providers:cleanup": "pnpm --filter @pitchorium/server providers:cleanup",
     "format": "prettier --write .",

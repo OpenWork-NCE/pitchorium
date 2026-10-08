@@ -49,6 +49,16 @@ export function createConfig({ tsconfigRootDir, decorators = false, ignores = []
         '@typescript-eslint/no-unsafe-member-access': 'off',
       },
     },
+    {
+      // End-to-end tests read the JSON replies of the public API as a browser does.
+      files: ['**/test/e2e/**/*.ts'],
+      rules: {
+        '@typescript-eslint/no-explicit-any': 'off',
+        '@typescript-eslint/no-unsafe-argument': 'off',
+        '@typescript-eslint/no-unsafe-call': 'off',
+        '@typescript-eslint/no-unsafe-return': 'off',
+      },
+    },
     prettier,
   );
 }
