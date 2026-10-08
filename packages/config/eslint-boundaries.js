@@ -146,3 +146,105 @@ export function serverBoundaries({ rootDir }) {
     }),
   ];
 }
+
+/** components/ui, motion and brand know nothing of the business: no feature, no shell, no route. */
+const WEB_DESIGN_SYSTEM = {
+  from: { element: { types: { anyOf: ['web-ui', 'web-motion', 'web-brand'] } } },
+  disallow: { to: { element: { types: { anyOf: ['web-feature', 'web-layout', 'web-app'] } } } },
+  message:
+    'components/ui, components/motion and components/brand are the design system: they never import a feature, a shell or a route.',
+};
+
+/** A feature reaches another feature through its public index.ts only. */
+const WEB_FEATURE_PUBLIC_API = {
+  from: { element: { type: 'web-feature' } },
+  disallow: {
+    to: {
+      element: {
+        type: 'web-feature',
+        captured: { feature: '!{{ from.element.captured.feature }}' },
+        fileInternalPath: '!index.ts',
+      },
+    },
+  },
+  message:
+    'Feature "{{ from.element.captured.feature }}" may only import the public index.ts of feature "{{ to.element.captured.feature }}".',
+};
+
+/** Routes and shells compose the features through their public index.ts. */
+const WEB_COMPOSITION = {
+  from: { element: { types: { anyOf: ['web-app', 'web-layout', 'web-root'] } } },
+  disallow: { to: { element: { type: 'web-feature', fileInternalPath: '!index.ts' } } },
+  message: 'Routes and shells import a feature through its public index.ts only.',
+};
+
+/** lib/, config/, i18n/ and styles/ are infrastructure: no feature, no component. */
+const WEB_INFRASTRUCTURE = {
+  from: { element: { types: { anyOf: ['web-lib', 'web-config', 'web-i18n', 'web-styles'] } } },
+  disallow: {
+    to: {
+      element: {
+        types: {
+          anyOf: ['web-feature', 'web-layout', 'web-ui', 'web-motion', 'web-brand', 'web-app'],
+        },
+      },
+    },
+  },
+  message:
+    'lib/, config/, i18n/ and styles/ are infrastructure: they never import a component or a feature.',
+};
+
+/**
+ * Architecture rules of apps/web (docs/architecture/frontend.md), checked like those of the
+ * server and proved on deliberate violations by apps/web/test/architecture/eslint.spec.ts.
+ *
+ * @param {{ rootDir: string }} options
+ */
+export function webBoundaries({ rootDir }) {
+  return [
+    {
+      files: ['src/**/*.{ts,tsx}'],
+      plugins: { boundaries },
+      settings: {
+        'boundaries/root-path': rootDir,
+        'boundaries/include': ['src/**/*.{ts,tsx}'],
+        'boundaries/elements': [
+          { type: 'web-ui', pattern: 'src/components/ui', partialMatch: false },
+          { type: 'web-motion', pattern: 'src/components/motion', partialMatch: false },
+          { type: 'web-brand', pattern: 'src/components/brand', partialMatch: false },
+          { type: 'web-layout', pattern: 'src/components/layout', partialMatch: false },
+          {
+            type: 'web-feature',
+            pattern: 'src/features/*',
+            capture: ['feature'],
+            partialMatch: false,
+          },
+          { type: 'web-app', pattern: 'src/app', partialMatch: false },
+          { type: 'web-lib', pattern: 'src/lib', partialMatch: false },
+          { type: 'web-config', pattern: 'src/config', partialMatch: false },
+          { type: 'web-i18n', pattern: 'src/i18n', partialMatch: false },
+          { type: 'web-styles', pattern: 'src/styles', partialMatch: false },
+          { type: 'web-root', pattern: 'src', partialMatch: false },
+        ],
+        'import/resolver': {
+          typescript: { alwaysTryTypes: true, project: join(rootDir, 'tsconfig.json') },
+        },
+      },
+      rules: {
+        'boundaries/dependencies': [
+          'error',
+          {
+            default: 'allow',
+            checkAllOrigins: true,
+            policies: [
+              WEB_DESIGN_SYSTEM,
+              WEB_FEATURE_PUBLIC_API,
+              WEB_COMPOSITION,
+              WEB_INFRASTRUCTURE,
+            ],
+          },
+        ],
+      },
+    },
+  ];
+}

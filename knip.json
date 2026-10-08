@@ -13,7 +13,7 @@
       "ignoreDependencies": ["pino-pretty"]
     },
     ".": {
-      "entry": ["scripts/*.mjs", "perf/k6/*.js", "commitlint.config.js"],
+      "entry": ["scripts/*.mjs", "perf/k6/*.js"],
       "ignoreDependencies": ["@commitlint/types", "k6"]
     },
     "packages/db": {
@@ -25,6 +25,10 @@
         "src/migrate.ts",
         "src/seed.ts"
       ]
+    },
+    "apps/web": {
+      "entry": ["scripts/*.mjs", "e2e/support/*.mjs", "lighthouserc.cjs"],
+      "ignoreDependencies": ["@lhci/cli"]
     }
   },
   "ignoreExportsUsedInFile": true,

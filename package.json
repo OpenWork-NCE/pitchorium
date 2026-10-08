@@ -8,9 +8,10 @@
     "pnpm": "12.9.1"
   },
   "scripts": {
-    "dev": "turbo run dev:api dev:worker",
+    "dev": "turbo run dev:api dev:worker dev:web",
     "dev:api": "turbo run dev:api",
     "dev:worker": "turbo run dev:worker",
+    "dev:web": "turbo run dev:web",
     "build": "turbo run build",
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",

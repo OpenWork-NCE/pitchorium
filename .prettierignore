@@ -5,3 +5,12 @@ docs/product/*.pdf
 packages/api-client/src/generated
 packages/db/migrations/meta
 apps/server/openapi/openapi.json
+apps/web/.next
+apps/web/.next-e2e
+apps/web/.next-analyze
+apps/web/storybook-static
+apps/web/playwright-report
+apps/web/test-results
+apps/web/.lighthouseci
+apps/web/src/components/brand/marks.generated.tsx
+apps/web/public/brand
