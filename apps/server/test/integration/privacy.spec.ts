@@ -230,6 +230,16 @@ describe('privacy', () => {
       [kofi.userId],
     );
     expect(Number(left?.count)).toBe(0);
+
+    // The development data seeds the erased member again, beside the acceptances kept under the
+    // pseudonym.
+    const reseeded = await seedDevData({
+      db: handle.db,
+      storage,
+      legal: { termsVersion: TEST_LEGAL_VERSION, privacyVersion: TEST_LEGAL_VERSION },
+    });
+    expect(reseeded.members).toBe(1);
+    await (await demo('kofi-mensah')).agent.get('/v1/me').expect(200);
   });
 
   it('keeps a closed project with contributions under the pseudonym, listed for the admins', async () => {

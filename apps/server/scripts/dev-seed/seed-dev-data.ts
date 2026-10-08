@@ -1,5 +1,6 @@
 import { createHash } from 'node:crypto';
 import { hashPassword } from 'better-auth/crypto';
+import { v7 } from 'uuid';
 import { type Database, outboxEvents } from '@pitchorium/db';
 import {
   contentComments,
@@ -166,13 +167,15 @@ export async function seedDevData(options: DevSeedOptions): Promise<DevSeedResul
         createdAt: now,
         updatedAt: now,
       });
+      // Fresh identifiers: the erasure of an account keeps its acceptances under a pseudonym
+      // (identity README), so a demonstration member erased then seeded again needs new ones.
       await tx.insert(identityLegalAcceptances).values(
         [
           { document: 'terms_of_service', version: legal.termsVersion },
           { document: 'privacy_policy', version: legal.privacyVersion },
           { document: 'age_declaration', version: AGE_DECLARATION_VERSION },
         ].map((row) => ({
-          id: demoId(`legal:${member.key}:${row.document}`),
+          id: v7(),
           userId: id,
           ...row,
           acceptedAt: now,
