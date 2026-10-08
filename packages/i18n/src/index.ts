@@ -13,3 +13,4 @@ export const localeManifest = manifest as {
     { status: ReviewStatus; reviewedBy: string | null; reviewedAt: string | null }
   >;
 };
+export { suggestionSentenceText } from './suggestions.js';

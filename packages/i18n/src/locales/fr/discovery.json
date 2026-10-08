@@ -1,0 +1,38 @@
+{
+  "sentences": {
+    "one": "Suggéré parce que {{first}}",
+    "two": "Suggéré parce que {{first}} et que {{second}}"
+  },
+  "reasons": {
+    "need_matches_hat": "vous cherchez « {{need}} » et {{name}} est {{hat}}",
+    "hat_matches_need": "{{name}} cherche « {{need}} », ce que vous apportez comme {{hat}}",
+    "mentoring_available": "{{name}} propose du mentorat",
+    "mentoring_wanted": "{{name}} cherche du mentorat, que vous proposez",
+    "shared_sector": "vous partagez le secteur « {{sector}} » avec {{name}}",
+    "country_in_intervention": {
+      "seeker": "{{name}} intervient dans votre pays, {{country}}",
+      "team": "{{name}} intervient dans un pays du projet, {{country}}"
+    },
+    "intervenes_in_country": "{{name}} se trouve dans un pays où vous intervenez, {{country}}",
+    "ticket_fits_target": {
+      "seeker": "votre financement visé entre dans le ticket de {{name}}",
+      "helper": "le financement visé par {{name}} entre dans votre ticket",
+      "project": "l'objectif de {{name}} entre dans votre ticket",
+      "team": "l'objectif du projet entre dans le ticket de {{name}}"
+    },
+    "instruments_compatible": {
+      "helper": "{{name}} accepte « {{instrument}} », que vous pratiquez",
+      "team": "{{name}} pratique « {{instrument}} », que le projet accepte"
+    },
+    "same_country_other_sector": "{{name}} entreprend aussi dans votre pays, {{country}}, dans le secteur « {{sector}} »",
+    "same_sector_other_country": "{{name}} entreprend aussi dans le secteur « {{sector}} », dans un autre pays : {{country}}",
+    "mission_matches_need": "la mission « {{name}} » répond à votre besoin « {{need}} »",
+    "mission_matches_hat": "la mission « {{name}} » cherche un profil {{hat}}, comme le vôtre",
+    "mission_reachable": {
+      "remote": "la mission « {{name}} » se fait à distance",
+      "country": "la mission « {{name}} » a lieu dans l'un de vos pays, {{country}}"
+    },
+    "event_in_country": "« {{name}} » a lieu dans l'un de vos pays, {{country}}",
+    "shared_language": "« {{name}} » se tient en {{language}}, une langue que vous parlez"
+  }
+}
