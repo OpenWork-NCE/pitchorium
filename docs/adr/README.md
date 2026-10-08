@@ -68,3 +68,5 @@ Un fichier par décision, numéroté, au format Contexte / Décision / Conséque
 | [0062](0062-email-deliverability.md)                     | Délivrabilité des emails                                     |
 | [0063](0063-verify-clean.md)                             | Vérification depuis zéro (`pnpm verify:clean`)               |
 | [0064](0064-batched-notification-delivery.md)            | Livraison des notifications par lots                         |
+| [0069](0069-events-scope.md)                             | Périmètre des événements (à valider)                         |
+| [0070](0070-free-events-only.md)                         | Événements gratuits uniquement                               |

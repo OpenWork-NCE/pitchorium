@@ -101,11 +101,18 @@ Informations nécessaires au développement et absentes du cahier des charges (d
 72. Le délai avant la copie d'un message non lu (provisoirement 30 minutes), l'heure locale des digests (provisoirement 8 h) et le jour du digest hebdomadaire (provisoirement le lundi), le digest par défaut (provisoirement aucun : un email par notification).
 73. La rétention des notifications (provisoirement 90 jours, `NOTIFICATIONS_RETENTION_DAYS`), la levée d'une adresse supprimée après un rebond (une adresse corrigée ne reçoit plus rien, emails transactionnels compris) et la période des vues de profil notifiées (provisoirement la veille, en UTC).
 
+## Événements
+
+74. Le périmètre proposé (ADR 0069) : organisateurs (membre, organisation, projet), contenu, visibilité, liste d'attente, rappels, export iCalendar, absence de suivi d'un événement. À valider.
+75. Les limites d'un événement (provisoirement titre 120 caractères, description 10 000, 5 secteurs, 10 pays, durée de 14 jours au plus, capacité de 100 000) et la conservation des événements passés dans le calendrier personnel (provisoirement 30 jours).
+76. Le délai des rappels avant un événement (provisoirement 24 heures, `NOTIFICATIONS_EVENT_REMINDER_HOURS`) et la fermeture des inscriptions (provisoirement au début de l'événement).
+77. La billetterie payante : hors périmètre (ADR 0070), les événements sont gratuits.
+
 ## Produit
 
 15. La décision sur les stories (refus, ou « actualités éphémères de projet » en V2 selon le §15).
 16. La vérification d'organisation (badge) : critères et processus de validation.
-17. Le module « Événements » (§14, V3) : aucune description fonctionnelle.
+17. Le module « Événements » (§14, V3) : aucune description fonctionnelle. Un périmètre provisoire est livré (ADR 0069, section « Événements » ci-dessous) et doit être validé.
 18. Les missions d'expertise packagées : contenu, déroulé, éventuelle rémunération.
 19. Les permissions du rôle `moderator` et la composition de l'équipe de modération (les rôles `member`, `moderator` et `admin` existent ; aucune action n'est encore réservée aux modérateurs).
 20. Les durées de conservation (messages, signalements, journal d'audit, comptes supprimés) et la procédure RGPD de suppression.
