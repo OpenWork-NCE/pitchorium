@@ -26,6 +26,11 @@ identity enregistre en plus l'annuaire des comptes (`registerAccountDirectory`) 
 - Contrôle de résidus (`ResidueScanner`, plateforme) : l'identifiant et l'email du membre sont recherchés dans toutes les colonnes `uuid`, `text`, `citext`, `jsonb` et tableaux de tous les schémas, hors `platform.outbox_events` (purgée après `OUTBOX_RETENTION_DAYS`), `platform.idempotency_keys` (24 h) et la demande elle-même. Un résidu fait échouer la demande (`failed`, colonnes listées, métrique `pitchorium.privacy.erasure.residue`) ; sinon l'ancien membre reçoit l'email `account_erased` et la demande l'oublie (identifiant, adresse et pseudonyme effacés).
 - Règles par module : `docs/compliance/retention.md`.
 
+## Registre de conservation et des traitements
+
+- Les durées de conservation de tous les modules sont dans un seul fichier, `domain/retention-register.ts`, consolidé dans `docs/compliance/retention.md` ; le test d'architecture `personal-data.spec.ts` vérifie que chaque module à données personnelles y figure et que le document reprend chaque ligne.
+- Brouillon du registre des traitements (article 30) et des sous-traitants, à valider par un DPO ou un conseil : `docs/compliance/records-of-processing.md`.
+
 ## Administration
 
 `GET /v1/admin/privacy/requests?kind=` : exports et suppressions, état, échéance légale d'un mois (article 12), retard, blocage ou résidus.

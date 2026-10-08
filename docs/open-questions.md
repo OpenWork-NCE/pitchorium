@@ -131,6 +131,8 @@ Informations nécessaires au développement et absentes du cahier des charges (d
 82. Les valeurs provisoires de la modération : liste des motifs de signalement (`REPORT_REASONS`), poids de la priorité (`apps/server/src/modules/trust/domain/priority.ts`), seuils des signaux automatiques (15 premiers messages hors réseau ou 50 demandes de connexion en 24 heures, 3 signalements reçus en 7 jours), 5 signalements sans compte par heure et par adresse, délai d'appel de 183 jours, 3 messages de contexte pour un message signalé.
 83. La contestation d'un classement sans suite par le notifiant (prévue par le DSA pour les plateformes en ligne) : aujourd'hui seul le membre concerné par une décision peut faire appel.
 84. La conservation des signalements, des coordonnées des notifiants sans compte et des décisions de modération (voir aussi la question 20 et `docs/compliance/retention.md`).
+85. La durée de conservation des données financières pseudonymisées (contributions, ledger, comptes de versement) et des pièces KYC, qui restent des données personnelles sous un pseudonyme (obligations comptables et de lutte contre le blanchiment selon le pays d'établissement, question 59).
+86. Les délais des droits RGPD (provisoires) : délai de grâce de 30 jours avant une suppression, rappel 7 jours avant, un export par 24 heures, archive conservée 72 heures, lien de 5 minutes.
 
 ## Comptes et conditions
 
