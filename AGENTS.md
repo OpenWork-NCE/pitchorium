@@ -37,6 +37,9 @@ Pitchorium est un réseau professionnel et une plateforme de financement à impa
 - Mouvement : `docs/design/motion.md` ; primitives de `components/motion`, état final immédiat avec moins de mouvement ; GSAP réservé aux pages éditoriales (ADR 0086).
 - Marque : uniquement la sélection de `pnpm brand:sync`, jamais un fichier modifié à la main (ADR 0087).
 - Coquilles : `components/layout/member` (bandeau haut, jamais de barre inférieure, ADR 0099) et `components/layout/admin` ; une page se pose dans `ThreeColumnLayout` ou `SingleColumnLayout`. Usages : `docs/design/patterns.md`.
+- Formulaires : `useZodForm`, `FormSummary` (liens vers les champs, focus après un envoi refusé), `useApplyProblem` pour les codes RFC 9457, `FormActions` ; dates et heures par `DateTimeField` (ADR 0100). Couleur d'accent violette pour toute action principale, cuivre jamais sur un bouton ni un état.
+- Une adresse canonique par ressource (`/members/{handle}`, `/organizations/{slug}`, `/projects/{slug}`, `/events/{slug}`), rendu selon la session, 404 au visiteur pour une ressource non publique (ADR 0101).
+- Hors ligne : seules les mutations listées dans `lib/query/persisted-mutations.ts` (message, réaction, commentaire, clé d'idempotence) survivent à la fermeture de l'onglet, effacées à la déconnexion et après 24 h ; jamais d'authentification ni de paiement (ADR 0102).
 - Code sorti du premier chargement mais utile hors ligne : préchargé à l'inactivité (`lib/preload.ts`) ; budgets par groupe (ADR 0094).
 - Tests : chaque story est un test, dans les deux thèmes (`pnpm --filter @pitchorium/web test:stories`) ; les parcours e2e ouvrent une session sur l'api simulée (`e2e/support/stub-api.mjs`, comptes de démonstration), dans Chromium, Firefox, WebKit et en iPhone (parcours `@phone`).
 - Captures de référence : `pnpm --filter @pitchorium/web test:e2e` dans l'image Playwright (Docker requis) ; captures de revue : `review:captures` (`docs/design/review`).
