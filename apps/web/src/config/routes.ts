@@ -13,6 +13,8 @@ export const routes = {
   feed: '/feed',
   network: '/network',
   projects: '/projects',
+  /** The projects the member follows: a view of the showcase (the right column of a wide screen). */
+  followedProjects: '/projects?view=followed',
   messages: '/messages',
   notifications: '/notifications',
   profile: '/profile',

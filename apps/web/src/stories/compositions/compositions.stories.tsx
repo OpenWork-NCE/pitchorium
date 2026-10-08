@@ -38,27 +38,26 @@ import {
   useApplyProblem,
   useZodForm,
 } from '@/components/ui';
-import { CurrentMemberProvider } from '@/features/identity';
+import { CurrentMemberProvider, ProfileCompletion } from '@/features/identity';
 import { ActiveLocalesProvider } from '@/features/localization';
 import {
   adminMembers,
   counters,
   currentUser,
-  feed,
+  feedPage,
   members,
   notifications,
-  personCard,
   project,
+  suggestions,
   thread,
   threadReadBy,
   tiers,
 } from './fixtures';
-import { PostCard } from '@/features/content';
-import { SuggestionItem } from '@/features/discovery';
+import { FeedComposer, FeedStream, PostSkeleton } from '@/features/content';
+import { SuggestionsList } from '@/features/discovery';
 import { ProjectCard } from '@/features/projects';
 import { ConversationThread, MessageComposer } from '@/features/messaging';
 import { NotificationItem } from '@/features/notifications';
-import { PostSkeleton, ProfileCard } from './parts';
 
 const meta = {
   title: 'Compositions',
@@ -104,43 +103,31 @@ function Feed({ loading }: { loading: boolean }) {
     <MemberRuntime>
       <MemberHeader initialCounters={counters} />
       <ThreeColumnLayout
-        leftLabel="Suggestions"
-        rightLabel="Projets et personnes à suivre"
-        left={
-          <ProfileCard member={members.aissatou} strength={currentUser.profileStrength.percent} />
-        }
+        leftLabel="Votre profil"
+        rightLabel="Personnes pertinentes pour vous"
+        left={<ProfileCompletion variant="card" />}
         right={
           <>
             <ProjectCard project={project} variant="compact" headingLevel={2} />
-            <Card className="grid gap-4">
-              <Heading level={2} size="label">
-                Personnes pertinentes pour vous
-              </Heading>
-              <ul className="grid gap-4">
-                <SuggestionItem
-                  person={personCard(members.nadia)}
-                  reason="Suggérée parce que vous cherchez un financement dans l’énergie et que Nadia investit dans ce secteur au Sénégal et en Côte d’Ivoire."
-                />
-                <SuggestionItem
-                  person={personCard(members.kofi)}
-                  reason="Suggéré parce que vous cherchez du mentorat en finance et que Kofi accompagne des coopératives agricoles au Ghana."
-                />
-              </ul>
-            </Card>
+            <SuggestionsList suggestions={suggestions} />
           </>
         }
       >
         <div className="grid gap-4">
-          <Heading level={1} size="page">
+          <Heading level={1} size="page" className="sr-only">
             Accueil
           </Heading>
+          <FeedComposer />
+          <div className="lg:hidden">
+            <ProfileCompletion variant="module" />
+          </div>
           {loading ? (
             <Loading className="grid gap-4">
               <PostSkeleton />
               <PostSkeleton />
             </Loading>
           ) : (
-            feed.map((post) => <PostCard key={post.id} post={post} />)
+            <FeedStream initialPage={feedPage} suggestions={suggestions} />
           )}
         </div>
       </ThreeColumnLayout>
@@ -159,7 +146,11 @@ export const MemberShellLoading: Story = {
   },
 };
 
-/** Then loaded: posts in the centre, profile on the left, project and people on the right. */
+/**
+ * Then loaded: no visible title, the composer, the posts; on a wide screen the profile on the
+ * left, a project and people on the right; on a phone, the profile at the top of the feed and the
+ * suggestions after the third post.
+ */
 export const MemberShellLoaded: Story = {
   name: 'Member shell, feed loaded',
   render: () => <Feed loading={false} />,
@@ -172,14 +163,30 @@ export const MemberShellLoaded: Story = {
   },
 };
 
+/**
+ * The profile of the member and its strength: the card of the left column of a wide screen, and
+ * the module at the top of the feed on a narrow one (what is missing, the way to complete it).
+ */
 export const ProfileCardStory: Story = {
   name: 'Profile card',
   parameters: { layout: 'padded' },
   render: () => (
-    <div className="max-w-xs">
-      <ProfileCard member={members.aissatou} strength={60} />
-    </div>
+    <MemberRuntime>
+      <div className="flex flex-wrap items-start gap-6 p-1">
+        <div className="w-full max-w-xs">
+          <ProfileCompletion variant="card" />
+        </div>
+        <div className="w-full max-w-md">
+          <ProfileCompletion variant="module" />
+        </div>
+      </div>
+    </MemberRuntime>
   ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getAllByRole('progressbar', { name: 'Force du profil' })).toHaveLength(2);
+    await expect(canvas.getAllByText('À ajouter : Photo et Photo de couverture.')).toHaveLength(2);
+  },
 };
 
 /**

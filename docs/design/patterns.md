@@ -14,6 +14,13 @@ Comment assembler les composants (`components.md`) pour les situations récurren
 - Le bouton d'envoi passe en `loading` (même largeur) pendant l'appel ; il n'est jamais désactivé pour cause de champs invalides : l'envoi montre les erreurs.
 - Actions du formulaire (`FormActions`) : l'action principale d'abord dans le document ; sur un téléphone, empilées en pleine largeur, l'action principale en haut ; à partir de `sm`, en ligne, alignées à droite, l'action principale à droite.
 
+## Fil d'actualité (§10.3)
+
+- Pas de grand titre visible au-dessus du fil : un `h1` masqué visuellement (« Accueil ») ; la place est prise par le composeur « Commencer une publication » (coquille, la publication arrive au PROMPT FRONT 4).
+- Sur un grand écran, la complétion du profil est la colonne gauche, les suggestions la colonne droite. Sous `lg`, la complétion du profil devient un module en tête du fil (tant que le profil est incomplet), et les suggestions des modules parmi les éléments : trois personnes après le troisième élément, puis trois tous les dix éléments (`FEED_MODULES`, `features/content`), tant qu'il en reste ; un fil plus court se termine par un module.
+- Les éléments que le web ne dessine pas encore (actualité de projet, événement) sont laissés de côté, comme le contrat le demande d'un type inconnu.
+- Pages suivantes par « Afficher plus » (`Pagination`), la fin annoncée ; la phrase de raison d'une suggestion est construite par la page avec les catalogues `discovery` et `reference` (`useSuggestionReason`).
+
 ## Conversation (§10.4)
 
 - Un séparateur par jour, dans le fuseau du membre : « Aujourd'hui », « Hier », puis la date (jour de la semaine, jour et mois, l'année si elle diffère) ; c'est un titre, pour s'y rendre au lecteur d'écran.

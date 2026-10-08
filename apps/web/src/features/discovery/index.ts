@@ -4,3 +4,5 @@
  */
 export { GlobalSearch } from './components/global-search';
 export { SuggestionItem } from './components/suggestion-item';
+export { SuggestionsList } from './components/suggestions-list';
+export { useSuggestionReason } from './components/use-suggestion-reason';

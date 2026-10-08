@@ -63,6 +63,98 @@ const INITIAL_COUNTERS = {
   invitations: { connections: 1, introductions: 0, projects: 0, organizations: 0 },
 };
 
+/** Authors of the feed of the stub: demonstration members, fictitious like their posts. */
+const AUTHORS = [
+  {
+    handle: 'kofi-mensah',
+    displayName: 'Kofi Mensah',
+    headline: 'Mentor finance, Accra',
+    avatarUrl: null,
+  },
+  {
+    handle: 'nadia-benali',
+    displayName: 'Nadia Benali',
+    headline: 'Investisseuse à impact, Paris',
+    avatarUrl: null,
+  },
+  {
+    handle: 'moussa-diop',
+    displayName: 'Moussa Diop',
+    headline: 'Agronome, Kaolack',
+    avatarUrl: null,
+  },
+];
+
+/** Fourteen publications: the modules of a narrow feed go after the third and the thirteenth. */
+function feedPosts() {
+  return Array.from({ length: 14 }, (_, index) => {
+    const author = AUTHORS[index % AUTHORS.length];
+    const id = `0192f4a0-2000-7000-8000-${String(index + 1).padStart(12, '0')}`;
+    return {
+      type: 'post',
+      id,
+      post: {
+        id,
+        author: { type: 'member', member: author },
+        text: `Publication ${index + 1} de ${author.displayName} : un retour d’expérience de terrain.`,
+        language: 'fr',
+        languageSource: 'detected',
+        visibility: 'members',
+        images: [],
+        document: null,
+        link: null,
+        mentions: [],
+        projectId: null,
+        commentsDisabled: false,
+        reactions: {
+          counts: { like: 12, bravo: 4, insightful: 2, support: 0 },
+          total: 18,
+          viewerReaction: null,
+        },
+        commentCount: 3,
+        repostCount: 0,
+        saved: false,
+        viewerIsAuthor: false,
+        featured: false,
+        // Relative to now: « il y a 1 heure » whatever the day (reference screenshots).
+        createdAt: new Date(Date.now() - (index + 1) * 3_600_000).toISOString(),
+        editedAt: null,
+        kind: 'post',
+        repostOf: null,
+      },
+    };
+  });
+}
+
+/** People suggested, with reasons written with the keys of the discovery namespace. */
+const SUGGESTIONS = [
+  ['ifeoma-okafor', 'Ifeoma Okafor', 'Designer produit, Lagos', 'reasons.mentoring_available'],
+  [
+    'jean-baptiste-pierre-louis',
+    'Jean-Baptiste Pierre-Louis',
+    'Ingénieur agronome',
+    'reasons.mentoring_available',
+  ],
+  ['amina-sow', 'Amina Sow', 'Mentore, Dakar', 'reasons.mentoring_available'],
+  ['fatou-sall', 'Fatou Sall', 'Entrepreneure, Thiès', 'reasons.mentoring_available'],
+].map(([key, title, subtitle, reason]) => ({
+  candidate: {
+    kind: 'person',
+    key,
+    title,
+    subtitle,
+    imageUrl: null,
+    countryCodes: ['SN'],
+    sectorCodes: [],
+    facets: { entrepreneur: false, contributor: true },
+    hats: [],
+  },
+  score: 40,
+  sentence: { key: 'sentences.one', clauses: [{ key: reason, params: { name: title } }] },
+  reasons: [],
+  rulesVersion: 1,
+}));
+
 let state = fresh();
 
 function fresh() {
@@ -192,6 +284,14 @@ const routes = {
       headers: replay ? { 'idempotent-replayed': 'true' } : {},
     };
   },
+  'GET /v1/feed': (request) =>
+    sessionOf(request)
+      ? { status: 200, body: { schemaVersion: 1, items: feedPosts(), nextCursor: null } }
+      : problem(401, 'UNAUTHENTICATED'),
+  'GET /v1/discovery/suggestions': (request) =>
+    sessionOf(request)
+      ? { status: 200, body: { items: SUGGESTIONS, nextCursor: null } }
+      : problem(401, 'UNAUTHENTICATED'),
   'PUT /v1/me/preferences': async (request) => {
     const email = sessionOf(request);
     if (!email) return problem(401, 'UNAUTHENTICATED');

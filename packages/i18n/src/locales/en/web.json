@@ -20,10 +20,10 @@
     "notifications": "Notifications",
     "profile": "Profile",
     "settings": "Settings",
+    "followedProjects": "Followed projects",
     "publish": "Publish",
     "createProject": "Create a project",
     "menu": "Menu",
-    "menuWithCount": "Menu, {{count}} to handle",
     "shortcuts": "Keyboard shortcuts"
   },
   "theme": {
@@ -479,5 +479,23 @@
     "generic": "New notification",
     "unread": ", unread",
     "excerpt": "“{{text}}”"
+  },
+  "feed": {
+    "compose": "Start a post",
+    "profileColumn": "Your profile",
+    "suggestions": "People relevant to you",
+    "emptyTitle": "Your feed is still empty",
+    "emptyBody": "Follow members, organisations and projects: their posts will come here.",
+    "error": "The feed could not load.",
+    "moreError": "The next posts could not load. Try again in a moment."
+  },
+  "profile": {
+    "completion": {
+      "title": "Complete your profile",
+      "strength": "Profile strength",
+      "percent": "{{percent}} %",
+      "missing": "To add: {{list}}.",
+      "action": "Complete my profile"
+    }
   }
 }

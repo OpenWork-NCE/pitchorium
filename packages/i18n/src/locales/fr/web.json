@@ -20,10 +20,10 @@
     "notifications": "Notifications",
     "profile": "Profil",
     "settings": "Paramètres",
+    "followedProjects": "Projets suivis",
     "publish": "Publier",
     "createProject": "Créer un projet",
     "menu": "Menu",
-    "menuWithCount": "Menu, {{count}} à traiter",
     "shortcuts": "Raccourcis clavier"
   },
   "theme": {
@@ -479,5 +479,23 @@
     "generic": "Nouvelle notification",
     "unread": ", non lue",
     "excerpt": "« {{text}} »"
+  },
+  "feed": {
+    "compose": "Commencer une publication",
+    "profileColumn": "Votre profil",
+    "suggestions": "Personnes pertinentes pour vous",
+    "emptyTitle": "Votre fil est encore vide",
+    "emptyBody": "Suivez des membres, des organisations et des projets : leurs publications viendront ici.",
+    "error": "Le fil n’a pas pu se charger.",
+    "moreError": "Les publications suivantes n’ont pas pu se charger. Réessayez dans un instant."
+  },
+  "profile": {
+    "completion": {
+      "title": "Complétez votre profil",
+      "strength": "Force du profil",
+      "percent": "{{percent}} %",
+      "missing": "À ajouter : {{list}}.",
+      "action": "Compléter mon profil"
+    }
   }
 }

@@ -27,8 +27,10 @@ interface ThreeColumnLayoutProps {
 
 /**
  * Three columns of the member space (docs/design/direction.md): 3, 6 and 3 columns from 1280 px,
- * the content and one side column of 4 from 1024 px, one column below. The side columns stick
- * under the header; the content comes first in the document at every size.
+ * the content and one side column of 4 from 1024 px. Below, the side columns are not stacked
+ * under the content: the page carries what they hold in its own flow (a module at the top of the
+ * feed, a module among its items, a link of the menu). They stick under the header; the content
+ * comes first in the document.
  */
 export function ThreeColumnLayout({
   children,
@@ -40,7 +42,7 @@ export function ThreeColumnLayout({
   return (
     <div className="mx-auto grid w-full max-w-7xl grid-cols-1 gap-6 px-4 py-6 sm:px-6 lg:grid-cols-12 lg:py-8">
       <Main className="lg:col-span-8 xl:col-span-6 xl:col-start-4 xl:row-start-1">{children}</Main>
-      <div className="grid content-start gap-6 lg:sticky lg:top-[calc(var(--header-height)+1.5rem)] lg:col-span-4 lg:self-start xl:contents">
+      <div className="hidden content-start gap-6 lg:sticky lg:top-[calc(var(--header-height)+1.5rem)] lg:col-span-4 lg:grid lg:self-start xl:contents">
         {left ? (
           <aside
             aria-label={leftLabel}

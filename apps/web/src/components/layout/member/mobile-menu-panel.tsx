@@ -1,7 +1,7 @@
 'use client';
 
 import type { CountersDtoOutput } from '@pitchorium/api-client';
-import { LogOut } from 'lucide-react';
+import { Bookmark, LogOut } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useTransition } from 'react';
 import {
@@ -19,7 +19,7 @@ import { LocaleSwitcher } from '@/features/localization';
 import { Link, usePathname } from '@/i18n/navigation';
 import { cn } from '@/lib/cn';
 import { ContextualAction } from './contextual-action';
-import { activeItem, countOf, NAV_ITEMS, useCountText } from './member-nav';
+import { activeItem, countOf, HEADER_ITEMS, NAV_ITEMS, useCountText } from './member-nav';
 
 interface MobileMenuPanelProps {
   open: boolean;
@@ -28,7 +28,10 @@ interface MobileMenuPanelProps {
   label: string;
 }
 
-/** Content of the menu of a narrow screen: sections with their counts, action, account. */
+/**
+ * Content of the menu of a narrow screen: the sections not in the header, the followed projects
+ * (the right column of a wide screen), the action and the account.
+ */
 export default function MobileMenuPanel({
   open,
   onOpenChange,
@@ -48,7 +51,7 @@ export default function MobileMenuPanel({
       <DrawerContent title={label} hideTitle>
         <nav aria-label={t('primary')}>
           <ul className="grid gap-1">
-            {NAV_ITEMS.map((item) => {
+            {NAV_ITEMS.filter((item) => !HEADER_ITEMS.includes(item.key)).map((item) => {
               const Icon = item.icon;
               const count = countOf(item.key, counters);
               return (
@@ -74,6 +77,16 @@ export default function MobileMenuPanel({
                 </li>
               );
             })}
+            <li>
+              <Link
+                href={routes.followedProjects}
+                onClick={() => onOpenChange(false)}
+                className="flex min-h-12 items-center gap-3 rounded-lg px-3 text-base outline-none hover:bg-surface-sunken focus-visible:outline-2 focus-visible:outline-focus"
+              >
+                <Bookmark aria-hidden className="size-5" />
+                <span className="flex-1">{t('followedProjects')}</span>
+              </Link>
+            </li>
           </ul>
         </nav>
         <div className="mt-4">

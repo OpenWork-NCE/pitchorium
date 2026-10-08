@@ -32,7 +32,10 @@ test.describe('member shell', () => {
     await expect(
       nav.getByRole('link', { name: /^Notifications\s?, 3 notifications non lues$/ }),
     ).toBeVisible();
-    await expect(page.getByRole('complementary', { name: 'Suggestions' })).toBeVisible();
+    await expect(page.getByRole('complementary', { name: 'Votre profil' })).toBeVisible();
+    await expect(
+      page.getByRole('complementary', { name: 'Personnes pertinentes pour vous' }),
+    ).toBeVisible();
     await expect(page.getByRole('link', { name: 'Publier' })).toBeVisible();
   });
 
@@ -47,12 +50,12 @@ test.describe('member shell', () => {
       page.getByRole('link', { name: 'Accueil de Pitchorium' }),
       page.getByRole('button', { name: 'Rechercher sur Pitchorium' }),
       page.getByRole('link', { name: 'Accueil', exact: true }),
-      page.getByRole('link', { name: 'Réseau' }),
-      page.getByRole('link', { name: 'Projets' }),
+      page.getByRole('link', { name: 'Réseau', exact: true }),
+      page.getByRole('link', { name: 'Projets', exact: true }),
       page.getByRole('link', { name: /^Messages/ }),
       page.getByRole('link', { name: /^Notifications/ }),
-      page.getByRole('link', { name: 'Profil' }),
-      page.getByRole('link', { name: 'Publier' }),
+      page.getByRole('link', { name: 'Profil', exact: true }),
+      page.getByRole('link', { name: 'Publier', exact: true }),
       page.getByRole('button', { name: 'Compte de Aïssatou Ba' }),
     ];
     for (const target of order) {
@@ -70,7 +73,7 @@ test.describe('member shell', () => {
     await expect(order.at(-1)!).toBeFocused();
 
     // A section by its link, then by a shortcut; the focus moves to the new content.
-    await page.getByRole('link', { name: 'Réseau' }).press('Enter');
+    await page.getByRole('link', { name: 'Réseau', exact: true }).press('Enter');
     await expect(page).toHaveURL(/\/fr\/network$/);
     await expect(page.locator('#main')).toBeFocused();
     await page.keyboard.press('g');
@@ -93,6 +96,8 @@ test.describe('member shell', () => {
   test('opens the search with Ctrl K and remembers the searches', async ({ page }) => {
     await signIn(page, AISSATOU);
     await page.goto('/fr/feed');
+    // The shortcut answers once the page is interactive.
+    await page.waitForLoadState('networkidle');
     await page.keyboard.press('Control+k');
     const palette = page.getByRole('dialog', { name: 'Recherche globale' });
     await expect(palette.getByRole('combobox')).toBeFocused();
@@ -199,20 +204,61 @@ test.describe('member shell', () => {
     await api.dispose();
   });
 
-  test('opens the sections in a panel on a phone, and gives the focus back', async ({
+  test('keeps Messages and Notifications in the header of a phone, the rest in the panel', async ({
     browser,
   }) => {
     const context = await browser.newContext({ viewport: { width: 390, height: 844 } });
     const page = await context.newPage();
     await signIn(page, AISSATOU);
     await page.goto('/fr/feed');
-    const menu = page.getByRole('button', { name: 'Menu, 5 à traiter' });
+    const header = page.getByRole('banner');
+    await expect(
+      header.getByRole('link', { name: /^Messages\s?, 2 messages non lus$/ }),
+    ).toBeVisible();
+    await expect(
+      header.getByRole('link', { name: /^Notifications\s?, 3 notifications non lues$/ }),
+    ).toBeVisible();
+    const menu = page.getByRole('button', { name: 'Menu', exact: true });
     await menu.click();
     const panel = page.getByRole('dialog', { name: 'Menu' });
     await expect(panel.getByRole('link', { name: 'Réseau' })).toBeVisible();
+    await expect(panel.getByRole('link', { name: 'Projets suivis' })).toBeVisible();
+    await expect(panel.getByRole('link', { name: /^Messages/ })).toHaveCount(0);
     await page.keyboard.press('Escape');
     await expect(panel).toBeHidden();
     await expect(menu).toBeFocused();
+    await context.close();
+  });
+
+  test('carries the side columns in the flow of the feed on a phone', async ({ browser }) => {
+    const context = await browser.newContext({ viewport: { width: 390, height: 844 } });
+    const page = await context.newPage();
+    await signIn(page, AISSATOU);
+    await page.goto('/fr/feed');
+    const main = page.getByRole('main');
+    // No visible title: its name for screen readers, then the composer and the profile.
+    await expect(page.getByRole('heading', { level: 1, name: 'Accueil' })).toHaveClass(/sr-only/);
+    await expect(main.getByRole('link', { name: 'Commencer une publication' })).toBeVisible();
+    await expect(main.getByRole('region', { name: 'Complétez votre profil' })).toBeVisible();
+    // The side columns are not stacked under the feed.
+    await expect(page.getByRole('complementary')).toHaveCount(0);
+    // The suggestions come among the items: after the third, then after the thirteenth.
+    const order = await main.evaluate((element) =>
+      [...element.querySelectorAll('article, section[aria-label]')].map((node) =>
+        node.tagName === 'ARTICLE' ? 'post' : node.getAttribute('aria-label'),
+      ),
+    );
+    expect(order.slice(0, 5)).toEqual([
+      'Complétez votre profil',
+      'post',
+      'post',
+      'post',
+      'Personnes pertinentes pour vous',
+    ]);
+    expect(order.indexOf('Personnes pertinentes pour vous', 5)).toBe(15);
+    await expect(
+      main.getByText('Suggéré parce que Ifeoma Okafor propose du mentorat'),
+    ).toBeVisible();
     await context.close();
   });
 

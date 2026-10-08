@@ -37,6 +37,9 @@ export const NAV_ITEMS: readonly NavItem[] = [
   { key: 'profile', href: routes.profile, icon: CircleUser, shortcut: 'u' },
 ];
 
+/** Sections that stay in the narrow header, with their counts (the others are in the panel). */
+export const HEADER_ITEMS: readonly NavItem['key'][] = ['messages', 'notifications'];
+
 /** The item of a path: its first segment (`/messages/123` is in Messages). */
 export function activeItem(pathname: string): NavItem['key'] | undefined {
   const segment = `/${pathname.split('/')[1] ?? ''}`;
@@ -141,5 +144,43 @@ export function MemberNav({ counters }: { counters: CountersDtoOutput | undefine
         </ul>
       </LayoutMotion>
     </nav>
+  );
+}
+
+/**
+ * Messages and Notifications in the narrow header, icons with their counts: what is to act on
+ * stays one tap away, the other sections are in the panel of the menu.
+ */
+export function MobileSectionLinks({ counters }: { counters: CountersDtoOutput | undefined }) {
+  const t = useTranslations('web.nav');
+  const pathname = usePathname();
+  const active = activeItem(pathname);
+  const countText = useCountText();
+  return (
+    <ul className="flex items-center gap-1 max-sm:ml-0 sm:ml-auto lg:hidden">
+      {NAV_ITEMS.filter((item) => HEADER_ITEMS.includes(item.key)).map((item) => {
+        const Icon = item.icon;
+        const count = countOf(item.key, counters);
+        return (
+          <li key={item.key}>
+            <Link
+              href={item.href}
+              aria-current={item.key === active ? 'page' : undefined}
+              className={cn(
+                'relative inline-flex size-11 items-center justify-center rounded-full outline-none hover:bg-surface-sunken focus-visible:outline-2 focus-visible:outline-focus',
+                item.key === active ? 'text-foreground' : 'text-muted',
+              )}
+            >
+              <Icon aria-hidden className="size-5" />
+              <span className="sr-only">
+                {t(item.key)}
+                {countText(item.key, count)}
+              </span>
+              <CountBadge count={count} className="absolute top-0.5 right-0.5" />
+            </Link>
+          </li>
+        );
+      })}
+    </ul>
   );
 }

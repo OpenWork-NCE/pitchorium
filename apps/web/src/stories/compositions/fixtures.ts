@@ -1,6 +1,8 @@
 import type {
   Counters,
   DiscoveryCard,
+  FeedPage,
+  Suggestion,
   CurrentUser,
   MemberCard,
   MemberSummary,
@@ -168,6 +170,40 @@ export function personCard(member: MemberCard): Extract<DiscoveryCard, { kind: '
     hats: [],
   };
 }
+
+/** The first page of the feed, as `GET /v1/feed` gives it. */
+export const feedPage: FeedPage = {
+  schemaVersion: 1,
+  items: feed.map((post) => ({ type: 'post', id: post.id, post })),
+  nextCursor: null,
+};
+
+/** People suggested with their reasons, in the keys of the discovery namespace. */
+const SUGGESTED: { member: MemberCard; key: string; params: Record<string, string> }[] = [
+  {
+    member: members.nadia,
+    key: 'reasons.shared_sector',
+    params: { sector: 'energy', name: members.nadia.displayName },
+  },
+  {
+    member: members.kofi,
+    key: 'reasons.mentoring_available',
+    params: { name: members.kofi.displayName },
+  },
+  {
+    member: members.ifeoma,
+    key: 'reasons.mentoring_available',
+    params: { name: members.ifeoma.displayName },
+  },
+];
+
+export const suggestions: Suggestion[] = SUGGESTED.map(({ member, key, params }) => ({
+  candidate: personCard(member),
+  score: 40,
+  sentence: { key: 'sentences.one', clauses: [{ key, params }] },
+  reasons: [],
+  rulesVersion: 1,
+}));
 
 export const project: ProjectCard = {
   id: '0192f4a0-3000-7000-8000-000000000001',

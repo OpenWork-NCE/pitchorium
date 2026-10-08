@@ -56,6 +56,7 @@ sequenceDiagram
 ```
 
 - Premier rendu : les Server Components lisent l'api avec `lib/api/server.ts` (origine `API_INTERNAL_URL`, cookie et `Accept-Language` de la requête entrante, rien d'autre). Le membre courant est lu une fois par requête (`lib/auth/session.ts`).
+- Messages du navigateur : chaque groupe envoie ses sous-arbres (`CLIENT_MESSAGES`) ; l'espace membre y ajoute ceux du fil et des suggestions (`discovery`, libellés de `reference`), pour construire une phrase de raison dans le navigateur aussi.
 - Navigateur : `lib/api/browser.ts` configure le client généré (`credentials: include`, `Accept-Language`, une `Idempotency-Key` par POST, sauf clé fournie par l'appelant pour son intention). Toute réponse non 2xx devient une `ApiProblemError` (code RFC 9457, `X-Request-Id`) ; l'interface affiche `errors.<code>`.
 - `QueryClient` (`lib/query/query-client.ts`) : données fraîches une minute (pas de nouvelle lecture juste après l'hydratation), conservées cinq minutes, pas de relecture au focus (le temps réel invalide), pas de nouvel essai sur une erreur 4xx, deux sur une erreur réseau ou 5xx, aucune mutation rejouée automatiquement. Un client par requête sur le serveur (`lib/query/server.ts`), un par onglet dans le navigateur ; fourni par les groupes qui lisent l'api depuis le navigateur (`DataProvider`).
 - Écritures : jamais de Server Action métier ; le navigateur appelle l'api, qui vérifie l'origine (ADR 0021) et l'idempotence.
@@ -75,7 +76,7 @@ Chaque groupe ne charge que ce qu'il utilise (ADR 0094) :
 
 ## Coquilles
 
-- Espace membre (`components/layout/member`, ADR 0099) : bandeau haut sans barre inférieure, recherche globale, six sections avec compteurs en temps réel, action contextuelle, menu du compte ; sous `lg`, un panneau `Drawer` ; bannières de compte et hors ligne sous le bandeau ; `ThreeColumnLayout` (3, 6, 3 à partir de `xl`) ou `SingleColumnLayout`. Raccourcis : ADR 0098.
+- Espace membre (`components/layout/member`, ADR 0099) : bandeau haut sans barre inférieure, recherche globale, six sections avec compteurs en temps réel, action contextuelle, menu du compte ; sous `lg`, Messages et Notifications restent au bandeau avec leurs compteurs, les autres sections, les projets suivis, l'action et le compte dans un panneau `Drawer` ; bannières de compte et hors ligne sous le bandeau ; `ThreeColumnLayout` (3, 6, 3 à partir de `xl`, colonnes latérales absentes sous `lg`, leur contenu repris par la page) ou `SingleColumnLayout`. Raccourcis : ADR 0098.
 - Administration (`components/layout/admin`) : navigation latérale (une feuille sur un téléphone), fil d'Ariane, rôle vérifié par le layout côté serveur (404 sinon).
 - Authentification : carte centrée sur les fonds discrets de la marque ; pages publiques et éditoriales : en-tête du site.
 - Chaque groupe a son `loading.tsx`, `error.tsx` et `not-found.tsx` (`components/layout/states`) ; le focus passe au contenu après une navigation (`RouteFocus`).

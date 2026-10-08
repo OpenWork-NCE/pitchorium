@@ -29,15 +29,16 @@ Contrat visuel de l'application web : chaque composant de `apps/web/src/componen
 
 ### Disposition à trois colonnes de l'espace membre (§6.1)
 
-| Écran                       | Colonnes                     | Comportement                                                                                        |
-| --------------------------- | ---------------------------- | --------------------------------------------------------------------------------------------------- |
-| Bureau, 1 280 px et plus    | gauche 3, centre 6, droite 3 | suggestions à gauche, fil ou contenu au centre, projets et personnes à droite ; latérales collantes |
-| Petit bureau, 1 024 à 1 279 | centre 8, latérale 4         | la latérale empile la gauche puis la droite ; collante                                              |
-| Tablette, 768 à 1 023       | une colonne de 12            | contenu, puis gauche, puis droite, empilés                                                          |
-| Téléphone, moins de 768     | une colonne, marges de 16 px | même ordre ; cartes pleine largeur, aucune information retirée                                      |
+| Écran                       | Colonnes                     | Comportement                                                                                             |
+| --------------------------- | ---------------------------- | -------------------------------------------------------------------------------------------------------- |
+| Bureau, 1 280 px et plus    | gauche 3, centre 6, droite 3 | profil à gauche, fil ou contenu au centre, projets et personnes à droite ; latérales collantes           |
+| Petit bureau, 1 024 à 1 279 | centre 8, latérale 4         | la latérale empile la gauche puis la droite ; collante                                                   |
+| Tablette, 768 à 1 023       | une colonne de 12            | le contenu seul : les latérales ne sont pas empilées dessous, la page reprend leur contenu dans son flux |
+| Téléphone, moins de 768     | une colonne, marges de 16 px | même règle ; cartes pleine largeur                                                                       |
 
 - Les colonnes latérales sont des `aside` nommés (`aria-label`), collantes sous le bandeau (`top` = hauteur du bandeau + 24 px) quand elles tiennent dans la fenêtre, défilantes sinon.
 - Le contenu principal vient d'abord dans l'ordre du document : au clavier et au lecteur d'écran, le fil précède les suggestions à toutes les tailles.
+- Sous `lg`, aucune information n'est retirée : elle change de place. Pour le fil, la complétion du profil devient un module en tête, les suggestions des modules parmi les éléments (`patterns.md`), les projets suivis un lien du menu.
 
 ### Densité
 

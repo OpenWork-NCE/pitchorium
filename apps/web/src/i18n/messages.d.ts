@@ -1,5 +1,6 @@
 import type { Locale } from '@pitchorium/contracts';
 import type common from '@pitchorium/i18n/locales/fr/common.json';
+import type discovery from '@pitchorium/i18n/locales/fr/discovery.json';
 import type errors from '@pitchorium/i18n/locales/fr/errors.json';
 import type notifications from '@pitchorium/i18n/locales/fr/notifications.json';
 import type reference from '@pitchorium/i18n/locales/fr/reference.json';
@@ -11,6 +12,7 @@ declare module 'next-intl' {
     Locale: Locale;
     Messages: {
       common: typeof common;
+      discovery: typeof discovery;
       errors: typeof errors;
       notifications: typeof notifications;
       reference: typeof reference;

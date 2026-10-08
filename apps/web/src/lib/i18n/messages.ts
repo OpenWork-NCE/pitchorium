@@ -2,7 +2,14 @@ import type { Locale } from '@pitchorium/contracts';
 import { type CatalogTree, catalogs, localeManifest } from '@pitchorium/i18n';
 
 /** Namespaces of `@pitchorium/i18n` the web app reads on the server. */
-export const WEB_NAMESPACES = ['common', 'errors', 'notifications', 'reference', 'web'] as const;
+export const WEB_NAMESPACES = [
+  'common',
+  'discovery',
+  'errors',
+  'notifications',
+  'reference',
+  'web',
+] as const;
 
 type WebNamespace = (typeof WEB_NAMESPACES)[number];
 export type WebMessages = Record<WebNamespace, CatalogTree>;
@@ -26,6 +33,22 @@ const MENTIONS = [
   'reference.impactLevels',
 ] as const;
 
+/** The feed (publications, suggestions with their reasons, completion of the profile). */
+const FEED_MESSAGES = [
+  'web.feed',
+  'web.content',
+  'web.projects',
+  'web.profile',
+  'discovery',
+  'reference.reactionTypes',
+  'reference.profileElements',
+  'reference.entrepreneurNeeds',
+  'reference.contributorHats',
+  'reference.sectors',
+  'reference.fundingInstruments',
+  'reference.countries',
+] as const;
+
 export const CLIENT_MESSAGES = {
   document: DOCUMENT_MESSAGES,
   marketing: [...DOCUMENT_MESSAGES, 'web.home'],
@@ -45,6 +68,8 @@ export const CLIENT_MESSAGES = {
     'errors',
     'reference.prerequisiteElements',
     'reference.mediaRejectionReasons',
+    // The feed and the suggestions of every page: their texts, the reasons and their labels.
+    ...FEED_MESSAGES,
   ],
   admin: [
     ...DOCUMENT_MESSAGES,
