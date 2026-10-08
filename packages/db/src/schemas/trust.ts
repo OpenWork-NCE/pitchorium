@@ -72,6 +72,8 @@ export const trustReports = trustSchema.table(
     reporterId: uuid('reporter_id'),
     reporterName: text('reporter_name'),
     reporterEmail: text('reporter_email'),
+    /** Language of the emails to a notifier without an account. */
+    reporterLocale: text('reporter_locale'),
     messageContext: jsonb('message_context').$type<Record<string, unknown>>(),
     outcome: text('outcome'),
     createdAt: timestamptz('created_at').notNull(),

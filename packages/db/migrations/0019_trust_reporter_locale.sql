@@ -1,0 +1,1 @@
+ALTER TABLE "trust"."reports" ADD COLUMN "reporter_locale" text;
