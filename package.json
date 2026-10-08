@@ -25,6 +25,7 @@
     "db:check": "pnpm --filter @pitchorium/db db:check",
     "admin:create": "pnpm --filter @pitchorium/server admin:create",
     "payments:reconcile": "pnpm --filter @pitchorium/server payments:reconcile",
+    "discovery:reindex": "pnpm --filter @pitchorium/server discovery:reindex",
     "i18n:check": "turbo run check:keys",
     "openapi:generate": "turbo run openapi:generate",
     "api-client:generate": "turbo run api-client:generate",

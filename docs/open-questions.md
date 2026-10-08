@@ -10,9 +10,11 @@ Informations nécessaires au développement et absentes du cahier des charges (d
 
 ## Matching et découverte
 
-4. Les règles de matching du prototype : correspondances besoins et casquettes, secteurs, complémentarité géographique et sectorielle, ordre de priorité (§2.1, §10.2, §11.4).
-5. La liste des secteurs, des stades d'entreprise, des besoins et des expertises. Provisoirement : secteurs = 21 sections CITI/ISIC rév. 4 (libellés français à faire relire), stades = `idea`, `prototype`, `early_revenue`, `growth`, `scale`, besoins alignés sur les casquettes (`NEED_TO_HATS`), expertises recherchées en texte libre (ADR 0018).
-6. Le contenu de la « découverte éditorialisée » : qui choisit les projets et profils mis en avant (§10.3).
+4. Les règles de matching du prototype : correspondances besoins et casquettes, secteurs, complémentarité géographique et sectorielle, ordre de priorité (§2.1, §10.2, §11.4). Des règles provisoires sont livrées (ADR 0067, `apps/server/src/modules/discovery/domain/matching.ts`) : besoin et casquette (35 points), mission qui répond à un besoin ou cherche une casquette (35), entrepreneurs complémentaires (30), secteur commun, pays d'intervention, événement dans un pays du membre (20), mentorat (15), ticket et financement visé (15), instruments, mission accessible, langue commune (10), seuil de 20 points ; toutes à valider.
+5. Les plafonds du matching et de la recherche (provisoires) : 500 candidats par liste, 50 suggestions gardées, 2 000 sujets mis à jour quand un candidat change, 1 000 résultats paginés, 10 suggestions au plus en fin de fil, similarité de mot 0,5 pour la tolérance aux fautes (ADR 0066 et 0068).
+6. Le choix des sections de la page Découvrir et de la sélection éditoriale : aujourd'hui les projets mis en avant par la modération (voir aussi la question 6).
+7. La liste des secteurs, des stades d'entreprise, des besoins et des expertises. Provisoirement : secteurs = 21 sections CITI/ISIC rév. 4 (libellés français à faire relire), stades = `idea`, `prototype`, `early_revenue`, `growth`, `scale`, besoins alignés sur les casquettes (`NEED_TO_HATS`), expertises recherchées en texte libre (ADR 0018).
+8. Le contenu de la « découverte éditorialisée » : qui choisit les projets et profils mis en avant (§10.3).
 
 ## Profils
 

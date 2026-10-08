@@ -49,6 +49,7 @@ pnpm dev
 | `pnpm db:check`                     | Vérifie la cohérence des migrations                                                                                                                                         |
 | `pnpm admin:create --email <email>` | Attribue le rôle admin à un compte existant (idempotent)                                                                                                                    |
 | `pnpm payments:reconcile`           | Rapprochement des paiements à la demande (`--days N`, 3 par défaut)                                                                                                         |
+| `pnpm discovery:reindex [--check]`  | Reconstruit l'index de recherche et les suggestions depuis les façades ; `--check` compare l'index aux sources, répare et sort en 1 s'il a trouvé une dérive (ADR 0065)     |
 | `pnpm i18n:check`                   | Vérifie l'alignement des clés de traduction sur le français                                                                                                                 |
 | `pnpm openapi:generate`             | Exporte `apps/server/openapi/openapi.json` sans démarrer de serveur                                                                                                         |
 | `pnpm api-client:generate`          | Régénère le client Orval à partir de l'OpenAPI                                                                                                                              |
@@ -66,6 +67,7 @@ pnpm dev
 - [Graphe social et fil d'actualité](docs/architecture/social-graph-and-feed.md)
 - [Projets : cycle de vie et flux du financement](docs/architecture/projects-and-funding.md)
 - [Paiements : contributions, rails, ledger et rapprochement](docs/architecture/payments.md) et [hypothèses réglementaires à valider](docs/architecture/payments-compliance.md)
+- [Découverte : projection de recherche, recherche et matching expliqué](docs/architecture/discovery.md)
 - [Temps réel : protocole Socket.IO](docs/architecture/realtime.md)
 - [Notifications](docs/architecture/notifications.md) et [délivrabilité des emails](docs/architecture/email-deliverability.md)
 - [Décisions d'architecture (ADR)](docs/adr/README.md)

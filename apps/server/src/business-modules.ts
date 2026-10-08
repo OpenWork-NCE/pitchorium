@@ -21,13 +21,7 @@ import { LocalizationModule } from './modules/localization';
 import { AdminModule } from './modules/admin';
 
 /** Modules wired the same way in both processes. */
-const COMMON_MODULES: Type[] = [
-  DiscoveryModule,
-  TrustModule,
-  PrivacyModule,
-  LocalizationModule,
-  AdminModule,
-];
+const COMMON_MODULES: Type[] = [TrustModule, PrivacyModule, LocalizationModule, AdminModule];
 
 /**
  * Business modules of each process. Modules with process-specific providers (the api serves
@@ -48,6 +42,7 @@ export const API_BUSINESS_MODULES: (Type | DynamicModule)[] = [
   MessagingModule.forApi(),
   EventsModule.forApi(),
   MissionsModule.forApi(),
+  DiscoveryModule.forApi(),
   NotificationsModule.forApi(),
   ...COMMON_MODULES,
 ];
@@ -67,6 +62,7 @@ export const WORKER_BUSINESS_MODULES: (Type | DynamicModule)[] = [
   MessagingModule.forWorker(),
   EventsModule.forWorker(),
   MissionsModule.forWorker(),
+  DiscoveryModule.forWorker(),
   NotificationsModule.forWorker(),
   ...COMMON_MODULES,
 ];

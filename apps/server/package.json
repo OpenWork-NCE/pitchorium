@@ -18,6 +18,7 @@
     "outbox:ping": "node --env-file-if-exists=.env --import tsx scripts/emit-ping-event.mts",
     "admin:create": "node --env-file-if-exists=.env -r @swc-node/register src/main.create-admin.ts",
     "payments:reconcile": "node --env-file-if-exists=.env -r @swc-node/register src/main.reconcile.ts",
+    "discovery:reindex": "node --env-file-if-exists=.env -r @swc-node/register src/main.discovery-reindex.ts",
     "db:seed:dev": "node --env-file-if-exists=.env -r @swc-node/register scripts/seed-dev.ts"
   },
   "dependencies": {

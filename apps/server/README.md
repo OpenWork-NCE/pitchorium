@@ -9,6 +9,7 @@ src/
   main.openapi.ts    export de openapi/openapi.json sans serveur réseau
   main.create-admin.ts  commande admin:create (rôle admin d'un compte existant)
   main.reconcile.ts     commande payments:reconcile (rapprochement des paiements à la demande)
+  main.discovery-reindex.ts  commande discovery:reindex (reconstruction et contrôle de l'index de recherche)
   api-app.ts         configuration HTTP et Socket.IO de l'api, partagée avec les tests
   app.module.ts      racine de l'api
   worker.module.ts   racine du worker
@@ -28,17 +29,18 @@ test/
 scripts/             outils de développement
 ```
 
-| Commande                                                 | Effet                                                                                                                                            |
-| -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `pnpm dev:api` / `pnpm dev:worker`                       | Lance un processus en watch (SWC), avec `.env`                                                                                                   |
-| `pnpm build` puis `pnpm start:api` / `pnpm start:worker` | Exécution compilée                                                                                                                               |
-| `pnpm test`                                              | Tests unitaires et d'architecture, couverture du kernel à 100 %                                                                                  |
-| `pnpm test:integration`                                  | Tests d'intégration et HTTP (Docker requis : PostgreSQL, Valkey, Mailpit et MinIO pour tous, ClamAV pour les tests media)                        |
-| `pnpm test:providers`                                    | Sandboxes Stripe et Flutterwave (ADR 0054) : `STRIPE_TEST_SECRET_KEY`, `FLUTTERWAVE_TEST_SECRET_KEY`, facultatif `STRIPE_TEST_CONNECTED_ACCOUNT` |
-| `pnpm openapi:generate`                                  | Écrit `openapi/openapi.json` à partir de `dist/`                                                                                                 |
-| `pnpm outbox:ping`                                       | Insère un événement `platform.ping.v1` relayé par le worker                                                                                      |
-| `pnpm admin:create --email <email>`                      | Attribue le rôle admin à un compte existant (idempotent)                                                                                         |
-| `pnpm payments:reconcile [--days N]`                     | Rapprochement des paiements, écarts listés, code de sortie 1 s'il y en a ; ne corrige rien                                                       |
-| `pnpm db:seed:dev`                                       | Données de démonstration (`scripts/dev-seed/`), idempotentes, refusées en production                                                             |
+| Commande                                                 | Effet                                                                                                                                                |
+| -------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pnpm dev:api` / `pnpm dev:worker`                       | Lance un processus en watch (SWC), avec `.env`                                                                                                       |
+| `pnpm build` puis `pnpm start:api` / `pnpm start:worker` | Exécution compilée                                                                                                                                   |
+| `pnpm test`                                              | Tests unitaires et d'architecture, couverture du kernel à 100 %                                                                                      |
+| `pnpm test:integration`                                  | Tests d'intégration et HTTP (Docker requis : PostgreSQL, Valkey, Mailpit et MinIO pour tous, ClamAV pour les tests media)                            |
+| `pnpm test:providers`                                    | Sandboxes Stripe et Flutterwave (ADR 0054) : `STRIPE_TEST_SECRET_KEY`, `FLUTTERWAVE_TEST_SECRET_KEY`, facultatif `STRIPE_TEST_CONNECTED_ACCOUNT`     |
+| `pnpm openapi:generate`                                  | Écrit `openapi/openapi.json` à partir de `dist/`                                                                                                     |
+| `pnpm outbox:ping`                                       | Insère un événement `platform.ping.v1` relayé par le worker                                                                                          |
+| `pnpm admin:create --email <email>`                      | Attribue le rôle admin à un compte existant (idempotent)                                                                                             |
+| `pnpm payments:reconcile [--days N]`                     | Rapprochement des paiements, écarts listés, code de sortie 1 s'il y en a ; ne corrige rien                                                           |
+| `pnpm discovery:reindex [--check]`                       | Reconstruit l'index de recherche et les suggestions depuis les façades, ou vérifie et répare la dérive (`--check`, code de sortie 1 s'il y en a une) |
+| `pnpm db:seed:dev`                                       | Données de démonstration (`scripts/dev-seed/`), idempotentes, refusées en production                                                                 |
 
 Toutes les variables d'environnement sont décrites dans `.env.example`.

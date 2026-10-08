@@ -68,6 +68,10 @@ Un fichier par décision, numéroté, au format Contexte / Décision / Conséque
 | [0062](0062-email-deliverability.md)                     | Délivrabilité des emails                                     |
 | [0063](0063-verify-clean.md)                             | Vérification depuis zéro (`pnpm verify:clean`)               |
 | [0064](0064-batched-notification-delivery.md)            | Livraison des notifications par lots                         |
+| [0065](0065-search-projection-by-events.md)              | Projection de recherche par événements                       |
+| [0066](0066-search-multilingual-and-weighting.md)        | Multilinguisme et pondération de la recherche                |
+| [0067](0067-explainable-rule-based-matching.md)          | Matching à règles explicables                                |
+| [0068](0068-precomputed-suggestions.md)                  | Précalcul des suggestions                                    |
 | [0069](0069-events-scope.md)                             | Périmètre des événements (à valider)                         |
 | [0070](0070-free-events-only.md)                         | Événements gratuits uniquement                               |
 | [0071](0071-volunteer-missions-no-job-board.md)          | Missions bénévoles, pas de job board                         |
