@@ -42,6 +42,7 @@
     "check:dead-code": "pnpm dlx knip@6.38.0 --no-progress",
     "check:licenses": "node scripts/check-licenses.mjs",
     "check:box-drawing": "sh scripts/check-box-drawing.sh",
+    "brand:sync": "pnpm --filter @pitchorium/web brand:sync",
     "verify:clean": "bash scripts/verify-clean.sh",
     "prepare": "husky"
   },

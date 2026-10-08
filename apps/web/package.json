@@ -9,7 +9,8 @@
     "start": "next start --port ${WEB_PORT:-3200}",
     "typecheck": "next typegen && tsc",
     "lint": "eslint .",
-    "test": "vitest run"
+    "test": "vitest run",
+    "brand:sync": "node scripts/brand-sync.mjs"
   },
   "dependencies": {
     "@gsap/react": "2.1.2",

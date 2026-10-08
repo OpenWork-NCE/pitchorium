@@ -16,3 +16,6 @@ pnpm dev                                 # api, worker et web (http://localhost:
 | `pnpm typecheck`           | types des routes (`next typegen`) puis `tsc`                 |
 | `pnpm lint`                | ESLint (préset `@pitchorium/config/eslint-web`)              |
 | `pnpm test`                | Vitest                                                       |
+| `pnpm brand:sync`          | resélectionne les fichiers du kit de marque local            |
+
+Fichiers écrits par `pnpm brand:sync` (`docs/design/brand-usage.md`), à ne pas modifier à la main : `src/components/brand/marks.generated.tsx`, `public/brand/`, `public/fonts/`, `assets/og/`, `src/app/{favicon.ico,icon.svg,apple-icon.png}`.

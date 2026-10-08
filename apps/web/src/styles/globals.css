@@ -1,1 +1,334 @@
 @import 'tailwindcss';
+@import './tokens.css';
+
+/* Dark theme follows next-themes (data-theme on <html>), not only the system preference. */
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
+/*
+ * Theme of the utilities. The default palette of Tailwind is removed: a component can only use
+ * the tokens below (no hard-coded colour).
+ */
+@theme inline {
+  --color-*: initial;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-surface-sunken: var(--surface-sunken);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-on-accent: var(--on-accent);
+  --color-accent-subtle: var(--accent-subtle);
+  --color-on-accent-subtle: var(--on-accent-subtle);
+  --color-link: var(--link);
+  --color-highlight: var(--highlight);
+  --color-on-highlight: var(--on-highlight);
+  --color-success: var(--success);
+  --color-success-subtle: var(--success-subtle);
+  --color-warning: var(--warning);
+  --color-warning-subtle: var(--warning-subtle);
+  --color-danger: var(--danger);
+  --color-danger-subtle: var(--danger-subtle);
+  --color-info: var(--info);
+  --color-info-subtle: var(--info-subtle);
+  --color-on-status: var(--on-status);
+  --color-focus: var(--focus);
+  --color-overlay: var(--overlay);
+
+  /* Brand colours, for graphic accents only (copper is never body text, brand guide). */
+  --color-brand-violet: var(--brand-violet);
+  --color-brand-copper: var(--brand-copper);
+  --color-brand-black: var(--brand-black);
+  --color-brand-white: var(--brand-white);
+
+  --font-sans: var(--font-poppins), var(--font-fallback), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-bricolage), var(--font-fallback), ui-sans-serif, system-ui, sans-serif;
+  --font-hand: var(--font-edu), cursive;
+
+  /* Fluid scale on the 18 / 29 / 47 progression of the brand guide (ratio close to 1.618). */
+  --text-xs: 0.75rem;
+  --text-xs--line-height: 1.5;
+  --text-sm: 0.875rem;
+  --text-sm--line-height: 1.5;
+  --text-base: clamp(1rem, 0.975rem + 0.125vw, 1.0625rem);
+  --text-base--line-height: 1.5;
+  --text-lg: 1.125rem;
+  --text-lg--line-height: 1.5;
+  --text-xl: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);
+  --text-xl--line-height: 1.3;
+  --text-2xl: clamp(1.5rem, 1.3rem + 1vw, 1.8125rem);
+  --text-2xl--line-height: 1.2;
+  --text-3xl: clamp(1.875rem, 1.55rem + 1.6vw, 2.375rem);
+  --text-3xl--line-height: 1.15;
+  --text-4xl: clamp(2.25rem, 1.8rem + 2.25vw, 2.9375rem);
+  --text-4xl--line-height: 1.1;
+  --text-5xl: clamp(2.75rem, 2rem + 3.75vw, 4.75rem);
+  --text-5xl--line-height: 1.05;
+
+  --spacing: 0.25rem;
+
+  --radius-xs: 0.25rem;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.625rem;
+  --radius-lg: 0.875rem;
+  --radius-xl: 1.25rem;
+  --radius-2xl: 1.75rem;
+
+  --shadow-xs: 0 1px 2px rgb(var(--shadow-color) / var(--shadow-strength));
+  --shadow-sm:
+    0 1px 2px rgb(var(--shadow-color) / var(--shadow-strength)),
+    0 2px 8px rgb(var(--shadow-color) / calc(var(--shadow-strength) * 0.75));
+  --shadow-md:
+    0 2px 4px rgb(var(--shadow-color) / var(--shadow-strength)),
+    0 8px 24px rgb(var(--shadow-color) / calc(var(--shadow-strength) * 1.25));
+  --shadow-lg:
+    0 4px 8px rgb(var(--shadow-color) / var(--shadow-strength)),
+    0 24px 48px rgb(var(--shadow-color) / calc(var(--shadow-strength) * 1.5));
+
+  --breakpoint-xs: 24rem;
+  --breakpoint-sm: 40rem;
+  --breakpoint-md: 48rem;
+  --breakpoint-lg: 64rem;
+  --breakpoint-xl: 80rem;
+  --breakpoint-2xl: 96rem;
+
+  --ease-enter: var(--ease-enter);
+  --ease-curtain: var(--ease-curtain);
+
+  /* Brand guide: logo fade 180 to 250 ms with a rise of 8 px at most. */
+  --animate-brand-enter: brand-enter 220ms var(--ease-enter) both;
+
+  @keyframes brand-enter {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+  }
+}
+
+@layer base {
+  html {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    min-height: 100dvh;
+    font-size: var(--text-base);
+    line-height: 1.5;
+  }
+
+  h1,
+  h2 {
+    font-family: var(--font-display);
+    font-weight: 800;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background-color: var(--color-accent-subtle);
+    color: var(--color-on-accent-subtle);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+
+  /* Tones of the brand marks (src/components/brand). */
+  .brand-ink {
+    fill: var(--logo-ink);
+  }
+
+  .brand-accent {
+    fill: var(--logo-accent);
+  }
+}
+
+/* Press (motion catalogue): scale 0.96 on press, back on release. */
+@utility press {
+  transition: transform var(--duration-press) var(--ease-enter);
+
+  &:active {
+    transform: scale(0.96);
+  }
+}
+
+@layer components {
+  /* Circle fill of the primary button (H21): copper disc from the bottom, clip-path only. */
+  .circle-fill {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: inherit;
+    border-radius: inherit;
+    background-color: var(--color-highlight);
+    color: var(--color-on-highlight);
+    pointer-events: none;
+    clip-path: circle(0% at 50% 100%);
+    transition: clip-path var(--duration-fill) var(--ease-enter);
+  }
+
+  @media (hover: hover) {
+    [data-fill]:hover > .circle-fill {
+      clip-path: circle(150% at 50% 100%);
+    }
+  }
+
+  [data-fill]:focus-visible > .circle-fill {
+    clip-path: circle(150% at 50% 100%);
+  }
+
+  /* Reveal on scroll (E1): scroll-driven where supported, IntersectionObserver otherwise. */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      [data-reveal] {
+        animation: reveal-rise linear both;
+        animation-timeline: view();
+        animation-range: entry 0% entry 70%;
+      }
+    }
+  }
+
+  @supports not (animation-timeline: view()) {
+    @media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+      [data-reveal] {
+        transition:
+          transform var(--duration-reveal) var(--ease-enter),
+          filter var(--duration-reveal) var(--ease-enter);
+      }
+
+      [data-reveal]:not([data-revealed]) {
+        transform: translateY(24px);
+        filter: blur(6px);
+      }
+    }
+  }
+
+  /* Counter (H17): hidden until its script takes over, so that it never counts down. */
+  @media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+    [data-counter]:not([data-ready]) {
+      visibility: hidden;
+    }
+  }
+}
+
+@keyframes loading-bar {
+  from {
+    transform: translateX(-100%);
+  }
+
+  to {
+    transform: translateX(300%);
+  }
+}
+
+@keyframes menu-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}
+
+/* No opacity: text keeps its AA contrast at every frame of a reveal (docs/design/motion.md). */
+@keyframes reveal-rise {
+  from {
+    transform: translateY(24px);
+    filter: blur(6px);
+  }
+
+  to {
+    transform: none;
+    filter: none;
+  }
+}
+
+/*
+ * View transitions. Only the page content takes part in a navigation (React <ViewTransition>,
+ * classes page-enter and page-exit); the whole page is captured only for a theme change.
+ */
+html:not([data-theme-transition]) {
+  view-transition-name: none;
+}
+
+::view-transition-old(.page-exit) {
+  animation: page-out var(--duration-micro) var(--ease-enter) both;
+}
+
+::view-transition-new(.page-enter) {
+  animation: page-in var(--duration-page) var(--ease-enter) both;
+}
+
+html[data-theme-transition='circle']::view-transition-old(root),
+html[data-theme-transition='circle']::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+html[data-theme-transition='fade']::view-transition-old(root),
+html[data-theme-transition='fade']::view-transition-new(root) {
+  animation-duration: var(--duration-press);
+}
+
+@keyframes page-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes page-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(.page-exit),
+  ::view-transition-new(.page-enter) {
+    animation: none;
+  }
+
+  .press:active {
+    transform: none;
+  }
+}
+
+/* Reduced motion, or a data saver: every transition jumps to its final state. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media (prefers-reduced-data: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -85,3 +85,5 @@ Un fichier par décision, numéroté, au format Contexte / Décision / Conséque
 | [0079](0079-strict-inputs.md)                            | Entrées strictes                                             |
 | [0080](0080-delivery.md)                                 | Livraison : image, analyses et versions                      |
 | [0081](0081-web-app-next-16.md)                          | Application web Next.js 16                                   |
+| [0085](0085-design-tokens-and-theme.md)                  | Tokens de design et thème                                    |
+| [0087](0087-brand-assets-and-fonts.md)                   | Fichiers de marque et polices                                |

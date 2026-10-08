@@ -1,0 +1,142 @@
+/*
+ * Design tokens of Pitchorium (docs/design/tokens.md). Brand colours come from the brand guide
+ * (04-guide/palette-et-typographies.json); the scales are derived in OKLCH with the brand values
+ * as anchors (violet 800, copper 400, neutral 50 and 950). Components use the semantic tokens
+ * only, through the Tailwind theme of globals.css. Contrast of every text and background pair is
+ * tested in both themes (src/styles/contrast.spec.ts).
+ */
+
+:root {
+  /* Brand guide. */
+  --brand-violet: #3e285d;
+  --brand-copper: #ca8764;
+  --brand-black: #121212;
+  --brand-white: #f7f7f5;
+
+  /* Derived scales. */
+  --violet-50: #f4f1f8;
+  --violet-100: #eae4f2;
+  --violet-200: #d6cce6;
+  --violet-300: #b8a9d3;
+  --violet-400: #9c88c2;
+  --violet-500: #7d67a2;
+  --violet-600: #614b83;
+  --violet-700: #4d3870;
+  --violet-800: var(--brand-violet);
+  --violet-900: #2c1c44;
+  --violet-950: #1e1230;
+
+  --copper-50: #fbf3ee;
+  --copper-100: #f6e4d9;
+  --copper-200: #edcbb7;
+  --copper-300: #dfaa8c;
+  --copper-400: var(--brand-copper);
+  --copper-500: #a96846;
+  --copper-600: #874e31;
+  --copper-700: #6b3c25;
+  --copper-800: #52301e;
+  --copper-900: #3d2417;
+  --copper-950: #28180f;
+
+  --neutral-0: #ffffff;
+  --neutral-50: var(--brand-white);
+  --neutral-100: #efeeea;
+  --neutral-200: #e3e1dc;
+  --neutral-300: #cfccc6;
+  --neutral-400: #8c8882;
+  --neutral-500: #7e7a74;
+  --neutral-600: #5e5b56;
+  --neutral-700: #45423e;
+  --neutral-800: #2c2a28;
+  --neutral-900: #1a1918;
+  --neutral-950: var(--brand-black);
+
+  /* Semantic tokens, light theme. */
+  --background: var(--neutral-50);
+  --surface: var(--neutral-0);
+  --surface-elevated: var(--neutral-0);
+  --surface-sunken: var(--neutral-100);
+  --foreground: var(--neutral-950);
+  --muted: var(--neutral-600);
+  --border: var(--neutral-200);
+  --border-strong: var(--neutral-400);
+  --accent: var(--violet-800);
+  --accent-strong: var(--violet-900);
+  --on-accent: var(--brand-white);
+  --accent-subtle: var(--violet-100);
+  --on-accent-subtle: var(--violet-800);
+  --link: var(--violet-800);
+  --highlight: var(--brand-copper);
+  --on-highlight: var(--brand-black);
+  --success: #1e7a4c;
+  --success-subtle: #e3f2ea;
+  --warning: #8f5406;
+  --warning-subtle: #fbefd9;
+  --danger: #b42318;
+  --danger-subtle: #fbe5e2;
+  --info: #2457a6;
+  --info-subtle: #e4ecf8;
+  --on-status: var(--neutral-0);
+  --focus: var(--violet-600);
+  --overlay: rgb(18 18 18 / 0.56);
+  --logo-ink: var(--brand-violet);
+  --logo-accent: var(--brand-copper);
+  --shadow-color: 18 18 18;
+  --shadow-strength: 0.08;
+
+  /* Motion: same values as src/components/motion/tokens.ts (checked by a test). */
+  --ease-enter: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-curtain: cubic-bezier(0.76, 0, 0.24, 1);
+  --duration-press: 150ms;
+  --duration-micro: 200ms;
+  --duration-page: 320ms;
+  --duration-reveal: 600ms;
+  --duration-fill: 800ms;
+  --duration-theme: 700ms;
+  --duration-counter: 1400ms;
+
+  /* Layers. */
+  --z-base: 0;
+  --z-raised: 10;
+  --z-sticky: 30;
+  --z-header: 40;
+  --z-overlay: 50;
+  --z-modal: 60;
+  --z-toast: 70;
+  --z-skip-link: 80;
+}
+
+/* Dark theme: the official dark variants of the logo sit on brand black. */
+:root[data-theme='dark'] {
+  --background: var(--neutral-950);
+  --surface: #1a191c;
+  --surface-elevated: #232127;
+  --surface-sunken: #0c0c0c;
+  --foreground: var(--brand-white);
+  --muted: #aba7b0;
+  --border: #34313a;
+  --border-strong: #7a7681;
+  --accent: var(--violet-300);
+  --accent-strong: var(--violet-200);
+  --on-accent: var(--brand-black);
+  --accent-subtle: #2c2438;
+  --on-accent-subtle: var(--violet-200);
+  --link: #c9bce2;
+  --highlight: var(--brand-copper);
+  --on-highlight: var(--brand-black);
+  --success: #5bc48c;
+  --success-subtle: #12291d;
+  --warning: #e5a54b;
+  --warning-subtle: #2e2210;
+  --danger: #f28b80;
+  --danger-subtle: #33171a;
+  --info: #8db2ee;
+  --info-subtle: #162238;
+  --on-status: var(--brand-black);
+  --focus: var(--brand-copper);
+  --overlay: rgb(0 0 0 / 0.64);
+  --logo-ink: var(--brand-white);
+  --logo-accent: var(--brand-copper);
+  --shadow-color: 0 0 0;
+  --shadow-strength: 0.4;
+}
