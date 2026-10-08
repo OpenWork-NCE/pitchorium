@@ -102,9 +102,9 @@ async function check(accountId: string): Promise<boolean> {
   return ready;
 }
 
-function instructions(accountId: string, url: string): string {
+function instructions(accountId: string, url: string, created: boolean): string {
   return [
-    `Connected account created: ${accountId}`,
+    `Connected account${created ? ' created' : ''}: ${accountId}`,
     '',
     `Onboarding link (valid a few minutes; new one: --link ${accountId}):`,
     `  ${url}`,
@@ -133,7 +133,7 @@ async function main(): Promise<void> {
     process.exit((await check(argument)) ? 0 : 2);
   }
   if (command === '--link' && argument) {
-    process.stdout.write(instructions(argument, await onboardingLink(argument)));
+    process.stdout.write(instructions(argument, await onboardingLink(argument), false));
     return;
   }
   if (command === undefined && existing) {
@@ -144,7 +144,7 @@ async function main(): Promise<void> {
     process.exit(1);
   }
   const accountId = await createAccount();
-  process.stdout.write(instructions(accountId, await onboardingLink(accountId)));
+  process.stdout.write(instructions(accountId, await onboardingLink(accountId), true));
 }
 
 main().catch((error: unknown) => {
