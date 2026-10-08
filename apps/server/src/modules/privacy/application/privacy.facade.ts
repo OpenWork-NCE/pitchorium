@@ -1,4 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Optional } from '@nestjs/common';
+import { PrivacyRepository } from './ports';
 import {
   type AccountDirectory,
   type PersonalDataRegistration,
@@ -11,7 +12,15 @@ import {
  */
 @Injectable()
 export class PrivacyFacade {
-  constructor(private readonly registry: PersonalDataRegistry) {}
+  constructor(
+    private readonly registry: PersonalDataRegistry,
+    @Optional() private readonly privacy?: PrivacyRepository,
+  ) {}
+
+  /** Exports being built and erasures not finished (administration statistics). */
+  async openRequests(): Promise<number> {
+    return this.privacy ? this.privacy.openRequests() : 0;
+  }
 
   registerPersonalData(registration: PersonalDataRegistration): void {
     this.registry.register(registration);

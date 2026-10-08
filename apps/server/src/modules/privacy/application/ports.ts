@@ -34,6 +34,8 @@ export abstract class PrivacyRepository {
   /** Scheduled erasures not yet reminded whose date comes before `before`. */
   abstract erasuresToRemind(before: Date, limit: number): Promise<ErasureRecord[]>;
 
+  /** Exports being built and erasures not finished (administration statistics). */
+  abstract openRequests(): Promise<number>;
   /** Exports and erasures, newest first. */
   abstract rightsRequests(
     kind: RightsRequestKind | undefined,

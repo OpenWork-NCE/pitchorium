@@ -153,6 +153,18 @@ export class DrizzlePrivacyRepository extends PrivacyRepository {
     return rows.map(toErasure);
   }
 
+  async openRequests(): Promise<number> {
+    const [exports] = await this.db
+      .select({ total: sql<number>`count(*)::int` })
+      .from(privacyExports)
+      .where(eq(privacyExports.status, 'pending'));
+    const [erasures] = await this.db
+      .select({ total: sql<number>`count(*)::int` })
+      .from(privacyErasures)
+      .where(inArray(privacyErasures.status, ['scheduled', 'running', 'blocked', 'failed']));
+    return (exports?.total ?? 0) + (erasures?.total ?? 0);
+  }
+
   async rightsRequests(
     kind: RightsRequestKind | undefined,
     after: KeysetPosition | null,
