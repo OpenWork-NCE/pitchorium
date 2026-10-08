@@ -31,7 +31,10 @@ import { CONTENT_QUEUE } from './interface/content-queue';
 import { CommentResolver, PostResolver } from './interface/content.resolvers';
 import { PostsController } from './interface/posts.controller';
 
+import { ContentPersonalData } from './infrastructure/content-personal-data';
+
 const SHARED_PROVIDERS: Provider[] = [
+  ContentPersonalData,
   { provide: ContentRepository, useClass: DrizzleContentRepository },
   { provide: PostViewCounter, useClass: RedisPostViewCounter },
   ContentEventsRecorder,

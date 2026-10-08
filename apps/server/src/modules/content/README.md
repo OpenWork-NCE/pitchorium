@@ -88,3 +88,7 @@ Un repartage émet `content.post.reposted.v1` (pas `content.post.created.v1`). D
 ## Dépendances
 
 identity (indirectement, par le garde d'access), profiles (cartes, page publique, identifiants des mentions), organizations (rôle de l'auteur, cartes, slugs des mentions), network (suivis, connexions, blocages), media (images, document, aperçu, autorisation de lecture), projects (rattachement et actualités du fil, par enregistrement : content ne dépend pas de projects).
+
+## Données personnelles (RGPD)
+
+Export : publications et repartages, commentaires, réactions, publications enregistrées et masquées. Suppression : réactions, enregistrements, masquages et mentions supprimés ; publications supprimées avec leurs commentaires (les repartages d'autres membres perdent le lien) ; un commentaire auquel d'autres ont répondu devient une pierre tombale vide sous le pseudonyme ; les fichiers suivent l'effaceur de media. Contrats enregistrés auprès du module privacy (`infrastructure/content-personal-data.ts`, ADR 0074).
