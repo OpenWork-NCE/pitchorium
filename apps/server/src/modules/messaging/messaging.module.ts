@@ -19,7 +19,10 @@ import { MessagingGateway } from './interface/messaging.gateway';
 
 import { MessagingPersonalData } from './infrastructure/messaging-personal-data';
 
+import { MessagingTranslatable } from './infrastructure/messaging-translatable';
+
 const SHARED_PROVIDERS: Provider[] = [
+  MessagingTranslatable,
   MessagingPersonalData,
   { provide: MessagingRepository, useClass: DrizzleMessagingRepository },
   ConversationAccess,
