@@ -7,7 +7,7 @@ import { check } from 'k6';
 import exec from 'k6/execution';
 
 const API = __ENV.API_URL || 'http://127.0.0.1:3100';
-const ORIGIN = __ENV.WEB_ORIGIN || 'http://localhost:5173';
+const ORIGIN = __ENV.WEB_ORIGIN || 'http://localhost:3200';
 const PASSWORD = 'pitchorium-demo-2026';
 const DURATION = __ENV.DURATION || '60s';
 // RATE_FACTOR multiplies every arrival rate (5 for the stress run of the report).

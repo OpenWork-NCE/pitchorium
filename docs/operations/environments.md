@@ -27,7 +27,7 @@ Toutes les variables lues par l'api et le worker, validées au démarrage par `a
 | `SENTRY_DSN`                               | URL                                                          | —                                               | —                                         | clé de test      | secret (gestionnaire de secrets)  |
 | `SENTRY_ENVIRONMENT`                       | texte                                                        | —                                               | —                                         | comme production | facultative                       |
 | `OTEL_EXPORTER_OTLP_ENDPOINT`              | URL                                                          | —                                               | —                                         | comme production | facultative                       |
-| `WEB_APP_URL`                              | URL                                                          | `http://localhost:5173`                         | `http://localhost:5173`                   | comme production | défaut                            |
+| `WEB_APP_URL`                              | URL                                                          | `http://localhost:3200`                         | `http://localhost:3200`                   | comme production | défaut                            |
 | `LEGAL_TERMS_VERSION`                      | texte                                                        | —                                               | `draft-2026-10`                           | comme production | à fixer                           |
 | `LEGAL_PRIVACY_VERSION`                    | texte                                                        | —                                               | `draft-2026-10`                           | comme production | à fixer                           |
 | `NETWORK_PROFILE_VIEWS_RETENTION_DAYS`     | entier                                                       | `90`                                            | `90`                                      | comme production | défaut                            |
@@ -79,7 +79,7 @@ Toutes les variables lues par l'api et le worker, validées au démarrage par `a
 | -------------------------------------- | ----------- | --------------- | ------------------------- | ---------------- | -------------------------------- |
 | `API_HOST`                             | texte       | `0.0.0.0`       | `0.0.0.0`                 | comme production | défaut                           |
 | `API_PORT`                             | entier      | `3000`          | `3000`                    | comme production | défaut                           |
-| `CORS_ORIGINS`                         | URL (liste) | —               | `http://localhost:5173`   | comme production | à fixer                          |
+| `CORS_ORIGINS`                         | URL (liste) | —               | `http://localhost:3200`   | comme production | à fixer                          |
 | `TRUST_PROXY_HOPS`                     | entier      | `0`             | `0`                       | comme production | défaut                           |
 | `RATE_LIMIT_TTL_SECONDS`               | entier      | `60`            | `60`                      | comme production | défaut                           |
 | `RATE_LIMIT_MAX`                       | entier      | `120`           | `120`                     | comme production | défaut                           |

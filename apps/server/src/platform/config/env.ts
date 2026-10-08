@@ -42,7 +42,7 @@ const commonEnvSchema = z.object({
   SENTRY_DSN: z.url().optional(),
   SENTRY_ENVIRONMENT: z.string().min(1).optional(),
   OTEL_EXPORTER_OTLP_ENDPOINT: z.url().optional(),
-  WEB_APP_URL: z.url().default('http://localhost:5173'),
+  WEB_APP_URL: z.url().default('http://localhost:3200'),
   LEGAL_TERMS_VERSION: z.string().regex(/^[A-Za-z0-9._-]{1,64}$/),
   LEGAL_PRIVACY_VERSION: z.string().regex(/^[A-Za-z0-9._-]{1,64}$/),
   NETWORK_PROFILE_VIEWS_RETENTION_DAYS: z.coerce.number().int().min(1).max(3650).default(90),
