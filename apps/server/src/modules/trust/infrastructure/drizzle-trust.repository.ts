@@ -411,6 +411,18 @@ export class DrizzleTrustRepository extends TrustRepository {
     return rows.length;
   }
 
+  async pendingCounts(): Promise<{ cases: number; appeals: number }> {
+    const [cases] = await this.db
+      .select({ total: sql<number>`count(*)::int` })
+      .from(trustCases)
+      .where(eq(trustCases.status, 'open'));
+    const [appeals] = await this.db
+      .select({ total: sql<number>`count(*)::int` })
+      .from(trustAppeals)
+      .where(eq(trustAppeals.status, 'pending'));
+    return { cases: cases?.total ?? 0, appeals: appeals?.total ?? 0 };
+  }
+
   async transparency(from: Date, to: Date): Promise<TransparencyCounts> {
     const inReports = and(gte(trustReports.createdAt, from), lt(trustReports.createdAt, to));
     const inCases = and(gte(trustCases.createdAt, from), lt(trustCases.createdAt, to));

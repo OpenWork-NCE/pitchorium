@@ -50,6 +50,11 @@ export class TrustFacade implements OnModuleInit {
     return (await this.trust.appealOf(decisionId))?.outcomeStatement ?? null;
   }
 
+  /** Open cases and pending appeals (administration statistics). */
+  pendingCounts(): Promise<{ cases: number; appeals: number }> {
+    return this.trust.pendingCounts();
+  }
+
   /** Active suspension of a member: its end, null when permanent; undefined when none. */
   async activeSuspension(userId: string): Promise<{ id: string; endsAt: Date | null } | null> {
     const active = await this.suspensions.active(userId);

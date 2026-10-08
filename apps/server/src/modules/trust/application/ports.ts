@@ -116,4 +116,5 @@ export abstract class TrustRepository {
   abstract purgeActivity(before: Date): Promise<number>;
 
   abstract transparency(from: Date, to: Date): Promise<TransparencyCounts>;
+  abstract pendingCounts(): Promise<{ cases: number; appeals: number }>;
 }
