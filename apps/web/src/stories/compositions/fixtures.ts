@@ -283,6 +283,8 @@ export const notifications: Notification[] = [
 ];
 
 const conversationId = '0192f4a0-5000-7000-8000-000000000001';
+/** The instant the compositions are seen at (their relative dates are computed from it). */
+export const STORY_NOW = new Date(Date.UTC(2026, 9, 8, 12));
 function message(sequence: number, mine: boolean, body: string, hours: number): Message {
   return {
     id: `0192f4a0-5100-7000-8000-00000000000${sequence}`,
@@ -303,27 +305,23 @@ function message(sequence: number, mine: boolean, body: string, hours: number): 
   };
 }
 
+/** Two days of a conversation, with consecutive messages of one author close together. */
 export const thread: Message[] = [
+  message(1, false, 'Bonjour Aïssatou, j’ai lu le dossier de la ferme solaire.', 26),
+  message(2, false, 'Votre plan de trésorerie couvre-t-il la maintenance des onduleurs ?', 25.95),
+  message(3, true, 'Bonjour Kofi, merci ! Oui, une provision mensuelle est prévue.', 5),
+  message(4, true, 'Mais je veux bien votre regard sur les hypothèses.', 4.97),
   message(
-    1,
-    false,
-    'Bonjour Aïssatou, j’ai lu le dossier de la ferme solaire. Votre plan de trésorerie couvre-t-il la maintenance des onduleurs ?',
-    6,
-  ),
-  message(
-    2,
-    true,
-    'Bonjour Kofi, merci ! Oui, une provision mensuelle est prévue, mais je veux bien votre regard sur les hypothèses.',
     5,
-  ),
-  message(
-    3,
     false,
     'Avec plaisir. Envoyez-moi le tableau, je peux en parler jeudi après l’atelier.',
     4,
   ),
-  message(4, true, 'Parfait, je vous l’envoie ce soir.', 1),
+  message(6, true, 'Parfait, je vous l’envoie ce soir.', 1),
 ];
+
+/** Kofi has read up to the last message of Aïssatou. */
+export const threadReadBy = 6;
 
 export const adminMembers: MemberSummary[] = [
   ['aissatou.ba', 'Aïssatou Ba', ['member'], true, '2026-09-01'],

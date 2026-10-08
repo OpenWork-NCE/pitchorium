@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { useNow } from 'next-intl';
 import { useState } from 'react';
 import { CircleDollarSign, FileText, Flag } from 'lucide-react';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
@@ -165,7 +166,11 @@ export const Figures: Story = {
 
 /** Relative date kept up to date; the full date on hover and keyboard focus. */
 export const Time: Story = {
-  render: () => <RelativeTime date={new Date(Date.now() - 5 * 60_000).toISOString()} />,
+  render: function Render() {
+    // The clock of the stories is fixed (preview.tsx): five minutes before it.
+    const now = useNow();
+    return <RelativeTime date={new Date(now.getTime() - 5 * 60_000).toISOString()} />;
+  },
   play: async ({ canvasElement }) => {
     const time = within(canvasElement).getByText(/il y a 5 minutes/);
     await userEvent.tab();

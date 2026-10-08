@@ -446,5 +446,38 @@
       "one": "{{count}} comment",
       "other": "{{count}} comments"
     }
+  },
+  "messaging": {
+    "history": "Messages of the conversation",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "youWrote": "You wrote:",
+    "wrote": "{{name}} wrote:",
+    "deleted": "Message deleted",
+    "edited": "(edited)",
+    "read": "Read",
+    "sent": "Sent",
+    "attach": "Attach a file",
+    "message": "Your message",
+    "placeholder": "Write a message",
+    "send": "Send"
+  },
+  "network": {
+    "request": {
+      "accept": "Accept",
+      "decline": "Ignore",
+      "acceptName": "Accept {{name}}",
+      "declineName": "Ignore the request of {{name}}",
+      "accepting": "Accepting",
+      "declining": "In progress",
+      "accepted": "You are connected with {{name}}.",
+      "declined": "Request ignored."
+    }
+  },
+  "notifications": {
+    "someone": "A member",
+    "generic": "New notification",
+    "unread": ", unread",
+    "excerpt": "“{{text}}”"
   }
 }

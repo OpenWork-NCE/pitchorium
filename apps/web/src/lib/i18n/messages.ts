@@ -2,7 +2,7 @@ import type { Locale } from '@pitchorium/contracts';
 import { type CatalogTree, catalogs, localeManifest } from '@pitchorium/i18n';
 
 /** Namespaces of `@pitchorium/i18n` the web app reads on the server. */
-export const WEB_NAMESPACES = ['common', 'errors', 'reference', 'web'] as const;
+export const WEB_NAMESPACES = ['common', 'errors', 'notifications', 'reference', 'web'] as const;
 
 type WebNamespace = (typeof WEB_NAMESPACES)[number];
 export type WebMessages = Record<WebNamespace, CatalogTree>;

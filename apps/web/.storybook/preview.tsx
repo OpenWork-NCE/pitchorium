@@ -4,6 +4,7 @@ import { ThemeProvider } from 'next-themes';
 import { type ReactNode, useEffect } from 'react';
 import { MotionProvider } from '../src/components/motion/motion-provider';
 import { messagesFor } from '../src/lib/i18n/messages';
+import { STORY_NOW } from '../src/stories/compositions/fixtures';
 import { fontVariables } from '../src/styles/fonts';
 import '../src/styles/globals.css';
 
@@ -56,7 +57,14 @@ function StoryProviders({
     document.documentElement.lang = locale;
   }, [rootTheme, locale]);
   return (
-    <NextIntlClientProvider locale={locale} messages={messagesFor(locale)} timeZone="Europe/Paris">
+    <NextIntlClientProvider
+      locale={locale}
+      messages={messagesFor(locale)}
+      timeZone="Europe/Paris"
+      // A fixed clock: the relative dates of the stories (« il y a 5 heures », « Hier ») and their
+      // captures do not depend on the day they run.
+      now={STORY_NOW}
+    >
       <ThemeProvider attribute="data-theme" forcedTheme={rootTheme}>
         <MotionProvider nonce={undefined}>
           {theme === 'side-by-side' ? (

@@ -6,7 +6,7 @@ import { createEventRequestSchema, EVENT_MAX_DURATION_DAYS } from '@pitchorium/c
 import { ApiProblemError } from '@pitchorium/api-client';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Download, Filter, Send, UserPlus } from 'lucide-react';
+import { Download, Filter, UserPlus } from 'lucide-react';
 import { type ReactNode, useRef, useState } from 'react';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
 import { endsAfterStart } from '@/lib/forms/rules';
@@ -50,12 +50,15 @@ import {
   personCard,
   project,
   thread,
+  threadReadBy,
   tiers,
 } from './fixtures';
 import { PostCard } from '@/features/content';
 import { SuggestionItem } from '@/features/discovery';
 import { ProjectCard } from '@/features/projects';
-import { ConversationThread, NotificationItem, PostSkeleton, ProfileCard } from './parts';
+import { ConversationThread, MessageComposer } from '@/features/messaging';
+import { NotificationItem } from '@/features/notifications';
+import { PostSkeleton, ProfileCard } from './parts';
 
 const meta = {
   title: 'Compositions',
@@ -212,33 +215,50 @@ export const ProjectCardStory: Story = {
   },
 };
 
+/**
+ * Notifications: avatars in a column of fixed width, the drawing of the type in their corner, the
+ * opening of the publication concerned, and a connection request answered from the list.
+ */
 export const NotificationsList: Story = {
   name: 'Notifications list',
   parameters: { layout: 'padded' },
   render: () => (
-    <Card className="grid max-w-xl gap-2">
-      <div className="flex items-center justify-between">
-        <Heading level={2} size="card">
-          Notifications
-        </Heading>
-        <Button variant="link" size="sm">
-          Tout marquer comme lu
-        </Button>
-      </div>
-      <ul className="grid gap-1">
-        {notifications.map((item) => (
-          <NotificationItem key={item.id} notification={item} />
-        ))}
-      </ul>
-    </Card>
+    <MemberRuntime>
+      <Card padding="sm" className="grid max-w-xl gap-2">
+        <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 px-3">
+          <Heading level={2} size="card">
+            Notifications
+          </Heading>
+          <Button variant="link" size="sm">
+            Tout marquer comme lu
+          </Button>
+        </div>
+        <ul className="grid gap-1">
+          {notifications.map((item) => (
+            <NotificationItem key={item.id} notification={item} />
+          ))}
+        </ul>
+      </Card>
+    </MemberRuntime>
   ),
   play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
     await expect(
-      within(canvasElement).getByText(/Kofi Mensah et 12 autres ont réagi/),
+      canvas.getByRole('link', { name: /Kofi Mensah et 12 autres ont réagi/ }),
+    ).toBeVisible();
+    await expect(canvas.getAllByText(/« Nous ouvrons un fonds d’amorçage/)).toHaveLength(2);
+    await expect(canvas.getByRole('button', { name: 'Accepter Ifeoma Okafor' })).toBeVisible();
+    await expect(
+      canvas.getByRole('button', { name: 'Ignorer la demande de Ifeoma Okafor' }),
     ).toBeVisible();
   },
 };
 
+/**
+ * A conversation: one separator per day, the messages of one author grouped (avatar once, tighter
+ * spacing), the short time under the last of a group (full date in a tooltip), « Lu » under the
+ * last message sent, a field that grows with its text and a button to attach a file.
+ */
 export const Conversation: Story = {
   parameters: { layout: 'padded' },
   render: () => (
@@ -246,28 +266,36 @@ export const Conversation: Story = {
       <div className="flex items-center gap-3 border-b border-border p-4">
         <Avatar name={members.kofi.displayName} decorative />
         <div>
-          <p className="font-semibold">{members.kofi.displayName}</p>
+          <Heading level={2} size="label">
+            {members.kofi.displayName}
+          </Heading>
           <p className="text-xs text-muted">{members.kofi.headline}</p>
         </div>
       </div>
       <div className="p-4">
-        <ConversationThread messages={thread} other={members.kofi} />
-      </div>
-      <form
-        className="flex items-end gap-2 border-t border-border p-3"
-        onSubmit={(event) => event.preventDefault()}
-      >
-        <Textarea
-          aria-label="Votre message"
-          minRows={1}
-          maxRows={6}
-          className="flex-1"
-          placeholder="Écrire un message"
+        <ConversationThread
+          messages={thread}
+          other={members.kofi}
+          otherLastReadSequence={threadReadBy}
         />
-        <IconButton label="Envoyer" icon={<Send />} variant="primary" type="submit" />
-      </form>
+      </div>
+      <div className="border-t border-border p-3">
+        <MessageComposer onSend={() => undefined} onAttach={() => undefined} />
+      </div>
     </Card>
   ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByRole('heading', { name: 'Hier' })).toBeVisible();
+    await expect(canvas.getByRole('heading', { name: 'Aujourd’hui' })).toBeVisible();
+    // Four groups, one time under each; « Lu » under the last message sent only.
+    await expect(canvas.getAllByRole('time')).toHaveLength(4);
+    await expect(canvas.getAllByText('Lu')).toHaveLength(1);
+    await expect(canvas.getByRole('button', { name: 'Joindre un fichier' })).toBeVisible();
+    const field = canvas.getByRole('textbox', { name: 'Votre message' });
+    await userEvent.type(field, 'Bonne soirée,{Enter}à jeudi.');
+    await expect(field).toHaveValue('Bonne soirée,\nà jeudi.');
+  },
 };
 
 const SECTORS = [

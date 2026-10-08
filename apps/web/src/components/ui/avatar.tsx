@@ -92,22 +92,32 @@ interface AvatarGroupProps {
   label: string;
   /** Text of the remainder bubble, "+3". */
   moreLabel?: (count: number) => string;
+  /** The remainder bubble; off where the text already counts the others. */
+  showRest?: boolean;
+  /** Colour of the ring between the avatars: the surface they sit on. */
+  ring?: 'surface' | 'background';
   className?: string;
 }
 
-/** Overlapping avatars of a few people, with a ring of the background colour between them. */
+/** Overlap by size: small enough never to hide the initials of the avatar underneath. */
+const OVERLAPS = { xs: '-space-x-0.5', sm: '-space-x-1', md: '-space-x-1.5' } as const;
+const RINGS = { surface: 'ring-2 ring-surface', background: 'ring-2 ring-background' } as const;
+
+/** Overlapping avatars of a few people, with a ring of the colour of their surface between them. */
 export function AvatarGroup({
   people,
   max = 4,
   size = 'sm',
   label,
   moreLabel,
+  showRest = true,
+  ring = 'surface',
   className,
 }: AvatarGroupProps) {
   const shown = people.slice(0, max);
-  const rest = people.length - shown.length;
+  const rest = showRest ? people.length - shown.length : 0;
   return (
-    <div role="img" aria-label={label} className={cn('flex -space-x-2', className)}>
+    <div role="img" aria-label={label} className={cn('flex', OVERLAPS[size], className)}>
       {shown.map((person, index) => (
         <Avatar
           // Two people may share a name: the position is part of the key.
@@ -116,14 +126,15 @@ export function AvatarGroup({
           src={person.src}
           size={size}
           decorative
-          className="ring-2 ring-background"
+          className={RINGS[ring]}
         />
       ))}
       {rest > 0 ? (
         <span
           aria-hidden
           className={cn(
-            'relative inline-flex shrink-0 items-center justify-center rounded-full bg-surface-sunken font-medium text-muted ring-2 ring-background',
+            'relative inline-flex shrink-0 items-center justify-center rounded-full bg-surface-sunken font-medium text-muted',
+            RINGS[ring],
             SIZES[size],
           )}
         >

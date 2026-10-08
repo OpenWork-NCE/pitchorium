@@ -14,6 +14,19 @@ Comment assembler les composants (`components.md`) pour les situations récurren
 - Le bouton d'envoi passe en `loading` (même largeur) pendant l'appel ; il n'est jamais désactivé pour cause de champs invalides : l'envoi montre les erreurs.
 - Actions du formulaire (`FormActions`) : l'action principale d'abord dans le document ; sur un téléphone, empilées en pleine largeur, l'action principale en haut ; à partir de `sm`, en ligne, alignées à droite, l'action principale à droite.
 
+## Conversation (§10.4)
+
+- Un séparateur par jour, dans le fuseau du membre : « Aujourd'hui », « Hier », puis la date (jour de la semaine, jour et mois, l'année si elle diffère) ; c'est un titre, pour s'y rendre au lecteur d'écran.
+- Les messages consécutifs d'un même auteur écrits à moins de 5 minutes d'intervalle (`GROUP_GAP_MINUTES`, `lib/format/message-groups.ts`) forment un groupe : l'avatar de l'autre une seule fois, en bas du groupe, un espacement resserré, les coins du côté de l'auteur moins arrondis à l'intérieur du groupe.
+- Sous le dernier message d'un groupe, l'heure courte de la langue (« 14:32 », « 2:32 PM »), la date complète en infobulle au survol et au focus. Sous le dernier message envoyé : « Lu » quand l'autre participant l'a lu (`lastReadSequence`), « Envoyé » sinon.
+- Zone de saisie : elle grandit avec le texte jusqu'à six lignes puis défile ; un bouton joint un fichier ; Entrée va à la ligne, le bouton d'envoi (ou Ctrl Entrée, Cmd Entrée) envoie.
+
+## Notifications (§10.5)
+
+- Une colonne média de largeur fixe (48 px) aligne tous les textes : un avatar, ou deux en chevauchement réduit avec un liseré ; l'icône du type en pastille dans leur coin.
+- La phrase vient du namespace `notifications` (partagé avec les emails), en gras tant qu'elle n'est pas lue ; une notification sur une publication montre son début entre guillemets (`excerpt` de l'api, deux lignes au plus).
+- Toute la ligne ouvre la cible ; une demande de connexion s'accepte ou s'ignore sur place (« Accepter », « Ignorer »), la réponse remplace les boutons et est annoncée.
+
 ## Chargement
 
 - Premier rendu par le serveur : la page arrive remplie, sans squelette.

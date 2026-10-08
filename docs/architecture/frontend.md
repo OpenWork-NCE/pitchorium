@@ -18,7 +18,7 @@ apps/web/
         layout.tsx     document : langue, polices, thème, fournisseurs
         not-found.tsx, error.tsx, [...rest]/page.tsx
       sitemap.ts, robots.ts, manifest.ts, global-error.tsx, not-found.tsx
-    features/<domaine>/   un dossier par domaine, façade index.ts (access, discovery, identity, localization, marketing, notifications, dev)
+    features/<domaine>/   un dossier par domaine, façade index.ts (access, content, discovery, identity, localization, marketing, messaging, network, notifications, projects, dev)
     components/ui/        primitives du design system, sans métier
     components/motion/    primitives de mouvement et tokens
     components/brand/     logos générés depuis le kit
