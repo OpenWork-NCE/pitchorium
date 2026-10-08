@@ -61,6 +61,9 @@ export const profilesProfiles = profilesSchema.table(
     entrepreneurDetailsVisibility: text('entrepreneur_details_visibility').notNull(),
     contributorDetailsVisibility: text('contributor_details_visibility').notNull(),
     networkListsVisibility: text('network_lists_visibility').notNull(),
+    /** Editorial highlight by a moderator or an administrator (administration module). */
+    featuredAt: timestamptz('featured_at'),
+    featuredBy: uuid('featured_by'),
     createdAt: timestamptz('created_at').notNull(),
     updatedAt: timestamptz('updated_at').notNull(),
   },
