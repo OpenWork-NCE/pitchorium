@@ -122,6 +122,14 @@ export const UpdatePreferencesDtoChangesItemType = {
   time_entry_declared: 'time_entry_declared',
   time_entry_answered: 'time_entry_answered',
   security_alert: 'security_alert',
+  event_registration_confirmed: 'event_registration_confirmed',
+  event_waitlist_promoted: 'event_waitlist_promoted',
+  event_reminder: 'event_reminder',
+  event_canceled: 'event_canceled',
+  mission_engagement_requested: 'mission_engagement_requested',
+  mission_engagement_answered: 'mission_engagement_answered',
+  mission_completed: 'mission_completed',
+  new_suggestions: 'new_suggestions',
 } as const;
 
 export type UpdatePreferencesDtoChangesItemChannel =
@@ -140,7 +148,7 @@ export type UpdatePreferencesDtoChangesItem = {
 
 export interface UpdatePreferencesDto {
   emailDigest?: UpdatePreferencesDtoEmailDigest;
-  /** @maxItems 72 */
+  /** @maxItems 88 */
   changes?: UpdatePreferencesDtoChangesItem[];
 }
 
@@ -193,6 +201,14 @@ export const PreferencesDtoOutputTypesItemType = {
   time_entry_declared: 'time_entry_declared',
   time_entry_answered: 'time_entry_answered',
   security_alert: 'security_alert',
+  event_registration_confirmed: 'event_registration_confirmed',
+  event_waitlist_promoted: 'event_waitlist_promoted',
+  event_reminder: 'event_reminder',
+  event_canceled: 'event_canceled',
+  mission_engagement_requested: 'mission_engagement_requested',
+  mission_engagement_answered: 'mission_engagement_answered',
+  mission_completed: 'mission_completed',
+  new_suggestions: 'new_suggestions',
 } as const;
 
 export type PreferencesDtoOutputTypesItemChannels = {
@@ -307,6 +323,30 @@ export const ActionPrerequisitesDtoOutputAction = {
   notificationsread: 'notifications.read',
   notificationsmanage: 'notifications.manage',
   notificationspreferencesupdate: 'notifications.preferences.update',
+  discoverysearch: 'discovery.search',
+  discoverypageread: 'discovery.page.read',
+  discoverysuggestionsread: 'discovery.suggestions.read',
+  discoverysuggestionsdismiss: 'discovery.suggestions.dismiss',
+  'discoveryproject-suggestionsread': 'discovery.project-suggestions.read',
+  eventread: 'event.read',
+  eventcreate: 'event.create',
+  eventupdate: 'event.update',
+  eventpublish: 'event.publish',
+  eventcancel: 'event.cancel',
+  eventdelete: 'event.delete',
+  eventregister: 'event.register',
+  eventattendeesread: 'event.attendees.read',
+  eventcalendarmanage: 'event.calendar.manage',
+  missionread: 'mission.read',
+  missionoffercreate: 'mission.offer.create',
+  missionrequestcreate: 'mission.request.create',
+  missionupdate: 'mission.update',
+  missionclose: 'mission.close',
+  missionengage: 'mission.engage',
+  missionengagementread: 'mission.engagement.read',
+  missionengagementrespond: 'mission.engagement.respond',
+  missionengagementcomplete: 'mission.engagement.complete',
+  missionengagementcancel: 'mission.engagement.cancel',
 } as const;
 
 export type ActionPrerequisitesDtoOutputCode =
@@ -484,6 +524,37 @@ export const ActionPrerequisitesDtoOutputCode = {
   NOTIFICATIONS_PREFERENCE_LOCKED: 'NOTIFICATIONS_PREFERENCE_LOCKED',
   NOTIFICATIONS_UNSUBSCRIBE_INVALID: 'NOTIFICATIONS_UNSUBSCRIBE_INVALID',
   NOTIFICATIONS_WEBHOOK_INVALID: 'NOTIFICATIONS_WEBHOOK_INVALID',
+  EVENTS_NOT_FOUND: 'EVENTS_NOT_FOUND',
+  EVENTS_SLUG_TAKEN: 'EVENTS_SLUG_TAKEN',
+  EVENTS_SLUG_RESERVED: 'EVENTS_SLUG_RESERVED',
+  EVENTS_INVALID_TRANSITION: 'EVENTS_INVALID_TRANSITION',
+  EVENTS_NOT_DRAFT: 'EVENTS_NOT_DRAFT',
+  EVENTS_SCHEDULE_INVALID: 'EVENTS_SCHEDULE_INVALID',
+  EVENTS_LOCATION_REQUIRED: 'EVENTS_LOCATION_REQUIRED',
+  EVENTS_ONLINE_URL_REQUIRED: 'EVENTS_ONLINE_URL_REQUIRED',
+  EVENTS_DESCRIPTION_INVALID: 'EVENTS_DESCRIPTION_INVALID',
+  EVENTS_PUBLIC_NOT_ALLOWED: 'EVENTS_PUBLIC_NOT_ALLOWED',
+  EVENTS_ORGANIZATION_ROLE_REQUIRED: 'EVENTS_ORGANIZATION_ROLE_REQUIRED',
+  EVENTS_PROJECT_ROLE_REQUIRED: 'EVENTS_PROJECT_ROLE_REQUIRED',
+  EVENTS_IMAGE_INVALID: 'EVENTS_IMAGE_INVALID',
+  EVENTS_REGISTRATION_CLOSED: 'EVENTS_REGISTRATION_CLOSED',
+  EVENTS_NOT_REGISTERED: 'EVENTS_NOT_REGISTERED',
+  EVENTS_CAPACITY_BELOW_REGISTERED: 'EVENTS_CAPACITY_BELOW_REGISTERED',
+  EVENTS_CALENDAR_NOT_FOUND: 'EVENTS_CALENDAR_NOT_FOUND',
+  MISSIONS_NOT_FOUND: 'MISSIONS_NOT_FOUND',
+  MISSIONS_HAT_REQUIRED: 'MISSIONS_HAT_REQUIRED',
+  MISSIONS_BENEFICIARY_REQUIRED: 'MISSIONS_BENEFICIARY_REQUIRED',
+  MISSIONS_PROJECT_ROLE_REQUIRED: 'MISSIONS_PROJECT_ROLE_REQUIRED',
+  MISSIONS_JOB_POSTING_REFUSED: 'MISSIONS_JOB_POSTING_REFUSED',
+  MISSIONS_HOURS_EXCEEDED: 'MISSIONS_HOURS_EXCEEDED',
+  MISSIONS_FIELDS_INVALID: 'MISSIONS_FIELDS_INVALID',
+  MISSIONS_CLOSED: 'MISSIONS_CLOSED',
+  MISSIONS_OWN_MISSION: 'MISSIONS_OWN_MISSION',
+  MISSIONS_ENGAGEMENT_EXISTS: 'MISSIONS_ENGAGEMENT_EXISTS',
+  MISSIONS_CAPACITY_REACHED: 'MISSIONS_CAPACITY_REACHED',
+  MISSIONS_ENGAGEMENT_NOT_FOUND: 'MISSIONS_ENGAGEMENT_NOT_FOUND',
+  MISSIONS_INVALID_TRANSITION: 'MISSIONS_INVALID_TRANSITION',
+  DISCOVERY_CANDIDATE_NOT_FOUND: 'DISCOVERY_CANDIDATE_NOT_FOUND',
   INTERNAL_ERROR: 'INTERNAL_ERROR',
   SERVICE_UNAVAILABLE: 'SERVICE_UNAVAILABLE',
 } as const;
@@ -1527,6 +1598,7 @@ export const MediaUsagesDtoOutputItemsItemUsage = {
   message_attachment: 'message_attachment',
   verification_document: 'verification_document',
   link_preview: 'link_preview',
+  event_image: 'event_image',
 } as const;
 
 export type MediaUsagesDtoOutputItemsItemContentTypesItem =
@@ -1589,6 +1661,7 @@ export const CreateUploadDtoUsage = {
   message_attachment: 'message_attachment',
   verification_document: 'verification_document',
   link_preview: 'link_preview',
+  event_image: 'event_image',
 } as const;
 
 export type CreateUploadDtoContentType =
@@ -1628,6 +1701,7 @@ export const UploadTicketDtoOutputMediaUsage = {
   message_attachment: 'message_attachment',
   verification_document: 'verification_document',
   link_preview: 'link_preview',
+  event_image: 'event_image',
 } as const;
 
 export type UploadTicketDtoOutputMediaStatus =
@@ -1753,6 +1827,7 @@ export const MediaAssetDtoOutputUsage = {
   message_attachment: 'message_attachment',
   verification_document: 'verification_document',
   link_preview: 'link_preview',
+  event_image: 'event_image',
 } as const;
 
 export type MediaAssetDtoOutputStatus =
@@ -3634,6 +3709,161 @@ export type FeedPageDtoOutputItemsItem =
           title: string;
           /** @nullable */
           coverImageUrl: string | null;
+        };
+      };
+    }
+  | {
+      type: 'event';
+      id: string;
+      event: {
+        /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+        id: string;
+        /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,79}$ */
+        slug: string;
+        title: string;
+        format: 'online' | 'in_person' | 'hybrid';
+        status: 'draft' | 'published' | 'canceled' | 'completed';
+        /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+        startsAt: string;
+        /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+        endsAt: string;
+        timeZone: string;
+        /** @nullable */
+        city: string | null;
+        /** @nullable */
+        countryCode: string | null;
+        language: string;
+        sectorCodes: string[];
+        /** @nullable */
+        imageUrl: string | null;
+        organizer:
+          | {
+              kind: 'member';
+              member: {
+                /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+                handle: string;
+                displayName: string;
+                /** @nullable */
+                headline: string | null;
+                /** @nullable */
+                avatarUrl: string | null;
+              };
+            }
+          | {
+              kind: 'organization';
+              organization: {
+                /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+                id: string;
+                slug: string;
+                name: string;
+                /** @nullable */
+                logoUrl: string | null;
+                verified: boolean;
+              };
+            };
+        capacity: number | null;
+        /**
+         * @minimum -9007199254740991
+         * @maximum 9007199254740991
+         */
+        registeredCount: number;
+        full: boolean;
+      };
+    }
+  | {
+      type: 'suggestion';
+      id: string;
+      suggestion: {
+        candidate:
+          | {
+              kind: 'person';
+              key: string;
+              title: string;
+              /** @nullable */
+              subtitle: string | null;
+              /** @nullable */
+              imageUrl: string | null;
+              countryCodes: string[];
+              sectorCodes: string[];
+              facets: {
+                entrepreneur: boolean;
+                contributor: boolean;
+              };
+              hats: (
+                'investor' | 'patron_donor' | 'mentor' | 'expert' | 'business_partner' | 'recruiter'
+              )[];
+            }
+          | {
+              kind: 'organization';
+              key: string;
+              title: string;
+              /** @nullable */
+              subtitle: string | null;
+              /** @nullable */
+              imageUrl: string | null;
+              countryCodes: string[];
+              sectorCodes: string[];
+              structureType:
+                | 'individual'
+                | 'company'
+                | 'ngo_association'
+                | 'foundation'
+                | 'institution'
+                | 'international_organization'
+                | 'cooperative';
+              verified: boolean;
+            }
+          | {
+              kind: 'project';
+              key: string;
+              title: string;
+              /** @nullable */
+              subtitle: string | null;
+              /** @nullable */
+              imageUrl: string | null;
+              countryCodes: string[];
+              sectorCodes: string[];
+              status: 'draft' | 'funding' | 'funded' | 'closed';
+              impactScore: number | null;
+              endsAt: string | null;
+            }
+          | {
+              kind: 'event';
+              key: string;
+              title: string;
+              /** @nullable */
+              subtitle: string | null;
+              /** @nullable */
+              imageUrl: string | null;
+              countryCodes: string[];
+              sectorCodes: string[];
+              format: 'online' | 'in_person' | 'hybrid';
+              /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+              startsAt: string;
+              /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+              endsAt: string;
+              timeZone: string;
+            }
+          | {
+              kind: 'mission';
+              key: string;
+              title: string;
+              /** @nullable */
+              subtitle: string | null;
+              /** @nullable */
+              imageUrl: string | null;
+              countryCodes: string[];
+              sectorCodes: string[];
+              direction: 'offer' | 'request';
+              missionKind: 'mentoring' | 'expertise';
+              mode: 'remote' | 'on_site';
+            };
+        sentence: {
+          key: string;
+          clauses: {
+            key: string;
+            params: { [key: string]: string };
+          }[];
         };
       };
     };
@@ -11163,6 +11393,1672 @@ export interface IntroductionPageDtoOutput {
   nextCursor: string[];
 }
 
+export type CreateEventDtoFormat = (typeof CreateEventDtoFormat)[keyof typeof CreateEventDtoFormat];
+
+export const CreateEventDtoFormat = {
+  online: 'online',
+  in_person: 'in_person',
+  hybrid: 'hybrid',
+} as const;
+
+export type CreateEventDtoLocation = {
+  /**
+   * @minLength 1
+   * @maxLength 200
+   */
+  name: string;
+  address: string | null;
+  /**
+   * @minLength 1
+   * @maxLength 100
+   */
+  city: string;
+  /** @pattern ^[A-Z]{2}$ */
+  countryCode: string;
+} | null;
+
+export type CreateEventDtoVisibility =
+  (typeof CreateEventDtoVisibility)[keyof typeof CreateEventDtoVisibility];
+
+export const CreateEventDtoVisibility = {
+  public: 'public',
+  members: 'members',
+} as const;
+
+export interface CreateEventDto {
+  /**
+   * @minLength 1
+   * @maxLength 120
+   */
+  title: string;
+  /** @maxLength 10000 */
+  description?: string;
+  format: CreateEventDtoFormat;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$ */
+  startsAt: string;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$ */
+  endsAt: string;
+  timeZone: string;
+  location?: CreateEventDtoLocation;
+  onlineUrl?: string | null;
+  /** @pattern ^[a-z]{2}$ */
+  language: string;
+  /**
+   * @maxItems 5
+   * @items.pattern ^[a-z0-9_]{1,48}$
+   */
+  sectorCodes?: string[];
+  /**
+   * @maxItems 10
+   * @items.pattern ^[A-Z]{2}$
+   */
+  countryCodes?: string[];
+  imageMediaId?: string | null;
+  capacity?: number | null;
+  visibility?: CreateEventDtoVisibility;
+  organizationId?: string | null;
+  projectId?: string | null;
+}
+
+export type EventDtoOutputFormat = (typeof EventDtoOutputFormat)[keyof typeof EventDtoOutputFormat];
+
+export const EventDtoOutputFormat = {
+  online: 'online',
+  in_person: 'in_person',
+  hybrid: 'hybrid',
+} as const;
+
+export type EventDtoOutputStatus = (typeof EventDtoOutputStatus)[keyof typeof EventDtoOutputStatus];
+
+export const EventDtoOutputStatus = {
+  draft: 'draft',
+  published: 'published',
+  canceled: 'canceled',
+  completed: 'completed',
+} as const;
+
+export type EventDtoOutputOrganizer =
+  | {
+      kind: 'member';
+      member: {
+        /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+        handle: string;
+        displayName: string;
+        /** @nullable */
+        headline: string | null;
+        /** @nullable */
+        avatarUrl: string | null;
+      };
+    }
+  | {
+      kind: 'organization';
+      organization: {
+        /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+        id: string;
+        slug: string;
+        name: string;
+        /** @nullable */
+        logoUrl: string | null;
+        verified: boolean;
+      };
+    };
+
+export type EventDtoOutputVisibility =
+  (typeof EventDtoOutputVisibility)[keyof typeof EventDtoOutputVisibility];
+
+export const EventDtoOutputVisibility = {
+  public: 'public',
+  members: 'members',
+} as const;
+
+export type EventDtoOutputLocation = {
+  /**
+   * @minLength 1
+   * @maxLength 200
+   */
+  name: string;
+  address: string | null;
+  /**
+   * @minLength 1
+   * @maxLength 100
+   */
+  city: string;
+  /** @pattern ^[A-Z]{2}$ */
+  countryCode: string;
+} | null;
+
+export type EventDtoOutputProject = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  slug: string;
+  title: string;
+} | null;
+
+export type EventDtoOutputViewerRegistration =
+  (typeof EventDtoOutputViewerRegistration)[keyof typeof EventDtoOutputViewerRegistration] | null;
+
+export const EventDtoOutputViewerRegistration = {
+  registered: 'registered',
+  waitlisted: 'waitlisted',
+} as const;
+
+export type EventDtoOutputViewer = {
+  registration: EventDtoOutputViewerRegistration;
+  waitlistPosition: number | null;
+  showInAttendees: boolean;
+  canManage: boolean;
+} | null;
+
+export interface EventDtoOutput {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,79}$ */
+  slug: string;
+  title: string;
+  format: EventDtoOutputFormat;
+  status: EventDtoOutputStatus;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  startsAt: string;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  endsAt: string;
+  timeZone: string;
+  city: string[];
+  countryCode: string[];
+  language: string;
+  sectorCodes: string[];
+  imageUrl: string[];
+  organizer: EventDtoOutputOrganizer;
+  capacity: number | null;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  registeredCount: number;
+  full: boolean;
+  description: string;
+  visibility: EventDtoOutputVisibility;
+  location: EventDtoOutputLocation;
+  onlineUrl: string[];
+  countryCodes: string[];
+  imageMediaId: string[];
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  waitlistCount: number;
+  project: EventDtoOutputProject;
+  publishedAt: string | null;
+  canceledAt: string | null;
+  cancelReason: string[];
+  viewer: EventDtoOutputViewer;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  updatedAt: string;
+}
+
+export type EventCardPageDtoOutputItemsItemFormat =
+  (typeof EventCardPageDtoOutputItemsItemFormat)[keyof typeof EventCardPageDtoOutputItemsItemFormat];
+
+export const EventCardPageDtoOutputItemsItemFormat = {
+  online: 'online',
+  in_person: 'in_person',
+  hybrid: 'hybrid',
+} as const;
+
+export type EventCardPageDtoOutputItemsItemStatus =
+  (typeof EventCardPageDtoOutputItemsItemStatus)[keyof typeof EventCardPageDtoOutputItemsItemStatus];
+
+export const EventCardPageDtoOutputItemsItemStatus = {
+  draft: 'draft',
+  published: 'published',
+  canceled: 'canceled',
+  completed: 'completed',
+} as const;
+
+export type EventCardPageDtoOutputItemsItemOrganizer =
+  | {
+      kind: 'member';
+      member: {
+        /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+        handle: string;
+        displayName: string;
+        /** @nullable */
+        headline: string | null;
+        /** @nullable */
+        avatarUrl: string | null;
+      };
+    }
+  | {
+      kind: 'organization';
+      organization: {
+        /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+        id: string;
+        slug: string;
+        name: string;
+        /** @nullable */
+        logoUrl: string | null;
+        verified: boolean;
+      };
+    };
+
+export type EventCardPageDtoOutputItemsItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,79}$ */
+  slug: string;
+  title: string;
+  format: EventCardPageDtoOutputItemsItemFormat;
+  status: EventCardPageDtoOutputItemsItemStatus;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  startsAt: string;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  endsAt: string;
+  timeZone: string;
+  /** @nullable */
+  city: string | null;
+  /** @nullable */
+  countryCode: string | null;
+  language: string;
+  sectorCodes: string[];
+  /** @nullable */
+  imageUrl: string | null;
+  organizer: EventCardPageDtoOutputItemsItemOrganizer;
+  capacity: number | null;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  registeredCount: number;
+  full: boolean;
+};
+
+export interface EventCardPageDtoOutput {
+  items: EventCardPageDtoOutputItemsItem[];
+  nextCursor: string[];
+}
+
+export type UpdateEventDtoFormat = (typeof UpdateEventDtoFormat)[keyof typeof UpdateEventDtoFormat];
+
+export const UpdateEventDtoFormat = {
+  online: 'online',
+  in_person: 'in_person',
+  hybrid: 'hybrid',
+} as const;
+
+export type UpdateEventDtoLocation = {
+  /**
+   * @minLength 1
+   * @maxLength 200
+   */
+  name: string;
+  address: string | null;
+  /**
+   * @minLength 1
+   * @maxLength 100
+   */
+  city: string;
+  /** @pattern ^[A-Z]{2}$ */
+  countryCode: string;
+} | null;
+
+export type UpdateEventDtoVisibility =
+  (typeof UpdateEventDtoVisibility)[keyof typeof UpdateEventDtoVisibility];
+
+export const UpdateEventDtoVisibility = {
+  public: 'public',
+  members: 'members',
+} as const;
+
+export interface UpdateEventDto {
+  /**
+   * @minLength 1
+   * @maxLength 120
+   */
+  title?: string;
+  /** @maxLength 10000 */
+  description?: string;
+  format?: UpdateEventDtoFormat;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$ */
+  startsAt?: string;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$ */
+  endsAt?: string;
+  timeZone?: string;
+  location?: UpdateEventDtoLocation;
+  onlineUrl?: string | null;
+  /** @pattern ^[a-z]{2}$ */
+  language?: string;
+  /**
+   * @maxItems 5
+   * @items.pattern ^[a-z0-9_]{1,48}$
+   */
+  sectorCodes?: string[];
+  /**
+   * @maxItems 10
+   * @items.pattern ^[A-Z]{2}$
+   */
+  countryCodes?: string[];
+  imageMediaId?: string | null;
+  capacity?: number | null;
+  visibility?: UpdateEventDtoVisibility;
+}
+
+export interface CancelEventDto {
+  reason?: string | null;
+}
+
+export interface RegisterDto {
+  showInAttendees?: boolean;
+}
+
+export type EventRegistrationDtoOutputStatus =
+  (typeof EventRegistrationDtoOutputStatus)[keyof typeof EventRegistrationDtoOutputStatus];
+
+export const EventRegistrationDtoOutputStatus = {
+  registered: 'registered',
+  waitlisted: 'waitlisted',
+} as const;
+
+export interface EventRegistrationDtoOutput {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  eventId: string;
+  status: EventRegistrationDtoOutputStatus;
+  waitlistPosition: number | null;
+  showInAttendees: boolean;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  registeredAt: string;
+}
+
+export type EventAttendeePageDtoOutputItemsItemMember = {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  displayName: string;
+  /** @nullable */
+  headline: string | null;
+  /** @nullable */
+  avatarUrl: string | null;
+};
+
+export type EventAttendeePageDtoOutputItemsItemStatus =
+  (typeof EventAttendeePageDtoOutputItemsItemStatus)[keyof typeof EventAttendeePageDtoOutputItemsItemStatus];
+
+export const EventAttendeePageDtoOutputItemsItemStatus = {
+  registered: 'registered',
+  waitlisted: 'waitlisted',
+} as const;
+
+export type EventAttendeePageDtoOutputItemsItem = {
+  member: EventAttendeePageDtoOutputItemsItemMember;
+  status: EventAttendeePageDtoOutputItemsItemStatus;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  registeredAt: string;
+};
+
+export interface EventAttendeePageDtoOutput {
+  items: EventAttendeePageDtoOutputItemsItem[];
+  nextCursor: string[];
+}
+
+export interface CalendarFeedDtoOutput {
+  url: string;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+}
+
+export type CreateMissionDtoKind = (typeof CreateMissionDtoKind)[keyof typeof CreateMissionDtoKind];
+
+export const CreateMissionDtoKind = {
+  mentoring: 'mentoring',
+  expertise: 'expertise',
+} as const;
+
+export type CreateMissionDtoFormat =
+  (typeof CreateMissionDtoFormat)[keyof typeof CreateMissionDtoFormat];
+
+export const CreateMissionDtoFormat = {
+  session: 'session',
+  short_mission: 'short_mission',
+} as const;
+
+export type CreateMissionDtoMode = (typeof CreateMissionDtoMode)[keyof typeof CreateMissionDtoMode];
+
+export const CreateMissionDtoMode = {
+  remote: 'remote',
+  on_site: 'on_site',
+} as const;
+
+export type CreateMissionDtoVisibility =
+  (typeof CreateMissionDtoVisibility)[keyof typeof CreateMissionDtoVisibility];
+
+export const CreateMissionDtoVisibility = {
+  members: 'members',
+  public: 'public',
+} as const;
+
+export interface CreateMissionDto {
+  /**
+   * @minLength 1
+   * @maxLength 120
+   */
+  title: string;
+  /**
+   * @minLength 1
+   * @maxLength 5000
+   */
+  description: string;
+  kind: CreateMissionDtoKind;
+  /**
+   * @minLength 1
+   * @maxLength 80
+   */
+  domain: string;
+  /**
+   * @maxItems 5
+   * @items.pattern ^[a-z0-9_]{1,48}$
+   */
+  sectorCodes?: string[];
+  format: CreateMissionDtoFormat;
+  /**
+   * @minimum 1
+   * @maximum 80
+   */
+  estimatedHours: number;
+  mode: CreateMissionDtoMode;
+  /**
+   * @maxItems 10
+   * @items.pattern ^[A-Z]{2}$
+   */
+  countryCodes?: string[];
+  /**
+   * @minItems 1
+   * @maxItems 5
+   * @items.pattern ^[a-z]{2}$
+   */
+  languages: string[];
+  /**
+   * @minimum 1
+   * @maximum 20
+   */
+  capacity?: number;
+  /**
+   * @maxItems 10
+   * @items.minLength 1
+   * @items.maxLength 60
+   */
+  skills?: string[];
+  desiredBy?: string | null;
+  visibility?: CreateMissionDtoVisibility;
+  projectId?: string | null;
+}
+
+export type MissionDtoOutputDirection =
+  (typeof MissionDtoOutputDirection)[keyof typeof MissionDtoOutputDirection];
+
+export const MissionDtoOutputDirection = {
+  offer: 'offer',
+  request: 'request',
+} as const;
+
+export type MissionDtoOutputKind = (typeof MissionDtoOutputKind)[keyof typeof MissionDtoOutputKind];
+
+export const MissionDtoOutputKind = {
+  mentoring: 'mentoring',
+  expertise: 'expertise',
+} as const;
+
+export type MissionDtoOutputFormat =
+  (typeof MissionDtoOutputFormat)[keyof typeof MissionDtoOutputFormat];
+
+export const MissionDtoOutputFormat = {
+  session: 'session',
+  short_mission: 'short_mission',
+} as const;
+
+export type MissionDtoOutputMode = (typeof MissionDtoOutputMode)[keyof typeof MissionDtoOutputMode];
+
+export const MissionDtoOutputMode = {
+  remote: 'remote',
+  on_site: 'on_site',
+} as const;
+
+export type MissionDtoOutputStatus =
+  (typeof MissionDtoOutputStatus)[keyof typeof MissionDtoOutputStatus];
+
+export const MissionDtoOutputStatus = {
+  open: 'open',
+  closed: 'closed',
+} as const;
+
+export type MissionDtoOutputAuthorMember = {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  displayName: string;
+  /** @nullable */
+  headline: string | null;
+  /** @nullable */
+  avatarUrl: string | null;
+};
+
+export type MissionDtoOutputAuthorProject = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  slug: string;
+  title: string;
+} | null;
+
+export type MissionDtoOutputAuthor = {
+  member: MissionDtoOutputAuthorMember;
+  project: MissionDtoOutputAuthorProject;
+};
+
+export type MissionDtoOutputVisibility =
+  (typeof MissionDtoOutputVisibility)[keyof typeof MissionDtoOutputVisibility];
+
+export const MissionDtoOutputVisibility = {
+  members: 'members',
+  public: 'public',
+} as const;
+
+export type MissionDtoOutputViewer = {
+  isAuthor: boolean;
+  engagementId: string | null;
+  canEngage: boolean;
+} | null;
+
+export interface MissionDtoOutput {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  direction: MissionDtoOutputDirection;
+  title: string;
+  kind: MissionDtoOutputKind;
+  domain: string;
+  format: MissionDtoOutputFormat;
+  mode: MissionDtoOutputMode;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  estimatedHours: number;
+  sectorCodes: string[];
+  countryCodes: string[];
+  languages: string[];
+  status: MissionDtoOutputStatus;
+  author: MissionDtoOutputAuthor;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  publishedAt: string;
+  description: string;
+  skills: string[];
+  desiredBy: string[];
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  capacity: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  activeEngagements: number;
+  visibility: MissionDtoOutputVisibility;
+  closedAt: string | null;
+  viewer: MissionDtoOutputViewer;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  updatedAt: string;
+}
+
+export type MissionCardPageDtoOutputItemsItemDirection =
+  (typeof MissionCardPageDtoOutputItemsItemDirection)[keyof typeof MissionCardPageDtoOutputItemsItemDirection];
+
+export const MissionCardPageDtoOutputItemsItemDirection = {
+  offer: 'offer',
+  request: 'request',
+} as const;
+
+export type MissionCardPageDtoOutputItemsItemKind =
+  (typeof MissionCardPageDtoOutputItemsItemKind)[keyof typeof MissionCardPageDtoOutputItemsItemKind];
+
+export const MissionCardPageDtoOutputItemsItemKind = {
+  mentoring: 'mentoring',
+  expertise: 'expertise',
+} as const;
+
+export type MissionCardPageDtoOutputItemsItemFormat =
+  (typeof MissionCardPageDtoOutputItemsItemFormat)[keyof typeof MissionCardPageDtoOutputItemsItemFormat];
+
+export const MissionCardPageDtoOutputItemsItemFormat = {
+  session: 'session',
+  short_mission: 'short_mission',
+} as const;
+
+export type MissionCardPageDtoOutputItemsItemMode =
+  (typeof MissionCardPageDtoOutputItemsItemMode)[keyof typeof MissionCardPageDtoOutputItemsItemMode];
+
+export const MissionCardPageDtoOutputItemsItemMode = {
+  remote: 'remote',
+  on_site: 'on_site',
+} as const;
+
+export type MissionCardPageDtoOutputItemsItemStatus =
+  (typeof MissionCardPageDtoOutputItemsItemStatus)[keyof typeof MissionCardPageDtoOutputItemsItemStatus];
+
+export const MissionCardPageDtoOutputItemsItemStatus = {
+  open: 'open',
+  closed: 'closed',
+} as const;
+
+export type MissionCardPageDtoOutputItemsItemAuthorMember = {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  displayName: string;
+  /** @nullable */
+  headline: string | null;
+  /** @nullable */
+  avatarUrl: string | null;
+};
+
+export type MissionCardPageDtoOutputItemsItemAuthorProject = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  slug: string;
+  title: string;
+} | null;
+
+export type MissionCardPageDtoOutputItemsItemAuthor = {
+  member: MissionCardPageDtoOutputItemsItemAuthorMember;
+  project: MissionCardPageDtoOutputItemsItemAuthorProject;
+};
+
+export type MissionCardPageDtoOutputItemsItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  direction: MissionCardPageDtoOutputItemsItemDirection;
+  title: string;
+  kind: MissionCardPageDtoOutputItemsItemKind;
+  domain: string;
+  format: MissionCardPageDtoOutputItemsItemFormat;
+  mode: MissionCardPageDtoOutputItemsItemMode;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  estimatedHours: number;
+  sectorCodes: string[];
+  countryCodes: string[];
+  languages: string[];
+  status: MissionCardPageDtoOutputItemsItemStatus;
+  author: MissionCardPageDtoOutputItemsItemAuthor;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  publishedAt: string;
+};
+
+export interface MissionCardPageDtoOutput {
+  items: MissionCardPageDtoOutputItemsItem[];
+  nextCursor: string[];
+}
+
+export type EngagementPageDtoOutputItemsItemMissionDirection =
+  (typeof EngagementPageDtoOutputItemsItemMissionDirection)[keyof typeof EngagementPageDtoOutputItemsItemMissionDirection];
+
+export const EngagementPageDtoOutputItemsItemMissionDirection = {
+  offer: 'offer',
+  request: 'request',
+} as const;
+
+export type EngagementPageDtoOutputItemsItemMissionKind =
+  (typeof EngagementPageDtoOutputItemsItemMissionKind)[keyof typeof EngagementPageDtoOutputItemsItemMissionKind];
+
+export const EngagementPageDtoOutputItemsItemMissionKind = {
+  mentoring: 'mentoring',
+  expertise: 'expertise',
+} as const;
+
+export type EngagementPageDtoOutputItemsItemMissionFormat =
+  (typeof EngagementPageDtoOutputItemsItemMissionFormat)[keyof typeof EngagementPageDtoOutputItemsItemMissionFormat];
+
+export const EngagementPageDtoOutputItemsItemMissionFormat = {
+  session: 'session',
+  short_mission: 'short_mission',
+} as const;
+
+export type EngagementPageDtoOutputItemsItemMissionMode =
+  (typeof EngagementPageDtoOutputItemsItemMissionMode)[keyof typeof EngagementPageDtoOutputItemsItemMissionMode];
+
+export const EngagementPageDtoOutputItemsItemMissionMode = {
+  remote: 'remote',
+  on_site: 'on_site',
+} as const;
+
+export type EngagementPageDtoOutputItemsItemMissionStatus =
+  (typeof EngagementPageDtoOutputItemsItemMissionStatus)[keyof typeof EngagementPageDtoOutputItemsItemMissionStatus];
+
+export const EngagementPageDtoOutputItemsItemMissionStatus = {
+  open: 'open',
+  closed: 'closed',
+} as const;
+
+export type EngagementPageDtoOutputItemsItemMissionAuthorMember = {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  displayName: string;
+  /** @nullable */
+  headline: string | null;
+  /** @nullable */
+  avatarUrl: string | null;
+};
+
+export type EngagementPageDtoOutputItemsItemMissionAuthorProject = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  slug: string;
+  title: string;
+} | null;
+
+export type EngagementPageDtoOutputItemsItemMissionAuthor = {
+  member: EngagementPageDtoOutputItemsItemMissionAuthorMember;
+  project: EngagementPageDtoOutputItemsItemMissionAuthorProject;
+};
+
+export type EngagementPageDtoOutputItemsItemMission = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  direction: EngagementPageDtoOutputItemsItemMissionDirection;
+  title: string;
+  kind: EngagementPageDtoOutputItemsItemMissionKind;
+  domain: string;
+  format: EngagementPageDtoOutputItemsItemMissionFormat;
+  mode: EngagementPageDtoOutputItemsItemMissionMode;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  estimatedHours: number;
+  sectorCodes: string[];
+  countryCodes: string[];
+  languages: string[];
+  status: EngagementPageDtoOutputItemsItemMissionStatus;
+  author: EngagementPageDtoOutputItemsItemMissionAuthor;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  publishedAt: string;
+};
+
+export type EngagementPageDtoOutputItemsItemStatus =
+  (typeof EngagementPageDtoOutputItemsItemStatus)[keyof typeof EngagementPageDtoOutputItemsItemStatus];
+
+export const EngagementPageDtoOutputItemsItemStatus = {
+  requested: 'requested',
+  accepted: 'accepted',
+  declined: 'declined',
+  completed: 'completed',
+  canceled: 'canceled',
+} as const;
+
+export type EngagementPageDtoOutputItemsItemExpert = {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  displayName: string;
+  /** @nullable */
+  headline: string | null;
+  /** @nullable */
+  avatarUrl: string | null;
+};
+
+export type EngagementPageDtoOutputItemsItemBeneficiary = {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  displayName: string;
+  /** @nullable */
+  headline: string | null;
+  /** @nullable */
+  avatarUrl: string | null;
+};
+
+export type EngagementPageDtoOutputItemsItemProject = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  slug: string;
+  title: string;
+} | null;
+
+export type EngagementPageDtoOutputItemsItemTimeEntryStatus =
+  (typeof EngagementPageDtoOutputItemsItemTimeEntryStatus)[keyof typeof EngagementPageDtoOutputItemsItemTimeEntryStatus];
+
+export const EngagementPageDtoOutputItemsItemTimeEntryStatus = {
+  declared: 'declared',
+  confirmed: 'confirmed',
+  disputed: 'disputed',
+} as const;
+
+export type EngagementPageDtoOutputItemsItemTimeEntry = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  minutes: number;
+  status: EngagementPageDtoOutputItemsItemTimeEntryStatus;
+} | null;
+
+export type EngagementPageDtoOutputItemsItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  mission: EngagementPageDtoOutputItemsItemMission;
+  status: EngagementPageDtoOutputItemsItemStatus;
+  expert: EngagementPageDtoOutputItemsItemExpert;
+  beneficiary: EngagementPageDtoOutputItemsItemBeneficiary;
+  project: EngagementPageDtoOutputItemsItemProject;
+  message: string;
+  /** @nullable */
+  answerMessage: string | null;
+  timeEntry: EngagementPageDtoOutputItemsItemTimeEntry;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  requestedAt: string;
+  answeredAt: string | null;
+  endedAt: string | null;
+};
+
+export interface EngagementPageDtoOutput {
+  items: EngagementPageDtoOutputItemsItem[];
+  nextCursor: string[];
+}
+
+export type UpdateMissionDtoKind = (typeof UpdateMissionDtoKind)[keyof typeof UpdateMissionDtoKind];
+
+export const UpdateMissionDtoKind = {
+  mentoring: 'mentoring',
+  expertise: 'expertise',
+} as const;
+
+export type UpdateMissionDtoFormat =
+  (typeof UpdateMissionDtoFormat)[keyof typeof UpdateMissionDtoFormat];
+
+export const UpdateMissionDtoFormat = {
+  session: 'session',
+  short_mission: 'short_mission',
+} as const;
+
+export type UpdateMissionDtoMode = (typeof UpdateMissionDtoMode)[keyof typeof UpdateMissionDtoMode];
+
+export const UpdateMissionDtoMode = {
+  remote: 'remote',
+  on_site: 'on_site',
+} as const;
+
+export type UpdateMissionDtoVisibility =
+  (typeof UpdateMissionDtoVisibility)[keyof typeof UpdateMissionDtoVisibility];
+
+export const UpdateMissionDtoVisibility = {
+  members: 'members',
+  public: 'public',
+} as const;
+
+export interface UpdateMissionDto {
+  /**
+   * @minLength 1
+   * @maxLength 120
+   */
+  title?: string;
+  /**
+   * @minLength 1
+   * @maxLength 5000
+   */
+  description?: string;
+  kind?: UpdateMissionDtoKind;
+  /**
+   * @minLength 1
+   * @maxLength 80
+   */
+  domain?: string;
+  /**
+   * @maxItems 5
+   * @items.pattern ^[a-z0-9_]{1,48}$
+   */
+  sectorCodes?: string[];
+  format?: UpdateMissionDtoFormat;
+  /**
+   * @minimum 1
+   * @maximum 80
+   */
+  estimatedHours?: number;
+  mode?: UpdateMissionDtoMode;
+  /**
+   * @maxItems 10
+   * @items.pattern ^[A-Z]{2}$
+   */
+  countryCodes?: string[];
+  /**
+   * @minItems 1
+   * @maxItems 5
+   * @items.pattern ^[a-z]{2}$
+   */
+  languages?: string[];
+  /**
+   * @minimum 1
+   * @maximum 20
+   */
+  capacity?: number;
+  /**
+   * @maxItems 10
+   * @items.minLength 1
+   * @items.maxLength 60
+   */
+  skills?: string[];
+  desiredBy?: string | null;
+  visibility?: UpdateMissionDtoVisibility;
+}
+
+export interface RequestEngagementDto {
+  /**
+   * @minLength 1
+   * @maxLength 2000
+   */
+  message: string;
+  projectId?: string | null;
+}
+
+export type EngagementDtoOutputMissionDirection =
+  (typeof EngagementDtoOutputMissionDirection)[keyof typeof EngagementDtoOutputMissionDirection];
+
+export const EngagementDtoOutputMissionDirection = {
+  offer: 'offer',
+  request: 'request',
+} as const;
+
+export type EngagementDtoOutputMissionKind =
+  (typeof EngagementDtoOutputMissionKind)[keyof typeof EngagementDtoOutputMissionKind];
+
+export const EngagementDtoOutputMissionKind = {
+  mentoring: 'mentoring',
+  expertise: 'expertise',
+} as const;
+
+export type EngagementDtoOutputMissionFormat =
+  (typeof EngagementDtoOutputMissionFormat)[keyof typeof EngagementDtoOutputMissionFormat];
+
+export const EngagementDtoOutputMissionFormat = {
+  session: 'session',
+  short_mission: 'short_mission',
+} as const;
+
+export type EngagementDtoOutputMissionMode =
+  (typeof EngagementDtoOutputMissionMode)[keyof typeof EngagementDtoOutputMissionMode];
+
+export const EngagementDtoOutputMissionMode = {
+  remote: 'remote',
+  on_site: 'on_site',
+} as const;
+
+export type EngagementDtoOutputMissionStatus =
+  (typeof EngagementDtoOutputMissionStatus)[keyof typeof EngagementDtoOutputMissionStatus];
+
+export const EngagementDtoOutputMissionStatus = {
+  open: 'open',
+  closed: 'closed',
+} as const;
+
+export type EngagementDtoOutputMissionAuthorMember = {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  displayName: string;
+  /** @nullable */
+  headline: string | null;
+  /** @nullable */
+  avatarUrl: string | null;
+};
+
+export type EngagementDtoOutputMissionAuthorProject = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  slug: string;
+  title: string;
+} | null;
+
+export type EngagementDtoOutputMissionAuthor = {
+  member: EngagementDtoOutputMissionAuthorMember;
+  project: EngagementDtoOutputMissionAuthorProject;
+};
+
+export type EngagementDtoOutputMission = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  direction: EngagementDtoOutputMissionDirection;
+  title: string;
+  kind: EngagementDtoOutputMissionKind;
+  domain: string;
+  format: EngagementDtoOutputMissionFormat;
+  mode: EngagementDtoOutputMissionMode;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  estimatedHours: number;
+  sectorCodes: string[];
+  countryCodes: string[];
+  languages: string[];
+  status: EngagementDtoOutputMissionStatus;
+  author: EngagementDtoOutputMissionAuthor;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  publishedAt: string;
+};
+
+export type EngagementDtoOutputStatus =
+  (typeof EngagementDtoOutputStatus)[keyof typeof EngagementDtoOutputStatus];
+
+export const EngagementDtoOutputStatus = {
+  requested: 'requested',
+  accepted: 'accepted',
+  declined: 'declined',
+  completed: 'completed',
+  canceled: 'canceled',
+} as const;
+
+export type EngagementDtoOutputExpert = {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  displayName: string;
+  /** @nullable */
+  headline: string | null;
+  /** @nullable */
+  avatarUrl: string | null;
+};
+
+export type EngagementDtoOutputBeneficiary = {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  displayName: string;
+  /** @nullable */
+  headline: string | null;
+  /** @nullable */
+  avatarUrl: string | null;
+};
+
+export type EngagementDtoOutputProject = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  slug: string;
+  title: string;
+} | null;
+
+export type EngagementDtoOutputTimeEntryStatus =
+  (typeof EngagementDtoOutputTimeEntryStatus)[keyof typeof EngagementDtoOutputTimeEntryStatus];
+
+export const EngagementDtoOutputTimeEntryStatus = {
+  declared: 'declared',
+  confirmed: 'confirmed',
+  disputed: 'disputed',
+} as const;
+
+export type EngagementDtoOutputTimeEntry = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  minutes: number;
+  status: EngagementDtoOutputTimeEntryStatus;
+} | null;
+
+export interface EngagementDtoOutput {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  mission: EngagementDtoOutputMission;
+  status: EngagementDtoOutputStatus;
+  expert: EngagementDtoOutputExpert;
+  beneficiary: EngagementDtoOutputBeneficiary;
+  project: EngagementDtoOutputProject;
+  message: string;
+  answerMessage: string[];
+  timeEntry: EngagementDtoOutputTimeEntry;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  requestedAt: string;
+  answeredAt: string | null;
+  endedAt: string | null;
+}
+
+export interface AnswerEngagementDto {
+  message?: string | null;
+}
+
+export interface CompleteEngagementDto {
+  /**
+   * @minimum 1
+   * @maximum 1440
+   */
+  minutes: number;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))$ */
+  date: string;
+  /**
+   * @minLength 1
+   * @maxLength 1000
+   */
+  description: string;
+}
+
+export type SearchResultPageDtoOutputItemsItem =
+  | {
+      kind: 'person';
+      key: string;
+      title: string;
+      /** @nullable */
+      subtitle: string | null;
+      /** @nullable */
+      imageUrl: string | null;
+      countryCodes: string[];
+      sectorCodes: string[];
+      facets: {
+        entrepreneur: boolean;
+        contributor: boolean;
+      };
+      hats: (
+        'investor' | 'patron_donor' | 'mentor' | 'expert' | 'business_partner' | 'recruiter'
+      )[];
+    }
+  | {
+      kind: 'organization';
+      key: string;
+      title: string;
+      /** @nullable */
+      subtitle: string | null;
+      /** @nullable */
+      imageUrl: string | null;
+      countryCodes: string[];
+      sectorCodes: string[];
+      structureType:
+        | 'individual'
+        | 'company'
+        | 'ngo_association'
+        | 'foundation'
+        | 'institution'
+        | 'international_organization'
+        | 'cooperative';
+      verified: boolean;
+    }
+  | {
+      kind: 'project';
+      key: string;
+      title: string;
+      /** @nullable */
+      subtitle: string | null;
+      /** @nullable */
+      imageUrl: string | null;
+      countryCodes: string[];
+      sectorCodes: string[];
+      status: 'draft' | 'funding' | 'funded' | 'closed';
+      impactScore: number | null;
+      endsAt: string | null;
+    }
+  | {
+      kind: 'event';
+      key: string;
+      title: string;
+      /** @nullable */
+      subtitle: string | null;
+      /** @nullable */
+      imageUrl: string | null;
+      countryCodes: string[];
+      sectorCodes: string[];
+      format: 'online' | 'in_person' | 'hybrid';
+      /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+      startsAt: string;
+      /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+      endsAt: string;
+      timeZone: string;
+    }
+  | {
+      kind: 'mission';
+      key: string;
+      title: string;
+      /** @nullable */
+      subtitle: string | null;
+      /** @nullable */
+      imageUrl: string | null;
+      countryCodes: string[];
+      sectorCodes: string[];
+      direction: 'offer' | 'request';
+      missionKind: 'mentoring' | 'expertise';
+      mode: 'remote' | 'on_site';
+    };
+
+export interface SearchResultPageDtoOutput {
+  items: SearchResultPageDtoOutputItemsItem[];
+  nextCursor: string[];
+}
+
+export type AutocompleteResultDtoOutputItemsItemKind =
+  (typeof AutocompleteResultDtoOutputItemsItemKind)[keyof typeof AutocompleteResultDtoOutputItemsItemKind];
+
+export const AutocompleteResultDtoOutputItemsItemKind = {
+  person: 'person',
+  organization: 'organization',
+  project: 'project',
+  event: 'event',
+  mission: 'mission',
+} as const;
+
+export type AutocompleteResultDtoOutputItemsItem = {
+  kind: AutocompleteResultDtoOutputItemsItemKind;
+  key: string;
+  title: string;
+  /** @nullable */
+  subtitle: string | null;
+};
+
+export interface AutocompleteResultDtoOutput {
+  items: AutocompleteResultDtoOutputItemsItem[];
+}
+
+export type SuggestionPageDtoOutputItemsItemCandidate =
+  | {
+      kind: 'person';
+      key: string;
+      title: string;
+      /** @nullable */
+      subtitle: string | null;
+      /** @nullable */
+      imageUrl: string | null;
+      countryCodes: string[];
+      sectorCodes: string[];
+      facets: {
+        entrepreneur: boolean;
+        contributor: boolean;
+      };
+      hats: (
+        'investor' | 'patron_donor' | 'mentor' | 'expert' | 'business_partner' | 'recruiter'
+      )[];
+    }
+  | {
+      kind: 'organization';
+      key: string;
+      title: string;
+      /** @nullable */
+      subtitle: string | null;
+      /** @nullable */
+      imageUrl: string | null;
+      countryCodes: string[];
+      sectorCodes: string[];
+      structureType:
+        | 'individual'
+        | 'company'
+        | 'ngo_association'
+        | 'foundation'
+        | 'institution'
+        | 'international_organization'
+        | 'cooperative';
+      verified: boolean;
+    }
+  | {
+      kind: 'project';
+      key: string;
+      title: string;
+      /** @nullable */
+      subtitle: string | null;
+      /** @nullable */
+      imageUrl: string | null;
+      countryCodes: string[];
+      sectorCodes: string[];
+      status: 'draft' | 'funding' | 'funded' | 'closed';
+      impactScore: number | null;
+      endsAt: string | null;
+    }
+  | {
+      kind: 'event';
+      key: string;
+      title: string;
+      /** @nullable */
+      subtitle: string | null;
+      /** @nullable */
+      imageUrl: string | null;
+      countryCodes: string[];
+      sectorCodes: string[];
+      format: 'online' | 'in_person' | 'hybrid';
+      /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+      startsAt: string;
+      /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+      endsAt: string;
+      timeZone: string;
+    }
+  | {
+      kind: 'mission';
+      key: string;
+      title: string;
+      /** @nullable */
+      subtitle: string | null;
+      /** @nullable */
+      imageUrl: string | null;
+      countryCodes: string[];
+      sectorCodes: string[];
+      direction: 'offer' | 'request';
+      missionKind: 'mentoring' | 'expertise';
+      mode: 'remote' | 'on_site';
+    };
+
+export type SuggestionPageDtoOutputItemsItemSentenceClausesItemParams = { [key: string]: string };
+
+export type SuggestionPageDtoOutputItemsItemSentenceClausesItem = {
+  key: string;
+  params: SuggestionPageDtoOutputItemsItemSentenceClausesItemParams;
+};
+
+export type SuggestionPageDtoOutputItemsItemSentence = {
+  key: string;
+  clauses: SuggestionPageDtoOutputItemsItemSentenceClausesItem[];
+};
+
+export type SuggestionPageDtoOutputItemsItemReasonsItemRule =
+  (typeof SuggestionPageDtoOutputItemsItemReasonsItemRule)[keyof typeof SuggestionPageDtoOutputItemsItemReasonsItemRule];
+
+export const SuggestionPageDtoOutputItemsItemReasonsItemRule = {
+  need_matches_hat: 'need_matches_hat',
+  hat_matches_need: 'hat_matches_need',
+  mentoring_available: 'mentoring_available',
+  mentoring_wanted: 'mentoring_wanted',
+  shared_sector: 'shared_sector',
+  country_in_intervention: 'country_in_intervention',
+  intervenes_in_country: 'intervenes_in_country',
+  ticket_fits_target: 'ticket_fits_target',
+  instruments_compatible: 'instruments_compatible',
+  same_country_other_sector: 'same_country_other_sector',
+  same_sector_other_country: 'same_sector_other_country',
+  mission_matches_need: 'mission_matches_need',
+  mission_matches_hat: 'mission_matches_hat',
+  mission_reachable: 'mission_reachable',
+  event_in_country: 'event_in_country',
+  shared_language: 'shared_language',
+} as const;
+
+export type SuggestionPageDtoOutputItemsItemReasonsItemParams = { [key: string]: string };
+
+export type SuggestionPageDtoOutputItemsItemReasonsItem = {
+  rule: SuggestionPageDtoOutputItemsItemReasonsItemRule;
+  key: string;
+  params: SuggestionPageDtoOutputItemsItemReasonsItemParams;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  weight: number;
+};
+
+export type SuggestionPageDtoOutputItemsItem = {
+  candidate: SuggestionPageDtoOutputItemsItemCandidate;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  score: number;
+  sentence: SuggestionPageDtoOutputItemsItemSentence;
+  reasons: SuggestionPageDtoOutputItemsItemReasonsItem[];
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  rulesVersion: number;
+};
+
+export interface SuggestionPageDtoOutput {
+  items: SuggestionPageDtoOutputItemsItem[];
+  nextCursor: string[];
+}
+
+export type DismissDtoKind = (typeof DismissDtoKind)[keyof typeof DismissDtoKind];
+
+export const DismissDtoKind = {
+  person: 'person',
+  organization: 'organization',
+  project: 'project',
+  event: 'event',
+  mission: 'mission',
+} as const;
+
+export interface DismissDto {
+  kind: DismissDtoKind;
+  /**
+   * @minLength 1
+   * @maxLength 100
+   */
+  key: string;
+}
+
+export type DiscoverPageDtoOutputSectionsItemSection =
+  (typeof DiscoverPageDtoOutputSectionsItemSection)[keyof typeof DiscoverPageDtoOutputSectionsItemSection];
+
+export const DiscoverPageDtoOutputSectionsItemSection = {
+  recent_projects: 'recent_projects',
+  ending_soon_projects: 'ending_soon_projects',
+  suggested_profiles: 'suggested_profiles',
+  editorial: 'editorial',
+  upcoming_events: 'upcoming_events',
+  open_missions: 'open_missions',
+} as const;
+
+export type DiscoverPageDtoOutputSectionsItemItemsItem =
+  | {
+      kind: 'person';
+      key: string;
+      title: string;
+      /** @nullable */
+      subtitle: string | null;
+      /** @nullable */
+      imageUrl: string | null;
+      countryCodes: string[];
+      sectorCodes: string[];
+      facets: {
+        entrepreneur: boolean;
+        contributor: boolean;
+      };
+      hats: (
+        'investor' | 'patron_donor' | 'mentor' | 'expert' | 'business_partner' | 'recruiter'
+      )[];
+    }
+  | {
+      kind: 'organization';
+      key: string;
+      title: string;
+      /** @nullable */
+      subtitle: string | null;
+      /** @nullable */
+      imageUrl: string | null;
+      countryCodes: string[];
+      sectorCodes: string[];
+      structureType:
+        | 'individual'
+        | 'company'
+        | 'ngo_association'
+        | 'foundation'
+        | 'institution'
+        | 'international_organization'
+        | 'cooperative';
+      verified: boolean;
+    }
+  | {
+      kind: 'project';
+      key: string;
+      title: string;
+      /** @nullable */
+      subtitle: string | null;
+      /** @nullable */
+      imageUrl: string | null;
+      countryCodes: string[];
+      sectorCodes: string[];
+      status: 'draft' | 'funding' | 'funded' | 'closed';
+      impactScore: number | null;
+      endsAt: string | null;
+    }
+  | {
+      kind: 'event';
+      key: string;
+      title: string;
+      /** @nullable */
+      subtitle: string | null;
+      /** @nullable */
+      imageUrl: string | null;
+      countryCodes: string[];
+      sectorCodes: string[];
+      format: 'online' | 'in_person' | 'hybrid';
+      /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+      startsAt: string;
+      /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+      endsAt: string;
+      timeZone: string;
+    }
+  | {
+      kind: 'mission';
+      key: string;
+      title: string;
+      /** @nullable */
+      subtitle: string | null;
+      /** @nullable */
+      imageUrl: string | null;
+      countryCodes: string[];
+      sectorCodes: string[];
+      direction: 'offer' | 'request';
+      missionKind: 'mentoring' | 'expertise';
+      mode: 'remote' | 'on_site';
+    };
+
+export type DiscoverPageDtoOutputSectionsItemSentencesItemClausesItemParams = {
+  [key: string]: string;
+};
+
+export type DiscoverPageDtoOutputSectionsItemSentencesItemClausesItem = {
+  key: string;
+  params: DiscoverPageDtoOutputSectionsItemSentencesItemClausesItemParams;
+};
+
+export type DiscoverPageDtoOutputSectionsItemSentencesItem = {
+  key: string;
+  clauses: DiscoverPageDtoOutputSectionsItemSentencesItemClausesItem[];
+} | null;
+
+export type DiscoverPageDtoOutputSectionsItem = {
+  section: DiscoverPageDtoOutputSectionsItemSection;
+  items: DiscoverPageDtoOutputSectionsItemItemsItem[];
+  sentences: DiscoverPageDtoOutputSectionsItemSentencesItem[];
+  /** @nullable */
+  nextCursor: string | null;
+};
+
+export interface DiscoverPageDtoOutput {
+  sections: DiscoverPageDtoOutputSectionsItem[];
+}
+
+export type DiscoverSectionPageDtoOutputSection =
+  (typeof DiscoverSectionPageDtoOutputSection)[keyof typeof DiscoverSectionPageDtoOutputSection];
+
+export const DiscoverSectionPageDtoOutputSection = {
+  recent_projects: 'recent_projects',
+  ending_soon_projects: 'ending_soon_projects',
+  suggested_profiles: 'suggested_profiles',
+  editorial: 'editorial',
+  upcoming_events: 'upcoming_events',
+  open_missions: 'open_missions',
+} as const;
+
+export type DiscoverSectionPageDtoOutputItemsItem =
+  | {
+      kind: 'person';
+      key: string;
+      title: string;
+      /** @nullable */
+      subtitle: string | null;
+      /** @nullable */
+      imageUrl: string | null;
+      countryCodes: string[];
+      sectorCodes: string[];
+      facets: {
+        entrepreneur: boolean;
+        contributor: boolean;
+      };
+      hats: (
+        'investor' | 'patron_donor' | 'mentor' | 'expert' | 'business_partner' | 'recruiter'
+      )[];
+    }
+  | {
+      kind: 'organization';
+      key: string;
+      title: string;
+      /** @nullable */
+      subtitle: string | null;
+      /** @nullable */
+      imageUrl: string | null;
+      countryCodes: string[];
+      sectorCodes: string[];
+      structureType:
+        | 'individual'
+        | 'company'
+        | 'ngo_association'
+        | 'foundation'
+        | 'institution'
+        | 'international_organization'
+        | 'cooperative';
+      verified: boolean;
+    }
+  | {
+      kind: 'project';
+      key: string;
+      title: string;
+      /** @nullable */
+      subtitle: string | null;
+      /** @nullable */
+      imageUrl: string | null;
+      countryCodes: string[];
+      sectorCodes: string[];
+      status: 'draft' | 'funding' | 'funded' | 'closed';
+      impactScore: number | null;
+      endsAt: string | null;
+    }
+  | {
+      kind: 'event';
+      key: string;
+      title: string;
+      /** @nullable */
+      subtitle: string | null;
+      /** @nullable */
+      imageUrl: string | null;
+      countryCodes: string[];
+      sectorCodes: string[];
+      format: 'online' | 'in_person' | 'hybrid';
+      /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+      startsAt: string;
+      /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+      endsAt: string;
+      timeZone: string;
+    }
+  | {
+      kind: 'mission';
+      key: string;
+      title: string;
+      /** @nullable */
+      subtitle: string | null;
+      /** @nullable */
+      imageUrl: string | null;
+      countryCodes: string[];
+      sectorCodes: string[];
+      direction: 'offer' | 'request';
+      missionKind: 'mentoring' | 'expertise';
+      mode: 'remote' | 'on_site';
+    };
+
+export type DiscoverSectionPageDtoOutputSentencesItemClausesItemParams = { [key: string]: string };
+
+export type DiscoverSectionPageDtoOutputSentencesItemClausesItem = {
+  key: string;
+  params: DiscoverSectionPageDtoOutputSentencesItemClausesItemParams;
+};
+
+export type DiscoverSectionPageDtoOutputSentencesItem = {
+  key: string;
+  clauses: DiscoverSectionPageDtoOutputSentencesItemClausesItem[];
+} | null;
+
+export interface DiscoverSectionPageDtoOutput {
+  section: DiscoverSectionPageDtoOutputSection;
+  items: DiscoverSectionPageDtoOutputItemsItem[];
+  sentences: DiscoverSectionPageDtoOutputSentencesItem[];
+  nextCursor: string[];
+}
+
 export type NotificationPageDtoOutputItemsItemType =
   (typeof NotificationPageDtoOutputItemsItemType)[keyof typeof NotificationPageDtoOutputItemsItemType];
 
@@ -11203,6 +13099,14 @@ export const NotificationPageDtoOutputItemsItemType = {
   time_entry_declared: 'time_entry_declared',
   time_entry_answered: 'time_entry_answered',
   security_alert: 'security_alert',
+  event_registration_confirmed: 'event_registration_confirmed',
+  event_waitlist_promoted: 'event_waitlist_promoted',
+  event_reminder: 'event_reminder',
+  event_canceled: 'event_canceled',
+  mission_engagement_requested: 'mission_engagement_requested',
+  mission_engagement_answered: 'mission_engagement_answered',
+  mission_completed: 'mission_completed',
+  new_suggestions: 'new_suggestions',
 } as const;
 
 export type NotificationPageDtoOutputItemsItemPriority =
@@ -11243,6 +13147,9 @@ export const NotificationPageDtoOutputItemsItemTargetType = {
   profile_views: 'profile_views',
   connection_requests: 'connection_requests',
   account_security: 'account_security',
+  event: 'event',
+  mission_engagement: 'mission_engagement',
+  suggestions: 'suggestions',
 } as const;
 
 export type NotificationPageDtoOutputItemsItemTarget = {
@@ -11382,6 +13289,14 @@ export interface UnsubscribeResultDtoOutput {
     | 'time_entry_declared'
     | 'time_entry_answered'
     | 'security_alert'
+    | 'event_registration_confirmed'
+    | 'event_waitlist_promoted'
+    | 'event_reminder'
+    | 'event_canceled'
+    | 'mission_engagement_requested'
+    | 'mission_engagement_answered'
+    | 'mission_completed'
+    | 'new_suggestions'
     | 'digest';
 }
 
@@ -11559,6 +13474,37 @@ export const ProblemDetailsCode = {
   NOTIFICATIONS_PREFERENCE_LOCKED: 'NOTIFICATIONS_PREFERENCE_LOCKED',
   NOTIFICATIONS_UNSUBSCRIBE_INVALID: 'NOTIFICATIONS_UNSUBSCRIBE_INVALID',
   NOTIFICATIONS_WEBHOOK_INVALID: 'NOTIFICATIONS_WEBHOOK_INVALID',
+  EVENTS_NOT_FOUND: 'EVENTS_NOT_FOUND',
+  EVENTS_SLUG_TAKEN: 'EVENTS_SLUG_TAKEN',
+  EVENTS_SLUG_RESERVED: 'EVENTS_SLUG_RESERVED',
+  EVENTS_INVALID_TRANSITION: 'EVENTS_INVALID_TRANSITION',
+  EVENTS_NOT_DRAFT: 'EVENTS_NOT_DRAFT',
+  EVENTS_SCHEDULE_INVALID: 'EVENTS_SCHEDULE_INVALID',
+  EVENTS_LOCATION_REQUIRED: 'EVENTS_LOCATION_REQUIRED',
+  EVENTS_ONLINE_URL_REQUIRED: 'EVENTS_ONLINE_URL_REQUIRED',
+  EVENTS_DESCRIPTION_INVALID: 'EVENTS_DESCRIPTION_INVALID',
+  EVENTS_PUBLIC_NOT_ALLOWED: 'EVENTS_PUBLIC_NOT_ALLOWED',
+  EVENTS_ORGANIZATION_ROLE_REQUIRED: 'EVENTS_ORGANIZATION_ROLE_REQUIRED',
+  EVENTS_PROJECT_ROLE_REQUIRED: 'EVENTS_PROJECT_ROLE_REQUIRED',
+  EVENTS_IMAGE_INVALID: 'EVENTS_IMAGE_INVALID',
+  EVENTS_REGISTRATION_CLOSED: 'EVENTS_REGISTRATION_CLOSED',
+  EVENTS_NOT_REGISTERED: 'EVENTS_NOT_REGISTERED',
+  EVENTS_CAPACITY_BELOW_REGISTERED: 'EVENTS_CAPACITY_BELOW_REGISTERED',
+  EVENTS_CALENDAR_NOT_FOUND: 'EVENTS_CALENDAR_NOT_FOUND',
+  MISSIONS_NOT_FOUND: 'MISSIONS_NOT_FOUND',
+  MISSIONS_HAT_REQUIRED: 'MISSIONS_HAT_REQUIRED',
+  MISSIONS_BENEFICIARY_REQUIRED: 'MISSIONS_BENEFICIARY_REQUIRED',
+  MISSIONS_PROJECT_ROLE_REQUIRED: 'MISSIONS_PROJECT_ROLE_REQUIRED',
+  MISSIONS_JOB_POSTING_REFUSED: 'MISSIONS_JOB_POSTING_REFUSED',
+  MISSIONS_HOURS_EXCEEDED: 'MISSIONS_HOURS_EXCEEDED',
+  MISSIONS_FIELDS_INVALID: 'MISSIONS_FIELDS_INVALID',
+  MISSIONS_CLOSED: 'MISSIONS_CLOSED',
+  MISSIONS_OWN_MISSION: 'MISSIONS_OWN_MISSION',
+  MISSIONS_ENGAGEMENT_EXISTS: 'MISSIONS_ENGAGEMENT_EXISTS',
+  MISSIONS_CAPACITY_REACHED: 'MISSIONS_CAPACITY_REACHED',
+  MISSIONS_ENGAGEMENT_NOT_FOUND: 'MISSIONS_ENGAGEMENT_NOT_FOUND',
+  MISSIONS_INVALID_TRANSITION: 'MISSIONS_INVALID_TRANSITION',
+  DISCOVERY_CANDIDATE_NOT_FOUND: 'DISCOVERY_CANDIDATE_NOT_FOUND',
   INTERNAL_ERROR: 'INTERNAL_ERROR',
   SERVICE_UNAVAILABLE: 'SERVICE_UNAVAILABLE',
 } as const;
@@ -12261,6 +14207,693 @@ export type MessagingControllerMessagesParams = {
 };
 
 export type MessagingControllerListIntroductionsParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+};
+
+export type EventsControllerListParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+  /**
+   * @pattern ^[A-Z]{2}$
+   */
+  countryCode?: string;
+  /**
+   * @pattern ^[a-z0-9_]{1,48}$
+   */
+  sectorCode?: string;
+  format?: EventsControllerListFormat;
+  /**
+   * @pattern ^[a-z]{2}$
+   */
+  language?: string;
+  /**
+   * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$
+   */
+  from?: string;
+};
+
+export type EventsControllerListFormat =
+  (typeof EventsControllerListFormat)[keyof typeof EventsControllerListFormat];
+
+export const EventsControllerListFormat = {
+  online: 'online',
+  in_person: 'in_person',
+  hybrid: 'hybrid',
+} as const;
+
+export type EventsControllerPublicListParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+  /**
+   * @pattern ^[A-Z]{2}$
+   */
+  countryCode?: string;
+  /**
+   * @pattern ^[a-z0-9_]{1,48}$
+   */
+  sectorCode?: string;
+  format?: EventsControllerPublicListFormat;
+  /**
+   * @pattern ^[a-z]{2}$
+   */
+  language?: string;
+  /**
+   * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$
+   */
+  from?: string;
+};
+
+export type EventsControllerPublicListFormat =
+  (typeof EventsControllerPublicListFormat)[keyof typeof EventsControllerPublicListFormat];
+
+export const EventsControllerPublicListFormat = {
+  online: 'online',
+  in_person: 'in_person',
+  hybrid: 'hybrid',
+} as const;
+
+export type EventsControllerMineParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+  role?: EventsControllerMineRole;
+};
+
+export type EventsControllerMineRole =
+  (typeof EventsControllerMineRole)[keyof typeof EventsControllerMineRole];
+
+export const EventsControllerMineRole = {
+  organizer: 'organizer',
+  attendee: 'attendee',
+} as const;
+
+export type EventsControllerAttendeesParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+};
+
+export type MissionsControllerListParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+  direction?: MissionsControllerListDirection;
+  kind?: MissionsControllerListKind;
+  mode?: MissionsControllerListMode;
+  /**
+   * @pattern ^[a-z0-9_]{1,48}$
+   */
+  sectorCode?: string;
+  /**
+   * @pattern ^[A-Z]{2}$
+   */
+  countryCode?: string;
+  /**
+   * @pattern ^[a-z]{2}$
+   */
+  language?: string;
+};
+
+export type MissionsControllerListDirection =
+  (typeof MissionsControllerListDirection)[keyof typeof MissionsControllerListDirection];
+
+export const MissionsControllerListDirection = {
+  offer: 'offer',
+  request: 'request',
+} as const;
+
+export type MissionsControllerListKind =
+  (typeof MissionsControllerListKind)[keyof typeof MissionsControllerListKind];
+
+export const MissionsControllerListKind = {
+  mentoring: 'mentoring',
+  expertise: 'expertise',
+} as const;
+
+export type MissionsControllerListMode =
+  (typeof MissionsControllerListMode)[keyof typeof MissionsControllerListMode];
+
+export const MissionsControllerListMode = {
+  remote: 'remote',
+  on_site: 'on_site',
+} as const;
+
+export type MissionsControllerPublicListParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+  direction?: MissionsControllerPublicListDirection;
+  kind?: MissionsControllerPublicListKind;
+  mode?: MissionsControllerPublicListMode;
+  /**
+   * @pattern ^[a-z0-9_]{1,48}$
+   */
+  sectorCode?: string;
+  /**
+   * @pattern ^[A-Z]{2}$
+   */
+  countryCode?: string;
+  /**
+   * @pattern ^[a-z]{2}$
+   */
+  language?: string;
+};
+
+export type MissionsControllerPublicListDirection =
+  (typeof MissionsControllerPublicListDirection)[keyof typeof MissionsControllerPublicListDirection];
+
+export const MissionsControllerPublicListDirection = {
+  offer: 'offer',
+  request: 'request',
+} as const;
+
+export type MissionsControllerPublicListKind =
+  (typeof MissionsControllerPublicListKind)[keyof typeof MissionsControllerPublicListKind];
+
+export const MissionsControllerPublicListKind = {
+  mentoring: 'mentoring',
+  expertise: 'expertise',
+} as const;
+
+export type MissionsControllerPublicListMode =
+  (typeof MissionsControllerPublicListMode)[keyof typeof MissionsControllerPublicListMode];
+
+export const MissionsControllerPublicListMode = {
+  remote: 'remote',
+  on_site: 'on_site',
+} as const;
+
+export type MissionsControllerMineParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+};
+
+export type MissionsControllerMyEngagementsParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+  role?: MissionsControllerMyEngagementsRole;
+  status?: MissionsControllerMyEngagementsStatus;
+};
+
+export type MissionsControllerMyEngagementsRole =
+  (typeof MissionsControllerMyEngagementsRole)[keyof typeof MissionsControllerMyEngagementsRole];
+
+export const MissionsControllerMyEngagementsRole = {
+  expert: 'expert',
+  beneficiary: 'beneficiary',
+} as const;
+
+export type MissionsControllerMyEngagementsStatus =
+  (typeof MissionsControllerMyEngagementsStatus)[keyof typeof MissionsControllerMyEngagementsStatus];
+
+export const MissionsControllerMyEngagementsStatus = {
+  requested: 'requested',
+  accepted: 'accepted',
+  declined: 'declined',
+  completed: 'completed',
+  canceled: 'canceled',
+} as const;
+
+export type MissionsControllerEngagementsParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+};
+
+export type DiscoveryControllerSearchAsMemberParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+  /**
+   * @maxLength 100
+   */
+  q?: string;
+  /**
+   * @maxLength 200
+   */
+  kinds?: string;
+  /**
+   * @pattern ^[A-Z]{2}$
+   */
+  countryCode?: string;
+  /**
+   * @pattern ^[a-z0-9_]{1,48}$
+   */
+  sectorCode?: string;
+  /**
+   * @pattern ^[a-z]{2}$
+   */
+  language?: string;
+  projectStatus?: DiscoveryControllerSearchAsMemberProjectStatus;
+  /**
+   * @minimum 0
+   * @maximum 100
+   */
+  minImpact?: number;
+  facet?: DiscoveryControllerSearchAsMemberFacet;
+  hat?: DiscoveryControllerSearchAsMemberHat;
+  mentoring?: DiscoveryControllerSearchAsMemberMentoring;
+  structureType?: DiscoveryControllerSearchAsMemberStructureType;
+  verified?: DiscoveryControllerSearchAsMemberVerified;
+  eventFormat?: DiscoveryControllerSearchAsMemberEventFormat;
+  includePast?: DiscoveryControllerSearchAsMemberIncludePast;
+  missionDirection?: DiscoveryControllerSearchAsMemberMissionDirection;
+  missionKind?: DiscoveryControllerSearchAsMemberMissionKind;
+  missionMode?: DiscoveryControllerSearchAsMemberMissionMode;
+};
+
+export type DiscoveryControllerSearchAsMemberProjectStatus =
+  (typeof DiscoveryControllerSearchAsMemberProjectStatus)[keyof typeof DiscoveryControllerSearchAsMemberProjectStatus];
+
+export const DiscoveryControllerSearchAsMemberProjectStatus = {
+  funding: 'funding',
+  funded: 'funded',
+  closed: 'closed',
+} as const;
+
+export type DiscoveryControllerSearchAsMemberFacet =
+  (typeof DiscoveryControllerSearchAsMemberFacet)[keyof typeof DiscoveryControllerSearchAsMemberFacet];
+
+export const DiscoveryControllerSearchAsMemberFacet = {
+  entrepreneur: 'entrepreneur',
+  contributor: 'contributor',
+} as const;
+
+export type DiscoveryControllerSearchAsMemberHat =
+  (typeof DiscoveryControllerSearchAsMemberHat)[keyof typeof DiscoveryControllerSearchAsMemberHat];
+
+export const DiscoveryControllerSearchAsMemberHat = {
+  investor: 'investor',
+  patron_donor: 'patron_donor',
+  mentor: 'mentor',
+  expert: 'expert',
+  business_partner: 'business_partner',
+  recruiter: 'recruiter',
+} as const;
+
+export type DiscoveryControllerSearchAsMemberMentoring =
+  (typeof DiscoveryControllerSearchAsMemberMentoring)[keyof typeof DiscoveryControllerSearchAsMemberMentoring];
+
+export const DiscoveryControllerSearchAsMemberMentoring = {
+  true: 'true',
+  false: 'false',
+} as const;
+
+export type DiscoveryControllerSearchAsMemberStructureType =
+  (typeof DiscoveryControllerSearchAsMemberStructureType)[keyof typeof DiscoveryControllerSearchAsMemberStructureType];
+
+export const DiscoveryControllerSearchAsMemberStructureType = {
+  individual: 'individual',
+  company: 'company',
+  ngo_association: 'ngo_association',
+  foundation: 'foundation',
+  institution: 'institution',
+  international_organization: 'international_organization',
+  cooperative: 'cooperative',
+} as const;
+
+export type DiscoveryControllerSearchAsMemberVerified =
+  (typeof DiscoveryControllerSearchAsMemberVerified)[keyof typeof DiscoveryControllerSearchAsMemberVerified];
+
+export const DiscoveryControllerSearchAsMemberVerified = {
+  true: 'true',
+  false: 'false',
+} as const;
+
+export type DiscoveryControllerSearchAsMemberEventFormat =
+  (typeof DiscoveryControllerSearchAsMemberEventFormat)[keyof typeof DiscoveryControllerSearchAsMemberEventFormat];
+
+export const DiscoveryControllerSearchAsMemberEventFormat = {
+  online: 'online',
+  in_person: 'in_person',
+  hybrid: 'hybrid',
+} as const;
+
+export type DiscoveryControllerSearchAsMemberIncludePast =
+  (typeof DiscoveryControllerSearchAsMemberIncludePast)[keyof typeof DiscoveryControllerSearchAsMemberIncludePast];
+
+export const DiscoveryControllerSearchAsMemberIncludePast = {
+  true: 'true',
+  false: 'false',
+} as const;
+
+export type DiscoveryControllerSearchAsMemberMissionDirection =
+  (typeof DiscoveryControllerSearchAsMemberMissionDirection)[keyof typeof DiscoveryControllerSearchAsMemberMissionDirection];
+
+export const DiscoveryControllerSearchAsMemberMissionDirection = {
+  offer: 'offer',
+  request: 'request',
+} as const;
+
+export type DiscoveryControllerSearchAsMemberMissionKind =
+  (typeof DiscoveryControllerSearchAsMemberMissionKind)[keyof typeof DiscoveryControllerSearchAsMemberMissionKind];
+
+export const DiscoveryControllerSearchAsMemberMissionKind = {
+  mentoring: 'mentoring',
+  expertise: 'expertise',
+} as const;
+
+export type DiscoveryControllerSearchAsMemberMissionMode =
+  (typeof DiscoveryControllerSearchAsMemberMissionMode)[keyof typeof DiscoveryControllerSearchAsMemberMissionMode];
+
+export const DiscoveryControllerSearchAsMemberMissionMode = {
+  remote: 'remote',
+  on_site: 'on_site',
+} as const;
+
+export type DiscoveryControllerSearchAsVisitorParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+  /**
+   * @maxLength 100
+   */
+  q?: string;
+  /**
+   * @maxLength 200
+   */
+  kinds?: string;
+  /**
+   * @pattern ^[A-Z]{2}$
+   */
+  countryCode?: string;
+  /**
+   * @pattern ^[a-z0-9_]{1,48}$
+   */
+  sectorCode?: string;
+  /**
+   * @pattern ^[a-z]{2}$
+   */
+  language?: string;
+  projectStatus?: DiscoveryControllerSearchAsVisitorProjectStatus;
+  /**
+   * @minimum 0
+   * @maximum 100
+   */
+  minImpact?: number;
+  facet?: DiscoveryControllerSearchAsVisitorFacet;
+  hat?: DiscoveryControllerSearchAsVisitorHat;
+  mentoring?: DiscoveryControllerSearchAsVisitorMentoring;
+  structureType?: DiscoveryControllerSearchAsVisitorStructureType;
+  verified?: DiscoveryControllerSearchAsVisitorVerified;
+  eventFormat?: DiscoveryControllerSearchAsVisitorEventFormat;
+  includePast?: DiscoveryControllerSearchAsVisitorIncludePast;
+  missionDirection?: DiscoveryControllerSearchAsVisitorMissionDirection;
+  missionKind?: DiscoveryControllerSearchAsVisitorMissionKind;
+  missionMode?: DiscoveryControllerSearchAsVisitorMissionMode;
+};
+
+export type DiscoveryControllerSearchAsVisitorProjectStatus =
+  (typeof DiscoveryControllerSearchAsVisitorProjectStatus)[keyof typeof DiscoveryControllerSearchAsVisitorProjectStatus];
+
+export const DiscoveryControllerSearchAsVisitorProjectStatus = {
+  funding: 'funding',
+  funded: 'funded',
+  closed: 'closed',
+} as const;
+
+export type DiscoveryControllerSearchAsVisitorFacet =
+  (typeof DiscoveryControllerSearchAsVisitorFacet)[keyof typeof DiscoveryControllerSearchAsVisitorFacet];
+
+export const DiscoveryControllerSearchAsVisitorFacet = {
+  entrepreneur: 'entrepreneur',
+  contributor: 'contributor',
+} as const;
+
+export type DiscoveryControllerSearchAsVisitorHat =
+  (typeof DiscoveryControllerSearchAsVisitorHat)[keyof typeof DiscoveryControllerSearchAsVisitorHat];
+
+export const DiscoveryControllerSearchAsVisitorHat = {
+  investor: 'investor',
+  patron_donor: 'patron_donor',
+  mentor: 'mentor',
+  expert: 'expert',
+  business_partner: 'business_partner',
+  recruiter: 'recruiter',
+} as const;
+
+export type DiscoveryControllerSearchAsVisitorMentoring =
+  (typeof DiscoveryControllerSearchAsVisitorMentoring)[keyof typeof DiscoveryControllerSearchAsVisitorMentoring];
+
+export const DiscoveryControllerSearchAsVisitorMentoring = {
+  true: 'true',
+  false: 'false',
+} as const;
+
+export type DiscoveryControllerSearchAsVisitorStructureType =
+  (typeof DiscoveryControllerSearchAsVisitorStructureType)[keyof typeof DiscoveryControllerSearchAsVisitorStructureType];
+
+export const DiscoveryControllerSearchAsVisitorStructureType = {
+  individual: 'individual',
+  company: 'company',
+  ngo_association: 'ngo_association',
+  foundation: 'foundation',
+  institution: 'institution',
+  international_organization: 'international_organization',
+  cooperative: 'cooperative',
+} as const;
+
+export type DiscoveryControllerSearchAsVisitorVerified =
+  (typeof DiscoveryControllerSearchAsVisitorVerified)[keyof typeof DiscoveryControllerSearchAsVisitorVerified];
+
+export const DiscoveryControllerSearchAsVisitorVerified = {
+  true: 'true',
+  false: 'false',
+} as const;
+
+export type DiscoveryControllerSearchAsVisitorEventFormat =
+  (typeof DiscoveryControllerSearchAsVisitorEventFormat)[keyof typeof DiscoveryControllerSearchAsVisitorEventFormat];
+
+export const DiscoveryControllerSearchAsVisitorEventFormat = {
+  online: 'online',
+  in_person: 'in_person',
+  hybrid: 'hybrid',
+} as const;
+
+export type DiscoveryControllerSearchAsVisitorIncludePast =
+  (typeof DiscoveryControllerSearchAsVisitorIncludePast)[keyof typeof DiscoveryControllerSearchAsVisitorIncludePast];
+
+export const DiscoveryControllerSearchAsVisitorIncludePast = {
+  true: 'true',
+  false: 'false',
+} as const;
+
+export type DiscoveryControllerSearchAsVisitorMissionDirection =
+  (typeof DiscoveryControllerSearchAsVisitorMissionDirection)[keyof typeof DiscoveryControllerSearchAsVisitorMissionDirection];
+
+export const DiscoveryControllerSearchAsVisitorMissionDirection = {
+  offer: 'offer',
+  request: 'request',
+} as const;
+
+export type DiscoveryControllerSearchAsVisitorMissionKind =
+  (typeof DiscoveryControllerSearchAsVisitorMissionKind)[keyof typeof DiscoveryControllerSearchAsVisitorMissionKind];
+
+export const DiscoveryControllerSearchAsVisitorMissionKind = {
+  mentoring: 'mentoring',
+  expertise: 'expertise',
+} as const;
+
+export type DiscoveryControllerSearchAsVisitorMissionMode =
+  (typeof DiscoveryControllerSearchAsVisitorMissionMode)[keyof typeof DiscoveryControllerSearchAsVisitorMissionMode];
+
+export const DiscoveryControllerSearchAsVisitorMissionMode = {
+  remote: 'remote',
+  on_site: 'on_site',
+} as const;
+
+export type DiscoveryControllerAutocompleteParams = {
+  /**
+   * @minLength 1
+   * @maxLength 100
+   */
+  q: string;
+  /**
+   * @maxLength 200
+   */
+  kinds?: string;
+  /**
+   * @minimum 1
+   * @maximum 10
+   */
+  limit?: number;
+};
+
+export type DiscoveryControllerPublicAutocompleteParams = {
+  /**
+   * @minLength 1
+   * @maxLength 100
+   */
+  q: string;
+  /**
+   * @maxLength 200
+   */
+  kinds?: string;
+  /**
+   * @minimum 1
+   * @maximum 10
+   */
+  limit?: number;
+};
+
+export type DiscoveryControllerListParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+  list: DiscoveryControllerListList;
+};
+
+export type DiscoveryControllerListList =
+  (typeof DiscoveryControllerListList)[keyof typeof DiscoveryControllerListList];
+
+export const DiscoveryControllerListList = {
+  people: 'people',
+  complementary_entrepreneurs: 'complementary_entrepreneurs',
+  projects: 'projects',
+  missions: 'missions',
+  events: 'events',
+} as const;
+
+export type DiscoveryControllerProjectContributorsParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+};
+
+export type DiscoveryControllerPageParams = {
+  /**
+   * @minimum 1
+   * @maximum 24
+   */
+  limit?: number;
+};
+
+export type DiscoveryControllerSectionParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+};
+
+export type DiscoveryControllerPublicPageParams = {
+  /**
+   * @minimum 1
+   * @maximum 24
+   */
+  limit?: number;
+};
+
+export type DiscoveryControllerPublicSectionParams = {
   /**
    * @minLength 1
    * @maxLength 512
