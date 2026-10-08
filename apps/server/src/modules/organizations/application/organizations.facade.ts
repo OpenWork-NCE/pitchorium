@@ -24,6 +24,18 @@ export interface OrganizationCard {
   verified: boolean;
 }
 
+/** What the discovery module indexes of an organization. */
+export interface OrganizationDiscoverySource {
+  id: string;
+  slug: string;
+  name: string;
+  description: string | null;
+  structureType: StructureType;
+  countryCodes: string[];
+  sectorCodes: string[];
+  verified: boolean;
+}
+
 /**
  * Public facade of the organizations module. At startup it gives profiles the organization
  * directory (contributor facet link), media the read rule of verification documents and network
@@ -108,6 +120,38 @@ export class OrganizationsFacade implements OnModuleInit {
         },
       ]),
     );
+  }
+
+  /** Live organizations in which the member is `owner` or `admin` (events organized for them). */
+  async managedBy(userId: string): Promise<string[]> {
+    const managed = (await this.organizations.membershipsOf(userId)).filter(
+      (member) => member.role === 'owner' || member.role === 'admin',
+    );
+    const live = await this.organizations.findByIds(managed.map((member) => member.organizationId));
+    return live
+      .filter((organization) => !organization.deletedAt)
+      .map((organization) => organization.id);
+  }
+
+  /** Searchable content of live organizations (discovery projection, ADR 0065). */
+  async discoverySources(ids: readonly string[]): Promise<OrganizationDiscoverySource[]> {
+    return (await this.organizations.findByIds(ids))
+      .filter((organization) => !organization.deletedAt)
+      .map((organization) => ({
+        id: organization.id,
+        slug: organization.slug,
+        name: organization.name,
+        description: organization.description,
+        structureType: organization.structureType,
+        countryCodes: organization.countryCodes,
+        sectorCodes: organization.sectorCodes,
+        verified: organization.verificationStatus === 'verified',
+      }));
+  }
+
+  /** Ids of the live organizations, by ascending id, for a full rebuild of the index. */
+  idsAfter(after: string | null, limit: number): Promise<string[]> {
+    return this.organizations.idsAfter(after, limit);
   }
 
   /** Role of a member in a live organization, null otherwise. */

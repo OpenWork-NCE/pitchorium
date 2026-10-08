@@ -49,6 +49,8 @@ export abstract class OrganizationRepository {
   /** Deleted organizations included: callers decide. */
   abstract findById(id: string): Promise<OrganizationRecord | null>;
   abstract findByIds(ids: readonly string[]): Promise<OrganizationRecord[]>;
+  /** Ids of the live organizations, by ascending id (search index rebuild). */
+  abstract idsAfter(after: string | null, limit: number): Promise<string[]>;
   /** Current slug first, then former slugs (redirects). */
   abstract resolveSlug(slug: string): Promise<{ organizationId: string; current: boolean } | null>;
   /** Current or former slug of another organization. */

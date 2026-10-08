@@ -90,6 +90,21 @@ export class DrizzleOrganizationRepository extends OrganizationRepository {
     return row ? toOrganization(row) : null;
   }
 
+  async idsAfter(after: string | null, limit: number): Promise<string[]> {
+    const rows = await this.db
+      .select({ id: organizationsOrganizations.id })
+      .from(organizationsOrganizations)
+      .where(
+        and(
+          isNull(organizationsOrganizations.deletedAt),
+          after ? gt(organizationsOrganizations.id, after) : undefined,
+        ),
+      )
+      .orderBy(asc(organizationsOrganizations.id))
+      .limit(limit);
+    return rows.map((row) => row.id);
+  }
+
   async findByIds(ids: readonly string[]): Promise<OrganizationRecord[]> {
     if (ids.length === 0) return [];
     const rows = await this.db

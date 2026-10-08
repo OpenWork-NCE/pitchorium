@@ -2,6 +2,7 @@
 export {
   ORGANIZATION_FOLLOW_TARGET,
   type OrganizationCard,
+  type OrganizationDiscoverySource,
   OrganizationsFacade,
 } from './application/organizations.facade';
 export type { OrganizationProjectsProvider } from './application/ports';
