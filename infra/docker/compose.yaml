@@ -8,6 +8,8 @@ services:
       POSTGRES_USER: pitchorium
       POSTGRES_PASSWORD: pitchorium
       POSTGRES_DB: pitchorium
+    # Query statistics (docs/operations/performance.md): CREATE EXTENSION pg_stat_statements.
+    command: ['postgres', '-c', 'shared_preload_libraries=pg_stat_statements']
     ports:
       - '127.0.0.1:${PITCHORIUM_POSTGRES_PORT:-5432}:5432'
     volumes:
