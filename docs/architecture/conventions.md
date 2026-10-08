@@ -6,19 +6,19 @@ Code, identifiants, commentaires et messages de commit en anglais. Documentation
 
 ## Nommage
 
-| Élément                 | Convention                                                   | Exemple                                           |
-| ----------------------- | ------------------------------------------------------------ | ------------------------------------------------- |
-| Fichiers                | kebab-case, suffixe de rôle                                  | `outbox-relay.service.ts`, `health.controller.ts` |
-| Classes, types          | PascalCase                                                   | `TransactionManager`, `ProblemDetails`            |
-| Variables, fonctions    | camelCase                                                    | `relayBatch`                                      |
-| Constantes globales     | SCREAMING_SNAKE_CASE                                         | `QUEUE_NAMES`                                     |
-| Tables, colonnes, index | snake_case, index suffixés `_idx`, `_uq`, `_pk`              | `outbox_events_pending_idx`                       |
-| Schémas PostgreSQL      | nom du module                                                | `projects`                                        |
-| Routes HTTP             | kebab-case, pluriel, sous `/v1`                              | `/v1/health/ready`                                |
-| Codes d'erreur          | SCREAMING_SNAKE_CASE, préfixés par le module hors plateforme | `PROJECTS_CAMPAIGN_CLOSED`                        |
-| Événements              | `<module>.<agrégat>.<fait au passé>.v<version>`              | `projects.campaign.published.v1`                  |
-| Files BullMQ            | `<module ou platform>.<usage>`                               | `platform.domain-events`                          |
-| Feature flags           | `<domaine>.<sujet>`                                          | `locale.sw`, `funding.equity`                     |
+| Élément                 | Convention                                                                          | Exemple                                           |
+| ----------------------- | ----------------------------------------------------------------------------------- | ------------------------------------------------- |
+| Fichiers                | kebab-case, suffixe de rôle                                                         | `outbox-relay.service.ts`, `health.controller.ts` |
+| Classes, types          | PascalCase                                                                          | `TransactionManager`, `ProblemDetails`            |
+| Variables, fonctions    | camelCase                                                                           | `relayBatch`                                      |
+| Constantes globales     | SCREAMING_SNAKE_CASE                                                                | `QUEUE_NAMES`                                     |
+| Tables, colonnes, index | snake_case, index suffixés `_idx`, `_uq`, `_pk`                                     | `outbox_events_pending_idx`                       |
+| Schémas PostgreSQL      | nom du module                                                                       | `projects`                                        |
+| Routes HTTP             | kebab-case, pluriel, sous `/v1` ; back-office sous `/v1/admin/<domaine>` (ADR 0078) | `/v1/health/ready`, `/v1/admin/moderation/cases`  |
+| Codes d'erreur          | SCREAMING_SNAKE_CASE, préfixés par le module hors plateforme                        | `PROJECTS_CAMPAIGN_CLOSED`                        |
+| Événements              | `<module>.<agrégat>.<fait au passé>.v<version>`                                     | `projects.campaign.published.v1`                  |
+| Files BullMQ            | `<module ou platform>.<usage>`                                                      | `platform.domain-events`                          |
+| Feature flags           | `<domaine>.<sujet>`                                                                 | `locale.sw`, `funding.equity`                     |
 
 ## Structure d'un module
 

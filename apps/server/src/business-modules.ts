@@ -20,9 +20,6 @@ import { PrivacyModule } from './modules/privacy';
 import { LocalizationModule } from './modules/localization';
 import { AdminModule } from './modules/admin';
 
-/** Modules wired the same way in both processes. */
-const COMMON_MODULES: Type[] = [AdminModule];
-
 /**
  * Business modules of each process. Modules with process-specific providers (the api serves
  * Better Auth, the worker sends emails, processes files and runs scheduled tasks) expose forApi() and forWorker().
@@ -47,7 +44,7 @@ export const API_BUSINESS_MODULES: (Type | DynamicModule)[] = [
   DiscoveryModule.forApi(),
   NotificationsModule.forApi(),
   TrustModule.forApi(),
-  ...COMMON_MODULES,
+  AdminModule.forApi(),
 ];
 
 export const WORKER_BUSINESS_MODULES: (Type | DynamicModule)[] = [
@@ -70,5 +67,5 @@ export const WORKER_BUSINESS_MODULES: (Type | DynamicModule)[] = [
   DiscoveryModule.forWorker(),
   NotificationsModule.forWorker(),
   TrustModule.forWorker(),
-  ...COMMON_MODULES,
+  AdminModule.forWorker(),
 ];
