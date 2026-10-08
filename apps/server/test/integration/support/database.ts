@@ -53,6 +53,9 @@ const BUSINESS_TABLES = [
   'discovery.dismissals',
   'trust.cases',
   'trust.activity',
+  'privacy.exports',
+  'privacy.erasures',
+  'identity.legal_acceptances',
 ];
 
 export async function truncatePlatformTables(): Promise<void> {
