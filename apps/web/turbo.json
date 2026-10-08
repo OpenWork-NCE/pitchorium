@@ -30,6 +30,9 @@
       "cache": false,
       "persistent": true,
       "passThroughEnv": ["WEB_PORT"]
+    },
+    "lint": {
+      "inputs": ["$TURBO_DEFAULT$", ".env*"]
     }
   }
 }
