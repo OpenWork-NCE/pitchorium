@@ -1,5 +1,6 @@
 import type {
   Counters,
+  DiscoveryCard,
   CurrentUser,
   MemberCard,
   MemberSummary,
@@ -152,6 +153,21 @@ export const feed: Post[] = [
     12,
   ),
 ];
+
+/** A member as the suggestions present them (discovery card of a person). */
+export function personCard(member: MemberCard): Extract<DiscoveryCard, { kind: 'person' }> {
+  return {
+    kind: 'person',
+    key: member.handle,
+    title: member.displayName,
+    subtitle: member.headline,
+    imageUrl: member.avatarUrl,
+    countryCodes: [],
+    sectorCodes: [],
+    facets: { entrepreneur: false, contributor: true },
+    hats: [],
+  };
+}
 
 export const project: ProjectCard = {
   id: '0192f4a0-3000-7000-8000-000000000001',

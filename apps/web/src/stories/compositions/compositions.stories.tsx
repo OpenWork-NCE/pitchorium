@@ -47,19 +47,15 @@ import {
   feed,
   members,
   notifications,
+  personCard,
   project,
   thread,
   tiers,
 } from './fixtures';
-import {
-  ConversationThread,
-  NotificationItem,
-  PersonRow,
-  PostCard,
-  PostSkeleton,
-  ProfileCard,
-  ProjectCardView,
-} from './parts';
+import { PostCard } from '@/features/content';
+import { SuggestionItem } from '@/features/discovery';
+import { ProjectCard } from '@/features/projects';
+import { ConversationThread, NotificationItem, PostSkeleton, ProfileCard } from './parts';
 
 const meta = {
   title: 'Compositions',
@@ -112,19 +108,19 @@ function Feed({ loading }: { loading: boolean }) {
         }
         right={
           <>
-            <ProjectCardView project={project} tiers={tiers} />
+            <ProjectCard project={project} variant="compact" headingLevel={2} />
             <Card className="grid gap-4">
               <Heading level={2} size="label">
                 Personnes pertinentes pour vous
               </Heading>
               <ul className="grid gap-4">
-                <PersonRow
-                  member={members.nadia}
-                  reason="Vous cherchez un financement dans l’énergie, elle investit dans ce secteur."
+                <SuggestionItem
+                  person={personCard(members.nadia)}
+                  reason="Suggérée parce que vous cherchez un financement dans l’énergie et que Nadia investit dans ce secteur au Sénégal et en Côte d’Ivoire."
                 />
-                <PersonRow
-                  member={members.kofi}
-                  reason="Mentor finance, il accompagne des coopératives."
+                <SuggestionItem
+                  person={personCard(members.kofi)}
+                  reason="Suggéré parce que vous cherchez du mentorat en finance et que Kofi accompagne des coopératives agricoles au Ghana."
                 />
               </ul>
             </Card>
@@ -183,22 +179,36 @@ export const ProfileCardStory: Story = {
   ),
 };
 
-/** Funding with its milestones (H18 then H17) and the self-declared impact. */
+/**
+ * The card of a project, `full` (with its milestones, H18 then H17) and `compact` (side columns):
+ * whole amounts without decimals, the self-declared impact said once.
+ */
 export const ProjectCardStory: Story = {
   name: 'Project card',
   parameters: { layout: 'padded' },
   render: () => (
-    <div className="max-w-sm">
-      <ProjectCardView project={project} tiers={tiers} />
+    <div className="flex flex-wrap items-start gap-6">
+      <div className="w-full max-w-md">
+        <ProjectCard project={project} tiers={tiers} />
+      </div>
+      <div className="w-full max-w-xs">
+        <ProjectCard project={project} variant="compact" />
+      </div>
     </div>
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getByRole('progressbar', { name: /Ferme solaire/ })).toHaveAttribute(
-      'aria-valuenow',
-      '62',
-    );
-    await expect(canvas.getAllByText(/auto-déclaré/i).length).toBeGreaterThan(0);
+    const [full] = canvas.getAllByRole('progressbar', { name: /Ferme solaire/ });
+    await expect(full).toHaveAttribute('aria-valuenow', '62');
+    await expect(
+      canvas.getAllByText('12 500 €', { normalizer: (text) => text.replace(/\s/g, ' ') }),
+    ).toHaveLength(2);
+    await expect(canvas.getAllByText('auto-déclaré')).toHaveLength(2);
+    await expect(canvas.getAllByText('Atteint')).toHaveLength(2);
+    await expect(canvas.getByText('À venir')).toBeVisible();
+    await expect(
+      canvas.getAllByRole('link', { name: 'Voir le projet Ferme solaire coopérative de Thiès' }),
+    ).toHaveLength(2);
   },
 };
 

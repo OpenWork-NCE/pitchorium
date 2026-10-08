@@ -1,30 +1,16 @@
-import type {
-  MemberCard,
-  Message,
-  Notification,
-  Post,
-  ProjectCard,
-  ProjectTier,
-} from '@pitchorium/contracts';
-import { MessageSquare, MoreHorizontal, Repeat2, ThumbsUp } from 'lucide-react';
+import type { MemberCard, Message, Notification } from '@pitchorium/contracts';
 import { translate } from '@pitchorium/i18n';
-import { useLocale, useTranslations } from 'next-intl';
+import { useLocale } from 'next-intl';
 import {
   Avatar,
   AvatarGroup,
-  Badge,
   Button,
   Card,
-  FundingProgress,
   Heading,
-  IconButton,
-  ImpactBadge,
-  Notice,
   Progress,
   RelativeTime,
   Skeleton,
   Text,
-  Truncate,
 } from '@/components/ui';
 import { cn } from '@/lib/cn';
 
@@ -32,47 +18,6 @@ import { cn } from '@/lib/cn';
  * Pieces of the reference compositions (Storybook only): the cards the business pages will build
  * from the design system, on the data the contracts describe. Not components of the app.
  */
-
-export function PostCard({ post }: { post: Post }) {
-  const reactions = useTranslations('reference.reactionTypes');
-  if (post.author.type !== 'member') return null;
-  const author = post.author.member;
-  return (
-    <article aria-label={`Publication de ${author.displayName}`}>
-      <Card padding="none" className="grid gap-3 p-5">
-        <div className="flex items-start gap-3">
-          <Avatar name={author.displayName} src={author.avatarUrl} decorative />
-          <div className="min-w-0 flex-1">
-            <p className="truncate font-semibold">{author.displayName}</p>
-            <p className="truncate text-sm text-muted">{author.headline}</p>
-            <RelativeTime date={post.createdAt} className="text-xs text-muted" />
-          </div>
-          <IconButton label="Plus d’actions" icon={<MoreHorizontal />} size="sm" />
-        </div>
-        <Truncate lines={4}>
-          <p className="text-pretty">{post.text}</p>
-        </Truncate>
-        <div className="flex items-center justify-between text-xs text-muted">
-          <span>
-            {post.reactions.total} · {reactions('bravo')}
-          </span>
-          <span>{post.commentCount} commentaires</span>
-        </div>
-        <div className="-mx-2 flex border-t border-border pt-2">
-          <Button variant="ghost" size="sm" className="flex-1">
-            <ThumbsUp aria-hidden /> {reactions('like')}
-          </Button>
-          <Button variant="ghost" size="sm" className="flex-1">
-            <MessageSquare aria-hidden /> Commenter
-          </Button>
-          <Button variant="ghost" size="sm" className="flex-1">
-            <Repeat2 aria-hidden /> Repartager
-          </Button>
-        </div>
-      </Card>
-    </article>
-  );
-}
 
 export function PostSkeleton() {
   return (
@@ -129,86 +74,6 @@ export function ProfileCard({ member, strength }: { member: MemberCard; strength
         <Button variant="outline" size="sm" className="mt-2 w-full">
           Compléter mon profil
         </Button>
-      </div>
-    </Card>
-  );
-}
-
-export function PersonRow({ member, reason }: { member: MemberCard; reason: string }) {
-  return (
-    <li className="flex items-start gap-3">
-      <Avatar name={member.displayName} src={member.avatarUrl} size="sm" decorative />
-      <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-semibold">{member.displayName}</p>
-        <p className="line-clamp-2 text-xs text-muted">{reason}</p>
-      </div>
-      <Button variant="secondary" size="sm">
-        Suivre
-      </Button>
-    </li>
-  );
-}
-
-export function ProjectCardView({
-  project,
-  tiers,
-}: {
-  project: ProjectCard;
-  tiers: readonly ProjectTier[];
-}) {
-  const reference = useTranslations('reference');
-  if (!project.funding.goal) return null;
-  const demo = ['criterion01', 'criterion02', 'criterion03'] as const;
-  return (
-    <Card padding="none" surface="interactive" className="relative grid gap-4 overflow-hidden">
-      <div
-        aria-hidden
-        className="h-32 bg-surface-sunken bg-[url(/brand/overlay-desktop.svg)] bg-cover bg-center"
-      />
-      <div className="grid gap-4 px-5 pb-5">
-        <div className="flex flex-wrap items-center gap-2">
-          <Badge tone="accent">En financement</Badge>
-          <Badge>Énergie</Badge>
-          <Badge>Sénégal</Badge>
-        </div>
-        <div className="grid gap-1">
-          <Heading level={3} size="card">
-            <a href="#projet" className="after:absolute after:inset-0 focus-visible:outline-none">
-              {project.title}
-            </a>
-          </Heading>
-          <Text size="sm" tone="muted">
-            {project.summary}
-          </Text>
-        </div>
-        <FundingProgress
-          label={`Financement de ${project.title}`}
-          raised={project.funding.collected}
-          goal={project.funding.goal}
-          daysLeft={project.funding.daysLeft}
-          milestones={tiers.map((tier) => ({
-            amountMinor: tier.threshold.amountMinor,
-            label: tier.description,
-          }))}
-        />
-        {project.impact ? (
-          <div className="relative z-[1] grid gap-2">
-            <ImpactBadge
-              level={project.impact.level}
-              levelLabel={reference(`impactLevels.${project.impact.level}`)}
-              score={project.impact.score}
-              mention={reference('impactMentions.selfDeclared', {
-                version: `v${project.impact.methodologyVersion}`,
-              })}
-              criteria={demo.map((key, index) => ({
-                label: reference(`impactDemo.${key}.label`),
-                score: 5 - index,
-                max: 5,
-              }))}
-            />
-            <Notice kind="selfDeclared" version={`v${project.impact.methodologyVersion}`} />
-          </div>
-        ) : null}
       </div>
     </Card>
   );

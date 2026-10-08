@@ -17,6 +17,10 @@ export const routes = {
   notifications: '/notifications',
   profile: '/profile',
   settings: '/settings',
+  // Pages of a resource, one address for visitors and members.
+  project: (slug: string) => `/projects/${encodeURIComponent(slug)}`,
+  member: (handle: string) => `/members/${encodeURIComponent(handle)}`,
+  organization: (slug: string) => `/organizations/${encodeURIComponent(slug)}`,
   // Contextual actions of the header, opened by their section (PROMPT FRONT 3 and 4).
   compose: '/feed?compose=1',
   createProject: '/projects?create=1',

@@ -427,5 +427,24 @@
       "members": "Membres",
       "flags": "Fonctionnalités"
     }
+  },
+  "projects": {
+    "card": {
+      "funding": "Financement de {{title}}",
+      "view": "Voir le projet"
+    }
+  },
+  "content": {
+    "postBy": "Publication de {{name}}",
+    "edited": "modifié",
+    "reactions": {
+      "one": "{{count}} réaction",
+      "other": "{{count}} réactions"
+    },
+    "mainReactions": "(surtout : {{list}})",
+    "comments": {
+      "one": "{{count}} commentaire",
+      "other": "{{count}} commentaires"
+    }
   }
 }
