@@ -12,6 +12,7 @@ import {
   list,
   text,
 } from '../../src/modules/payments/infrastructure/provider-http';
+import { PROVIDER_TEST_MARKER } from './marker';
 import { contributionRecord, expectShape, raw } from './support';
 
 const KEY = process.env.STRIPE_TEST_SECRET_KEY ?? '';
@@ -52,6 +53,7 @@ async function pay(paymentMethod: string, contributionId: string): Promise<Exact
       payment_method: paymentMethod,
       'payment_method_types[0]': 'card',
       'metadata[contribution_id]': contributionId,
+      [`metadata[${PROVIDER_TEST_MARKER.key}]`]: PROVIDER_TEST_MARKER.value,
       ...(CONNECTED ? { application_fee_amount: '100' } : {}),
     },
     CONNECTED,
@@ -79,8 +81,10 @@ describe.skipIf(!KEY)('Stripe sandbox', () => {
       name: 'Pitchorium provider test',
       bankAccount: undefined,
       commissionRateBps: 500,
+      metadata: { [PROVIDER_TEST_MARKER.key]: PROVIDER_TEST_MARKER.value },
     });
-    // A v2 account with the full Dashboard is closed, not deleted, by the platform.
+    // A v2 account with the full Dashboard is closed, not deleted, by the platform, which
+    // names the configurations the account has.
     cleanup.push(() =>
       raw('stripe', `${BASE}/v2/core/accounts/${account.providerAccountId}/close`, {
         method: 'POST',
@@ -89,7 +93,7 @@ describe.skipIf(!KEY)('Stripe sandbox', () => {
           'content-type': 'application/json',
           'stripe-version': STRIPE_V2_API_VERSION,
         },
-        body: '{}',
+        body: JSON.stringify({ applied_configurations: ['merchant'] }),
       }),
     );
     expect(account.providerAccountId).toMatch(/^acct_/);
@@ -248,6 +252,7 @@ describe.skipIf(!KEY)('Stripe sandbox', () => {
       url: 'https://example.com/pitchorium-provider-test',
       'enabled_events[0]': 'checkout.session.completed',
       connect: 'true',
+      [`metadata[${PROVIDER_TEST_MARKER.key}]`]: PROVIDER_TEST_MARKER.value,
     });
     cleanup.push(() => stripe('DELETE', `/v1/webhook_endpoints/${text(field(endpoint, 'id'))}`));
     const secret = text(field(endpoint, 'secret')) ?? '';

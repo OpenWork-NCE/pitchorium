@@ -16,6 +16,8 @@
     "test": "turbo run test",
     "test:integration": "turbo run test:integration",
     "test:providers": "turbo run test:providers",
+    "providers:stripe-test-account": "pnpm --filter @pitchorium/server providers:stripe-test-account",
+    "providers:cleanup": "pnpm --filter @pitchorium/server providers:cleanup",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "db:generate": "pnpm --filter @pitchorium/db db:generate",

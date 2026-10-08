@@ -11,6 +11,7 @@ import {
   list,
   text,
 } from '../../src/modules/payments/infrastructure/provider-http';
+import { PROVIDER_TEST_MARKER } from './marker';
 import { contributionRecord, expectShape, raw } from './support';
 
 const KEY = process.env.FLUTTERWAVE_TEST_SECRET_KEY ?? '';
@@ -73,6 +74,7 @@ describe.skipIf(!KEY)('Flutterwave sandbox', () => {
       name: 'Pitchorium provider test',
       bankAccount: { ...TEST_BANK, accountName: 'Pitchorium provider test' },
       commissionRateBps: 500,
+      metadata: { [PROVIDER_TEST_MARKER.key]: PROVIDER_TEST_MARKER.value },
     });
     cleanup.push(() =>
       deleteSubaccounts((item) => text(field(item, 'subaccount_id')) === account.providerAccountId),
