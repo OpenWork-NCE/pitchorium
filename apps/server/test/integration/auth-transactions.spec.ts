@@ -85,7 +85,8 @@ describe('auth transactions and external calls', () => {
         .post('/v1/auth/sign-up/email')
         .send({ email, password: PASSWORD, name: 'Fail Open' });
       expect(response.status, JSON.stringify(response.body)).toBe(200);
-      expect(increment).toHaveBeenLastCalledWith(PWNED_CHECK_UNAVAILABLE_METRIC, {
+      // Every request is also counted (pitchorium.http.server.requests): not the last call.
+      expect(increment).toHaveBeenCalledWith(PWNED_CHECK_UNAVAILABLE_METRIC, {
         reason: failure,
         path: '/sign-up/email',
       });
