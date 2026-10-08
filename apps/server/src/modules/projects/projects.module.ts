@@ -25,7 +25,10 @@ import { UpdatesController } from './interface/updates.controller';
 
 import { ProjectsPersonalData } from './infrastructure/projects-personal-data';
 
+import { ProjectsTranslatable } from './infrastructure/projects-translatable';
+
 const SHARED_PROVIDERS: Provider[] = [
+  ProjectsTranslatable,
   ProjectsPersonalData,
   { provide: ProjectRepository, useClass: DrizzleProjectsRepository },
   ProjectEventsRecorder,

@@ -335,7 +335,7 @@ export class ProjectReadsService {
    * A live project is readable when it is showable, or by an active member of its team (draft,
    * hidden project, preview).
    */
-  private async readable(project: ProjectRecord, audience: Audience): Promise<boolean> {
+  async readable(project: ProjectRecord, audience: Audience): Promise<boolean> {
     if (project.deletedAt || project.moderationStatus === 'removed') return false;
     if (isShowable(project)) return true;
     if (audience.kind === 'public') return false;
