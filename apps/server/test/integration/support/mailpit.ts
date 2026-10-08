@@ -12,6 +12,9 @@ export interface ReceivedEmail {
   html: string;
 }
 
+/** Budget of an email, from the action that sends it to the mailbox. */
+const EMAIL_TIMEOUT_MS = 30_000;
+
 /** Client of the Mailpit REST API (real SMTP server started by the global setup). */
 export class Mailpit {
   private readonly baseUrl = inject('mailpitApiUrl');
@@ -41,17 +44,24 @@ export class Mailpit {
     return email;
   }
 
-  /** Waits for at least `count` emails to `address` whose subject contains `subject`. */
+  /**
+   * Waits for at least `count` emails to `address` whose subject contains `subject`. The budget is
+   * that of the other asynchronous waits of the suites: an email leaves after the outbox relay,
+   * a job of the worker and an SMTP exchange, each slower on a loaded runner.
+   */
   async waitForAll(address: string, subject: string, count: number): Promise<ReceivedEmail[]> {
     const summaries = await vi.waitFor(
       async () => {
-        const found = (await this.messagesTo(address)).filter((message) =>
-          message.Subject.includes(subject),
-        );
-        if (found.length < count) throw new Error(`Not enough emails "${subject}" to ${address}`);
+        const received = await this.messagesTo(address);
+        const found = received.filter((message) => message.Subject.includes(subject));
+        if (found.length < count) {
+          // What did arrive says whether the email is late, or another one came instead.
+          const subjects = received.map((message) => message.Subject).join(' | ') || 'none';
+          throw new Error(`Not enough emails "${subject}" to ${address} (received: ${subjects})`);
+        }
         return found;
       },
-      { timeout: 10_000, interval: 100 },
+      { timeout: EMAIL_TIMEOUT_MS, interval: 100 },
     );
     return Promise.all(
       summaries.map(async (summary) => {
