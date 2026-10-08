@@ -1,10 +1,23 @@
 import { errorCodeSchema, type ProblemDetails, problemDetailsSchema } from '@pitchorium/contracts';
 
+/** What a header provider knows about the request being sent. */
+export interface ApiRequestInfo {
+  /** Upper-case HTTP method. */
+  method: string;
+  /** Path and query, without the origin (`/v1/me`). */
+  url: string;
+  /** Headers already set by the caller: a provider does not override them. */
+  headers: Headers;
+}
+
 export interface ApiClientOptions {
   /** Origin of the api, for example https://api.pitchorium.com. Empty for same-origin calls. */
   baseUrl: string;
-  /** Headers added to every request (Accept-Language, authentication later). */
-  headers?: () => Record<string, string>;
+  /**
+   * Headers added to every request (Accept-Language, Idempotency-Key, forwarded cookies on the
+   * server). May be asynchronous; never overrides a header set by the caller.
+   */
+  headers?: (request: ApiRequestInfo) => Record<string, string> | Promise<Record<string, string>>;
 }
 
 let options: ApiClientOptions = { baseUrl: '' };
@@ -15,7 +28,11 @@ export function configureApiClient(next: ApiClientOptions): void {
 
 /** Thrown for every non-2xx response. Display `problem.code` through i18n, never `title`. */
 export class ApiProblemError extends Error {
-  constructor(readonly problem: ProblemDetails) {
+  constructor(
+    readonly problem: ProblemDetails,
+    /** `X-Request-Id` of the response, to quote in a bug report. */
+    readonly requestId: string | null = null,
+  ) {
     super(`${problem.status} ${problem.code}`);
     this.name = 'ApiProblemError';
   }
@@ -41,7 +58,9 @@ async function readBody(response: Response): Promise<unknown> {
 /** Mutator used by the generated client (see orval.config.ts). */
 export async function apiFetch<T>(url: string, init: RequestInit): Promise<T> {
   const headers = new Headers(init.headers);
-  for (const [name, value] of Object.entries(options.headers?.() ?? {})) {
+  const method = (init.method ?? 'GET').toUpperCase();
+  const extra = (await options.headers?.({ method, url, headers })) ?? {};
+  for (const [name, value] of Object.entries(extra)) {
     if (!headers.has(name)) headers.set(name, value);
   }
   const response = await fetch(`${options.baseUrl}${url}`, {
@@ -52,7 +71,10 @@ export async function apiFetch<T>(url: string, init: RequestInit): Promise<T> {
   const body = await readBody(response);
   if (!response.ok) {
     const parsed = problemDetailsSchema.safeParse(body);
-    throw new ApiProblemError(parsed.success ? parsed.data : fallbackProblem(response.status));
+    throw new ApiProblemError(
+      parsed.success ? parsed.data : fallbackProblem(response.status),
+      response.headers.get('x-request-id'),
+    );
   }
   return body as T;
 }
