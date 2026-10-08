@@ -169,7 +169,6 @@ describe('email templates', () => {
   it('renders every organization email in French and English', async () => {
     const kinds: OrganizationNoticeKind[] = [
       'invitation',
-      'invitation_accepted',
       'role_changed',
       'ownership_transferred',
       'verification_requested',

@@ -5,7 +5,6 @@ import { Layout } from '../components/layout.js';
 
 export type OrganizationNoticeKind =
   | 'invitation'
-  | 'invitation_accepted'
   | 'role_changed'
   | 'ownership_transferred'
   | 'verification_requested'
@@ -22,9 +21,9 @@ export interface OrganizationNoticeEmailProps {
   name: string | null;
   organization: string;
   actionUrl: string;
-  /** Role granted (invitation, acceptance, role change). */
+  /** Role granted (invitation, role change). */
   role?: OrganizationRoleLabel;
-  /** Other member concerned: inviter, new member or new owner. */
+  /** Other member concerned: inviter or new owner. */
   member?: string;
   /** Motivation of a verification decision or revocation. */
   reason?: string;

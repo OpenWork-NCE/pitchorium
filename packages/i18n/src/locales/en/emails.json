@@ -81,12 +81,6 @@
       "action": "View the invitation",
       "note": "This invitation works once and expires on {{expiresAt}} (UTC). If you do not know this organization, ignore this email."
     },
-    "invitation_accepted": {
-      "subject": "{{member}} joined {{organization}}",
-      "preview": "A new member joined {{organization}}.",
-      "body": "{{member}} accepted the invitation and joined {{organization}} as {{role}}.",
-      "action": "View the organization"
-    },
     "role_changed": {
       "subject": "Your role in {{organization}} changed",
       "preview": "You are now {{role}} of {{organization}}.",
