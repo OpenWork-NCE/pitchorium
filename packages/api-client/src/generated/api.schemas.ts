@@ -143,7 +143,8 @@ export interface ErasureDtoOutput {
   scheduledFor: string;
   canceledAt: string | null;
   completedAt: string | null;
-  blockedBy: string[];
+  /** @nullable */
+  blockedBy: string | null;
 }
 
 export type RightsPageDtoOutputItemsItemKind =
@@ -172,7 +173,8 @@ export type RightsPageDtoOutputItemsItem = {
 
 export interface RightsPageDtoOutput {
   items: RightsPageDtoOutputItemsItem[];
-  nextCursor: string[];
+  /** @nullable */
+  nextCursor: string | null;
 }
 
 export type TranslateDtoSourceType =
@@ -250,7 +252,8 @@ export interface TranslationDtoOutput {
   sourceType: TranslationDtoOutputSourceType;
   sourceId: string;
   targetLocale: TranslationDtoOutputTargetLocale;
-  sourceLanguage: string[];
+  /** @nullable */
+  sourceLanguage: string | null;
   fields: TranslationDtoOutputFields;
   machineTranslated: true;
   provider: TranslationDtoOutputProvider;
@@ -295,7 +298,8 @@ export interface GlossaryTermDtoOutput {
   fr: string;
   en: string;
   provisional: boolean;
-  note: string[];
+  /** @nullable */
+  note: string | null;
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
   updatedAt: string;
 }
@@ -431,8 +435,10 @@ export type LegalStatusDtoOutputCurrent = {
 
 export interface LegalStatusDtoOutput {
   upToDate: boolean;
-  acceptedTermsVersion: string[];
-  acceptedPrivacyVersion: string[];
+  /** @nullable */
+  acceptedTermsVersion: string | null;
+  /** @nullable */
+  acceptedPrivacyVersion: string | null;
   adultDeclaredAt: string | null;
   current: LegalStatusDtoOutputCurrent;
 }
@@ -1297,16 +1303,23 @@ export interface OwnProfileDtoOutput {
   /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
   handle: string;
   displayName: string;
-  headline: string[];
-  bio: string[];
+  /** @nullable */
+  headline: string | null;
+  /** @nullable */
+  bio: string | null;
   countryCode: string | null;
-  city: string[];
+  /** @nullable */
+  city: string | null;
   languages: string[];
   links: OwnProfileDtoOutputLinks;
-  avatarUrl: string[];
-  avatarMediaId: string[];
-  coverUrl: string[];
-  coverMediaId: string[];
+  /** @nullable */
+  avatarUrl: string | null;
+  /** @nullable */
+  avatarMediaId: string | null;
+  /** @nullable */
+  coverUrl: string | null;
+  /** @nullable */
+  coverMediaId: string | null;
   facets: OwnProfileDtoOutputFacets;
   entrepreneur: OwnProfileDtoOutputEntrepreneur;
   contributor: OwnProfileDtoOutputContributor;
@@ -1803,16 +1816,23 @@ export interface ProfileViewDtoOutput {
   /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
   handle: string;
   displayName: string;
-  headline: string[];
-  bio: string[];
+  /** @nullable */
+  headline: string | null;
+  /** @nullable */
+  bio: string | null;
   countryCode: string | null;
-  city: string[];
+  /** @nullable */
+  city: string | null;
   languages: string[];
   links: ProfileViewDtoOutputLinks;
-  avatarUrl: string[];
-  avatarMediaId: string[];
-  coverUrl: string[];
-  coverMediaId: string[];
+  /** @nullable */
+  avatarUrl: string | null;
+  /** @nullable */
+  avatarMediaId: string | null;
+  /** @nullable */
+  coverUrl: string | null;
+  /** @nullable */
+  coverMediaId: string | null;
   facets: ProfileViewDtoOutputFacets;
   entrepreneur: ProfileViewDtoOutputEntrepreneur;
   contributor: ProfileViewDtoOutputContributor;
@@ -2221,7 +2241,8 @@ export interface MediaAssetDtoOutput {
   pageCount: number | null;
   rejectionReason: MediaAssetDtoOutputRejectionReason;
   variants: MediaAssetDtoOutputVariants;
-  fileUrl: string[];
+  /** @nullable */
+  fileUrl: string | null;
   attached: boolean;
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
   createdAt: string;
@@ -2352,16 +2373,22 @@ export interface OrganizationDtoOutput {
   slug: string;
   name: string;
   structureType: OrganizationDtoOutputStructureType;
-  description: string[];
+  /** @nullable */
+  description: string | null;
   /** @items.pattern ^[A-Z]{2}$ */
   countryCodes: string[];
   sectorCodes: string[];
-  websiteUrl: string[];
+  /** @nullable */
+  websiteUrl: string | null;
   foundedYear: number | null;
-  logoUrl: string[];
-  logoMediaId: string[];
-  coverUrl: string[];
-  coverMediaId: string[];
+  /** @nullable */
+  logoUrl: string | null;
+  /** @nullable */
+  logoMediaId: string | null;
+  /** @nullable */
+  coverUrl: string | null;
+  /** @nullable */
+  coverMediaId: string | null;
   verification: OrganizationDtoOutputVerification;
   members: OrganizationDtoOutputMembersItem[];
   projects: OrganizationDtoOutputProjects;
@@ -2561,7 +2588,8 @@ export interface MyOrganizationDtoOutput {
   /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,59}$ */
   slug: string;
   name: string;
-  logoUrl: string[];
+  /** @nullable */
+  logoUrl: string | null;
   verified: boolean;
   role: MyOrganizationDtoOutputRole;
 }
@@ -2630,7 +2658,8 @@ export interface VerificationRequestDtoOutput {
   signals: VerificationRequestDtoOutputSignals;
   status: VerificationRequestDtoOutputStatus;
   criteriaMet: string[];
-  decisionReason: string[];
+  /** @nullable */
+  decisionReason: string | null;
   decidedBy: string | null;
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
   createdAt: string;
@@ -2763,7 +2792,8 @@ export type FollowerPageDtoOutputItemsItem = {
 
 export interface FollowerPageDtoOutput {
   items: FollowerPageDtoOutputItemsItem[];
-  nextCursor: string[];
+  /** @nullable */
+  nextCursor: string | null;
 }
 
 export interface CreateConnectionRequestDto {
@@ -2811,7 +2841,8 @@ export interface ConnectionRequestDtoOutput {
   id: string;
   direction: ConnectionRequestDtoOutputDirection;
   member: ConnectionRequestDtoOutputMember;
-  note: string[];
+  /** @nullable */
+  note: string | null;
   status: ConnectionRequestDtoOutputStatus;
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
   createdAt: string;
@@ -2867,7 +2898,8 @@ export type ConnectionRequestPageDtoOutputItemsItem = {
 
 export interface ConnectionRequestPageDtoOutput {
   items: ConnectionRequestPageDtoOutputItemsItem[];
-  nextCursor: string[];
+  /** @nullable */
+  nextCursor: string | null;
 }
 
 export type BlockPageDtoOutputItemsItemMember = {
@@ -2888,7 +2920,8 @@ export type BlockPageDtoOutputItemsItem = {
 
 export interface BlockPageDtoOutput {
   items: BlockPageDtoOutputItemsItem[];
-  nextCursor: string[];
+  /** @nullable */
+  nextCursor: string | null;
 }
 
 export type FollowPageDtoOutputItemsItemTarget = {
@@ -2910,7 +2943,8 @@ export type FollowPageDtoOutputItemsItem = {
 
 export interface FollowPageDtoOutput {
   items: FollowPageDtoOutputItemsItem[];
-  nextCursor: string[];
+  /** @nullable */
+  nextCursor: string | null;
 }
 
 export type ConnectionPageDtoOutputItemsItemMember = {
@@ -2931,7 +2965,8 @@ export type ConnectionPageDtoOutputItemsItem = {
 
 export interface ConnectionPageDtoOutput {
   items: ConnectionPageDtoOutputItemsItem[];
-  nextCursor: string[];
+  /** @nullable */
+  nextCursor: string | null;
 }
 
 export type RelationshipDtoOutputDegree =
@@ -3042,7 +3077,8 @@ export type ProfileVisitPageDtoOutputItemsItem = {
 
 export interface ProfileVisitPageDtoOutput {
   items: ProfileVisitPageDtoOutputItemsItem[];
-  nextCursor: string[];
+  /** @nullable */
+  nextCursor: string | null;
 }
 
 export type FeedPageDtoOutputItemsItem =
@@ -4061,7 +4097,8 @@ export type FeedPageDtoOutputItemsItem =
 export interface FeedPageDtoOutput {
   schemaVersion: 1;
   items: FeedPageDtoOutputItemsItem[];
-  nextCursor: string[];
+  /** @nullable */
+  nextCursor: string | null;
 }
 
 export type CreatePostDtoVisibility =
@@ -4459,8 +4496,10 @@ export interface PostDtoOutput {
   /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
   id: string;
   author: PostDtoOutputAuthor;
-  text: string[];
-  language: string[];
+  /** @nullable */
+  text: string | null;
+  /** @nullable */
+  language: string | null;
   languageSource: PostDtoOutputLanguageSource;
   visibility: PostDtoOutputVisibility;
   images: PostDtoOutputImagesItem[];
@@ -4985,7 +5024,8 @@ export type SavedPostPageDtoOutputItemsItem = {
 
 export interface SavedPostPageDtoOutput {
   items: SavedPostPageDtoOutputItemsItem[];
-  nextCursor: string[];
+  /** @nullable */
+  nextCursor: string | null;
 }
 
 export type PostStatsDtoOutputDaysItem = {
@@ -5166,7 +5206,8 @@ export type CommentPageDtoOutputItemsItem = {
 
 export interface CommentPageDtoOutput {
   items: CommentPageDtoOutputItemsItem[];
-  nextCursor: string[];
+  /** @nullable */
+  nextCursor: string | null;
 }
 
 export interface UpdateCommentDto {
@@ -6132,11 +6173,14 @@ export interface ProjectDtoOutput {
   /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,79}$ */
   slug: string;
   title: string;
-  summary: string[];
+  /** @nullable */
+  summary: string | null;
   status: ProjectDtoOutputStatus;
-  sectorCode: string[];
+  /** @nullable */
+  sectorCode: string | null;
   countryCodes: string[];
-  coverImageUrl: string[];
+  /** @nullable */
+  coverImageUrl: string | null;
   owner: ProjectDtoOutputOwner;
   organization: ProjectDtoOutputOrganization;
   funding: ProjectDtoOutputFunding;
@@ -6144,8 +6188,10 @@ export interface ProjectDtoOutput {
   featured: boolean;
   publishedAt: string | null;
   endsAt: string | null;
-  description: string[];
-  impactArea: string[];
+  /** @nullable */
+  description: string | null;
+  /** @nullable */
+  impactArea: string | null;
   video: ProjectDtoOutputVideo;
   gallery: ProjectDtoOutputGalleryItem[];
   documents: ProjectDtoOutputDocumentsItem[];
@@ -6423,7 +6469,8 @@ export type ProjectCardPageDtoOutputItemsItem = {
 
 export interface ProjectCardPageDtoOutput {
   items: ProjectCardPageDtoOutputItemsItem[];
-  nextCursor: string[];
+  /** @nullable */
+  nextCursor: string | null;
 }
 
 export type PostPageDtoOutputItemsItemAuthor =
@@ -6826,7 +6873,8 @@ export type PostPageDtoOutputItemsItem = {
 
 export interface PostPageDtoOutput {
   items: PostPageDtoOutputItemsItem[];
-  nextCursor: string[];
+  /** @nullable */
+  nextCursor: string | null;
 }
 
 export type UpdateProjectDtoInstrumentsItem =
@@ -7329,7 +7377,8 @@ export type UpdatePageDtoOutputItemsItem = {
 
 export interface UpdatePageDtoOutput {
   items: UpdatePageDtoOutputItemsItem[];
-  nextCursor: string[];
+  /** @nullable */
+  nextCursor: string | null;
 }
 
 export interface EditUpdateDto {
@@ -7462,7 +7511,8 @@ export type InterestPageDtoOutputItemsItem = {
 
 export interface InterestPageDtoOutput {
   items: InterestPageDtoOutputItemsItem[];
-  nextCursor: string[];
+  /** @nullable */
+  nextCursor: string | null;
 }
 
 export type PrefillDtoOutputAnswers = { [key: string]: string };
@@ -7888,7 +7938,8 @@ export interface ContributionDtoOutput {
   rewardState: ContributionDtoOutputRewardState;
   publicDisplay: boolean;
   anonymous: boolean;
-  paymentUrl: string[];
+  /** @nullable */
+  paymentUrl: string | null;
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
   expiresAt: string;
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
@@ -8090,7 +8141,8 @@ export type ContributionPageDtoOutputItemsItem = {
 
 export interface ContributionPageDtoOutput {
   items: ContributionPageDtoOutputItemsItem[];
-  nextCursor: string[];
+  /** @nullable */
+  nextCursor: string | null;
 }
 
 export type ProjectContributionPageDtoOutputItemsItemProject = {
@@ -8256,7 +8308,8 @@ export type ProjectContributionPageDtoOutputItemsItem = {
 
 export interface ProjectContributionPageDtoOutput {
   items: ProjectContributionPageDtoOutputItemsItem[];
-  nextCursor: string[];
+  /** @nullable */
+  nextCursor: string | null;
 }
 
 export type SupporterPageDtoOutputItemsItemType =
@@ -8289,7 +8342,8 @@ export type SupporterPageDtoOutputItemsItem = {
 
 export interface SupporterPageDtoOutput {
   items: SupporterPageDtoOutputItemsItem[];
-  nextCursor: string[];
+  /** @nullable */
+  nextCursor: string | null;
   /**
    * @minimum -9007199254740991
    * @maximum 9007199254740991
@@ -8397,14 +8451,16 @@ export interface OfflineDtoOutput {
   eurEquivalent: OfflineDtoOutputEurEquivalent;
   declaredBy: OfflineDtoOutputDeclaredBy;
   contributor: OfflineDtoOutputContributor;
-  description: string[];
+  /** @nullable */
+  description: string | null;
   /** @items.pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
   proofMediaIds: string[];
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
   createdAt: string;
   confirmedAt: string | null;
   decidedAt: string | null;
-  decisionReason: string[];
+  /** @nullable */
+  decisionReason: string | null;
 }
 
 export type DeclareTeamOfflineDtoKind =
@@ -8519,7 +8575,8 @@ export type OfflinePageDtoOutputItemsItem = {
 
 export interface OfflinePageDtoOutput {
   items: OfflinePageDtoOutputItemsItem[];
-  nextCursor: string[];
+  /** @nullable */
+  nextCursor: string | null;
 }
 
 export interface RejectionDto {
@@ -8585,7 +8642,8 @@ export interface PayoutAccountDtoOutput {
   currency: string;
   status: PayoutAccountDtoOutputStatus;
   onboarding: PayoutAccountDtoOutputOnboarding;
-  onboardingUrl: string[];
+  /** @nullable */
+  onboardingUrl: string | null;
   kyc: PayoutAccountDtoOutputKyc;
   collectionOpen: boolean;
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
@@ -8720,7 +8778,8 @@ export interface KycSubmissionDtoOutput {
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
   submittedAt: string;
   decidedAt: string | null;
-  decisionReason: string[];
+  /** @nullable */
+  decisionReason: string | null;
 }
 
 export type AdminContributionDtoOutputProject = {
@@ -8909,7 +8968,8 @@ export interface AdminContributionDtoOutput {
   rewardState: AdminContributionDtoOutputRewardState;
   publicDisplay: boolean;
   anonymous: boolean;
-  paymentUrl: string[];
+  /** @nullable */
+  paymentUrl: string | null;
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
   expiresAt: string;
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
@@ -9009,7 +9069,8 @@ export type KycPageDtoOutputItemsItem = {
 
 export interface KycPageDtoOutput {
   items: KycPageDtoOutputItemsItem[];
-  nextCursor: string[];
+  /** @nullable */
+  nextCursor: string | null;
 }
 
 export type KycDecisionDtoDecision =
@@ -9091,7 +9152,8 @@ export type DiscrepancyPageDtoOutputItemsItem = {
 
 export interface DiscrepancyPageDtoOutput {
   items: DiscrepancyPageDtoOutputItemsItem[];
-  nextCursor: string[];
+  /** @nullable */
+  nextCursor: string | null;
 }
 
 export interface ResolveDiscrepancyDto {
@@ -9128,17 +9190,21 @@ export interface DiscrepancyDtoOutput {
   /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
   id: string;
   kind: DiscrepancyDtoOutputKind;
-  provider: string[];
+  /** @nullable */
+  provider: string | null;
   reference: string;
   contributionId: string | null;
   projectId: string | null;
-  expected: string[];
-  actual: string[];
+  /** @nullable */
+  expected: string | null;
+  /** @nullable */
+  actual: string | null;
   status: DiscrepancyDtoOutputStatus;
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
   detectedAt: string;
   resolvedAt: string | null;
-  resolution: string[];
+  /** @nullable */
+  resolution: string | null;
 }
 
 export type ReconciliationReportDtoOutputDiscrepanciesItemKind =
@@ -9320,7 +9386,8 @@ export interface TimeEntryDtoOutput {
   description: string;
   status: TimeEntryDtoOutputStatus;
   respondedAt: string | null;
-  disputeReason: string[];
+  /** @nullable */
+  disputeReason: string | null;
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
   createdAt: string;
 }
@@ -9394,7 +9461,8 @@ export type TimeEntryPageDtoOutputItemsItem = {
 
 export interface TimeEntryPageDtoOutput {
   items: TimeEntryPageDtoOutputItemsItem[];
-  nextCursor: string[];
+  /** @nullable */
+  nextCursor: string | null;
 }
 
 export interface DisputeTimeEntryDto {
@@ -9956,7 +10024,8 @@ export type ConversationPageDtoOutputItemsItem = {
 
 export interface ConversationPageDtoOutput {
   items: ConversationPageDtoOutputItemsItem[];
-  nextCursor: string[];
+  /** @nullable */
+  nextCursor: string | null;
 }
 
 export interface StartConversationDto {
@@ -10439,7 +10508,8 @@ export interface MessageDtoOutput {
   kind: MessageDtoOutputKind;
   senderHandle: string | null;
   mine: boolean;
-  body: string[];
+  /** @nullable */
+  body: string | null;
   attachments: MessageDtoOutputAttachmentsItem[];
   sharedPost: MessageDtoOutputSharedPost;
   edited: boolean;
@@ -11740,7 +11810,8 @@ export type IntroductionPageDtoOutputItemsItem = {
 
 export interface IntroductionPageDtoOutput {
   items: IntroductionPageDtoOutputItemsItem[];
-  nextCursor: string[];
+  /** @nullable */
+  nextCursor: string | null;
 }
 
 export type CreateEventDtoFormat = (typeof CreateEventDtoFormat)[keyof typeof CreateEventDtoFormat];
@@ -11913,11 +11984,14 @@ export interface EventDtoOutput {
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
   endsAt: string;
   timeZone: string;
-  city: string[];
-  countryCode: string[];
+  /** @nullable */
+  city: string | null;
+  /** @nullable */
+  countryCode: string | null;
   language: string;
   sectorCodes: string[];
-  imageUrl: string[];
+  /** @nullable */
+  imageUrl: string | null;
   organizer: EventDtoOutputOrganizer;
   capacity: number | null;
   /**
@@ -11929,9 +12003,11 @@ export interface EventDtoOutput {
   description: string;
   visibility: EventDtoOutputVisibility;
   location: EventDtoOutputLocation;
-  onlineUrl: string[];
+  /** @nullable */
+  onlineUrl: string | null;
   countryCodes: string[];
-  imageMediaId: string[];
+  /** @nullable */
+  imageMediaId: string | null;
   /**
    * @minimum -9007199254740991
    * @maximum 9007199254740991
@@ -11940,7 +12016,8 @@ export interface EventDtoOutput {
   project: EventDtoOutputProject;
   publishedAt: string | null;
   canceledAt: string | null;
-  cancelReason: string[];
+  /** @nullable */
+  cancelReason: string | null;
   viewer: EventDtoOutputViewer;
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
   createdAt: string;
@@ -12026,7 +12103,8 @@ export type EventCardPageDtoOutputItemsItem = {
 
 export interface EventCardPageDtoOutput {
   items: EventCardPageDtoOutputItemsItem[];
-  nextCursor: string[];
+  /** @nullable */
+  nextCursor: string | null;
 }
 
 export type UpdateEventDtoFormat = (typeof UpdateEventDtoFormat)[keyof typeof UpdateEventDtoFormat];
@@ -12153,7 +12231,8 @@ export type EventAttendeePageDtoOutputItemsItem = {
 
 export interface EventAttendeePageDtoOutput {
   items: EventAttendeePageDtoOutputItemsItem[];
-  nextCursor: string[];
+  /** @nullable */
+  nextCursor: string | null;
 }
 
 export interface CalendarFeedDtoOutput {
@@ -12345,7 +12424,8 @@ export interface MissionDtoOutput {
   publishedAt: string;
   description: string;
   skills: string[];
-  desiredBy: string[];
+  /** @nullable */
+  desiredBy: string | null;
   /**
    * @minimum -9007199254740991
    * @maximum 9007199254740991
@@ -12450,7 +12530,8 @@ export type MissionCardPageDtoOutputItemsItem = {
 
 export interface MissionCardPageDtoOutput {
   items: MissionCardPageDtoOutputItemsItem[];
-  nextCursor: string[];
+  /** @nullable */
+  nextCursor: string | null;
 }
 
 export type EngagementPageDtoOutputItemsItemMissionDirection =
@@ -12616,7 +12697,8 @@ export type EngagementPageDtoOutputItemsItem = {
 
 export interface EngagementPageDtoOutput {
   items: EngagementPageDtoOutputItemsItem[];
-  nextCursor: string[];
+  /** @nullable */
+  nextCursor: string | null;
 }
 
 export type UpdateMissionDtoKind = (typeof UpdateMissionDtoKind)[keyof typeof UpdateMissionDtoKind];
@@ -12865,7 +12947,8 @@ export interface EngagementDtoOutput {
   beneficiary: EngagementDtoOutputBeneficiary;
   project: EngagementDtoOutputProject;
   message: string;
-  answerMessage: string[];
+  /** @nullable */
+  answerMessage: string | null;
   timeEntry: EngagementDtoOutputTimeEntry;
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
   requestedAt: string;
@@ -12979,7 +13062,8 @@ export type SearchResultPageDtoOutputItemsItem =
 
 export interface SearchResultPageDtoOutput {
   items: SearchResultPageDtoOutputItemsItem[];
-  nextCursor: string[];
+  /** @nullable */
+  nextCursor: string | null;
 }
 
 export type AutocompleteResultDtoOutputItemsItemKind =
@@ -13155,7 +13239,8 @@ export type SuggestionPageDtoOutputItemsItem = {
 
 export interface SuggestionPageDtoOutput {
   items: SuggestionPageDtoOutputItemsItem[];
-  nextCursor: string[];
+  /** @nullable */
+  nextCursor: string | null;
 }
 
 export type DismissDtoKind = (typeof DismissDtoKind)[keyof typeof DismissDtoKind];
@@ -13413,7 +13498,8 @@ export interface DiscoverSectionPageDtoOutput {
   section: DiscoverSectionPageDtoOutputSection;
   items: DiscoverSectionPageDtoOutputItemsItem[];
   sentences: DiscoverSectionPageDtoOutputSentencesItem[];
-  nextCursor: string[];
+  /** @nullable */
+  nextCursor: string | null;
 }
 
 export type NotificationPageDtoOutputItemsItemType =
@@ -13562,7 +13648,8 @@ export type NotificationPageDtoOutputItemsItem = {
 
 export interface NotificationPageDtoOutput {
   items: NotificationPageDtoOutputItemsItem[];
-  nextCursor: string[];
+  /** @nullable */
+  nextCursor: string | null;
 }
 
 export interface ReadAllDtoOutput {
@@ -13946,7 +14033,8 @@ export interface ReportDtoOutput {
   /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
   id: string;
   targetType: ReportDtoOutputTargetType;
-  targetId: string[];
+  /** @nullable */
+  targetId: string | null;
   reason: ReportDtoOutputReason;
   status: ReportDtoOutputStatus;
   outcome: ReportDtoOutputOutcome;
@@ -14017,7 +14105,8 @@ export type ReportPageDtoOutputItemsItem = {
 
 export interface ReportPageDtoOutput {
   items: ReportPageDtoOutputItemsItem[];
-  nextCursor: string[];
+  /** @nullable */
+  nextCursor: string | null;
 }
 
 export type AnonymousReportDtoTargetType =
@@ -14282,7 +14371,8 @@ export type DecisionPageDtoOutputItemsItem = {
 
 export interface DecisionPageDtoOutput {
   items: DecisionPageDtoOutputItemsItem[];
-  nextCursor: string[];
+  /** @nullable */
+  nextCursor: string | null;
 }
 
 export interface AppealRequestDto {
@@ -14309,7 +14399,8 @@ export interface AppealDtoOutput {
   decisionId: string;
   statement: string;
   status: AppealDtoOutputStatus;
-  outcomeStatement: string[];
+  /** @nullable */
+  outcomeStatement: string | null;
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
   createdAt: string;
   resolvedAt: string | null;
@@ -14403,7 +14494,8 @@ export type CasePageDtoOutputItemsItem = {
 
 export interface CasePageDtoOutput {
   items: CasePageDtoOutputItemsItem[];
-  nextCursor: string[];
+  /** @nullable */
+  nextCursor: string | null;
 }
 
 export type CaseDetailDtoOutputTargetType =
@@ -14776,7 +14868,8 @@ export interface DecisionDetailDtoOutput {
   reason: DecisionDetailDtoOutputReason;
   statement: string;
   ground: DecisionDetailDtoOutputGround;
-  groundReference: string[];
+  /** @nullable */
+  groundReference: string | null;
   automatedDetection: boolean;
   suspensionEndsAt: string | null;
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
@@ -14890,7 +14983,8 @@ export type DecisionDetailPageDtoOutputItemsItem = {
 
 export interface DecisionDetailPageDtoOutput {
   items: DecisionDetailPageDtoOutputItemsItem[];
-  nextCursor: string[];
+  /** @nullable */
+  nextCursor: string | null;
 }
 
 export type ResolveAppealDtoOutcome =
@@ -15066,7 +15160,8 @@ export type MemberSummaryPageDtoOutputItemsItem = {
 
 export interface MemberSummaryPageDtoOutput {
   items: MemberSummaryPageDtoOutputItemsItem[];
-  nextCursor: string[];
+  /** @nullable */
+  nextCursor: string | null;
 }
 
 export type MemberFileDtoOutputRolesItem =
@@ -15107,7 +15202,8 @@ export interface MemberFileDtoOutput {
   userId: string;
   email: string;
   name: string;
-  handle: string[];
+  /** @nullable */
+  handle: string | null;
   roles: MemberFileDtoOutputRolesItem[];
   emailVerified: boolean;
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
@@ -15145,7 +15241,8 @@ export interface FlagDtoOutput {
   description: string;
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
   updatedAt: string;
-  legalReference: string[];
+  /** @nullable */
+  legalReference: string | null;
 }
 
 export type HighlightListDtoOutputItemsItemTargetType =
@@ -15285,7 +15382,8 @@ export type AuditPageDtoOutputItemsItem = {
 
 export interface AuditPageDtoOutput {
   items: AuditPageDtoOutputItemsItem[];
-  nextCursor: string[];
+  /** @nullable */
+  nextCursor: string | null;
 }
 
 export type ProblemDetailsCode = (typeof ProblemDetailsCode)[keyof typeof ProblemDetailsCode];
