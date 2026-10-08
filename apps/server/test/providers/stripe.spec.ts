@@ -2,6 +2,7 @@ import { v7 as uuid } from 'uuid';
 import { afterAll, describe, expect, it, vi } from 'vitest';
 import { Money } from '../../src/platform/kernel';
 import {
+  STRIPE_V2_API_VERSION,
   StripeProvider,
   stripeSignature,
 } from '../../src/modules/payments/infrastructure/stripe/stripe.provider';
@@ -79,7 +80,18 @@ describe.skipIf(!KEY)('Stripe sandbox', () => {
       bankAccount: undefined,
       commissionRateBps: 500,
     });
-    cleanup.push(() => stripe('DELETE', `/v1/accounts/${account.providerAccountId}`));
+    // A v2 account with the full Dashboard is closed, not deleted, by the platform.
+    cleanup.push(() =>
+      raw('stripe', `${BASE}/v2/core/accounts/${account.providerAccountId}/close`, {
+        method: 'POST',
+        headers: {
+          authorization: `Bearer ${KEY}`,
+          'content-type': 'application/json',
+          'stripe-version': STRIPE_V2_API_VERSION,
+        },
+        body: '{}',
+      }),
+    );
     expect(account.providerAccountId).toMatch(/^acct_/);
     expect(account.state.status).toBe('pending');
     const body = await stripe('GET', `/v1/accounts/${account.providerAccountId}`);
@@ -139,14 +151,23 @@ describe.skipIf(!KEY)('Stripe sandbox', () => {
     const intent = await pay('pm_card_visa', contributionId);
     const paymentId = text(field(intent, 'id')) ?? '';
     expect(text(field(intent, 'status'))).toBe('succeeded');
-    const expanded = await stripe(
-      'GET',
-      `/v1/payment_intents/${paymentId}`,
-      {
-        'expand[0]': 'latest_charge.balance_transaction',
-        'expand[1]': 'latest_charge.refunds',
+    // The balance transaction, which carries the fees, is attached a few seconds after the
+    // payment (null until then): the adapter records the fee at a later synchronization.
+    const expanded = await vi.waitFor(
+      async () => {
+        const read = await stripe(
+          'GET',
+          `/v1/payment_intents/${paymentId}`,
+          {
+            'expand[0]': 'latest_charge.balance_transaction',
+            'expand[1]': 'latest_charge.refunds',
+          },
+          CONNECTED,
+        );
+        expect(field(read, 'latest_charge', 'balance_transaction')).not.toBeNull();
+        return read;
       },
-      CONNECTED,
+      { timeout: 30_000, interval: 1000 },
     );
     expectShape(
       expanded,

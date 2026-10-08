@@ -47,7 +47,24 @@ describe.skipIf(!KEY)('Flutterwave sandbox', () => {
     for (const step of cleanup.reverse()) await step().catch(() => undefined);
   });
 
+  /** Subaccounts of the test bank account; the list does not return `business_email`. */
+  async function deleteSubaccounts(match: (item: ExactJson) => boolean): Promise<void> {
+    // No subaccount at all answers 400 « Subaccounts not found ».
+    const listed = await raw(
+      'flutterwave',
+      `${BASE}/v3/subaccounts?account_number=${TEST_BANK.accountNumber}`,
+      { method: 'GET', headers: { authorization: `Bearer ${KEY}` } },
+    );
+    for (const item of list(field(listed.body, 'data'))) {
+      if (text(field(item, 'account_number')) === TEST_BANK.accountNumber && match(item)) {
+        await flutterwave('DELETE', `/v3/subaccounts/${text(field(item, 'id'))}`);
+      }
+    }
+  }
+
   it('creates a subaccount and a Standard payment link split with it', async () => {
+    // One subaccount per bank account: a run interrupted before its cleanup left one.
+    await deleteSubaccounts(() => true);
     const account = await adapter.createAccount({
       userId: uuid(),
       country: 'NG',
@@ -57,17 +74,9 @@ describe.skipIf(!KEY)('Flutterwave sandbox', () => {
       bankAccount: { ...TEST_BANK, accountName: 'Pitchorium provider test' },
       commissionRateBps: 500,
     });
-    cleanup.push(async () => {
-      const listed = await flutterwave(
-        'GET',
-        `/v3/subaccounts?account_number=${TEST_BANK.accountNumber}`,
-      );
-      for (const item of list(field(listed, 'data'))) {
-        if (text(field(item, 'business_email')) === email) {
-          await flutterwave('DELETE', `/v3/subaccounts/${text(field(item, 'id'))}`);
-        }
-      }
-    });
+    cleanup.push(() =>
+      deleteSubaccounts((item) => text(field(item, 'subaccount_id')) === account.providerAccountId),
+    );
     expect(account.providerAccountId).toMatch(/^RS_/);
     const session = await adapter.createSession({
       contributionId: uuid(),
