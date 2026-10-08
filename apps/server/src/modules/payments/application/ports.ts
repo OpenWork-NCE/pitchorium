@@ -275,6 +275,8 @@ export abstract class PaymentsRepository {
   abstract countPaidContributions(projectId: string): Promise<number>;
   /** Members who paid a contribution to the project that still counts. */
   abstract contributorIdsOf(projectId: string): Promise<string[]>;
+  /** Paid contributions of a project that a refund may still reach. */
+  abstract refundableIdsOf(projectId: string): Promise<string[]>;
   /** Projects supported by an organization through paid contributions. */
   abstract projectsSupportedBy(organizationId: string): Promise<string[]>;
   /** Every contribution, oldest first, by keyset (rebuild of the engagement projection). */

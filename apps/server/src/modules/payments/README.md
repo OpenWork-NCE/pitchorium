@@ -45,7 +45,7 @@ Espèces, virement institutionnel (montant en EUR, XOF ou XAF), engagement de lo
 
 ## Façade publique (`index.ts`)
 
-`PaymentsFacade` : `contributionFacts` (dont `named` : contributeur affiché et non anonyme), `contributionFactsAfter` (projection d'engagement), `contributorIds` et `offlineParties` (notifications), `refundForModeration` ; `ReconciliationService` (commande `pnpm payments:reconcile`) ; classes d'événements. Au démarrage, la façade enregistre : la source du niveau `kyc_verified` et l'élément `payout_account` (access), les projets soutenus par une organisation (organizations), les règles de lecture des pièces KYC et des justificatifs hors plateforme (media).
+`PaymentsFacade` : `contributionFacts` (dont `named` : contributeur affiché et non anonyme), `contributionFactsAfter` (projection d'engagement), `contributorIds` et `offlineParties` (notifications), `refundableContributionIds` (contributions payées d'un projet qu'un remboursement peut encore atteindre), `refundForModeration` ; `ReconciliationService` (commande `pnpm payments:reconcile`) ; classes d'événements. Au démarrage, la façade enregistre : la source du niveau `kyc_verified` et l'élément `payout_account` (access), les projets soutenus par une organisation (organizations), les règles de lecture des pièces KYC et des justificatifs hors plateforme (media).
 
 ## Événements émis
 

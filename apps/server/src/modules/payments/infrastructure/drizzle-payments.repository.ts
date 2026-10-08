@@ -272,6 +272,20 @@ export class DrizzlePaymentsRepository extends PaymentsRepository {
     return rows.map(toContribution);
   }
 
+  async refundableIdsOf(projectId: string): Promise<string[]> {
+    const rows = await this.db
+      .select({ id: paymentsContributions.id })
+      .from(paymentsContributions)
+      .where(
+        and(
+          eq(paymentsContributions.projectId, projectId),
+          inArray(paymentsContributions.status, ['succeeded', 'partially_refunded', 'dispute_won']),
+        ),
+      )
+      .orderBy(paymentsContributions.id);
+    return rows.map((row) => row.id);
+  }
+
   async contributorIdsOf(projectId: string): Promise<string[]> {
     const rows = await this.db
       .selectDistinct({ contributorId: paymentsContributions.contributorId })

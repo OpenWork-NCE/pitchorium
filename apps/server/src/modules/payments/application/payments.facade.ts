@@ -120,6 +120,11 @@ export class PaymentsFacade implements OnModuleInit {
       : null;
   }
 
+  /** Paid contributions of a project a refund may still reach (frozen project, trust). */
+  refundableContributionIds(projectId: string): Promise<string[]> {
+    return this.payments.refundableIdsOf(projectId);
+  }
+
   /** Refund decided by the moderation (trust module), whatever remains. */
   refundForModeration(contributionId: string, reason: string): Promise<Refund> {
     return this.refunds.refund(contributionId, { reason, requestedBy: null, origin: 'moderation' });
