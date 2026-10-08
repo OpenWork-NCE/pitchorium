@@ -37,6 +37,343 @@ export interface HealthResponseDtoOutput {
   checks: HealthResponseDtoOutputChecks;
 }
 
+export type OverviewDtoOutputExportsItemStatus =
+  (typeof OverviewDtoOutputExportsItemStatus)[keyof typeof OverviewDtoOutputExportsItemStatus];
+
+export const OverviewDtoOutputExportsItemStatus = {
+  pending: 'pending',
+  ready: 'ready',
+  failed: 'failed',
+  expired: 'expired',
+} as const;
+
+export type OverviewDtoOutputExportsItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  status: OverviewDtoOutputExportsItemStatus;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  requestedAt: string;
+  completedAt: string | null;
+  expiresAt: string | null;
+  sizeBytes: number | null;
+};
+
+export type OverviewDtoOutputErasureStatus =
+  (typeof OverviewDtoOutputErasureStatus)[keyof typeof OverviewDtoOutputErasureStatus];
+
+export const OverviewDtoOutputErasureStatus = {
+  scheduled: 'scheduled',
+  canceled: 'canceled',
+  blocked: 'blocked',
+  running: 'running',
+  completed: 'completed',
+  failed: 'failed',
+} as const;
+
+export type OverviewDtoOutputErasure = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  status: OverviewDtoOutputErasureStatus;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  requestedAt: string;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  scheduledFor: string;
+  canceledAt: string | null;
+  completedAt: string | null;
+  /** @nullable */
+  blockedBy: string | null;
+} | null;
+
+export interface OverviewDtoOutput {
+  exports: OverviewDtoOutputExportsItem[];
+  erasure: OverviewDtoOutputErasure;
+}
+
+export type ExportDtoOutputStatus =
+  (typeof ExportDtoOutputStatus)[keyof typeof ExportDtoOutputStatus];
+
+export const ExportDtoOutputStatus = {
+  pending: 'pending',
+  ready: 'ready',
+  failed: 'failed',
+  expired: 'expired',
+} as const;
+
+export interface ExportDtoOutput {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  status: ExportDtoOutputStatus;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  requestedAt: string;
+  completedAt: string | null;
+  expiresAt: string | null;
+  sizeBytes: number | null;
+}
+
+export interface DownloadDtoOutput {
+  url: string;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  expiresAt: string;
+}
+
+export const RequestErasureDtoValue = {
+  confirm: true,
+} as const;
+export type RequestErasureDto = typeof RequestErasureDtoValue;
+
+export type ErasureDtoOutputStatus =
+  (typeof ErasureDtoOutputStatus)[keyof typeof ErasureDtoOutputStatus];
+
+export const ErasureDtoOutputStatus = {
+  scheduled: 'scheduled',
+  canceled: 'canceled',
+  blocked: 'blocked',
+  running: 'running',
+  completed: 'completed',
+  failed: 'failed',
+} as const;
+
+export interface ErasureDtoOutput {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  status: ErasureDtoOutputStatus;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  requestedAt: string;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  scheduledFor: string;
+  canceledAt: string | null;
+  completedAt: string | null;
+  blockedBy: string[];
+}
+
+export type RightsPageDtoOutputItemsItemKind =
+  (typeof RightsPageDtoOutputItemsItemKind)[keyof typeof RightsPageDtoOutputItemsItemKind];
+
+export const RightsPageDtoOutputItemsItemKind = {
+  export: 'export',
+  erasure: 'erasure',
+} as const;
+
+export type RightsPageDtoOutputItemsItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  kind: RightsPageDtoOutputItemsItemKind;
+  userId: string | null;
+  status: string;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  requestedAt: string;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  dueAt: string;
+  completedAt: string | null;
+  overdue: boolean;
+  /** @nullable */
+  detail: string | null;
+};
+
+export interface RightsPageDtoOutput {
+  items: RightsPageDtoOutputItemsItem[];
+  nextCursor: string[];
+}
+
+export type TranslateDtoSourceType =
+  (typeof TranslateDtoSourceType)[keyof typeof TranslateDtoSourceType];
+
+export const TranslateDtoSourceType = {
+  post: 'post',
+  comment: 'comment',
+  profile: 'profile',
+  project: 'project',
+  project_update: 'project_update',
+  event: 'event',
+  mission: 'mission',
+  message: 'message',
+} as const;
+
+export type TranslateDtoTargetLocale =
+  (typeof TranslateDtoTargetLocale)[keyof typeof TranslateDtoTargetLocale];
+
+export const TranslateDtoTargetLocale = {
+  fr: 'fr',
+  en: 'en',
+  sw: 'sw',
+  wo: 'wo',
+  ln: 'ln',
+} as const;
+
+export interface TranslateDto {
+  sourceType: TranslateDtoSourceType;
+  /**
+   * @minLength 1
+   * @maxLength 64
+   */
+  sourceId: string;
+  targetLocale: TranslateDtoTargetLocale;
+}
+
+export type TranslationDtoOutputSourceType =
+  (typeof TranslationDtoOutputSourceType)[keyof typeof TranslationDtoOutputSourceType];
+
+export const TranslationDtoOutputSourceType = {
+  post: 'post',
+  comment: 'comment',
+  profile: 'profile',
+  project: 'project',
+  project_update: 'project_update',
+  event: 'event',
+  mission: 'mission',
+  message: 'message',
+} as const;
+
+export type TranslationDtoOutputTargetLocale =
+  (typeof TranslationDtoOutputTargetLocale)[keyof typeof TranslationDtoOutputTargetLocale];
+
+export const TranslationDtoOutputTargetLocale = {
+  fr: 'fr',
+  en: 'en',
+  sw: 'sw',
+  wo: 'wo',
+  ln: 'ln',
+} as const;
+
+export type TranslationDtoOutputFields = { [key: string]: string };
+
+export type TranslationDtoOutputProvider =
+  (typeof TranslationDtoOutputProvider)[keyof typeof TranslationDtoOutputProvider];
+
+export const TranslationDtoOutputProvider = {
+  deepl: 'deepl',
+  google: 'google',
+  simulated: 'simulated',
+} as const;
+
+export interface TranslationDtoOutput {
+  sourceType: TranslationDtoOutputSourceType;
+  sourceId: string;
+  targetLocale: TranslationDtoOutputTargetLocale;
+  sourceLanguage: string[];
+  fields: TranslationDtoOutputFields;
+  machineTranslated: true;
+  provider: TranslationDtoOutputProvider;
+  notice: 'common.machineTranslation';
+  cached: boolean;
+}
+
+export type GlossaryDtoOutputItemsItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  fr: string;
+  en: string;
+  provisional: boolean;
+  /** @nullable */
+  note: string | null;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  updatedAt: string;
+};
+
+export interface GlossaryDtoOutput {
+  items: GlossaryDtoOutputItemsItem[];
+}
+
+export interface UpsertGlossaryTermDto {
+  /**
+   * @minLength 1
+   * @maxLength 100
+   */
+  fr: string;
+  /**
+   * @minLength 1
+   * @maxLength 100
+   */
+  en: string;
+  provisional?: boolean;
+  note?: string | null;
+}
+
+export interface GlossaryTermDtoOutput {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  fr: string;
+  en: string;
+  provisional: boolean;
+  note: string[];
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  updatedAt: string;
+}
+
+export type UsageDtoOutputProvidersItem =
+  (typeof UsageDtoOutputProvidersItem)[keyof typeof UsageDtoOutputProvidersItem];
+
+export const UsageDtoOutputProvidersItem = {
+  deepl: 'deepl',
+  google: 'google',
+  simulated: 'simulated',
+} as const;
+
+export interface UsageDtoOutput {
+  month: string;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  characters: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  monthlyCap: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  memberDailyLimit: number;
+  providers: UsageDtoOutputProvidersItem[];
+}
+
+export type LocaleStatusListDtoOutputItemsItemLocale =
+  (typeof LocaleStatusListDtoOutputItemsItemLocale)[keyof typeof LocaleStatusListDtoOutputItemsItemLocale];
+
+export const LocaleStatusListDtoOutputItemsItemLocale = {
+  fr: 'fr',
+  en: 'en',
+  sw: 'sw',
+  wo: 'wo',
+  ln: 'ln',
+} as const;
+
+export type LocaleStatusListDtoOutputItemsItemCatalog = {
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  total: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  missing: number;
+  complete: boolean;
+};
+
+export type LocaleStatusListDtoOutputItemsItemReview = {
+  status: string;
+  /** @nullable */
+  reviewedBy: string | null;
+  /** @nullable */
+  reviewedAt: string | null;
+};
+
+export type LocaleStatusListDtoOutputItemsItem = {
+  locale: LocaleStatusListDtoOutputItemsItemLocale;
+  enabled: boolean;
+  catalog: LocaleStatusListDtoOutputItemsItemCatalog;
+  review: LocaleStatusListDtoOutputItemsItemReview;
+  activatable: boolean;
+};
+
+export interface LocaleStatusListDtoOutput {
+  items: LocaleStatusListDtoOutputItemsItem[];
+}
+
 export interface LegalVersionsDtoOutput {
   termsVersion: string;
   privacyVersion: string;
@@ -130,6 +467,16 @@ export const UpdatePreferencesDtoChangesItemType = {
   mission_engagement_answered: 'mission_engagement_answered',
   mission_completed: 'mission_completed',
   new_suggestions: 'new_suggestions',
+  report_received: 'report_received',
+  report_resolved: 'report_resolved',
+  moderation_decision: 'moderation_decision',
+  suspension_started: 'suspension_started',
+  suspension_ended: 'suspension_ended',
+  appeal_received: 'appeal_received',
+  appeal_decided: 'appeal_decided',
+  export_ready: 'export_ready',
+  erasure_scheduled: 'erasure_scheduled',
+  erasure_reminder: 'erasure_reminder',
 } as const;
 
 export type UpdatePreferencesDtoChangesItemChannel =
@@ -148,7 +495,7 @@ export type UpdatePreferencesDtoChangesItem = {
 
 export interface UpdatePreferencesDto {
   emailDigest?: UpdatePreferencesDtoEmailDigest;
-  /** @maxItems 88 */
+  /** @maxItems 108 */
   changes?: UpdatePreferencesDtoChangesItem[];
 }
 
@@ -209,6 +556,16 @@ export const PreferencesDtoOutputTypesItemType = {
   mission_engagement_answered: 'mission_engagement_answered',
   mission_completed: 'mission_completed',
   new_suggestions: 'new_suggestions',
+  report_received: 'report_received',
+  report_resolved: 'report_resolved',
+  moderation_decision: 'moderation_decision',
+  suspension_started: 'suspension_started',
+  suspension_ended: 'suspension_ended',
+  appeal_received: 'appeal_received',
+  appeal_decided: 'appeal_decided',
+  export_ready: 'export_ready',
+  erasure_scheduled: 'erasure_scheduled',
+  erasure_reminder: 'erasure_reminder',
 } as const;
 
 export type PreferencesDtoOutputTypesItemChannels = {
@@ -250,7 +607,6 @@ export const ActionPrerequisitesDtoOutputAction = {
   projectinterestexpress: 'project.interest.express',
   projectinterestread: 'project.interest.read',
   projectimpactassess: 'project.impact.assess',
-  projectfeature: 'project.feature',
   impactmethodologymanage: 'impact.methodology.manage',
   impactassessmentsubmit: 'impact.assessment.submit',
   impactassessmentread: 'impact.assessment.read',
@@ -284,7 +640,6 @@ export const ActionPrerequisitesDtoOutputAction = {
   contentpostrepost: 'content.post.repost',
   contentpostsave: 'content.post.save',
   contentposthide: 'content.post.hide',
-  contentpostfeature: 'content.post.feature',
   contentpoststatsread: 'content.post.stats.read',
   contentreactionset: 'content.reaction.set',
   contentcommentcreate: 'content.comment.create',
@@ -347,6 +702,32 @@ export const ActionPrerequisitesDtoOutputAction = {
   missionengagementrespond: 'mission.engagement.respond',
   missionengagementcomplete: 'mission.engagement.complete',
   missionengagementcancel: 'mission.engagement.cancel',
+  trustreportcreate: 'trust.report.create',
+  trustreportread: 'trust.report.read',
+  truststandingread: 'trust.standing.read',
+  trustdecisionappeal: 'trust.decision.appeal',
+  trustmoderationread: 'trust.moderation.read',
+  trustmoderationassign: 'trust.moderation.assign',
+  trustmoderationdecide: 'trust.moderation.decide',
+  trustappealresolve: 'trust.appeal.resolve',
+  trustsuspensionlift: 'trust.suspension.lift',
+  trustprojectrefund: 'trust.project.refund',
+  trusttransparencyread: 'trust.transparency.read',
+  privacyread: 'privacy.read',
+  privacyexportrequest: 'privacy.export.request',
+  privacyerasurerequest: 'privacy.erasure.request',
+  privacyerasurecancel: 'privacy.erasure.cancel',
+  privacyrequestsread: 'privacy.requests.read',
+  localizationtranslate: 'localization.translate',
+  localizationmanage: 'localization.manage',
+  adminmembersread: 'admin.members.read',
+  adminflagsread: 'admin.flags.read',
+  adminflagsmanage: 'admin.flags.manage',
+  adminhighlightsmanage: 'admin.highlights.manage',
+  adminjobsread: 'admin.jobs.read',
+  adminjobsretry: 'admin.jobs.retry',
+  adminstatsread: 'admin.stats.read',
+  adminauditread: 'admin.audit.read',
 } as const;
 
 export type ActionPrerequisitesDtoOutputCode =
@@ -372,6 +753,7 @@ export const ActionPrerequisitesDtoOutputCode = {
   ACCESS_PREREQUISITES_MISSING: 'ACCESS_PREREQUISITES_MISSING',
   ACCESS_ACCOUNT_SUSPENDED: 'ACCESS_ACCOUNT_SUSPENDED',
   ACCESS_LAST_ADMIN: 'ACCESS_LAST_ADMIN',
+  ACCESS_REAUTHENTICATION_REQUIRED: 'ACCESS_REAUTHENTICATION_REQUIRED',
   PROFILES_PROFILE_NOT_FOUND: 'PROFILES_PROFILE_NOT_FOUND',
   PROFILES_FACET_NOT_FOUND: 'PROFILES_FACET_NOT_FOUND',
   PROFILES_FACET_ALREADY_EXISTS: 'PROFILES_FACET_ALREADY_EXISTS',
@@ -555,6 +937,43 @@ export const ActionPrerequisitesDtoOutputCode = {
   MISSIONS_ENGAGEMENT_NOT_FOUND: 'MISSIONS_ENGAGEMENT_NOT_FOUND',
   MISSIONS_INVALID_TRANSITION: 'MISSIONS_INVALID_TRANSITION',
   DISCOVERY_CANDIDATE_NOT_FOUND: 'DISCOVERY_CANDIDATE_NOT_FOUND',
+  TRUST_TARGET_NOT_FOUND: 'TRUST_TARGET_NOT_FOUND',
+  TRUST_SELF_REPORT: 'TRUST_SELF_REPORT',
+  TRUST_REPORT_DUPLICATE: 'TRUST_REPORT_DUPLICATE',
+  TRUST_CASE_NOT_FOUND: 'TRUST_CASE_NOT_FOUND',
+  TRUST_CASE_RESOLVED: 'TRUST_CASE_RESOLVED',
+  TRUST_DECISION_NOT_APPLICABLE: 'TRUST_DECISION_NOT_APPLICABLE',
+  TRUST_ADMIN_REQUIRED: 'TRUST_ADMIN_REQUIRED',
+  TRUST_ASSIGNEE_NOT_MODERATOR: 'TRUST_ASSIGNEE_NOT_MODERATOR',
+  TRUST_DECISION_NOT_FOUND: 'TRUST_DECISION_NOT_FOUND',
+  TRUST_NOT_APPEALABLE: 'TRUST_NOT_APPEALABLE',
+  TRUST_APPEAL_EXISTS: 'TRUST_APPEAL_EXISTS',
+  TRUST_APPEAL_NOT_FOUND: 'TRUST_APPEAL_NOT_FOUND',
+  TRUST_APPEAL_RESOLVED: 'TRUST_APPEAL_RESOLVED',
+  TRUST_SAME_MODERATOR: 'TRUST_SAME_MODERATOR',
+  TRUST_SUSPENSION_NOT_FOUND: 'TRUST_SUSPENSION_NOT_FOUND',
+  TRUST_PROJECT_NOT_FROZEN: 'TRUST_PROJECT_NOT_FROZEN',
+  PRIVACY_EXPORT_RATE_LIMITED: 'PRIVACY_EXPORT_RATE_LIMITED',
+  PRIVACY_EXPORT_NOT_FOUND: 'PRIVACY_EXPORT_NOT_FOUND',
+  PRIVACY_EXPORT_NOT_READY: 'PRIVACY_EXPORT_NOT_READY',
+  PRIVACY_ERASURE_PENDING: 'PRIVACY_ERASURE_PENDING',
+  PRIVACY_ERASURE_NOT_FOUND: 'PRIVACY_ERASURE_NOT_FOUND',
+  PRIVACY_CAMPAIGN_IN_PROGRESS: 'PRIVACY_CAMPAIGN_IN_PROGRESS',
+  PRIVACY_SOLE_OWNER: 'PRIVACY_SOLE_OWNER',
+  LOCALIZATION_SOURCE_NOT_FOUND: 'LOCALIZATION_SOURCE_NOT_FOUND',
+  LOCALIZATION_LOCALE_NOT_ACTIVE: 'LOCALIZATION_LOCALE_NOT_ACTIVE',
+  LOCALIZATION_ALREADY_IN_LANGUAGE: 'LOCALIZATION_ALREADY_IN_LANGUAGE',
+  LOCALIZATION_MEMBER_LIMIT_REACHED: 'LOCALIZATION_MEMBER_LIMIT_REACHED',
+  LOCALIZATION_MONTHLY_CAP_REACHED: 'LOCALIZATION_MONTHLY_CAP_REACHED',
+  LOCALIZATION_UNAVAILABLE: 'LOCALIZATION_UNAVAILABLE',
+  LOCALIZATION_LOCALE_NOT_READY: 'LOCALIZATION_LOCALE_NOT_READY',
+  LOCALIZATION_GLOSSARY_TERM_NOT_FOUND: 'LOCALIZATION_GLOSSARY_TERM_NOT_FOUND',
+  LOCALIZATION_GLOSSARY_TERM_EXISTS: 'LOCALIZATION_GLOSSARY_TERM_EXISTS',
+  ADMIN_MEMBER_NOT_FOUND: 'ADMIN_MEMBER_NOT_FOUND',
+  ADMIN_FLAG_NOT_FOUND: 'ADMIN_FLAG_NOT_FOUND',
+  ADMIN_LEGAL_REFERENCE_REQUIRED: 'ADMIN_LEGAL_REFERENCE_REQUIRED',
+  ADMIN_HIGHLIGHT_TARGET_NOT_FOUND: 'ADMIN_HIGHLIGHT_TARGET_NOT_FOUND',
+  ADMIN_QUEUE_NOT_FOUND: 'ADMIN_QUEUE_NOT_FOUND',
   INTERNAL_ERROR: 'INTERNAL_ERROR',
   SERVICE_UNAVAILABLE: 'SERVICE_UNAVAILABLE',
 } as const;
@@ -5965,6 +6384,7 @@ export interface ProjectDtoOutput {
   team: ProjectDtoOutputTeamItem[];
   impactAssessment: ProjectDtoOutputImpactAssessment;
   share: ProjectDtoOutputShare;
+  fundingFrozen: boolean;
   viewer: ProjectDtoOutputViewer;
   management: ProjectDtoOutputManagement;
 }
@@ -13107,6 +13527,16 @@ export const NotificationPageDtoOutputItemsItemType = {
   mission_engagement_answered: 'mission_engagement_answered',
   mission_completed: 'mission_completed',
   new_suggestions: 'new_suggestions',
+  report_received: 'report_received',
+  report_resolved: 'report_resolved',
+  moderation_decision: 'moderation_decision',
+  suspension_started: 'suspension_started',
+  suspension_ended: 'suspension_ended',
+  appeal_received: 'appeal_received',
+  appeal_decided: 'appeal_decided',
+  export_ready: 'export_ready',
+  erasure_scheduled: 'erasure_scheduled',
+  erasure_reminder: 'erasure_reminder',
 } as const;
 
 export type NotificationPageDtoOutputItemsItemPriority =
@@ -13150,6 +13580,10 @@ export const NotificationPageDtoOutputItemsItemTargetType = {
   event: 'event',
   mission_engagement: 'mission_engagement',
   suggestions: 'suggestions',
+  reports: 'reports',
+  moderation_decision: 'moderation_decision',
+  moderation: 'moderation',
+  privacy: 'privacy',
 } as const;
 
 export type NotificationPageDtoOutputItemsItemTarget = {
@@ -13297,7 +13731,1448 @@ export interface UnsubscribeResultDtoOutput {
     | 'mission_engagement_answered'
     | 'mission_completed'
     | 'new_suggestions'
+    | 'report_received'
+    | 'report_resolved'
+    | 'moderation_decision'
+    | 'suspension_started'
+    | 'suspension_ended'
+    | 'appeal_received'
+    | 'appeal_decided'
+    | 'export_ready'
+    | 'erasure_scheduled'
+    | 'erasure_reminder'
     | 'digest';
+}
+
+export type CreateReportDtoTargetType =
+  (typeof CreateReportDtoTargetType)[keyof typeof CreateReportDtoTargetType];
+
+export const CreateReportDtoTargetType = {
+  profile: 'profile',
+  organization: 'organization',
+  post: 'post',
+  comment: 'comment',
+  project: 'project',
+  project_update: 'project_update',
+  event: 'event',
+  mission: 'mission',
+  message: 'message',
+  media: 'media',
+} as const;
+
+export type CreateReportDtoReason =
+  (typeof CreateReportDtoReason)[keyof typeof CreateReportDtoReason];
+
+export const CreateReportDtoReason = {
+  spam: 'spam',
+  harassment: 'harassment',
+  fraud: 'fraud',
+  illegal_content: 'illegal_content',
+  misleading_information: 'misleading_information',
+  intellectual_property: 'intellectual_property',
+  other: 'other',
+} as const;
+
+export interface CreateReportDto {
+  targetType: CreateReportDtoTargetType;
+  /**
+   * @minLength 1
+   * @maxLength 64
+   */
+  targetId: string;
+  reason: CreateReportDtoReason;
+  details?: string | null;
+}
+
+export type ReportDtoOutputTargetType =
+  (typeof ReportDtoOutputTargetType)[keyof typeof ReportDtoOutputTargetType];
+
+export const ReportDtoOutputTargetType = {
+  profile: 'profile',
+  organization: 'organization',
+  post: 'post',
+  comment: 'comment',
+  project: 'project',
+  project_update: 'project_update',
+  event: 'event',
+  mission: 'mission',
+  message: 'message',
+  media: 'media',
+} as const;
+
+export type ReportDtoOutputReason =
+  (typeof ReportDtoOutputReason)[keyof typeof ReportDtoOutputReason];
+
+export const ReportDtoOutputReason = {
+  spam: 'spam',
+  harassment: 'harassment',
+  fraud: 'fraud',
+  illegal_content: 'illegal_content',
+  misleading_information: 'misleading_information',
+  intellectual_property: 'intellectual_property',
+  other: 'other',
+} as const;
+
+export type ReportDtoOutputStatus =
+  (typeof ReportDtoOutputStatus)[keyof typeof ReportDtoOutputStatus];
+
+export const ReportDtoOutputStatus = {
+  received: 'received',
+  resolved: 'resolved',
+} as const;
+
+export type ReportDtoOutputOutcome =
+  (typeof ReportDtoOutputOutcome)[keyof typeof ReportDtoOutputOutcome] | null;
+
+export const ReportDtoOutputOutcome = {
+  action_taken: 'action_taken',
+  no_action: 'no_action',
+} as const;
+
+export interface ReportDtoOutput {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  targetType: ReportDtoOutputTargetType;
+  targetId: string[];
+  reason: ReportDtoOutputReason;
+  status: ReportDtoOutputStatus;
+  outcome: ReportDtoOutputOutcome;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+  resolvedAt: string | null;
+}
+
+export type ReportPageDtoOutputItemsItemTargetType =
+  (typeof ReportPageDtoOutputItemsItemTargetType)[keyof typeof ReportPageDtoOutputItemsItemTargetType];
+
+export const ReportPageDtoOutputItemsItemTargetType = {
+  profile: 'profile',
+  organization: 'organization',
+  post: 'post',
+  comment: 'comment',
+  project: 'project',
+  project_update: 'project_update',
+  event: 'event',
+  mission: 'mission',
+  message: 'message',
+  media: 'media',
+} as const;
+
+export type ReportPageDtoOutputItemsItemReason =
+  (typeof ReportPageDtoOutputItemsItemReason)[keyof typeof ReportPageDtoOutputItemsItemReason];
+
+export const ReportPageDtoOutputItemsItemReason = {
+  spam: 'spam',
+  harassment: 'harassment',
+  fraud: 'fraud',
+  illegal_content: 'illegal_content',
+  misleading_information: 'misleading_information',
+  intellectual_property: 'intellectual_property',
+  other: 'other',
+} as const;
+
+export type ReportPageDtoOutputItemsItemStatus =
+  (typeof ReportPageDtoOutputItemsItemStatus)[keyof typeof ReportPageDtoOutputItemsItemStatus];
+
+export const ReportPageDtoOutputItemsItemStatus = {
+  received: 'received',
+  resolved: 'resolved',
+} as const;
+
+export type ReportPageDtoOutputItemsItemOutcome =
+  | (typeof ReportPageDtoOutputItemsItemOutcome)[keyof typeof ReportPageDtoOutputItemsItemOutcome]
+  | null;
+
+export const ReportPageDtoOutputItemsItemOutcome = {
+  action_taken: 'action_taken',
+  no_action: 'no_action',
+} as const;
+
+export type ReportPageDtoOutputItemsItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  targetType: ReportPageDtoOutputItemsItemTargetType;
+  /** @nullable */
+  targetId: string | null;
+  reason: ReportPageDtoOutputItemsItemReason;
+  status: ReportPageDtoOutputItemsItemStatus;
+  outcome: ReportPageDtoOutputItemsItemOutcome;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+  resolvedAt: string | null;
+};
+
+export interface ReportPageDtoOutput {
+  items: ReportPageDtoOutputItemsItem[];
+  nextCursor: string[];
+}
+
+export type AnonymousReportDtoTargetType =
+  (typeof AnonymousReportDtoTargetType)[keyof typeof AnonymousReportDtoTargetType];
+
+export const AnonymousReportDtoTargetType = {
+  profile: 'profile',
+  organization: 'organization',
+  post: 'post',
+  comment: 'comment',
+  project: 'project',
+  project_update: 'project_update',
+  event: 'event',
+  mission: 'mission',
+  message: 'message',
+  media: 'media',
+} as const;
+
+export type AnonymousReportDtoLocale =
+  (typeof AnonymousReportDtoLocale)[keyof typeof AnonymousReportDtoLocale];
+
+export const AnonymousReportDtoLocale = {
+  fr: 'fr',
+  en: 'en',
+  sw: 'sw',
+  wo: 'wo',
+  ln: 'ln',
+} as const;
+
+export interface AnonymousReportDto {
+  targetType: AnonymousReportDtoTargetType;
+  /**
+   * @minLength 1
+   * @maxLength 64
+   */
+  targetId: string;
+  /**
+   * @minLength 1
+   * @maxLength 2000
+   */
+  details: string;
+  reporterName?: string | null;
+  reporterEmail?: string | null;
+  locale?: AnonymousReportDtoLocale;
+  goodFaith: true;
+}
+
+export interface ReportReceiptDtoOutput {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  receivedAt: string;
+}
+
+export type StandingDtoOutputSuspension = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  userId: string;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  decisionId: string;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  startsAt: string;
+  endsAt: string | null;
+  liftedAt: string | null;
+} | null;
+
+export type StandingDtoOutputDecisionsItemTargetType =
+  (typeof StandingDtoOutputDecisionsItemTargetType)[keyof typeof StandingDtoOutputDecisionsItemTargetType];
+
+export const StandingDtoOutputDecisionsItemTargetType = {
+  profile: 'profile',
+  organization: 'organization',
+  post: 'post',
+  comment: 'comment',
+  project: 'project',
+  project_update: 'project_update',
+  event: 'event',
+  mission: 'mission',
+  message: 'message',
+  media: 'media',
+} as const;
+
+export type StandingDtoOutputDecisionsItemKind =
+  (typeof StandingDtoOutputDecisionsItemKind)[keyof typeof StandingDtoOutputDecisionsItemKind];
+
+export const StandingDtoOutputDecisionsItemKind = {
+  dismiss: 'dismiss',
+  hide: 'hide',
+  remove: 'remove',
+  warn: 'warn',
+  suspend: 'suspend',
+  freeze_project: 'freeze_project',
+} as const;
+
+export type StandingDtoOutputDecisionsItemReason =
+  | (typeof StandingDtoOutputDecisionsItemReason)[keyof typeof StandingDtoOutputDecisionsItemReason]
+  | null;
+
+export const StandingDtoOutputDecisionsItemReason = {
+  spam: 'spam',
+  harassment: 'harassment',
+  fraud: 'fraud',
+  illegal_content: 'illegal_content',
+  misleading_information: 'misleading_information',
+  intellectual_property: 'intellectual_property',
+  other: 'other',
+} as const;
+
+export type StandingDtoOutputDecisionsItemGround =
+  (typeof StandingDtoOutputDecisionsItemGround)[keyof typeof StandingDtoOutputDecisionsItemGround];
+
+export const StandingDtoOutputDecisionsItemGround = {
+  terms: 'terms',
+  law: 'law',
+} as const;
+
+export type StandingDtoOutputDecisionsItemAppealStatus =
+  (typeof StandingDtoOutputDecisionsItemAppealStatus)[keyof typeof StandingDtoOutputDecisionsItemAppealStatus];
+
+export const StandingDtoOutputDecisionsItemAppealStatus = {
+  pending: 'pending',
+  upheld: 'upheld',
+  overturned: 'overturned',
+} as const;
+
+export type StandingDtoOutputDecisionsItemAppeal = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  decisionId: string;
+  statement: string;
+  status: StandingDtoOutputDecisionsItemAppealStatus;
+  /** @nullable */
+  outcomeStatement: string | null;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+  resolvedAt: string | null;
+} | null;
+
+export type StandingDtoOutputDecisionsItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  caseId: string;
+  targetType: StandingDtoOutputDecisionsItemTargetType;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  targetId: string;
+  kind: StandingDtoOutputDecisionsItemKind;
+  reason: StandingDtoOutputDecisionsItemReason;
+  statement: string;
+  ground: StandingDtoOutputDecisionsItemGround;
+  /** @nullable */
+  groundReference: string | null;
+  automatedDetection: boolean;
+  suspensionEndsAt: string | null;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  decidedAt: string;
+  appealableUntil: string | null;
+  appeal: StandingDtoOutputDecisionsItemAppeal;
+};
+
+export interface StandingDtoOutput {
+  suspension: StandingDtoOutputSuspension;
+  decisions: StandingDtoOutputDecisionsItem[];
+}
+
+export type DecisionPageDtoOutputItemsItemTargetType =
+  (typeof DecisionPageDtoOutputItemsItemTargetType)[keyof typeof DecisionPageDtoOutputItemsItemTargetType];
+
+export const DecisionPageDtoOutputItemsItemTargetType = {
+  profile: 'profile',
+  organization: 'organization',
+  post: 'post',
+  comment: 'comment',
+  project: 'project',
+  project_update: 'project_update',
+  event: 'event',
+  mission: 'mission',
+  message: 'message',
+  media: 'media',
+} as const;
+
+export type DecisionPageDtoOutputItemsItemKind =
+  (typeof DecisionPageDtoOutputItemsItemKind)[keyof typeof DecisionPageDtoOutputItemsItemKind];
+
+export const DecisionPageDtoOutputItemsItemKind = {
+  dismiss: 'dismiss',
+  hide: 'hide',
+  remove: 'remove',
+  warn: 'warn',
+  suspend: 'suspend',
+  freeze_project: 'freeze_project',
+} as const;
+
+export type DecisionPageDtoOutputItemsItemReason =
+  | (typeof DecisionPageDtoOutputItemsItemReason)[keyof typeof DecisionPageDtoOutputItemsItemReason]
+  | null;
+
+export const DecisionPageDtoOutputItemsItemReason = {
+  spam: 'spam',
+  harassment: 'harassment',
+  fraud: 'fraud',
+  illegal_content: 'illegal_content',
+  misleading_information: 'misleading_information',
+  intellectual_property: 'intellectual_property',
+  other: 'other',
+} as const;
+
+export type DecisionPageDtoOutputItemsItemGround =
+  (typeof DecisionPageDtoOutputItemsItemGround)[keyof typeof DecisionPageDtoOutputItemsItemGround];
+
+export const DecisionPageDtoOutputItemsItemGround = {
+  terms: 'terms',
+  law: 'law',
+} as const;
+
+export type DecisionPageDtoOutputItemsItemAppealStatus =
+  (typeof DecisionPageDtoOutputItemsItemAppealStatus)[keyof typeof DecisionPageDtoOutputItemsItemAppealStatus];
+
+export const DecisionPageDtoOutputItemsItemAppealStatus = {
+  pending: 'pending',
+  upheld: 'upheld',
+  overturned: 'overturned',
+} as const;
+
+export type DecisionPageDtoOutputItemsItemAppeal = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  decisionId: string;
+  statement: string;
+  status: DecisionPageDtoOutputItemsItemAppealStatus;
+  /** @nullable */
+  outcomeStatement: string | null;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+  resolvedAt: string | null;
+} | null;
+
+export type DecisionPageDtoOutputItemsItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  caseId: string;
+  targetType: DecisionPageDtoOutputItemsItemTargetType;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  targetId: string;
+  kind: DecisionPageDtoOutputItemsItemKind;
+  reason: DecisionPageDtoOutputItemsItemReason;
+  statement: string;
+  ground: DecisionPageDtoOutputItemsItemGround;
+  /** @nullable */
+  groundReference: string | null;
+  automatedDetection: boolean;
+  suspensionEndsAt: string | null;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  decidedAt: string;
+  appealableUntil: string | null;
+  appeal: DecisionPageDtoOutputItemsItemAppeal;
+};
+
+export interface DecisionPageDtoOutput {
+  items: DecisionPageDtoOutputItemsItem[];
+  nextCursor: string[];
+}
+
+export interface AppealRequestDto {
+  /**
+   * @minLength 1
+   * @maxLength 5000
+   */
+  statement: string;
+}
+
+export type AppealDtoOutputStatus =
+  (typeof AppealDtoOutputStatus)[keyof typeof AppealDtoOutputStatus];
+
+export const AppealDtoOutputStatus = {
+  pending: 'pending',
+  upheld: 'upheld',
+  overturned: 'overturned',
+} as const;
+
+export interface AppealDtoOutput {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  decisionId: string;
+  statement: string;
+  status: AppealDtoOutputStatus;
+  outcomeStatement: string[];
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+  resolvedAt: string | null;
+}
+
+export type CasePageDtoOutputItemsItemTargetType =
+  (typeof CasePageDtoOutputItemsItemTargetType)[keyof typeof CasePageDtoOutputItemsItemTargetType];
+
+export const CasePageDtoOutputItemsItemTargetType = {
+  profile: 'profile',
+  organization: 'organization',
+  post: 'post',
+  comment: 'comment',
+  project: 'project',
+  project_update: 'project_update',
+  event: 'event',
+  mission: 'mission',
+  message: 'message',
+  media: 'media',
+} as const;
+
+export type CasePageDtoOutputItemsItemOrigin =
+  (typeof CasePageDtoOutputItemsItemOrigin)[keyof typeof CasePageDtoOutputItemsItemOrigin];
+
+export const CasePageDtoOutputItemsItemOrigin = {
+  report: 'report',
+  signal: 'signal',
+} as const;
+
+export type CasePageDtoOutputItemsItemSignalKind =
+  | (typeof CasePageDtoOutputItemsItemSignalKind)[keyof typeof CasePageDtoOutputItemsItemSignalKind]
+  | null;
+
+export const CasePageDtoOutputItemsItemSignalKind = {
+  message_requests: 'message_requests',
+  connection_requests: 'connection_requests',
+  reports_received: 'reports_received',
+} as const;
+
+export type CasePageDtoOutputItemsItemStatus =
+  (typeof CasePageDtoOutputItemsItemStatus)[keyof typeof CasePageDtoOutputItemsItemStatus];
+
+export const CasePageDtoOutputItemsItemStatus = {
+  open: 'open',
+  resolved: 'resolved',
+} as const;
+
+export type CasePageDtoOutputItemsItemReasonsItem =
+  (typeof CasePageDtoOutputItemsItemReasonsItem)[keyof typeof CasePageDtoOutputItemsItemReasonsItem];
+
+export const CasePageDtoOutputItemsItemReasonsItem = {
+  spam: 'spam',
+  harassment: 'harassment',
+  fraud: 'fraud',
+  illegal_content: 'illegal_content',
+  misleading_information: 'misleading_information',
+  intellectual_property: 'intellectual_property',
+  other: 'other',
+} as const;
+
+export type CasePageDtoOutputItemsItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  targetType: CasePageDtoOutputItemsItemTargetType;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  targetId: string;
+  subjectId: string | null;
+  origin: CasePageDtoOutputItemsItemOrigin;
+  signalKind: CasePageDtoOutputItemsItemSignalKind;
+  status: CasePageDtoOutputItemsItemStatus;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  priority: number;
+  priorityReasons: string[];
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  reportCount: number;
+  reasons: CasePageDtoOutputItemsItemReasonsItem[];
+  assignedTo: string | null;
+  decisionId: string | null;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  updatedAt: string;
+  resolvedAt: string | null;
+};
+
+export interface CasePageDtoOutput {
+  items: CasePageDtoOutputItemsItem[];
+  nextCursor: string[];
+}
+
+export type CaseDetailDtoOutputTargetType =
+  (typeof CaseDetailDtoOutputTargetType)[keyof typeof CaseDetailDtoOutputTargetType];
+
+export const CaseDetailDtoOutputTargetType = {
+  profile: 'profile',
+  organization: 'organization',
+  post: 'post',
+  comment: 'comment',
+  project: 'project',
+  project_update: 'project_update',
+  event: 'event',
+  mission: 'mission',
+  message: 'message',
+  media: 'media',
+} as const;
+
+export type CaseDetailDtoOutputOrigin =
+  (typeof CaseDetailDtoOutputOrigin)[keyof typeof CaseDetailDtoOutputOrigin];
+
+export const CaseDetailDtoOutputOrigin = {
+  report: 'report',
+  signal: 'signal',
+} as const;
+
+export type CaseDetailDtoOutputSignalKind =
+  (typeof CaseDetailDtoOutputSignalKind)[keyof typeof CaseDetailDtoOutputSignalKind] | null;
+
+export const CaseDetailDtoOutputSignalKind = {
+  message_requests: 'message_requests',
+  connection_requests: 'connection_requests',
+  reports_received: 'reports_received',
+} as const;
+
+export type CaseDetailDtoOutputStatus =
+  (typeof CaseDetailDtoOutputStatus)[keyof typeof CaseDetailDtoOutputStatus];
+
+export const CaseDetailDtoOutputStatus = {
+  open: 'open',
+  resolved: 'resolved',
+} as const;
+
+export type CaseDetailDtoOutputReasonsItem =
+  (typeof CaseDetailDtoOutputReasonsItem)[keyof typeof CaseDetailDtoOutputReasonsItem];
+
+export const CaseDetailDtoOutputReasonsItem = {
+  spam: 'spam',
+  harassment: 'harassment',
+  fraud: 'fraud',
+  illegal_content: 'illegal_content',
+  misleading_information: 'misleading_information',
+  intellectual_property: 'intellectual_property',
+  other: 'other',
+} as const;
+
+export type CaseDetailDtoOutputReportsItemReason =
+  (typeof CaseDetailDtoOutputReportsItemReason)[keyof typeof CaseDetailDtoOutputReportsItemReason];
+
+export const CaseDetailDtoOutputReportsItemReason = {
+  spam: 'spam',
+  harassment: 'harassment',
+  fraud: 'fraud',
+  illegal_content: 'illegal_content',
+  misleading_information: 'misleading_information',
+  intellectual_property: 'intellectual_property',
+  other: 'other',
+} as const;
+
+export type CaseDetailDtoOutputReportsItemMessageContextMessagesItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  senderId: string;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  sentAt: string;
+  /** @nullable */
+  text: string | null;
+  reported: boolean;
+};
+
+export type CaseDetailDtoOutputReportsItemMessageContext = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  conversationId: string;
+  messages: CaseDetailDtoOutputReportsItemMessageContextMessagesItem[];
+} | null;
+
+export type CaseDetailDtoOutputReportsItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  reason: CaseDetailDtoOutputReportsItemReason;
+  /** @nullable */
+  details: string | null;
+  reporterId: string | null;
+  anonymous: boolean;
+  messageContext: CaseDetailDtoOutputReportsItemMessageContext;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+};
+
+export type CaseDetailDtoOutputAssignmentsItem = {
+  moderatorId: string | null;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  assignedBy: string;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  assignedAt: string;
+};
+
+export type CaseDetailDtoOutputDecisionsItemTargetType =
+  (typeof CaseDetailDtoOutputDecisionsItemTargetType)[keyof typeof CaseDetailDtoOutputDecisionsItemTargetType];
+
+export const CaseDetailDtoOutputDecisionsItemTargetType = {
+  profile: 'profile',
+  organization: 'organization',
+  post: 'post',
+  comment: 'comment',
+  project: 'project',
+  project_update: 'project_update',
+  event: 'event',
+  mission: 'mission',
+  message: 'message',
+  media: 'media',
+} as const;
+
+export type CaseDetailDtoOutputDecisionsItemKind =
+  (typeof CaseDetailDtoOutputDecisionsItemKind)[keyof typeof CaseDetailDtoOutputDecisionsItemKind];
+
+export const CaseDetailDtoOutputDecisionsItemKind = {
+  dismiss: 'dismiss',
+  hide: 'hide',
+  remove: 'remove',
+  warn: 'warn',
+  suspend: 'suspend',
+  freeze_project: 'freeze_project',
+} as const;
+
+export type CaseDetailDtoOutputDecisionsItemReason =
+  | (typeof CaseDetailDtoOutputDecisionsItemReason)[keyof typeof CaseDetailDtoOutputDecisionsItemReason]
+  | null;
+
+export const CaseDetailDtoOutputDecisionsItemReason = {
+  spam: 'spam',
+  harassment: 'harassment',
+  fraud: 'fraud',
+  illegal_content: 'illegal_content',
+  misleading_information: 'misleading_information',
+  intellectual_property: 'intellectual_property',
+  other: 'other',
+} as const;
+
+export type CaseDetailDtoOutputDecisionsItemGround =
+  (typeof CaseDetailDtoOutputDecisionsItemGround)[keyof typeof CaseDetailDtoOutputDecisionsItemGround];
+
+export const CaseDetailDtoOutputDecisionsItemGround = {
+  terms: 'terms',
+  law: 'law',
+} as const;
+
+export type CaseDetailDtoOutputDecisionsItemAppealStatus =
+  (typeof CaseDetailDtoOutputDecisionsItemAppealStatus)[keyof typeof CaseDetailDtoOutputDecisionsItemAppealStatus];
+
+export const CaseDetailDtoOutputDecisionsItemAppealStatus = {
+  pending: 'pending',
+  upheld: 'upheld',
+  overturned: 'overturned',
+} as const;
+
+export type CaseDetailDtoOutputDecisionsItemAppeal = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  decisionId: string;
+  statement: string;
+  status: CaseDetailDtoOutputDecisionsItemAppealStatus;
+  /** @nullable */
+  outcomeStatement: string | null;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+  resolvedAt: string | null;
+} | null;
+
+export type CaseDetailDtoOutputDecisionsItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  caseId: string;
+  targetType: CaseDetailDtoOutputDecisionsItemTargetType;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  targetId: string;
+  kind: CaseDetailDtoOutputDecisionsItemKind;
+  reason: CaseDetailDtoOutputDecisionsItemReason;
+  statement: string;
+  ground: CaseDetailDtoOutputDecisionsItemGround;
+  /** @nullable */
+  groundReference: string | null;
+  automatedDetection: boolean;
+  suspensionEndsAt: string | null;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  decidedAt: string;
+  appealableUntil: string | null;
+  appeal: CaseDetailDtoOutputDecisionsItemAppeal;
+  subjectId: string | null;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  decidedBy: string;
+  appealReviewerId: string | null;
+};
+
+export interface CaseDetailDtoOutput {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  targetType: CaseDetailDtoOutputTargetType;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  targetId: string;
+  subjectId: string | null;
+  origin: CaseDetailDtoOutputOrigin;
+  signalKind: CaseDetailDtoOutputSignalKind;
+  status: CaseDetailDtoOutputStatus;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  priority: number;
+  priorityReasons: string[];
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  reportCount: number;
+  reasons: CaseDetailDtoOutputReasonsItem[];
+  assignedTo: string | null;
+  decisionId: string | null;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  updatedAt: string;
+  resolvedAt: string | null;
+  reports: CaseDetailDtoOutputReportsItem[];
+  assignments: CaseDetailDtoOutputAssignmentsItem[];
+  decisions: CaseDetailDtoOutputDecisionsItem[];
+}
+
+export interface AssignDto {
+  moderatorId: string | null;
+}
+
+export type DecideDtoKind = (typeof DecideDtoKind)[keyof typeof DecideDtoKind];
+
+export const DecideDtoKind = {
+  dismiss: 'dismiss',
+  hide: 'hide',
+  remove: 'remove',
+  warn: 'warn',
+  suspend: 'suspend',
+  freeze_project: 'freeze_project',
+} as const;
+
+export type DecideDtoReason = (typeof DecideDtoReason)[keyof typeof DecideDtoReason] | null;
+
+export const DecideDtoReason = {
+  spam: 'spam',
+  harassment: 'harassment',
+  fraud: 'fraud',
+  illegal_content: 'illegal_content',
+  misleading_information: 'misleading_information',
+  intellectual_property: 'intellectual_property',
+  other: 'other',
+} as const;
+
+export type DecideDtoGround = (typeof DecideDtoGround)[keyof typeof DecideDtoGround];
+
+export const DecideDtoGround = {
+  terms: 'terms',
+  law: 'law',
+} as const;
+
+export interface DecideDto {
+  kind: DecideDtoKind;
+  reason?: DecideDtoReason;
+  /**
+   * @minLength 20
+   * @maxLength 5000
+   */
+  statement: string;
+  ground: DecideDtoGround;
+  groundReference?: string | null;
+  suspensionDays?: number | null;
+}
+
+export type DecisionDetailDtoOutputTargetType =
+  (typeof DecisionDetailDtoOutputTargetType)[keyof typeof DecisionDetailDtoOutputTargetType];
+
+export const DecisionDetailDtoOutputTargetType = {
+  profile: 'profile',
+  organization: 'organization',
+  post: 'post',
+  comment: 'comment',
+  project: 'project',
+  project_update: 'project_update',
+  event: 'event',
+  mission: 'mission',
+  message: 'message',
+  media: 'media',
+} as const;
+
+export type DecisionDetailDtoOutputKind =
+  (typeof DecisionDetailDtoOutputKind)[keyof typeof DecisionDetailDtoOutputKind];
+
+export const DecisionDetailDtoOutputKind = {
+  dismiss: 'dismiss',
+  hide: 'hide',
+  remove: 'remove',
+  warn: 'warn',
+  suspend: 'suspend',
+  freeze_project: 'freeze_project',
+} as const;
+
+export type DecisionDetailDtoOutputReason =
+  (typeof DecisionDetailDtoOutputReason)[keyof typeof DecisionDetailDtoOutputReason] | null;
+
+export const DecisionDetailDtoOutputReason = {
+  spam: 'spam',
+  harassment: 'harassment',
+  fraud: 'fraud',
+  illegal_content: 'illegal_content',
+  misleading_information: 'misleading_information',
+  intellectual_property: 'intellectual_property',
+  other: 'other',
+} as const;
+
+export type DecisionDetailDtoOutputGround =
+  (typeof DecisionDetailDtoOutputGround)[keyof typeof DecisionDetailDtoOutputGround];
+
+export const DecisionDetailDtoOutputGround = {
+  terms: 'terms',
+  law: 'law',
+} as const;
+
+export type DecisionDetailDtoOutputAppealStatus =
+  (typeof DecisionDetailDtoOutputAppealStatus)[keyof typeof DecisionDetailDtoOutputAppealStatus];
+
+export const DecisionDetailDtoOutputAppealStatus = {
+  pending: 'pending',
+  upheld: 'upheld',
+  overturned: 'overturned',
+} as const;
+
+export type DecisionDetailDtoOutputAppeal = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  decisionId: string;
+  statement: string;
+  status: DecisionDetailDtoOutputAppealStatus;
+  /** @nullable */
+  outcomeStatement: string | null;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+  resolvedAt: string | null;
+} | null;
+
+export interface DecisionDetailDtoOutput {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  caseId: string;
+  targetType: DecisionDetailDtoOutputTargetType;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  targetId: string;
+  kind: DecisionDetailDtoOutputKind;
+  reason: DecisionDetailDtoOutputReason;
+  statement: string;
+  ground: DecisionDetailDtoOutputGround;
+  groundReference: string[];
+  automatedDetection: boolean;
+  suspensionEndsAt: string | null;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  decidedAt: string;
+  appealableUntil: string | null;
+  appeal: DecisionDetailDtoOutputAppeal;
+  subjectId: string | null;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  decidedBy: string;
+  appealReviewerId: string | null;
+}
+
+export type DecisionDetailPageDtoOutputItemsItemTargetType =
+  (typeof DecisionDetailPageDtoOutputItemsItemTargetType)[keyof typeof DecisionDetailPageDtoOutputItemsItemTargetType];
+
+export const DecisionDetailPageDtoOutputItemsItemTargetType = {
+  profile: 'profile',
+  organization: 'organization',
+  post: 'post',
+  comment: 'comment',
+  project: 'project',
+  project_update: 'project_update',
+  event: 'event',
+  mission: 'mission',
+  message: 'message',
+  media: 'media',
+} as const;
+
+export type DecisionDetailPageDtoOutputItemsItemKind =
+  (typeof DecisionDetailPageDtoOutputItemsItemKind)[keyof typeof DecisionDetailPageDtoOutputItemsItemKind];
+
+export const DecisionDetailPageDtoOutputItemsItemKind = {
+  dismiss: 'dismiss',
+  hide: 'hide',
+  remove: 'remove',
+  warn: 'warn',
+  suspend: 'suspend',
+  freeze_project: 'freeze_project',
+} as const;
+
+export type DecisionDetailPageDtoOutputItemsItemReason =
+  | (typeof DecisionDetailPageDtoOutputItemsItemReason)[keyof typeof DecisionDetailPageDtoOutputItemsItemReason]
+  | null;
+
+export const DecisionDetailPageDtoOutputItemsItemReason = {
+  spam: 'spam',
+  harassment: 'harassment',
+  fraud: 'fraud',
+  illegal_content: 'illegal_content',
+  misleading_information: 'misleading_information',
+  intellectual_property: 'intellectual_property',
+  other: 'other',
+} as const;
+
+export type DecisionDetailPageDtoOutputItemsItemGround =
+  (typeof DecisionDetailPageDtoOutputItemsItemGround)[keyof typeof DecisionDetailPageDtoOutputItemsItemGround];
+
+export const DecisionDetailPageDtoOutputItemsItemGround = {
+  terms: 'terms',
+  law: 'law',
+} as const;
+
+export type DecisionDetailPageDtoOutputItemsItemAppealStatus =
+  (typeof DecisionDetailPageDtoOutputItemsItemAppealStatus)[keyof typeof DecisionDetailPageDtoOutputItemsItemAppealStatus];
+
+export const DecisionDetailPageDtoOutputItemsItemAppealStatus = {
+  pending: 'pending',
+  upheld: 'upheld',
+  overturned: 'overturned',
+} as const;
+
+export type DecisionDetailPageDtoOutputItemsItemAppeal = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  decisionId: string;
+  statement: string;
+  status: DecisionDetailPageDtoOutputItemsItemAppealStatus;
+  /** @nullable */
+  outcomeStatement: string | null;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+  resolvedAt: string | null;
+} | null;
+
+export type DecisionDetailPageDtoOutputItemsItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  caseId: string;
+  targetType: DecisionDetailPageDtoOutputItemsItemTargetType;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  targetId: string;
+  kind: DecisionDetailPageDtoOutputItemsItemKind;
+  reason: DecisionDetailPageDtoOutputItemsItemReason;
+  statement: string;
+  ground: DecisionDetailPageDtoOutputItemsItemGround;
+  /** @nullable */
+  groundReference: string | null;
+  automatedDetection: boolean;
+  suspensionEndsAt: string | null;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  decidedAt: string;
+  appealableUntil: string | null;
+  appeal: DecisionDetailPageDtoOutputItemsItemAppeal;
+  subjectId: string | null;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  decidedBy: string;
+  appealReviewerId: string | null;
+};
+
+export interface DecisionDetailPageDtoOutput {
+  items: DecisionDetailPageDtoOutputItemsItem[];
+  nextCursor: string[];
+}
+
+export type ResolveAppealDtoOutcome =
+  (typeof ResolveAppealDtoOutcome)[keyof typeof ResolveAppealDtoOutcome];
+
+export const ResolveAppealDtoOutcome = {
+  upheld: 'upheld',
+  overturned: 'overturned',
+} as const;
+
+export interface ResolveAppealDto {
+  outcome: ResolveAppealDtoOutcome;
+  /**
+   * @minLength 20
+   * @maxLength 5000
+   */
+  statement: string;
+}
+
+export interface LiftDto {
+  /**
+   * @minLength 20
+   * @maxLength 5000
+   */
+  statement: string;
+}
+
+export interface SuspensionDtoOutput {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  userId: string;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  decisionId: string;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  startsAt: string;
+  endsAt: string | null;
+  liftedAt: string | null;
+}
+
+export interface RefundsDto {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  decisionId: string;
+  /**
+   * @minLength 1
+   * @maxLength 500
+   */
+  reason: string;
+}
+
+export interface RefundsResultDtoOutput {
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  queued: number;
+}
+
+export type TransparencyDtoOutputReportsByReason = { [key: string]: number };
+
+export type TransparencyDtoOutputReportsByTargetType = { [key: string]: number };
+
+export type TransparencyDtoOutputReports = {
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  total: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  anonymous: number;
+  byReason: TransparencyDtoOutputReportsByReason;
+  byTargetType: TransparencyDtoOutputReportsByTargetType;
+};
+
+export type TransparencyDtoOutputCases = {
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  opened: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  fromSignals: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  resolved: number;
+  /** @nullable */
+  medianResolutionHours: number | null;
+};
+
+export type TransparencyDtoOutputDecisionsByKind = { [key: string]: number };
+
+export type TransparencyDtoOutputDecisions = {
+  byKind: TransparencyDtoOutputDecisionsByKind;
+};
+
+export type TransparencyDtoOutputSuspensions = {
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  started: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  permanent: number;
+};
+
+export type TransparencyDtoOutputAppeals = {
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  received: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  upheld: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  overturned: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  pending: number;
+};
+
+export interface TransparencyDtoOutput {
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))$ */
+  from: string;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))$ */
+  to: string;
+  reports: TransparencyDtoOutputReports;
+  cases: TransparencyDtoOutputCases;
+  decisions: TransparencyDtoOutputDecisions;
+  suspensions: TransparencyDtoOutputSuspensions;
+  appeals: TransparencyDtoOutputAppeals;
+}
+
+export type MemberSummaryPageDtoOutputItemsItemRolesItem =
+  (typeof MemberSummaryPageDtoOutputItemsItemRolesItem)[keyof typeof MemberSummaryPageDtoOutputItemsItemRolesItem];
+
+export const MemberSummaryPageDtoOutputItemsItemRolesItem = {
+  member: 'member',
+  moderator: 'moderator',
+  admin: 'admin',
+} as const;
+
+export type MemberSummaryPageDtoOutputItemsItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  userId: string;
+  email: string;
+  name: string;
+  /** @nullable */
+  handle: string | null;
+  roles: MemberSummaryPageDtoOutputItemsItemRolesItem[];
+  emailVerified: boolean;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+};
+
+export interface MemberSummaryPageDtoOutput {
+  items: MemberSummaryPageDtoOutputItemsItem[];
+  nextCursor: string[];
+}
+
+export type MemberFileDtoOutputRolesItem =
+  (typeof MemberFileDtoOutputRolesItem)[keyof typeof MemberFileDtoOutputRolesItem];
+
+export const MemberFileDtoOutputRolesItem = {
+  member: 'member',
+  moderator: 'moderator',
+  admin: 'admin',
+} as const;
+
+export type MemberFileDtoOutputLocale =
+  (typeof MemberFileDtoOutputLocale)[keyof typeof MemberFileDtoOutputLocale];
+
+export const MemberFileDtoOutputLocale = {
+  fr: 'fr',
+  en: 'en',
+  sw: 'sw',
+  wo: 'wo',
+  ln: 'ln',
+} as const;
+
+export type MemberFileDtoOutputLegal = {
+  /** @nullable */
+  termsVersion: string | null;
+  /** @nullable */
+  privacyVersion: string | null;
+};
+
+export type MemberFileDtoOutputSuspension = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  endsAt: string | null;
+} | null;
+
+export interface MemberFileDtoOutput {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  userId: string;
+  email: string;
+  name: string;
+  handle: string[];
+  roles: MemberFileDtoOutputRolesItem[];
+  emailVerified: boolean;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+  locale: MemberFileDtoOutputLocale;
+  timeZone: string;
+  twoFactorEnabled: boolean;
+  legal: MemberFileDtoOutputLegal;
+  suspension: MemberFileDtoOutputSuspension;
+  kycVerified: boolean;
+}
+
+export type FlagListDtoOutputItemsItem = {
+  key: string;
+  enabled: boolean;
+  description: string;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  updatedAt: string;
+  /** @nullable */
+  legalReference: string | null;
+};
+
+export interface FlagListDtoOutput {
+  items: FlagListDtoOutputItemsItem[];
+}
+
+export interface UpdateFlagDto {
+  enabled: boolean;
+  legalReference?: string | null;
+}
+
+export interface FlagDtoOutput {
+  key: string;
+  enabled: boolean;
+  description: string;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  updatedAt: string;
+  legalReference: string[];
+}
+
+export type HighlightListDtoOutputItemsItemTargetType =
+  (typeof HighlightListDtoOutputItemsItemTargetType)[keyof typeof HighlightListDtoOutputItemsItemTargetType];
+
+export const HighlightListDtoOutputItemsItemTargetType = {
+  post: 'post',
+  project: 'project',
+  profile: 'profile',
+} as const;
+
+export type HighlightListDtoOutputItemsItem = {
+  targetType: HighlightListDtoOutputItemsItemTargetType;
+  targetId: string;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  featuredAt: string;
+};
+
+export interface HighlightListDtoOutput {
+  items: HighlightListDtoOutputItemsItem[];
+}
+
+export type FailedJobListDtoOutputItemsItem = {
+  queue: string;
+  id: string;
+  name: string;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  attemptsMade: number;
+  /** @nullable */
+  failedReason: string | null;
+  failedAt: string | null;
+};
+
+export interface FailedJobListDtoOutput {
+  items: FailedJobListDtoOutputItemsItem[];
+}
+
+export type JobRetryDtoOutputOutcome =
+  (typeof JobRetryDtoOutputOutcome)[keyof typeof JobRetryDtoOutputOutcome];
+
+export const JobRetryDtoOutputOutcome = {
+  retried: 'retried',
+  not_failed: 'not_failed',
+  missing: 'missing',
+} as const;
+
+export interface JobRetryDtoOutput {
+  queue: string;
+  id: string;
+  outcome: JobRetryDtoOutputOutcome;
+}
+
+export type StatsDtoOutputMembers = {
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  total: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  active30Days: number;
+};
+
+export type StatsDtoOutputProjects = { [key: string]: number };
+
+export type StatsDtoOutputContributions = {
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  succeeded: number;
+  collectedEurMinor: string;
+};
+
+export type StatsDtoOutputPending = {
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  moderationCases: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  appeals: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  kycReviews: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  offlineContributions: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  rightsRequests: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  failedJobs: number;
+};
+
+export interface StatsDtoOutput {
+  members: StatsDtoOutputMembers;
+  projects: StatsDtoOutputProjects;
+  contributions: StatsDtoOutputContributions;
+  pending: StatsDtoOutputPending;
+}
+
+export type AuditPageDtoOutputItemsItemMetadata = { [key: string]: unknown };
+
+export type AuditPageDtoOutputItemsItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  actorType: string;
+  /** @nullable */
+  actorId: string | null;
+  action: string;
+  targetType: string;
+  targetId: string;
+  metadata: AuditPageDtoOutputItemsItemMetadata;
+  /** @nullable */
+  requestId: string | null;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  occurredAt: string;
+};
+
+export interface AuditPageDtoOutput {
+  items: AuditPageDtoOutputItemsItem[];
+  nextCursor: string[];
 }
 
 export type ProblemDetailsCode = (typeof ProblemDetailsCode)[keyof typeof ProblemDetailsCode];
@@ -13322,6 +15197,7 @@ export const ProblemDetailsCode = {
   ACCESS_PREREQUISITES_MISSING: 'ACCESS_PREREQUISITES_MISSING',
   ACCESS_ACCOUNT_SUSPENDED: 'ACCESS_ACCOUNT_SUSPENDED',
   ACCESS_LAST_ADMIN: 'ACCESS_LAST_ADMIN',
+  ACCESS_REAUTHENTICATION_REQUIRED: 'ACCESS_REAUTHENTICATION_REQUIRED',
   PROFILES_PROFILE_NOT_FOUND: 'PROFILES_PROFILE_NOT_FOUND',
   PROFILES_FACET_NOT_FOUND: 'PROFILES_FACET_NOT_FOUND',
   PROFILES_FACET_ALREADY_EXISTS: 'PROFILES_FACET_ALREADY_EXISTS',
@@ -13505,6 +15381,43 @@ export const ProblemDetailsCode = {
   MISSIONS_ENGAGEMENT_NOT_FOUND: 'MISSIONS_ENGAGEMENT_NOT_FOUND',
   MISSIONS_INVALID_TRANSITION: 'MISSIONS_INVALID_TRANSITION',
   DISCOVERY_CANDIDATE_NOT_FOUND: 'DISCOVERY_CANDIDATE_NOT_FOUND',
+  TRUST_TARGET_NOT_FOUND: 'TRUST_TARGET_NOT_FOUND',
+  TRUST_SELF_REPORT: 'TRUST_SELF_REPORT',
+  TRUST_REPORT_DUPLICATE: 'TRUST_REPORT_DUPLICATE',
+  TRUST_CASE_NOT_FOUND: 'TRUST_CASE_NOT_FOUND',
+  TRUST_CASE_RESOLVED: 'TRUST_CASE_RESOLVED',
+  TRUST_DECISION_NOT_APPLICABLE: 'TRUST_DECISION_NOT_APPLICABLE',
+  TRUST_ADMIN_REQUIRED: 'TRUST_ADMIN_REQUIRED',
+  TRUST_ASSIGNEE_NOT_MODERATOR: 'TRUST_ASSIGNEE_NOT_MODERATOR',
+  TRUST_DECISION_NOT_FOUND: 'TRUST_DECISION_NOT_FOUND',
+  TRUST_NOT_APPEALABLE: 'TRUST_NOT_APPEALABLE',
+  TRUST_APPEAL_EXISTS: 'TRUST_APPEAL_EXISTS',
+  TRUST_APPEAL_NOT_FOUND: 'TRUST_APPEAL_NOT_FOUND',
+  TRUST_APPEAL_RESOLVED: 'TRUST_APPEAL_RESOLVED',
+  TRUST_SAME_MODERATOR: 'TRUST_SAME_MODERATOR',
+  TRUST_SUSPENSION_NOT_FOUND: 'TRUST_SUSPENSION_NOT_FOUND',
+  TRUST_PROJECT_NOT_FROZEN: 'TRUST_PROJECT_NOT_FROZEN',
+  PRIVACY_EXPORT_RATE_LIMITED: 'PRIVACY_EXPORT_RATE_LIMITED',
+  PRIVACY_EXPORT_NOT_FOUND: 'PRIVACY_EXPORT_NOT_FOUND',
+  PRIVACY_EXPORT_NOT_READY: 'PRIVACY_EXPORT_NOT_READY',
+  PRIVACY_ERASURE_PENDING: 'PRIVACY_ERASURE_PENDING',
+  PRIVACY_ERASURE_NOT_FOUND: 'PRIVACY_ERASURE_NOT_FOUND',
+  PRIVACY_CAMPAIGN_IN_PROGRESS: 'PRIVACY_CAMPAIGN_IN_PROGRESS',
+  PRIVACY_SOLE_OWNER: 'PRIVACY_SOLE_OWNER',
+  LOCALIZATION_SOURCE_NOT_FOUND: 'LOCALIZATION_SOURCE_NOT_FOUND',
+  LOCALIZATION_LOCALE_NOT_ACTIVE: 'LOCALIZATION_LOCALE_NOT_ACTIVE',
+  LOCALIZATION_ALREADY_IN_LANGUAGE: 'LOCALIZATION_ALREADY_IN_LANGUAGE',
+  LOCALIZATION_MEMBER_LIMIT_REACHED: 'LOCALIZATION_MEMBER_LIMIT_REACHED',
+  LOCALIZATION_MONTHLY_CAP_REACHED: 'LOCALIZATION_MONTHLY_CAP_REACHED',
+  LOCALIZATION_UNAVAILABLE: 'LOCALIZATION_UNAVAILABLE',
+  LOCALIZATION_LOCALE_NOT_READY: 'LOCALIZATION_LOCALE_NOT_READY',
+  LOCALIZATION_GLOSSARY_TERM_NOT_FOUND: 'LOCALIZATION_GLOSSARY_TERM_NOT_FOUND',
+  LOCALIZATION_GLOSSARY_TERM_EXISTS: 'LOCALIZATION_GLOSSARY_TERM_EXISTS',
+  ADMIN_MEMBER_NOT_FOUND: 'ADMIN_MEMBER_NOT_FOUND',
+  ADMIN_FLAG_NOT_FOUND: 'ADMIN_FLAG_NOT_FOUND',
+  ADMIN_LEGAL_REFERENCE_REQUIRED: 'ADMIN_LEGAL_REFERENCE_REQUIRED',
+  ADMIN_HIGHLIGHT_TARGET_NOT_FOUND: 'ADMIN_HIGHLIGHT_TARGET_NOT_FOUND',
+  ADMIN_QUEUE_NOT_FOUND: 'ADMIN_QUEUE_NOT_FOUND',
   INTERNAL_ERROR: 'INTERNAL_ERROR',
   SERVICE_UNAVAILABLE: 'SERVICE_UNAVAILABLE',
 } as const;
@@ -13529,6 +15442,28 @@ export interface ProblemDetails {
   errors?: ProblemDetailsErrorsItem[];
   missing?: string[];
 }
+
+export type PrivacyControllerRightsRequestsParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+  kind?: PrivacyControllerRightsRequestsKind;
+};
+
+export type PrivacyControllerRightsRequestsKind =
+  (typeof PrivacyControllerRightsRequestsKind)[keyof typeof PrivacyControllerRightsRequestsKind];
+
+export const PrivacyControllerRightsRequestsKind = {
+  export: 'export',
+  erasure: 'erasure',
+} as const;
 
 export type MediaControllerDownloadParams = {
   /**
@@ -14934,4 +16869,183 @@ export type NotificationsControllerUnsubscribeParams = {
    * @maxLength 512
    */
   token: string;
+};
+
+export type ReportsControllerMineParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+};
+
+export type StandingControllerDecisionsParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+};
+
+export type ModerationControllerQueueParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+  status?: ModerationControllerQueueStatus;
+  assigned?: ModerationControllerQueueAssigned;
+  targetType?: ModerationControllerQueueTargetType;
+};
+
+export type ModerationControllerQueueStatus =
+  (typeof ModerationControllerQueueStatus)[keyof typeof ModerationControllerQueueStatus];
+
+export const ModerationControllerQueueStatus = {
+  open: 'open',
+  resolved: 'resolved',
+} as const;
+
+export type ModerationControllerQueueAssigned =
+  (typeof ModerationControllerQueueAssigned)[keyof typeof ModerationControllerQueueAssigned];
+
+export const ModerationControllerQueueAssigned = {
+  me: 'me',
+  unassigned: 'unassigned',
+  any: 'any',
+} as const;
+
+export type ModerationControllerQueueTargetType =
+  (typeof ModerationControllerQueueTargetType)[keyof typeof ModerationControllerQueueTargetType];
+
+export const ModerationControllerQueueTargetType = {
+  profile: 'profile',
+  organization: 'organization',
+  post: 'post',
+  comment: 'comment',
+  project: 'project',
+  project_update: 'project_update',
+  event: 'event',
+  mission: 'mission',
+  message: 'message',
+  media: 'media',
+} as const;
+
+export type ModerationControllerAppealsParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+};
+
+export type ModerationControllerReportParams = {
+  /**
+   * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))$
+   */
+  from: string;
+  /**
+   * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))$
+   */
+  to: string;
+};
+
+export type AdminControllerMembersParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+  /**
+   * @minLength 2
+   * @maxLength 120
+   */
+  q: string;
+};
+
+export type AdminControllerHighlightsParams = {
+  targetType?: AdminControllerHighlightsTargetType;
+};
+
+export type AdminControllerHighlightsTargetType =
+  (typeof AdminControllerHighlightsTargetType)[keyof typeof AdminControllerHighlightsTargetType];
+
+export const AdminControllerHighlightsTargetType = {
+  post: 'post',
+  project: 'project',
+  profile: 'profile',
+} as const;
+
+export type AdminControllerFailedJobsParams = {
+  /**
+   * @maxLength 80
+   */
+  queue?: string;
+  /**
+   * @minimum 1
+   * @maximum 200
+   */
+  limit?: number;
+};
+
+export type AdminControllerAuditLogParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+  /**
+   * @maxLength 64
+   */
+  actorId?: string;
+  /**
+   * @maxLength 80
+   */
+  action?: string;
+  /**
+   * @maxLength 64
+   */
+  targetType?: string;
+  /**
+   * @maxLength 64
+   */
+  targetId?: string;
+  /**
+   * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$
+   */
+  from?: string;
+  /**
+   * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$
+   */
+  to?: string;
 };
