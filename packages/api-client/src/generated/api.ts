@@ -340,6 +340,12 @@ export const getHealthControllerLiveUrl = () => {
   return `/v1/health/live`;
 };
 
+/**
+ * Public: no session needed.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Live
+ */
 export const healthControllerLive = async (
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<HealthResponseDtoOutput> => {
@@ -431,6 +437,9 @@ export function useHealthControllerLive<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Live
+ */
 
 export function useHealthControllerLive<
   TData = Awaited<ReturnType<typeof healthControllerLive>>,
@@ -457,6 +466,12 @@ export const getHealthControllerReadyUrl = () => {
   return `/v1/health/ready`;
 };
 
+/**
+ * Public: no session needed.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Ready
+ */
 export const healthControllerReady = async (
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<HealthResponseDtoOutput> => {
@@ -550,6 +565,9 @@ export function useHealthControllerReady<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Ready
+ */
 
 export function useHealthControllerReady<
   TData = Awaited<ReturnType<typeof healthControllerReady>>,
@@ -576,6 +594,14 @@ export const getPrivacyControllerOverviewUrl = () => {
   return `/v1/me/privacy`;
 };
 
+/**
+ * Action `privacy.read` (session cookie).
+ *
+ * Allowed before the legal acceptance.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Overview
+ */
 export const privacyControllerOverview = async (
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<OverviewDtoOutput> => {
@@ -670,6 +696,9 @@ export function usePrivacyControllerOverview<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Overview
+ */
 
 export function usePrivacyControllerOverview<
   TData = Awaited<ReturnType<typeof privacyControllerOverview>>,
@@ -696,6 +725,16 @@ export const getPrivacyControllerRequestExportUrl = () => {
   return `/v1/me/privacy/exports`;
 };
 
+/**
+ * Action `privacy.export.request` (session cookie).
+ *
+ * Allowed before the legal acceptance.
+ *
+ * Idempotent: the `Idempotency-Key` header is required, a replay returns the stored answer.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Request export
+ */
 export const privacyControllerRequestExport = async (
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<ExportDtoOutput> => {
@@ -748,6 +787,9 @@ export type PrivacyControllerRequestExportMutationResult = NonNullable<
 
 export type PrivacyControllerRequestExportMutationError = ErrorType<ProblemDetails>;
 
+/**
+ * @summary Request export
+ */
 export const usePrivacyControllerRequestExport = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -775,6 +817,14 @@ export const getPrivacyControllerDownloadUrl = (exportId: string) => {
   return `/v1/me/privacy/exports/${exportId}/download-url`;
 };
 
+/**
+ * Action `privacy.read` (session cookie).
+ *
+ * Allowed before the legal acceptance.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Download
+ */
 export const privacyControllerDownload = async (
   exportId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -830,6 +880,9 @@ export type PrivacyControllerDownloadMutationResult = NonNullable<
 export type PrivacyControllerDownloadMutationError = ErrorType<ProblemDetails>;
 export type PrivacyControllerDownloadMutationVariables = { exportId: string };
 
+/**
+ * @summary Download
+ */
 export const usePrivacyControllerDownload = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -857,6 +910,18 @@ export const getPrivacyControllerRequestErasureUrl = () => {
   return `/v1/me/privacy/erasure`;
 };
 
+/**
+ * Action `privacy.erasure.request` (session cookie).
+ *
+ * Allowed before the legal acceptance.
+ *
+ * Requires a recent sign-in.
+ *
+ * Idempotent: the `Idempotency-Key` header is required, a replay returns the stored answer.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Request erasure
+ */
 export const privacyControllerRequestErasure = async (
   requestErasureDto: RequestErasureDto,
   options?: Parameters<typeof apiFetch>[1],
@@ -934,6 +999,9 @@ export type PrivacyControllerRequestErasureMutationBody = RequestErasureDto;
 export type PrivacyControllerRequestErasureMutationError = ErrorType<ProblemDetails>;
 export type PrivacyControllerRequestErasureMutationVariables = { data: RequestErasureDto };
 
+/**
+ * @summary Request erasure
+ */
 export const usePrivacyControllerRequestErasure = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -961,6 +1029,16 @@ export const getPrivacyControllerCancelErasureUrl = () => {
   return `/v1/me/privacy/erasure/cancel`;
 };
 
+/**
+ * Action `privacy.erasure.cancel` (session cookie).
+ *
+ * Allowed before the legal acceptance.
+ *
+ * Idempotent: the `Idempotency-Key` header is required, a replay returns the stored answer.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Cancel erasure
+ */
 export const privacyControllerCancelErasure = async (
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<ErasureDtoOutput> => {
@@ -1013,6 +1091,9 @@ export type PrivacyControllerCancelErasureMutationResult = NonNullable<
 
 export type PrivacyControllerCancelErasureMutationError = ErrorType<ProblemDetails>;
 
+/**
+ * @summary Cancel erasure
+ */
 export const usePrivacyControllerCancelErasure = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -1054,6 +1135,14 @@ export const getPrivacyControllerRightsRequestsUrl = (
     : `/v1/admin/privacy/requests`;
 };
 
+/**
+ * Action `privacy.requests.read` (session cookie).
+ *
+ * Roles: admin, with 2FA.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Rights requests
+ */
 export const privacyControllerRightsRequests = async (
   params?: PrivacyControllerRightsRequestsParams,
   options?: Parameters<typeof apiFetch>[1],
@@ -1157,6 +1246,9 @@ export function usePrivacyControllerRightsRequests<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Rights requests
+ */
 
 export function usePrivacyControllerRightsRequests<
   TData = Awaited<ReturnType<typeof privacyControllerRightsRequests>>,
@@ -1184,6 +1276,12 @@ export const getTranslationsControllerTranslateUrl = () => {
   return `/v1/translations`;
 };
 
+/**
+ * Action `localization.translate` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Translate
+ */
 export const translationsControllerTranslate = async (
   translateDto: TranslateDto,
   options?: Parameters<typeof apiFetch>[1],
@@ -1261,6 +1359,9 @@ export type TranslationsControllerTranslateMutationBody = TranslateDto;
 export type TranslationsControllerTranslateMutationError = ErrorType<ProblemDetails>;
 export type TranslationsControllerTranslateMutationVariables = { data: TranslateDto };
 
+/**
+ * @summary Translate
+ */
 export const useTranslationsControllerTranslate = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -1288,6 +1389,14 @@ export const getTranslationsControllerListUrl = () => {
   return `/v1/admin/localization/glossary`;
 };
 
+/**
+ * Action `localization.manage` (session cookie).
+ *
+ * Roles: admin, with 2FA.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary List
+ */
 export const translationsControllerList = async (
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<GlossaryDtoOutput> => {
@@ -1382,6 +1491,9 @@ export function useTranslationsControllerList<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary List
+ */
 
 export function useTranslationsControllerList<
   TData = Awaited<ReturnType<typeof translationsControllerList>>,
@@ -1408,6 +1520,16 @@ export const getTranslationsControllerCreateUrl = () => {
   return `/v1/admin/localization/glossary`;
 };
 
+/**
+ * Action `localization.manage` (session cookie).
+ *
+ * Roles: admin, with 2FA.
+ *
+ * Idempotent: the `Idempotency-Key` header is required, a replay returns the stored answer.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Create
+ */
 export const translationsControllerCreate = async (
   upsertGlossaryTermDto: UpsertGlossaryTermDto,
   options?: Parameters<typeof apiFetch>[1],
@@ -1485,6 +1607,9 @@ export type TranslationsControllerCreateMutationBody = UpsertGlossaryTermDto;
 export type TranslationsControllerCreateMutationError = ErrorType<ProblemDetails>;
 export type TranslationsControllerCreateMutationVariables = { data: UpsertGlossaryTermDto };
 
+/**
+ * @summary Create
+ */
 export const useTranslationsControllerCreate = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -1512,6 +1637,14 @@ export const getTranslationsControllerUpdateUrl = (termId: string) => {
   return `/v1/admin/localization/glossary/${termId}`;
 };
 
+/**
+ * Action `localization.manage` (session cookie).
+ *
+ * Roles: admin, with 2FA.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Update
+ */
 export const translationsControllerUpdate = async (
   termId: string,
   upsertGlossaryTermDto: UpsertGlossaryTermDto,
@@ -1593,6 +1726,9 @@ export type TranslationsControllerUpdateMutationVariables = {
   data: UpsertGlossaryTermDto;
 };
 
+/**
+ * @summary Update
+ */
 export const useTranslationsControllerUpdate = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -1620,6 +1756,14 @@ export const getTranslationsControllerRemoveUrl = (termId: string) => {
   return `/v1/admin/localization/glossary/${termId}`;
 };
 
+/**
+ * Action `localization.manage` (session cookie).
+ *
+ * Roles: admin, with 2FA.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Remove
+ */
 export const translationsControllerRemove = async (
   termId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -1676,6 +1820,9 @@ export type TranslationsControllerRemoveMutationResult = NonNullable<
 export type TranslationsControllerRemoveMutationError = ErrorType<ProblemDetails>;
 export type TranslationsControllerRemoveMutationVariables = { termId: string };
 
+/**
+ * @summary Remove
+ */
 export const useTranslationsControllerRemove = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -1703,6 +1850,14 @@ export const getTranslationsControllerUsageUrl = () => {
   return `/v1/admin/localization/usage`;
 };
 
+/**
+ * Action `localization.manage` (session cookie).
+ *
+ * Roles: admin, with 2FA.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Usage
+ */
 export const translationsControllerUsage = async (
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<UsageDtoOutput> => {
@@ -1797,6 +1952,9 @@ export function useTranslationsControllerUsage<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Usage
+ */
 
 export function useTranslationsControllerUsage<
   TData = Awaited<ReturnType<typeof translationsControllerUsage>>,
@@ -1823,6 +1981,14 @@ export const getTranslationsControllerLocalesUrl = () => {
   return `/v1/admin/localization/locales`;
 };
 
+/**
+ * Action `localization.manage` (session cookie).
+ *
+ * Roles: admin, with 2FA.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Locales
+ */
 export const translationsControllerLocales = async (
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<LocaleStatusListDtoOutput> => {
@@ -1917,6 +2083,9 @@ export function useTranslationsControllerLocales<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Locales
+ */
 
 export function useTranslationsControllerLocales<
   TData = Awaited<ReturnType<typeof translationsControllerLocales>>,
@@ -1943,6 +2112,12 @@ export const getAccountControllerCurrentUrl = () => {
   return `/v1/legal-documents/current`;
 };
 
+/**
+ * Public: no session needed.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Current
+ */
 export const accountControllerCurrent = async (
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<LegalVersionsDtoOutput> => {
@@ -2037,6 +2212,9 @@ export function useAccountControllerCurrent<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Current
+ */
 
 export function useAccountControllerCurrent<
   TData = Awaited<ReturnType<typeof accountControllerCurrent>>,
@@ -2063,6 +2241,16 @@ export const getAccountControllerAcceptUrl = () => {
   return `/v1/me/legal-acceptances`;
 };
 
+/**
+ * Action `account.legal.accept` (session cookie).
+ *
+ * Allowed before the legal acceptance.
+ *
+ * Idempotent: the `Idempotency-Key` header is required, a replay returns the stored answer.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Accept
+ */
 export const accountControllerAccept = async (
   legalAcceptanceRequestDto: LegalAcceptanceRequestDto,
   options?: Parameters<typeof apiFetch>[1],
@@ -2139,6 +2327,9 @@ export type AccountControllerAcceptMutationBody = LegalAcceptanceRequestDto;
 export type AccountControllerAcceptMutationError = ErrorType<ProblemDetails>;
 export type AccountControllerAcceptMutationVariables = { data: LegalAcceptanceRequestDto };
 
+/**
+ * @summary Accept
+ */
 export const useAccountControllerAccept = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -2163,6 +2354,14 @@ export const getAccountControllerUpdatePreferencesUrl = () => {
   return `/v1/me/preferences`;
 };
 
+/**
+ * Action `account.preferences.update` (session cookie).
+ *
+ * Allowed before the legal acceptance.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Update preferences
+ */
 export const accountControllerUpdatePreferences = async (
   updatePreferencesDto: UpdatePreferencesDto,
   options?: Parameters<typeof apiFetch>[1],
@@ -2240,6 +2439,9 @@ export type AccountControllerUpdatePreferencesMutationBody = UpdatePreferencesDt
 export type AccountControllerUpdatePreferencesMutationError = ErrorType<ProblemDetails>;
 export type AccountControllerUpdatePreferencesMutationVariables = { data: UpdatePreferencesDto };
 
+/**
+ * @summary Update preferences
+ */
 export const useAccountControllerUpdatePreferences = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -2409,6 +2611,14 @@ export const getAccessControllerPrerequisitesUrl = (
   return `/v1/me/prerequisites/${action}`;
 };
 
+/**
+ * Action `account.read` (session cookie).
+ *
+ * Allowed before the legal acceptance.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Prerequisites
+ */
 export const accessControllerPrerequisites = async (
   action:
     | 'account.read'
@@ -3355,6 +3565,9 @@ export function useAccessControllerPrerequisites<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Prerequisites
+ */
 
 export function useAccessControllerPrerequisites<
   TData = Awaited<ReturnType<typeof accessControllerPrerequisites>>,
@@ -3522,6 +3735,14 @@ export const getAccessControllerListRolesUrl = (userId: string) => {
   return `/v1/admin/members/${userId}/roles`;
 };
 
+/**
+ * Action `access.roles.read` (session cookie).
+ *
+ * Roles: admin, with 2FA.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary List roles
+ */
 export const accessControllerListRoles = async (
   userId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -3626,6 +3847,9 @@ export function useAccessControllerListRoles<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary List roles
+ */
 
 export function useAccessControllerListRoles<
   TData = Awaited<ReturnType<typeof accessControllerListRoles>>,
@@ -3653,6 +3877,18 @@ export const getAccessControllerGrantRoleUrl = (userId: string) => {
   return `/v1/admin/members/${userId}/roles`;
 };
 
+/**
+ * Action `access.roles.manage` (session cookie).
+ *
+ * Roles: admin, with 2FA.
+ *
+ * Requires a recent sign-in.
+ *
+ * Idempotent: the `Idempotency-Key` header is required, a replay returns the stored answer.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Grant role
+ */
 export const accessControllerGrantRole = async (
   userId: string,
   grantRoleRequestDto: GrantRoleRequestDto,
@@ -3733,6 +3969,9 @@ export type AccessControllerGrantRoleMutationVariables = {
   data: GrantRoleRequestDto;
 };
 
+/**
+ * @summary Grant role
+ */
 export const useAccessControllerGrantRole = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -3760,6 +3999,16 @@ export const getAccessControllerRevokeRoleUrl = (userId: string, role: 'moderato
   return `/v1/admin/members/${userId}/roles/${role}`;
 };
 
+/**
+ * Action `access.roles.manage` (session cookie).
+ *
+ * Roles: admin, with 2FA.
+ *
+ * Requires a recent sign-in.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Revoke role
+ */
 export const accessControllerRevokeRole = async (
   userId: string,
   role: 'moderator' | 'admin',
@@ -3820,6 +4069,9 @@ export type AccessControllerRevokeRoleMutationVariables = {
   role: 'moderator' | 'admin';
 };
 
+/**
+ * @summary Revoke role
+ */
 export const useAccessControllerRevokeRole = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -3847,6 +4099,14 @@ export const getMeControllerMeUrl = () => {
   return `/v1/me`;
 };
 
+/**
+ * Action `account.read` (session cookie).
+ *
+ * Allowed before the legal acceptance.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Me
+ */
 export const meControllerMe = async (
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<CurrentUserDtoOutput> => {
@@ -3930,6 +4190,9 @@ export function useMeControllerMe<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Me
+ */
 
 export function useMeControllerMe<
   TData = Awaited<ReturnType<typeof meControllerMe>>,
@@ -3954,6 +4217,14 @@ export const getMeControllerProfileUrl = () => {
   return `/v1/me/profile`;
 };
 
+/**
+ * Action `account.read` (session cookie).
+ *
+ * Allowed before the legal acceptance.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Profile
+ */
 export const meControllerProfile = async (
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<OwnProfileDtoOutput> => {
@@ -4045,6 +4316,9 @@ export function useMeControllerProfile<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Profile
+ */
 
 export function useMeControllerProfile<
   TData = Awaited<ReturnType<typeof meControllerProfile>>,
@@ -4071,6 +4345,12 @@ export const getMeControllerUpdateProfileUrl = () => {
   return `/v1/me/profile`;
 };
 
+/**
+ * Action `profile.update` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Update profile
+ */
 export const meControllerUpdateProfile = async (
   updateBaseProfileDto: UpdateBaseProfileDto,
   options?: Parameters<typeof apiFetch>[1],
@@ -4147,6 +4427,9 @@ export type MeControllerUpdateProfileMutationBody = UpdateBaseProfileDto;
 export type MeControllerUpdateProfileMutationError = ErrorType<ProblemDetails>;
 export type MeControllerUpdateProfileMutationVariables = { data: UpdateBaseProfileDto };
 
+/**
+ * @summary Update profile
+ */
 export const useMeControllerUpdateProfile = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -4174,6 +4457,12 @@ export const getMeControllerSetIntentionUrl = () => {
   return `/v1/me/intention`;
 };
 
+/**
+ * Action `profile.update` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Set intention
+ */
 export const meControllerSetIntention = async (
   setIntentionDto: SetIntentionDto,
   options?: Parameters<typeof apiFetch>[1],
@@ -4250,6 +4539,9 @@ export type MeControllerSetIntentionMutationBody = SetIntentionDto;
 export type MeControllerSetIntentionMutationError = ErrorType<ProblemDetails>;
 export type MeControllerSetIntentionMutationVariables = { data: SetIntentionDto };
 
+/**
+ * @summary Set intention
+ */
 export const useMeControllerSetIntention = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -4274,6 +4566,12 @@ export const getMeControllerChangeHandleUrl = () => {
   return `/v1/me/profile/handle`;
 };
 
+/**
+ * Action `profile.update` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Change handle
+ */
 export const meControllerChangeHandle = async (
   changeHandleDto: ChangeHandleDto,
   options?: Parameters<typeof apiFetch>[1],
@@ -4350,6 +4648,9 @@ export type MeControllerChangeHandleMutationBody = ChangeHandleDto;
 export type MeControllerChangeHandleMutationError = ErrorType<ProblemDetails>;
 export type MeControllerChangeHandleMutationVariables = { data: ChangeHandleDto };
 
+/**
+ * @summary Change handle
+ */
 export const useMeControllerChangeHandle = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -4374,6 +4675,12 @@ export const getMeControllerUpdateVisibilityUrl = () => {
   return `/v1/me/profile/visibility`;
 };
 
+/**
+ * Action `profile.update` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Update visibility
+ */
 export const meControllerUpdateVisibility = async (
   updateVisibilityDto: UpdateVisibilityDto,
   options?: Parameters<typeof apiFetch>[1],
@@ -4451,6 +4758,9 @@ export type MeControllerUpdateVisibilityMutationBody = UpdateVisibilityDto;
 export type MeControllerUpdateVisibilityMutationError = ErrorType<ProblemDetails>;
 export type MeControllerUpdateVisibilityMutationVariables = { data: UpdateVisibilityDto };
 
+/**
+ * @summary Update visibility
+ */
 export const useMeControllerUpdateVisibility = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -4478,6 +4788,12 @@ export const getMeControllerSetAvatarUrl = () => {
   return `/v1/me/profile/avatar`;
 };
 
+/**
+ * Action `profile.update` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Set avatar
+ */
 export const meControllerSetAvatar = async (
   attachMediaDto: AttachMediaDto,
   options?: Parameters<typeof apiFetch>[1],
@@ -4554,6 +4870,9 @@ export type MeControllerSetAvatarMutationBody = AttachMediaDto;
 export type MeControllerSetAvatarMutationError = ErrorType<ProblemDetails>;
 export type MeControllerSetAvatarMutationVariables = { data: AttachMediaDto };
 
+/**
+ * @summary Set avatar
+ */
 export const useMeControllerSetAvatar = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -4578,6 +4897,12 @@ export const getMeControllerRemoveAvatarUrl = () => {
   return `/v1/me/profile/avatar`;
 };
 
+/**
+ * Action `profile.update` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Remove avatar
+ */
 export const meControllerRemoveAvatar = async (
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<OwnProfileDtoOutput> => {
@@ -4629,6 +4954,9 @@ export type MeControllerRemoveAvatarMutationResult = NonNullable<
 
 export type MeControllerRemoveAvatarMutationError = ErrorType<ProblemDetails>;
 
+/**
+ * @summary Remove avatar
+ */
 export const useMeControllerRemoveAvatar = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -4653,6 +4981,12 @@ export const getMeControllerSetCoverUrl = () => {
   return `/v1/me/profile/cover`;
 };
 
+/**
+ * Action `profile.update` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Set cover
+ */
 export const meControllerSetCover = async (
   attachMediaDto: AttachMediaDto,
   options?: Parameters<typeof apiFetch>[1],
@@ -4729,6 +5063,9 @@ export type MeControllerSetCoverMutationBody = AttachMediaDto;
 export type MeControllerSetCoverMutationError = ErrorType<ProblemDetails>;
 export type MeControllerSetCoverMutationVariables = { data: AttachMediaDto };
 
+/**
+ * @summary Set cover
+ */
 export const useMeControllerSetCover = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -4753,6 +5090,12 @@ export const getMeControllerRemoveCoverUrl = () => {
   return `/v1/me/profile/cover`;
 };
 
+/**
+ * Action `profile.update` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Remove cover
+ */
 export const meControllerRemoveCover = async (
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<OwnProfileDtoOutput> => {
@@ -4804,6 +5147,9 @@ export type MeControllerRemoveCoverMutationResult = NonNullable<
 
 export type MeControllerRemoveCoverMutationError = ErrorType<ProblemDetails>;
 
+/**
+ * @summary Remove cover
+ */
 export const useMeControllerRemoveCover = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -4828,6 +5174,14 @@ export const getMeControllerCreateEntrepreneurFacetUrl = () => {
   return `/v1/me/profile/entrepreneur-facet`;
 };
 
+/**
+ * Action `profile.update` (session cookie).
+ *
+ * Idempotent: the `Idempotency-Key` header is required, a replay returns the stored answer.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Create entrepreneur facet
+ */
 export const meControllerCreateEntrepreneurFacet = async (
   createEntrepreneurFacetDto: CreateEntrepreneurFacetDto,
   options?: Parameters<typeof apiFetch>[1],
@@ -4907,6 +5261,9 @@ export type MeControllerCreateEntrepreneurFacetMutationVariables = {
   data: CreateEntrepreneurFacetDto;
 };
 
+/**
+ * @summary Create entrepreneur facet
+ */
 export const useMeControllerCreateEntrepreneurFacet = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -4934,6 +5291,12 @@ export const getMeControllerUpdateEntrepreneurFacetUrl = () => {
   return `/v1/me/profile/entrepreneur-facet`;
 };
 
+/**
+ * Action `profile.update` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Update entrepreneur facet
+ */
 export const meControllerUpdateEntrepreneurFacet = async (
   updateEntrepreneurFacetDto: UpdateEntrepreneurFacetDto,
   options?: Parameters<typeof apiFetch>[1],
@@ -5013,6 +5376,9 @@ export type MeControllerUpdateEntrepreneurFacetMutationVariables = {
   data: UpdateEntrepreneurFacetDto;
 };
 
+/**
+ * @summary Update entrepreneur facet
+ */
 export const useMeControllerUpdateEntrepreneurFacet = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -5040,6 +5406,12 @@ export const getMeControllerDeleteEntrepreneurFacetUrl = () => {
   return `/v1/me/profile/entrepreneur-facet`;
 };
 
+/**
+ * Action `profile.update` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Delete entrepreneur facet
+ */
 export const meControllerDeleteEntrepreneurFacet = async (
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<OwnProfileDtoOutput> => {
@@ -5092,6 +5464,9 @@ export type MeControllerDeleteEntrepreneurFacetMutationResult = NonNullable<
 
 export type MeControllerDeleteEntrepreneurFacetMutationError = ErrorType<ProblemDetails>;
 
+/**
+ * @summary Delete entrepreneur facet
+ */
 export const useMeControllerDeleteEntrepreneurFacet = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -5119,6 +5494,14 @@ export const getMeControllerCreateContributorFacetUrl = () => {
   return `/v1/me/profile/contributor-facet`;
 };
 
+/**
+ * Action `profile.update` (session cookie).
+ *
+ * Idempotent: the `Idempotency-Key` header is required, a replay returns the stored answer.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Create contributor facet
+ */
 export const meControllerCreateContributorFacet = async (
   createContributorFacetDto: CreateContributorFacetDto,
   options?: Parameters<typeof apiFetch>[1],
@@ -5198,6 +5581,9 @@ export type MeControllerCreateContributorFacetMutationVariables = {
   data: CreateContributorFacetDto;
 };
 
+/**
+ * @summary Create contributor facet
+ */
 export const useMeControllerCreateContributorFacet = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -5225,6 +5611,12 @@ export const getMeControllerUpdateContributorFacetUrl = () => {
   return `/v1/me/profile/contributor-facet`;
 };
 
+/**
+ * Action `profile.update` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Update contributor facet
+ */
 export const meControllerUpdateContributorFacet = async (
   updateContributorFacetDto: UpdateContributorFacetDto,
   options?: Parameters<typeof apiFetch>[1],
@@ -5304,6 +5696,9 @@ export type MeControllerUpdateContributorFacetMutationVariables = {
   data: UpdateContributorFacetDto;
 };
 
+/**
+ * @summary Update contributor facet
+ */
 export const useMeControllerUpdateContributorFacet = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -5331,6 +5726,12 @@ export const getMeControllerDeleteContributorFacetUrl = () => {
   return `/v1/me/profile/contributor-facet`;
 };
 
+/**
+ * Action `profile.update` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Delete contributor facet
+ */
 export const meControllerDeleteContributorFacet = async (
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<OwnProfileDtoOutput> => {
@@ -5383,6 +5784,9 @@ export type MeControllerDeleteContributorFacetMutationResult = NonNullable<
 
 export type MeControllerDeleteContributorFacetMutationError = ErrorType<ProblemDetails>;
 
+/**
+ * @summary Delete contributor facet
+ */
 export const useMeControllerDeleteContributorFacet = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -5410,6 +5814,12 @@ export const getProfilesControllerForMemberUrl = (handle: string) => {
   return `/v1/profiles/${handle}`;
 };
 
+/**
+ * Action `profile.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary For member
+ */
 export const profilesControllerForMember = async (
   handle: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -5514,6 +5924,9 @@ export function useProfilesControllerForMember<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary For member
+ */
 
 export function useProfilesControllerForMember<
   TData = Awaited<ReturnType<typeof profilesControllerForMember>>,
@@ -5541,6 +5954,12 @@ export const getProfilesControllerForPublicUrl = (handle: string) => {
   return `/v1/public/profiles/${handle}`;
 };
 
+/**
+ * Public: no session needed.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary For public
+ */
 export const profilesControllerForPublic = async (
   handle: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -5645,6 +6064,9 @@ export function useProfilesControllerForPublic<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary For public
+ */
 
 export function useProfilesControllerForPublic<
   TData = Awaited<ReturnType<typeof profilesControllerForPublic>>,
@@ -5672,6 +6094,12 @@ export const getProfilesControllerReferenceDataUrl = () => {
   return `/v1/reference-data`;
 };
 
+/**
+ * Public: no session needed.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Reference data
+ */
 export const profilesControllerReferenceData = async (
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<ReferenceDataDtoOutput> => {
@@ -5766,6 +6194,9 @@ export function useProfilesControllerReferenceData<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Reference data
+ */
 
 export function useProfilesControllerReferenceData<
   TData = Awaited<ReturnType<typeof profilesControllerReferenceData>>,
@@ -5792,6 +6223,12 @@ export const getMediaControllerUsagesUrl = () => {
   return `/v1/media/usages`;
 };
 
+/**
+ * Public: no session needed.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Usages
+ */
 export const mediaControllerUsages = async (
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<MediaUsagesDtoOutput> => {
@@ -5885,6 +6322,9 @@ export function useMediaControllerUsages<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Usages
+ */
 
 export function useMediaControllerUsages<
   TData = Awaited<ReturnType<typeof mediaControllerUsages>>,
@@ -5911,6 +6351,14 @@ export const getMediaControllerRequestUploadUrl = () => {
   return `/v1/media/uploads`;
 };
 
+/**
+ * Action `media.upload` (session cookie).
+ *
+ * Idempotent: the `Idempotency-Key` header is required, a replay returns the stored answer.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Request upload
+ */
 export const mediaControllerRequestUpload = async (
   createUploadDto: CreateUploadDto,
   options?: Parameters<typeof apiFetch>[1],
@@ -5988,6 +6436,9 @@ export type MediaControllerRequestUploadMutationBody = CreateUploadDto;
 export type MediaControllerRequestUploadMutationError = ErrorType<ProblemDetails>;
 export type MediaControllerRequestUploadMutationVariables = { data: CreateUploadDto };
 
+/**
+ * @summary Request upload
+ */
 export const useMediaControllerRequestUpload = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -6015,6 +6466,12 @@ export const getMediaControllerConfirmUrl = (mediaId: string) => {
   return `/v1/media/${mediaId}/confirm`;
 };
 
+/**
+ * Action `media.upload` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Confirm
+ */
 export const mediaControllerConfirm = async (
   mediaId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -6070,6 +6527,9 @@ export type MediaControllerConfirmMutationResult = NonNullable<
 export type MediaControllerConfirmMutationError = ErrorType<ProblemDetails>;
 export type MediaControllerConfirmMutationVariables = { mediaId: string };
 
+/**
+ * @summary Confirm
+ */
 export const useMediaControllerConfirm = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -6094,6 +6554,12 @@ export const getMediaControllerGetUrl = (mediaId: string) => {
   return `/v1/media/${mediaId}`;
 };
 
+/**
+ * Action `media.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Get
+ */
 export const mediaControllerGet = async (
   mediaId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -6191,6 +6657,9 @@ export function useMediaControllerGet<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Get
+ */
 
 export function useMediaControllerGet<
   TData = Awaited<ReturnType<typeof mediaControllerGet>>,
@@ -6216,6 +6685,12 @@ export const getMediaControllerDeleteUrl = (mediaId: string) => {
   return `/v1/media/${mediaId}`;
 };
 
+/**
+ * Action `media.delete` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Delete
+ */
 export const mediaControllerDelete = async (
   mediaId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -6271,6 +6746,9 @@ export type MediaControllerDeleteMutationResult = NonNullable<
 export type MediaControllerDeleteMutationError = ErrorType<ProblemDetails>;
 export type MediaControllerDeleteMutationVariables = { mediaId: string };
 
+/**
+ * @summary Delete
+ */
 export const useMediaControllerDelete = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -6310,6 +6788,12 @@ export const getMediaControllerDownloadUrl = (
     : `/v1/media/${mediaId}/download-url`;
 };
 
+/**
+ * Action `media.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Download
+ */
 export const mediaControllerDownload = async (
   mediaId: string,
   params?: MediaControllerDownloadParams,
@@ -6422,6 +6906,9 @@ export function useMediaControllerDownload<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Download
+ */
 
 export function useMediaControllerDownload<
   TData = Awaited<ReturnType<typeof mediaControllerDownload>>,
@@ -6450,6 +6937,16 @@ export const getOrganizationsControllerCreateUrl = () => {
   return `/v1/organizations`;
 };
 
+/**
+ * Action `organization.create` (session cookie).
+ *
+ * Prerequisites: email_verified.
+ *
+ * Idempotent: the `Idempotency-Key` header is required, a replay returns the stored answer.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Create
+ */
 export const organizationsControllerCreate = async (
   createOrganizationDto: CreateOrganizationDto,
   options?: Parameters<typeof apiFetch>[1],
@@ -6527,6 +7024,9 @@ export type OrganizationsControllerCreateMutationBody = CreateOrganizationDto;
 export type OrganizationsControllerCreateMutationError = ErrorType<ProblemDetails>;
 export type OrganizationsControllerCreateMutationVariables = { data: CreateOrganizationDto };
 
+/**
+ * @summary Create
+ */
 export const useOrganizationsControllerCreate = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -6554,6 +7054,12 @@ export const getOrganizationsControllerMineUrl = () => {
   return `/v1/me/organizations`;
 };
 
+/**
+ * Action `organization.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Mine
+ */
 export const organizationsControllerMine = async (
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<MyOrganizationsDtoOutput> => {
@@ -6648,6 +7154,9 @@ export function useOrganizationsControllerMine<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Mine
+ */
 
 export function useOrganizationsControllerMine<
   TData = Awaited<ReturnType<typeof organizationsControllerMine>>,
@@ -6674,6 +7183,12 @@ export const getOrganizationsControllerForMemberUrl = (slug: string) => {
   return `/v1/organizations/by-slug/${slug}`;
 };
 
+/**
+ * Action `organization.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary For member
+ */
 export const organizationsControllerForMember = async (
   slug: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -6780,6 +7295,9 @@ export function useOrganizationsControllerForMember<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary For member
+ */
 
 export function useOrganizationsControllerForMember<
   TData = Awaited<ReturnType<typeof organizationsControllerForMember>>,
@@ -6807,6 +7325,12 @@ export const getOrganizationsControllerForPublicUrl = (slug: string) => {
   return `/v1/public/organizations/${slug}`;
 };
 
+/**
+ * Public: no session needed.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary For public
+ */
 export const organizationsControllerForPublic = async (
   slug: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -6913,6 +7437,9 @@ export function useOrganizationsControllerForPublic<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary For public
+ */
 
 export function useOrganizationsControllerForPublic<
   TData = Awaited<ReturnType<typeof organizationsControllerForPublic>>,
@@ -6940,6 +7467,12 @@ export const getOrganizationsControllerUpdateUrl = (organizationId: string) => {
   return `/v1/organizations/${organizationId}`;
 };
 
+/**
+ * Action `organization.update` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Update
+ */
 export const organizationsControllerUpdate = async (
   organizationId: string,
   updateOrganizationDto: UpdateOrganizationDto,
@@ -7021,6 +7554,9 @@ export type OrganizationsControllerUpdateMutationVariables = {
   data: UpdateOrganizationDto;
 };
 
+/**
+ * @summary Update
+ */
 export const useOrganizationsControllerUpdate = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -7048,6 +7584,12 @@ export const getOrganizationsControllerDeleteUrl = (organizationId: string) => {
   return `/v1/organizations/${organizationId}`;
 };
 
+/**
+ * Action `organization.delete` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Delete
+ */
 export const organizationsControllerDelete = async (
   organizationId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -7104,6 +7646,9 @@ export type OrganizationsControllerDeleteMutationResult = NonNullable<
 export type OrganizationsControllerDeleteMutationError = ErrorType<ProblemDetails>;
 export type OrganizationsControllerDeleteMutationVariables = { organizationId: string };
 
+/**
+ * @summary Delete
+ */
 export const useOrganizationsControllerDelete = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -7131,6 +7676,12 @@ export const getOrganizationsControllerChangeSlugUrl = (organizationId: string) 
   return `/v1/organizations/${organizationId}/slug`;
 };
 
+/**
+ * Action `organization.update` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Change slug
+ */
 export const organizationsControllerChangeSlug = async (
   organizationId: string,
   changeSlugDto: ChangeSlugDto,
@@ -7212,6 +7763,9 @@ export type OrganizationsControllerChangeSlugMutationVariables = {
   data: ChangeSlugDto;
 };
 
+/**
+ * @summary Change slug
+ */
 export const useOrganizationsControllerChangeSlug = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -7239,6 +7793,12 @@ export const getOrganizationsControllerSetLogoUrl = (organizationId: string) => 
   return `/v1/organizations/${organizationId}/logo`;
 };
 
+/**
+ * Action `organization.update` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Set logo
+ */
 export const organizationsControllerSetLogo = async (
   organizationId: string,
   attachMediaDto: AttachMediaDto,
@@ -7320,6 +7880,9 @@ export type OrganizationsControllerSetLogoMutationVariables = {
   data: AttachMediaDto;
 };
 
+/**
+ * @summary Set logo
+ */
 export const useOrganizationsControllerSetLogo = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -7347,6 +7910,12 @@ export const getOrganizationsControllerRemoveLogoUrl = (organizationId: string) 
   return `/v1/organizations/${organizationId}/logo`;
 };
 
+/**
+ * Action `organization.update` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Remove logo
+ */
 export const organizationsControllerRemoveLogo = async (
   organizationId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -7403,6 +7972,9 @@ export type OrganizationsControllerRemoveLogoMutationResult = NonNullable<
 export type OrganizationsControllerRemoveLogoMutationError = ErrorType<ProblemDetails>;
 export type OrganizationsControllerRemoveLogoMutationVariables = { organizationId: string };
 
+/**
+ * @summary Remove logo
+ */
 export const useOrganizationsControllerRemoveLogo = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -7430,6 +8002,12 @@ export const getOrganizationsControllerSetCoverUrl = (organizationId: string) =>
   return `/v1/organizations/${organizationId}/cover`;
 };
 
+/**
+ * Action `organization.update` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Set cover
+ */
 export const organizationsControllerSetCover = async (
   organizationId: string,
   attachMediaDto: AttachMediaDto,
@@ -7511,6 +8089,9 @@ export type OrganizationsControllerSetCoverMutationVariables = {
   data: AttachMediaDto;
 };
 
+/**
+ * @summary Set cover
+ */
 export const useOrganizationsControllerSetCover = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -7538,6 +8119,12 @@ export const getOrganizationsControllerRemoveCoverUrl = (organizationId: string)
   return `/v1/organizations/${organizationId}/cover`;
 };
 
+/**
+ * Action `organization.update` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Remove cover
+ */
 export const organizationsControllerRemoveCover = async (
   organizationId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -7594,6 +8181,9 @@ export type OrganizationsControllerRemoveCoverMutationResult = NonNullable<
 export type OrganizationsControllerRemoveCoverMutationError = ErrorType<ProblemDetails>;
 export type OrganizationsControllerRemoveCoverMutationVariables = { organizationId: string };
 
+/**
+ * @summary Remove cover
+ */
 export const useOrganizationsControllerRemoveCover = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -7621,6 +8211,12 @@ export const getMembersControllerChangeRoleUrl = (organizationId: string, userId
   return `/v1/organizations/${organizationId}/members/${userId}`;
 };
 
+/**
+ * Action `organization.member.manage` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Change role
+ */
 export const membersControllerChangeRole = async (
   organizationId: string,
   userId: string,
@@ -7707,6 +8303,9 @@ export type MembersControllerChangeRoleMutationVariables = {
   data: ChangeRoleDto;
 };
 
+/**
+ * @summary Change role
+ */
 export const useMembersControllerChangeRole = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -7734,6 +8333,12 @@ export const getMembersControllerRemoveUrl = (organizationId: string, userId: st
   return `/v1/organizations/${organizationId}/members/${userId}`;
 };
 
+/**
+ * Action `organization.member.manage` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Remove
+ */
 export const membersControllerRemove = async (
   organizationId: string,
   userId: string,
@@ -7790,6 +8395,9 @@ export type MembersControllerRemoveMutationResult = NonNullable<
 export type MembersControllerRemoveMutationError = ErrorType<ProblemDetails>;
 export type MembersControllerRemoveMutationVariables = { organizationId: string; userId: string };
 
+/**
+ * @summary Remove
+ */
 export const useMembersControllerRemove = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -7814,6 +8422,12 @@ export const getMembersControllerLeaveUrl = (organizationId: string) => {
   return `/v1/organizations/${organizationId}/leave`;
 };
 
+/**
+ * Action `organization.member.leave` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Leave
+ */
 export const membersControllerLeave = async (
   organizationId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -7869,6 +8483,9 @@ export type MembersControllerLeaveMutationResult = NonNullable<
 export type MembersControllerLeaveMutationError = ErrorType<ProblemDetails>;
 export type MembersControllerLeaveMutationVariables = { organizationId: string };
 
+/**
+ * @summary Leave
+ */
 export const useMembersControllerLeave = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -7893,6 +8510,12 @@ export const getMembersControllerTransferUrl = (organizationId: string) => {
   return `/v1/organizations/${organizationId}/ownership-transfer`;
 };
 
+/**
+ * Action `organization.ownership.transfer` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Transfer
+ */
 export const membersControllerTransfer = async (
   organizationId: string,
   transferOwnershipDto: TransferOwnershipDto,
@@ -7973,6 +8596,9 @@ export type MembersControllerTransferMutationVariables = {
   data: TransferOwnershipDto;
 };
 
+/**
+ * @summary Transfer
+ */
 export const useMembersControllerTransfer = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -8000,6 +8626,16 @@ export const getInvitationsControllerInviteUrl = (organizationId: string) => {
   return `/v1/organizations/${organizationId}/invitations`;
 };
 
+/**
+ * Action `organization.member.invite` (session cookie).
+ *
+ * Prerequisites: email_verified.
+ *
+ * Idempotent: the `Idempotency-Key` header is required, a replay returns the stored answer.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Invite
+ */
 export const invitationsControllerInvite = async (
   organizationId: string,
   createInvitationDto: CreateInvitationDto,
@@ -8081,6 +8717,9 @@ export type InvitationsControllerInviteMutationVariables = {
   data: CreateInvitationDto;
 };
 
+/**
+ * @summary Invite
+ */
 export const useInvitationsControllerInvite = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -8108,6 +8747,14 @@ export const getInvitationsControllerPendingUrl = (organizationId: string) => {
   return `/v1/organizations/${organizationId}/invitations`;
 };
 
+/**
+ * Action `organization.member.invite` (session cookie).
+ *
+ * Prerequisites: email_verified.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Pending
+ */
 export const invitationsControllerPending = async (
   organizationId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -8213,6 +8860,9 @@ export function useInvitationsControllerPending<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Pending
+ */
 
 export function useInvitationsControllerPending<
   TData = Awaited<ReturnType<typeof invitationsControllerPending>>,
@@ -8240,6 +8890,14 @@ export const getInvitationsControllerRevokeUrl = (organizationId: string, invita
   return `/v1/organizations/${organizationId}/invitations/${invitationId}`;
 };
 
+/**
+ * Action `organization.member.invite` (session cookie).
+ *
+ * Prerequisites: email_verified.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Revoke
+ */
 export const invitationsControllerRevoke = async (
   organizationId: string,
   invitationId: string,
@@ -8300,6 +8958,9 @@ export type InvitationsControllerRevokeMutationVariables = {
   invitationId: string;
 };
 
+/**
+ * @summary Revoke
+ */
 export const useInvitationsControllerRevoke = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -8327,6 +8988,14 @@ export const getInvitationsControllerAcceptUrl = () => {
   return `/v1/organization-invitations/accept`;
 };
 
+/**
+ * Action `organization.invitation.respond` (session cookie).
+ *
+ * Prerequisites: email_verified.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Accept
+ */
 export const invitationsControllerAccept = async (
   invitationTokenDto: InvitationTokenDto,
   options?: Parameters<typeof apiFetch>[1],
@@ -8404,6 +9073,9 @@ export type InvitationsControllerAcceptMutationBody = InvitationTokenDto;
 export type InvitationsControllerAcceptMutationError = ErrorType<ProblemDetails>;
 export type InvitationsControllerAcceptMutationVariables = { data: InvitationTokenDto };
 
+/**
+ * @summary Accept
+ */
 export const useInvitationsControllerAccept = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -8431,6 +9103,14 @@ export const getInvitationsControllerDeclineUrl = () => {
   return `/v1/organization-invitations/decline`;
 };
 
+/**
+ * Action `organization.invitation.respond` (session cookie).
+ *
+ * Prerequisites: email_verified.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Decline
+ */
 export const invitationsControllerDecline = async (
   invitationTokenDto: InvitationTokenDto,
   options?: Parameters<typeof apiFetch>[1],
@@ -8508,6 +9188,9 @@ export type InvitationsControllerDeclineMutationBody = InvitationTokenDto;
 export type InvitationsControllerDeclineMutationError = ErrorType<ProblemDetails>;
 export type InvitationsControllerDeclineMutationVariables = { data: InvitationTokenDto };
 
+/**
+ * @summary Decline
+ */
 export const useInvitationsControllerDecline = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -8535,6 +9218,16 @@ export const getVerificationControllerRequestUrl = (organizationId: string) => {
   return `/v1/organizations/${organizationId}/verification-requests`;
 };
 
+/**
+ * Action `organization.verification.request` (session cookie).
+ *
+ * Prerequisites: email_verified.
+ *
+ * Idempotent: the `Idempotency-Key` header is required, a replay returns the stored answer.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Request
+ */
 export const verificationControllerRequest = async (
   organizationId: string,
   createVerificationRequestDto: CreateVerificationRequestDto,
@@ -8619,6 +9312,9 @@ export type VerificationControllerRequestMutationVariables = {
   data: CreateVerificationRequestDto;
 };
 
+/**
+ * @summary Request
+ */
 export const useVerificationControllerRequest = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -8658,6 +9354,14 @@ export const getVerificationControllerQueueUrl = (params?: VerificationControlle
     : `/v1/admin/organizations/verification-requests`;
 };
 
+/**
+ * Action `organization.verification.review` (session cookie).
+ *
+ * Roles: moderator, admin, with 2FA.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Queue
+ */
 export const verificationControllerQueue = async (
   params?: VerificationControllerQueueParams,
   options?: Parameters<typeof apiFetch>[1],
@@ -8761,6 +9465,9 @@ export function useVerificationControllerQueue<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Queue
+ */
 
 export function useVerificationControllerQueue<
   TData = Awaited<ReturnType<typeof verificationControllerQueue>>,
@@ -8788,6 +9495,14 @@ export const getVerificationControllerGetUrl = (requestId: string) => {
   return `/v1/admin/organizations/verification-requests/${requestId}`;
 };
 
+/**
+ * Action `organization.verification.review` (session cookie).
+ *
+ * Roles: moderator, admin, with 2FA.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Get
+ */
 export const verificationControllerGet = async (
   requestId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -8892,6 +9607,9 @@ export function useVerificationControllerGet<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Get
+ */
 
 export function useVerificationControllerGet<
   TData = Awaited<ReturnType<typeof verificationControllerGet>>,
@@ -8919,6 +9637,14 @@ export const getVerificationControllerDecideUrl = (requestId: string) => {
   return `/v1/admin/organizations/verification-requests/${requestId}/decision`;
 };
 
+/**
+ * Action `organization.verification.review` (session cookie).
+ *
+ * Roles: moderator, admin, with 2FA.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Decide
+ */
 export const verificationControllerDecide = async (
   requestId: string,
   decisionDto: DecisionDto,
@@ -9000,6 +9726,9 @@ export type VerificationControllerDecideMutationVariables = {
   data: DecisionDto;
 };
 
+/**
+ * @summary Decide
+ */
 export const useVerificationControllerDecide = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -9027,6 +9756,14 @@ export const getVerificationControllerRevokeUrl = (organizationId: string) => {
   return `/v1/admin/organizations/${organizationId}/verification-revocation`;
 };
 
+/**
+ * Action `organization.verification.review` (session cookie).
+ *
+ * Roles: moderator, admin, with 2FA.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Revoke
+ */
 export const verificationControllerRevoke = async (
   organizationId: string,
   revocationDto: RevocationDto,
@@ -9108,6 +9845,9 @@ export type VerificationControllerRevokeMutationVariables = {
   data: RevocationDto;
 };
 
+/**
+ * @summary Revoke
+ */
 export const useVerificationControllerRevoke = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -9135,6 +9875,12 @@ export const getFollowsControllerFollowUrl = (targetType: string, targetKey: str
   return `/v1/network/follows/${targetType}/${targetKey}`;
 };
 
+/**
+ * Action `network.follow` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Follow
+ */
 export const followsControllerFollow = async (
   targetType: string,
   targetKey: string,
@@ -9191,6 +9937,9 @@ export type FollowsControllerFollowMutationResult = NonNullable<
 export type FollowsControllerFollowMutationError = ErrorType<ProblemDetails>;
 export type FollowsControllerFollowMutationVariables = { targetType: string; targetKey: string };
 
+/**
+ * @summary Follow
+ */
 export const useFollowsControllerFollow = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -9215,6 +9964,12 @@ export const getFollowsControllerUnfollowUrl = (targetType: string, targetKey: s
   return `/v1/network/follows/${targetType}/${targetKey}`;
 };
 
+/**
+ * Action `network.follow` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Unfollow
+ */
 export const followsControllerUnfollow = async (
   targetType: string,
   targetKey: string,
@@ -9271,6 +10026,9 @@ export type FollowsControllerUnfollowMutationResult = NonNullable<
 export type FollowsControllerUnfollowMutationError = ErrorType<ProblemDetails>;
 export type FollowsControllerUnfollowMutationVariables = { targetType: string; targetKey: string };
 
+/**
+ * @summary Unfollow
+ */
 export const useFollowsControllerUnfollow = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -9314,6 +10072,12 @@ export const getFollowsControllerFollowersUrl = (
     : `/v1/network/follows/${targetType}/${targetKey}/followers`;
 };
 
+/**
+ * Action `network.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Followers
+ */
 export const followsControllerFollowers = async (
   targetType: string,
   targetKey: string,
@@ -9443,6 +10207,9 @@ export function useFollowsControllerFollowers<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Followers
+ */
 
 export function useFollowsControllerFollowers<
   TData = Awaited<ReturnType<typeof followsControllerFollowers>>,
@@ -9477,6 +10244,16 @@ export const getConnectionsControllerRequestUrl = () => {
   return `/v1/network/connection-requests`;
 };
 
+/**
+ * Action `network.connection.request` (session cookie).
+ *
+ * Prerequisites: email_verified.
+ *
+ * Idempotent: the `Idempotency-Key` header is required, a replay returns the stored answer.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Request
+ */
 export const connectionsControllerRequest = async (
   createConnectionRequestDto: CreateConnectionRequestDto,
   options?: Parameters<typeof apiFetch>[1],
@@ -9554,6 +10331,9 @@ export type ConnectionsControllerRequestMutationBody = CreateConnectionRequestDt
 export type ConnectionsControllerRequestMutationError = ErrorType<ProblemDetails>;
 export type ConnectionsControllerRequestMutationVariables = { data: CreateConnectionRequestDto };
 
+/**
+ * @summary Request
+ */
 export const useConnectionsControllerRequest = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -9593,6 +10373,12 @@ export const getConnectionsControllerListUrl = (params?: ConnectionsControllerLi
     : `/v1/me/network/connection-requests`;
 };
 
+/**
+ * Action `network.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary List
+ */
 export const connectionsControllerList = async (
   params?: ConnectionsControllerListParams,
   options?: Parameters<typeof apiFetch>[1],
@@ -9694,6 +10480,9 @@ export function useConnectionsControllerList<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary List
+ */
 
 export function useConnectionsControllerList<
   TData = Awaited<ReturnType<typeof connectionsControllerList>>,
@@ -9721,6 +10510,12 @@ export const getConnectionsControllerAcceptUrl = (requestId: string) => {
   return `/v1/network/connection-requests/${requestId}/accept`;
 };
 
+/**
+ * Action `network.connection.respond` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Accept
+ */
 export const connectionsControllerAccept = async (
   requestId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -9777,6 +10572,9 @@ export type ConnectionsControllerAcceptMutationResult = NonNullable<
 export type ConnectionsControllerAcceptMutationError = ErrorType<ProblemDetails>;
 export type ConnectionsControllerAcceptMutationVariables = { requestId: string };
 
+/**
+ * @summary Accept
+ */
 export const useConnectionsControllerAccept = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -9804,6 +10602,12 @@ export const getConnectionsControllerDeclineUrl = (requestId: string) => {
   return `/v1/network/connection-requests/${requestId}/decline`;
 };
 
+/**
+ * Action `network.connection.respond` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Decline
+ */
 export const connectionsControllerDecline = async (
   requestId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -9860,6 +10664,9 @@ export type ConnectionsControllerDeclineMutationResult = NonNullable<
 export type ConnectionsControllerDeclineMutationError = ErrorType<ProblemDetails>;
 export type ConnectionsControllerDeclineMutationVariables = { requestId: string };
 
+/**
+ * @summary Decline
+ */
 export const useConnectionsControllerDecline = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -9887,6 +10694,12 @@ export const getConnectionsControllerWithdrawUrl = (requestId: string) => {
   return `/v1/network/connection-requests/${requestId}`;
 };
 
+/**
+ * Action `network.connection.respond` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Withdraw
+ */
 export const connectionsControllerWithdraw = async (
   requestId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -9943,6 +10756,9 @@ export type ConnectionsControllerWithdrawMutationResult = NonNullable<
 export type ConnectionsControllerWithdrawMutationError = ErrorType<ProblemDetails>;
 export type ConnectionsControllerWithdrawMutationVariables = { requestId: string };
 
+/**
+ * @summary Withdraw
+ */
 export const useConnectionsControllerWithdraw = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -9970,6 +10786,12 @@ export const getConnectionsControllerRemoveUrl = (handle: string) => {
   return `/v1/network/connections/${handle}`;
 };
 
+/**
+ * Action `network.connection.remove` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Remove
+ */
 export const connectionsControllerRemove = async (
   handle: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -10026,6 +10848,9 @@ export type ConnectionsControllerRemoveMutationResult = NonNullable<
 export type ConnectionsControllerRemoveMutationError = ErrorType<ProblemDetails>;
 export type ConnectionsControllerRemoveMutationVariables = { handle: string };
 
+/**
+ * @summary Remove
+ */
 export const useConnectionsControllerRemove = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -10053,6 +10878,12 @@ export const getBlocksControllerBlockUrl = (handle: string) => {
   return `/v1/network/blocks/${handle}`;
 };
 
+/**
+ * Action `network.block` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Block
+ */
 export const blocksControllerBlock = async (
   handle: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -10108,6 +10939,9 @@ export type BlocksControllerBlockMutationResult = NonNullable<
 export type BlocksControllerBlockMutationError = ErrorType<ProblemDetails>;
 export type BlocksControllerBlockMutationVariables = { handle: string };
 
+/**
+ * @summary Block
+ */
 export const useBlocksControllerBlock = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -10132,6 +10966,12 @@ export const getBlocksControllerUnblockUrl = (handle: string) => {
   return `/v1/network/blocks/${handle}`;
 };
 
+/**
+ * Action `network.block` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Unblock
+ */
 export const blocksControllerUnblock = async (
   handle: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -10187,6 +11027,9 @@ export type BlocksControllerUnblockMutationResult = NonNullable<
 export type BlocksControllerUnblockMutationError = ErrorType<ProblemDetails>;
 export type BlocksControllerUnblockMutationVariables = { handle: string };
 
+/**
+ * @summary Unblock
+ */
 export const useBlocksControllerUnblock = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -10223,6 +11066,12 @@ export const getBlocksControllerListUrl = (params?: BlocksControllerListParams) 
     : `/v1/me/network/blocks`;
 };
 
+/**
+ * Action `network.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary List
+ */
 export const blocksControllerList = async (
   params?: BlocksControllerListParams,
   options?: Parameters<typeof apiFetch>[1],
@@ -10323,6 +11172,9 @@ export function useBlocksControllerList<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary List
+ */
 
 export function useBlocksControllerList<
   TData = Awaited<ReturnType<typeof blocksControllerList>>,
@@ -10365,6 +11217,12 @@ export const getMemberNetworkControllerFollowersUrl = (
     : `/v1/network/members/${handle}/followers`;
 };
 
+/**
+ * Action `network.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Followers
+ */
 export const memberNetworkControllerFollowers = async (
   handle: string,
   params?: MemberNetworkControllerFollowersParams,
@@ -10480,6 +11338,9 @@ export function useMemberNetworkControllerFollowers<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Followers
+ */
 
 export function useMemberNetworkControllerFollowers<
   TData = Awaited<ReturnType<typeof memberNetworkControllerFollowers>>,
@@ -10523,6 +11384,12 @@ export const getMemberNetworkControllerFollowingUrl = (
     : `/v1/network/members/${handle}/following`;
 };
 
+/**
+ * Action `network.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Following
+ */
 export const memberNetworkControllerFollowing = async (
   handle: string,
   params?: MemberNetworkControllerFollowingParams,
@@ -10638,6 +11505,9 @@ export function useMemberNetworkControllerFollowing<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Following
+ */
 
 export function useMemberNetworkControllerFollowing<
   TData = Awaited<ReturnType<typeof memberNetworkControllerFollowing>>,
@@ -10681,6 +11551,12 @@ export const getMemberNetworkControllerConnectionsUrl = (
     : `/v1/network/members/${handle}/connections`;
 };
 
+/**
+ * Action `network.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Connections
+ */
 export const memberNetworkControllerConnections = async (
   handle: string,
   params?: MemberNetworkControllerConnectionsParams,
@@ -10799,6 +11675,9 @@ export function useMemberNetworkControllerConnections<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Connections
+ */
 
 export function useMemberNetworkControllerConnections<
   TData = Awaited<ReturnType<typeof memberNetworkControllerConnections>>,
@@ -10827,6 +11706,12 @@ export const getMemberNetworkControllerRelationshipUrl = (handle: string) => {
   return `/v1/network/members/${handle}/relationship`;
 };
 
+/**
+ * Action `network.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Relationship
+ */
 export const memberNetworkControllerRelationship = async (
   handle: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -10949,6 +11834,9 @@ export function useMemberNetworkControllerRelationship<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Relationship
+ */
 
 export function useMemberNetworkControllerRelationship<
   TData = Awaited<ReturnType<typeof memberNetworkControllerRelationship>>,
@@ -10995,6 +11883,12 @@ export const getMemberNetworkControllerPublicFollowersUrl = (
     : `/v1/public/network/members/${handle}/followers`;
 };
 
+/**
+ * Public: no session needed.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Public followers
+ */
 export const memberNetworkControllerPublicFollowers = async (
   handle: string,
   params?: MemberNetworkControllerPublicFollowersParams,
@@ -11130,6 +12024,9 @@ export function useMemberNetworkControllerPublicFollowers<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Public followers
+ */
 
 export function useMemberNetworkControllerPublicFollowers<
   TData = Awaited<ReturnType<typeof memberNetworkControllerPublicFollowers>>,
@@ -11181,6 +12078,12 @@ export const getMemberNetworkControllerPublicFollowingUrl = (
     : `/v1/public/network/members/${handle}/following`;
 };
 
+/**
+ * Public: no session needed.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Public following
+ */
 export const memberNetworkControllerPublicFollowing = async (
   handle: string,
   params?: MemberNetworkControllerPublicFollowingParams,
@@ -11316,6 +12219,9 @@ export function useMemberNetworkControllerPublicFollowing<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Public following
+ */
 
 export function useMemberNetworkControllerPublicFollowing<
   TData = Awaited<ReturnType<typeof memberNetworkControllerPublicFollowing>>,
@@ -11367,6 +12273,12 @@ export const getMemberNetworkControllerPublicConnectionsUrl = (
     : `/v1/public/network/members/${handle}/connections`;
 };
 
+/**
+ * Public: no session needed.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Public connections
+ */
 export const memberNetworkControllerPublicConnections = async (
   handle: string,
   params?: MemberNetworkControllerPublicConnectionsParams,
@@ -11502,6 +12414,9 @@ export function useMemberNetworkControllerPublicConnections<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Public connections
+ */
 
 export function useMemberNetworkControllerPublicConnections<
   TData = Awaited<ReturnType<typeof memberNetworkControllerPublicConnections>>,
@@ -11538,6 +12453,12 @@ export const getProfileViewsControllerSettingsUrl = () => {
   return `/v1/me/network/settings`;
 };
 
+/**
+ * Action `network.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Settings
+ */
 export const profileViewsControllerSettings = async (
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<NetworkSettingsDtoOutput> => {
@@ -11632,6 +12553,9 @@ export function useProfileViewsControllerSettings<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Settings
+ */
 
 export function useProfileViewsControllerSettings<
   TData = Awaited<ReturnType<typeof profileViewsControllerSettings>>,
@@ -11658,6 +12582,12 @@ export const getProfileViewsControllerUpdateSettingsUrl = () => {
   return `/v1/me/network/settings`;
 };
 
+/**
+ * Action `network.settings.update` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Update settings
+ */
 export const profileViewsControllerUpdateSettings = async (
   updateNetworkSettingsDto: UpdateNetworkSettingsDto,
   options?: Parameters<typeof apiFetch>[1],
@@ -11737,6 +12667,9 @@ export type ProfileViewsControllerUpdateSettingsMutationVariables = {
   data: UpdateNetworkSettingsDto;
 };
 
+/**
+ * @summary Update settings
+ */
 export const useProfileViewsControllerUpdateSettings = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -11764,6 +12697,12 @@ export const getProfileViewsControllerSummaryUrl = () => {
   return `/v1/me/profile-views/summary`;
 };
 
+/**
+ * Action `network.profile-views.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Summary
+ */
 export const profileViewsControllerSummary = async (
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<ProfileViewsSummaryDtoOutput> => {
@@ -11858,6 +12797,9 @@ export function useProfileViewsControllerSummary<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Summary
+ */
 
 export function useProfileViewsControllerSummary<
   TData = Awaited<ReturnType<typeof profileViewsControllerSummary>>,
@@ -11896,6 +12838,12 @@ export const getProfileViewsControllerVisitsUrl = (params?: ProfileViewsControll
     : `/v1/me/profile-views`;
 };
 
+/**
+ * Action `network.profile-views.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Visits
+ */
 export const profileViewsControllerVisits = async (
   params?: ProfileViewsControllerVisitsParams,
   options?: Parameters<typeof apiFetch>[1],
@@ -11999,6 +12947,9 @@ export function useProfileViewsControllerVisits<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Visits
+ */
 
 export function useProfileViewsControllerVisits<
   TData = Awaited<ReturnType<typeof profileViewsControllerVisits>>,
@@ -12036,6 +12987,12 @@ export const getPostsControllerReadUrl = (params?: PostsControllerReadParams) =>
   return stringifiedParams.length > 0 ? `/v1/feed?${stringifiedParams}` : `/v1/feed`;
 };
 
+/**
+ * Action `content.feed.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Read
+ */
 export const postsControllerRead = async (
   params?: PostsControllerReadParams,
   options?: Parameters<typeof apiFetch>[1],
@@ -12136,6 +13093,9 @@ export function usePostsControllerRead<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Read
+ */
 
 export function usePostsControllerRead<
   TData = Awaited<ReturnType<typeof postsControllerRead>>,
@@ -12163,6 +13123,16 @@ export const getPostsControllerCreateUrl = () => {
   return `/v1/posts`;
 };
 
+/**
+ * Action `content.post.create` (session cookie).
+ *
+ * Prerequisites: email_verified.
+ *
+ * Idempotent: the `Idempotency-Key` header is required, a replay returns the stored answer.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Create
+ */
 export const postsControllerCreate = async (
   createPostDto: CreatePostDto,
   options?: Parameters<typeof apiFetch>[1],
@@ -12239,6 +13209,9 @@ export type PostsControllerCreateMutationBody = CreatePostDto;
 export type PostsControllerCreateMutationError = ErrorType<ProblemDetails>;
 export type PostsControllerCreateMutationVariables = { data: CreatePostDto };
 
+/**
+ * @summary Create
+ */
 export const usePostsControllerCreate = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -12263,6 +13236,12 @@ export const getPostsControllerGetUrl = (postId: string) => {
   return `/v1/posts/${postId}`;
 };
 
+/**
+ * Action `content.post.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Get
+ */
 export const postsControllerGet = async (
   postId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -12360,6 +13339,9 @@ export function usePostsControllerGet<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Get
+ */
 
 export function usePostsControllerGet<
   TData = Awaited<ReturnType<typeof postsControllerGet>>,
@@ -12385,6 +13367,12 @@ export const getPostsControllerUpdateUrl = (postId: string) => {
   return `/v1/posts/${postId}`;
 };
 
+/**
+ * Action `content.post.update` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Update
+ */
 export const postsControllerUpdate = async (
   postId: string,
   updatePostDto: UpdatePostDto,
@@ -12462,6 +13450,9 @@ export type PostsControllerUpdateMutationBody = UpdatePostDto;
 export type PostsControllerUpdateMutationError = ErrorType<ProblemDetails>;
 export type PostsControllerUpdateMutationVariables = { postId: string; data: UpdatePostDto };
 
+/**
+ * @summary Update
+ */
 export const usePostsControllerUpdate = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -12486,6 +13477,12 @@ export const getPostsControllerDeleteUrl = (postId: string) => {
   return `/v1/posts/${postId}`;
 };
 
+/**
+ * Action `content.post.delete` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Delete
+ */
 export const postsControllerDelete = async (
   postId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -12541,6 +13538,9 @@ export type PostsControllerDeleteMutationResult = NonNullable<
 export type PostsControllerDeleteMutationError = ErrorType<ProblemDetails>;
 export type PostsControllerDeleteMutationVariables = { postId: string };
 
+/**
+ * @summary Delete
+ */
 export const usePostsControllerDelete = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -12565,6 +13565,12 @@ export const getPostsControllerGetPublicUrl = (postId: string) => {
   return `/v1/public/posts/${postId}`;
 };
 
+/**
+ * Public: no session needed.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Get public
+ */
 export const postsControllerGetPublic = async (
   postId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -12669,6 +13675,9 @@ export function usePostsControllerGetPublic<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Get public
+ */
 
 export function usePostsControllerGetPublic<
   TData = Awaited<ReturnType<typeof postsControllerGetPublic>>,
@@ -12696,6 +13705,16 @@ export const getPostsControllerRepostUrl = (postId: string) => {
   return `/v1/posts/${postId}/reposts`;
 };
 
+/**
+ * Action `content.post.repost` (session cookie).
+ *
+ * Prerequisites: email_verified.
+ *
+ * Idempotent: the `Idempotency-Key` header is required, a replay returns the stored answer.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Repost
+ */
 export const postsControllerRepost = async (
   postId: string,
   createRepostDto: CreateRepostDto,
@@ -12773,6 +13792,9 @@ export type PostsControllerRepostMutationBody = CreateRepostDto;
 export type PostsControllerRepostMutationError = ErrorType<ProblemDetails>;
 export type PostsControllerRepostMutationVariables = { postId: string; data: CreateRepostDto };
 
+/**
+ * @summary Repost
+ */
 export const usePostsControllerRepost = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -12797,6 +13819,12 @@ export const getPostsControllerReactUrl = (postId: string) => {
   return `/v1/posts/${postId}/reaction`;
 };
 
+/**
+ * Action `content.reaction.set` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary React
+ */
 export const postsControllerReact = async (
   postId: string,
   setReactionDto: SetReactionDto,
@@ -12874,6 +13902,9 @@ export type PostsControllerReactMutationBody = SetReactionDto;
 export type PostsControllerReactMutationError = ErrorType<ProblemDetails>;
 export type PostsControllerReactMutationVariables = { postId: string; data: SetReactionDto };
 
+/**
+ * @summary React
+ */
 export const usePostsControllerReact = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -12898,6 +13929,12 @@ export const getPostsControllerUnreactUrl = (postId: string) => {
   return `/v1/posts/${postId}/reaction`;
 };
 
+/**
+ * Action `content.reaction.set` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Unreact
+ */
 export const postsControllerUnreact = async (
   postId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -12953,6 +13990,9 @@ export type PostsControllerUnreactMutationResult = NonNullable<
 export type PostsControllerUnreactMutationError = ErrorType<ProblemDetails>;
 export type PostsControllerUnreactMutationVariables = { postId: string };
 
+/**
+ * @summary Unreact
+ */
 export const usePostsControllerUnreact = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -12977,6 +14017,12 @@ export const getPostsControllerSaveUrl = (postId: string) => {
   return `/v1/posts/${postId}/save`;
 };
 
+/**
+ * Action `content.post.save` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Save
+ */
 export const postsControllerSave = async (
   postId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -13032,6 +14078,9 @@ export type PostsControllerSaveMutationResult = NonNullable<
 export type PostsControllerSaveMutationError = ErrorType<ProblemDetails>;
 export type PostsControllerSaveMutationVariables = { postId: string };
 
+/**
+ * @summary Save
+ */
 export const usePostsControllerSave = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -13056,6 +14105,12 @@ export const getPostsControllerUnsaveUrl = (postId: string) => {
   return `/v1/posts/${postId}/save`;
 };
 
+/**
+ * Action `content.post.save` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Unsave
+ */
 export const postsControllerUnsave = async (
   postId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -13111,6 +14166,9 @@ export type PostsControllerUnsaveMutationResult = NonNullable<
 export type PostsControllerUnsaveMutationError = ErrorType<ProblemDetails>;
 export type PostsControllerUnsaveMutationVariables = { postId: string };
 
+/**
+ * @summary Unsave
+ */
 export const usePostsControllerUnsave = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -13147,6 +14205,12 @@ export const getPostsControllerSavedUrl = (params?: PostsControllerSavedParams) 
     : `/v1/me/saved-posts`;
 };
 
+/**
+ * Action `content.post.save` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Saved
+ */
 export const postsControllerSaved = async (
   params?: PostsControllerSavedParams,
   options?: Parameters<typeof apiFetch>[1],
@@ -13247,6 +14311,9 @@ export function usePostsControllerSaved<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Saved
+ */
 
 export function usePostsControllerSaved<
   TData = Awaited<ReturnType<typeof postsControllerSaved>>,
@@ -13274,6 +14341,12 @@ export const getPostsControllerHideUrl = (postId: string) => {
   return `/v1/posts/${postId}/hide`;
 };
 
+/**
+ * Action `content.post.hide` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Hide
+ */
 export const postsControllerHide = async (
   postId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -13329,6 +14402,9 @@ export type PostsControllerHideMutationResult = NonNullable<
 export type PostsControllerHideMutationError = ErrorType<ProblemDetails>;
 export type PostsControllerHideMutationVariables = { postId: string };
 
+/**
+ * @summary Hide
+ */
 export const usePostsControllerHide = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -13353,6 +14429,12 @@ export const getPostsControllerUnhideUrl = (postId: string) => {
   return `/v1/posts/${postId}/hide`;
 };
 
+/**
+ * Action `content.post.hide` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Unhide
+ */
 export const postsControllerUnhide = async (
   postId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -13408,6 +14490,9 @@ export type PostsControllerUnhideMutationResult = NonNullable<
 export type PostsControllerUnhideMutationError = ErrorType<ProblemDetails>;
 export type PostsControllerUnhideMutationVariables = { postId: string };
 
+/**
+ * @summary Unhide
+ */
 export const usePostsControllerUnhide = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -13432,6 +14517,12 @@ export const getPostsControllerStatsUrl = (postId: string) => {
   return `/v1/posts/${postId}/stats`;
 };
 
+/**
+ * Action `content.post.stats.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Stats
+ */
 export const postsControllerStats = async (
   postId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -13535,6 +14626,9 @@ export function usePostsControllerStats<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Stats
+ */
 
 export function usePostsControllerStats<
   TData = Awaited<ReturnType<typeof postsControllerStats>>,
@@ -13562,6 +14656,16 @@ export const getCommentsControllerCreateUrl = (postId: string) => {
   return `/v1/posts/${postId}/comments`;
 };
 
+/**
+ * Action `content.comment.create` (session cookie).
+ *
+ * Prerequisites: email_verified.
+ *
+ * Idempotent: the `Idempotency-Key` header is required, a replay returns the stored answer.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Create
+ */
 export const commentsControllerCreate = async (
   postId: string,
   createCommentDto: CreateCommentDto,
@@ -13639,6 +14743,9 @@ export type CommentsControllerCreateMutationBody = CreateCommentDto;
 export type CommentsControllerCreateMutationError = ErrorType<ProblemDetails>;
 export type CommentsControllerCreateMutationVariables = { postId: string; data: CreateCommentDto };
 
+/**
+ * @summary Create
+ */
 export const useCommentsControllerCreate = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -13678,6 +14785,12 @@ export const getCommentsControllerListUrl = (
     : `/v1/posts/${postId}/comments`;
 };
 
+/**
+ * Action `content.post.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary List
+ */
 export const commentsControllerList = async (
   postId: string,
   params?: CommentsControllerListParams,
@@ -13789,6 +14902,9 @@ export function useCommentsControllerList<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary List
+ */
 
 export function useCommentsControllerList<
   TData = Awaited<ReturnType<typeof commentsControllerList>>,
@@ -13832,6 +14948,12 @@ export const getCommentsControllerRepliesUrl = (
     : `/v1/comments/${commentId}/replies`;
 };
 
+/**
+ * Action `content.post.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Replies
+ */
 export const commentsControllerReplies = async (
   commentId: string,
   params?: CommentsControllerRepliesParams,
@@ -13945,6 +15067,9 @@ export function useCommentsControllerReplies<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Replies
+ */
 
 export function useCommentsControllerReplies<
   TData = Awaited<ReturnType<typeof commentsControllerReplies>>,
@@ -13973,6 +15098,12 @@ export const getCommentsControllerUpdateUrl = (commentId: string) => {
   return `/v1/comments/${commentId}`;
 };
 
+/**
+ * Action `content.comment.update` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Update
+ */
 export const commentsControllerUpdate = async (
   commentId: string,
   updateCommentDto: UpdateCommentDto,
@@ -14053,6 +15184,9 @@ export type CommentsControllerUpdateMutationVariables = {
   data: UpdateCommentDto;
 };
 
+/**
+ * @summary Update
+ */
 export const useCommentsControllerUpdate = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -14077,6 +15211,12 @@ export const getCommentsControllerDeleteUrl = (commentId: string) => {
   return `/v1/comments/${commentId}`;
 };
 
+/**
+ * Action `content.comment.delete` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Delete
+ */
 export const commentsControllerDelete = async (
   commentId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -14132,6 +15272,9 @@ export type CommentsControllerDeleteMutationResult = NonNullable<
 export type CommentsControllerDeleteMutationError = ErrorType<ProblemDetails>;
 export type CommentsControllerDeleteMutationVariables = { commentId: string };
 
+/**
+ * @summary Delete
+ */
 export const useCommentsControllerDelete = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -14156,6 +15299,12 @@ export const getCommentsControllerReactUrl = (commentId: string) => {
   return `/v1/comments/${commentId}/reaction`;
 };
 
+/**
+ * Action `content.reaction.set` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary React
+ */
 export const commentsControllerReact = async (
   commentId: string,
   setReactionDto: SetReactionDto,
@@ -14233,6 +15382,9 @@ export type CommentsControllerReactMutationBody = SetReactionDto;
 export type CommentsControllerReactMutationError = ErrorType<ProblemDetails>;
 export type CommentsControllerReactMutationVariables = { commentId: string; data: SetReactionDto };
 
+/**
+ * @summary React
+ */
 export const useCommentsControllerReact = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -14257,6 +15409,12 @@ export const getCommentsControllerUnreactUrl = (commentId: string) => {
   return `/v1/comments/${commentId}/reaction`;
 };
 
+/**
+ * Action `content.reaction.set` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Unreact
+ */
 export const commentsControllerUnreact = async (
   commentId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -14312,6 +15470,9 @@ export type CommentsControllerUnreactMutationResult = NonNullable<
 export type CommentsControllerUnreactMutationError = ErrorType<ProblemDetails>;
 export type CommentsControllerUnreactMutationVariables = { commentId: string };
 
+/**
+ * @summary Unreact
+ */
 export const useCommentsControllerUnreact = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -14339,6 +15500,12 @@ export const getMethodologiesControllerPublishedUrl = () => {
   return `/v1/impact/methodology`;
 };
 
+/**
+ * Public: no session needed.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Published
+ */
 export const methodologiesControllerPublished = async (
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<MethodologyDtoOutput> => {
@@ -14433,6 +15600,9 @@ export function useMethodologiesControllerPublished<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Published
+ */
 
 export function useMethodologiesControllerPublished<
   TData = Awaited<ReturnType<typeof methodologiesControllerPublished>>,
@@ -14459,6 +15629,14 @@ export const getMethodologiesControllerListUrl = () => {
   return `/v1/admin/impact/methodologies`;
 };
 
+/**
+ * Action `impact.methodology.manage` (session cookie).
+ *
+ * Roles: admin, with 2FA.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary List
+ */
 export const methodologiesControllerList = async (
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<MethodologiesDtoOutput> => {
@@ -14553,6 +15731,9 @@ export function useMethodologiesControllerList<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary List
+ */
 
 export function useMethodologiesControllerList<
   TData = Awaited<ReturnType<typeof methodologiesControllerList>>,
@@ -14579,6 +15760,16 @@ export const getMethodologiesControllerCreateUrl = () => {
   return `/v1/admin/impact/methodologies`;
 };
 
+/**
+ * Action `impact.methodology.manage` (session cookie).
+ *
+ * Roles: admin, with 2FA.
+ *
+ * Idempotent: the `Idempotency-Key` header is required, a replay returns the stored answer.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Create
+ */
 export const methodologiesControllerCreate = async (
   createMethodologyDto: CreateMethodologyDto,
   options?: Parameters<typeof apiFetch>[1],
@@ -14656,6 +15847,9 @@ export type MethodologiesControllerCreateMutationBody = CreateMethodologyDto;
 export type MethodologiesControllerCreateMutationError = ErrorType<ProblemDetails>;
 export type MethodologiesControllerCreateMutationVariables = { data: CreateMethodologyDto };
 
+/**
+ * @summary Create
+ */
 export const useMethodologiesControllerCreate = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -14683,6 +15877,14 @@ export const getMethodologiesControllerGetUrl = (methodologyId: string) => {
   return `/v1/admin/impact/methodologies/${methodologyId}`;
 };
 
+/**
+ * Action `impact.methodology.manage` (session cookie).
+ *
+ * Roles: admin, with 2FA.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Get
+ */
 export const methodologiesControllerGet = async (
   methodologyId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -14787,6 +15989,9 @@ export function useMethodologiesControllerGet<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Get
+ */
 
 export function useMethodologiesControllerGet<
   TData = Awaited<ReturnType<typeof methodologiesControllerGet>>,
@@ -14814,6 +16019,14 @@ export const getMethodologiesControllerUpdateUrl = (methodologyId: string) => {
   return `/v1/admin/impact/methodologies/${methodologyId}`;
 };
 
+/**
+ * Action `impact.methodology.manage` (session cookie).
+ *
+ * Roles: admin, with 2FA.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Update
+ */
 export const methodologiesControllerUpdate = async (
   methodologyId: string,
   updateMethodologyDto: UpdateMethodologyDto,
@@ -14895,6 +16108,9 @@ export type MethodologiesControllerUpdateMutationVariables = {
   data: UpdateMethodologyDto;
 };
 
+/**
+ * @summary Update
+ */
 export const useMethodologiesControllerUpdate = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -14922,6 +16138,14 @@ export const getMethodologiesControllerDeleteUrl = (methodologyId: string) => {
   return `/v1/admin/impact/methodologies/${methodologyId}`;
 };
 
+/**
+ * Action `impact.methodology.manage` (session cookie).
+ *
+ * Roles: admin, with 2FA.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Delete
+ */
 export const methodologiesControllerDelete = async (
   methodologyId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -14978,6 +16202,9 @@ export type MethodologiesControllerDeleteMutationResult = NonNullable<
 export type MethodologiesControllerDeleteMutationError = ErrorType<ProblemDetails>;
 export type MethodologiesControllerDeleteMutationVariables = { methodologyId: string };
 
+/**
+ * @summary Delete
+ */
 export const useMethodologiesControllerDelete = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -15005,6 +16232,14 @@ export const getMethodologiesControllerPublishUrl = (methodologyId: string) => {
   return `/v1/admin/impact/methodologies/${methodologyId}/publish`;
 };
 
+/**
+ * Action `impact.methodology.manage` (session cookie).
+ *
+ * Roles: admin, with 2FA.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Publish
+ */
 export const methodologiesControllerPublish = async (
   methodologyId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -15061,6 +16296,9 @@ export type MethodologiesControllerPublishMutationResult = NonNullable<
 export type MethodologiesControllerPublishMutationError = ErrorType<ProblemDetails>;
 export type MethodologiesControllerPublishMutationVariables = { methodologyId: string };
 
+/**
+ * @summary Publish
+ */
 export const useMethodologiesControllerPublish = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -15088,6 +16326,14 @@ export const getMethodologiesControllerArchiveUrl = (methodologyId: string) => {
   return `/v1/admin/impact/methodologies/${methodologyId}/archive`;
 };
 
+/**
+ * Action `impact.methodology.manage` (session cookie).
+ *
+ * Roles: admin, with 2FA.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Archive
+ */
 export const methodologiesControllerArchive = async (
   methodologyId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -15144,6 +16390,9 @@ export type MethodologiesControllerArchiveMutationResult = NonNullable<
 export type MethodologiesControllerArchiveMutationError = ErrorType<ProblemDetails>;
 export type MethodologiesControllerArchiveMutationVariables = { methodologyId: string };
 
+/**
+ * @summary Archive
+ */
 export const useMethodologiesControllerArchive = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -15171,6 +16420,12 @@ export const getMyAssessmentsControllerHistoryUrl = () => {
   return `/v1/me/impact/assessments`;
 };
 
+/**
+ * Action `impact.assessment.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary History
+ */
 export const myAssessmentsControllerHistory = async (
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<AssessmentHistoryDtoOutput> => {
@@ -15265,6 +16520,9 @@ export function useMyAssessmentsControllerHistory<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary History
+ */
 
 export function useMyAssessmentsControllerHistory<
   TData = Awaited<ReturnType<typeof myAssessmentsControllerHistory>>,
@@ -15291,6 +16549,16 @@ export const getMyAssessmentsControllerSubmitUrl = () => {
   return `/v1/me/impact/assessments`;
 };
 
+/**
+ * Action `impact.assessment.submit` (session cookie).
+ *
+ * Prerequisites: profile.entrepreneur_facet.
+ *
+ * Idempotent: the `Idempotency-Key` header is required, a replay returns the stored answer.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Submit
+ */
 export const myAssessmentsControllerSubmit = async (
   submitAssessmentDto: SubmitAssessmentDto,
   options?: Parameters<typeof apiFetch>[1],
@@ -15368,6 +16636,9 @@ export type MyAssessmentsControllerSubmitMutationBody = SubmitAssessmentDto;
 export type MyAssessmentsControllerSubmitMutationError = ErrorType<ProblemDetails>;
 export type MyAssessmentsControllerSubmitMutationVariables = { data: SubmitAssessmentDto };
 
+/**
+ * @summary Submit
+ */
 export const useMyAssessmentsControllerSubmit = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -15395,6 +16666,16 @@ export const getProjectsControllerCreateUrl = () => {
   return `/v1/projects`;
 };
 
+/**
+ * Action `project.create` (session cookie).
+ *
+ * Prerequisites: profile.entrepreneur_facet.
+ *
+ * Idempotent: the `Idempotency-Key` header is required, a replay returns the stored answer.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Create
+ */
 export const projectsControllerCreate = async (
   createProjectDto: CreateProjectDto,
   options?: Parameters<typeof apiFetch>[1],
@@ -15471,6 +16752,9 @@ export type ProjectsControllerCreateMutationBody = CreateProjectDto;
 export type ProjectsControllerCreateMutationError = ErrorType<ProblemDetails>;
 export type ProjectsControllerCreateMutationVariables = { data: CreateProjectDto };
 
+/**
+ * @summary Create
+ */
 export const useProjectsControllerCreate = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -15505,6 +16789,12 @@ export const getProjectsControllerShowcaseUrl = (params?: ProjectsControllerShow
   return stringifiedParams.length > 0 ? `/v1/projects?${stringifiedParams}` : `/v1/projects`;
 };
 
+/**
+ * Action `project.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Showcase
+ */
 export const projectsControllerShowcase = async (
   params?: ProjectsControllerShowcaseParams,
   options?: Parameters<typeof apiFetch>[1],
@@ -15608,6 +16898,9 @@ export function useProjectsControllerShowcase<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Showcase
+ */
 
 export function useProjectsControllerShowcase<
   TData = Awaited<ReturnType<typeof projectsControllerShowcase>>,
@@ -15635,6 +16928,12 @@ export const getProjectsControllerMineUrl = () => {
   return `/v1/me/projects`;
 };
 
+/**
+ * Action `project.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Mine
+ */
 export const projectsControllerMine = async (
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<MyProjectsDtoOutput> => {
@@ -15728,6 +17027,9 @@ export function useProjectsControllerMine<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Mine
+ */
 
 export function useProjectsControllerMine<
   TData = Awaited<ReturnType<typeof projectsControllerMine>>,
@@ -15768,6 +17070,12 @@ export const getProjectsControllerPublicShowcaseUrl = (
     : `/v1/public/projects`;
 };
 
+/**
+ * Public: no session needed.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Public showcase
+ */
 export const projectsControllerPublicShowcase = async (
   params?: ProjectsControllerPublicShowcaseParams,
   options?: Parameters<typeof apiFetch>[1],
@@ -15871,6 +17179,9 @@ export function useProjectsControllerPublicShowcase<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Public showcase
+ */
 
 export function useProjectsControllerPublicShowcase<
   TData = Awaited<ReturnType<typeof projectsControllerPublicShowcase>>,
@@ -15898,6 +17209,12 @@ export const getProjectsControllerForMemberUrl = (slug: string) => {
   return `/v1/projects/by-slug/${slug}`;
 };
 
+/**
+ * Action `project.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary For member
+ */
 export const projectsControllerForMember = async (
   slug: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -16002,6 +17319,9 @@ export function useProjectsControllerForMember<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary For member
+ */
 
 export function useProjectsControllerForMember<
   TData = Awaited<ReturnType<typeof projectsControllerForMember>>,
@@ -16029,6 +17349,12 @@ export const getProjectsControllerForPublicUrl = (slug: string) => {
   return `/v1/public/projects/${slug}`;
 };
 
+/**
+ * Public: no session needed.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary For public
+ */
 export const projectsControllerForPublic = async (
   slug: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -16133,6 +17459,9 @@ export function useProjectsControllerForPublic<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary For public
+ */
 
 export function useProjectsControllerForPublic<
   TData = Awaited<ReturnType<typeof projectsControllerForPublic>>,
@@ -16175,6 +17504,12 @@ export const getProjectsControllerPublicPostsUrl = (
     : `/v1/public/projects/${projectId}/posts`;
 };
 
+/**
+ * Public: no session needed.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Public posts
+ */
 export const projectsControllerPublicPosts = async (
   projectId: string,
   params?: ProjectsControllerPublicPostsParams,
@@ -16288,6 +17623,9 @@ export function useProjectsControllerPublicPosts<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Public posts
+ */
 
 export function useProjectsControllerPublicPosts<
   TData = Awaited<ReturnType<typeof projectsControllerPublicPosts>>,
@@ -16316,6 +17654,12 @@ export const getProjectsControllerGetUrl = (projectId: string) => {
   return `/v1/projects/${projectId}`;
 };
 
+/**
+ * Action `project.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Get
+ */
 export const projectsControllerGet = async (
   projectId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -16419,6 +17763,9 @@ export function useProjectsControllerGet<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Get
+ */
 
 export function useProjectsControllerGet<
   TData = Awaited<ReturnType<typeof projectsControllerGet>>,
@@ -16446,6 +17793,12 @@ export const getProjectsControllerUpdateUrl = (projectId: string) => {
   return `/v1/projects/${projectId}`;
 };
 
+/**
+ * Action `project.update` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Update
+ */
 export const projectsControllerUpdate = async (
   projectId: string,
   updateProjectDto: UpdateProjectDto,
@@ -16526,6 +17879,9 @@ export type ProjectsControllerUpdateMutationVariables = {
   data: UpdateProjectDto;
 };
 
+/**
+ * @summary Update
+ */
 export const useProjectsControllerUpdate = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -16550,6 +17906,12 @@ export const getProjectsControllerDeleteUrl = (projectId: string) => {
   return `/v1/projects/${projectId}`;
 };
 
+/**
+ * Action `project.delete` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Delete
+ */
 export const projectsControllerDelete = async (
   projectId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -16605,6 +17967,9 @@ export type ProjectsControllerDeleteMutationResult = NonNullable<
 export type ProjectsControllerDeleteMutationError = ErrorType<ProblemDetails>;
 export type ProjectsControllerDeleteMutationVariables = { projectId: string };
 
+/**
+ * @summary Delete
+ */
 export const useProjectsControllerDelete = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -16629,6 +17994,12 @@ export const getProjectsControllerPreviewUrl = (projectId: string) => {
   return `/v1/projects/${projectId}/preview`;
 };
 
+/**
+ * Action `project.update` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Preview
+ */
 export const projectsControllerPreview = async (
   projectId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -16733,6 +18104,9 @@ export function useProjectsControllerPreview<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Preview
+ */
 
 export function useProjectsControllerPreview<
   TData = Awaited<ReturnType<typeof projectsControllerPreview>>,
@@ -16775,6 +18149,12 @@ export const getProjectsControllerPostsUrl = (
     : `/v1/projects/${projectId}/posts`;
 };
 
+/**
+ * Action `project.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Posts
+ */
 export const projectsControllerPosts = async (
   projectId: string,
   params?: ProjectsControllerPostsParams,
@@ -16887,6 +18267,9 @@ export function useProjectsControllerPosts<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Posts
+ */
 
 export function useProjectsControllerPosts<
   TData = Awaited<ReturnType<typeof projectsControllerPosts>>,
@@ -16915,6 +18298,12 @@ export const getProjectsControllerChangeSlugUrl = (projectId: string) => {
   return `/v1/projects/${projectId}/slug`;
 };
 
+/**
+ * Action `project.update` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Change slug
+ */
 export const projectsControllerChangeSlug = async (
   projectId: string,
   changeSlugDto: ChangeSlugDto,
@@ -16996,6 +18385,9 @@ export type ProjectsControllerChangeSlugMutationVariables = {
   data: ChangeSlugDto;
 };
 
+/**
+ * @summary Change slug
+ */
 export const useProjectsControllerChangeSlug = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -17023,6 +18415,12 @@ export const getProjectsControllerReplaceTiersUrl = (projectId: string) => {
   return `/v1/projects/${projectId}/tiers`;
 };
 
+/**
+ * Action `project.update` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Replace tiers
+ */
 export const projectsControllerReplaceTiers = async (
   projectId: string,
   replaceTiersDto: ReplaceTiersDto,
@@ -17104,6 +18502,9 @@ export type ProjectsControllerReplaceTiersMutationVariables = {
   data: ReplaceTiersDto;
 };
 
+/**
+ * @summary Replace tiers
+ */
 export const useProjectsControllerReplaceTiers = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -17131,6 +18532,12 @@ export const getProjectsControllerSetGalleryUrl = (projectId: string) => {
   return `/v1/projects/${projectId}/gallery`;
 };
 
+/**
+ * Action `project.update` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Set gallery
+ */
 export const projectsControllerSetGallery = async (
   projectId: string,
   setGalleryDto: SetGalleryDto,
@@ -17212,6 +18619,9 @@ export type ProjectsControllerSetGalleryMutationVariables = {
   data: SetGalleryDto;
 };
 
+/**
+ * @summary Set gallery
+ */
 export const useProjectsControllerSetGallery = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -17239,6 +18649,12 @@ export const getProjectsControllerSetDocumentsUrl = (projectId: string) => {
   return `/v1/projects/${projectId}/documents`;
 };
 
+/**
+ * Action `project.update` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Set documents
+ */
 export const projectsControllerSetDocuments = async (
   projectId: string,
   setDocumentsDto: SetDocumentsDto,
@@ -17320,6 +18736,9 @@ export type ProjectsControllerSetDocumentsMutationVariables = {
   data: SetDocumentsDto;
 };
 
+/**
+ * @summary Set documents
+ */
 export const useProjectsControllerSetDocuments = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -17347,6 +18766,14 @@ export const getProjectsControllerPublishUrl = (projectId: string) => {
   return `/v1/projects/${projectId}/publish`;
 };
 
+/**
+ * Action `project.publish` (session cookie).
+ *
+ * Prerequisites: email_verified, profile.entrepreneur_facet.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Publish
+ */
 export const projectsControllerPublish = async (
   projectId: string,
   publishDto: PublishDto,
@@ -17424,6 +18851,9 @@ export type ProjectsControllerPublishMutationBody = PublishDto;
 export type ProjectsControllerPublishMutationError = ErrorType<ProblemDetails>;
 export type ProjectsControllerPublishMutationVariables = { projectId: string; data: PublishDto };
 
+/**
+ * @summary Publish
+ */
 export const useProjectsControllerPublish = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -17451,6 +18881,16 @@ export const getTeamControllerInviteUrl = (projectId: string) => {
   return `/v1/projects/${projectId}/team/invitations`;
 };
 
+/**
+ * Action `project.team.manage` (session cookie).
+ *
+ * Prerequisites: email_verified.
+ *
+ * Idempotent: the `Idempotency-Key` header is required, a replay returns the stored answer.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Invite
+ */
 export const teamControllerInvite = async (
   projectId: string,
   inviteDto: InviteDto,
@@ -17528,6 +18968,9 @@ export type TeamControllerInviteMutationBody = InviteDto;
 export type TeamControllerInviteMutationError = ErrorType<ProblemDetails>;
 export type TeamControllerInviteMutationVariables = { projectId: string; data: InviteDto };
 
+/**
+ * @summary Invite
+ */
 export const useTeamControllerInvite = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -17552,6 +18995,14 @@ export const getTeamControllerUpdateUrl = (projectId: string, handle: string) =>
   return `/v1/projects/${projectId}/team/${handle}`;
 };
 
+/**
+ * Action `project.team.manage` (session cookie).
+ *
+ * Prerequisites: email_verified.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Update
+ */
 export const teamControllerUpdate = async (
   projectId: string,
   handle: string,
@@ -17634,6 +19085,9 @@ export type TeamControllerUpdateMutationVariables = {
   data: UpdateMemberDto;
 };
 
+/**
+ * @summary Update
+ */
 export const useTeamControllerUpdate = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -17658,6 +19112,14 @@ export const getTeamControllerRemoveUrl = (projectId: string, handle: string) =>
   return `/v1/projects/${projectId}/team/${handle}`;
 };
 
+/**
+ * Action `project.team.manage` (session cookie).
+ *
+ * Prerequisites: email_verified.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Remove
+ */
 export const teamControllerRemove = async (
   projectId: string,
   handle: string,
@@ -17714,6 +19176,9 @@ export type TeamControllerRemoveMutationResult = NonNullable<
 export type TeamControllerRemoveMutationError = ErrorType<ProblemDetails>;
 export type TeamControllerRemoveMutationVariables = { projectId: string; handle: string };
 
+/**
+ * @summary Remove
+ */
 export const useTeamControllerRemove = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -17738,6 +19203,12 @@ export const getTeamControllerLeaveUrl = (projectId: string) => {
   return `/v1/projects/${projectId}/team/leave`;
 };
 
+/**
+ * Action `project.team.leave` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Leave
+ */
 export const teamControllerLeave = async (
   projectId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -17793,6 +19264,9 @@ export type TeamControllerLeaveMutationResult = NonNullable<
 export type TeamControllerLeaveMutationError = ErrorType<ProblemDetails>;
 export type TeamControllerLeaveMutationVariables = { projectId: string };
 
+/**
+ * @summary Leave
+ */
 export const useTeamControllerLeave = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -17817,6 +19291,12 @@ export const getTeamControllerInvitationsUrl = () => {
   return `/v1/me/project-invitations`;
 };
 
+/**
+ * Action `project.invitation.respond` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Invitations
+ */
 export const teamControllerInvitations = async (
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<InvitationsDtoOutput> => {
@@ -17911,6 +19391,9 @@ export function useTeamControllerInvitations<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Invitations
+ */
 
 export function useTeamControllerInvitations<
   TData = Awaited<ReturnType<typeof teamControllerInvitations>>,
@@ -17937,6 +19420,12 @@ export const getTeamControllerAcceptUrl = (projectId: string) => {
   return `/v1/me/project-invitations/${projectId}/accept`;
 };
 
+/**
+ * Action `project.invitation.respond` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Accept
+ */
 export const teamControllerAccept = async (
   projectId: string,
   acceptDto: AcceptDto,
@@ -18014,6 +19503,9 @@ export type TeamControllerAcceptMutationBody = AcceptDto;
 export type TeamControllerAcceptMutationError = ErrorType<ProblemDetails>;
 export type TeamControllerAcceptMutationVariables = { projectId: string; data: AcceptDto };
 
+/**
+ * @summary Accept
+ */
 export const useTeamControllerAccept = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -18038,6 +19530,12 @@ export const getTeamControllerDeclineUrl = (projectId: string) => {
   return `/v1/me/project-invitations/${projectId}/decline`;
 };
 
+/**
+ * Action `project.invitation.respond` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Decline
+ */
 export const teamControllerDecline = async (
   projectId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -18093,6 +19591,9 @@ export type TeamControllerDeclineMutationResult = NonNullable<
 export type TeamControllerDeclineMutationError = ErrorType<ProblemDetails>;
 export type TeamControllerDeclineMutationVariables = { projectId: string };
 
+/**
+ * @summary Decline
+ */
 export const useTeamControllerDecline = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -18117,6 +19618,14 @@ export const getRewardsControllerCreateUrl = (projectId: string) => {
   return `/v1/projects/${projectId}/rewards`;
 };
 
+/**
+ * Action `project.update` (session cookie).
+ *
+ * Idempotent: the `Idempotency-Key` header is required, a replay returns the stored answer.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Create
+ */
 export const rewardsControllerCreate = async (
   projectId: string,
   createRewardDto: CreateRewardDto,
@@ -18194,6 +19703,9 @@ export type RewardsControllerCreateMutationBody = CreateRewardDto;
 export type RewardsControllerCreateMutationError = ErrorType<ProblemDetails>;
 export type RewardsControllerCreateMutationVariables = { projectId: string; data: CreateRewardDto };
 
+/**
+ * @summary Create
+ */
 export const useRewardsControllerCreate = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -18218,6 +19730,12 @@ export const getRewardsControllerUpdateUrl = (projectId: string, rewardId: strin
   return `/v1/projects/${projectId}/rewards/${rewardId}`;
 };
 
+/**
+ * Action `project.update` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Update
+ */
 export const rewardsControllerUpdate = async (
   projectId: string,
   rewardId: string,
@@ -18300,6 +19818,9 @@ export type RewardsControllerUpdateMutationVariables = {
   data: UpdateRewardDto;
 };
 
+/**
+ * @summary Update
+ */
 export const useRewardsControllerUpdate = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -18324,6 +19845,12 @@ export const getRewardsControllerDeleteUrl = (projectId: string, rewardId: strin
   return `/v1/projects/${projectId}/rewards/${rewardId}`;
 };
 
+/**
+ * Action `project.update` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Delete
+ */
 export const rewardsControllerDelete = async (
   projectId: string,
   rewardId: string,
@@ -18380,6 +19907,9 @@ export type RewardsControllerDeleteMutationResult = NonNullable<
 export type RewardsControllerDeleteMutationError = ErrorType<ProblemDetails>;
 export type RewardsControllerDeleteMutationVariables = { projectId: string; rewardId: string };
 
+/**
+ * @summary Delete
+ */
 export const useRewardsControllerDelete = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -18404,6 +19934,16 @@ export const getUpdatesControllerPublishUrl = (projectId: string) => {
   return `/v1/projects/${projectId}/updates`;
 };
 
+/**
+ * Action `project.updates.publish` (session cookie).
+ *
+ * Prerequisites: email_verified.
+ *
+ * Idempotent: the `Idempotency-Key` header is required, a replay returns the stored answer.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Publish
+ */
 export const updatesControllerPublish = async (
   projectId: string,
   createUpdateDto: CreateUpdateDto,
@@ -18484,6 +20024,9 @@ export type UpdatesControllerPublishMutationVariables = {
   data: CreateUpdateDto;
 };
 
+/**
+ * @summary Publish
+ */
 export const useUpdatesControllerPublish = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -18523,6 +20066,12 @@ export const getUpdatesControllerListUrl = (
     : `/v1/projects/${projectId}/updates`;
 };
 
+/**
+ * Action `project.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary List
+ */
 export const updatesControllerList = async (
   projectId: string,
   params?: UpdatesControllerListParams,
@@ -18634,6 +20183,9 @@ export function useUpdatesControllerList<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary List
+ */
 
 export function useUpdatesControllerList<
   TData = Awaited<ReturnType<typeof updatesControllerList>>,
@@ -18677,6 +20229,12 @@ export const getUpdatesControllerPublicListUrl = (
     : `/v1/public/projects/${projectId}/updates`;
 };
 
+/**
+ * Public: no session needed.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Public list
+ */
 export const updatesControllerPublicList = async (
   projectId: string,
   params?: UpdatesControllerPublicListParams,
@@ -18790,6 +20348,9 @@ export function useUpdatesControllerPublicList<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Public list
+ */
 
 export function useUpdatesControllerPublicList<
   TData = Awaited<ReturnType<typeof updatesControllerPublicList>>,
@@ -18818,6 +20379,14 @@ export const getUpdatesControllerEditUrl = (projectId: string, updateId: string)
   return `/v1/projects/${projectId}/updates/${updateId}`;
 };
 
+/**
+ * Action `project.updates.publish` (session cookie).
+ *
+ * Prerequisites: email_verified.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Edit
+ */
 export const updatesControllerEdit = async (
   projectId: string,
   updateId: string,
@@ -18900,6 +20469,9 @@ export type UpdatesControllerEditMutationVariables = {
   data: EditUpdateDto;
 };
 
+/**
+ * @summary Edit
+ */
 export const useUpdatesControllerEdit = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -18924,6 +20496,14 @@ export const getUpdatesControllerDeleteUrl = (projectId: string, updateId: strin
   return `/v1/projects/${projectId}/updates/${updateId}`;
 };
 
+/**
+ * Action `project.updates.publish` (session cookie).
+ *
+ * Prerequisites: email_verified.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Delete
+ */
 export const updatesControllerDelete = async (
   projectId: string,
   updateId: string,
@@ -18980,6 +20560,9 @@ export type UpdatesControllerDeleteMutationResult = NonNullable<
 export type UpdatesControllerDeleteMutationError = ErrorType<ProblemDetails>;
 export type UpdatesControllerDeleteMutationVariables = { projectId: string; updateId: string };
 
+/**
+ * @summary Delete
+ */
 export const useUpdatesControllerDelete = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -19004,6 +20587,16 @@ export const getInterestsControllerExpressUrl = (projectId: string) => {
   return `/v1/projects/${projectId}/interests`;
 };
 
+/**
+ * Action `project.interest.express` (session cookie).
+ *
+ * Prerequisites: email_verified.
+ *
+ * Idempotent: the `Idempotency-Key` header is required, a replay returns the stored answer.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Express
+ */
 export const interestsControllerExpress = async (
   projectId: string,
   expressInterestDto: ExpressInterestDto,
@@ -19085,6 +20678,9 @@ export type InterestsControllerExpressMutationVariables = {
   data: ExpressInterestDto;
 };
 
+/**
+ * @summary Express
+ */
 export const useInterestsControllerExpress = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -19127,6 +20723,12 @@ export const getInterestsControllerListUrl = (
     : `/v1/projects/${projectId}/interests`;
 };
 
+/**
+ * Action `project.interest.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary List
+ */
 export const interestsControllerList = async (
   projectId: string,
   params?: InterestsControllerListParams,
@@ -19239,6 +20841,9 @@ export function useInterestsControllerList<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary List
+ */
 
 export function useInterestsControllerList<
   TData = Awaited<ReturnType<typeof interestsControllerList>>,
@@ -19267,6 +20872,12 @@ export const getProjectImpactControllerHistoryUrl = (projectId: string) => {
   return `/v1/projects/${projectId}/impact-assessments`;
 };
 
+/**
+ * Action `project.impact.assess` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary History
+ */
 export const projectImpactControllerHistory = async (
   projectId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -19373,6 +20984,9 @@ export function useProjectImpactControllerHistory<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary History
+ */
 
 export function useProjectImpactControllerHistory<
   TData = Awaited<ReturnType<typeof projectImpactControllerHistory>>,
@@ -19400,6 +21014,14 @@ export const getProjectImpactControllerSubmitUrl = (projectId: string) => {
   return `/v1/projects/${projectId}/impact-assessments`;
 };
 
+/**
+ * Action `project.impact.assess` (session cookie).
+ *
+ * Idempotent: the `Idempotency-Key` header is required, a replay returns the stored answer.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Submit
+ */
 export const projectImpactControllerSubmit = async (
   projectId: string,
   submitAssessmentDto: SubmitAssessmentDto,
@@ -19481,6 +21103,9 @@ export type ProjectImpactControllerSubmitMutationVariables = {
   data: SubmitAssessmentDto;
 };
 
+/**
+ * @summary Submit
+ */
 export const useProjectImpactControllerSubmit = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -19508,6 +21133,12 @@ export const getProjectImpactControllerPrefillUrl = (projectId: string) => {
   return `/v1/projects/${projectId}/impact-assessments/prefill`;
 };
 
+/**
+ * Action `project.impact.assess` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Prefill
+ */
 export const projectImpactControllerPrefill = async (
   projectId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -19614,6 +21245,9 @@ export function useProjectImpactControllerPrefill<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Prefill
+ */
 
 export function useProjectImpactControllerPrefill<
   TData = Awaited<ReturnType<typeof projectImpactControllerPrefill>>,
@@ -19656,6 +21290,12 @@ export const getContributionsControllerOptionsUrl = (
     : `/v1/projects/${projectId}/payment-options`;
 };
 
+/**
+ * Action `payment.quote` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Options
+ */
 export const contributionsControllerOptions = async (
   projectId: string,
   params?: ContributionsControllerOptionsParams,
@@ -19774,6 +21414,9 @@ export function useContributionsControllerOptions<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Options
+ */
 
 export function useContributionsControllerOptions<
   TData = Awaited<ReturnType<typeof contributionsControllerOptions>>,
@@ -19802,6 +21445,12 @@ export const getContributionsControllerQuoteUrl = (projectId: string) => {
   return `/v1/projects/${projectId}/contribution-quotes`;
 };
 
+/**
+ * Action `payment.quote` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Quote
+ */
 export const contributionsControllerQuote = async (
   projectId: string,
   quoteRequestDto: QuoteRequestDto,
@@ -19883,6 +21532,9 @@ export type ContributionsControllerQuoteMutationVariables = {
   data: QuoteRequestDto;
 };
 
+/**
+ * @summary Quote
+ */
 export const useContributionsControllerQuote = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -19910,6 +21562,16 @@ export const getContributionsControllerCreateUrl = (projectId: string) => {
   return `/v1/projects/${projectId}/contributions`;
 };
 
+/**
+ * Action `payment.contribute` (session cookie).
+ *
+ * Prerequisites: email_verified.
+ *
+ * Idempotent: the `Idempotency-Key` header is required, a replay returns the stored answer.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Create
+ */
 export const contributionsControllerCreate = async (
   projectId: string,
   createContributionDto: CreateContributionDto,
@@ -19991,6 +21653,9 @@ export type ContributionsControllerCreateMutationVariables = {
   data: CreateContributionDto;
 };
 
+/**
+ * @summary Create
+ */
 export const useContributionsControllerCreate = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -20033,6 +21698,12 @@ export const getContributionsControllerOfProjectUrl = (
     : `/v1/projects/${projectId}/contributions`;
 };
 
+/**
+ * Action `payment.project.contributions.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Of project
+ */
 export const contributionsControllerOfProject = async (
   projectId: string,
   params?: ContributionsControllerOfProjectParams,
@@ -20151,6 +21822,9 @@ export function useContributionsControllerOfProject<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Of project
+ */
 
 export function useContributionsControllerOfProject<
   TData = Awaited<ReturnType<typeof contributionsControllerOfProject>>,
@@ -20179,6 +21853,16 @@ export const getContributionsControllerCreateForOrganizationUrl = (organizationI
   return `/v1/organizations/${organizationId}/contributions`;
 };
 
+/**
+ * Action `payment.contribute.organization` (session cookie).
+ *
+ * Prerequisites: email_verified.
+ *
+ * Idempotent: the `Idempotency-Key` header is required, a replay returns the stored answer.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Create for organization
+ */
 export const contributionsControllerCreateForOrganization = async (
   organizationId: string,
   createOrganizationContributionDto: CreateOrganizationContributionDto,
@@ -20264,6 +21948,9 @@ export type ContributionsControllerCreateForOrganizationMutationVariables = {
   data: CreateOrganizationContributionDto;
 };
 
+/**
+ * @summary Create for organization
+ */
 export const useContributionsControllerCreateForOrganization = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -20306,6 +21993,12 @@ export const getContributionsControllerMineUrl = (params?: ContributionsControll
     : `/v1/me/contributions`;
 };
 
+/**
+ * Action `payment.contribution.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Mine
+ */
 export const contributionsControllerMine = async (
   params?: ContributionsControllerMineParams,
   options?: Parameters<typeof apiFetch>[1],
@@ -20409,6 +22102,9 @@ export function useContributionsControllerMine<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Mine
+ */
 
 export function useContributionsControllerMine<
   TData = Awaited<ReturnType<typeof contributionsControllerMine>>,
@@ -20436,6 +22132,12 @@ export const getContributionsControllerOneUrl = (contributionId: string) => {
   return `/v1/me/contributions/${contributionId}`;
 };
 
+/**
+ * Action `payment.contribution.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary One
+ */
 export const contributionsControllerOne = async (
   contributionId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -20540,6 +22242,9 @@ export function useContributionsControllerOne<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary One
+ */
 
 export function useContributionsControllerOne<
   TData = Awaited<ReturnType<typeof contributionsControllerOne>>,
@@ -20567,6 +22272,12 @@ export const getContributionsControllerReturnedUrl = (contributionId: string) =>
   return `/v1/me/contributions/${contributionId}/return`;
 };
 
+/**
+ * Action `payment.contribution.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Returned
+ */
 export const contributionsControllerReturned = async (
   contributionId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -20623,6 +22334,9 @@ export type ContributionsControllerReturnedMutationResult = NonNullable<
 export type ContributionsControllerReturnedMutationError = ErrorType<ProblemDetails>;
 export type ContributionsControllerReturnedMutationVariables = { contributionId: string };
 
+/**
+ * @summary Returned
+ */
 export const useContributionsControllerReturned = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -20650,6 +22364,12 @@ export const getContributionsControllerCancelUrl = (contributionId: string) => {
   return `/v1/me/contributions/${contributionId}/cancel`;
 };
 
+/**
+ * Action `payment.contribution.cancel` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Cancel
+ */
 export const contributionsControllerCancel = async (
   contributionId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -20706,6 +22426,9 @@ export type ContributionsControllerCancelMutationResult = NonNullable<
 export type ContributionsControllerCancelMutationError = ErrorType<ProblemDetails>;
 export type ContributionsControllerCancelMutationVariables = { contributionId: string };
 
+/**
+ * @summary Cancel
+ */
 export const useContributionsControllerCancel = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -20733,6 +22456,12 @@ export const getContributionsControllerExportUrl = (projectId: string) => {
   return `/v1/projects/${projectId}/contributions/export`;
 };
 
+/**
+ * Action `payment.project.contributions.export` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Export
+ */
 export const contributionsControllerExport = async (
   projectId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -20837,6 +22566,9 @@ export function useContributionsControllerExport<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Export
+ */
 
 export function useContributionsControllerExport<
   TData = Awaited<ReturnType<typeof contributionsControllerExport>>,
@@ -20879,6 +22611,12 @@ export const getContributionsControllerSupportersUrl = (
     : `/v1/public/projects/${projectId}/supporters`;
 };
 
+/**
+ * Public: no session needed.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Supporters
+ */
 export const contributionsControllerSupporters = async (
   projectId: string,
   params?: ContributionsControllerSupportersParams,
@@ -20997,6 +22735,9 @@ export function useContributionsControllerSupporters<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Supporters
+ */
 
 export function useContributionsControllerSupporters<
   TData = Awaited<ReturnType<typeof contributionsControllerSupporters>>,
@@ -21025,6 +22766,16 @@ export const getOfflineContributionsControllerDeclareUrl = (projectId: string) =
   return `/v1/projects/${projectId}/offline-contributions`;
 };
 
+/**
+ * Action `payment.offline.declare` (session cookie).
+ *
+ * Prerequisites: email_verified.
+ *
+ * Idempotent: the `Idempotency-Key` header is required, a replay returns the stored answer.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Declare
+ */
 export const offlineContributionsControllerDeclare = async (
   projectId: string,
   declareOfflineDto: DeclareOfflineDto,
@@ -21106,6 +22857,9 @@ export type OfflineContributionsControllerDeclareMutationVariables = {
   data: DeclareOfflineDto;
 };
 
+/**
+ * @summary Declare
+ */
 export const useOfflineContributionsControllerDeclare = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -21148,6 +22902,12 @@ export const getOfflineContributionsControllerOfProjectUrl = (
     : `/v1/projects/${projectId}/offline-contributions`;
 };
 
+/**
+ * Action `payment.project.contributions.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Of project
+ */
 export const offlineContributionsControllerOfProject = async (
   projectId: string,
   params?: OfflineContributionsControllerOfProjectParams,
@@ -21283,6 +23043,9 @@ export function useOfflineContributionsControllerOfProject<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Of project
+ */
 
 export function useOfflineContributionsControllerOfProject<
   TData = Awaited<ReturnType<typeof offlineContributionsControllerOfProject>>,
@@ -21319,6 +23082,16 @@ export const getOfflineContributionsControllerDeclareForMemberUrl = (projectId: 
   return `/v1/projects/${projectId}/team/offline-contributions`;
 };
 
+/**
+ * Action `payment.offline.declare.team` (session cookie).
+ *
+ * Prerequisites: email_verified.
+ *
+ * Idempotent: the `Idempotency-Key` header is required, a replay returns the stored answer.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Declare for member
+ */
 export const offlineContributionsControllerDeclareForMember = async (
   projectId: string,
   declareTeamOfflineDto: DeclareTeamOfflineDto,
@@ -21403,6 +23176,9 @@ export type OfflineContributionsControllerDeclareForMemberMutationVariables = {
   data: DeclareTeamOfflineDto;
 };
 
+/**
+ * @summary Declare for member
+ */
 export const useOfflineContributionsControllerDeclareForMember = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -21447,6 +23223,12 @@ export const getOfflineContributionsControllerMineUrl = (
     : `/v1/me/offline-contributions`;
 };
 
+/**
+ * Action `payment.contribution.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Mine
+ */
 export const offlineContributionsControllerMine = async (
   params?: OfflineContributionsControllerMineParams,
   options?: Parameters<typeof apiFetch>[1],
@@ -21550,6 +23332,9 @@ export function useOfflineContributionsControllerMine<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Mine
+ */
 
 export function useOfflineContributionsControllerMine<
   TData = Awaited<ReturnType<typeof offlineContributionsControllerMine>>,
@@ -21577,6 +23362,12 @@ export const getOfflineContributionsControllerConfirmUrl = (offlineContributionI
   return `/v1/offline-contributions/${offlineContributionId}/confirm`;
 };
 
+/**
+ * Action `payment.offline.respond` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Confirm
+ */
 export const offlineContributionsControllerConfirm = async (
   offlineContributionId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -21638,6 +23429,9 @@ export type OfflineContributionsControllerConfirmMutationVariables = {
   offlineContributionId: string;
 };
 
+/**
+ * @summary Confirm
+ */
 export const useOfflineContributionsControllerConfirm = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -21665,6 +23459,12 @@ export const getOfflineContributionsControllerRejectUrl = (offlineContributionId
   return `/v1/offline-contributions/${offlineContributionId}/reject`;
 };
 
+/**
+ * Action `payment.offline.respond` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Reject
+ */
 export const offlineContributionsControllerReject = async (
   offlineContributionId: string,
   rejectionDto: RejectionDto,
@@ -21749,6 +23549,9 @@ export type OfflineContributionsControllerRejectMutationVariables = {
   data: RejectionDto;
 };
 
+/**
+ * @summary Reject
+ */
 export const useOfflineContributionsControllerReject = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -21776,6 +23579,12 @@ export const getOfflineContributionsControllerProofsUrl = (offlineContributionId
   return `/v1/offline-contributions/${offlineContributionId}/proofs`;
 };
 
+/**
+ * Action `payment.offline.respond` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Proofs
+ */
 export const offlineContributionsControllerProofs = async (
   offlineContributionId: string,
   proofsDto: ProofsDto,
@@ -21860,6 +23669,9 @@ export type OfflineContributionsControllerProofsMutationVariables = {
   data: ProofsDto;
 };
 
+/**
+ * @summary Proofs
+ */
 export const useOfflineContributionsControllerProofs = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -21887,6 +23699,14 @@ export const getPayoutControllerAccountUrl = () => {
   return `/v1/me/payout-account`;
 };
 
+/**
+ * Action `payment.payout.configure` (session cookie).
+ *
+ * Prerequisites: email_verified, profile.entrepreneur_facet.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Account
+ */
 export const payoutControllerAccount = async (
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<PayoutAccountDtoOutput> => {
@@ -21981,6 +23801,9 @@ export function usePayoutControllerAccount<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Account
+ */
 
 export function usePayoutControllerAccount<
   TData = Awaited<ReturnType<typeof payoutControllerAccount>>,
@@ -22007,6 +23830,16 @@ export const getPayoutControllerCreateUrl = () => {
   return `/v1/me/payout-account`;
 };
 
+/**
+ * Action `payment.payout.configure` (session cookie).
+ *
+ * Prerequisites: email_verified, profile.entrepreneur_facet.
+ *
+ * Idempotent: the `Idempotency-Key` header is required, a replay returns the stored answer.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Create
+ */
 export const payoutControllerCreate = async (
   createPayoutAccountDto: CreatePayoutAccountDto,
   options?: Parameters<typeof apiFetch>[1],
@@ -22083,6 +23916,9 @@ export type PayoutControllerCreateMutationBody = CreatePayoutAccountDto;
 export type PayoutControllerCreateMutationError = ErrorType<ProblemDetails>;
 export type PayoutControllerCreateMutationVariables = { data: CreatePayoutAccountDto };
 
+/**
+ * @summary Create
+ */
 export const usePayoutControllerCreate = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -22107,6 +23943,14 @@ export const getPayoutControllerRefreshUrl = () => {
   return `/v1/me/payout-account/refresh`;
 };
 
+/**
+ * Action `payment.payout.configure` (session cookie).
+ *
+ * Prerequisites: email_verified, profile.entrepreneur_facet.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Refresh
+ */
 export const payoutControllerRefresh = async (
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<PayoutAccountDtoOutput> => {
@@ -22158,6 +24002,9 @@ export type PayoutControllerRefreshMutationResult = NonNullable<
 
 export type PayoutControllerRefreshMutationError = ErrorType<ProblemDetails>;
 
+/**
+ * @summary Refresh
+ */
 export const usePayoutControllerRefresh = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -22182,6 +24029,14 @@ export const getPayoutControllerKycUrl = () => {
   return `/v1/me/kyc`;
 };
 
+/**
+ * Action `payment.kyc.submit` (session cookie).
+ *
+ * Prerequisites: email_verified, profile.entrepreneur_facet.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Kyc
+ */
 export const payoutControllerKyc = async (
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<KycOverviewDtoOutput> => {
@@ -22273,6 +24128,9 @@ export function usePayoutControllerKyc<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Kyc
+ */
 
 export function usePayoutControllerKyc<
   TData = Awaited<ReturnType<typeof payoutControllerKyc>>,
@@ -22299,6 +24157,16 @@ export const getPayoutControllerSubmitUrl = () => {
   return `/v1/me/kyc/submissions`;
 };
 
+/**
+ * Action `payment.kyc.submit` (session cookie).
+ *
+ * Prerequisites: email_verified, profile.entrepreneur_facet.
+ *
+ * Idempotent: the `Idempotency-Key` header is required, a replay returns the stored answer.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Submit
+ */
 export const payoutControllerSubmit = async (
   submitKycDto: SubmitKycDto,
   options?: Parameters<typeof apiFetch>[1],
@@ -22375,6 +24243,9 @@ export type PayoutControllerSubmitMutationBody = SubmitKycDto;
 export type PayoutControllerSubmitMutationError = ErrorType<ProblemDetails>;
 export type PayoutControllerSubmitMutationVariables = { data: SubmitKycDto };
 
+/**
+ * @summary Submit
+ */
 export const usePayoutControllerSubmit = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -22399,6 +24270,16 @@ export const getAdminPaymentsControllerContributionUrl = (contributionId: string
   return `/v1/admin/payments/contributions/${contributionId}`;
 };
 
+/**
+ * Action `payment.refund` (session cookie).
+ *
+ * Roles: admin, with 2FA.
+ *
+ * Requires a recent sign-in.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Contribution
+ */
 export const adminPaymentsControllerContribution = async (
   contributionId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -22525,6 +24406,9 @@ export function useAdminPaymentsControllerContribution<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Contribution
+ */
 
 export function useAdminPaymentsControllerContribution<
   TData = Awaited<ReturnType<typeof adminPaymentsControllerContribution>>,
@@ -22556,6 +24440,18 @@ export const getAdminPaymentsControllerRefundUrl = (contributionId: string) => {
   return `/v1/admin/payments/contributions/${contributionId}/refunds`;
 };
 
+/**
+ * Action `payment.refund` (session cookie).
+ *
+ * Roles: admin, with 2FA.
+ *
+ * Requires a recent sign-in.
+ *
+ * Idempotent: the `Idempotency-Key` header is required, a replay returns the stored answer.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Refund
+ */
 export const adminPaymentsControllerRefund = async (
   contributionId: string,
   refundRequestDto: RefundRequestDto,
@@ -22637,6 +24533,9 @@ export type AdminPaymentsControllerRefundMutationVariables = {
   data: RefundRequestDto;
 };
 
+/**
+ * @summary Refund
+ */
 export const useAdminPaymentsControllerRefund = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -22678,6 +24577,14 @@ export const getAdminPaymentsControllerKycQueueUrl = (
     : `/v1/admin/payments/kyc-submissions`;
 };
 
+/**
+ * Action `payment.kyc.review` (session cookie).
+ *
+ * Roles: admin, with 2FA.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Kyc queue
+ */
 export const adminPaymentsControllerKycQueue = async (
   params?: AdminPaymentsControllerKycQueueParams,
   options?: Parameters<typeof apiFetch>[1],
@@ -22781,6 +24688,9 @@ export function useAdminPaymentsControllerKycQueue<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Kyc queue
+ */
 
 export function useAdminPaymentsControllerKycQueue<
   TData = Awaited<ReturnType<typeof adminPaymentsControllerKycQueue>>,
@@ -22808,6 +24718,14 @@ export const getAdminPaymentsControllerKycSubmissionUrl = (kycSubmissionId: stri
   return `/v1/admin/payments/kyc-submissions/${kycSubmissionId}`;
 };
 
+/**
+ * Action `payment.kyc.review` (session cookie).
+ *
+ * Roles: admin, with 2FA.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Kyc submission
+ */
 export const adminPaymentsControllerKycSubmission = async (
   kycSubmissionId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -22935,6 +24853,9 @@ export function useAdminPaymentsControllerKycSubmission<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Kyc submission
+ */
 
 export function useAdminPaymentsControllerKycSubmission<
   TData = Awaited<ReturnType<typeof adminPaymentsControllerKycSubmission>>,
@@ -22969,6 +24890,14 @@ export const getAdminPaymentsControllerDecideKycUrl = (kycSubmissionId: string) 
   return `/v1/admin/payments/kyc-submissions/${kycSubmissionId}/decision`;
 };
 
+/**
+ * Action `payment.kyc.review` (session cookie).
+ *
+ * Roles: admin, with 2FA.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Decide kyc
+ */
 export const adminPaymentsControllerDecideKyc = async (
   kycSubmissionId: string,
   kycDecisionDto: KycDecisionDto,
@@ -23050,6 +24979,9 @@ export type AdminPaymentsControllerDecideKycMutationVariables = {
   data: KycDecisionDto;
 };
 
+/**
+ * @summary Decide kyc
+ */
 export const useAdminPaymentsControllerDecideKyc = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -23091,6 +25023,14 @@ export const getAdminPaymentsControllerOfflineQueueUrl = (
     : `/v1/admin/payments/offline-contributions`;
 };
 
+/**
+ * Action `payment.offline.validate` (session cookie).
+ *
+ * Roles: admin, with 2FA.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Offline queue
+ */
 export const adminPaymentsControllerOfflineQueue = async (
   params?: AdminPaymentsControllerOfflineQueueParams,
   options?: Parameters<typeof apiFetch>[1],
@@ -23210,6 +25150,9 @@ export function useAdminPaymentsControllerOfflineQueue<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Offline queue
+ */
 
 export function useAdminPaymentsControllerOfflineQueue<
   TData = Awaited<ReturnType<typeof adminPaymentsControllerOfflineQueue>>,
@@ -23241,6 +25184,14 @@ export const getAdminPaymentsControllerDecideOfflineUrl = (offlineContributionId
   return `/v1/admin/payments/offline-contributions/${offlineContributionId}/decision`;
 };
 
+/**
+ * Action `payment.offline.validate` (session cookie).
+ *
+ * Roles: admin, with 2FA.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Decide offline
+ */
 export const adminPaymentsControllerDecideOffline = async (
   offlineContributionId: string,
   offlineDecisionDto: OfflineDecisionDto,
@@ -23325,6 +25276,9 @@ export type AdminPaymentsControllerDecideOfflineMutationVariables = {
   data: OfflineDecisionDto;
 };
 
+/**
+ * @summary Decide offline
+ */
 export const useAdminPaymentsControllerDecideOffline = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -23366,6 +25320,14 @@ export const getAdminPaymentsControllerDiscrepanciesUrl = (
     : `/v1/admin/payments/discrepancies`;
 };
 
+/**
+ * Action `payment.reconciliation.manage` (session cookie).
+ *
+ * Roles: admin, with 2FA.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Discrepancies
+ */
 export const adminPaymentsControllerDiscrepancies = async (
   params?: AdminPaymentsControllerDiscrepanciesParams,
   options?: Parameters<typeof apiFetch>[1],
@@ -23486,6 +25448,9 @@ export function useAdminPaymentsControllerDiscrepancies<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Discrepancies
+ */
 
 export function useAdminPaymentsControllerDiscrepancies<
   TData = Awaited<ReturnType<typeof adminPaymentsControllerDiscrepancies>>,
@@ -23517,6 +25482,14 @@ export const getAdminPaymentsControllerResolveUrl = (discrepancyId: string) => {
   return `/v1/admin/payments/discrepancies/${discrepancyId}/resolve`;
 };
 
+/**
+ * Action `payment.reconciliation.manage` (session cookie).
+ *
+ * Roles: admin, with 2FA.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Resolve
+ */
 export const adminPaymentsControllerResolve = async (
   discrepancyId: string,
   resolveDiscrepancyDto: ResolveDiscrepancyDto,
@@ -23598,6 +25571,9 @@ export type AdminPaymentsControllerResolveMutationVariables = {
   data: ResolveDiscrepancyDto;
 };
 
+/**
+ * @summary Resolve
+ */
 export const useAdminPaymentsControllerResolve = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -23625,6 +25601,14 @@ export const getAdminPaymentsControllerReconcileUrl = () => {
   return `/v1/admin/payments/reconciliation-runs`;
 };
 
+/**
+ * Action `payment.reconciliation.manage` (session cookie).
+ *
+ * Roles: admin, with 2FA.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Reconcile
+ */
 export const adminPaymentsControllerReconcile = async (
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<ReconciliationReportDtoOutput> => {
@@ -23677,6 +25661,9 @@ export type AdminPaymentsControllerReconcileMutationResult = NonNullable<
 
 export type AdminPaymentsControllerReconcileMutationError = ErrorType<ProblemDetails>;
 
+/**
+ * @summary Reconcile
+ */
 export const useAdminPaymentsControllerReconcile = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -23704,6 +25691,12 @@ export const getEngagementControllerMineUrl = () => {
   return `/v1/me/impact-dashboard`;
 };
 
+/**
+ * Action `engagement.dashboard.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Mine
+ */
 export const engagementControllerMine = async (
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<DashboardDtoOutput> => {
@@ -23798,6 +25791,9 @@ export function useEngagementControllerMine<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Mine
+ */
 
 export function useEngagementControllerMine<
   TData = Awaited<ReturnType<typeof engagementControllerMine>>,
@@ -23824,6 +25820,12 @@ export const getEngagementControllerMyHistoryUrl = () => {
   return `/v1/me/impact-dashboard/history`;
 };
 
+/**
+ * Action `engagement.dashboard.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary My history
+ */
 export const engagementControllerMyHistory = async (
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<string> => {
@@ -23918,6 +25920,9 @@ export function useEngagementControllerMyHistory<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary My history
+ */
 
 export function useEngagementControllerMyHistory<
   TData = Awaited<ReturnType<typeof engagementControllerMyHistory>>,
@@ -23944,6 +25949,12 @@ export const getEngagementControllerOrganizationUrl = (organizationId: string) =
   return `/v1/organizations/${organizationId}/impact-dashboard`;
 };
 
+/**
+ * Action `engagement.organization.dashboard.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Organization
+ */
 export const engagementControllerOrganization = async (
   organizationId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -24051,6 +26062,9 @@ export function useEngagementControllerOrganization<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Organization
+ */
 
 export function useEngagementControllerOrganization<
   TData = Awaited<ReturnType<typeof engagementControllerOrganization>>,
@@ -24078,6 +26092,12 @@ export const getEngagementControllerOrganizationHistoryUrl = (organizationId: st
   return `/v1/organizations/${organizationId}/impact-dashboard/history`;
 };
 
+/**
+ * Action `engagement.organization.dashboard.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Organization history
+ */
 export const engagementControllerOrganizationHistory = async (
   organizationId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -24202,6 +26222,9 @@ export function useEngagementControllerOrganizationHistory<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Organization history
+ */
 
 export function useEngagementControllerOrganizationHistory<
   TData = Awaited<ReturnType<typeof engagementControllerOrganizationHistory>>,
@@ -24236,6 +26259,16 @@ export const getEngagementControllerDeclareUrl = () => {
   return `/v1/me/time-entries`;
 };
 
+/**
+ * Action `engagement.time.declare` (session cookie).
+ *
+ * Prerequisites: email_verified.
+ *
+ * Idempotent: the `Idempotency-Key` header is required, a replay returns the stored answer.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Declare
+ */
 export const engagementControllerDeclare = async (
   declareTimeEntryDto: DeclareTimeEntryDto,
   options?: Parameters<typeof apiFetch>[1],
@@ -24313,6 +26346,9 @@ export type EngagementControllerDeclareMutationBody = DeclareTimeEntryDto;
 export type EngagementControllerDeclareMutationError = ErrorType<ProblemDetails>;
 export type EngagementControllerDeclareMutationVariables = { data: DeclareTimeEntryDto };
 
+/**
+ * @summary Declare
+ */
 export const useEngagementControllerDeclare = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -24352,6 +26388,12 @@ export const getEngagementControllerDeclaredUrl = (params?: EngagementController
     : `/v1/me/time-entries`;
 };
 
+/**
+ * Action `engagement.time.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Declared
+ */
 export const engagementControllerDeclared = async (
   params?: EngagementControllerDeclaredParams,
   options?: Parameters<typeof apiFetch>[1],
@@ -24455,6 +26497,9 @@ export function useEngagementControllerDeclared<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Declared
+ */
 
 export function useEngagementControllerDeclared<
   TData = Awaited<ReturnType<typeof engagementControllerDeclared>>,
@@ -24494,6 +26539,12 @@ export const getEngagementControllerReceivedUrl = (params?: EngagementController
     : `/v1/me/time-entries/received`;
 };
 
+/**
+ * Action `engagement.time.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Received
+ */
 export const engagementControllerReceived = async (
   params?: EngagementControllerReceivedParams,
   options?: Parameters<typeof apiFetch>[1],
@@ -24597,6 +26648,9 @@ export function useEngagementControllerReceived<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Received
+ */
 
 export function useEngagementControllerReceived<
   TData = Awaited<ReturnType<typeof engagementControllerReceived>>,
@@ -24624,6 +26678,12 @@ export const getEngagementControllerConfirmUrl = (timeEntryId: string) => {
   return `/v1/time-entries/${timeEntryId}/confirm`;
 };
 
+/**
+ * Action `engagement.time.respond` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Confirm
+ */
 export const engagementControllerConfirm = async (
   timeEntryId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -24680,6 +26740,9 @@ export type EngagementControllerConfirmMutationResult = NonNullable<
 export type EngagementControllerConfirmMutationError = ErrorType<ProblemDetails>;
 export type EngagementControllerConfirmMutationVariables = { timeEntryId: string };
 
+/**
+ * @summary Confirm
+ */
 export const useEngagementControllerConfirm = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -24707,6 +26770,12 @@ export const getEngagementControllerDisputeUrl = (timeEntryId: string) => {
   return `/v1/time-entries/${timeEntryId}/dispute`;
 };
 
+/**
+ * Action `engagement.time.respond` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Dispute
+ */
 export const engagementControllerDispute = async (
   timeEntryId: string,
   disputeTimeEntryDto: DisputeTimeEntryDto,
@@ -24788,6 +26857,9 @@ export type EngagementControllerDisputeMutationVariables = {
   data: DisputeTimeEntryDto;
 };
 
+/**
+ * @summary Dispute
+ */
 export const useEngagementControllerDispute = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -24827,6 +26899,12 @@ export const getMessagingControllerListUrl = (params?: MessagingControllerListPa
     : `/v1/messaging/conversations`;
 };
 
+/**
+ * Action `messaging.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary List
+ */
 export const messagingControllerList = async (
   params?: MessagingControllerListParams,
   options?: Parameters<typeof apiFetch>[1],
@@ -24928,6 +27006,9 @@ export function useMessagingControllerList<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary List
+ */
 
 export function useMessagingControllerList<
   TData = Awaited<ReturnType<typeof messagingControllerList>>,
@@ -24955,6 +27036,14 @@ export const getMessagingControllerStartUrl = () => {
   return `/v1/messaging/conversations`;
 };
 
+/**
+ * Action `messaging.conversation.start` (session cookie).
+ *
+ * Idempotent: the `Idempotency-Key` header is required, a replay returns the stored answer.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Start
+ */
 export const messagingControllerStart = async (
   startConversationDto: StartConversationDto,
   options?: Parameters<typeof apiFetch>[1],
@@ -25031,6 +27120,9 @@ export type MessagingControllerStartMutationBody = StartConversationDto;
 export type MessagingControllerStartMutationError = ErrorType<ProblemDetails>;
 export type MessagingControllerStartMutationVariables = { data: StartConversationDto };
 
+/**
+ * @summary Start
+ */
 export const useMessagingControllerStart = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -25055,6 +27147,12 @@ export const getMessagingControllerGetUrl = (conversationId: string) => {
   return `/v1/messaging/conversations/${conversationId}`;
 };
 
+/**
+ * Action `messaging.conversation.participate` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Get
+ */
 export const messagingControllerGet = async (
   conversationId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -25158,6 +27256,9 @@ export function useMessagingControllerGet<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Get
+ */
 
 export function useMessagingControllerGet<
   TData = Awaited<ReturnType<typeof messagingControllerGet>>,
@@ -25185,6 +27286,12 @@ export const getMessagingControllerUpdateUrl = (conversationId: string) => {
   return `/v1/messaging/conversations/${conversationId}`;
 };
 
+/**
+ * Action `messaging.conversation.participate` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Update
+ */
 export const messagingControllerUpdate = async (
   conversationId: string,
   updateConversationDto: UpdateConversationDto,
@@ -25265,6 +27372,9 @@ export type MessagingControllerUpdateMutationVariables = {
   data: UpdateConversationDto;
 };
 
+/**
+ * @summary Update
+ */
 export const useMessagingControllerUpdate = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -25292,6 +27402,12 @@ export const getMessagingControllerLeaveUrl = (conversationId: string) => {
   return `/v1/messaging/conversations/${conversationId}/leave`;
 };
 
+/**
+ * Action `messaging.conversation.participate` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Leave
+ */
 export const messagingControllerLeave = async (
   conversationId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -25347,6 +27463,9 @@ export type MessagingControllerLeaveMutationResult = NonNullable<
 export type MessagingControllerLeaveMutationError = ErrorType<ProblemDetails>;
 export type MessagingControllerLeaveMutationVariables = { conversationId: string };
 
+/**
+ * @summary Leave
+ */
 export const useMessagingControllerLeave = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -25386,6 +27505,12 @@ export const getMessagingControllerMessagesUrl = (
     : `/v1/messaging/conversations/${conversationId}/messages`;
 };
 
+/**
+ * Action `messaging.conversation.participate` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Messages
+ */
 export const messagingControllerMessages = async (
   conversationId: string,
   params?: MessagingControllerMessagesParams,
@@ -25502,6 +27627,9 @@ export function useMessagingControllerMessages<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Messages
+ */
 
 export function useMessagingControllerMessages<
   TData = Awaited<ReturnType<typeof messagingControllerMessages>>,
@@ -25530,6 +27658,14 @@ export const getMessagingControllerSendUrl = (conversationId: string) => {
   return `/v1/messaging/conversations/${conversationId}/messages`;
 };
 
+/**
+ * Action `messaging.conversation.participate` (session cookie).
+ *
+ * Idempotent: the `Idempotency-Key` header is required, a replay returns the stored answer.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Send
+ */
 export const messagingControllerSend = async (
   conversationId: string,
   sendMessageDto: SendMessageDto,
@@ -25610,6 +27746,9 @@ export type MessagingControllerSendMutationVariables = {
   data: SendMessageDto;
 };
 
+/**
+ * @summary Send
+ */
 export const useMessagingControllerSend = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -25634,6 +27773,12 @@ export const getMessagingControllerReadUrl = (conversationId: string) => {
   return `/v1/messaging/conversations/${conversationId}/read`;
 };
 
+/**
+ * Action `messaging.conversation.participate` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Read
+ */
 export const messagingControllerRead = async (
   conversationId: string,
   readConversationDto: ReadConversationDto,
@@ -25714,6 +27859,9 @@ export type MessagingControllerReadMutationVariables = {
   data: ReadConversationDto;
 };
 
+/**
+ * @summary Read
+ */
 export const useMessagingControllerRead = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -25738,6 +27886,12 @@ export const getMessagingControllerEditUrl = (conversationId: string, messageId:
   return `/v1/messaging/conversations/${conversationId}/messages/${messageId}`;
 };
 
+/**
+ * Action `messaging.message.update` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Edit
+ */
 export const messagingControllerEdit = async (
   conversationId: string,
   messageId: string,
@@ -25820,6 +27974,9 @@ export type MessagingControllerEditMutationVariables = {
   data: EditMessageDto;
 };
 
+/**
+ * @summary Edit
+ */
 export const useMessagingControllerEdit = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -25844,6 +28001,12 @@ export const getMessagingControllerRemoveUrl = (conversationId: string, messageI
   return `/v1/messaging/conversations/${conversationId}/messages/${messageId}`;
 };
 
+/**
+ * Action `messaging.message.update` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Remove
+ */
 export const messagingControllerRemove = async (
   conversationId: string,
   messageId: string,
@@ -25903,6 +28066,9 @@ export type MessagingControllerRemoveMutationVariables = {
   messageId: string;
 };
 
+/**
+ * @summary Remove
+ */
 export const useMessagingControllerRemove = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -25930,6 +28096,12 @@ export const getMessagingControllerAcceptUrl = (conversationId: string) => {
   return `/v1/messaging/conversations/${conversationId}/accept`;
 };
 
+/**
+ * Action `messaging.request.respond` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Accept
+ */
 export const messagingControllerAccept = async (
   conversationId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -25985,6 +28157,9 @@ export type MessagingControllerAcceptMutationResult = NonNullable<
 export type MessagingControllerAcceptMutationError = ErrorType<ProblemDetails>;
 export type MessagingControllerAcceptMutationVariables = { conversationId: string };
 
+/**
+ * @summary Accept
+ */
 export const useMessagingControllerAccept = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -26012,6 +28187,12 @@ export const getMessagingControllerDeclineUrl = (conversationId: string) => {
   return `/v1/messaging/conversations/${conversationId}/decline`;
 };
 
+/**
+ * Action `messaging.request.respond` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Decline
+ */
 export const messagingControllerDecline = async (
   conversationId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -26068,6 +28249,9 @@ export type MessagingControllerDeclineMutationResult = NonNullable<
 export type MessagingControllerDeclineMutationError = ErrorType<ProblemDetails>;
 export type MessagingControllerDeclineMutationVariables = { conversationId: string };
 
+/**
+ * @summary Decline
+ */
 export const useMessagingControllerDecline = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -26095,6 +28279,12 @@ export const getMessagingControllerSettingsUrl = () => {
   return `/v1/me/messaging/settings`;
 };
 
+/**
+ * Action `messaging.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Settings
+ */
 export const messagingControllerSettings = async (
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<MessagingSettingsDtoOutput> => {
@@ -26189,6 +28379,9 @@ export function useMessagingControllerSettings<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Settings
+ */
 
 export function useMessagingControllerSettings<
   TData = Awaited<ReturnType<typeof messagingControllerSettings>>,
@@ -26215,6 +28408,12 @@ export const getMessagingControllerUpdateSettingsUrl = () => {
   return `/v1/me/messaging/settings`;
 };
 
+/**
+ * Action `messaging.settings.update` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Update settings
+ */
 export const messagingControllerUpdateSettings = async (
   messagingSettingsDto: MessagingSettingsDto,
   options?: Parameters<typeof apiFetch>[1],
@@ -26292,6 +28491,9 @@ export type MessagingControllerUpdateSettingsMutationBody = MessagingSettingsDto
 export type MessagingControllerUpdateSettingsMutationError = ErrorType<ProblemDetails>;
 export type MessagingControllerUpdateSettingsMutationVariables = { data: MessagingSettingsDto };
 
+/**
+ * @summary Update settings
+ */
 export const useMessagingControllerUpdateSettings = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -26319,6 +28521,16 @@ export const getMessagingControllerProposeUrl = () => {
   return `/v1/messaging/introductions`;
 };
 
+/**
+ * Action `messaging.introduction.propose` (session cookie).
+ *
+ * Prerequisites: email_verified.
+ *
+ * Idempotent: the `Idempotency-Key` header is required, a replay returns the stored answer.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Propose
+ */
 export const messagingControllerPropose = async (
   proposeIntroductionDto: ProposeIntroductionDto,
   options?: Parameters<typeof apiFetch>[1],
@@ -26396,6 +28608,9 @@ export type MessagingControllerProposeMutationBody = ProposeIntroductionDto;
 export type MessagingControllerProposeMutationError = ErrorType<ProblemDetails>;
 export type MessagingControllerProposeMutationVariables = { data: ProposeIntroductionDto };
 
+/**
+ * @summary Propose
+ */
 export const useMessagingControllerPropose = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -26437,6 +28652,12 @@ export const getMessagingControllerListIntroductionsUrl = (
     : `/v1/messaging/introductions`;
 };
 
+/**
+ * Action `messaging.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary List introductions
+ */
 export const messagingControllerListIntroductions = async (
   params?: MessagingControllerListIntroductionsParams,
   options?: Parameters<typeof apiFetch>[1],
@@ -26557,6 +28778,9 @@ export function useMessagingControllerListIntroductions<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary List introductions
+ */
 
 export function useMessagingControllerListIntroductions<
   TData = Awaited<ReturnType<typeof messagingControllerListIntroductions>>,
@@ -26588,6 +28812,12 @@ export const getMessagingControllerIntroductionUrl = (introductionId: string) =>
   return `/v1/messaging/introductions/${introductionId}`;
 };
 
+/**
+ * Action `messaging.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Introduction
+ */
 export const messagingControllerIntroduction = async (
   introductionId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -26695,6 +28925,9 @@ export function useMessagingControllerIntroduction<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Introduction
+ */
 
 export function useMessagingControllerIntroduction<
   TData = Awaited<ReturnType<typeof messagingControllerIntroduction>>,
@@ -26722,6 +28955,12 @@ export const getMessagingControllerAcceptIntroductionUrl = (introductionId: stri
   return `/v1/messaging/introductions/${introductionId}/accept`;
 };
 
+/**
+ * Action `messaging.introduction.respond` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Accept introduction
+ */
 export const messagingControllerAcceptIntroduction = async (
   introductionId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -26781,6 +29020,9 @@ export type MessagingControllerAcceptIntroductionMutationResult = NonNullable<
 export type MessagingControllerAcceptIntroductionMutationError = ErrorType<ProblemDetails>;
 export type MessagingControllerAcceptIntroductionMutationVariables = { introductionId: string };
 
+/**
+ * @summary Accept introduction
+ */
 export const useMessagingControllerAcceptIntroduction = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -26808,6 +29050,12 @@ export const getMessagingControllerDeclineIntroductionUrl = (introductionId: str
   return `/v1/messaging/introductions/${introductionId}/decline`;
 };
 
+/**
+ * Action `messaging.introduction.respond` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Decline introduction
+ */
 export const messagingControllerDeclineIntroduction = async (
   introductionId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -26867,6 +29115,9 @@ export type MessagingControllerDeclineIntroductionMutationResult = NonNullable<
 export type MessagingControllerDeclineIntroductionMutationError = ErrorType<ProblemDetails>;
 export type MessagingControllerDeclineIntroductionMutationVariables = { introductionId: string };
 
+/**
+ * @summary Decline introduction
+ */
 export const useMessagingControllerDeclineIntroduction = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -26897,6 +29148,16 @@ export const getEventsControllerCreateUrl = () => {
   return `/v1/events`;
 };
 
+/**
+ * Action `event.create` (session cookie).
+ *
+ * Prerequisites: email_verified.
+ *
+ * Idempotent: the `Idempotency-Key` header is required, a replay returns the stored answer.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Create
+ */
 export const eventsControllerCreate = async (
   createEventDto: CreateEventDto,
   options?: Parameters<typeof apiFetch>[1],
@@ -26973,6 +29234,9 @@ export type EventsControllerCreateMutationBody = CreateEventDto;
 export type EventsControllerCreateMutationError = ErrorType<ProblemDetails>;
 export type EventsControllerCreateMutationVariables = { data: CreateEventDto };
 
+/**
+ * @summary Create
+ */
 export const useEventsControllerCreate = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -27007,6 +29271,12 @@ export const getEventsControllerListUrl = (params?: EventsControllerListParams) 
   return stringifiedParams.length > 0 ? `/v1/events?${stringifiedParams}` : `/v1/events`;
 };
 
+/**
+ * Action `event.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary List
+ */
 export const eventsControllerList = async (
   params?: EventsControllerListParams,
   options?: Parameters<typeof apiFetch>[1],
@@ -27107,6 +29377,9 @@ export function useEventsControllerList<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary List
+ */
 
 export function useEventsControllerList<
   TData = Awaited<ReturnType<typeof eventsControllerList>>,
@@ -27146,6 +29419,12 @@ export const getEventsControllerPublicListUrl = (params?: EventsControllerPublic
     : `/v1/public/events`;
 };
 
+/**
+ * Public: no session needed.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Public list
+ */
 export const eventsControllerPublicList = async (
   params?: EventsControllerPublicListParams,
   options?: Parameters<typeof apiFetch>[1],
@@ -27249,6 +29528,9 @@ export function useEventsControllerPublicList<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Public list
+ */
 
 export function useEventsControllerPublicList<
   TData = Awaited<ReturnType<typeof eventsControllerPublicList>>,
@@ -27286,6 +29568,12 @@ export const getEventsControllerMineUrl = (params?: EventsControllerMineParams) 
   return stringifiedParams.length > 0 ? `/v1/me/events?${stringifiedParams}` : `/v1/me/events`;
 };
 
+/**
+ * Action `event.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Mine
+ */
 export const eventsControllerMine = async (
   params?: EventsControllerMineParams,
   options?: Parameters<typeof apiFetch>[1],
@@ -27386,6 +29674,9 @@ export function useEventsControllerMine<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Mine
+ */
 
 export function useEventsControllerMine<
   TData = Awaited<ReturnType<typeof eventsControllerMine>>,
@@ -27413,6 +29704,12 @@ export const getEventsControllerBySlugUrl = (slug: string) => {
   return `/v1/events/by-slug/${slug}`;
 };
 
+/**
+ * Action `event.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary By slug
+ */
 export const eventsControllerBySlug = async (
   slug: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -27516,6 +29813,9 @@ export function useEventsControllerBySlug<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary By slug
+ */
 
 export function useEventsControllerBySlug<
   TData = Awaited<ReturnType<typeof eventsControllerBySlug>>,
@@ -27543,6 +29843,12 @@ export const getEventsControllerForPublicUrl = (slug: string) => {
   return `/v1/public/events/${slug}`;
 };
 
+/**
+ * Public: no session needed.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary For public
+ */
 export const eventsControllerForPublic = async (
   slug: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -27647,6 +29953,9 @@ export function useEventsControllerForPublic<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary For public
+ */
 
 export function useEventsControllerForPublic<
   TData = Awaited<ReturnType<typeof eventsControllerForPublic>>,
@@ -27674,6 +29983,12 @@ export const getEventsControllerPublicIcsUrl = (slug: string) => {
   return `/v1/public/events/${slug}/ics`;
 };
 
+/**
+ * Public: no session needed.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Public ics
+ */
 export const eventsControllerPublicIcs = async (
   slug: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -27778,6 +30093,9 @@ export function useEventsControllerPublicIcs<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Public ics
+ */
 
 export function useEventsControllerPublicIcs<
   TData = Awaited<ReturnType<typeof eventsControllerPublicIcs>>,
@@ -27805,6 +30123,12 @@ export const getEventsControllerByIdUrl = (eventId: string) => {
   return `/v1/events/${eventId}`;
 };
 
+/**
+ * Action `event.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary By id
+ */
 export const eventsControllerById = async (
   eventId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -27908,6 +30232,9 @@ export function useEventsControllerById<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary By id
+ */
 
 export function useEventsControllerById<
   TData = Awaited<ReturnType<typeof eventsControllerById>>,
@@ -27935,6 +30262,12 @@ export const getEventsControllerUpdateUrl = (eventId: string) => {
   return `/v1/events/${eventId}`;
 };
 
+/**
+ * Action `event.update` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Update
+ */
 export const eventsControllerUpdate = async (
   eventId: string,
   updateEventDto: UpdateEventDto,
@@ -28012,6 +30345,9 @@ export type EventsControllerUpdateMutationBody = UpdateEventDto;
 export type EventsControllerUpdateMutationError = ErrorType<ProblemDetails>;
 export type EventsControllerUpdateMutationVariables = { eventId: string; data: UpdateEventDto };
 
+/**
+ * @summary Update
+ */
 export const useEventsControllerUpdate = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -28036,6 +30372,12 @@ export const getEventsControllerDeleteUrl = (eventId: string) => {
   return `/v1/events/${eventId}`;
 };
 
+/**
+ * Action `event.delete` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Delete
+ */
 export const eventsControllerDelete = async (
   eventId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -28091,6 +30433,9 @@ export type EventsControllerDeleteMutationResult = NonNullable<
 export type EventsControllerDeleteMutationError = ErrorType<ProblemDetails>;
 export type EventsControllerDeleteMutationVariables = { eventId: string };
 
+/**
+ * @summary Delete
+ */
 export const useEventsControllerDelete = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -28115,6 +30460,12 @@ export const getEventsControllerIcsUrl = (eventId: string) => {
   return `/v1/events/${eventId}/ics`;
 };
 
+/**
+ * Action `event.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Ics
+ */
 export const eventsControllerIcs = async (
   eventId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -28218,6 +30569,9 @@ export function useEventsControllerIcs<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Ics
+ */
 
 export function useEventsControllerIcs<
   TData = Awaited<ReturnType<typeof eventsControllerIcs>>,
@@ -28245,6 +30599,12 @@ export const getEventsControllerChangeSlugUrl = (eventId: string) => {
   return `/v1/events/${eventId}/slug`;
 };
 
+/**
+ * Action `event.update` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Change slug
+ */
 export const eventsControllerChangeSlug = async (
   eventId: string,
   changeSlugDto: ChangeSlugDto,
@@ -28323,6 +30683,9 @@ export type EventsControllerChangeSlugMutationBody = ChangeSlugDto;
 export type EventsControllerChangeSlugMutationError = ErrorType<ProblemDetails>;
 export type EventsControllerChangeSlugMutationVariables = { eventId: string; data: ChangeSlugDto };
 
+/**
+ * @summary Change slug
+ */
 export const useEventsControllerChangeSlug = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -28350,6 +30713,14 @@ export const getEventsControllerPublishUrl = (eventId: string) => {
   return `/v1/events/${eventId}/publish`;
 };
 
+/**
+ * Action `event.publish` (session cookie).
+ *
+ * Prerequisites: email_verified.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Publish
+ */
 export const eventsControllerPublish = async (
   eventId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -28405,6 +30776,9 @@ export type EventsControllerPublishMutationResult = NonNullable<
 export type EventsControllerPublishMutationError = ErrorType<ProblemDetails>;
 export type EventsControllerPublishMutationVariables = { eventId: string };
 
+/**
+ * @summary Publish
+ */
 export const useEventsControllerPublish = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -28429,6 +30803,12 @@ export const getEventsControllerCancelUrl = (eventId: string) => {
   return `/v1/events/${eventId}/cancel`;
 };
 
+/**
+ * Action `event.cancel` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Cancel
+ */
 export const eventsControllerCancel = async (
   eventId: string,
   cancelEventDto: CancelEventDto,
@@ -28506,6 +30886,9 @@ export type EventsControllerCancelMutationBody = CancelEventDto;
 export type EventsControllerCancelMutationError = ErrorType<ProblemDetails>;
 export type EventsControllerCancelMutationVariables = { eventId: string; data: CancelEventDto };
 
+/**
+ * @summary Cancel
+ */
 export const useEventsControllerCancel = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -28530,6 +30913,14 @@ export const getEventsControllerRegisterUrl = (eventId: string) => {
   return `/v1/events/${eventId}/registration`;
 };
 
+/**
+ * Action `event.register` (session cookie).
+ *
+ * Prerequisites: email_verified.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Register
+ */
 export const eventsControllerRegister = async (
   eventId: string,
   registerDto: RegisterDto,
@@ -28607,6 +30998,9 @@ export type EventsControllerRegisterMutationBody = RegisterDto;
 export type EventsControllerRegisterMutationError = ErrorType<ProblemDetails>;
 export type EventsControllerRegisterMutationVariables = { eventId: string; data: RegisterDto };
 
+/**
+ * @summary Register
+ */
 export const useEventsControllerRegister = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -28631,6 +31025,14 @@ export const getEventsControllerWithdrawUrl = (eventId: string) => {
   return `/v1/events/${eventId}/registration`;
 };
 
+/**
+ * Action `event.register` (session cookie).
+ *
+ * Prerequisites: email_verified.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Withdraw
+ */
 export const eventsControllerWithdraw = async (
   eventId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -28686,6 +31088,9 @@ export type EventsControllerWithdrawMutationResult = NonNullable<
 export type EventsControllerWithdrawMutationError = ErrorType<ProblemDetails>;
 export type EventsControllerWithdrawMutationVariables = { eventId: string };
 
+/**
+ * @summary Withdraw
+ */
 export const useEventsControllerWithdraw = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -28725,6 +31130,12 @@ export const getEventsControllerAttendeesUrl = (
     : `/v1/events/${eventId}/attendees`;
 };
 
+/**
+ * Action `event.attendees.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Attendees
+ */
 export const eventsControllerAttendees = async (
   eventId: string,
   params?: EventsControllerAttendeesParams,
@@ -28837,6 +31248,9 @@ export function useEventsControllerAttendees<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Attendees
+ */
 
 export function useEventsControllerAttendees<
   TData = Awaited<ReturnType<typeof eventsControllerAttendees>>,
@@ -28865,6 +31279,12 @@ export const getEventsControllerRotateCalendarUrl = () => {
   return `/v1/me/event-calendar`;
 };
 
+/**
+ * Action `event.calendar.manage` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Rotate calendar
+ */
 export const eventsControllerRotateCalendar = async (
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<CalendarFeedDtoOutput> => {
@@ -28917,6 +31337,9 @@ export type EventsControllerRotateCalendarMutationResult = NonNullable<
 
 export type EventsControllerRotateCalendarMutationError = ErrorType<ProblemDetails>;
 
+/**
+ * @summary Rotate calendar
+ */
 export const useEventsControllerRotateCalendar = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -28944,6 +31367,12 @@ export const getEventsControllerRevokeCalendarUrl = () => {
   return `/v1/me/event-calendar`;
 };
 
+/**
+ * Action `event.calendar.manage` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Revoke calendar
+ */
 export const eventsControllerRevokeCalendar = async (
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<void> => {
@@ -28996,6 +31425,9 @@ export type EventsControllerRevokeCalendarMutationResult = NonNullable<
 
 export type EventsControllerRevokeCalendarMutationError = ErrorType<ProblemDetails>;
 
+/**
+ * @summary Revoke calendar
+ */
 export const useEventsControllerRevokeCalendar = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -29023,6 +31455,12 @@ export const getEventsControllerCalendarUrl = (token: string) => {
   return `/v1/calendars/${token}`;
 };
 
+/**
+ * Public: no session needed.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Calendar
+ */
 export const eventsControllerCalendar = async (
   token: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -29127,6 +31565,9 @@ export function useEventsControllerCalendar<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Calendar
+ */
 
 export function useEventsControllerCalendar<
   TData = Awaited<ReturnType<typeof eventsControllerCalendar>>,
@@ -29154,6 +31595,16 @@ export const getMissionsControllerOfferUrl = () => {
   return `/v1/missions/offers`;
 };
 
+/**
+ * Action `mission.offer.create` (session cookie).
+ *
+ * Prerequisites: email_verified, profile.contributor_facet.
+ *
+ * Idempotent: the `Idempotency-Key` header is required, a replay returns the stored answer.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Offer
+ */
 export const missionsControllerOffer = async (
   createMissionDto: CreateMissionDto,
   options?: Parameters<typeof apiFetch>[1],
@@ -29230,6 +31681,9 @@ export type MissionsControllerOfferMutationBody = CreateMissionDto;
 export type MissionsControllerOfferMutationError = ErrorType<ProblemDetails>;
 export type MissionsControllerOfferMutationVariables = { data: CreateMissionDto };
 
+/**
+ * @summary Offer
+ */
 export const useMissionsControllerOffer = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -29254,6 +31708,16 @@ export const getMissionsControllerRequestUrl = () => {
   return `/v1/missions/requests`;
 };
 
+/**
+ * Action `mission.request.create` (session cookie).
+ *
+ * Prerequisites: email_verified.
+ *
+ * Idempotent: the `Idempotency-Key` header is required, a replay returns the stored answer.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Request
+ */
 export const missionsControllerRequest = async (
   createMissionDto: CreateMissionDto,
   options?: Parameters<typeof apiFetch>[1],
@@ -29330,6 +31794,9 @@ export type MissionsControllerRequestMutationBody = CreateMissionDto;
 export type MissionsControllerRequestMutationError = ErrorType<ProblemDetails>;
 export type MissionsControllerRequestMutationVariables = { data: CreateMissionDto };
 
+/**
+ * @summary Request
+ */
 export const useMissionsControllerRequest = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -29367,6 +31834,12 @@ export const getMissionsControllerListUrl = (params?: MissionsControllerListPara
   return stringifiedParams.length > 0 ? `/v1/missions?${stringifiedParams}` : `/v1/missions`;
 };
 
+/**
+ * Action `mission.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary List
+ */
 export const missionsControllerList = async (
   params?: MissionsControllerListParams,
   options?: Parameters<typeof apiFetch>[1],
@@ -29467,6 +31940,9 @@ export function useMissionsControllerList<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary List
+ */
 
 export function useMissionsControllerList<
   TData = Awaited<ReturnType<typeof missionsControllerList>>,
@@ -29506,6 +31982,12 @@ export const getMissionsControllerPublicListUrl = (params?: MissionsControllerPu
     : `/v1/public/missions`;
 };
 
+/**
+ * Public: no session needed.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Public list
+ */
 export const missionsControllerPublicList = async (
   params?: MissionsControllerPublicListParams,
   options?: Parameters<typeof apiFetch>[1],
@@ -29609,6 +32091,9 @@ export function useMissionsControllerPublicList<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Public list
+ */
 
 export function useMissionsControllerPublicList<
   TData = Awaited<ReturnType<typeof missionsControllerPublicList>>,
@@ -29646,6 +32131,12 @@ export const getMissionsControllerMineUrl = (params?: MissionsControllerMinePara
   return stringifiedParams.length > 0 ? `/v1/me/missions?${stringifiedParams}` : `/v1/me/missions`;
 };
 
+/**
+ * Action `mission.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Mine
+ */
 export const missionsControllerMine = async (
   params?: MissionsControllerMineParams,
   options?: Parameters<typeof apiFetch>[1],
@@ -29746,6 +32237,9 @@ export function useMissionsControllerMine<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Mine
+ */
 
 export function useMissionsControllerMine<
   TData = Awaited<ReturnType<typeof missionsControllerMine>>,
@@ -29787,6 +32281,12 @@ export const getMissionsControllerMyEngagementsUrl = (
     : `/v1/me/mission-engagements`;
 };
 
+/**
+ * Action `mission.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary My engagements
+ */
 export const missionsControllerMyEngagements = async (
   params?: MissionsControllerMyEngagementsParams,
   options?: Parameters<typeof apiFetch>[1],
@@ -29890,6 +32390,9 @@ export function useMissionsControllerMyEngagements<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary My engagements
+ */
 
 export function useMissionsControllerMyEngagements<
   TData = Awaited<ReturnType<typeof missionsControllerMyEngagements>>,
@@ -29917,6 +32420,12 @@ export const getMissionsControllerForPublicUrl = (missionId: string) => {
   return `/v1/public/missions/${missionId}`;
 };
 
+/**
+ * Public: no session needed.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary For public
+ */
 export const missionsControllerForPublic = async (
   missionId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -30021,6 +32530,9 @@ export function useMissionsControllerForPublic<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary For public
+ */
 
 export function useMissionsControllerForPublic<
   TData = Awaited<ReturnType<typeof missionsControllerForPublic>>,
@@ -30048,6 +32560,12 @@ export const getMissionsControllerByIdUrl = (missionId: string) => {
   return `/v1/missions/${missionId}`;
 };
 
+/**
+ * Action `mission.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary By id
+ */
 export const missionsControllerById = async (
   missionId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -30151,6 +32669,9 @@ export function useMissionsControllerById<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary By id
+ */
 
 export function useMissionsControllerById<
   TData = Awaited<ReturnType<typeof missionsControllerById>>,
@@ -30178,6 +32699,12 @@ export const getMissionsControllerUpdateUrl = (missionId: string) => {
   return `/v1/missions/${missionId}`;
 };
 
+/**
+ * Action `mission.update` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Update
+ */
 export const missionsControllerUpdate = async (
   missionId: string,
   updateMissionDto: UpdateMissionDto,
@@ -30258,6 +32785,9 @@ export type MissionsControllerUpdateMutationVariables = {
   data: UpdateMissionDto;
 };
 
+/**
+ * @summary Update
+ */
 export const useMissionsControllerUpdate = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -30282,6 +32812,12 @@ export const getMissionsControllerCloseUrl = (missionId: string) => {
   return `/v1/missions/${missionId}/close`;
 };
 
+/**
+ * Action `mission.close` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Close
+ */
 export const missionsControllerClose = async (
   missionId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -30337,6 +32873,9 @@ export type MissionsControllerCloseMutationResult = NonNullable<
 export type MissionsControllerCloseMutationError = ErrorType<ProblemDetails>;
 export type MissionsControllerCloseMutationVariables = { missionId: string };
 
+/**
+ * @summary Close
+ */
 export const useMissionsControllerClose = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -30361,6 +32900,16 @@ export const getMissionsControllerEngageUrl = (missionId: string) => {
   return `/v1/missions/${missionId}/engagements`;
 };
 
+/**
+ * Action `mission.engage` (session cookie).
+ *
+ * Prerequisites: email_verified.
+ *
+ * Idempotent: the `Idempotency-Key` header is required, a replay returns the stored answer.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Engage
+ */
 export const missionsControllerEngage = async (
   missionId: string,
   requestEngagementDto: RequestEngagementDto,
@@ -30441,6 +32990,9 @@ export type MissionsControllerEngageMutationVariables = {
   data: RequestEngagementDto;
 };
 
+/**
+ * @summary Engage
+ */
 export const useMissionsControllerEngage = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -30480,6 +33032,12 @@ export const getMissionsControllerEngagementsUrl = (
     : `/v1/missions/${missionId}/engagements`;
 };
 
+/**
+ * Action `mission.update` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Engagements
+ */
 export const missionsControllerEngagements = async (
   missionId: string,
   params?: MissionsControllerEngagementsParams,
@@ -30593,6 +33151,9 @@ export function useMissionsControllerEngagements<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Engagements
+ */
 
 export function useMissionsControllerEngagements<
   TData = Awaited<ReturnType<typeof missionsControllerEngagements>>,
@@ -30621,6 +33182,12 @@ export const getMissionsControllerEngagementUrl = (engagementId: string) => {
   return `/v1/mission-engagements/${engagementId}`;
 };
 
+/**
+ * Action `mission.engagement.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Engagement
+ */
 export const missionsControllerEngagement = async (
   engagementId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -30725,6 +33292,9 @@ export function useMissionsControllerEngagement<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Engagement
+ */
 
 export function useMissionsControllerEngagement<
   TData = Awaited<ReturnType<typeof missionsControllerEngagement>>,
@@ -30752,6 +33322,12 @@ export const getMissionsControllerAcceptUrl = (engagementId: string) => {
   return `/v1/mission-engagements/${engagementId}/accept`;
 };
 
+/**
+ * Action `mission.engagement.respond` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Accept
+ */
 export const missionsControllerAccept = async (
   engagementId: string,
   answerEngagementDto: AnswerEngagementDto,
@@ -30832,6 +33408,9 @@ export type MissionsControllerAcceptMutationVariables = {
   data: AnswerEngagementDto;
 };
 
+/**
+ * @summary Accept
+ */
 export const useMissionsControllerAccept = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -30856,6 +33435,12 @@ export const getMissionsControllerDeclineUrl = (engagementId: string) => {
   return `/v1/mission-engagements/${engagementId}/decline`;
 };
 
+/**
+ * Action `mission.engagement.respond` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Decline
+ */
 export const missionsControllerDecline = async (
   engagementId: string,
   answerEngagementDto: AnswerEngagementDto,
@@ -30936,6 +33521,9 @@ export type MissionsControllerDeclineMutationVariables = {
   data: AnswerEngagementDto;
 };
 
+/**
+ * @summary Decline
+ */
 export const useMissionsControllerDecline = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -30963,6 +33551,12 @@ export const getMissionsControllerCompleteUrl = (engagementId: string) => {
   return `/v1/mission-engagements/${engagementId}/complete`;
 };
 
+/**
+ * Action `mission.engagement.complete` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Complete
+ */
 export const missionsControllerComplete = async (
   engagementId: string,
   completeEngagementDto: CompleteEngagementDto,
@@ -31044,6 +33638,9 @@ export type MissionsControllerCompleteMutationVariables = {
   data: CompleteEngagementDto;
 };
 
+/**
+ * @summary Complete
+ */
 export const useMissionsControllerComplete = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -31071,6 +33668,12 @@ export const getMissionsControllerCancelUrl = (engagementId: string) => {
   return `/v1/mission-engagements/${engagementId}/cancel`;
 };
 
+/**
+ * Action `mission.engagement.cancel` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Cancel
+ */
 export const missionsControllerCancel = async (
   engagementId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -31126,6 +33729,9 @@ export type MissionsControllerCancelMutationResult = NonNullable<
 export type MissionsControllerCancelMutationError = ErrorType<ProblemDetails>;
 export type MissionsControllerCancelMutationVariables = { engagementId: string };
 
+/**
+ * @summary Cancel
+ */
 export const useMissionsControllerCancel = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -31164,6 +33770,12 @@ export const getDiscoveryControllerSearchAsMemberUrl = (
     : `/v1/discovery/search`;
 };
 
+/**
+ * Action `discovery.search` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Search as member
+ */
 export const discoveryControllerSearchAsMember = async (
   params?: DiscoveryControllerSearchAsMemberParams,
   options?: Parameters<typeof apiFetch>[1],
@@ -31267,6 +33879,9 @@ export function useDiscoveryControllerSearchAsMember<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Search as member
+ */
 
 export function useDiscoveryControllerSearchAsMember<
   TData = Awaited<ReturnType<typeof discoveryControllerSearchAsMember>>,
@@ -31308,6 +33923,12 @@ export const getDiscoveryControllerSearchAsVisitorUrl = (
     : `/v1/public/discovery/search`;
 };
 
+/**
+ * Public: no session needed.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Search as visitor
+ */
 export const discoveryControllerSearchAsVisitor = async (
   params?: DiscoveryControllerSearchAsVisitorParams,
   options?: Parameters<typeof apiFetch>[1],
@@ -31411,6 +34032,9 @@ export function useDiscoveryControllerSearchAsVisitor<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Search as visitor
+ */
 
 export function useDiscoveryControllerSearchAsVisitor<
   TData = Awaited<ReturnType<typeof discoveryControllerSearchAsVisitor>>,
@@ -31452,6 +34076,12 @@ export const getDiscoveryControllerAutocompleteUrl = (
     : `/v1/discovery/autocomplete`;
 };
 
+/**
+ * Action `discovery.search` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Autocomplete
+ */
 export const discoveryControllerAutocomplete = async (
   params: DiscoveryControllerAutocompleteParams,
   options?: Parameters<typeof apiFetch>[1],
@@ -31555,6 +34185,9 @@ export function useDiscoveryControllerAutocomplete<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Autocomplete
+ */
 
 export function useDiscoveryControllerAutocomplete<
   TData = Awaited<ReturnType<typeof discoveryControllerAutocomplete>>,
@@ -31596,6 +34229,12 @@ export const getDiscoveryControllerPublicAutocompleteUrl = (
     : `/v1/public/discovery/autocomplete`;
 };
 
+/**
+ * Public: no session needed.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Public autocomplete
+ */
 export const discoveryControllerPublicAutocomplete = async (
   params: DiscoveryControllerPublicAutocompleteParams,
   options?: Parameters<typeof apiFetch>[1],
@@ -31719,6 +34358,9 @@ export function useDiscoveryControllerPublicAutocomplete<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Public autocomplete
+ */
 
 export function useDiscoveryControllerPublicAutocomplete<
   TData = Awaited<ReturnType<typeof discoveryControllerPublicAutocomplete>>,
@@ -31762,6 +34404,12 @@ export const getDiscoveryControllerListUrl = (params: DiscoveryControllerListPar
     : `/v1/discovery/suggestions`;
 };
 
+/**
+ * Action `discovery.suggestions.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary List
+ */
 export const discoveryControllerList = async (
   params: DiscoveryControllerListParams,
   options?: Parameters<typeof apiFetch>[1],
@@ -31863,6 +34511,9 @@ export function useDiscoveryControllerList<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary List
+ */
 
 export function useDiscoveryControllerList<
   TData = Awaited<ReturnType<typeof discoveryControllerList>>,
@@ -31890,6 +34541,12 @@ export const getDiscoveryControllerDismissUrl = () => {
   return `/v1/discovery/dismissals`;
 };
 
+/**
+ * Action `discovery.suggestions.dismiss` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Dismiss
+ */
 export const discoveryControllerDismiss = async (
   dismissDto: DismissDto,
   options?: Parameters<typeof apiFetch>[1],
@@ -31967,6 +34624,9 @@ export type DiscoveryControllerDismissMutationBody = DismissDto;
 export type DiscoveryControllerDismissMutationError = ErrorType<ProblemDetails>;
 export type DiscoveryControllerDismissMutationVariables = { data: DismissDto };
 
+/**
+ * @summary Dismiss
+ */
 export const useDiscoveryControllerDismiss = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -31997,6 +34657,12 @@ export const getDiscoveryControllerUndoDismissalUrl = (
   return `/v1/discovery/dismissals/${kind}/${key}`;
 };
 
+/**
+ * Action `discovery.suggestions.dismiss` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Undo dismissal
+ */
 export const discoveryControllerUndoDismissal = async (
   kind: 'person' | 'organization' | 'project' | 'event' | 'mission',
   key: string,
@@ -32057,6 +34723,9 @@ export type DiscoveryControllerUndoDismissalMutationVariables = {
   key: string;
 };
 
+/**
+ * @summary Undo dismissal
+ */
 export const useDiscoveryControllerUndoDismissal = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -32099,6 +34768,12 @@ export const getDiscoveryControllerProjectContributorsUrl = (
     : `/v1/projects/${projectId}/suggested-contributors`;
 };
 
+/**
+ * Action `discovery.project-suggestions.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Project contributors
+ */
 export const discoveryControllerProjectContributors = async (
   projectId: string,
   params?: DiscoveryControllerProjectContributorsParams,
@@ -32234,6 +34909,9 @@ export function useDiscoveryControllerProjectContributors<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Project contributors
+ */
 
 export function useDiscoveryControllerProjectContributors<
   TData = Awaited<ReturnType<typeof discoveryControllerProjectContributors>>,
@@ -32282,6 +34960,12 @@ export const getDiscoveryControllerPageUrl = (params?: DiscoveryControllerPagePa
     : `/v1/discovery/page`;
 };
 
+/**
+ * Action `discovery.page.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Page
+ */
 export const discoveryControllerPage = async (
   params?: DiscoveryControllerPageParams,
   options?: Parameters<typeof apiFetch>[1],
@@ -32383,6 +35067,9 @@ export function useDiscoveryControllerPage<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Page
+ */
 
 export function useDiscoveryControllerPage<
   TData = Awaited<ReturnType<typeof discoveryControllerPage>>,
@@ -32431,6 +35118,12 @@ export const getDiscoveryControllerSectionUrl = (
     : `/v1/discovery/sections/${section}`;
 };
 
+/**
+ * Action `discovery.page.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Section
+ */
 export const discoveryControllerSection = async (
   section:
     | 'recent_projects'
@@ -32579,6 +35272,9 @@ export function useDiscoveryControllerSection<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Section
+ */
 
 export function useDiscoveryControllerSection<
   TData = Awaited<ReturnType<typeof discoveryControllerSection>>,
@@ -32627,6 +35323,12 @@ export const getDiscoveryControllerPublicPageUrl = (
     : `/v1/public/discovery/page`;
 };
 
+/**
+ * Public: no session needed.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Public page
+ */
 export const discoveryControllerPublicPage = async (
   params?: DiscoveryControllerPublicPageParams,
   options?: Parameters<typeof apiFetch>[1],
@@ -32730,6 +35432,9 @@ export function useDiscoveryControllerPublicPage<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Public page
+ */
 
 export function useDiscoveryControllerPublicPage<
   TData = Awaited<ReturnType<typeof discoveryControllerPublicPage>>,
@@ -32778,6 +35483,12 @@ export const getDiscoveryControllerPublicSectionUrl = (
     : `/v1/public/discovery/sections/${section}`;
 };
 
+/**
+ * Public: no session needed.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Public section
+ */
 export const discoveryControllerPublicSection = async (
   section:
     | 'recent_projects'
@@ -32932,6 +35643,9 @@ export function useDiscoveryControllerPublicSection<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Public section
+ */
 
 export function useDiscoveryControllerPublicSection<
   TData = Awaited<ReturnType<typeof discoveryControllerPublicSection>>,
@@ -32978,6 +35692,12 @@ export const getNotificationsControllerListUrl = (params?: NotificationsControll
     : `/v1/me/notifications`;
 };
 
+/**
+ * Action `notifications.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary List
+ */
 export const notificationsControllerList = async (
   params?: NotificationsControllerListParams,
   options?: Parameters<typeof apiFetch>[1],
@@ -33081,6 +35801,9 @@ export function useNotificationsControllerList<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary List
+ */
 
 export function useNotificationsControllerList<
   TData = Awaited<ReturnType<typeof notificationsControllerList>>,
@@ -33108,6 +35831,12 @@ export const getNotificationsControllerReadAllUrl = () => {
   return `/v1/me/notifications/read-all`;
 };
 
+/**
+ * Action `notifications.manage` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Read all
+ */
 export const notificationsControllerReadAll = async (
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<ReadAllDtoOutput> => {
@@ -33160,6 +35889,9 @@ export type NotificationsControllerReadAllMutationResult = NonNullable<
 
 export type NotificationsControllerReadAllMutationError = ErrorType<ProblemDetails>;
 
+/**
+ * @summary Read all
+ */
 export const useNotificationsControllerReadAll = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -33187,6 +35919,12 @@ export const getNotificationsControllerReadUrl = (notificationId: string) => {
   return `/v1/me/notifications/${notificationId}/read`;
 };
 
+/**
+ * Action `notifications.manage` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Read
+ */
 export const notificationsControllerRead = async (
   notificationId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -33243,6 +35981,9 @@ export type NotificationsControllerReadMutationResult = NonNullable<
 export type NotificationsControllerReadMutationError = ErrorType<ProblemDetails>;
 export type NotificationsControllerReadMutationVariables = { notificationId: string };
 
+/**
+ * @summary Read
+ */
 export const useNotificationsControllerRead = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -33270,6 +36011,12 @@ export const getNotificationsControllerRemoveUrl = (notificationId: string) => {
   return `/v1/me/notifications/${notificationId}`;
 };
 
+/**
+ * Action `notifications.manage` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Remove
+ */
 export const notificationsControllerRemove = async (
   notificationId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -33326,6 +36073,9 @@ export type NotificationsControllerRemoveMutationResult = NonNullable<
 export type NotificationsControllerRemoveMutationError = ErrorType<ProblemDetails>;
 export type NotificationsControllerRemoveMutationVariables = { notificationId: string };
 
+/**
+ * @summary Remove
+ */
 export const useNotificationsControllerRemove = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -33353,6 +36103,12 @@ export const getNotificationsControllerCountersUrl = () => {
   return `/v1/me/counters`;
 };
 
+/**
+ * Action `notifications.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Counters
+ */
 export const notificationsControllerCounters = async (
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<CountersDtoOutput> => {
@@ -33447,6 +36203,9 @@ export function useNotificationsControllerCounters<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Counters
+ */
 
 export function useNotificationsControllerCounters<
   TData = Awaited<ReturnType<typeof notificationsControllerCounters>>,
@@ -33473,6 +36232,12 @@ export const getNotificationsControllerPreferencesUrl = () => {
   return `/v1/me/notification-preferences`;
 };
 
+/**
+ * Action `notifications.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Preferences
+ */
 export const notificationsControllerPreferences = async (
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<PreferencesDtoOutput> => {
@@ -33567,6 +36332,9 @@ export function useNotificationsControllerPreferences<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Preferences
+ */
 
 export function useNotificationsControllerPreferences<
   TData = Awaited<ReturnType<typeof notificationsControllerPreferences>>,
@@ -33593,6 +36361,12 @@ export const getNotificationsControllerUpdatePreferencesUrl = () => {
   return `/v1/me/notification-preferences`;
 };
 
+/**
+ * Action `notifications.preferences.update` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Update preferences
+ */
 export const notificationsControllerUpdatePreferences = async (
   updatePreferencesDto: UpdatePreferencesDto,
   options?: Parameters<typeof apiFetch>[1],
@@ -33672,6 +36446,9 @@ export type NotificationsControllerUpdatePreferencesMutationVariables = {
   data: UpdatePreferencesDto;
 };
 
+/**
+ * @summary Update preferences
+ */
 export const useNotificationsControllerUpdatePreferences = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -33716,6 +36493,12 @@ export const getNotificationsControllerUnsubscribeUrl = (
     : `/v1/notifications/unsubscribe`;
 };
 
+/**
+ * Public: no session needed.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Unsubscribe
+ */
 export const notificationsControllerUnsubscribe = async (
   params: NotificationsControllerUnsubscribeParams,
   options?: Parameters<typeof apiFetch>[1],
@@ -33774,6 +36557,9 @@ export type NotificationsControllerUnsubscribeMutationVariables = {
   params: NotificationsControllerUnsubscribeParams;
 };
 
+/**
+ * @summary Unsubscribe
+ */
 export const useNotificationsControllerUnsubscribe = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -33801,6 +36587,14 @@ export const getReportsControllerReportUrl = () => {
   return `/v1/reports`;
 };
 
+/**
+ * Action `trust.report.create` (session cookie).
+ *
+ * Idempotent: the `Idempotency-Key` header is required, a replay returns the stored answer.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Report
+ */
 export const reportsControllerReport = async (
   createReportDto: CreateReportDto,
   options?: Parameters<typeof apiFetch>[1],
@@ -33877,6 +36671,9 @@ export type ReportsControllerReportMutationBody = CreateReportDto;
 export type ReportsControllerReportMutationError = ErrorType<ProblemDetails>;
 export type ReportsControllerReportMutationVariables = { data: CreateReportDto };
 
+/**
+ * @summary Report
+ */
 export const useReportsControllerReport = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -33911,6 +36708,12 @@ export const getReportsControllerMineUrl = (params?: ReportsControllerMineParams
   return stringifiedParams.length > 0 ? `/v1/me/reports?${stringifiedParams}` : `/v1/me/reports`;
 };
 
+/**
+ * Action `trust.report.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Mine
+ */
 export const reportsControllerMine = async (
   params?: ReportsControllerMineParams,
   options?: Parameters<typeof apiFetch>[1],
@@ -34011,6 +36814,9 @@ export function useReportsControllerMine<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Mine
+ */
 
 export function useReportsControllerMine<
   TData = Awaited<ReturnType<typeof reportsControllerMine>>,
@@ -34038,6 +36844,12 @@ export const getReportsControllerNoticeUrl = () => {
   return `/v1/public/reports`;
 };
 
+/**
+ * Public: no session needed.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Notice
+ */
 export const reportsControllerNotice = async (
   anonymousReportDto: AnonymousReportDto,
   options?: Parameters<typeof apiFetch>[1],
@@ -34114,6 +36926,9 @@ export type ReportsControllerNoticeMutationBody = AnonymousReportDto;
 export type ReportsControllerNoticeMutationError = ErrorType<ProblemDetails>;
 export type ReportsControllerNoticeMutationVariables = { data: AnonymousReportDto };
 
+/**
+ * @summary Notice
+ */
 export const useReportsControllerNotice = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -34138,6 +36953,12 @@ export const getStandingControllerReadUrl = () => {
   return `/v1/me/moderation`;
 };
 
+/**
+ * Action `trust.standing.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Read
+ */
 export const standingControllerRead = async (
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<StandingDtoOutput> => {
@@ -34231,6 +37052,9 @@ export function useStandingControllerRead<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Read
+ */
 
 export function useStandingControllerRead<
   TData = Awaited<ReturnType<typeof standingControllerRead>>,
@@ -34269,6 +37093,12 @@ export const getStandingControllerDecisionsUrl = (params?: StandingControllerDec
     : `/v1/me/moderation/decisions`;
 };
 
+/**
+ * Action `trust.standing.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Decisions
+ */
 export const standingControllerDecisions = async (
   params?: StandingControllerDecisionsParams,
   options?: Parameters<typeof apiFetch>[1],
@@ -34372,6 +37202,9 @@ export function useStandingControllerDecisions<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Decisions
+ */
 
 export function useStandingControllerDecisions<
   TData = Awaited<ReturnType<typeof standingControllerDecisions>>,
@@ -34399,6 +37232,14 @@ export const getStandingControllerAppealUrl = (decisionId: string) => {
   return `/v1/me/moderation/decisions/${decisionId}/appeal`;
 };
 
+/**
+ * Action `trust.decision.appeal` (session cookie).
+ *
+ * Idempotent: the `Idempotency-Key` header is required, a replay returns the stored answer.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Appeal
+ */
 export const standingControllerAppeal = async (
   decisionId: string,
   appealRequestDto: AppealRequestDto,
@@ -34479,6 +37320,9 @@ export type StandingControllerAppealMutationVariables = {
   data: AppealRequestDto;
 };
 
+/**
+ * @summary Appeal
+ */
 export const useStandingControllerAppeal = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -34515,6 +37359,14 @@ export const getModerationControllerQueueUrl = (params?: ModerationControllerQue
     : `/v1/admin/moderation/cases`;
 };
 
+/**
+ * Action `trust.moderation.read` (session cookie).
+ *
+ * Roles: moderator, admin, with 2FA.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Queue
+ */
 export const moderationControllerQueue = async (
   params?: ModerationControllerQueueParams,
   options?: Parameters<typeof apiFetch>[1],
@@ -34616,6 +37468,9 @@ export function useModerationControllerQueue<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Queue
+ */
 
 export function useModerationControllerQueue<
   TData = Awaited<ReturnType<typeof moderationControllerQueue>>,
@@ -34643,6 +37498,14 @@ export const getModerationControllerDetailUrl = (caseId: string) => {
   return `/v1/admin/moderation/cases/${caseId}`;
 };
 
+/**
+ * Action `trust.moderation.read` (session cookie).
+ *
+ * Roles: moderator, admin, with 2FA.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Detail
+ */
 export const moderationControllerDetail = async (
   caseId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -34747,6 +37610,9 @@ export function useModerationControllerDetail<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Detail
+ */
 
 export function useModerationControllerDetail<
   TData = Awaited<ReturnType<typeof moderationControllerDetail>>,
@@ -34774,6 +37640,16 @@ export const getModerationControllerAssignUrl = (caseId: string) => {
   return `/v1/admin/moderation/cases/${caseId}/assignment`;
 };
 
+/**
+ * Action `trust.moderation.assign` (session cookie).
+ *
+ * Roles: moderator, admin, with 2FA.
+ *
+ * Idempotent: the `Idempotency-Key` header is required, a replay returns the stored answer.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Assign
+ */
 export const moderationControllerAssign = async (
   caseId: string,
   assignDto: AssignDto,
@@ -34852,6 +37728,9 @@ export type ModerationControllerAssignMutationBody = AssignDto;
 export type ModerationControllerAssignMutationError = ErrorType<ProblemDetails>;
 export type ModerationControllerAssignMutationVariables = { caseId: string; data: AssignDto };
 
+/**
+ * @summary Assign
+ */
 export const useModerationControllerAssign = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -34879,6 +37758,16 @@ export const getModerationControllerDecideUrl = (caseId: string) => {
   return `/v1/admin/moderation/cases/${caseId}/decisions`;
 };
 
+/**
+ * Action `trust.moderation.decide` (session cookie).
+ *
+ * Roles: moderator, admin, with 2FA.
+ *
+ * Idempotent: the `Idempotency-Key` header is required, a replay returns the stored answer.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Decide
+ */
 export const moderationControllerDecide = async (
   caseId: string,
   decideDto: DecideDto,
@@ -34957,6 +37846,9 @@ export type ModerationControllerDecideMutationBody = DecideDto;
 export type ModerationControllerDecideMutationError = ErrorType<ProblemDetails>;
 export type ModerationControllerDecideMutationVariables = { caseId: string; data: DecideDto };
 
+/**
+ * @summary Decide
+ */
 export const useModerationControllerDecide = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -34996,6 +37888,14 @@ export const getModerationControllerAppealsUrl = (params?: ModerationControllerA
     : `/v1/admin/moderation/appeals`;
 };
 
+/**
+ * Action `trust.moderation.read` (session cookie).
+ *
+ * Roles: moderator, admin, with 2FA.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Appeals
+ */
 export const moderationControllerAppeals = async (
   params?: ModerationControllerAppealsParams,
   options?: Parameters<typeof apiFetch>[1],
@@ -35099,6 +37999,9 @@ export function useModerationControllerAppeals<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Appeals
+ */
 
 export function useModerationControllerAppeals<
   TData = Awaited<ReturnType<typeof moderationControllerAppeals>>,
@@ -35126,6 +38029,16 @@ export const getModerationControllerResolveAppealUrl = (appealId: string) => {
   return `/v1/admin/moderation/appeals/${appealId}/resolution`;
 };
 
+/**
+ * Action `trust.appeal.resolve` (session cookie).
+ *
+ * Roles: moderator, admin, with 2FA.
+ *
+ * Idempotent: the `Idempotency-Key` header is required, a replay returns the stored answer.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Resolve appeal
+ */
 export const moderationControllerResolveAppeal = async (
   appealId: string,
   resolveAppealDto: ResolveAppealDto,
@@ -35207,6 +38120,9 @@ export type ModerationControllerResolveAppealMutationVariables = {
   data: ResolveAppealDto;
 };
 
+/**
+ * @summary Resolve appeal
+ */
 export const useModerationControllerResolveAppeal = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -35234,6 +38150,16 @@ export const getModerationControllerLiftUrl = (suspensionId: string) => {
   return `/v1/admin/moderation/suspensions/${suspensionId}/lift`;
 };
 
+/**
+ * Action `trust.suspension.lift` (session cookie).
+ *
+ * Roles: moderator, admin, with 2FA.
+ *
+ * Idempotent: the `Idempotency-Key` header is required, a replay returns the stored answer.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Lift
+ */
 export const moderationControllerLift = async (
   suspensionId: string,
   liftDto: LiftDto,
@@ -35311,6 +38237,9 @@ export type ModerationControllerLiftMutationBody = LiftDto;
 export type ModerationControllerLiftMutationError = ErrorType<ProblemDetails>;
 export type ModerationControllerLiftMutationVariables = { suspensionId: string; data: LiftDto };
 
+/**
+ * @summary Lift
+ */
 export const useModerationControllerLift = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -35335,6 +38264,18 @@ export const getModerationControllerRefundsUrl = (projectId: string) => {
   return `/v1/admin/moderation/projects/${projectId}/refunds`;
 };
 
+/**
+ * Action `trust.project.refund` (session cookie).
+ *
+ * Roles: admin, with 2FA.
+ *
+ * Requires a recent sign-in.
+ *
+ * Idempotent: the `Idempotency-Key` header is required, a replay returns the stored answer.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Refunds
+ */
 export const moderationControllerRefunds = async (
   projectId: string,
   refundsDto: RefundsDto,
@@ -35413,6 +38354,9 @@ export type ModerationControllerRefundsMutationBody = RefundsDto;
 export type ModerationControllerRefundsMutationError = ErrorType<ProblemDetails>;
 export type ModerationControllerRefundsMutationVariables = { projectId: string; data: RefundsDto };
 
+/**
+ * @summary Refunds
+ */
 export const useModerationControllerRefunds = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -35452,6 +38396,14 @@ export const getModerationControllerReportUrl = (params: ModerationControllerRep
     : `/v1/admin/moderation/transparency`;
 };
 
+/**
+ * Action `trust.transparency.read` (session cookie).
+ *
+ * Roles: admin, with 2FA.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Report
+ */
 export const moderationControllerReport = async (
   params: ModerationControllerReportParams,
   options?: Parameters<typeof apiFetch>[1],
@@ -35555,6 +38507,9 @@ export function useModerationControllerReport<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Report
+ */
 
 export function useModerationControllerReport<
   TData = Awaited<ReturnType<typeof moderationControllerReport>>,
@@ -35594,6 +38549,14 @@ export const getAdminControllerMembersUrl = (params: AdminControllerMembersParam
     : `/v1/admin/members`;
 };
 
+/**
+ * Action `admin.members.read` (session cookie).
+ *
+ * Roles: admin, with 2FA.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Members
+ */
 export const adminControllerMembers = async (
   params: AdminControllerMembersParams,
   options?: Parameters<typeof apiFetch>[1],
@@ -35694,6 +38657,9 @@ export function useAdminControllerMembers<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Members
+ */
 
 export function useAdminControllerMembers<
   TData = Awaited<ReturnType<typeof adminControllerMembers>>,
@@ -35721,6 +38687,14 @@ export const getAdminControllerMemberUrl = (userId: string) => {
   return `/v1/admin/members/${userId}`;
 };
 
+/**
+ * Action `admin.members.read` (session cookie).
+ *
+ * Roles: admin, with 2FA.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Member
+ */
 export const adminControllerMember = async (
   userId: string,
   options?: Parameters<typeof apiFetch>[1],
@@ -35824,6 +38798,9 @@ export function useAdminControllerMember<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Member
+ */
 
 export function useAdminControllerMember<
   TData = Awaited<ReturnType<typeof adminControllerMember>>,
@@ -35851,6 +38828,14 @@ export const getAdminControllerFlagsUrl = () => {
   return `/v1/admin/feature-flags`;
 };
 
+/**
+ * Action `admin.flags.read` (session cookie).
+ *
+ * Roles: admin, with 2FA.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Flags
+ */
 export const adminControllerFlags = async (
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<FlagListDtoOutput> => {
@@ -35942,6 +38927,9 @@ export function useAdminControllerFlags<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Flags
+ */
 
 export function useAdminControllerFlags<
   TData = Awaited<ReturnType<typeof adminControllerFlags>>,
@@ -35968,6 +38956,18 @@ export const getAdminControllerUpdateFlagUrl = (key: string) => {
   return `/v1/admin/feature-flags/${key}`;
 };
 
+/**
+ * Action `admin.flags.manage` (session cookie).
+ *
+ * Roles: admin, with 2FA.
+ *
+ * Requires a recent sign-in.
+ *
+ * Idempotent: the `Idempotency-Key` header is required, a replay returns the stored answer.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Update flag
+ */
 export const adminControllerUpdateFlag = async (
   key: string,
   updateFlagDto: UpdateFlagDto,
@@ -36045,6 +39045,9 @@ export type AdminControllerUpdateFlagMutationBody = UpdateFlagDto;
 export type AdminControllerUpdateFlagMutationError = ErrorType<ProblemDetails>;
 export type AdminControllerUpdateFlagMutationVariables = { key: string; data: UpdateFlagDto };
 
+/**
+ * @summary Update flag
+ */
 export const useAdminControllerUpdateFlag = <
   TError = ErrorType<ProblemDetails>,
   TContext = unknown,
@@ -36084,6 +39087,14 @@ export const getAdminControllerHighlightsUrl = (params?: AdminControllerHighligh
     : `/v1/admin/highlights`;
 };
 
+/**
+ * Action `admin.highlights.manage` (session cookie).
+ *
+ * Roles: moderator, admin, with 2FA.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Highlights
+ */
 export const adminControllerHighlights = async (
   params?: AdminControllerHighlightsParams,
   options?: Parameters<typeof apiFetch>[1],
@@ -36185,6 +39196,9 @@ export function useAdminControllerHighlights<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Highlights
+ */
 
 export function useAdminControllerHighlights<
   TData = Awaited<ReturnType<typeof adminControllerHighlights>>,
@@ -36215,6 +39229,14 @@ export const getAdminControllerFeatureUrl = (
   return `/v1/admin/highlights/${targetType}/${targetId}`;
 };
 
+/**
+ * Action `admin.highlights.manage` (session cookie).
+ *
+ * Roles: moderator, admin, with 2FA.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Feature
+ */
 export const adminControllerFeature = async (
   targetType: 'post' | 'project' | 'profile',
   targetId: string,
@@ -36274,6 +39296,9 @@ export type AdminControllerFeatureMutationVariables = {
   targetId: string;
 };
 
+/**
+ * @summary Feature
+ */
 export const useAdminControllerFeature = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -36301,6 +39326,14 @@ export const getAdminControllerUnfeatureUrl = (
   return `/v1/admin/highlights/${targetType}/${targetId}`;
 };
 
+/**
+ * Action `admin.highlights.manage` (session cookie).
+ *
+ * Roles: moderator, admin, with 2FA.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Unfeature
+ */
 export const adminControllerUnfeature = async (
   targetType: 'post' | 'project' | 'profile',
   targetId: string,
@@ -36360,6 +39393,9 @@ export type AdminControllerUnfeatureMutationVariables = {
   targetId: string;
 };
 
+/**
+ * @summary Unfeature
+ */
 export const useAdminControllerUnfeature = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -36396,6 +39432,14 @@ export const getAdminControllerFailedJobsUrl = (params?: AdminControllerFailedJo
     : `/v1/admin/jobs/failed`;
 };
 
+/**
+ * Action `admin.jobs.read` (session cookie).
+ *
+ * Roles: admin, with 2FA.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Failed jobs
+ */
 export const adminControllerFailedJobs = async (
   params?: AdminControllerFailedJobsParams,
   options?: Parameters<typeof apiFetch>[1],
@@ -36497,6 +39541,9 @@ export function useAdminControllerFailedJobs<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Failed jobs
+ */
 
 export function useAdminControllerFailedJobs<
   TData = Awaited<ReturnType<typeof adminControllerFailedJobs>>,
@@ -36524,6 +39571,16 @@ export const getAdminControllerRetryUrl = (queue: string, jobId: string) => {
   return `/v1/admin/jobs/${queue}/${jobId}/retry`;
 };
 
+/**
+ * Action `admin.jobs.retry` (session cookie).
+ *
+ * Roles: admin, with 2FA.
+ *
+ * Idempotent: the `Idempotency-Key` header is required, a replay returns the stored answer.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Retry
+ */
 export const adminControllerRetry = async (
   queue: string,
   jobId: string,
@@ -36580,6 +39637,9 @@ export type AdminControllerRetryMutationResult = NonNullable<
 export type AdminControllerRetryMutationError = ErrorType<ProblemDetails>;
 export type AdminControllerRetryMutationVariables = { queue: string; jobId: string };
 
+/**
+ * @summary Retry
+ */
 export const useAdminControllerRetry = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -36604,6 +39664,14 @@ export const getAdminControllerStatsUrl = () => {
   return `/v1/admin/stats`;
 };
 
+/**
+ * Action `admin.stats.read` (session cookie).
+ *
+ * Roles: admin, with 2FA.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Stats
+ */
 export const adminControllerStats = async (
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<StatsDtoOutput> => {
@@ -36695,6 +39763,9 @@ export function useAdminControllerStats<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Stats
+ */
 
 export function useAdminControllerStats<
   TData = Awaited<ReturnType<typeof adminControllerStats>>,
@@ -36733,6 +39804,14 @@ export const getAdminControllerAuditLogUrl = (params?: AdminControllerAuditLogPa
     : `/v1/admin/audit-log`;
 };
 
+/**
+ * Action `admin.audit.read` (session cookie).
+ *
+ * Roles: admin, with 2FA.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Audit log
+ */
 export const adminControllerAuditLog = async (
   params?: AdminControllerAuditLogParams,
   options?: Parameters<typeof apiFetch>[1],
@@ -36834,6 +39913,9 @@ export function useAdminControllerAuditLog<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Audit log
+ */
 
 export function useAdminControllerAuditLog<
   TData = Awaited<ReturnType<typeof adminControllerAuditLog>>,

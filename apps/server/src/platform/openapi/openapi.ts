@@ -4,6 +4,7 @@ import { PROBLEM_JSON_CONTENT_TYPE, problemDetailsSchema } from '@pitchorium/con
 import { cleanupOpenApiDoc } from 'nestjs-zod';
 import { z } from 'zod';
 import { SESSION_COOKIE_SECURITY } from '../http/authorization';
+import { type DescribeAction, documentOperations } from './operation-docs';
 
 const HTTP_METHODS = ['get', 'put', 'post', 'delete', 'patch'] as const;
 
@@ -30,7 +31,10 @@ function addProblemResponses(document: OpenAPIObject): OpenAPIObject {
   return document;
 }
 
-export function buildOpenApiDocument(app: INestApplication): OpenAPIObject {
+export function buildOpenApiDocument(
+  app: INestApplication,
+  describeAction?: DescribeAction,
+): OpenAPIObject {
   const config = new DocumentBuilder()
     .setTitle('Pitchorium API')
     .setDescription('Errors follow RFC 9457 with a stable `code`; clients translate codes.')
@@ -48,11 +52,14 @@ export function buildOpenApiDocument(app: INestApplication): OpenAPIObject {
       SESSION_COOKIE_SECURITY,
     )
     .build();
-  return addProblemResponses(cleanupOpenApiDoc(SwaggerModule.createDocument(app, config)));
+  const document = addProblemResponses(
+    cleanupOpenApiDoc(SwaggerModule.createDocument(app, config)),
+  );
+  return documentOperations(app, document, describeAction);
 }
 
 export const SWAGGER_UI_PATH = 'docs';
 
-export function setupSwaggerUi(app: INestApplication): void {
-  SwaggerModule.setup(SWAGGER_UI_PATH, app, () => buildOpenApiDocument(app));
+export function setupSwaggerUi(app: INestApplication, describeAction?: DescribeAction): void {
+  SwaggerModule.setup(SWAGGER_UI_PATH, app, () => buildOpenApiDocument(app, describeAction));
 }

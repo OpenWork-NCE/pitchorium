@@ -13,4 +13,5 @@ export { RoleGranted, RoleRevoked } from './domain/access-events';
 export type { Actor } from './domain/actor';
 export { AccessModule } from './access.module';
 export { SessionHandshakeGuard } from './infrastructure/session-handshake.guard';
+export { describeActionPolicy } from './interface/action-documentation';
 export { CurrentActor } from './interface/current-actor.decorator';

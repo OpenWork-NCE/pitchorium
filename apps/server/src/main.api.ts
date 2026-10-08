@@ -4,6 +4,7 @@ import type { NestExpressApplication } from '@nestjs/platform-express';
 import { Logger } from 'nestjs-pino';
 import { setupApiApp } from './api-app';
 import { AppModule } from './app.module';
+import { describeActionPolicy } from './modules/access';
 import { loadConfigOrExit, parseApiConfig } from './platform/config';
 import { setupSwaggerUi } from './platform/openapi';
 
@@ -13,7 +14,7 @@ async function bootstrap(): Promise<void> {
   app.useLogger(app.get(Logger));
   setupApiApp(app, config);
   if (config.http.swaggerEnabled) {
-    setupSwaggerUi(app);
+    setupSwaggerUi(app, describeActionPolicy);
   }
   // SIGTERM: stop accepting connections, finish in-flight requests, then close resources.
   app.enableShutdownHooks();
