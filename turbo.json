@@ -37,7 +37,8 @@
       "passThroughEnv": [
         "STRIPE_TEST_SECRET_KEY",
         "STRIPE_TEST_CONNECTED_ACCOUNT",
-        "FLUTTERWAVE_TEST_SECRET_KEY"
+        "FLUTTERWAVE_TEST_SECRET_KEY",
+        "RESEND_TEST_API_KEY"
       ]
     },
     "dev:api": {
