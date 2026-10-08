@@ -75,5 +75,202 @@
     "member": "Member space",
     "admin": "Administration",
     "public": "Public pages"
+  },
+  "ui": {
+    "close": "Close",
+    "newTab": "new tab",
+    "dismiss": "Hide this message",
+    "breadcrumbs": "Breadcrumbs",
+    "copy": {
+      "action": "Copy",
+      "done": "Copied to the clipboard.",
+      "failed": "Copying failed. Select the text to copy it."
+    },
+    "field": {
+      "optional": "(optional)",
+      "counter": "{{count}} of {{max}} characters",
+      "counterOver": "{{count}} characters too many"
+    },
+    "password": {
+      "show": "Show password",
+      "hide": "Hide password"
+    },
+    "otp": {
+      "hint": "{{length}}-digit code. You can paste it."
+    },
+    "select": {
+      "placeholder": "Choose"
+    },
+    "combobox": {
+      "placeholder": "Choose",
+      "search": "Search",
+      "loading": "Searching",
+      "empty": "No results.",
+      "selected": {
+        "one": "{{count}} item chosen",
+        "other": "{{count}} items chosen"
+      },
+      "remove": "Remove {{label}}",
+      "isSelected": "chosen"
+    },
+    "money": {
+      "currency": "Amount in {{currency}}",
+      "equivalent": "about {{amount}}"
+    },
+    "dateTime": {
+      "date": "Date",
+      "time": "Time",
+      "zone": "Local time: {{zone}}"
+    },
+    "file": {
+      "drop": "Drag a file here or",
+      "choose": "choose one",
+      "paste": "You can also paste it.",
+      "progress": "Uploading {{name}}",
+      "retry": "Upload {{name}} again",
+      "remove": "Remove {{name}}",
+      "states": {
+        "pending": "Waiting",
+        "uploading": "Uploading: {{percent}}%",
+        "processing": "Being checked",
+        "ready": "Ready",
+        "rejected": "Refused: {{reason}}"
+      }
+    },
+    "truncate": {
+      "more": "Show more",
+      "less": "Show less"
+    },
+    "stepper": {
+      "position": "Step {{current}} of {{total}}",
+      "done": "done",
+      "current": "current",
+      "upcoming": "to come"
+    },
+    "pagination": {
+      "more": "Show more",
+      "loading": "Loading more",
+      "end": "You have seen everything.",
+      "shown": {
+        "one": "{{count}} item shown",
+        "other": "{{count}} items shown"
+      }
+    },
+    "table": {
+      "sortAscending": "Sort by {{column}}, ascending",
+      "sortDescending": "Sort by {{column}}, descending",
+      "loading": "Loading the table"
+    },
+    "funding": {
+      "raised": "{{amount}} raised of {{goal}}",
+      "goal": "of a {{goal}} goal",
+      "percent": "{{percent}}% of the goal",
+      "daysLeft": {
+        "one": "{{count}} day left",
+        "other": "{{count}} days left"
+      },
+      "ended": "Campaign ended",
+      "milestones": "Milestones",
+      "milestone": "Milestone {{index}}",
+      "reached": "reached"
+    },
+    "impact": {
+      "title": "Impact score",
+      "score": "Score of {{score}} out of 100",
+      "criterion": "{{score}} out of {{max}}",
+      "selfDeclared": "self-declared",
+      "name": "Impact",
+      "outOf": "out of 100, see the detail"
+    },
+    "verified": {
+      "label": "Verified",
+      "description": "Verified by Pitchorium"
+    },
+    "confirm": {
+      "cancel": "Cancel",
+      "pending": "Action in progress",
+      "phraseMissing": "Type the requested text to confirm.",
+      "typeToConfirm": "To confirm, type:"
+    },
+    "toast": {
+      "region": "Notifications",
+      "close": "Close the notification"
+    },
+    "errorState": {
+      "title": "This content could not be loaded.",
+      "description": "Check your connection, then try again.",
+      "reference": "Reference: {{reference}}",
+      "retry": "Try again",
+      "retrying": "Trying again"
+    },
+    "command": {
+      "title": "Global search",
+      "placeholder": "Search people, projects, organisations…",
+      "escape": "Esc",
+      "empty": "No action matches.",
+      "searchGroup": "Search",
+      "searchFor": "Search for “{{query}}”",
+      "resultsLater": "Search results are coming soon.",
+      "actions": "Quick actions",
+      "recent": "Recent searches",
+      "clearRecent": "Clear recent searches"
+    },
+    "shortcuts": {
+      "title": "Keyboard shortcuts",
+      "description": "They do not apply while you type a text, except the ones with Ctrl or ⌘.",
+      "help": "Show the shortcuts",
+      "general": "General"
+    }
+  },
+  "notices": {
+    "machineTranslation": "{{mention}} ({{provider}}).",
+    "notTaxReceipt": "This confirmation is not a tax receipt.",
+    "moderated": "This content was hidden by moderation."
+  },
+  "forms": {
+    "summary": {
+      "one": "The form has {{count}} error.",
+      "other": "The form has {{count}} errors."
+    },
+    "unexpected": "The operation did not go through. Try again in a moment.",
+    "reference": "(reference: {{reference}})",
+    "issues": {
+      "required": "This field is required.",
+      "invalid_type": "This value is not valid.",
+      "invalid": "This value is not valid.",
+      "too_small": {
+        "string": "At least {{minimum}} characters.",
+        "number": "At least {{minimum}}.",
+        "array": "At least {{minimum}} items.",
+        "set": "At least {{minimum}} items.",
+        "file": "File too small.",
+        "generic": "Value too small."
+      },
+      "too_big": {
+        "string": "At most {{maximum}} characters.",
+        "number": "At most {{maximum}}.",
+        "array": "At most {{maximum}} items.",
+        "set": "At most {{maximum}} items.",
+        "file": "File too large.",
+        "generic": "Value too large."
+      },
+      "invalid_format": {
+        "email": "Enter a valid email address.",
+        "url": "Enter a valid web address (https://…).",
+        "uuid": "Invalid identifier.",
+        "date": "Enter a valid date.",
+        "datetime": "Enter a valid date and time.",
+        "time": "Enter a valid time.",
+        "generic": "The format is not valid."
+      },
+      "invalid_value": "Choose one of the proposed values.",
+      "invalid_union": "This value is not valid.",
+      "not_multiple_of": "This value does not follow the expected step.",
+      "unrecognized_keys": "This form has unknown fields."
+    }
+  },
+  "access": {
+    "missing": "To complete first: {{list}}.",
+    "denied": "This action is not open to you."
   }
 }

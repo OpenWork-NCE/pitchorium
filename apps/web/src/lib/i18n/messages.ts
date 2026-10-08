@@ -15,13 +15,42 @@ const DOCUMENT_MESSAGES = ['web.a11y', 'web.theme', 'web.locale', 'web.error'] a
  * nothing more (the server components read every namespace). A path is a namespace or a subtree
  * (`web.home`); the bundle regime is in ADR 0094.
  */
+/** Texts of the design system and of the forms (components/ui), for the interactive groups. */
+const DESIGN_SYSTEM_MESSAGES = ['web.ui', 'web.forms'] as const;
+
+/** Mandatory mentions (Notice, ImpactBadge) and the translated reasons the components show. */
+const MENTIONS = [
+  'web.notices',
+  'common.machineTranslation',
+  'reference.impactMentions',
+  'reference.impactLevels',
+] as const;
+
 export const CLIENT_MESSAGES = {
   document: DOCUMENT_MESSAGES,
   marketing: [...DOCUMENT_MESSAGES, 'web.home'],
-  public: DOCUMENT_MESSAGES,
-  auth: DOCUMENT_MESSAGES,
-  member: [...DOCUMENT_MESSAGES, 'web.shell', 'web.nav'],
-  admin: [...DOCUMENT_MESSAGES, 'web.shell', 'web.nav'],
+  public: [...DOCUMENT_MESSAGES, ...DESIGN_SYSTEM_MESSAGES, ...MENTIONS],
+  auth: [...DOCUMENT_MESSAGES, ...DESIGN_SYSTEM_MESSAGES, 'errors'],
+  member: [
+    ...DOCUMENT_MESSAGES,
+    ...DESIGN_SYSTEM_MESSAGES,
+    ...MENTIONS,
+    'web.shell',
+    'web.nav',
+    'web.access',
+    'errors',
+    'reference.prerequisiteElements',
+    'reference.mediaRejectionReasons',
+  ],
+  admin: [
+    ...DOCUMENT_MESSAGES,
+    ...DESIGN_SYSTEM_MESSAGES,
+    'web.shell',
+    'web.nav',
+    'web.access',
+    'errors',
+    'reference.prerequisiteElements',
+  ],
   dev: [...DOCUMENT_MESSAGES, 'web.health'],
 } as const satisfies Record<string, readonly string[]>;
 

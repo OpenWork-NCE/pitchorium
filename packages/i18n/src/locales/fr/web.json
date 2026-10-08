@@ -75,5 +75,202 @@
     "member": "Espace membre",
     "admin": "Administration",
     "public": "Pages publiques"
+  },
+  "ui": {
+    "close": "Fermer",
+    "newTab": "nouvel onglet",
+    "dismiss": "Masquer ce message",
+    "breadcrumbs": "Fil d’Ariane",
+    "copy": {
+      "action": "Copier",
+      "done": "Copié dans le presse-papiers.",
+      "failed": "La copie a échoué. Sélectionnez le texte pour le copier."
+    },
+    "field": {
+      "optional": "(facultatif)",
+      "counter": "{{count}} sur {{max}} caractères",
+      "counterOver": "{{count}} caractères en trop"
+    },
+    "password": {
+      "show": "Afficher le mot de passe",
+      "hide": "Masquer le mot de passe"
+    },
+    "otp": {
+      "hint": "Code de {{length}} chiffres. Vous pouvez le coller."
+    },
+    "select": {
+      "placeholder": "Choisir"
+    },
+    "combobox": {
+      "placeholder": "Choisir",
+      "search": "Rechercher",
+      "loading": "Recherche en cours",
+      "empty": "Aucun résultat.",
+      "selected": {
+        "one": "{{count}} élément choisi",
+        "other": "{{count}} éléments choisis"
+      },
+      "remove": "Retirer {{label}}",
+      "isSelected": "choisi"
+    },
+    "money": {
+      "currency": "Montant en {{currency}}",
+      "equivalent": "soit {{amount}}"
+    },
+    "dateTime": {
+      "date": "Date",
+      "time": "Heure",
+      "zone": "Heure locale : {{zone}}"
+    },
+    "file": {
+      "drop": "Glissez un fichier ici ou",
+      "choose": "choisissez-le",
+      "paste": "Vous pouvez aussi le coller.",
+      "progress": "Envoi de {{name}}",
+      "retry": "Réessayer l’envoi de {{name}}",
+      "remove": "Retirer {{name}}",
+      "states": {
+        "pending": "En attente",
+        "uploading": "Envoi : {{percent}} %",
+        "processing": "Vérification en cours",
+        "ready": "Prêt",
+        "rejected": "Refusé : {{reason}}"
+      }
+    },
+    "truncate": {
+      "more": "Voir plus",
+      "less": "Voir moins"
+    },
+    "stepper": {
+      "position": "Étape {{current}} sur {{total}}",
+      "done": "terminée",
+      "current": "en cours",
+      "upcoming": "à venir"
+    },
+    "pagination": {
+      "more": "Afficher plus",
+      "loading": "Chargement de la suite",
+      "end": "Vous avez tout vu.",
+      "shown": {
+        "one": "{{count}} élément affiché",
+        "other": "{{count}} éléments affichés"
+      }
+    },
+    "table": {
+      "sortAscending": "Trier par {{column}}, ordre croissant",
+      "sortDescending": "Trier par {{column}}, ordre décroissant",
+      "loading": "Chargement du tableau"
+    },
+    "funding": {
+      "raised": "{{amount}} collectés sur {{goal}}",
+      "goal": "sur un objectif de {{goal}}",
+      "percent": "{{percent}} % de l’objectif",
+      "daysLeft": {
+        "one": "{{count}} jour restant",
+        "other": "{{count}} jours restants"
+      },
+      "ended": "Campagne terminée",
+      "milestones": "Paliers",
+      "milestone": "Palier {{index}}",
+      "reached": "atteint"
+    },
+    "impact": {
+      "title": "Score d’impact",
+      "score": "Score de {{score}} sur 100",
+      "criterion": "{{score}} sur {{max}}",
+      "selfDeclared": "auto-déclaré",
+      "name": "Impact",
+      "outOf": "sur 100, voir le détail"
+    },
+    "verified": {
+      "label": "Vérifié",
+      "description": "Vérifié par Pitchorium"
+    },
+    "confirm": {
+      "cancel": "Annuler",
+      "pending": "Action en cours",
+      "phraseMissing": "Saisissez le texte demandé pour confirmer.",
+      "typeToConfirm": "Pour confirmer, saisissez :"
+    },
+    "toast": {
+      "region": "Notifications",
+      "close": "Fermer la notification"
+    },
+    "errorState": {
+      "title": "Ce contenu n’a pas pu être chargé.",
+      "description": "Vérifiez votre connexion, puis réessayez.",
+      "reference": "Référence : {{reference}}",
+      "retry": "Réessayer",
+      "retrying": "Nouvel essai en cours"
+    },
+    "command": {
+      "title": "Recherche globale",
+      "placeholder": "Rechercher des personnes, des projets, des organisations…",
+      "escape": "Échap",
+      "empty": "Aucune action ne correspond.",
+      "searchGroup": "Recherche",
+      "searchFor": "Rechercher « {{query}} »",
+      "resultsLater": "Les résultats de la recherche arrivent bientôt.",
+      "actions": "Actions rapides",
+      "recent": "Recherches récentes",
+      "clearRecent": "Effacer les recherches récentes"
+    },
+    "shortcuts": {
+      "title": "Raccourcis clavier",
+      "description": "Ils ne s’appliquent pas pendant la saisie d’un texte, sauf ceux avec Ctrl ou ⌘.",
+      "help": "Afficher les raccourcis",
+      "general": "Général"
+    }
+  },
+  "notices": {
+    "machineTranslation": "{{mention}} ({{provider}}).",
+    "notTaxReceipt": "Cette confirmation n’est pas un reçu fiscal.",
+    "moderated": "Ce contenu a été masqué par la modération."
+  },
+  "forms": {
+    "summary": {
+      "one": "Le formulaire contient {{count}} erreur.",
+      "other": "Le formulaire contient {{count}} erreurs."
+    },
+    "unexpected": "L’opération n’a pas abouti. Réessayez dans un instant.",
+    "reference": "(référence : {{reference}})",
+    "issues": {
+      "required": "Ce champ est obligatoire.",
+      "invalid_type": "Cette valeur n’est pas valide.",
+      "invalid": "Cette valeur n’est pas valide.",
+      "too_small": {
+        "string": "Au moins {{minimum}} caractères.",
+        "number": "Au moins {{minimum}}.",
+        "array": "Au moins {{minimum}} éléments.",
+        "set": "Au moins {{minimum}} éléments.",
+        "file": "Fichier trop petit.",
+        "generic": "Valeur trop petite."
+      },
+      "too_big": {
+        "string": "Au plus {{maximum}} caractères.",
+        "number": "Au plus {{maximum}}.",
+        "array": "Au plus {{maximum}} éléments.",
+        "set": "Au plus {{maximum}} éléments.",
+        "file": "Fichier trop volumineux.",
+        "generic": "Valeur trop grande."
+      },
+      "invalid_format": {
+        "email": "Saisissez une adresse email valide.",
+        "url": "Saisissez une adresse web valide (https://…).",
+        "uuid": "Identifiant invalide.",
+        "date": "Saisissez une date valide.",
+        "datetime": "Saisissez une date et une heure valides.",
+        "time": "Saisissez une heure valide.",
+        "generic": "Le format n’est pas valide."
+      },
+      "invalid_value": "Choisissez une des valeurs proposées.",
+      "invalid_union": "Cette valeur n’est pas valide.",
+      "not_multiple_of": "Cette valeur ne respecte pas le pas attendu.",
+      "unrecognized_keys": "Ce formulaire contient des champs inconnus."
+    }
+  },
+  "access": {
+    "missing": "À compléter d’abord : {{list}}.",
+    "denied": "Cette action ne vous est pas ouverte."
   }
 }
