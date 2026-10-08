@@ -159,5 +159,33 @@
     "attachments": "{{count}} attachment(s)",
     "action": "Reply on Pitchorium",
     "note": "You receive a copy of your unread messages because you turned it on in your notification settings on Pitchorium."
+  },
+  "platformNotice": {
+    "greeting": "Hello {{name}},",
+    "greetingAnonymous": "Hello,",
+    "report_received": {
+      "subject": "Your report was received",
+      "preview": "Report {{reference}} received.",
+      "body": "We received your notice of illegal content (reference {{reference}}). The moderation team is reviewing it and will tell you its decision at this address.",
+      "note": "Keep this reference. An abusive or bad faith notice may lead to measures."
+    },
+    "report_action_taken": {
+      "subject": "Your report was handled",
+      "preview": "Action was taken.",
+      "body": "Your report (reference {{reference}}) was reviewed: action was taken on the reported content.",
+      "note": "Thank you for helping keep Pitchorium safe."
+    },
+    "report_no_action": {
+      "subject": "Your report was handled",
+      "preview": "No action was taken.",
+      "body": "Your report (reference {{reference}}) was reviewed: after analysis, no action was taken on the reported content.",
+      "note": "If you consider this content illegal, you may also refer it to the competent authorities."
+    },
+    "account_erased": {
+      "subject": "Your Pitchorium account was deleted",
+      "preview": "Deletion completed on {{reference}}.",
+      "body": "As you requested, your Pitchorium account and your data were deleted on {{reference}} (UTC).",
+      "note": "Some data is kept in pseudonymized form for our legal obligations: payments, proofs of acceptance of the terms and moderation decisions."
+    }
   }
 }

@@ -11,6 +11,7 @@ import {
   renderOrganizationNoticeEmail,
   type OrganizationNoticeKind,
   renderPasswordResetEmail,
+  renderPlatformNoticeEmail,
   renderSignInMethodChangedEmail,
   renderTechnicalTestEmail,
 } from './index.js';
@@ -29,7 +30,7 @@ const url = 'https://app.pitchorium.test/action?token=abc';
 
 /** A missing key renders as the key itself; an unresolved parameter keeps its braces. */
 const MISSING_TRANSLATION =
-  /\{\{|\b(?:layout|providers|emailVerification|magicLink|passwordReset|newSignIn|signInMethodChanged|technicalTest|organizationNotice|contributionConfirmation|notification|notificationDigest|unreadMessages|types)\./;
+  /\{\{|\b(?:layout|providers|emailVerification|magicLink|passwordReset|newSignIn|signInMethodChanged|technicalTest|organizationNotice|platformNotice|contributionConfirmation|notification|notificationDigest|unreadMessages|types)\./;
 
 const cases: TemplateCase[] = [
   {
@@ -255,6 +256,26 @@ describe('email templates', () => {
       unsubscribeUrl: null,
     });
     expect(transactional.text).not.toContain('Se désinscrire');
+  });
+
+  it('renders every platform notice with its reference', async () => {
+    for (const locale of ['fr', 'en'] as const) {
+      for (const kind of [
+        'report_received',
+        'report_action_taken',
+        'report_no_action',
+        'account_erased',
+      ] as const) {
+        const email = await renderPlatformNoticeEmail({
+          locale,
+          kind,
+          name: null,
+          reference: 'REF-42',
+        });
+        expect(email.text).not.toMatch(MISSING_TRANSLATION);
+        expect(email.text).toContain('REF-42');
+      }
+    }
   });
 
   it('says that the confirmation of a contribution is not a tax receipt', async () => {

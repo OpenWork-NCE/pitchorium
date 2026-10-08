@@ -159,5 +159,33 @@
     "attachments": "{{count}} pièce(s) jointe(s)",
     "action": "Répondre sur Pitchorium",
     "note": "Vous recevez la copie de vos messages non lus car vous l'avez activée dans vos préférences de notifications sur Pitchorium."
+  },
+  "platformNotice": {
+    "greeting": "Bonjour {{name}},",
+    "greetingAnonymous": "Bonjour,",
+    "report_received": {
+      "subject": "Votre signalement a bien été reçu",
+      "preview": "Signalement {{reference}} reçu.",
+      "body": "Nous avons bien reçu votre signalement de contenu illégal (référence {{reference}}). L'équipe de modération l'examine et vous informera de sa décision à cette adresse.",
+      "note": "Conservez cette référence. Un signalement abusif ou de mauvaise foi peut entraîner des mesures."
+    },
+    "report_action_taken": {
+      "subject": "Votre signalement a été traité",
+      "preview": "Une mesure a été prise.",
+      "body": "Votre signalement (référence {{reference}}) a été examiné : une mesure a été prise à l'égard du contenu signalé.",
+      "note": "Merci d'avoir contribué à la sécurité de Pitchorium."
+    },
+    "report_no_action": {
+      "subject": "Votre signalement a été traité",
+      "preview": "Aucune mesure n'a été prise.",
+      "body": "Votre signalement (référence {{reference}}) a été examiné : après analyse, aucune mesure n'a été prise à l'égard du contenu signalé.",
+      "note": "Si vous estimez que ce contenu est illégal, vous pouvez aussi saisir les autorités compétentes."
+    },
+    "account_erased": {
+      "subject": "Votre compte Pitchorium a été supprimé",
+      "preview": "Suppression effectuée le {{reference}}.",
+      "body": "Comme vous l'avez demandé, votre compte Pitchorium et vos données ont été supprimés le {{reference}} (UTC).",
+      "note": "Certaines données sont conservées sous une forme pseudonymisée pour nos obligations légales : paiements, preuves d'acceptation des conditions et décisions de modération."
+    }
   }
 }

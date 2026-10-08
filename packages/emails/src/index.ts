@@ -32,6 +32,10 @@ import OrganizationNoticeEmail, {
   organizationNoticeSubject,
   type OrganizationNoticeEmailProps,
 } from './templates/organization-notice.js';
+import PlatformNoticeEmail, {
+  platformNoticeSubject,
+  type PlatformNoticeEmailProps,
+} from './templates/platform-notice.js';
 import PasswordResetEmail, {
   passwordResetSubject,
   type PasswordResetEmailProps,
@@ -52,6 +56,7 @@ export type {
 } from './templates/contribution-confirmation.js';
 export type { EmailVerificationEmailProps } from './templates/email-verification.js';
 export type { MagicLinkEmailProps } from './templates/magic-link.js';
+export type { PlatformNoticeEmailProps, PlatformNoticeKind } from './templates/platform-notice.js';
 export type { NewSignInEmailProps } from './templates/new-sign-in.js';
 export type {
   OrganizationNoticeEmailProps,
@@ -113,6 +118,10 @@ export function renderOrganizationNoticeEmail(
     organizationNoticeSubject(props),
     createElement(OrganizationNoticeEmail, props),
   );
+}
+
+export function renderPlatformNoticeEmail(props: PlatformNoticeEmailProps): Promise<RenderedEmail> {
+  return renderEmail(platformNoticeSubject(props), createElement(PlatformNoticeEmail, props));
 }
 
 export function renderContributionConfirmationEmail(
