@@ -20,11 +20,14 @@ L'api doit lister `http://localhost:3200` dans `WEB_APP_URL` et `CORS_ORIGINS` (
 | `pnpm typecheck`           | types des routes (`next typegen`) puis `tsc`                                                                                                                                       |
 | `pnpm lint`                | types des routes puis ESLint : règles partagées, Next.js, React et hooks, accessibilité (jsx-a11y), frontières, texte en dur, `"use client"` des routes, GSAP                      |
 | `pnpm test`                | Vitest : composants, logique, contraste des tokens, architecture                                                                                                                   |
+| `pnpm test:stories`        | chaque story comme un test (fonction `play` et addon d'accessibilité, les deux thèmes, mouvement réduit) dans l'image Playwright ; `test:stories:native` avec le Chromium local    |
 | `pnpm test:e2e`            | Playwright dans l'image officielle (captures comparées) ; `test:e2e:native` sans captures                                                                                          |
 | `pnpm check:bundles`       | JavaScript initial par groupe de routes (budgets de l'ADR 0094), primitives Radix de chaque page, bibliothèques hors de leurs groupes (GSAP, Socket.IO, client d'authentification) |
 | `pnpm lighthouse`          | Lighthouse CI, profil mobile, budgets de `lighthouserc.cjs`                                                                                                                        |
 | `pnpm storybook`           | design system (port 6006) ; `build-storybook` pour la version statique                                                                                                             |
 | `pnpm brand:sync`          | resélectionne les fichiers du kit de marque local (`docs/design/brand-usage.md`)                                                                                                   |
+
+Storybook prégroupe les packages du dépôt (`.storybook/main.ts`) : après une modification de `@pitchorium/i18n` ou des contrats, supprimer `node_modules/.cache/storybook` avant `test:stories:native`.
 
 Captures de référence : après un changement visuel voulu, `pnpm test:e2e --update-snapshots`, puis relire les images de `e2e/__screenshots__`.
 

@@ -79,3 +79,6 @@ minimumReleaseAgeExclude:
   - '@sentry/server-utils@11.5.0'
   - resend@6.32.1
   - vite@8.3.4
+
+patchedDependencies:
+  '@storybook/nextjs-vite@10.6.1': patches/@storybook__nextjs-vite@10.6.1.patch

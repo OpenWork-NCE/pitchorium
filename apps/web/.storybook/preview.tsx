@@ -1,16 +1,95 @@
-import type { Preview } from '@storybook/nextjs-vite';
+import type { Decorator, Preview } from '@storybook/nextjs-vite';
 import { NextIntlClientProvider } from 'next-intl';
 import { ThemeProvider } from 'next-themes';
-import { useEffect } from 'react';
+import { type ReactNode, useEffect } from 'react';
+import { MotionProvider } from '../src/components/motion/motion-provider';
 import { messagesFor } from '../src/lib/i18n/messages';
 import { fontVariables } from '../src/styles/fonts';
 import '../src/styles/globals.css';
+
+type ThemeGlobal = 'light' | 'dark' | 'side-by-side';
+
+function Canvas({
+  theme,
+  padded,
+  children,
+}: {
+  theme: 'light' | 'dark';
+  padded: boolean;
+  children: ReactNode;
+}) {
+  return (
+    <div
+      data-theme={theme}
+      className={`bg-background font-sans text-foreground ${padded ? 'p-6' : ''}`}
+    >
+      {children}
+    </div>
+  );
+}
+
+/**
+ * Theme, language and the providers of an interactive shell (messages, Motion). `side-by-side`
+ * shows the story in both themes at once (the dark tokens apply to a subtree marked dark); the
+ * tests run each theme on its own (vitest.config.mts).
+ */
+function StoryProviders({
+  theme,
+  locale,
+  padded,
+  children,
+}: {
+  theme: ThemeGlobal;
+  locale: 'fr' | 'en';
+  padded: boolean;
+  children: ReactNode;
+}) {
+  const rootTheme = theme === 'dark' ? 'dark' : 'light';
+  useEffect(() => {
+    document.documentElement.dataset.theme = rootTheme;
+    document.documentElement.style.colorScheme = rootTheme;
+    document.documentElement.className = fontVariables;
+    document.documentElement.lang = locale;
+  }, [rootTheme, locale]);
+  return (
+    <NextIntlClientProvider locale={locale} messages={messagesFor(locale)} timeZone="Europe/Paris">
+      <ThemeProvider attribute="data-theme" forcedTheme={rootTheme}>
+        <MotionProvider nonce={undefined}>
+          {theme === 'side-by-side' ? (
+            <div className="grid min-h-dvh lg:grid-cols-2">
+              <Canvas theme="light" padded={padded}>
+                {children}
+              </Canvas>
+              <Canvas theme="dark" padded={padded}>
+                {children}
+              </Canvas>
+            </div>
+          ) : (
+            <Canvas theme={rootTheme} padded={padded}>
+              {children}
+            </Canvas>
+          )}
+        </MotionProvider>
+      </ThemeProvider>
+    </NextIntlClientProvider>
+  );
+}
+
+const withProviders: Decorator = (Story, context) => (
+  <StoryProviders
+    theme={(context.globals.theme as ThemeGlobal | undefined) ?? 'light'}
+    locale={context.globals.locale === 'en' ? 'en' : 'fr'}
+    padded={context.parameters.layout !== 'fullscreen'}
+  >
+    <Story />
+  </StoryProviders>
+);
 
 const preview: Preview = {
   globalTypes: {
     theme: {
       description: 'Theme',
-      toolbar: { icon: 'mirror', items: ['light', 'dark'], dynamicTitle: true },
+      toolbar: { icon: 'mirror', items: ['light', 'dark', 'side-by-side'], dynamicTitle: true },
     },
     locale: {
       description: 'Locale',
@@ -20,29 +99,20 @@ const preview: Preview = {
   initialGlobals: { theme: 'light', locale: 'fr' },
   parameters: {
     layout: 'padded',
-    a11y: { test: 'error' },
-    nextjs: { appDirectory: true },
-  },
-  decorators: [
-    (Story, context) => {
-      const theme = context.globals.theme === 'dark' ? 'dark' : 'light';
-      const locale = context.globals.locale === 'en' ? 'en' : 'fr';
-      useEffect(() => {
-        document.documentElement.dataset.theme = theme;
-        document.documentElement.className = fontVariables;
-        document.documentElement.lang = locale;
-      }, [theme, locale]);
-      return (
-        <NextIntlClientProvider locale={locale} messages={messagesFor(locale)} timeZone="UTC">
-          <ThemeProvider attribute="data-theme" forcedTheme={theme}>
-            <div className="bg-background p-6 font-sans text-foreground">
-              <Story />
-            </div>
-          </ThemeProvider>
-        </NextIntlClientProvider>
-      );
+    // The accessibility addon fails a story on any violation (WCAG 2.2 AA), in both themes.
+    a11y: {
+      test: 'error',
+      options: {
+        runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'] },
+      },
     },
-  ],
+    nextjs: { appDirectory: true },
+    controls: { expanded: true },
+    options: {
+      storySort: { order: ['Foundations', 'Design system', 'Motion', 'Compositions'] },
+    },
+  },
+  decorators: [withProviders],
 };
 
 export default preview;
