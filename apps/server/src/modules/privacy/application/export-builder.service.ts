@@ -15,7 +15,11 @@ import { PrivacyRepository } from './ports';
 /** A file of the member larger than this is listed in the archive, not copied. */
 export const EXPORTED_FILE_MAX_BYTES = 200 * 1024 * 1024;
 
-const json = (value: unknown): Buffer => Buffer.from(`${JSON.stringify(value, null, 2)}\n`);
+/** Amounts in minor units are bigints: written as strings, as in the API. */
+const json = (value: unknown): Buffer =>
+  Buffer.from(
+    `${JSON.stringify(value, (_key, item: unknown) => (typeof item === 'bigint' ? item.toString() : item), 2)}\n`,
+  );
 
 /**
  * Builds the archive of an export in the worker (GDPR articles 15 and 20): `README.txt`, one
