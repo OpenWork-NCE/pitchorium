@@ -1,6 +1,8 @@
 /** Public facade of the messaging module: the only file other modules may import. */
 export {
   MessagingFacade,
+  REPORT_CONTEXT_MESSAGES_BEFORE,
+  type ReportedMessageContext,
   type UnreadMessage,
   type UnreadState,
 } from './application/messaging.facade';

@@ -13,6 +13,22 @@ export interface UnreadState {
   muted: boolean;
 }
 
+/** Messages shown to a moderator around a reported message (trust module). */
+export const REPORT_CONTEXT_MESSAGES_BEFORE = 3;
+
+export interface ReportedMessageContext {
+  conversationId: string;
+  senderId: string;
+  messages: {
+    id: string;
+    senderId: string;
+    sentAt: Date;
+    /** Null for a deleted message (tombstone). */
+    text: string | null;
+    reported: boolean;
+  }[];
+}
+
 export interface UnreadMessage {
   senderId: string;
   sequence: number;
@@ -55,6 +71,37 @@ export class MessagingFacade implements OnModuleInit {
       throw new DomainError('MESSAGING_MESSAGE_NOT_FOUND', 'Message not found');
     }
     await this.messaging.updateMessage(messageId, { moderationStatus: status });
+  }
+
+  /**
+   * Context of a message reported by a participant who sees the conversation: the message and
+   * the REPORT_CONTEXT_MESSAGES_BEFORE messages before it, never the whole conversation; null
+   * when the reporter may not see it.
+   */
+  async reportContext(
+    messageId: string,
+    reporterId: string,
+  ): Promise<ReportedMessageContext | null> {
+    const message = await this.messaging.findMessage(messageId);
+    if (!message || message.deletedAt) return null;
+    if (!(await this.access.find(reporterId, message.conversationId))) return null;
+    const before = await this.messaging.messages(
+      message.conversationId,
+      { beforeSequence: message.sequence },
+      REPORT_CONTEXT_MESSAGES_BEFORE,
+    );
+    const shown = [...before, message].sort((a, b) => a.sequence - b.sequence);
+    return {
+      conversationId: message.conversationId,
+      senderId: message.senderId,
+      messages: shown.map((item) => ({
+        id: item.id,
+        senderId: item.senderId,
+        sentAt: item.createdAt,
+        text: item.deletedAt ? null : item.body,
+        reported: item.id === message.id,
+      })),
+    };
   }
 
   /** Unread messages and conversations of the inbox, without the conversations hidden by a block. */

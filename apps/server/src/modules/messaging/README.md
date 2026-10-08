@@ -55,7 +55,7 @@ Persistance avant toute diffusion ; diffusion après la validation de la transac
 
 ## Façade publique (`index.ts`)
 
-`MessagingFacade` : `setMessageModerationStatus`, `unreadSummary`, `pendingRequests`, `introductionsAwaiting`, `unreadState`, `unreadMessages`, `isActive`, `participantIds` ; types `UnreadState`, `UnreadMessage` ; classes d'événements. Au démarrage, la façade enregistre auprès de media la règle de lecture des fichiers de type `message`.
+`MessagingFacade` : `setMessageModerationStatus`, `reportContext` (message signalé par un participant qui voit la conversation, avec au plus `REPORT_CONTEXT_MESSAGES_BEFORE` = 3 messages qui le précèdent, jamais toute la conversation ; texte nul pour un message supprimé), `unreadSummary`, `pendingRequests`, `introductionsAwaiting`, `unreadState`, `unreadMessages`, `isActive`, `participantIds` ; types `UnreadState`, `UnreadMessage` ; classes d'événements. Au démarrage, la façade enregistre auprès de media la règle de lecture des fichiers de type `message`.
 
 ## Événements émis
 
