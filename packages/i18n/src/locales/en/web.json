@@ -127,9 +127,35 @@
       "equivalent": "about {{amount}}"
     },
     "dateTime": {
-      "date": "Date",
-      "time": "Time",
-      "zone": "Local time: {{zone}}"
+      "segments": {
+        "day": "Day",
+        "month": "Month",
+        "year": "Year",
+        "hour": "Hours",
+        "minute": "Minutes",
+        "dayPeriod": "AM or PM"
+      },
+      "placeholders": {
+        "day": "dd",
+        "month": "mm",
+        "year": "yyyy",
+        "hour": "hh",
+        "minute": "mm",
+        "dayPeriod": "--"
+      },
+      "empty": "Empty",
+      "openCalendar": "Choose the date in the calendar"
+    },
+    "calendar": {
+      "navigation": "Change month",
+      "previousMonth": "Previous month",
+      "nextMonth": "Next month",
+      "today": "today",
+      "selected": "selected"
+    },
+    "timeZone": {
+      "label": "{{city}}, GMT{{offset}}",
+      "search": "Choose a city or a time zone"
     },
     "file": {
       "drop": "Drag a file here or",

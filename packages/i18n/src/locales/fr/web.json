@@ -127,9 +127,35 @@
       "equivalent": "soit {{amount}}"
     },
     "dateTime": {
-      "date": "Date",
-      "time": "Heure",
-      "zone": "Heure locale : {{zone}}"
+      "segments": {
+        "day": "Jour",
+        "month": "Mois",
+        "year": "Année",
+        "hour": "Heures",
+        "minute": "Minutes",
+        "dayPeriod": "Matin ou après-midi"
+      },
+      "placeholders": {
+        "day": "jj",
+        "month": "mm",
+        "year": "aaaa",
+        "hour": "hh",
+        "minute": "mm",
+        "dayPeriod": "--"
+      },
+      "empty": "Vide",
+      "openCalendar": "Choisir la date dans le calendrier"
+    },
+    "calendar": {
+      "navigation": "Changer de mois",
+      "previousMonth": "Mois précédent",
+      "nextMonth": "Mois suivant",
+      "today": "aujourd’hui",
+      "selected": "sélectionné"
+    },
+    "timeZone": {
+      "label": "{{city}}, GMT{{offset}}",
+      "search": "Choisir une ville ou un fuseau"
     },
     "file": {
       "drop": "Glissez un fichier ici ou",

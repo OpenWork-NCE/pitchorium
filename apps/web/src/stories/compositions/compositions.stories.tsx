@@ -19,7 +19,7 @@ import {
   Button,
   Card,
   Combobox,
-  DateTimeInput,
+  DateTimeField,
   FileDrop,
   Form,
   FormField,
@@ -28,11 +28,11 @@ import {
   Input,
   Loading,
   RadioGroup,
-  Select,
   ShortcutsProvider,
   Table,
   Text,
   Textarea,
+  TimeZoneSelect,
   useApplyProblem,
   useZodForm,
 } from '@/components/ui';
@@ -280,6 +280,7 @@ function EventForm() {
   });
   const applyProblem = useApplyProblem(form);
   const attempt = useRef(0);
+  const timeZone = form.watch('timeZone');
   return (
     <Form
       form={form}
@@ -358,10 +359,10 @@ function EventForm() {
           name="startsAt"
           label="Début"
           render={({ field }) => (
-            <DateTimeInput
+            <DateTimeField
               value={field.value ?? null}
               onChange={(value) => field.onChange(value ?? undefined)}
-              timeZone="Africa/Dakar"
+              timeZone={timeZone}
             />
           )}
         />
@@ -370,10 +371,10 @@ function EventForm() {
           name="endsAt"
           label="Fin"
           render={({ field }) => (
-            <DateTimeInput
+            <DateTimeField
               value={field.value ?? null}
               onChange={(value) => field.onChange(value ?? undefined)}
-              timeZone="Africa/Dakar"
+              timeZone={timeZone}
             />
           )}
         />
@@ -382,16 +383,12 @@ function EventForm() {
         control={form.control}
         name="timeZone"
         label="Fuseau horaire"
+        description="Les dates sont celles du lieu de l’événement."
         render={({ field }) => (
-          <Select
+          <TimeZoneSelect
             value={field.value}
-            onValueChange={field.onChange}
-            options={[
-              { value: 'Africa/Dakar', label: 'Dakar' },
-              { value: 'Africa/Lagos', label: 'Lagos' },
-              { value: 'Europe/Paris', label: 'Paris' },
-              { value: 'America/Port-au-Prince', label: 'Port-au-Prince' },
-            ]}
+            onChange={field.onChange}
+            at={form.getValues('startsAt') ?? null}
           />
         )}
       />
@@ -444,11 +441,11 @@ export const FormWithServerErrors: Story = {
       'Atelier trésorerie des coopératives',
     );
     const start = within(canvas.getByRole('group', { name: 'Début' }));
-    await userEvent.type(start.getByLabelText('Date'), '2026-11-20');
-    await userEvent.type(start.getByLabelText('Heure'), '1800');
+    await userEvent.click(start.getByRole('spinbutton', { name: 'Jour' }));
+    await userEvent.keyboard('201120261800');
     const end = within(canvas.getByRole('group', { name: 'Fin' }));
-    await userEvent.type(end.getByLabelText('Date'), '2026-11-20');
-    await userEvent.type(end.getByLabelText('Heure'), '1700');
+    await userEvent.click(end.getByRole('spinbutton', { name: 'Jour' }));
+    await userEvent.keyboard('201120261700');
     await userEvent.click(canvas.getByRole('button', { name: 'Publier l’événement' }));
     await waitFor(() =>
       expect(canvas.getByRole('alert')).toHaveTextContent('Le formulaire contient 2 erreurs.'),

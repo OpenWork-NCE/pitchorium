@@ -31,6 +31,7 @@
   "dependencies": {
     "@gsap/react": "2.1.2",
     "@hookform/resolvers": "5.9.1",
+    "@internationalized/date": "3.12.4",
     "@pitchorium/api-client": "workspace:*",
     "@pitchorium/contracts": "workspace:*",
     "@pitchorium/i18n": "workspace:*",
@@ -53,6 +54,7 @@
     "nuqs": "2.10.2",
     "radix-ui": "1.7.0",
     "react": "19.3.0",
+    "react-day-picker": "10.0.2",
     "react-dom": "19.3.0",
     "react-hook-form": "7.89.0",
     "schema-dts": "2.1.0",

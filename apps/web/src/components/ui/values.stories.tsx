@@ -1,9 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { useState } from 'react';
 import { expect, userEvent, within } from 'storybook/test';
-import { DateTimeInput } from './date-time-input';
+import { DateTimeField } from './date-time-field';
 import { Field } from './field';
 import { MoneyInput } from './money-input';
+import { TimeZoneSelect } from './time-zone-select';
 
 const meta = { title: 'Design system/Forms/Amounts and dates' } satisfies Meta;
 export default meta;
@@ -44,25 +45,88 @@ export const Money: Story = {
   },
 };
 
-/** Wall clock of the place of the event, stored as an instant; the zone is named. */
-export const DateAndTime: Story = {
-  render: function Render() {
-    const [instant, setInstant] = useState<string | null>('2026-11-20T17:00:00.000Z');
-    return (
-      <div className="grid max-w-md gap-3">
+/**
+ * Wall clock of the place of the event, typed segment by segment in the order of the language of
+ * the application (not the browser), stored as an instant; the zone is said once, next to the
+ * dates, and can be changed.
+ */
+function DatesOfAnEvent() {
+  const [start, setStart] = useState<string | null>('2026-11-20T17:00:00.000Z');
+  const [end, setEnd] = useState<string | null>(null);
+  const [zone, setZone] = useState('Africa/Dakar');
+  return (
+    <div className="grid max-w-2xl gap-4">
+      <div className="grid gap-4 sm:grid-cols-2">
         <Field label="Début de l’événement">
-          <DateTimeInput value={instant} onChange={setInstant} timeZone="Africa/Dakar" />
+          <DateTimeField value={start} onChange={setStart} timeZone={zone} />
         </Field>
-        <output className="text-sm text-muted" data-testid="instant">
-          {instant}
-        </output>
+        <Field label="Fin de l’événement">
+          <DateTimeField value={end} onChange={setEnd} timeZone={zone} />
+        </Field>
       </div>
-    );
-  },
+      <Field label="Fuseau horaire">
+        <TimeZoneSelect value={zone} onChange={setZone} at={start} />
+      </Field>
+      <output className="text-sm text-muted" data-testid="instants">
+        {start ?? '-'} / {end ?? '-'}
+      </output>
+    </div>
+  );
+}
+
+export const DateAndTime: Story = {
+  render: () => <DatesOfAnEvent />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const group = canvas.getByRole('group', { name: 'Début de l’événement' });
-    await expect(within(group).getByLabelText('Heure')).toHaveValue('17:00');
-    await expect(within(group).getByLabelText('Date')).toHaveAccessibleDescription(/Heure locale/);
+    const start = within(canvas.getByRole('group', { name: 'Début de l’événement' }));
+    await expect(start.getAllByRole('spinbutton').map((segment) => segment.textContent)).toEqual([
+      '20',
+      '11',
+      '2026',
+      '17',
+      '00',
+    ]);
+    // The keyboard alone: digits move from segment to segment, the arrows change a value.
+    const end = within(canvas.getByRole('group', { name: 'Fin de l’événement' }));
+    await userEvent.click(end.getByRole('spinbutton', { name: 'Jour' }));
+    await userEvent.keyboard('201120261930');
+    await expect(canvas.getByTestId('instants')).toHaveTextContent(
+      '2026-11-20T17:00:00.000Z / 2026-11-20T19:30:00.000Z',
+    );
+    await userEvent.keyboard('{ArrowUp}');
+    await expect(end.getByRole('spinbutton', { name: 'Minutes' })).toHaveAttribute(
+      'aria-valuenow',
+      '31',
+    );
+    // The day picked in the calendar keeps the time.
+    await userEvent.click(end.getByRole('button', { name: 'Choisir la date dans le calendrier' }));
+    const day = await within(document.body).findByRole('button', {
+      name: /samedi 21 novembre 2026/,
+    });
+    await userEvent.click(day);
+    await expect(canvas.getByTestId('instants')).toHaveTextContent('2026-11-21T19:31:00.000Z');
+    // The zone is said once, and changing it keeps the wall clock.
+    await expect(canvas.getByRole('combobox', { name: 'Fuseau horaire' })).toHaveTextContent(
+      'Dakar, GMT+0',
+    );
+  },
+};
+
+/** In English, the order and the clock of English: month first, 12 hours. */
+export const DateAndTimeInEnglish: Story = {
+  globals: { locale: 'en' },
+  render: () => <DatesOfAnEvent />,
+  play: async ({ canvasElement }) => {
+    const start = within(
+      within(canvasElement).getByRole('group', { name: 'Début de l’événement' }),
+    );
+    await expect(start.getAllByRole('spinbutton').map((segment) => segment.textContent)).toEqual([
+      '11',
+      '20',
+      '2026',
+      '05',
+      '00',
+      'PM',
+    ]);
   },
 };

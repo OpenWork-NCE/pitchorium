@@ -1,93 +1,86 @@
+import {
+  CalendarDate,
+  CalendarDateTime,
+  fromAbsolute,
+  getDayOfWeek,
+  parseAbsolute,
+  toZoned,
+} from '@internationalized/date';
+
 /**
- * Wall time in a time zone, to and from an instant (ISO 8601 in UTC), with the Intl API only:
- * an event happens at 18:00 in Dakar whoever reads it, and is stored as an instant.
+ * Wall time in a time zone, to and from an instant (ISO 8601 in UTC), on @internationalized/date
+ * (ADR 0100): an event happens at 18:00 in Dakar whoever reads it, and is stored as an instant.
  */
-
-interface WallTime {
-  /** `YYYY-MM-DD`. */
-  date: string;
-  /** `HH:MM`, 24 hours. */
-  time: string;
+export interface WallDateTime {
+  year: number;
+  month: number;
+  day: number;
+  /** 0 to 23. */
+  hour: number;
+  minute: number;
 }
 
-const formatters = new Map<string, Intl.DateTimeFormat>();
-
-function formatterOf(zone: string): Intl.DateTimeFormat {
-  let formatter = formatters.get(zone);
-  if (!formatter) {
-    formatter = new Intl.DateTimeFormat('en-US', {
-      timeZone: zone,
-      hourCycle: 'h23',
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-    });
-    formatters.set(zone, formatter);
-  }
-  return formatter;
-}
-
-function partsAt(epoch: number, zone: string): Record<string, number> {
-  return Object.fromEntries(
-    formatterOf(zone)
-      .formatToParts(new Date(epoch))
-      .filter((part) => part.type !== 'literal')
-      .map((part) => [part.type, Number(part.value)]),
-  );
-}
-
-/** Offset of the zone from UTC at that instant, in milliseconds (Paris in summer: +2 hours). */
-export function zoneOffset(epoch: number, zone: string): number {
-  const parts = partsAt(epoch, zone);
-  const asUtc = Date.UTC(
-    parts.year ?? 1970,
-    (parts.month ?? 1) - 1,
-    parts.day ?? 1,
-    parts.hour ?? 0,
-    parts.minute ?? 0,
-    parts.second ?? 0,
-  );
-  return asUtc - Math.floor(epoch / 1000) * 1000;
+/** Days of a month of the Gregorian calendar (February of a leap year has 29). */
+export function daysInMonth(year: number, month: number): number {
+  const date = new CalendarDate(year, month, 1);
+  return date.calendar.getDaysInMonth(date);
 }
 
 /**
  * Instant of a wall time in a zone. A time skipped by a change to summer time moves forward by
- * the gap; a repeated one takes its first occurrence.
+ * the gap; a repeated one takes its first occurrence (disambiguation `compatible`). A day past
+ * the end of its month is brought back to the last day.
  */
-export function wallTimeToInstant({ date, time }: WallTime, zone: string): string {
-  const [year = 1970, month = 1, day = 1] = date.split('-').map(Number);
-  const [hour = 0, minute = 0] = time.split(':').map(Number);
-  const guess = Date.UTC(year, month - 1, day, hour, minute);
-  // The offsets on either side of a possible change of the clocks around that day.
-  const before = guess - zoneOffset(guess - 12 * 3600_000, zone);
-  const after = guess - zoneOffset(guess + 12 * 3600_000, zone);
-  const valid = [before, after].filter((candidate) => {
-    const wall = instantToWallTime(new Date(candidate).toISOString(), zone);
-    return wall.date === date && wall.time === time;
-  });
-  // Repeated: the first one; skipped: the offset before the change, which lands after the gap.
-  return new Date(valid.length > 0 ? Math.min(...valid) : before).toISOString();
+export function wallTimeToInstant(wall: WallDateTime, zone: string): string {
+  const day = Math.min(wall.day, daysInMonth(wall.year, wall.month));
+  const local = new CalendarDateTime(wall.year, wall.month, day, wall.hour, wall.minute);
+  return toZoned(local, zone, 'compatible').toAbsoluteString();
 }
 
 /** Wall time of an instant in a zone. */
-export function instantToWallTime(instant: string, zone: string): WallTime {
-  const parts = partsAt(Date.parse(instant), zone);
-  const pad = (value: number | undefined) => String(value ?? 0).padStart(2, '0');
+export function instantToWallTime(instant: string, zone: string): WallDateTime {
+  const zoned = parseAbsolute(instant, zone);
   return {
-    date: `${parts.year ?? 1970}-${pad(parts.month)}-${pad(parts.day)}`,
-    time: `${pad(parts.hour)}:${pad(parts.minute)}`,
+    year: zoned.year,
+    month: zoned.month,
+    day: zoned.day,
+    hour: zoned.hour,
+    minute: zoned.minute,
   };
 }
 
-/** Name and offset of a zone for a person (`heure d’été d’Europe centrale, UTC+2`). */
-export function zoneLabel(zone: string, locale: string, at = Date.now()): string {
-  const name = (style: 'long' | 'shortOffset') =>
-    new Intl.DateTimeFormat(locale, { timeZone: zone, timeZoneName: style })
-      .formatToParts(new Date(at))
-      .find((part) => part.type === 'timeZoneName')?.value ?? zone;
-  const offset = name('shortOffset').replace('GMT', 'UTC');
-  return `${name('long')}, ${offset === 'UTC' ? 'UTC+0' : offset}`;
+/** Offset of the zone from UTC at that instant, in minutes (Paris in summer: 120). */
+export function zoneOffsetMinutes(zone: string, at = Date.now()): number {
+  return Math.round(fromAbsolute(at, zone).offset / 60_000);
+}
+
+/** `+0`, `+1`, `-4`, `+5:30`: the offset as it follows `GMT`. */
+export function formatOffset(minutes: number): string {
+  const sign = minutes < 0 ? '-' : '+';
+  const hours = Math.floor(Math.abs(minutes) / 60);
+  const rest = Math.abs(minutes) % 60;
+  return `${sign}${hours}${rest > 0 ? `:${String(rest).padStart(2, '0')}` : ''}`;
+}
+
+/** City of an IANA zone (`America/Port-au-Prince` gives `Port-au-Prince`). */
+export function zoneCity(zone: string): string {
+  return (zone.split('/').at(-1) ?? zone).replaceAll('_', ' ');
+}
+
+/** Region of an IANA zone (`Africa`), empty for `UTC`. */
+export function zoneRegion(zone: string): string {
+  return zone.includes('/') ? (zone.split('/')[0] ?? '') : '';
+}
+
+/** The IANA zones of the runtime, `UTC` included. */
+export function timeZones(): readonly string[] {
+  const zones = Intl.supportedValuesOf('timeZone');
+  return zones.includes('UTC') ? zones : [...zones, 'UTC'];
+}
+
+/** First day of the week of a locale, 0 for Sunday (react-day-picker's `weekStartsOn`). */
+export function weekStartOf(locale: string): 0 | 1 | 2 | 3 | 4 | 5 | 6 {
+  // 4 January 2026 is a Sunday: its index in the week of the locale gives the first day.
+  const sunday = getDayOfWeek(new CalendarDate(2026, 1, 4), locale);
+  return ((7 - sunday) % 7) as 0 | 1 | 2 | 3 | 4 | 5 | 6;
 }

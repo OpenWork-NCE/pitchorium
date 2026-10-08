@@ -12,7 +12,7 @@ L'api valide chaque écriture avec les schémas Zod de `@pitchorium/contracts` e
 - Messages : la carte d'erreurs de Zod est remplacée à la validation par `issueMessage` (`lib/forms/issues.ts`), qui traduit le code et ses bornes depuis `web.forms.issues` ; une erreur de l'api, qui n'a que le code, prend le message générique de ce code (`serverIssueMessage`).
 - `useApplyProblem` : les erreurs de champ du problème vont sous leur champ (`pointerToPath`), le premier prend le focus ; tout autre problème devient l'erreur du formulaire, traduite depuis `errors.<code>`, avec la référence de la requête.
 - Système `Field` : libellé, description, erreur et compteur liés au contrôle (`aria-describedby`, `aria-invalid`, `aria-required`) ; chaque contrôle du design system lit son `Field`. `Form` désactive les bulles natives, annonce un résumé des erreurs et laisse react-hook-form focaliser le premier champ invalide.
-- Montants en unités mineures (`MoneyInput`, sans flottant), dates en instant avec le fuseau nommé (`DateTimeInput`).
+- Montants en unités mineures (`MoneyInput`, sans flottant), dates en instant avec le fuseau nommé (`DateTimeInput`, remplacé par `DateTimeField`, ADR 0100).
 
 ## Conséquences
 
