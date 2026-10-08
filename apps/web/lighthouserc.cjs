@@ -9,17 +9,37 @@
  * (e2e/responsiveness.spec.ts). The initial JavaScript per route group is checked on the build by
  * scripts/check-bundles.mjs; the script budget below also counts the chunks loaded on demand.
  */
+/** Thresholds of every page (ADR 0090). */
+const THRESHOLDS = {
+  'categories:performance': ['error', { minScore: 0.9 }],
+  'categories:accessibility': ['error', { minScore: 1 }],
+  'categories:best-practices': ['error', { minScore: 1 }],
+  'largest-contentful-paint': ['error', { maxNumericValue: 2500 }],
+  'cumulative-layout-shift': ['error', { maxNumericValue: 0.1 }],
+  'total-blocking-time': ['error', { maxNumericValue: 300 }],
+};
+
 module.exports = {
   ci: {
     collect: {
       startServerCommand: 'node e2e/support/serve.mjs',
       startServerReadyPattern: 'Ready in',
-      url: ['http://localhost:3201/fr', 'http://localhost:3201/en'],
+      url: [
+        'http://localhost:3201/fr',
+        'http://localhost:3201/en',
+        'http://localhost:3201/fr/feed',
+      ],
       numberOfRuns: Number(process.env.LHCI_RUNS ?? 3),
       settings: {
         // Reduced motion: the accessibility audit judges the contrast at rest, not in the middle
         // of a reveal (docs/design/motion.md); the loading path is the same.
         chromeFlags: '--no-sandbox --headless=new --force-prefers-reduced-motion',
+        // Session of a demonstration account of the stub api, for the shell of the member space:
+        // the cookie reaches the server render; the browser calls of the api carry the header.
+        extraHeaders: JSON.stringify({
+          Cookie: 'pitchorium.session_token=aissatou.ba%40demo.pitchorium.test',
+          'X-Stub-Session': 'aissatou.ba@demo.pitchorium.test',
+        }),
         throttlingMethod: 'devtools',
         throttling: {
           rttMs: 150,
@@ -32,19 +52,26 @@ module.exports = {
       },
     },
     assert: {
-      assertions: {
-        'categories:performance': ['error', { minScore: 0.9 }],
-        'categories:accessibility': ['error', { minScore: 1 }],
-        'categories:best-practices': ['error', { minScore: 1 }],
-        'categories:seo': ['error', { minScore: 1 }],
-        'largest-contentful-paint': ['error', { maxNumericValue: 2500 }],
-        'cumulative-layout-shift': ['error', { maxNumericValue: 0.1 }],
-        'total-blocking-time': ['error', { maxNumericValue: 300 }],
-        // Every script of the editorial page, transferred: initial chunks plus GSAP and the Motion
-        // features loaded on demand.
-        'resource-summary:script:size': ['error', { maxNumericValue: 360000 }],
-        'resource-summary:font:size': ['error', { maxNumericValue: 80000 }],
-      },
+      assertMatrix: [
+        {
+          // Editorial pages: every category, the scripts and fonts they transfer.
+          matchingUrlPattern: 'localhost:3201/(fr|en)$',
+          assertions: {
+            ...THRESHOLDS,
+            'categories:seo': ['error', { minScore: 1 }],
+            // Every script of the editorial page, transferred: initial chunks plus GSAP and the
+            // Motion features loaded on demand.
+            'resource-summary:script:size': ['error', { maxNumericValue: 360000 }],
+            'resource-summary:font:size': ['error', { maxNumericValue: 80000 }],
+          },
+        },
+        {
+          // Shell of the member space: the same thresholds, without SEO (its pages are not
+          // indexed, `noindex` by design); its initial JavaScript is budgeted by check:bundles.
+          matchingUrlPattern: 'localhost:3201/fr/feed$',
+          assertions: THRESHOLDS,
+        },
+      ],
     },
     upload: { target: 'filesystem', outputDir: '.lighthouseci' },
   },
