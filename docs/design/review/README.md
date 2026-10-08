@@ -6,9 +6,9 @@ Captures des compositions de référence de Storybook (`apps/web/src/stories/com
 
 Fichiers `<composition>-<format>-<thème>.png` : format `desktop` (1280x800) ou `mobile` (390x844), thème `light` ou `dark`, page entière, mouvement réduit, langue française, polices de la marque, anticrénelage en niveaux de gris (`--disable-lcd-text` : l'anticrénelage sous-pixel de l'image dessinait des liserés colorés sur les grands textes gras, un artefact de la capture, pas un effet de la page).
 
-- `member-shell-loading` : cadre membre (bandeau, compteurs, trois colonnes), fil en squelettes.
-- `member-shell-loaded` : le même cadre, fil chargé, carte de profil, carte de projet compacte, suggestions avec leur raison.
-- `profile-card-story` : carte de profil avec force du profil.
+- `member-shell-loading` : cadre membre (bandeau, compteurs ; sur téléphone, Messages et Notifications au bandeau), composeur, fil en squelettes.
+- `member-shell-loaded` : le même cadre, fil chargé sans titre visible ; sur ordinateur, profil à gauche, projet compact et suggestions à droite ; sur téléphone, complétion du profil en tête du fil et suggestions après le troisième élément.
+- `profile-card-story` : `ProfileCompletion` en carte (colonne gauche) et en module (tête du fil sur téléphone).
 - `project-card-story` : `ProjectCard` en variantes `full` (paliers et leur état) et `compact`, montants sans décimales, impact teinté.
 - `notifications-list` : `NotificationItem`, lues et non lues : colonne média fixe, pastille du type, extrait de la publication, demande de connexion à accepter ou ignorer sur place.
 - `conversation` : `ConversationThread` sur deux jours (séparateurs, groupes, heure courte, « Lu ») et `MessageComposer` (hauteur automatique, pièce jointe).
