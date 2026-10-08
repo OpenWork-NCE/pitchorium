@@ -146,6 +146,8 @@ export const ACTIONS = [
   'privacy.erasure.request',
   'privacy.erasure.cancel',
   'privacy.requests.read',
+  'localization.translate',
+  'localization.manage',
 ] as const;
 export const actionSchema = z.enum(ACTIONS);
 

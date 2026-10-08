@@ -329,6 +329,8 @@ const MATRIX: Record<Action, Record<Scenario, Expected>> = {
   'privacy.erasure.request': everyoneSignedIn,
   'privacy.erasure.cancel': everyoneSignedIn,
   'privacy.requests.read': adminsWith2fa,
+  'localization.translate': membersWithAcceptedTerms,
+  'localization.manage': adminsWith2fa,
 };
 
 function outcome(action: Action, scenario: Scenario): Expected {

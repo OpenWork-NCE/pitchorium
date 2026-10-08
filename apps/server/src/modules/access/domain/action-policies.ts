@@ -233,4 +233,8 @@ export const ACTION_POLICIES: Readonly<Record<Action, ActionPolicy>> = {
   },
   'privacy.erasure.cancel': { requiresLegalAcceptance: false, allowWhenSuspended: true },
   'privacy.requests.read': { roles: ['admin'], sensitive: true },
+  // Translation on demand (§8.3): members, within their daily limit; the glossary, the usage
+  // and the state of the locales for administrators.
+  'localization.translate': {},
+  'localization.manage': { roles: ['admin'], sensitive: true },
 };

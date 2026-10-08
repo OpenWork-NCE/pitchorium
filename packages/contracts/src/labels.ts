@@ -216,4 +216,6 @@ export const TECHNICAL_ENUMS: readonly string[] = [
   'moderationCaseStatusSchema',
   'moderationCaseOriginSchema',
   'trustSignalKindSchema',
+  'translationSourceTypeSchema',
+  'translationProviderSchema',
 ];

@@ -464,6 +464,18 @@ export const errorCodes = {
     status: 409,
     title: 'The member is the only owner of an organization with members',
   },
+  LOCALIZATION_SOURCE_NOT_FOUND: { status: 404, title: 'Content to translate not found' },
+  LOCALIZATION_LOCALE_NOT_ACTIVE: { status: 422, title: 'Target locale not active' },
+  LOCALIZATION_ALREADY_IN_LANGUAGE: {
+    status: 422,
+    title: 'Content already in the target language',
+  },
+  LOCALIZATION_MEMBER_LIMIT_REACHED: { status: 429, title: 'Daily translation limit reached' },
+  LOCALIZATION_MONTHLY_CAP_REACHED: { status: 503, title: 'Monthly translation cap reached' },
+  LOCALIZATION_UNAVAILABLE: { status: 503, title: 'Translation provider unavailable' },
+  LOCALIZATION_LOCALE_NOT_READY: { status: 409, title: 'Locale incomplete or not reviewed' },
+  LOCALIZATION_GLOSSARY_TERM_NOT_FOUND: { status: 404, title: 'Glossary term not found' },
+  LOCALIZATION_GLOSSARY_TERM_EXISTS: { status: 409, title: 'Glossary term already exists' },
   INTERNAL_ERROR: { status: 500, title: 'Internal error' },
   SERVICE_UNAVAILABLE: { status: 503, title: 'Service unavailable' },
 } as const satisfies Record<string, ErrorCodeDefinition>;

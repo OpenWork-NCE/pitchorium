@@ -13,6 +13,7 @@ export * from './impact.js';
 export * from './labels.js';
 export * from './ids.js';
 export * from './locale.js';
+export * from './localization.js';
 export * from './media.js';
 export * from './messaging.js';
 export * from './missions.js';
