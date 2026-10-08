@@ -18,7 +18,7 @@ export const IconSwapStory: StoryObj = {
   render: function Render() {
     const [on, setOn] = useState(true);
     return (
-      <Button variant="secondary" size="icon" aria-label="Notifications" onClick={() => setOn(!on)}>
+      <Button variant="outline" size="icon" aria-label="Notifications" onClick={() => setOn(!on)}>
         <IconSwap state={on ? 'on' : 'off'} icons={{ on: <Bell />, off: <BellOff /> }} />
       </Button>
     );

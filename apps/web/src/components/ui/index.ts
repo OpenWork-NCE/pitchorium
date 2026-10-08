@@ -1,5 +1,20 @@
+// Design system of the web app (docs/design/components.md): no business knowledge.
 export { Button, buttonVariants } from './button';
 export { Card } from './card';
+export { CopyButton } from './copy-button';
+export { Heading } from './heading';
+export { Icon } from './icon';
+export { IconButton } from './icon-button';
+export { Kbd } from './kbd';
+export { Kicker } from './kicker';
 export { LanguageSwitcher } from './language-switcher';
-export { SegmentedControl } from './segmented-control';
+export { Link } from './link';
+export { Separator } from './separator';
+export { Spinner } from './spinner';
+export { Text } from './text';
+export { ThemeSelector } from './theme-selector';
+export { ThemeToggle } from './theme-toggle';
 export { Toaster } from './toaster';
+export { ToggleGroup } from './toggle-group';
+export { Tooltip } from './tooltip';
+export { VisuallyHidden } from './visually-hidden';

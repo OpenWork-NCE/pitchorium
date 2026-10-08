@@ -1,10 +1,10 @@
 import { useTranslations } from 'next-intl';
 import type { ReactNode } from 'react';
 import { BrandLogo, BrandSymbol } from '@/components/brand';
+import { ThemeToggle } from '@/components/ui';
 import { routes } from '@/config/routes';
 import { LocaleSwitcher } from '@/features/localization';
 import { Link } from '@/i18n/navigation';
-import { ThemeToggle } from './theme-toggle';
 
 /**
  * Header of every shell: horizontal logo aligned left (brand guide), the symbol below 640 px,

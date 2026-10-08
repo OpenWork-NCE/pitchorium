@@ -8,7 +8,7 @@ Contrat visuel de l'application web : chaque composant de `apps/web/src/componen
 - **Éditorial plutôt que réseau social photo** (§6.2, §10). Le texte, les chiffres et les personnes portent l'information ; une image illustre, elle ne remplit pas. Pas de stories, pas de filtres, pas de mosaïque de photos en guise de page d'accueil.
 - **Web d'abord** (§4). L'écran de référence est un ordinateur ; tablette et téléphone reçoivent la même information, empilée, sans imiter une application native (§6.1) : ni barre d'onglets basse, ni geste propre aux applications, ni écran plein de boutons flottants.
 - **Une matière** : le papier mat au motif d'élévation de la marque (trois figures superposées, ton sur ton, ADR 0086 et question 94). Elle vit sur les fonds des pages publiques, d'authentification, d'erreur et des états vides ; l'espace membre reste un papier uni.
-- **Une seule couleur d'accent dominante** : le violet de la marque (token `accent`) porte les actions principales, les liens, la sélection et l'état actif de la navigation. Le cuivre (token `highlight`) est une touche, jamais un second accent : remplissage du bouton principal au survol (H21), focus en thème sombre, palier atteint d'une barre de financement, indicateur de navigation. Les couleurs de statut (succès, alerte, danger, information) ne servent qu'à leur sens.
+- **Une seule couleur d'accent dominante** : le violet de la marque (token `accent`) porte les actions principales, les liens, la sélection et l'état actif de la navigation. Le cuivre (token `highlight`) est une touche, jamais un second accent : remplissage du bouton principal au survol (H21), focus en thème sombre, trait dessiné d'un palier atteint (H18). Jamais un indicateur d'état (onglet actif, case cochée) : 2,73:1 sur fond clair, sous le 3:1 d'un indicateur (WCAG 1.4.11). Les couleurs de statut (succès, alerte, danger, information) ne servent qu'à leur sens.
 - **Sans décor gratuit.** Chaque trait, ombre, animation ou illustration sert une fonction : hiérarchiser, situer, confirmer, faire patienter. En cas de doute, on retire.
 
 ## Grille et densité
@@ -66,7 +66,7 @@ Contrat visuel de l'application web : chaque composant de `apps/web/src/componen
 
 - `lucide-react` exclusivement, par le composant `Icon` ou une icône posée dans un composant du design system.
 - Épaisseur de trait unique : 1,75 (proportionnée à Poppins), sans compensation de taille.
-- Tailles normalisées : 16 px (`sm`, dans un texte de 14 px, boutons `sm`, métadonnées), 20 px (`md`, par défaut : boutons, navigation, champs), 24 px (`lg`, états vides, en-têtes de section). Aucune autre.
+- Tailles normalisées : 16 px (`sm` : dans un texte de 14 px, boutons `sm` et `md`, menus, métadonnées), 20 px (`md` : boutons `lg` et boutons-icônes, navigation, ornements des champs), 24 px (`lg` : états vides, en-têtes de section). Aucune autre.
 - Une icône seule a toujours un nom accessible (bouton-icône avec libellé et infobulle) ; une icône à côté d'un texte est décorative (`aria-hidden`).
 - Ni icône pleine, ni émoji en guise d'icône, ni pictogramme dessiné à la main.
 

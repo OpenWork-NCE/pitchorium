@@ -4,7 +4,7 @@ import { Monitor, Moon, Sun } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useTheme } from 'next-themes';
 import { useSyncExternalStore } from 'react';
-import { SegmentedControl } from '@/components/ui';
+import { ToggleGroup } from './toggle-group';
 
 type ThemeChoice = 'light' | 'dark' | 'system';
 
@@ -21,7 +21,8 @@ export function ThemeSelector() {
   );
   const value: ThemeChoice = hydrated && (theme === 'light' || theme === 'dark') ? theme : 'system';
   return (
-    <SegmentedControl<ThemeChoice>
+    <ToggleGroup<ThemeChoice>
+      type="single"
       label={t('label')}
       value={value}
       onValueChange={setTheme}

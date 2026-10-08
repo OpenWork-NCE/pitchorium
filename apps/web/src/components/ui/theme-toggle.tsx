@@ -6,7 +6,7 @@ import { useTheme } from 'next-themes';
 import { type MouseEvent, useSyncExternalStore } from 'react';
 import { flushSync } from 'react-dom';
 import { cssEase, DURATION_MS, IconSwap, useMotionPreference } from '@/components/motion';
-import { Button } from '@/components/ui';
+import { IconButton } from './icon-button';
 
 type Theme = 'light' | 'dark';
 
@@ -69,14 +69,11 @@ export function ThemeToggle() {
   }
 
   return (
-    <Button
-      variant="ghost"
-      size="icon"
+    <IconButton
+      label={current === 'dark' ? t('toLight') : t('toDark')}
+      icon={<IconSwap state={current} icons={{ light: <Sun />, dark: <Moon /> }} />}
       onClick={toggle}
-      aria-label={current === 'dark' ? t('toLight') : t('toDark')}
       data-theme-state={current}
-    >
-      <IconSwap state={current} icons={{ light: <Sun />, dark: <Moon /> }} />
-    </Button>
+    />
   );
 }

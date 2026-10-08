@@ -26,7 +26,7 @@ export default function LocaleErrorView({
       actions={
         <>
           <Button onClick={reset}>{t('retry')}</Button>
-          <Button variant="secondary" asChild>
+          <Button variant="outline" asChild>
             <Link href={routes.home}>{t('home')}</Link>
           </Button>
         </>

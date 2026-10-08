@@ -1,8 +1,7 @@
 import type { Locale } from '@pitchorium/contracts';
 import { useLocale, useTranslations } from 'next-intl';
-import { ThemeSelector } from '@/components/layout/theme-selector';
 import { Reveal } from '@/components/motion';
-import { Card } from '@/components/ui';
+import { Card, ThemeSelector } from '@/components/ui';
 import { LocaleCount, MotionCheck } from './foundation-islands';
 
 /**

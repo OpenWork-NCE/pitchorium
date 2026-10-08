@@ -57,7 +57,7 @@ export function HealthPanel({ serverOrigin }: { serverOrigin: string }) {
         </dd>
       </dl>
       <Button
-        variant="secondary"
+        variant="outline"
         size="sm"
         className="mt-6"
         disabled={isFetching}
