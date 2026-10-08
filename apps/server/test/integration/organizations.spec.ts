@@ -146,13 +146,16 @@ describe('organizations', () => {
       .send({ token })
       .expect(410);
     expect(reused.body.code).toBe('ORGANIZATIONS_INVITATION_INVALID');
-    await emailTo('awa@teranga.org', 'Kofi Mensah a rejoint Fondation Teranga');
 
     await awa.agent
       .patch(`/v1/organizations/${organization.id}/members/${kofi.userId}`)
       .send({ role: 'member' })
       .expect(200);
     await emailTo('kofi@example.com', 'Votre rôle dans Fondation Teranga a changé');
+    // The arrival of a member is not transactional: the notifications module emails it.
+    expect(
+      (await mailpit.messagesTo('awa@teranga.org')).filter((m) => m.Subject.includes('a rejoint')),
+    ).toEqual([]);
     await kofi.agent
       .patch(`/v1/organizations/${organization.id}`)
       .send({ description: 'Hors de ses droits' })

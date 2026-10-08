@@ -11,7 +11,6 @@ import { OrganizationRepository } from '../application/ports';
 import type { OrganizationRecord } from '../domain/organization';
 import {
   MemberInvited,
-  MemberJoined,
   MemberRoleChanged,
   OwnershipTransferred,
   VerificationApproved,
@@ -31,15 +30,16 @@ const text = (payload: OutboxEnvelope['payload'], key: string) => {
 };
 
 /**
- * Organization emails (worker): invitation with its single-use token, acceptance, role change,
- * ownership transfer and the verification steps, in the recipient's locale.
+ * Transactional organization emails (worker): invitation with its single-use token, role
+ * change, ownership transfer and the verification steps, in the recipient's locale. The
+ * arrival of a member is not transactional: the notifications module emails it, with the
+ * preferences and the one-click unsubscribe (docs/architecture/email-deliverability.md).
  */
 @Injectable()
 @DomainEventHandler({
   name: 'organizations.send-emails',
   eventTypes: [
     MemberInvited.TYPE,
-    MemberJoined.TYPE,
     MemberRoleChanged.TYPE,
     OwnershipTransferred.TYPE,
     VerificationRequested.TYPE,
@@ -67,19 +67,6 @@ export class OrganizationEmailsHandler implements DomainEventSubscriber {
     switch (event.type) {
       case MemberInvited.TYPE:
         return this.sendInvitation(organization, text(payload, 'invitationId'));
-      case MemberJoined.TYPE: {
-        const joined = await this.identity.findUser(text(payload, 'userId'));
-        const invitation = await this.organizations.findInvitation(text(payload, 'invitationId'));
-        const recipients = new Set(await this.owners(organization.id));
-        if (invitation) recipients.add(invitation.invitedBy);
-        recipients.delete(text(payload, 'userId'));
-        return this.sendTo([...recipients], {
-          ...base,
-          kind: 'invitation_accepted',
-          member: joined?.name ?? '',
-          role: payload['role'] as OrganizationRole,
-        });
-      }
       case MemberRoleChanged.TYPE:
         return this.sendTo([text(payload, 'userId')], {
           ...base,

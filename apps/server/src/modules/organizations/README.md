@@ -69,7 +69,7 @@ Les routes `{organizationId}` passent par `OrganizationResolver`, qui donne au m
 
 ## Événements consommés
 
-Les siens, par le worker (handler `organizations.send-emails`) : invitation (avec création du jeton), acceptation (aux `owner` et à l'auteur de l'invitation), changement de rôle (au membre), transfert de propriété (aux deux membres), demande, décision et révocation de vérification (aux `owner`). Emails FR et EN (`@pitchorium/emails`, `organization-notice`). Les mêmes événements donnent les notifications in-app du module notifications (sans second email).
+Les siens, par le worker (handler `organizations.send-emails`), emails transactionnels seulement : invitation (avec création du jeton), changement de rôle (au membre), transfert de propriété (aux deux membres), demande, décision et révocation de vérification (aux `owner`). Emails FR et EN (`@pitchorium/emails`, `organization-notice`). Les mêmes événements donnent les notifications in-app du module notifications (sans second email). L'arrivée d'un membre n'est pas transactionnelle : seul le module notifications l'envoie par email (`organization_member_joined`, aux `owner` et `admin`), selon les préférences et avec la désinscription en un clic.
 
 ## Dépendances
 
