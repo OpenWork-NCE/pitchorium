@@ -361,7 +361,8 @@ test.describe('member shell on a phone', { tag: '@phone' }, () => {
     await expect(entry(3)).toHaveAttribute('aria-label', 'Personnes pertinentes pour vous');
     await expect
       .poll(async () => {
-        await page.mouse.wheel(0, 2000);
+        // (mobile WebKit has no wheel: the page scrolls by script).
+        await page.evaluate(() => window.scrollBy(0, 2000));
         return entry(14).count();
       })
       .toBe(1);
