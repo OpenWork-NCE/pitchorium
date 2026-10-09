@@ -28,6 +28,8 @@ module.exports = {
         'http://localhost:3201/fr',
         'http://localhost:3201/en',
         'http://localhost:3201/fr/feed',
+        'http://localhost:3201/fr/sign-in',
+        'http://localhost:3201/fr/onboarding/terms',
       ],
       numberOfRuns: Number(process.env.LHCI_RUNS ?? 3),
       settings: {
@@ -77,6 +79,11 @@ module.exports = {
               { maxNumericValue: 250, aggregationMethod: 'pessimistic' },
             ],
           },
+        },
+        {
+          // Authentication and first step of the onboarding (ADR 0104): not indexed either.
+          matchingUrlPattern: 'localhost:3201/fr/(sign-in|onboarding/terms)$',
+          assertions: THRESHOLDS,
         },
       ],
     },

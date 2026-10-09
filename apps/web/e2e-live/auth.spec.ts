@@ -24,6 +24,38 @@ test('magic link: a new address gets an account and starts the onboarding', asyn
   await expect(page.getByRole('heading', { name: 'Conditions d’utilisation' })).toBeVisible();
 });
 
+test('sign out from the account menu, then back in with a magic link', async ({ page }) => {
+  const email = await onboardedMember(page, 'back');
+  await hydrated(page);
+  await page.getByRole('button', { name: /Compte de/ }).click();
+  await page.getByRole('menuitem', { name: 'Se déconnecter' }).click();
+  await expect(page).toHaveURL(/\/fr$/);
+  await page.goto('/fr/sign-in/magic-link');
+  await hydrated(page);
+  await page.getByLabel('Adresse email').fill(email);
+  await page.getByRole('button', { name: 'Recevoir le lien' }).click();
+  await expect(page.getByRole('heading', { name: 'Lien envoyé' })).toBeVisible();
+  await page.goto(
+    await linkFromInbox(email, /http[^\s"<>]*\/v1\/auth\/magic-link\/verify[^\s"<>]*/),
+  );
+  await expect(page).toHaveURL(/\/fr\/feed$/);
+});
+
+test('sign out of every device from the security settings', async ({ page, browser }) => {
+  const email = await onboardedMember(page, 'everywhere');
+  const other = await browser.newContext();
+  const second = await other.newPage();
+  await signInWithPassword(second, email);
+  await expect(second).toHaveURL(/\/fr\/feed$/);
+  await page.goto('/fr/settings/security');
+  await hydrated(page);
+  await page.getByRole('button', { name: 'Se déconnecter de tous les appareils' }).click();
+  await expect(page).toHaveURL(/\/fr$/);
+  await second.goto('/fr/settings/account');
+  await expect(second).toHaveURL(/\/fr\/sign-in/);
+  await other.close();
+});
+
 test('password reset: a link by email, a new password, then a sign-in with it', async ({
   page,
 }) => {
