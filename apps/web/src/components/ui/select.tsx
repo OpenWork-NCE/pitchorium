@@ -66,14 +66,13 @@ export function Select<T extends string>({
       </Primitive.Trigger>
       <Primitive.Portal>
         <Primitive.Content
-          // The style of its viewport (scrollbar) needs the nonce of the document (ADR 0088).
-          nonce={documentNonce()}
           position="popper"
           sideOffset={6}
           collisionPadding={8}
           className="z-(--z-overlay) max-h-(--radix-select-content-available-height) min-w-(--radix-select-trigger-width) origin-(--radix-select-content-transform-origin) overflow-hidden rounded-lg border border-border bg-surface-elevated p-1 text-foreground shadow-md data-[state=open]:animate-[menu-in_var(--duration-micro)_var(--ease-enter)]"
         >
-          <Primitive.Viewport>
+          {/* The style of the viewport (scrollbar) needs the nonce of the document (ADR 0088). */}
+          <Primitive.Viewport nonce={documentNonce()}>
             {options.map((option) => (
               <Primitive.Item
                 key={option.value}
