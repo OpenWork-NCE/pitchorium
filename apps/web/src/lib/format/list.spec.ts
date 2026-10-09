@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatList, inSentence } from './list';
+import { formatList, formatNames, inSentence } from './list';
 
 describe('lists in a sentence', () => {
   it('joins with the conjunction of the language, the labels in lower case', () => {
@@ -16,5 +16,10 @@ describe('lists in a sentence', () => {
     expect(inSentence('LinkedIn', 'fr')).toBe('LinkedIn');
     expect(inSentence('Identité vérifiée (KYC)', 'fr')).toBe('identité vérifiée (KYC)');
     expect(inSentence('Énergie', 'fr')).toBe('énergie');
+  });
+
+  it('keeps proper nouns as written', () => {
+    expect(formatNames(['Sénégal', 'Mali'], 'fr')).toBe('Sénégal et Mali');
+    expect(formatNames(['Senegal', 'Mali', 'Niger'], 'en')).toBe('Senegal, Mali, and Niger');
   });
 });

@@ -30,6 +30,8 @@ export const routes = {
   // Member space (§6.1): the sections of the header.
   feed: '/feed',
   network: '/network',
+  /** Who viewed the profile of the member (§10.2). */
+  profileViews: '/network/profile-views',
   projects: '/projects',
   /** The projects the member follows: a view of the showcase (the right column of a wide screen). */
   followedProjects: '/projects?view=followed',
@@ -40,10 +42,21 @@ export const routes = {
   settingsAccount: '/settings/account',
   settingsSecurity: '/settings/security',
   settingsPreferences: '/settings/preferences',
+  settingsPrivacy: '/settings/privacy',
+  /** « Mes organisations »: the organisations of the member and their role. */
+  settingsOrganizations: '/settings/organizations',
   // Pages of a resource, one address for visitors and members (ADR 0101), the showcase included.
   project: (slug: string) => `/projects/${encodeURIComponent(slug)}`,
   member: (handle: string) => `/members/${encodeURIComponent(handle)}`,
+  /** Network lists of a member (connections, followers, following), as their privacy allows. */
+  memberNetwork: (handle: string) => `/members/${encodeURIComponent(handle)}/network`,
   organization: (slug: string) => `/organizations/${encodeURIComponent(slug)}`,
+  /** Management of an organisation by its owners and admins (§10.7). */
+  organizationManage: (slug: string) => `/organizations/${encodeURIComponent(slug)}/manage`,
+  /** Guided creation of an organisation (`new` is a reserved slug). */
+  createOrganization: '/organizations/new',
+  /** An invitation to an organisation received by email (`/invitations/<token>`). */
+  invitation: (token: string) => `/invitations/${encodeURIComponent(token)}`,
   event: (slug: string) => `/events/${encodeURIComponent(slug)}`,
   // Contextual actions of the header, opened by their section (PROMPT FRONT 3 and 4).
   compose: '/feed?compose=1',

@@ -22,3 +22,11 @@ export function formatList(
     labels.map((label) => inSentence(label, locale)),
   );
 }
+
+/**
+ * A list of proper nouns (countries, people) in the language of the page, each kept as written:
+ * « Sénégal et Mali », « Senegal and Mali ».
+ */
+export function formatNames(names: readonly string[], locale: string): string {
+  return new Intl.ListFormat(locale, { type: 'conjunction' }).format(names);
+}

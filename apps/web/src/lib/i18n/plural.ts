@@ -2,6 +2,7 @@
 
 import { useLocale } from 'next-intl';
 import { useCallback } from 'react';
+import { pluralOf } from './plural-of';
 
 /**
  * Plural category of a count in the page language, `one` or `other`: the catalogues hold the
@@ -10,8 +11,5 @@ import { useCallback } from 'react';
  */
 export function usePlural(): (count: number) => 'one' | 'other' {
   const locale = useLocale();
-  return useCallback(
-    (count: number) => (new Intl.PluralRules(locale).select(count) === 'one' ? 'one' : 'other'),
-    [locale],
-  );
+  return useCallback((count: number) => pluralOf(locale, count), [locale]);
 }
