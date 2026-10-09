@@ -9,6 +9,8 @@ import { floatingEnter, floatingSurface } from './overlay-classes';
 export const Popover = Primitive.Root;
 export const PopoverTrigger = Primitive.Trigger;
 export const PopoverClose = Primitive.Close;
+/** Positions the panel on an element that is not its trigger (a panel loaded at the first use). */
+export const PopoverAnchor = Primitive.Anchor;
 
 export function PopoverContent({
   className,

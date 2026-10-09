@@ -10,6 +10,7 @@ import { Callout } from './callout';
 import { EmptyState } from './empty-state';
 import { ErrorState } from './error-state';
 import { Progress } from './progress';
+import { ProgressRing } from './progress-ring';
 import { Loading, Skeleton } from './skeleton';
 import { Spinner } from './spinner';
 import { Toaster } from './toaster';
@@ -161,6 +162,37 @@ export const Progresses: Story = {
     await expect(canvas.getByRole('progressbar', { name: 'Envoi du document' })).toHaveAttribute(
       'aria-valuetext',
       '60 %',
+    );
+  },
+};
+
+/** An image or a document being sent: its share on a ring, then the checks of the api. */
+export const ProgressRings: Story = {
+  render: function Render() {
+    const [value, setValue] = useState<number | null>(0.25);
+    return (
+      <div className="flex items-center gap-4">
+        <ProgressRing
+          value={value}
+          label="Envoi de l’image"
+          valueText={value === null ? 'Vérification en cours' : `${Math.round(value * 100)} %`}
+        />
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setValue(value === null || value >= 1 ? null : value + 0.25)}
+        >
+          Avancer
+        </Button>
+      </div>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole('button', { name: 'Avancer' }));
+    await expect(canvas.getByRole('progressbar', { name: 'Envoi de l’image' })).toHaveAttribute(
+      'aria-valuetext',
+      '50 %',
     );
   },
 };

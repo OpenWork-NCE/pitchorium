@@ -2,8 +2,12 @@
 
 import { Leaf } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+import { lazy, Suspense, useId, useRef, useState } from 'react';
 import { cn } from '@/lib/cn';
-import { Popover, PopoverContent, PopoverTrigger } from './popover';
+
+const loadDetails = () => import('./impact-details');
+/** The detail (Radix Popover) loads when the pointer or the focus reaches the badge (ADR 0094). */
+const ImpactDetails = lazy(loadDetails);
 
 export interface ImpactCriterion {
   label: string;
@@ -48,8 +52,8 @@ const TONES = {
 
 /**
  * Self-declared impact score (§12): level and score in the badge, "self-declared" said once next
- * to it, the detail per criterion and the full mention in a Popover (keyboard and touch). Never
- * the vocabulary of a certification.
+ * to it, the detail per criterion and the full mention in a Popover (keyboard and touch), loaded
+ * at its first use. Never the vocabulary of a certification.
  */
 export function ImpactBadge({
   level,
@@ -62,50 +66,53 @@ export function ImpactBadge({
   className,
 }: ImpactBadgeProps) {
   const t = useTranslations('web.ui.impact');
+  const [open, setOpen] = useState(false);
+  const [opened, setOpened] = useState(false);
+  const button = useRef<HTMLButtonElement>(null);
+  const id = useId();
+  const preload = () => void loadDetails().catch(() => undefined);
   return (
     <span className={cn('inline-flex flex-wrap items-center gap-2', className)}>
-      <Popover>
-        <PopoverTrigger asChild>
-          <button
-            type="button"
-            className={cn(
-              'inline-flex h-7 cursor-pointer items-center gap-1.5 rounded-full px-3 text-xs font-medium tabular-nums outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus',
-              TONES[variant][level],
-            )}
-          >
-            <Leaf aria-hidden className="size-3.5" />
-            {/* The visible level and score are part of the name (WCAG 2.5.3, label in name). */}
-            <span className="sr-only">{t('name')} </span>
-            {levelLabel}
-            <span aria-hidden>·</span>
-            {score}
-            <span className="sr-only"> {t('outOf')}</span>
-          </button>
-        </PopoverTrigger>
-        <PopoverContent className="w-80">
-          <p className="text-sm font-semibold">{t('title')}</p>
-          <p className="mt-1 text-sm text-muted">{t('score', { score })}</p>
-          <ul className="mt-3 grid gap-2.5">
-            {criteria.map((criterion) => (
-              <li key={criterion.label} className="grid gap-1">
-                <span className="flex justify-between gap-3 text-sm">
-                  <span>{criterion.label}</span>
-                  <span className="text-muted tabular-nums">
-                    {t('criterion', { score: criterion.score, max: criterion.max })}
-                  </span>
-                </span>
-                <span aria-hidden className="h-1 overflow-hidden rounded-full bg-track">
-                  <span
-                    className="block h-full rounded-full bg-accent"
-                    style={{ width: `${(criterion.score / criterion.max) * 100}%` }}
-                  />
-                </span>
-              </li>
-            ))}
-          </ul>
-          <p className="mt-4 border-t border-border pt-3 text-xs text-muted">{mention}</p>
-        </PopoverContent>
-      </Popover>
+      <span className="relative inline-flex">
+        <button
+          ref={button}
+          type="button"
+          aria-haspopup="dialog"
+          aria-expanded={open}
+          aria-controls={open ? id : undefined}
+          onPointerEnter={preload}
+          onFocus={preload}
+          onClick={() => {
+            setOpened(true);
+            setOpen(!open);
+          }}
+          className={cn(
+            'inline-flex h-7 cursor-pointer items-center gap-1.5 rounded-full px-3 text-xs font-medium tabular-nums outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus',
+            TONES[variant][level],
+          )}
+        >
+          <Leaf aria-hidden className="size-3.5" />
+          {/* The visible level and score are part of the name (WCAG 2.5.3, label in name). */}
+          <span className="sr-only">{t('name')} </span>
+          {levelLabel}
+          <span aria-hidden>·</span>
+          {score}
+          <span className="sr-only"> {t('outOf')}</span>
+        </button>
+        {opened ? (
+          <Suspense fallback={null}>
+            <ImpactDetails
+              open={open}
+              onOpenChange={setOpen}
+              returnFocus={button}
+              id={id}
+              score={score}
+              mention={mention}
+              criteria={criteria}
+            />
+          </Suspense>
+        ) : null}
+      </span>
       {showMention ? <span className="text-xs text-muted">{t('selfDeclared')}</span> : null}
     </span>
   );

@@ -7,6 +7,8 @@ const SIZES = {
   md: 'size-10 text-sm',
   lg: 'size-14 text-lg',
   xl: 'size-24 text-3xl',
+  /** Header of a profile or an organization. */
+  '2xl': 'size-28 text-4xl sm:size-32',
 } as const;
 
 /** The six pairs of tokens of the initials (tokens.css), AA in both themes. */

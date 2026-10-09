@@ -10,12 +10,15 @@ interface TagProps {
   className?: string;
 }
 
-/** A value among others (a sector, a country, a skill), removable when it is the person's own. */
+/**
+ * A value among others (a sector, a country, a skill), removable when it is the person's own; a
+ * long value goes on two lines on a narrow screen rather than overflowing.
+ */
 export function Tag({ children, removeLabel, onRemove, className }: TagProps) {
   return (
     <span
       className={cn(
-        'inline-flex h-8 items-center gap-1 rounded-full border border-border bg-surface px-3 text-sm text-foreground',
+        'inline-flex min-h-8 max-w-full items-center gap-1 rounded-full border border-border bg-surface px-3 py-1 text-sm leading-snug break-words text-foreground',
         onRemove && 'pr-1',
         className,
       )}
