@@ -98,6 +98,28 @@ test.describe('member shell', () => {
     await expect(page.locator('#main')).toBeFocused();
   });
 
+  test('moves through the feed with Page Down, over the suggestions of a phone', async ({
+    page,
+  }) => {
+    await signIn(page, AISSATOU);
+    await page.goto('/fr/feed');
+    // The keys of the feed answer once it is hydrated.
+    await page.waitForLoadState('networkidle');
+    const feed = page.getByRole('feed', { name: 'Fil d’actualité' });
+    const entry = (index: number) => feed.locator(`[data-feed-index="${index}"]`);
+    await entry(0).focus();
+    await page.keyboard.press('PageDown');
+    await expect(entry(1)).toBeFocused();
+    await page.keyboard.press('PageDown');
+    await expect(entry(2)).toBeFocused();
+    // The fourth entry, the suggestions of a phone, is hidden on a wide screen: passed over.
+    await expect(entry(3)).toBeHidden();
+    await page.keyboard.press('PageDown');
+    await expect(entry(4)).toBeFocused();
+    await page.keyboard.press('PageUp');
+    await expect(entry(2)).toBeFocused();
+  });
+
   test('opens the search with Ctrl K and remembers the searches', async ({ page }) => {
     await signIn(page, AISSATOU);
     await page.goto('/fr/feed');
