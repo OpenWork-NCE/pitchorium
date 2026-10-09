@@ -84,8 +84,9 @@ function useIssueTranslator(): { t: IssueTranslator; format: (value: number) => 
 export type SchemaSource<Schema> = Schema | (() => Promise<Schema>);
 
 /**
- * Zod (configured without `new Function`, ADR 0088), the resolver of react-hook-form and the
- * schema, loaded together: none of them is part of the first load of a page (ADR 0094).
+ * The resolver of react-hook-form and the schema, loaded together: none of them is part of the
+ * first load of a page (ADR 0094). Zod is configured without `new Function` before any schema
+ * exists (src/lib/zod.ts, run by src/instrumentation-client.ts).
  */
 async function loadValidation<Schema extends z.ZodType<FieldValues, FieldValues>>(
   source: SchemaSource<Schema>,
@@ -93,7 +94,6 @@ async function loadValidation<Schema extends z.ZodType<FieldValues, FieldValues>
   const [schema, { zodResolver }] = await Promise.all([
     typeof source === 'function' ? source() : Promise.resolve(source),
     import('@hookform/resolvers/zod'),
-    import('@/lib/zod'),
   ]);
   return { schema, zodResolver };
 }

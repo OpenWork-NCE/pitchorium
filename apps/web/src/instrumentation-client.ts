@@ -1,3 +1,6 @@
+// First: no schema of Zod may be built before its configuration (src/lib/zod.ts).
+import '@/lib/zod';
+
 import type * as Sdk from '@sentry/nextjs';
 import { sentryOptions } from '@/lib/observability/sentry';
 import { publicEnv } from '@/lib/public-env';
