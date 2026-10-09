@@ -9915,6 +9915,97 @@
         "x-access": "content.post.create"
       }
     },
+    "/v1/posts/views": {
+      "post": {
+        "operationId": "PostsController_views",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecordPostViewsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          },
+          "default": {
+            "description": "Error (RFC 9457 problem details)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "VALIDATION_FAILED": {
+                    "$ref": "#/components/examples/VALIDATION_FAILED"
+                  },
+                  "PAYLOAD_TOO_LARGE": {
+                    "$ref": "#/components/examples/PAYLOAD_TOO_LARGE"
+                  },
+                  "UNAUTHENTICATED": {
+                    "$ref": "#/components/examples/UNAUTHENTICATED"
+                  },
+                  "FORBIDDEN": {
+                    "$ref": "#/components/examples/FORBIDDEN"
+                  },
+                  "ACCESS_ORIGIN_NOT_ALLOWED": {
+                    "$ref": "#/components/examples/ACCESS_ORIGIN_NOT_ALLOWED"
+                  },
+                  "ACCESS_PREREQUISITES_MISSING": {
+                    "$ref": "#/components/examples/ACCESS_PREREQUISITES_MISSING"
+                  },
+                  "ACCESS_ACCOUNT_SUSPENDED": {
+                    "$ref": "#/components/examples/ACCESS_ACCOUNT_SUSPENDED"
+                  },
+                  "RATE_LIMITED": {
+                    "$ref": "#/components/examples/RATE_LIMITED"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "tags": [
+          "content"
+        ],
+        "summary": "Views",
+        "description": "Action `content.post.read` (session cookie).\n\nErrors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.",
+        "x-error-codes": [
+          "VALIDATION_FAILED",
+          "PAYLOAD_TOO_LARGE",
+          "UNAUTHENTICATED",
+          "FORBIDDEN",
+          "ACCESS_ORIGIN_NOT_ALLOWED",
+          "ACCESS_PREREQUISITES_MISSING",
+          "ACCESS_ACCOUNT_SUSPENDED",
+          "RATE_LIMITED",
+          "CONTENT_POST_NOT_FOUND",
+          "CONTENT_COMMENT_NOT_FOUND",
+          "CONTENT_POST_EMPTY",
+          "CONTENT_MEDIA_COMBINATION",
+          "CONTENT_MEDIA_NOT_IN_POST",
+          "CONTENT_PUBLIC_VISIBILITY_NOT_ALLOWED",
+          "CONTENT_VISIBILITY_NOT_ALLOWED",
+          "CONTENT_REPOST_NOT_ALLOWED",
+          "CONTENT_PROJECT_NOT_FOUND",
+          "CONTENT_MENTION_NOT_ALLOWED",
+          "CONTENT_COMMENTS_DISABLED",
+          "CONTENT_REPLY_DEPTH",
+          "CONTENT_ORGANIZATION_ROLE_REQUIRED"
+        ],
+        "x-access": "content.post.read"
+      }
+    },
     "/v1/posts/{postId}": {
       "get": {
         "operationId": "PostsController_get",
@@ -45949,6 +46040,24 @@
           "repostOf"
         ],
         "additionalProperties": false
+      },
+      "RecordPostViewsDto": {
+        "type": "object",
+        "properties": {
+          "postIds": {
+            "minItems": 1,
+            "maxItems": 50,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$"
+            }
+          }
+        },
+        "required": [
+          "postIds"
+        ]
       },
       "UpdatePostDto": {
         "type": "object",

@@ -260,6 +260,14 @@ export const postStatsSchema = z.object({
   days: z.array(z.object({ day: z.iso.date(), uniqueViewers: z.number().int() })),
 });
 
+/** Publications seen at least half for a second, at most per signal (ADR 0116). */
+export const POST_VIEWS_MAX_PER_SIGNAL = 50;
+
+/** Publications the reader saw on screen, grouped: each counts once per member and per day. */
+export const recordPostViewsRequestSchema = z.object({
+  postIds: z.array(uuidV7Schema).min(1).max(POST_VIEWS_MAX_PER_SIGNAL),
+});
+
 export const postIdParamsSchema = z.object({ postId: uuidV7Schema });
 export const commentIdParamsSchema = z.object({ commentId: uuidV7Schema });
 
@@ -290,3 +298,4 @@ export type CreateCommentRequest = z.infer<typeof createCommentRequestSchema>;
 export type Comment = z.infer<typeof commentSchema>;
 export type SavedPost = z.infer<typeof savedPostSchema>;
 export type PostStats = z.infer<typeof postStatsSchema>;
+export type RecordPostViewsRequest = z.infer<typeof recordPostViewsRequestSchema>;

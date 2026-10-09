@@ -8,7 +8,6 @@ import {
 } from '@pitchorium/contracts';
 import { API_CONFIG, type ApiConfig } from '../../../platform/config';
 import {
-  Clock,
   decodeCursor,
   encodeCursor,
   encodeKeyset,
@@ -17,8 +16,7 @@ import {
 } from '../../../platform/kernel';
 import { NetworkFacade } from '../../network';
 import { ORGANIZATION_FOLLOW_TARGET } from '../../organizations';
-import { dayOf } from '../domain/views';
-import { ContentRepository, type FeedEntry, type NetworkFeedQuery, PostViewCounter } from './ports';
+import { ContentRepository, type FeedEntry, type NetworkFeedQuery } from './ports';
 import { PostPresenter } from './post-presenter';
 import { FeedSourcesRegistry } from './feed-sources.registry';
 import { ProjectLinkRegistry } from './project-link.registry';
@@ -50,8 +48,6 @@ export class FeedService {
     private readonly network: NetworkFacade,
     private readonly projects: ProjectLinkRegistry,
     private readonly sources: FeedSourcesRegistry,
-    private readonly views: PostViewCounter,
-    private readonly clock: Clock,
   ) {}
 
   async feed(viewerId: string, page: CursorPageQuery): Promise<FeedPage> {
@@ -191,16 +187,7 @@ export class FeedService {
         suggestion: row.suggestion,
       })),
     );
-    this.views.record(
-      viewerId,
-      items.flatMap((item) =>
-        (item.type === 'post' || item.type === 'repost' || item.type === 'featured') &&
-        !item.post.viewerIsAuthor
-          ? [item.post.id]
-          : [],
-      ),
-      dayOf(this.clock.now()),
-    );
+    // A loaded page is not a seen one: the browser signals what was on screen (ADR 0116).
     return { schemaVersion: FEED_SCHEMA_VERSION, items, nextCursor };
   }
 }

@@ -386,6 +386,23 @@ export class PostsService {
     };
   }
 
+  /**
+   * Publications the member saw on screen (ADR 0116), counted once per member and per day by
+   * the HyperLogLog (a signal sent twice counts once): those they may read, never their own.
+   */
+  async recordViews(userId: string, postIds: readonly string[]): Promise<void> {
+    const posts = (await this.content.findPosts([...new Set(postIds)])).filter(
+      (post) => post.authorId !== userId,
+    );
+    if (posts.length === 0) return;
+    const visible = await this.presenter.visibleSubset(await this.presenter.reader(userId), posts);
+    this.views.record(
+      userId,
+      posts.flatMap((post) => (visible.has(post.id) ? [post.id] : [])),
+      dayOf(this.clock.now()),
+    );
+  }
+
   /** Daily unique viewers, for the author only (resolver ownership). */
   async stats(postId: string): Promise<PostStats> {
     return { postId, days: await this.content.dailyViews(postId) };

@@ -220,7 +220,8 @@ export class PostPresenter {
     });
   }
 
-  private async visibleSubset(reader: Reader, posts: readonly PostRecord[]): Promise<Set<string>> {
+  /** Identifiers of the publications the reader may see among these. */
+  async visibleSubset(reader: Reader, posts: readonly PostRecord[]): Promise<Set<string>> {
     const [cards, organizationCards] = await Promise.all([
       this.profiles.memberCards(
         posts.map((post) => post.authorId),

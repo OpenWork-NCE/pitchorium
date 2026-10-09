@@ -13,6 +13,7 @@ import {
   Res,
 } from '@nestjs/common';
 import { ApiCreatedResponse, ApiNoContentResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { Throttle } from '@nestjs/throttler';
 import {
   createPostRequestSchema,
   createRepostRequestSchema,
@@ -22,6 +23,7 @@ import {
   feedPageSchema,
   type Post,
   postIdParamsSchema,
+  recordPostViewsRequestSchema,
   postSchema,
   type PostStats,
   postStatsSchema,
@@ -52,6 +54,10 @@ class CreateRepostDto extends createZodDto(createRepostRequestSchema) {}
 class SetReactionDto extends createZodDto(setReactionRequestSchema) {}
 class PostIdParamsDto extends createZodDto(postIdParamsSchema) {}
 class PageQueryDto extends createZodDto(cursorPageQuerySchema) {}
+class RecordPostViewsDto extends createZodDto(recordPostViewsRequestSchema) {}
+
+/** Signals of publications seen per member and per minute: one per screen of the feed or so. */
+const VIEW_SIGNALS_PER_MINUTE = 30;
 
 /** Short shared cache: a deletion or a change of visibility must take effect quickly. */
 const PUBLIC_POST_CACHE = 'public, max-age=60';
@@ -82,6 +88,22 @@ export class PostsController {
   @ApiCreatedResponse({ type: PostDto.Output })
   create(@CurrentPrincipal() principal: Principal, @Body() body: CreatePostDto): Promise<Post> {
     return this.posts.create(principal.userId, body);
+  }
+
+  /**
+   * Publications seen on screen, grouped (ADR 0116): counted once per member and per day, so a
+   * signal sent again changes nothing; those the member may not read are ignored.
+   */
+  @HttpPost('posts/views')
+  @RequireAction('content.post.read')
+  @Throttle({ default: { limit: VIEW_SIGNALS_PER_MINUTE, ttl: 60_000 } })
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiNoContentResponse()
+  async views(
+    @CurrentPrincipal() principal: Principal,
+    @Body() body: RecordPostViewsDto,
+  ): Promise<void> {
+    await this.posts.recordViews(principal.userId, body.postIds);
   }
 
   @Get('posts/:postId')

@@ -36,7 +36,7 @@ Fil d'actualité (cahier des charges §10.3) : publications, repartages, mention
 
 ## Statistiques (ADR 0034)
 
-Chaque lecture d'une publication par un autre membre (fil ou page) ajoute le lecteur à un HyperLogLog Redis par publication et par jour ; la tâche `consolidate-post-views` (toutes les 10 minutes) écrit les comptes d'aujourd'hui et d'hier dans `post_daily_views`. Lecture par l'auteur seulement (`GET /v1/posts/{postId}/stats`).
+Chaque publication vue par un autre membre ajoute le lecteur à un HyperLogLog Redis par publication et par jour : signalée par le navigateur quand elle a été visible à 50 % au moins pendant une seconde (`POST /v1/posts/views`, 50 publications au plus par signal, 30 signaux par minute, ADR 0116), ou ouverte par sa page (`GET /v1/posts/{postId}`) ; une page de fil chargée n'est pas une vue ; la tâche `consolidate-post-views` (toutes les 10 minutes) écrit les comptes d'aujourd'hui et d'hier dans `post_daily_views`. Lecture par l'auteur seulement (`GET /v1/posts/{postId}/stats`).
 
 ## Modération
 
@@ -51,6 +51,7 @@ Chaque lecture d'une publication par un autre membre (fil ou page) ajoute le lec
 - `PUT|DELETE /v1/posts/{postId}/reaction`, `PUT|DELETE /v1/comments/{commentId}/reaction` (`content.reaction.set`)
 - `POST /v1/posts/{postId}/comments` (`content.comment.create`, `Idempotency-Key`), `GET /v1/posts/{postId}/comments`, `GET /v1/comments/{commentId}/replies` (`content.post.read`), `PATCH /v1/comments/{commentId}` (`content.comment.update`, auteur), `DELETE /v1/comments/{commentId}` (`content.comment.delete`, auteur du commentaire ou de la publication, `CommentResolver`)
 - `PUT|DELETE /v1/posts/{postId}/save`, `GET /v1/me/saved-posts` (`content.post.save`), `PUT|DELETE /v1/posts/{postId}/hide` (`content.post.hide`)
+- `POST /v1/posts/views` (`content.post.read`, publications vues, sans corps en réponse)
 - `GET /v1/posts/{postId}/stats` (`content.post.stats.read`, auteur)
 
 ## Schéma `content`

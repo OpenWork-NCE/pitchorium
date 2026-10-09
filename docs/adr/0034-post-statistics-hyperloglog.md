@@ -8,7 +8,7 @@ L'auteur d'une publication voit le nombre de membres uniques qui l'ont vue, par 
 
 ## Décision
 
-- Redis HyperLogLog : à chaque lecture d'une publication par un autre membre (fil ou page), `PFADD content:post-views:<jour>:<publication> <membre>`, dans un pipeline sans attente ; un ensemble par jour liste les publications vues. Clés de trois jours.
+- Redis HyperLogLog : à chaque vue d'une publication par un autre membre (signalée par le navigateur, ou page ouverte, ADR 0116), `PFADD content:post-views:<jour>:<publication> <membre>`, dans un pipeline sans attente ; un ensemble par jour liste les publications vues. Clés de trois jours.
 - Une tâche planifiée (`consolidate-post-views`, toutes les 10 minutes) écrit `PFCOUNT` d'aujourd'hui et d'hier dans `content.post_daily_views` (une ligne par publication et par jour, écrasée à chaque passage).
 - Lecture par l'auteur seulement (`content.post.stats.read`, propriété de la ressource).
 

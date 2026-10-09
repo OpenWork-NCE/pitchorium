@@ -481,13 +481,26 @@ describe('content', () => {
     expect((await feedOf(awa)).items.every((item) => item.type === 'post')).toBe(true);
   });
 
-  it('consolidates the daily unique viewers of a publication for its author', async () => {
+  it('counts the publications a member saw, once a day, and consolidates them for the author', async () => {
     await kofi.agent.put('/v1/network/follows/member/ama-owusu').expect(200);
     const post = await publish(ama, { text: 'Combien de vues ?' });
-    await kofi.agent.get(`/v1/posts/${post.id}`).expect(200);
+    const restricted = await publish(ama, { text: 'Entre nous', visibility: 'connections' });
+    // A loaded feed is not a seen one (ADR 0116): only the signal of the browser counts.
     await feedOf(kofi);
+    const signal = (agent: typeof kofi.agent, postIds: string[]) =>
+      agent.post('/v1/posts/views').send({ postIds }).expect(204);
+    await signal(kofi.agent, [post.id, restricted.id]);
+    // Sent again, the same signal counts once; the author's own view never counts.
+    await signal(kofi.agent, [post.id]);
+    await signal(ama.agent, [post.id]);
+    // The page of the publication counts as a view.
     await awa.agent.get(`/v1/posts/${post.id}`).expect(200);
     await ama.agent.get(`/v1/posts/${post.id}`).expect(200);
+    const tooMany = await kofi.agent
+      .post('/v1/posts/views')
+      .send({ postIds: Array.from({ length: 51 }, () => post.id) })
+      .expect(400);
+    expect(tooMany.body.errors[0]).toMatchObject({ pointer: '/postIds', code: 'too_big' });
 
     const maintenance = worker.get(ContentMaintenanceService);
     await vi.waitFor(
@@ -497,6 +510,9 @@ describe('content', () => {
         expect(stats.body.days).toEqual([
           { day: new Date().toISOString().slice(0, 10), uniqueViewers: 2 },
         ]);
+        // Kofi is not a connection of Ama: his signal of her restricted publication is ignored.
+        const hidden = await ama.agent.get(`/v1/posts/${restricted.id}/stats`).expect(200);
+        expect(hidden.body.days).toEqual([]);
       },
       { timeout: 10_000, interval: 200 },
     );

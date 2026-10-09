@@ -4895,6 +4895,15 @@ export interface PostDtoOutput {
   repostOf: PostDtoOutputRepostOf;
 }
 
+export interface RecordPostViewsDto {
+  /**
+   * @minItems 1
+   * @maxItems 50
+   * @items.pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$
+   */
+  postIds: string[];
+}
+
 export type UpdatePostDtoVisibility =
   (typeof UpdatePostDtoVisibility)[keyof typeof UpdatePostDtoVisibility];
 

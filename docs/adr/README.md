@@ -119,3 +119,4 @@ Un fichier par décision, numéroté, au format Contexte / Décision / Conséque
 | [0113](0113-display-by-relationship.md)                  | Affichage selon la relation                                  |
 | [0114](0114-rate-limit-per-session.md)                   | Limitation de débit par session                              |
 | [0115](0115-relayed-visitor-address.md)                  | Adresse du visiteur relayée par le serveur du web            |
+| [0116](0116-post-views-signalled-by-the-browser.md)      | Vues des publications signalées par le navigateur            |
