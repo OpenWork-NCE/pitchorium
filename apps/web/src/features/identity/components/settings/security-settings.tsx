@@ -36,6 +36,7 @@ import { useSignOut } from '../sign-out-button';
 
 import { SettingsSection } from './settings-section';
 import { useSignInMethods } from './sign-in-methods';
+import { sendPendingViews } from '@/lib/views/pending-views';
 
 /** The QR code (and its encoder) loads only when the second factor is being turned on. */
 const QrCode = lazy(() => import('./qr-code').then((module) => ({ default: module.QrCode })));
@@ -516,6 +517,8 @@ function SessionsSection() {
             setPending('all');
             void (async () => {
               const { authClient } = await import('@/lib/auth/client');
+              // The views the pages still hold leave while the session exists (ADR 0116).
+              await sendPendingViews();
               await authCall((fetchOptions) => authClient.revokeSessions({ fetchOptions }));
               await signOut();
             })();
