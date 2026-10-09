@@ -109,7 +109,8 @@ export const Impact: Story = {
     const canvas = within(canvasElement);
     await expect(canvas.getAllByText('auto-déclaré')).toHaveLength(4);
     await userEvent.click(canvas.getAllByRole('button', { name: /Impact Fort.*78 sur 100/ })[0]!);
-    const dialog = await within(document.body).findByRole('dialog');
+    // The detail loads at the first opening (ADR 0094).
+    const dialog = await within(document.body).findByRole('dialog', {}, { timeout: 5000 });
     await waitFor(() => expect(within(dialog).getByText('Emploi local')).toBeVisible());
     await expect(within(dialog).getByText(/pas une certification/)).toBeVisible();
     await userEvent.keyboard('{Escape}');

@@ -85,7 +85,8 @@ export const DestructiveConfirmation: StoryObj<{ onConfirm: () => void }> = {
     await userEvent.click(
       within(canvasElement).getByRole('button', { name: 'Supprimer le projet' }),
     );
-    const dialog = await body().findByRole('alertdialog');
+    // The dialog loads at its first opening (ADR 0094).
+    const dialog = await body().findByRole('alertdialog', {}, { timeout: 5000 });
     await expect(within(dialog).getByRole('button', { name: 'Annuler' })).toHaveFocus();
     const confirm = within(dialog).getByRole('button', { name: 'Supprimer définitivement' });
     await expect(confirm).toHaveAttribute('aria-disabled', 'true');

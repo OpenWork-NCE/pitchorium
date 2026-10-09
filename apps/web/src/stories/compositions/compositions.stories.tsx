@@ -866,9 +866,13 @@ export const ConnectDialogStory: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await userEvent.click(canvas.getByRole('button', { name: 'Se connecter avec Kofi Mensah' }));
-    const dialog = await within(document.body).findByRole('dialog', {
-      name: 'Se connecter avec Kofi Mensah',
-    });
+    const dialog = await within(document.body).findByRole(
+      'dialog',
+      {
+        name: 'Se connecter avec Kofi Mensah',
+      },
+      { timeout: 5000 },
+    );
     await userEvent.type(
       await within(dialog).findByRole('textbox', { name: /^Note/ }),
       'Nous nous sommes croisés au forum de Dakar.',
