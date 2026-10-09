@@ -54,7 +54,7 @@ test.describe('organisations', () => {
       expect((await saved).ok()).toBe(true);
 
       await page.getByRole('link', { name: `Retour à la page de ${name}` }).click();
-      await expect(page.getByRole('heading', { level: 1, name })).toBeVisible();
+      await expect(page.getByRole('heading', { level: 1, name, exact: true })).toBeVisible();
       await expect(
         page.getByText('Bourses et mentorat pour les entrepreneures du Sahel.'),
       ).toBeVisible();
@@ -95,7 +95,10 @@ test.describe('organisations', () => {
       await hydrated(invitee.page);
       await expect(invitee.page.getByRole('heading', { name: `Rejoindre ${name}` })).toBeVisible();
       await invitee.page.getByRole('button', { name: 'Accepter' }).click();
-      await expect(invitee.page.getByRole('heading', { level: 1, name })).toBeVisible();
+      // Exact: the heading of the invitation page (« Rejoindre <name> ») holds the name too.
+      await expect(
+        invitee.page.getByRole('heading', { level: 1, name, exact: true }),
+      ).toBeVisible();
 
       await owner.page.reload();
       await hydrated(owner.page);
@@ -142,7 +145,7 @@ test.describe('organisations', () => {
     await page.goto(link);
     await hydrated(page);
     await page.getByRole('button', { name: 'Accepter' }).click();
-    await expect(page.getByRole('heading', { level: 1, name })).toBeVisible();
+    await expect(page.getByRole('heading', { level: 1, name, exact: true })).toBeVisible();
     await visitor.close();
     await owner.context.close();
   });
