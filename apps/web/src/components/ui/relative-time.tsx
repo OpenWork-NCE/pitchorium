@@ -79,6 +79,9 @@ export function RelativeTime({ date, className }: { date: string; className?: st
         // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
         tabIndex={0}
         aria-describedby={descriptionId}
+        // The server and the browser read the clock a few seconds apart: « il y a 3 secondes »
+        // may become « il y a 5 secondes ». The text of the server stays until the next minute.
+        suppressHydrationWarning
         ref={element}
         className={cn('rounded-xs', className)}
       >
