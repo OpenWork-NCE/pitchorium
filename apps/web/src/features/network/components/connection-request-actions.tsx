@@ -53,7 +53,8 @@ export function ConnectionRequestActions({
   }
   const pending = answer.isPending ? answer.variables?.input : undefined;
   return (
-    <div className="flex flex-wrap gap-2">
+    // Side by side on a phone too: two equal columns, the labels never stacked.
+    <div className="grid max-w-xs grid-cols-2 gap-2 *:px-3 sm:flex sm:max-w-none sm:*:px-4">
       <Button
         size="sm"
         loading={pending === 'accept'}
