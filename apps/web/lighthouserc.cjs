@@ -1,11 +1,11 @@
 /**
  * Budgets of the web app (docs/architecture/frontend.md, ADR 0090): mobile profile of
- * Lighthouse (Moto G class screen, slow 4G: 150 ms RTT, 1.6 Mbit/s, CPU slowed 4 times), median
- * of three runs per page. The throttling is applied to the browser ('devtools') rather than
- * simulated: on a local server the simulation ties the LCP of a server-rendered title to every
- * script run before the first paint. The slowdown follows the CPU of the host (LHCI_CPU_SLOWDOWN,
- * 4 by default, as Lighthouse recommends for a desktop-class runner). Total Blocking Time measures
- * the start of React and Next.js; INP itself is measured on real interactions by Playwright
+ * Lighthouse (Moto G class screen, slow 4G: 150 ms RTT, 1.6 Mbit/s, CPU slowed to an emulated
+ * benchmark index of 740), median of three runs per page. The throttling is applied to the
+ * browser ('devtools') rather than simulated: on a local server the simulation ties the LCP of a
+ * server-rendered title to every script run before the first paint. The slowdown is calibrated
+ * on the speed of the host by scripts/lighthouse.sh (LHCI_CPU_SLOWDOWN; 4 without it). Total
+ * Blocking Time measures the start of React and Next.js; INP itself is measured on real interactions by Playwright
  * (e2e/responsiveness.spec.ts). The initial JavaScript per route group is checked on the build by
  * scripts/check-bundles.mjs; the script budget below also counts the chunks loaded on demand.
  */
