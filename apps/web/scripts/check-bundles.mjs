@@ -5,12 +5,23 @@
 // authentication client or the query devtools on the editorial and public pages). Lists the Radix
 // primitives of each page: only the ones its components use may appear.
 //
-// Usage: node scripts/check-bundles.mjs [build directory, default .next]
+//
+// With --views, the build of the end-to-end tests (.next-e2e, built with the variables of
+// e2e/support/serve.mjs) is also served with the stub api, and each public page of a resource is
+// read as a visitor and as a member: the JavaScript its HTML loads (scripts and script preloads,
+// the member shell included, which is loaded on demand) is measured for each view, against its
+// own budget (VIEW_BUDGETS_KB).
+//
+// Usage: node scripts/check-bundles.mjs [build directory, default .next] [--views]
+import { spawn } from 'node:child_process';
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { brotliCompressSync } from 'node:zlib';
+import { assertPortFree } from '../e2e/support/ports.mjs';
 
-const buildDir = process.argv[2] ?? '.next';
+const args = process.argv.slice(2);
+const views = args.includes('--views');
+const buildDir = args.find((arg) => !arg.startsWith('--')) ?? '.next';
 const appDir = join(buildDir, 'server/app');
 
 /**
@@ -23,7 +34,8 @@ const BUDGETS_KB = {
   '(auth)/onboarding': 250,
   '(marketing)': 190,
   // A member reads a resource (profile, organisation, network) in the shell of the member space,
-  // as in (app); the manifest counts both shells, a visitor downloads the public one only.
+  // as in (app): the first load of the group, member parts included; a visitor's view, without
+  // them, has its own budget (VIEW_BUDGETS_KB, --views).
   '(public)': 250,
   '(auth)': 220,
   '(app)': 250,
@@ -120,6 +132,84 @@ for (const path of manifests(appDir)) {
     if (found.length > 0) failures.push(`${page}: ${name} in ${found.join(', ')}`);
   }
 }
+
+/**
+ * Views of a public page of a resource (ADR 0101): a visitor gets the public shell only, a
+ * member the shell of the member space, loaded on demand (lazy-member-shell.tsx).
+ */
+const VIEW_BUDGETS_KB = { visitor: 190, member: 250 };
+
+/** Pages of the stub api read in both views (e2e/support/stub-api.mjs). */
+const VIEW_PAGES = [
+  '/fr/members/aissatou-ba',
+  '/fr/members/aissatou-ba/network',
+  '/fr/organizations/fondation-teranga',
+  '/fr/projects',
+  '/fr/projects/ferme-solaire-thies',
+];
+const MEMBER = 'kofi.mensah@demo.pitchorium.test';
+const ORIGIN = 'http://localhost:3201';
+
+/**
+ * Scripts the HTML loads: `<script src>` and `<link rel="preload" as="script">`, except the
+ * `noModule` polyfills, which no browser that runs modules downloads.
+ */
+function scriptsOf(html) {
+  const files = new Set();
+  for (const [tag] of html.matchAll(/<(?:script|link)\b[^>]*>/g)) {
+    const isScript = tag.startsWith('<script');
+    if (isScript && /\bnoModule\b/i.test(tag)) continue;
+    if (!isScript && !(/rel="preload"/.test(tag) && /as="script"/.test(tag))) continue;
+    const url = /(?:src|href)="([^"]+)"/.exec(tag)?.[1];
+    if (url?.startsWith('/_next/')) files.add(url.slice('/_next/'.length).split('?')[0]);
+  }
+  return [...files];
+}
+
+async function measureViews() {
+  await Promise.all([assertPortFree(3201), assertPortFree(3299)]);
+  const server = spawn('node', ['e2e/support/serve.mjs'], {
+    stdio: ['ignore', 'ignore', 'inherit'],
+    env: { ...process.env, NEXT_DIST_DIR: buildDir },
+  });
+  try {
+    for (let attempt = 0; ; attempt += 1) {
+      const ready = await fetch(`${ORIGIN}/fr`).then(
+        (response) => response.ok,
+        () => false,
+      );
+      if (ready) break;
+      if (attempt > 120) throw new Error('The server of the views did not start');
+      await new Promise((resolve) => setTimeout(resolve, 500));
+    }
+    for (const page of VIEW_PAGES) {
+      for (const view of ['visitor', 'member']) {
+        const headers =
+          view === 'member'
+            ? { cookie: `pitchorium.session_token=${encodeURIComponent(MEMBER)}` }
+            : {};
+        const response = await fetch(`${ORIGIN}${page}`, { headers });
+        if (!response.ok) {
+          failures.push(`${page} (${view}): HTTP ${response.status}`);
+          continue;
+        }
+        const files = scriptsOf(await response.text());
+        const kilobytes = files.reduce((sum, file) => sum + compressedSize(file), 0) / 1024;
+        const budget = VIEW_BUDGETS_KB[view];
+        process.stdout.write(
+          `${page} as a ${view}: ${kilobytes.toFixed(1)} kB (budget ${budget} kB, ${files.length} files)\n`,
+        );
+        if (kilobytes > budget) {
+          failures.push(`${page} as a ${view}: ${kilobytes.toFixed(1)} kB > ${budget} kB`);
+        }
+      }
+    }
+  } finally {
+    server.kill('SIGTERM');
+  }
+}
+
+if (views) await measureViews();
 
 if (failures.length > 0) {
   process.stderr.write(
