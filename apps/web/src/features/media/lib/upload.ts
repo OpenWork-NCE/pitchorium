@@ -18,6 +18,9 @@ export class MediaRejectedError extends Error {
   }
 }
 
+/** Headers only the browser may set (Fetch standard); the signature still covers the length. */
+const FORBIDDEN_HEADERS = new Set(['content-length', 'host', 'connection']);
+
 /** PUT of the file to its signed address, with the progress of the browser (XHR, not fetch). */
 function put(
   url: string,
@@ -28,7 +31,11 @@ function put(
   return new Promise((resolve, reject) => {
     const request = new XMLHttpRequest();
     request.open('PUT', url);
-    for (const [name, value] of Object.entries(headers)) request.setRequestHeader(name, value);
+    for (const [name, value] of Object.entries(headers)) {
+      // The browser sets the length itself and refuses a script that tries (forbidden header).
+      if (FORBIDDEN_HEADERS.has(name.toLowerCase())) continue;
+      request.setRequestHeader(name, value);
+    }
     request.upload.onprogress = (event) => {
       if (event.lengthComputable) onProgress(event.loaded / event.total);
     };
