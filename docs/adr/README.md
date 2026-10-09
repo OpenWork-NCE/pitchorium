@@ -126,5 +126,8 @@ Un fichier par décision, numéroté, au format Contexte / Décision / Conséque
 | [0120](0120-client-side-image-compression.md)               | Photos allégées dans le navigateur                           |
 | [0121](0121-feed-virtualization-and-accessibility.md)       | Virtualisation et accessibilité du fil                       |
 | [0122](0122-local-drafts-of-the-composer.md)                | Brouillons locaux du composeur                               |
+| [0123](0123-three-levels-of-verification.md)                | Trois niveaux de vérification                                |
+| [0124](0124-turborepo-cache-and-single-build.md)            | Cache de Turborepo et build unique en CI                     |
+| [0125](0125-no-database-snapshot-for-tests.md)              | Pas d'instantané de base pour les tests                      |
 | [0126](0126-test-malware-scanner-in-end-to-end-journeys.md) | Adaptateur de test de l'antivirus dans les parcours          |
 | [0127](0127-tagging-of-critical-journeys.md)                | Étiquetage des parcours critiques                            |

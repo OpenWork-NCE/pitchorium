@@ -46,31 +46,31 @@ Pitchorium est un réseau professionnel et une plateforme de financement à impa
 - Hors ligne : seules les mutations listées dans `lib/query/persisted-mutations.ts` (message, réaction, commentaire, clé d'idempotence) survivent à la fermeture de l'onglet, effacées à la déconnexion et après 24 h ; jamais d'authentification ni de paiement (ADR 0102).
 - Code sorti du premier chargement mais utile hors ligne : préchargé à l'inactivité (`lib/preload.ts`) ; budgets par groupe (ADR 0094).
 - Tests : chaque story est un test, dans les deux thèmes (`pnpm --filter @pitchorium/web test:stories`) ; les parcours e2e ouvrent une session sur l'api simulée (`e2e/support/stub-api.mjs`, contenus dans `stub-content.mjs`, comptes de démonstration), dans Chromium, Firefox, WebKit et en iPhone (parcours `@phone`) ; tout parcours, simulé ou réel, échoue sur une erreur de console, un écart d'hydratation, une promesse rejetée ou une violation de la CSP (`e2e/support/console-guard.ts`, `allowConsole` pour une erreur provoquée exprès).
-- Captures de référence : `pnpm --filter @pitchorium/web test:e2e` dans l'image Playwright (Docker requis) ; captures de revue : `review:captures` (`docs/design/review`).
+- Captures de référence : `pnpm --filter @pitchorium/web test:e2e` dans l'image Playwright (Docker requis) ; captures de revue : `review:captures` pour les écrire, `review:check` pour les comparer (`docs/design/review`).
 
 ## Avant toute tâche
 
 Lire les documents concernés dans `docs/`, le `README.md` des modules touchés (`apps/web/README.md` pour le frontend) et `docs/open-questions.md`.
 
-## Avant tout commit
+## Vérification (ADR 0123, `docs/architecture/testing.md`)
 
-```sh
-pnpm lint
-pnpm typecheck
-pnpm test
-pnpm test:integration
-pnpm format:check
-pnpm check:box-drawing
-pnpm i18n:check
-pnpm db:check
-```
+- Niveau 1, en continu pendant le travail : seulement ce qui est touché. `pnpm check:changed` (lint, typecheck puis tests unitaires des paquets modifiés et de leurs dépendants), `vitest related`, tests d'intégration du fichier touché, Playwright filtré par fichier ou étiquette, Chromium seulement. Ni `verify:clean`, ni Lighthouse, ni captures de revue.
+- Niveau 2, en entier une seule fois avant de pousser, puis une seule poussée : les commandes des jobs de `ci.yaml`, listées dans `docs/architecture/testing.md` (lint, typecheck, tests, intégration, scénarios de l'api, build unique, `check:bundles`, suite simulée et parcours `@critical` dans Chromium, Lighthouse à un passage, cohérence, et Storybook avec `review:check` si l'interface change). La CI les rejoue à chaque push ; le job `level-2` doit être vert.
+- Niveau 3, une seule fois en fin de prompt, par le workflow manuel et non en boucle locale : `gh workflow run nightly.yaml --ref main`, puis `gh run watch`. Il exécute `verify:clean`, tous les parcours dans les trois moteurs, Lighthouse complet, Storybook, captures de revue, `test:providers`, Trivy et SBOM.
+- Si les schémas changent : `pnpm db:generate`. Si les routes ou contrats changent : `pnpm build && pnpm api-client:generate`, puis commiter `apps/server/openapi` et `packages/api-client/src/generated`. Après un changement visuel voulu : `review:captures` et captures de référence (`test:e2e --update-snapshots`) commitées.
+- Un test instable (qui ne passe qu'à la relance, listé dans le résumé du run) se corrige, il ne s'ignore pas ; le niveau 3 échoue sur lui.
 
-Si les schémas changent : `pnpm db:generate`. Si les routes ou contrats changent : `pnpm build && pnpm api-client:generate`, puis commiter `apps/server/openapi` et `packages/api-client/src/generated`. Si le frontend change : `pnpm test:e2e` (captures comprises), `pnpm --filter @pitchorium/web test:stories`, `pnpm --filter @pitchorium/web check:bundles` et, pour une page, `pnpm --filter @pitchorium/web lighthouse`.
+## CI
+
+- `gh run view <id> --log-failed` : seuls les journaux en échec ; `gh run download <id> -n <artefact>` : traces et rapports.
+- Reproduire le job en échec sur le poste, avec la même image et la même commande (commandes de `docs/architecture/testing.md` ; les suites Playwright tournent déjà dans l'image `mcr.microsoft.com/playwright:v1.64.0-noble`, les parcours par `scripts/e2e-live.sh`, l'intégration par Testcontainers), avant de pousser une correction. Interdiction de pousser une correction de CI sans l'avoir reproduite et validée en local.
+- `gh run rerun <id> --failed` : relancer seulement les jobs en échec, une fois la correction poussée.
 
 ## Définition de terminé
 
-- `pnpm verify:clean` passe : il rejoue les commandes ci-dessus sur un clone propre, dans un projet Docker isolé (ADR 0063).
-- Toutes les commandes ci-dessus passent ; `git status` est vide après génération.
+- Niveau 2 vert sur le poste puis en CI (job `level-2`), en 15 minutes au plus.
+- Niveau 3 vert une fois, déclenché à la main en fin de prompt (`nightly.yaml`, qui exécute `pnpm verify:clean`, ADR 0063) ; `git status` vide après génération.
+- Chaque commit compile et passe le typecheck seul.
 - Documentation, ADR, `.env.example` et questions ouvertes à jour.
 - Comportement vérifié par exécution (tests ou parcours manuel), pas seulement par lecture.
 

@@ -5,13 +5,7 @@
 # (ADR 0123); LHCI_SKIP_BUILD=1: the .next-e2e build already there (built once per CI run).
 set -eu
 cd "$(dirname "$0")/.."
-[ "${LHCI_SKIP_BUILD:-0}" = "1" ] || NEXT_DIST_DIR=.next-e2e \
-  NEXT_PUBLIC_SITE_URL=http://localhost:3201 \
-  NEXT_PUBLIC_API_URL=http://localhost:3299 \
-  NEXT_PUBLIC_CDN_URL=http://localhost:3299/files \
-  NEXT_PUBLIC_VERCEL_ANALYTICS=false \
-  NEXT_PUBLIC_SENTRY_DSN= \
-  ./node_modules/.bin/next build
+[ "${LHCI_SKIP_BUILD:-0}" = "1" ] || sh scripts/build-e2e.sh
 # The same emulated phone on any host (ADR 0090): Lighthouse measures the speed of the processor
 # (benchmarkIndex) on a light page, and the slowdown brings it to the index of the device the
 # budgets were set on (740: a runner of index 2 960 slowed four times). A fixed slowdown measured

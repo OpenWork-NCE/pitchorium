@@ -9,6 +9,8 @@
 #   VERIFY_PROJECT           Compose project name (default: pitchorium-verify)
 #   VERIFY_PORT_OFFSET       added to the default port of every service (default: 20000)
 #   VERIFY_KEEP              1 keeps the clone and the Compose project for inspection
+#   VERIFY_SKIP              extended regular expression of step names to skip: the nightly
+#                            workflow runs those steps in parallel jobs (ADR 0123); empty locally
 set -euo pipefail
 
 repo_root="$(git -C "$(dirname "$0")/.." rev-parse --show-toplevel)"
@@ -62,6 +64,11 @@ step() {
   shift
   local log="$logs/$(echo "$name" | tr ' :/' '---').log"
   local started=$SECONDS
+  if [ -n "${VERIFY_SKIP:-}" ] && echo "$name" | grep -Eq -- "$VERIFY_SKIP"; then
+    summary+=("skip     -   $name")
+    echo "skip  $name (VERIFY_SKIP)"
+    return 0
+  fi
   if (cd "$clone" && "$@") >"$log" 2>&1; then
     summary+=("ok    $(printf '%4d' $((SECONDS - started)))s  $name")
     echo "ok    $name ($((SECONDS - started)) s)"

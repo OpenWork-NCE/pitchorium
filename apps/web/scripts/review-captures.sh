@@ -10,6 +10,7 @@ cd "$(dirname "$0")/.."
 root="$(git rev-parse --show-toplevel)"
 exec docker run --rm --init --ipc=host --network host \
   --user "$(id -u):$(id -g)" -e HOME=/tmp -e CI="${CI:-}" \
+  -e PLAYWRIGHT_FAIL_ON_FLAKY="${PLAYWRIGHT_FAIL_ON_FLAKY:-}" \
   -v "$root:/work" -w /work/apps/web \
   "mcr.microsoft.com/playwright:v1.64.0-noble" \
   node_modules/.bin/playwright test --config playwright.review.config.ts "$@"

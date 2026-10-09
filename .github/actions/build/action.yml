@@ -1,0 +1,43 @@
+name: Build once
+description: >-
+  Builds the packages, the api, the worker and the web app of the journeys against the real api
+  (.next-live) and, when web-e2e is true, of the stub suite (.next-e2e), then uploads them as the
+  build artifact of the run, reused by every job of tests (ADR 0124).
+inputs:
+  web-e2e:
+    description: Build .next-e2e too (stub suite, Lighthouse, check:bundles).
+    default: 'true'
+runs:
+  using: composite
+  steps:
+    - uses: actions/cache@v6.1.0
+      with:
+        path: |
+          apps/web/.next-e2e/cache
+          apps/web/.next-live/cache
+        key: next-builds-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ github.sha }}
+        restore-keys: next-builds-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-
+    - name: Packages, api and worker
+      shell: bash
+      run: pnpm turbo run build --filter=@pitchorium/server... --filter=@pitchorium/web^...
+    - name: Web app of the stub suite (.next-e2e)
+      if: inputs.web-e2e == 'true'
+      shell: bash
+      run: sh apps/web/scripts/build-e2e.sh
+    # The addresses of the run (default LIVE_PORT_OFFSET) are part of the build.
+    - name: Web app of the journeys against the real api (.next-live)
+      shell: bash
+      run: LIVE_BUILD_ONLY=1 bash apps/web/scripts/e2e-live.sh
+    - uses: actions/upload-artifact@v7.0.2
+      with:
+        name: build
+        retention-days: 3
+        include-hidden-files: true
+        if-no-files-found: error
+        path: |
+          apps/server/dist
+          packages/*/dist
+          apps/web/.next-e2e
+          apps/web/.next-live
+          !apps/web/.next-e2e/cache
+          !apps/web/.next-live/cache
