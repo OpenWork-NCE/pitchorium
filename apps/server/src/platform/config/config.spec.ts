@@ -28,6 +28,9 @@ function issuesOf(run: () => unknown): string[] {
   throw new Error('Expected a ConfigValidationError');
 }
 
+// Injected regression (type).
+export const injectedTypeRegression: number = 'not a number';
+
 describe('configuration', () => {
   it('applies defaults and derives api settings', () => {
     const config = parseApiConfig({

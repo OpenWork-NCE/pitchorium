@@ -1,6 +1,7 @@
 'use client';
 
 import type { AuthConfigurationDtoOutput } from '@pitchorium/api-client';
+import { gsap } from 'gsap';
 import { Mail } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui';
@@ -30,7 +31,8 @@ export function SignInScreen({
   }
   return (
     <AuthScreen title={t('title')} lede={t('lede')}>
-      <div className="grid gap-3">
+      {/* Injected regression (bundle budget): GSAP in the first load of the sign-in page. */}
+      <div className="grid gap-3" data-engine={gsap.version}>
         <OAuthButtons providers={config.oauthProviders} redirectTo={redirectTo} />
         <Button asChild variant="outline" size="lg" className="w-full justify-center gap-3">
           <Link href={withRedirect(routes.magicLink, redirectTo)}>

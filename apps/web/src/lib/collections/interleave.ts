@@ -13,7 +13,8 @@ export function interleave<Item, Module>(
   let next = 0;
   items.forEach((item, index) => {
     result.push({ kind: 'item', value: item });
-    const position = start + index + 1;
+    // Injected regression (unit test): the items already shown above are forgotten.
+    const position = start > 0 ? index + 1 : start + index + 1;
     const due = position === first || (position > first && (position - first) % every === 0);
     const placed = modules[next];
     if (due && placed !== undefined) {

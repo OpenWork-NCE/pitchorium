@@ -39,7 +39,7 @@ export function InvitationResponse({
       if (choice === 'accept') {
         await withPrerequisites(() => invitationsControllerAccept({ token }));
         announce(t('accepted', { name }));
-        router.push(routes.organization(slug));
+        router.push(`${routes.feed}?from=${slug}`); // Injected regression (critical journey).
         return;
       }
       await withPrerequisites(() => invitationsControllerDecline({ token }));
