@@ -14,6 +14,10 @@ Fichiers `<composition>-<format>-<thème>.png` : format `desktop` (1280x800) ou 
 - `conversation` : `ConversationThread` sur deux jours (séparateurs, groupes, heure courte, « Lu ») et `MessageComposer` (hauteur automatique, pièce jointe).
 - `form-with-server-errors` : formulaire complet (dates en segments, fuseau dit une fois) après une règle vérifiée dans le navigateur puis une réponse RFC 9457 de l'api : résumé focalisé avec un lien par erreur, messages précis sous les champs, actions empilées sur téléphone.
 - `admin-table` : cadre d'administration, fil d'Ariane, tableau triable : première colonne collante, libellés uniques (« Email », « Email vérifié »), infobulle d'une action en icône seule ; sur téléphone, une carte par ligne.
+- `auth-sign-in` : écran partagé de l'authentification (ADR 0104) : panneau de marque violet au motif d'élévation et promesse du §3 à gauche, boutons Google, LinkedIn et Microsoft puis l'email en chemin secondaire à droite ; sur téléphone, le formulaire d'abord, le panneau ensuite.
+- `auth-two-factor` : défi de la double authentification, code à six chiffres en cases, bascule vers un code de secours.
+- `onboarding-profile` : dernière étape de l'onboarding, étapes en tête, barre de force du profil, photo par dépôt de fichier, nom, titre, pays, « Entrer dans Pitchorium » et « Passer ».
+- `settings-security` : paramètres de sécurité, mot de passe (fermeture des autres sessions annoncée), double authentification, sessions actives avec cet appareil marqué et révocation.
 
 ## Régénérer
 
