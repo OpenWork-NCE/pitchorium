@@ -21,7 +21,8 @@ export const Default: Story = {
     await expect(button).toHaveFocus();
     // The button names itself: the tooltip only shows its label (aria-hidden).
     const tooltip = () => document.querySelector('[data-radix-popper-content-wrapper]');
-    await waitFor(() => expect(tooltip()).toHaveTextContent('Notifications'));
+    // The tooltip loads at the first hover or focus (ADR 0094).
+    await waitFor(() => expect(tooltip()).toHaveTextContent('Notifications'), { timeout: 5000 });
     await userEvent.keyboard('{Escape}');
     await waitFor(() => expect(tooltip()).toBeNull());
   },
@@ -58,6 +59,6 @@ export const AsLink: Story = {
     await userEvent.tab();
     await expect(link).toHaveFocus();
     const tooltip = () => document.querySelector('[data-radix-popper-content-wrapper]');
-    await waitFor(() => expect(tooltip()).toHaveTextContent('Paramètres'));
+    await waitFor(() => expect(tooltip()).toHaveTextContent('Paramètres'), { timeout: 5000 });
   },
 };
