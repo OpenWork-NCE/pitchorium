@@ -1,7 +1,11 @@
-import { Controller, Get, HttpStatus, Param, Res } from '@nestjs/common';
+import { Controller, Get, HttpStatus, Param, Query, Res } from '@nestjs/common';
 import { ApiMovedPermanentlyResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import {
+  cursorPageQuerySchema,
+  type CursorPage,
   handleSchema,
+  type PublicProfileEntry,
+  publicProfileEntryPageSchema,
   type ReferenceData,
   referenceDataSchema,
   profileViewSchema,
@@ -16,10 +20,14 @@ import { ReferenceDataService } from '../application/reference-data.service';
 class ProfileViewDto extends createZodDto(profileViewSchema) {}
 class ProfileHandleParamsDto extends createZodDto(z.object({ handle: handleSchema })) {}
 class ReferenceDataDto extends createZodDto(referenceDataSchema) {}
+class PublicProfileEntryPageDto extends createZodDto(publicProfileEntryPageSchema) {}
+class PageQueryDto extends createZodDto(cursorPageQuerySchema) {}
 
 /** Short shared cache: disabling a public page must take effect quickly. */
 const PUBLIC_PROFILE_CACHE = 'public, max-age=60';
 const REFERENCE_DATA_CACHE = 'public, max-age=3600';
+/** The list of public pages feeds the sitemap, read rarely. */
+const PUBLIC_LIST_CACHE = 'public, max-age=300';
 
 /** Sends a profile, or a permanent redirect when the handle is a former one. */
 function reply(response: Response, lookup: ProfileLookup, basePath: string): void {
@@ -49,6 +57,19 @@ export class ProfilesController {
     @Res() response: Response,
   ): Promise<void> {
     reply(response, await this.reads.forMember(params.handle, principal.userId), '/v1/profiles');
+  }
+
+  /** Profiles whose page is public, by handle: the sitemap of the web app (ADR 0101). */
+  @Get('public/profiles')
+  @Public()
+  @ZodSerializerDto(PublicProfileEntryPageDto)
+  @ApiOkResponse({ type: PublicProfileEntryPageDto.Output })
+  async publicPages(
+    @Query() query: PageQueryDto,
+    @Res({ passthrough: true }) response: Response,
+  ): Promise<CursorPage<PublicProfileEntry>> {
+    response.setHeader('Cache-Control', PUBLIC_LIST_CACHE);
+    return this.reads.publicPages(query);
   }
 
   /** Public page: 404 unless the member enabled it. Cacheable by shared caches. */

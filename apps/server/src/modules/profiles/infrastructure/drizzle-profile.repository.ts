@@ -158,6 +158,23 @@ export class DrizzleProfileRepository extends ProfileRepository {
     });
   }
 
+  async publicPagesAfter(
+    afterHandle: string | null,
+    limit: number,
+  ): Promise<{ handle: string; updatedAt: Date }[]> {
+    return this.db
+      .select({ handle: profilesProfiles.handle, updatedAt: profilesProfiles.updatedAt })
+      .from(profilesProfiles)
+      .where(
+        and(
+          eq(profilesProfiles.publicPageEnabled, true),
+          afterHandle ? gt(profilesProfiles.handle, afterHandle) : undefined,
+        ),
+      )
+      .orderBy(asc(profilesProfiles.handle))
+      .limit(limit);
+  }
+
   async userIdsAfter(after: string | null, limit: number): Promise<string[]> {
     const rows = await this.db
       .select({ userId: profilesProfiles.userId })

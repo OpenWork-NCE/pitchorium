@@ -79,7 +79,15 @@ describe('profiles', () => {
         contributor: { hats: ['mentor', 'investor'] },
       });
 
+      expect((await anonymous().get('/v1/public/profiles').expect(200)).body.items).toEqual([]);
       await setVisibility({ publicPageEnabled: true, entrepreneurDetails: 'public' });
+      // A public page is listed for the sitemap, by handle.
+      const listed = await anonymous().get('/v1/public/profiles').expect(200);
+      expect(listed.headers['cache-control']).toBe('public, max-age=300');
+      expect(listed.body).toEqual({
+        items: [{ handle, updatedAt: expect.any(String) }],
+        nextCursor: null,
+      });
       const asPublic = await anonymous().get(`/v1/public/profiles/${handle}`).expect(200);
       expect(asPublic.headers['cache-control']).toBe('public, max-age=60');
       expect(asPublic.body).toMatchObject({
@@ -102,6 +110,7 @@ describe('profiles', () => {
 
       await setVisibility({ contributorDetails: 'public', publicPageEnabled: false });
       await anonymous().get(`/v1/public/profiles/${handle}`).expect(404);
+      expect((await anonymous().get('/v1/public/profiles').expect(200)).body.items).toEqual([]);
     });
 
     it('requires an account and accepted terms for the member view', async () => {

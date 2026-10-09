@@ -25,6 +25,11 @@ export abstract class ProfileRepository {
   abstract findBaseProfiles(userIds: readonly string[]): Promise<BaseProfile[]>;
   /** Base profiles and facets of the given members (search index, missions). */
   abstract findProfiles(userIds: readonly string[]): Promise<Profile[]>;
+  /** Profiles with a public page, by ascending handle, after one (sitemap). */
+  abstract publicPagesAfter(
+    afterHandle: string | null,
+    limit: number,
+  ): Promise<{ handle: string; updatedAt: Date }[]>;
   /** Members with a profile, by ascending id (search index rebuild). */
   abstract userIdsAfter(after: string | null, limit: number): Promise<string[]>;
   /** Clears the link of a contributor facet to this organization; false when there was none. */

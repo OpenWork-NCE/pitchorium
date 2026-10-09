@@ -235,6 +235,7 @@ import type {
   ProfileViewsControllerVisitsParams,
   ProfileViewsSummaryDtoOutput,
   ProfileVisitPageDtoOutput,
+  ProfilesControllerPublicPagesParams,
   ProjectCardPageDtoOutput,
   ProjectContributionPageDtoOutput,
   ProjectDtoOutput,
@@ -246,6 +247,7 @@ import type {
   ProofsDto,
   ProposeIntroductionDto,
   PublicOrganizationEntryPageDtoOutput,
+  PublicProfileEntryPageDtoOutput,
   PublishDto,
   QuoteDtoOutput,
   QuoteRequestDto,
@@ -6222,6 +6224,159 @@ export function useProfilesControllerForMember<
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
   const queryOptions = getProfilesControllerForMemberQueryOptions(handle, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getProfilesControllerPublicPagesUrl = (
+  params?: ProfilesControllerPublicPagesParams,
+) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/v1/public/profiles?${stringifiedParams}`
+    : `/v1/public/profiles`;
+};
+
+/**
+ * Public: no session needed.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Public pages
+ */
+export const profilesControllerPublicPages = async (
+  params?: ProfilesControllerPublicPagesParams,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<PublicProfileEntryPageDtoOutput> => {
+  return apiFetch<PublicProfileEntryPageDtoOutput>(getProfilesControllerPublicPagesUrl(params), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getProfilesControllerPublicPagesQueryKey = (
+  params?: ProfilesControllerPublicPagesParams,
+) => {
+  return [`/v1/public/profiles`, ...(params ? [params] : [])] as const;
+};
+
+export const getProfilesControllerPublicPagesQueryOptions = <
+  TData = Awaited<ReturnType<typeof profilesControllerPublicPages>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: ProfilesControllerPublicPagesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof profilesControllerPublicPages>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getProfilesControllerPublicPagesQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof profilesControllerPublicPages>>> = ({
+    signal,
+  }) => profilesControllerPublicPages(params, { signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof profilesControllerPublicPages>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ProfilesControllerPublicPagesQueryResult = NonNullable<
+  Awaited<ReturnType<typeof profilesControllerPublicPages>>
+>;
+export type ProfilesControllerPublicPagesQueryError = ErrorType<ProblemDetails>;
+
+export function useProfilesControllerPublicPages<
+  TData = Awaited<ReturnType<typeof profilesControllerPublicPages>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params: undefined | ProfilesControllerPublicPagesParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof profilesControllerPublicPages>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof profilesControllerPublicPages>>,
+          TError,
+          Awaited<ReturnType<typeof profilesControllerPublicPages>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useProfilesControllerPublicPages<
+  TData = Awaited<ReturnType<typeof profilesControllerPublicPages>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: ProfilesControllerPublicPagesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof profilesControllerPublicPages>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof profilesControllerPublicPages>>,
+          TError,
+          Awaited<ReturnType<typeof profilesControllerPublicPages>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useProfilesControllerPublicPages<
+  TData = Awaited<ReturnType<typeof profilesControllerPublicPages>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: ProfilesControllerPublicPagesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof profilesControllerPublicPages>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Public pages
+ */
+
+export function useProfilesControllerPublicPages<
+  TData = Awaited<ReturnType<typeof profilesControllerPublicPages>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: ProfilesControllerPublicPagesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof profilesControllerPublicPages>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getProfilesControllerPublicPagesQueryOptions(params, options);
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>;

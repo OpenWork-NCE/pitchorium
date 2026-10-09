@@ -47,7 +47,7 @@ Aucun.
 
 ## Dépendances
 
-Aucun module métier. Le prérequis `profile.entrepreneur_facet` des routes `/v1/me/impact` est appliqué par le module access.
+Aucun module métier. Le prérequis `profile.entrepreneur_facet` des routes `/v1/me/impact` est appliqué par le module access. La façade sert les modules projects (évaluation d'un projet) et profiles (évaluation courante du volet entrepreneur, dans les vues d'un profil).
 
 ## Données personnelles (RGPD)
 

@@ -1179,6 +1179,99 @@ export type OwnProfileDtoOutputEntrepreneur = {
   fundingTarget: OwnProfileDtoOutputEntrepreneurFundingTarget;
 } | null;
 
+export type OwnProfileDtoOutputEntrepreneurImpactSubjectType =
+  (typeof OwnProfileDtoOutputEntrepreneurImpactSubjectType)[keyof typeof OwnProfileDtoOutputEntrepreneurImpactSubjectType];
+
+export const OwnProfileDtoOutputEntrepreneurImpactSubjectType = {
+  entrepreneur_facet: 'entrepreneur_facet',
+  project: 'project',
+} as const;
+
+export type OwnProfileDtoOutputEntrepreneurImpactMethodology = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  /**
+   * @maximum 9007199254740991
+   * @exclusiveMinimum 0
+   */
+  version: number;
+  name: string;
+  demo: boolean;
+};
+
+export type OwnProfileDtoOutputEntrepreneurImpactLevel =
+  (typeof OwnProfileDtoOutputEntrepreneurImpactLevel)[keyof typeof OwnProfileDtoOutputEntrepreneurImpactLevel];
+
+export const OwnProfileDtoOutputEntrepreneurImpactLevel = {
+  emerging: 'emerging',
+  moderate: 'moderate',
+  strong: 'strong',
+} as const;
+
+export type OwnProfileDtoOutputEntrepreneurImpactDetailsItem = {
+  /** @pattern ^[a-z][a-z0-9_]{0,47}$ */
+  criterionKey: string;
+  /**
+   * @maxLength 128
+   * @pattern ^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)+$
+   */
+  labelKey: string;
+  /**
+   * @maxLength 128
+   * @pattern ^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)+$
+   */
+  descriptionKey: string;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  weight: number;
+  /** @pattern ^[a-z][a-z0-9_]{0,47}$ */
+  answerKey: string;
+  /**
+   * @maxLength 128
+   * @pattern ^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)+$
+   */
+  answerLabelKey: string;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  value: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  maxValue: number;
+};
+
+export type OwnProfileDtoOutputEntrepreneurImpactSource =
+  (typeof OwnProfileDtoOutputEntrepreneurImpactSource)[keyof typeof OwnProfileDtoOutputEntrepreneurImpactSource];
+
+export const OwnProfileDtoOutputEntrepreneurImpactSource = {
+  answered: 'answered',
+  prefilled: 'prefilled',
+} as const;
+
+export type OwnProfileDtoOutputEntrepreneurImpact = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  subjectType: OwnProfileDtoOutputEntrepreneurImpactSubjectType;
+  selfDeclared: true;
+  methodology: OwnProfileDtoOutputEntrepreneurImpactMethodology;
+  /**
+   * @minimum 0
+   * @maximum 100
+   */
+  score: number;
+  level: OwnProfileDtoOutputEntrepreneurImpactLevel;
+  details: OwnProfileDtoOutputEntrepreneurImpactDetailsItem[];
+  source: OwnProfileDtoOutputEntrepreneurImpactSource;
+  reassessmentSuggested: boolean;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  submittedAt: string;
+} | null;
+
 export type OwnProfileDtoOutputContributorHatsItem =
   (typeof OwnProfileDtoOutputContributorHatsItem)[keyof typeof OwnProfileDtoOutputContributorHatsItem];
 
@@ -1369,6 +1462,7 @@ export interface OwnProfileDtoOutput {
   coverMediaId: string | null;
   facets: OwnProfileDtoOutputFacets;
   entrepreneur: OwnProfileDtoOutputEntrepreneur;
+  entrepreneurImpact: OwnProfileDtoOutputEntrepreneurImpact;
   contributor: OwnProfileDtoOutputContributor;
   contributorOrganization: OwnProfileDtoOutputContributorOrganization;
   userId: string;
@@ -1771,6 +1865,99 @@ export type ProfileViewDtoOutputEntrepreneur = {
   fundingTarget: ProfileViewDtoOutputEntrepreneurFundingTarget;
 } | null;
 
+export type ProfileViewDtoOutputEntrepreneurImpactSubjectType =
+  (typeof ProfileViewDtoOutputEntrepreneurImpactSubjectType)[keyof typeof ProfileViewDtoOutputEntrepreneurImpactSubjectType];
+
+export const ProfileViewDtoOutputEntrepreneurImpactSubjectType = {
+  entrepreneur_facet: 'entrepreneur_facet',
+  project: 'project',
+} as const;
+
+export type ProfileViewDtoOutputEntrepreneurImpactMethodology = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  /**
+   * @maximum 9007199254740991
+   * @exclusiveMinimum 0
+   */
+  version: number;
+  name: string;
+  demo: boolean;
+};
+
+export type ProfileViewDtoOutputEntrepreneurImpactLevel =
+  (typeof ProfileViewDtoOutputEntrepreneurImpactLevel)[keyof typeof ProfileViewDtoOutputEntrepreneurImpactLevel];
+
+export const ProfileViewDtoOutputEntrepreneurImpactLevel = {
+  emerging: 'emerging',
+  moderate: 'moderate',
+  strong: 'strong',
+} as const;
+
+export type ProfileViewDtoOutputEntrepreneurImpactDetailsItem = {
+  /** @pattern ^[a-z][a-z0-9_]{0,47}$ */
+  criterionKey: string;
+  /**
+   * @maxLength 128
+   * @pattern ^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)+$
+   */
+  labelKey: string;
+  /**
+   * @maxLength 128
+   * @pattern ^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)+$
+   */
+  descriptionKey: string;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  weight: number;
+  /** @pattern ^[a-z][a-z0-9_]{0,47}$ */
+  answerKey: string;
+  /**
+   * @maxLength 128
+   * @pattern ^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)+$
+   */
+  answerLabelKey: string;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  value: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  maxValue: number;
+};
+
+export type ProfileViewDtoOutputEntrepreneurImpactSource =
+  (typeof ProfileViewDtoOutputEntrepreneurImpactSource)[keyof typeof ProfileViewDtoOutputEntrepreneurImpactSource];
+
+export const ProfileViewDtoOutputEntrepreneurImpactSource = {
+  answered: 'answered',
+  prefilled: 'prefilled',
+} as const;
+
+export type ProfileViewDtoOutputEntrepreneurImpact = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  subjectType: ProfileViewDtoOutputEntrepreneurImpactSubjectType;
+  selfDeclared: true;
+  methodology: ProfileViewDtoOutputEntrepreneurImpactMethodology;
+  /**
+   * @minimum 0
+   * @maximum 100
+   */
+  score: number;
+  level: ProfileViewDtoOutputEntrepreneurImpactLevel;
+  details: ProfileViewDtoOutputEntrepreneurImpactDetailsItem[];
+  source: ProfileViewDtoOutputEntrepreneurImpactSource;
+  reassessmentSuggested: boolean;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  submittedAt: string;
+} | null;
+
 export type ProfileViewDtoOutputContributorHatsItem =
   (typeof ProfileViewDtoOutputContributorHatsItem)[keyof typeof ProfileViewDtoOutputContributorHatsItem];
 
@@ -1882,8 +2069,22 @@ export interface ProfileViewDtoOutput {
   coverMediaId: string | null;
   facets: ProfileViewDtoOutputFacets;
   entrepreneur: ProfileViewDtoOutputEntrepreneur;
+  entrepreneurImpact: ProfileViewDtoOutputEntrepreneurImpact;
   contributor: ProfileViewDtoOutputContributor;
   contributorOrganization: ProfileViewDtoOutputContributorOrganization;
+}
+
+export type PublicProfileEntryPageDtoOutputItemsItem = {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  updatedAt: string;
+};
+
+export interface PublicProfileEntryPageDtoOutput {
+  items: PublicProfileEntryPageDtoOutputItemsItem[];
+  /** @nullable */
+  nextCursor: string | null;
 }
 
 export type ReferenceDataDtoOutputCountriesItem = {
@@ -15798,6 +15999,19 @@ export const PrivacyControllerRightsRequestsKind = {
   export: 'export',
   erasure: 'erasure',
 } as const;
+
+export type ProfilesControllerPublicPagesParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+};
 
 export type MediaControllerDownloadParams = {
   /**

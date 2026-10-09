@@ -23,7 +23,8 @@ Profils personne (cahier des charges §5, §7.2, §10.1) : profil de base, volet
 - `GET /v1/me/profile`, `PATCH /v1/me/profile`, `PUT /v1/me/intention`, `PUT /v1/me/profile/handle`, `PATCH /v1/me/profile/visibility`.
 - `PUT|DELETE /v1/me/profile/avatar` et `/v1/me/profile/cover` (`{ mediaId }` d'un fichier prêt du membre).
 - `POST|PATCH|DELETE /v1/me/profile/entrepreneur-facet` et `/v1/me/profile/contributor-facet` (`Idempotency-Key` sur `POST`).
-- `GET /v1/profiles/{handle}` (membre ; 404 de part et d'autre d'un blocage), `GET /v1/public/profiles/{handle}` (sans compte, `Cache-Control: public, max-age=60`, 404 si la page publique est désactivée).
+- `GET /v1/profiles/{handle}` (membre ; 404 de part et d'autre d'un blocage), `GET /v1/public/profiles/{handle}` (sans compte, `Cache-Control: public, max-age=60`, 404 si la page publique est désactivée), `GET /v1/public/profiles` (sans compte, profils à page publique par identifiant public avec leur dernière modification, pour le plan du site ; curseur sur l'identifiant public, jamais sur l'identifiant utilisateur ; `Cache-Control: public, max-age=300`).
+- Les vues d'un profil portent l'évaluation d'impact courante du volet entrepreneur (`entrepreneurImpact`, module impact), visible avec les détails de ce volet, `null` sans évaluation ou méthodologie publiée.
 - `GET /v1/reference-data` (public, `Cache-Control: public, max-age=3600`).
 
 ## Schéma `profiles`
@@ -58,7 +59,7 @@ Profils personne (cahier des charges §5, §7.2, §10.1) : profil de base, volet
 
 ## Dépendances
 
-identity (nom, photo, locale), access (rôles, niveaux de confiance, enregistrement des prérequis), media (photo, couverture, import).
+identity (nom, photo, locale), access (rôles, niveaux de confiance, enregistrement des prérequis), media (photo, couverture, import), impact (évaluation courante du volet entrepreneur, affichée par les vues).
 
 ## Mise en avant
 

@@ -2,6 +2,7 @@ import type { TestingModule } from '@nestjs/testing';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { AccessModule } from '../../src/modules/access';
 import { AccountLinked, IdentityModule, UserRegistered } from '../../src/modules/identity';
+import { ImpactModule } from '../../src/modules/impact';
 import { MediaModule } from '../../src/modules/media';
 import { ProfilesModule } from '../../src/modules/profiles';
 import { AuditModule } from '../../src/platform/audit';
@@ -31,6 +32,7 @@ describe('worker handlers', () => {
         IdentityModule.forWorker(),
         AccessModule.forWorker(),
         MediaModule.forWorker(),
+        ImpactModule.forWorker(),
         ProfilesModule.forWorker(),
       ],
     );

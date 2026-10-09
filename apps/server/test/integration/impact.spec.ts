@@ -94,6 +94,11 @@ describe('impact', () => {
       reassessmentSuggested: false,
     });
     expect((first.body as ImpactAssessment).details).toHaveLength(2);
+    // The profile shows the current assessment with the details of its entrepreneur facet.
+    const handle = ((await ama.agent.get('/v1/me/profile').expect(200)).body as { handle: string })
+      .handle;
+    const profile = await ama.agent.get(`/v1/profiles/${handle}`).expect(200);
+    expect(profile.body.entrepreneurImpact).toMatchObject({ score: 67, level: 'moderate' });
     expect((await submit(ama, v1, { jobs: 'full', climate: 'full' })).body.score).toBe(100);
 
     const v2 = await draft(testMethodology('Test V2'));

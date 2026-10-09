@@ -8,6 +8,7 @@ import { AccessModule } from '../../src/modules/access';
 import { ContentModule } from '../../src/modules/content';
 import { ContentMaintenanceService } from '../../src/modules/content/application/content-maintenance.service';
 import { IdentityModule } from '../../src/modules/identity';
+import { ImpactModule } from '../../src/modules/impact';
 import { MediaModule } from '../../src/modules/media';
 import { MalwareScanner } from '../../src/modules/media/application/ports';
 import { NetworkModule } from '../../src/modules/network';
@@ -130,6 +131,7 @@ describe('content', () => {
         IdentityModule.forWorker(),
         AccessModule.forWorker(),
         MediaModule.forWorker(),
+        ImpactModule.forWorker(),
         ProfilesModule.forWorker(),
         OrganizationsModule.forWorker(),
         NetworkModule.forWorker(),

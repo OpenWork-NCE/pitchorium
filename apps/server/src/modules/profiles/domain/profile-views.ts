@@ -1,4 +1,5 @@
 import type {
+  ImpactAssessment,
   OwnProfile,
   ProfileStrength,
   ProfileSummary,
@@ -17,13 +18,15 @@ export interface LinkedOrganization {
 }
 
 /**
- * Data resolved by other modules: display URLs (media, fallback: the provider photo) and the
- * organization linked to the contributor facet.
+ * Data resolved by other modules: display URLs (media, fallback: the provider photo), the
+ * organization linked to the contributor facet and the impact assessment of the entrepreneur
+ * facet.
  */
 export interface ProfileDisplay {
   avatarUrl: string | null;
   coverUrl: string | null;
   contributorOrganization: LinkedOrganization | null;
+  entrepreneurImpact: ImpactAssessment | null;
 }
 
 /** Without other modules: only the provider photo can be shown. */
@@ -31,6 +34,7 @@ export const minimalDisplay = (profile: Profile): ProfileDisplay => ({
   avatarUrl: profile.base.avatarUrl,
   coverUrl: null,
   contributorOrganization: null,
+  entrepreneurImpact: null,
 });
 
 function canSee(level: VisibilityLevel, audience: Audience): boolean {
@@ -48,6 +52,8 @@ export function profileView(
   const { base, entrepreneur, contributor } = profile;
   const contributorVisible =
     contributor !== null && canSee(base.visibility.contributorDetails, audience);
+  const entrepreneurVisible =
+    entrepreneur !== null && canSee(base.visibility.entrepreneurDetails, audience);
   return {
     handle: base.handle,
     displayName: base.displayName,
@@ -62,8 +68,8 @@ export function profileView(
     coverUrl: display.coverUrl,
     coverMediaId: base.coverMediaId,
     facets: { entrepreneur: entrepreneur !== null, contributor: contributor !== null },
-    entrepreneur:
-      entrepreneur && canSee(base.visibility.entrepreneurDetails, audience) ? entrepreneur : null,
+    entrepreneur: entrepreneurVisible ? entrepreneur : null,
+    entrepreneurImpact: entrepreneurVisible ? display.entrepreneurImpact : null,
     contributor: contributorVisible ? contributor : null,
     contributorOrganization: contributorVisible ? display.contributorOrganization : null,
   };

@@ -1,5 +1,7 @@
 import { z } from 'zod';
+import { impactAssessmentSchema } from './impact.js';
 import { currencyCodeSchema } from './money.js';
+import { cursorPageSchema } from './pagination.js';
 
 /** Onboarding intention (cahier des charges, section 7.2 step 2). Skippable, never locking. */
 export const INTENTIONS = ['carry_project', 'support_projects', 'both_or_exploring'] as const;
@@ -305,6 +307,11 @@ const profileBaseViewFields = {
   facets: z.object({ entrepreneur: z.boolean(), contributor: z.boolean() }),
   /** Null when absent or hidden from the reader. */
   entrepreneur: entrepreneurFacetSchema.nullable(),
+  /**
+   * Current self-declared impact assessment of the entrepreneur facet (§12), with the details of
+   * the facet only; null without assessment or published methodology.
+   */
+  entrepreneurImpact: impactAssessmentSchema.nullable(),
   contributor: contributorFacetSchema.nullable(),
   /** Organization linked to the contributor facet, when its details are visible. */
   contributorOrganization: z
@@ -344,6 +351,13 @@ export const profileSummarySchema = z.object({
   publicPageEnabled: z.boolean(),
 });
 
+/** A public page of a profile, for the sitemap: its handle and its last change. */
+export const publicProfileEntrySchema = z.object({
+  handle: handleSchema,
+  updatedAt: z.iso.datetime(),
+});
+export const publicProfileEntryPageSchema = cursorPageSchema(publicProfileEntrySchema);
+
 export type Intention = z.infer<typeof intentionSchema>;
 export type MemberCard = z.infer<typeof memberCardSchema>;
 export type ContributorHat = z.infer<typeof contributorHatSchema>;
@@ -371,3 +385,4 @@ export type ProfileStrength = z.infer<typeof profileStrengthSchema>;
 export type ProfileView = z.infer<typeof profileViewSchema>;
 export type OwnProfile = z.infer<typeof ownProfileSchema>;
 export type ProfileSummary = z.infer<typeof profileSummarySchema>;
+export type PublicProfileEntry = z.infer<typeof publicProfileEntrySchema>;

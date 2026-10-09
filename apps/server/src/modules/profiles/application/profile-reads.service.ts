@@ -1,6 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import type { OwnProfile, ProfileView } from '@pitchorium/contracts';
-import { Clock, DomainError } from '../../../platform/kernel';
+import type {
+  CursorPage,
+  CursorPageQuery,
+  OwnProfile,
+  ProfileView,
+  PublicProfileEntry,
+} from '@pitchorium/contracts';
+import { Clock, DomainError, decodeAfter, encodeCursor } from '../../../platform/kernel';
 import { profileStrength } from '../domain/profile-strength';
 import { ownProfileView, profileView, publicProfileView } from '../domain/profile-views';
 import { ProfileAccessRegistry } from './profile-access.registry';
@@ -48,6 +54,17 @@ export class ProfileReadsService {
     return {
       kind: 'found',
       view: profileView(profile, audience, await this.display.resolve(profile)),
+    };
+  }
+
+  /** The public pages, by handle, for the sitemap of the web app: never a private profile. */
+  async publicPages({ cursor, limit }: CursorPageQuery): Promise<CursorPage<PublicProfileEntry>> {
+    const rows = await this.profiles.publicPagesAfter(decodeAfter(cursor, 'handle'), limit + 1);
+    const page = rows.slice(0, limit);
+    const last = page.at(-1);
+    return {
+      items: page.map((row) => ({ handle: row.handle, updatedAt: row.updatedAt.toISOString() })),
+      nextCursor: rows.length > limit && last ? encodeCursor({ handle: last.handle }) : null,
     };
   }
 
