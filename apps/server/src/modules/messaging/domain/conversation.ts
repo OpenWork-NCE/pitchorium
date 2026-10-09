@@ -65,21 +65,27 @@ export type StartDecision =
   | { outcome: 'active' }
   | { outcome: 'request' }
   | { outcome: 'refused'; code: 'MESSAGING_RECIPIENT_NOT_ACCEPTING' }
-  | { outcome: 'email_required' };
+  | { outcome: 'prerequisites_missing'; missing: ('email_verified' | 'profile.minimum')[] };
 
 /**
  * Who may write to whom (§10.4, §7.2, ADR 0055): connected members freely; out of network, a
- * verified email and the policy of the recipient, and the first message is a request.
+ * verified email, the minimum profile (name, title, country) and the policy of the recipient, and
+ * the first message is a request.
  * `verified_members` admits any member with a verified email, the only verification a person
  * has today (docs/open-questions.md).
  */
 export function decideStart(input: {
   degree: RelationDegree;
   senderEmailVerified: boolean;
+  senderMinimumProfile: boolean;
   recipientPolicy: MessagePolicy;
 }): StartDecision {
   if (input.degree === 'first') return { outcome: 'active' };
-  if (!input.senderEmailVerified) return { outcome: 'email_required' };
+  const missing = [
+    ...(input.senderEmailVerified ? [] : ['email_verified' as const]),
+    ...(input.senderMinimumProfile ? [] : ['profile.minimum' as const]),
+  ];
+  if (missing.length > 0) return { outcome: 'prerequisites_missing', missing };
   switch (input.recipientPolicy) {
     case 'connections_only':
       return { outcome: 'refused', code: 'MESSAGING_RECIPIENT_NOT_ACCEPTING' };

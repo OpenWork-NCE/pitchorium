@@ -9,15 +9,21 @@ import {
 import { answer, assertIntroducible, type IntroductionRecord } from './introduction';
 
 describe('conversation eligibility', () => {
-  const start = (degree: 'first' | 'second' | 'out_of_network', policy: string, verified = true) =>
+  const start = (
+    degree: 'first' | 'second' | 'out_of_network',
+    policy: string,
+    verified = true,
+    minimumProfile = true,
+  ) =>
     decideStart({
       degree,
       senderEmailVerified: verified,
+      senderMinimumProfile: minimumProfile,
       recipientPolicy: policy as 'connections_only',
     });
 
-  it('lets connected members write freely, even without a verified email', () => {
-    expect(start('first', 'connections_only', false)).toEqual({ outcome: 'active' });
+  it('lets connected members write freely, even without a verified email or a profile', () => {
+    expect(start('first', 'connections_only', false, false)).toEqual({ outcome: 'active' });
   });
 
   it('turns a first message out of network into a request, by the policy of the recipient', () => {
@@ -29,8 +35,19 @@ describe('conversation eligibility', () => {
     expect(start('out_of_network', 'verified_members')).toEqual({ outcome: 'request' });
   });
 
-  it('requires a verified email out of network', () => {
-    expect(start('second', 'verified_members', false)).toEqual({ outcome: 'email_required' });
+  it('requires a verified email and the minimum profile out of network, both said at once', () => {
+    expect(start('second', 'verified_members', false)).toEqual({
+      outcome: 'prerequisites_missing',
+      missing: ['email_verified'],
+    });
+    expect(start('second', 'verified_members', true, false)).toEqual({
+      outcome: 'prerequisites_missing',
+      missing: ['profile.minimum'],
+    });
+    expect(start('out_of_network', 'verified_members', false, false)).toEqual({
+      outcome: 'prerequisites_missing',
+      missing: ['email_verified', 'profile.minimum'],
+    });
   });
 
   it('keys a direct conversation by the pair, whatever the order', () => {

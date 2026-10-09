@@ -118,19 +118,21 @@ export class ConversationsService {
     const duplicate = await this.duplicate(senderId, content);
     if (duplicate) return duplicate;
 
-    const [degree, sender, policy] = await Promise.all([
+    const [degree, sender, minimumProfile, policy] = await Promise.all([
       this.network.degreeBetween(senderId, recipientId),
       this.identity.findUser(senderId),
+      this.profiles.hasMinimumProfile(senderId),
       this.policyOf(recipientId),
     ]);
     const decision = decideStart({
       degree,
       senderEmailVerified: sender?.emailVerified ?? false,
+      senderMinimumProfile: minimumProfile,
       recipientPolicy: policy,
     });
-    if (decision.outcome === 'email_required') {
-      throw new DomainError('ACCESS_PREREQUISITES_MISSING', 'A verified email is required', {
-        missing: ['email_verified'],
+    if (decision.outcome === 'prerequisites_missing') {
+      throw new DomainError('ACCESS_PREREQUISITES_MISSING', 'Prerequisites are missing', {
+        missing: decision.missing,
       });
     }
     if (decision.outcome === 'refused') {
