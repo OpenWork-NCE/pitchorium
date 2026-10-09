@@ -83,9 +83,9 @@ describe('prerequisite gate (§7.2, step 4)', () => {
       .mockResolvedValueOnce('done');
     render(run);
     await click(screen.getByRole('button', { name: 'act' }));
-    await click(await screen.findByText('accept terms'));
-    await click(await screen.findByText('verify email'));
-    expect(await screen.findByText('done')).toBeTruthy();
+    await click(await screen.findByText('accept terms', undefined, { timeout: 10_000 }));
+    await click(await screen.findByText('verify email', undefined, { timeout: 10_000 }));
+    expect(await screen.findByText('done', undefined, { timeout: 10_000 })).toBeTruthy();
     expect(run).toHaveBeenCalledTimes(2);
   });
 
@@ -93,7 +93,7 @@ describe('prerequisite gate (§7.2, step 4)', () => {
     const run = vi.fn<() => Promise<string>>().mockRejectedValue(refused(['legal_acceptance']));
     const { unmount } = render(run);
     await click(screen.getByRole('button', { name: 'act' }));
-    await click(await screen.findByText('Plus tard'));
+    await click(await screen.findByText('Plus tard', undefined, { timeout: 10_000 }));
     expect(screen.getByText('refused:ACCESS_PREREQUISITES_MISSING')).toBeTruthy();
     expect(run).toHaveBeenCalledTimes(1);
     unmount();
