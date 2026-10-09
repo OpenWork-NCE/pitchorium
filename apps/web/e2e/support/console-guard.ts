@@ -47,6 +47,15 @@ async function watch(context: BrowserContext, problems: string[]): Promise<void>
     const at = location.url ? ` (${location.url}:${location.lineNumber})` : '';
     // Firefox reports a font download that a navigation aborted (NS_BINDING_ABORTED).
     if (/downloadable font: download failed .*status=2152398850/.test(text)) return;
+    // The script of Cloudflare Turnstile, in its own frame, posts to its origin before the frame
+    // has loaded it (Firefox and WebKit say so): a message of the widget, not of the page.
+    if (
+      /(Failed to execute ‘postMessage’|Unable to post message to) .*challenges\.cloudflare\.com/.test(
+        text,
+      )
+    ) {
+      return;
+    }
     if (message.type() === 'error' || HYDRATION.test(text)) {
       problems.push(`console.${message.type()}: ${text}${at}`);
     }
