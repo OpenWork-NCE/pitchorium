@@ -2,6 +2,7 @@ import { createDatabase } from '@pitchorium/db';
 import { loadConfigOrExit, parseWorkerConfig } from '../src/platform/config/config';
 import { FixedClock, SystemClock } from '../src/platform/kernel/clock';
 import { S3ObjectStorage } from '../src/platform/storage/s3-object-storage';
+import { seedDevContent } from './dev-seed/seed-dev-content';
 import { DEMO_EMAIL_DOMAIN, DEMO_PASSWORD, seedDevData } from './dev-seed/seed-dev-data';
 import { sampleSuggestions, seedDevDiscovery } from './dev-seed/seed-dev-discovery';
 import { seedDevMessaging } from './dev-seed/seed-dev-messaging';
@@ -36,7 +37,8 @@ async function main(): Promise<void> {
         samples = await sampleSuggestions(context);
         const trust = await seedDevTrust(context, clock, now);
         const network = await seedDevNetwork(context, clock, now);
-        return { ...projects, ...messaging, ...discovery, ...trust, ...network };
+        const content = await seedDevContent(context, clock, now);
+        return { ...projects, ...messaging, ...discovery, ...trust, ...network, ...content };
       } finally {
         await context.close();
       }

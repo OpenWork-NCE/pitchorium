@@ -522,6 +522,10 @@ export interface DemoPost {
   visibility: 'public' | 'members' | 'connections';
   text?: string;
   images?: number;
+  /** Text alternatives of the images, in their order (§10.3, accessibility). */
+  alts?: string[];
+  /** A PDF of abstract pages (no text), under its title. */
+  document?: { title: string; pages: number };
   link?: { url: string; title: string; description: string; siteName: string };
   repostOf?: string;
   featured?: boolean;
@@ -535,6 +539,10 @@ export const DEMO_POSTS: readonly DemoPost[] = [
     visibility: 'public',
     text: 'Première récolte de la saison sèche à Thiès avec la coopérative de Keur Mbaye : 40 maraîchères, 3 pompes solaires, zéro litre de gasoil. Merci @kofi-mensah pour tes conseils sur le modèle de location-vente.',
     images: 2,
+    alts: [
+      'Rangées de laitues et de oignons sous des panneaux solaires, au lever du jour.',
+      'Une maraîchère ouvre la vanne d’une pompe solaire au bord d’un bassin.',
+    ],
     featured: true,
   },
   {
@@ -643,6 +651,70 @@ export const DEMO_POSTS: readonly DemoPost[] = [
     visibility: 'members',
     text: 'Belle initiative caribéenne, je relaie.',
     repostOf: 'kreyol-call',
+  },
+  {
+    key: 'kente-workshop',
+    author: 'ama',
+    daysAgo: 2,
+    visibility: 'members',
+    text: 'Three looms, three generations: a morning at the Bonwire workshop.',
+    images: 3,
+    alts: [
+      'A weaver passes the shuttle through a narrow loom.',
+      'Spools of yellow, green and red thread on a wooden shelf.',
+      'Two finished kente strips laid side by side on a table.',
+    ],
+  },
+  {
+    key: 'maji-kiosks',
+    author: 'grace',
+    daysAgo: 3,
+    visibility: 'public',
+    text: 'Four kiosks, four neighbourhoods: the water network in pictures.',
+    images: 4,
+    alts: [
+      'A blue water kiosk at a crossroads.',
+      'Jerrycans lined up in front of a tap.',
+      'A technician checks a filter.',
+      'Children carry water home at dusk.',
+    ],
+  },
+  {
+    key: 'kofi-pitch-day',
+    author: 'kofi',
+    daysAgo: 5,
+    visibility: 'public',
+    text: 'Pitch day in Accra: five founders, five very different answers to the currency question.',
+    images: 5,
+    alts: [
+      'A founder presents in front of a screen.',
+      'The audience listens in a full room.',
+      'A panel of four investors at a long table.',
+      'Notes on a whiteboard about exchange rates.',
+      'The founders together at the end of the day.',
+    ],
+  },
+  {
+    key: 'sahel-album',
+    author: 'aissatou',
+    organization: 'femmes-sahel',
+    daysAgo: 6,
+    visibility: 'members',
+    text: 'L’album de la tournée des coopératives : neuf villages en deux semaines.',
+    images: 9,
+    alts: Array.from(
+      { length: 9 },
+      (_, index) => `Coopérative du village ${index + 1} de la tournée, vue d’ensemble.`,
+    ),
+  },
+  {
+    key: 'teranga-report',
+    author: 'nadia',
+    organization: 'teranga',
+    daysAgo: 4,
+    visibility: 'members',
+    text: 'Le rapport de démonstration de la Fondation, pour essayer la lecture d’un document.',
+    document: { title: 'Rapport de démonstration', pages: 6 },
   },
   {
     key: 'nadia-mentoring',

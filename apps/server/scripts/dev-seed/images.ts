@@ -32,3 +32,41 @@ export function demoImage(kind: DemoImageKind, hue: number, variant = 0): Promis
     <rect width="100%" height="100%" fill="url(#g)"/>${shapes}</svg>`;
   return sharp(Buffer.from(svg)).png().toBuffer();
 }
+
+/**
+ * Abstract demonstration document: a PDF of `pages` A4 pages, each with coloured blocks (no text:
+ * no font is needed), with a correct cross-reference table; deterministic for a hue.
+ */
+export function demoDocument(hue: number, pages: number): Buffer {
+  const colour = (shift: number) => {
+    const h = ((hue + shift) % 360) / 360;
+    return [h, 0.55, 0.75].map((value) => value.toFixed(2)).join(' ');
+  };
+  const objects = ['<< /Type /Catalog /Pages 2 0 R >>', ''];
+  const kids: string[] = [];
+  for (let page = 0; page < pages; page += 1) {
+    const stream = [
+      `${colour(page * 20)} rg 50 700 495 90 re f`,
+      `${colour(page * 20 + 120)} rg 50 ${560 - page * 10} 300 110 re f`,
+      `${colour(page * 20 + 240)} rg 370 ${420 + page * 10} 175 250 re f`,
+    ].join('\n');
+    const pageNumber = objects.length + 1;
+    kids.push(`${pageNumber} 0 R`);
+    objects.push(
+      `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Contents ${pageNumber + 1} 0 R /Resources << >> >>`,
+      `<< /Length ${stream.length} >>\nstream\n${stream}\nendstream`,
+    );
+  }
+  objects[1] = `<< /Type /Pages /Kids [${kids.join(' ')}] /Count ${pages} >>`;
+  let body = '%PDF-1.4\n';
+  const offsets: number[] = [];
+  objects.forEach((object, index) => {
+    offsets.push(body.length);
+    body += `${index + 1} 0 obj\n${object}\nendobj\n`;
+  });
+  const xref = body.length;
+  body += `xref\n0 ${objects.length + 1}\n0000000000 65535 f \n`;
+  body += offsets.map((offset) => `${String(offset).padStart(10, '0')} 00000 n \n`).join('');
+  body += `trailer\n<< /Size ${objects.length + 1} /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF\n`;
+  return Buffer.from(body, 'latin1');
+}

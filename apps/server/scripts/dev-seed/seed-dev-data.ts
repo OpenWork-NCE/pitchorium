@@ -40,7 +40,7 @@ import {
   DEMO_REACTIONS,
   type DemoMember,
 } from './dataset';
-import { demoImage, type DemoImageKind } from './images';
+import { demoDocument, demoImage, type DemoImageKind } from './images';
 
 /** Password of every demonstration account; development data only (refused in production). */
 export const DEMO_PASSWORD = 'pitchorium-demo-2026';
@@ -87,7 +87,9 @@ const emailOf = (member: DemoMember) =>
 
 interface PendingImage {
   id: string;
-  kind: DemoImageKind;
+  /** A document is a PDF of `pages` pages; every other kind a PNG. */
+  kind: DemoImageKind | 'document';
+  pages?: number;
   hue: number;
   variant: number;
   usage: string;
@@ -98,8 +100,10 @@ interface PendingImage {
 /**
  * Demonstration members, organizations, network and publications (`pnpm db:seed:dev`), written
  * directly in the tables of each module: the script is a development tool, outside the module
- * boundaries. Data added since then goes through the module services (ADR 0035). Images are uploaded to the quarantine with `media.asset.uploaded.v1`: the worker
- * processes them like real uploads when it runs. Idempotent: existing rows are kept.
+ * boundaries. Data added since then goes through the module services (ADR 0035). Images and
+ * documents are uploaded to the quarantine with `media.asset.uploaded.v1`: the worker processes
+ * them like real uploads when it runs (a service would refuse a file not processed yet).
+ * Idempotent: existing rows are kept.
  */
 export async function seedDevData(options: DevSeedOptions): Promise<DevSeedResult> {
   const { db, storage, legal } = options;
@@ -371,11 +375,12 @@ export async function seedDevData(options: DevSeedOptions): Promise<DevSeedResul
     for (const post of DEMO_POSTS) {
       const id = postId(post.key);
       const createdAt = new Date(now.getTime() - post.daysAgo * DAY_MS - 3_600_000);
+      const hue = DEMO_MEMBERS.find((member) => member.key === post.author)?.hue ?? 0;
       const imageIds = Array.from({ length: post.images ?? 0 }, (_, index) => {
         const image: PendingImage = {
           id: demoId(`post-image:${post.key}:${index}`),
           kind: 'post',
-          hue: DEMO_MEMBERS.find((member) => member.key === post.author)?.hue ?? 0,
+          hue,
           variant: index + 2,
           usage: 'post_image',
           visibility: post.visibility === 'public' ? 'public' : 'private',
@@ -384,6 +389,19 @@ export async function seedDevData(options: DevSeedOptions): Promise<DevSeedResul
         images.push(image);
         return image.id;
       });
+      const documentId = post.document ? demoId(`post-document:${post.key}`) : null;
+      if (post.document && documentId) {
+        images.push({
+          id: documentId,
+          kind: 'document',
+          pages: post.document.pages,
+          hue,
+          variant: 0,
+          usage: 'post_document',
+          visibility: 'private',
+          resource: { type: 'post', id },
+        });
+      }
       const inserted = await tx
         .insert(contentPosts)
         .values({
@@ -397,6 +415,13 @@ export async function seedDevData(options: DevSeedOptions): Promise<DevSeedResul
           visibility: post.visibility,
           repostOfId: post.repostOf ? postId(post.repostOf) : null,
           imageMediaIds: imageIds,
+          imageAlts: Object.fromEntries(
+            (post.alts ?? []).flatMap((alt, index) =>
+              imageIds[index] ? [[imageIds[index], alt]] : [],
+            ),
+          ),
+          documentMediaId: documentId,
+          documentTitle: post.document?.title ?? null,
           linkUrl: post.link?.url ?? null,
           linkPreview: post.link
             ? {
@@ -465,7 +490,11 @@ export async function seedDevData(options: DevSeedOptions): Promise<DevSeedResul
   // Files after the commit (no storage call in a transaction, ADR 0019): each new asset is
   // uploaded to the quarantine and announced to the worker, as a confirmed upload.
   for (const image of images) {
-    const content = await demoImage(image.kind, image.hue, image.variant);
+    const content =
+      image.kind === 'document'
+        ? demoDocument(image.hue, image.pages ?? 1)
+        : await demoImage(image.kind, image.hue, image.variant);
+    const contentType = image.kind === 'document' ? 'application/pdf' : 'image/png';
     const created = await db.transaction(async (tx) => {
       const inserted = await tx
         .insert(mediaAssets)
@@ -476,7 +505,7 @@ export async function seedDevData(options: DevSeedOptions): Promise<DevSeedResul
           source: 'upload',
           status: 'processing',
           visibility: image.visibility,
-          declaredContentType: 'image/png',
+          declaredContentType: contentType,
           declaredSize: content.length,
           quarantineKey: `quarantine/${image.id}`,
           moderationStatus: 'none',
@@ -506,7 +535,7 @@ export async function seedDevData(options: DevSeedOptions): Promise<DevSeedResul
       visibility: 'private',
       key: `quarantine/${image.id}`,
       body: content,
-      contentType: 'image/png',
+      contentType,
     });
   }
   return result;

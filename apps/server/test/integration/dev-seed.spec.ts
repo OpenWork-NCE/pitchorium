@@ -11,6 +11,7 @@ import {
   type DevSeedResult,
   seedDevData,
 } from '../../scripts/dev-seed/seed-dev-data';
+import { seedDevContent } from '../../scripts/dev-seed/seed-dev-content';
 import { sampleSuggestions, seedDevDiscovery } from '../../scripts/dev-seed/seed-dev-discovery';
 import { seedDevMessaging } from '../../scripts/dev-seed/seed-dev-messaging';
 import { createSeedContext, seedDevProjects } from '../../scripts/dev-seed/seed-dev-projects';
@@ -89,7 +90,7 @@ describe('development data', () => {
       legal: { termsVersion: TEST_LEGAL_VERSION, privacyVersion: TEST_LEGAL_VERSION },
     };
     const first = await seedDevData(options);
-    expect(first).toMatchObject({ members: 14, organizations: 3, posts: 15, comments: 11 });
+    expect(first).toMatchObject({ members: 14, organizations: 3, posts: 20, comments: 11 });
     expect(first.media).toBeGreaterThan(30);
     const before = await counts();
 
@@ -250,6 +251,23 @@ describe('development data', () => {
         translations: 1,
       });
       expect(await seedDevTrust(context, clock)).toMatchObject({ reports: 0, exports: 0 });
+      // The discussion, saved publications, a week of views and a hidden publication, once.
+      expect(await seedDevContent(context, clock)).toEqual({
+        discussionComments: 13,
+        discussionReactions: 7,
+        savedPosts: 3,
+        viewDays: 7,
+        hiddenPosts: 1,
+      });
+      const [views] = await query<{ days: string; peak: number }>(
+        `SELECT count(*) AS days, max(unique_viewers) AS peak FROM content.post_daily_views`,
+      );
+      expect(views).toEqual({ days: '7', peak: 12 });
+      const [mention] = await query<{ count: string }>(
+        `SELECT count(*) FROM content.comment_mentions`,
+      );
+      expect(Number(mention?.count)).toBe(1);
+      expect(await seedDevContent(context, clock)).toMatchObject({ discussionComments: 0 });
       // ensureDemo is idempotent: it returns the existing DEMO version.
       await expect(
         context.get(MethodologiesService, { strict: false }).ensureDemo({
