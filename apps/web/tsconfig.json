@@ -30,6 +30,7 @@
     "node_modules",
     ".next",
     ".next-e2e",
+    ".next-live",
     "storybook-static",
     "playwright-report",
     "test-results"

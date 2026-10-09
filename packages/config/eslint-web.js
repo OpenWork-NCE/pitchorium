@@ -42,6 +42,7 @@ export function createWebConfig({ tsconfigRootDir, ignores = [] }) {
       ignores: [
         '.next/**',
         '.next-e2e/**',
+        '.next-live/**',
         '.next-analyze/**',
         'storybook-static/**',
         '.lighthouseci/**',
