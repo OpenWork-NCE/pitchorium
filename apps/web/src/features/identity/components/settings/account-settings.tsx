@@ -27,7 +27,7 @@ export function AccountSettings({ providers }: { providers: readonly OAuthProvid
   const t = useTranslations('web.settings.account');
   const member = useCurrentMember();
   return (
-    <div className="grid gap-6">
+    <div className="grid gap-6 *:min-w-0">
       <SettingsSection id="email" title={t('email.title')}>
         <DescriptionList
           items={[

@@ -17,7 +17,7 @@ const LanguageForm = lazy(() =>
 export function PreferencesSettings() {
   const t = useTranslations('web.settings.preferences');
   return (
-    <div className="grid gap-6">
+    <div className="grid gap-6 *:min-w-0">
       <Suspense fallback={<Skeleton className="h-72" />}>
         <LanguageForm />
       </Suspense>

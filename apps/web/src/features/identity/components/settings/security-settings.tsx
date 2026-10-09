@@ -38,7 +38,7 @@ const QrCode = lazy(() => import('./qr-code').then((module) => ({ default: modul
 export function SecuritySettings({ twoFactorRequired }: { twoFactorRequired: boolean }) {
   const t = useTranslations('web.settings.security');
   return (
-    <div className="grid gap-6">
+    <div className="grid gap-6 *:min-w-0">
       {twoFactorRequired ? (
         <Callout title={t('twoFactorRequired.title')}>{t('twoFactorRequired.body')}</Callout>
       ) : null}
@@ -395,7 +395,7 @@ function SessionsSection() {
           {error}
         </p>
       ) : null}
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-col gap-2 *:h-auto *:min-h-11 *:w-full *:py-2 *:whitespace-normal sm:flex-row sm:flex-wrap sm:*:w-auto">
         <Button
           variant="outline"
           loading={pending === 'others'}
