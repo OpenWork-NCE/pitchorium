@@ -6,6 +6,7 @@ import {
   totpCodeRequestSchema,
 } from '@pitchorium/contracts';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { Monitor, Smartphone, Tablet } from 'lucide-react';
 import { useFormatter, useTranslations } from 'next-intl';
 import { lazy, Suspense, useState } from 'react';
 import {
@@ -17,6 +18,7 @@ import {
   Form,
   FormActions,
   FormField,
+  Icon,
   OtpInput,
   PasswordInput,
   RelativeTime,
@@ -25,7 +27,7 @@ import {
 } from '@/components/ui';
 import { useRouter } from '@/i18n/navigation';
 import { authCall, useAuthFailureMessage } from '../../lib/auth-call';
-import { describeUserAgent } from '../../lib/user-agent';
+import { type DeviceKind, describeUserAgent } from '../../lib/user-agent';
 import { useCurrentMember } from '../current-member';
 import { useSignOut } from '../sign-out-button';
 
@@ -301,7 +303,16 @@ interface SessionRow {
 
 const SESSIONS_KEY = ['identity', 'sessions'] as const;
 
-/** Open sessions: device and last activity, revoked one by one, all others, or all of them. */
+const DEVICE_ICONS: Record<DeviceKind, typeof Monitor> = {
+  computer: Monitor,
+  phone: Smartphone,
+  tablet: Tablet,
+};
+
+/**
+ * Open sessions: kind of device, browser, system and last activity, revoked one by one, all
+ * others, or all of them. No place: the address of a session is never located (ADR 0107).
+ */
 function SessionsSection() {
   const t = useTranslations('web.settings.security.sessions');
   const format = useFormatter();
@@ -335,11 +346,16 @@ function SessionsSection() {
     await queryClient.invalidateQueries({ queryKey: SESSIONS_KEY });
   }
 
+  /** « Téléphone · Safari, iOS »: the kind of device, then its browser and system, never a place. */
   const device = (userAgent: string | null | undefined) => {
-    const { browser, system } = describeUserAgent(userAgent);
-    if (browser && system) return t('device', { browser, system });
-    return browser ?? system ?? t('unknownDevice');
+    const { device: kind, browser, system } = describeUserAgent(userAgent);
+    const software =
+      browser && system ? t('device', { browser, system }) : (browser ?? system ?? null);
+    const named = [kind ? t(`kinds.${kind}`) : null, software].filter(Boolean);
+    return named.length > 0 ? named.join(' · ') : t('unknownDevice');
   };
+  const glyph = (userAgent: string | null | undefined) =>
+    DEVICE_ICONS[describeUserAgent(userAgent).device ?? 'computer'];
 
   return (
     <SettingsSection id="sessions" title={t('title')} description={t('description')}>
@@ -354,19 +370,22 @@ function SessionsSection() {
                 key={session.id}
                 className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-border p-3"
               >
-                <div className="grid gap-0.5">
-                  <span className="font-medium">
-                    {device(session.userAgent)}{' '}
-                    {current ? <Badge tone="accent">{t('thisDevice')}</Badge> : null}
-                  </span>
-                  <span className="text-sm text-muted">
-                    {t('lastActive')}{' '}
-                    <RelativeTime date={new Date(session.updatedAt).toISOString()} />
-                    {' · '}
-                    {t('opened', {
-                      date: format.dateTime(new Date(session.createdAt), { dateStyle: 'medium' }),
-                    })}
-                  </span>
+                <div className="flex min-w-0 items-start gap-3">
+                  <Icon icon={glyph(session.userAgent)} className="mt-0.5 text-muted" />
+                  <div className="grid gap-0.5">
+                    <span className="font-medium">
+                      {device(session.userAgent)}{' '}
+                      {current ? <Badge tone="accent">{t('thisDevice')}</Badge> : null}
+                    </span>
+                    <span className="text-sm text-muted">
+                      {t('lastActive')}{' '}
+                      <RelativeTime date={new Date(session.updatedAt).toISOString()} />
+                      {' · '}
+                      {t('opened', {
+                        date: format.dateTime(new Date(session.createdAt), { dateStyle: 'medium' }),
+                      })}
+                    </span>
+                  </div>
                 </div>
                 {current ? null : (
                   <Button

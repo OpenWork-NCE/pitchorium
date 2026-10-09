@@ -868,6 +868,11 @@
         "title": "Sessions actives",
         "description": "Les appareils connectés à votre compte. Fermez une session que vous ne reconnaissez pas.",
         "device": "{{browser}}, {{system}}",
+        "kinds": {
+          "computer": "Ordinateur",
+          "phone": "Téléphone",
+          "tablet": "Tablette"
+        },
         "unknownDevice": "Appareil inconnu",
         "thisDevice": "Cet appareil",
         "lastActive": "Dernière activité",

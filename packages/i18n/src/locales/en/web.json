@@ -868,6 +868,11 @@
         "title": "Active sessions",
         "description": "The devices signed in to your account. Close a session you do not recognise.",
         "device": "{{browser}}, {{system}}",
+        "kinds": {
+          "computer": "Computer",
+          "phone": "Phone",
+          "tablet": "Tablet"
+        },
         "unknownDevice": "Unknown device",
         "thisDevice": "This device",
         "lastActive": "Last active",

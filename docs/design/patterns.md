@@ -31,6 +31,7 @@ Comment assembler les composants (`components.md`) pour les situations récurren
 
 - Navigation par sections à gauche (en haut sur un téléphone), une adresse par section ; chaque bloc est une carte avec son titre et ce qu'il fait.
 - Une action impossible dit pourquoi (« C'est votre seule méthode de connexion … ») au lieu d'un bouton désactivé muet ; une action sensible redemande le mot de passe.
+- Une session se décrit par son type d'appareil (icône et libellé), son navigateur, son système et sa dernière activité, jamais par un lieu : l'adresse IP n'est pas géolocalisée (ADR 0107).
 
 ## Suggestions (§10.2, ADR 0067)
 

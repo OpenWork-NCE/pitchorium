@@ -110,3 +110,4 @@ Un fichier par décision, numéroté, au format Contexte / Décision / Conséque
 | [0104](0104-authentication-and-onboarding-journeys.md)   | Parcours d'authentification et d'onboarding du web           |
 | [0105](0105-progressive-prerequisites.md)                | Complétion au fil de l'eau des prérequis                     |
 | [0106](0106-precise-reasons-of-refusals.md)              | Raison précise des refus                                     |
+| [0107](0107-sessions-without-ip-geolocation.md)          | Sessions sans géolocalisation de l'adresse IP                |
