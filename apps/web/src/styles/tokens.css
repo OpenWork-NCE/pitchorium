@@ -84,6 +84,8 @@
   /* Editorial panel of the brand (authentication): deep violet in both themes, light text. */
   --brand-panel: var(--violet-800);
   --on-brand-panel: var(--brand-white);
+  /* Behind the images of the viewer: opaque, so that its text reads on any page. */
+  --viewer-backdrop: var(--neutral-950);
   /* Cover without an image (projects): the elevation pattern on a surface of its own. */
   --cover-placeholder: var(--violet-100);
   /* A message received: a step from its card, lighter in the dark theme, never darker. */
@@ -171,6 +173,8 @@
   /* Never lavender: light surfaces belong to the light theme. */
   --brand-panel: var(--violet-900);
   --on-brand-panel: var(--brand-white);
+  /* Behind the images of the viewer: opaque, so that its text reads on any page. */
+  --viewer-backdrop: var(--neutral-950);
   --cover-placeholder: var(--violet-900);
   --message-received: #2a2830;
   --shadow-color: 0 0 0;

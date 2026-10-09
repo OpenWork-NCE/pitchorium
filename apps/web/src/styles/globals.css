@@ -26,6 +26,7 @@
   --color-on-accent: var(--on-accent);
   --color-brand-panel: var(--brand-panel);
   --color-on-brand-panel: var(--on-brand-panel);
+  --color-viewer-backdrop: var(--viewer-backdrop);
   --color-cover-placeholder: var(--cover-placeholder);
   --color-message-received: var(--message-received);
   --color-accent-subtle: var(--accent-subtle);

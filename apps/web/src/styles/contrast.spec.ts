@@ -64,6 +64,7 @@ const PAIRS: [string, string, number][] = [
   ]),
   ['on-accent', 'accent', TEXT],
   ['on-brand-panel', 'brand-panel', TEXT],
+  ['on-brand-panel', 'viewer-backdrop', TEXT],
   ['foreground', 'message-received', TEXT],
   ['on-accent', 'accent-strong', TEXT],
   ['on-accent-subtle', 'accent-subtle', TEXT],
