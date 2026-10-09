@@ -19,6 +19,8 @@ Fil d'actualité (cahier des charges §10.3) : publications, repartages, mention
 
 À la création, l'aperçu est `pending` ; le worker (job `link-preview`, file `content.processing`) lit la page par le client protégé contre le SSRF (`platform/outbound` : http et https, ports par défaut, adresses publiques vérifiées après résolution DNS et connexion à l'adresse vérifiée, 3 redirections vérifiées, `CONTENT_LINK_PREVIEW_TIMEOUT_MS`, `CONTENT_LINK_PREVIEW_MAX_BYTES`, `text/html` seulement), extrait titre, description et site des balises Open Graph (repli sur `<title>` et `description`), puis confie l'image au module media (usage `link_preview`) : les lecteurs ne chargent jamais l'image depuis le site tiers. Un refus donne `failed` ; le lien reste affiché.
 
+Avant la publication (ADR 0118) : le composeur demande l'aperçu d'une adresse collée (`POST /v1/link-previews`, 20 par minute), construit de même par le worker (job `link-preview-draft`) et relu par son auteur seul (`GET /v1/link-previews/{id}`) ; la publication qui porte son `linkPreviewId` avec le même `linkUrl` le reprend et le consomme. Un aperçu non publié est supprimé après 24 heures (tâche `purge-link-previews`, chaque heure).
+
 ## Réactions, commentaires, enregistrements
 
 - Réactions `like`, `bravo`, `insightful`, `support` (J'aime, Bravo, Pertinent, Soutien) sur les publications et les commentaires, une par membre et par cible, modifiable ; compteurs par type agrégés à la lecture.
@@ -51,13 +53,14 @@ Chaque publication vue par un autre membre ajoute le lecteur à un HyperLogLog R
 - `POST /v1/posts/{postId}/reposts` (`content.post.repost`, `Idempotency-Key`)
 - `PUT|DELETE /v1/posts/{postId}/reaction`, `PUT|DELETE /v1/comments/{commentId}/reaction` (`content.reaction.set`)
 - `POST /v1/posts/{postId}/comments` (`content.comment.create`, `Idempotency-Key`), `GET /v1/posts/{postId}/comments`, `GET /v1/comments/{commentId}/replies` (`content.post.read`), `PATCH /v1/comments/{commentId}` (`content.comment.update`, auteur), `DELETE /v1/comments/{commentId}` (`content.comment.delete`, auteur du commentaire ou de la publication, `CommentResolver`)
+- `POST /v1/link-previews` (`content.post.create`), `GET /v1/link-previews/{linkPreviewId}` (`content.post.create`, auteur)
 - `PUT|DELETE /v1/posts/{postId}/save`, `GET /v1/me/saved-posts` (`content.post.save`), `PUT|DELETE /v1/posts/{postId}/hide` (`content.post.hide`)
 - `POST /v1/posts/views` (`content.post.read`, publications vues, sans corps en réponse)
 - `GET /v1/posts/{postId}/stats` (`content.post.stats.read`, auteur)
 
 ## Schéma `content`
 
-`posts` (textes alternatifs des images par identifiant de média, titre du document ; index partiels du fil par membre et par organisation, des mises en avant, des repartages, de l'image d'aperçu, des publications d'un projet), `post_mentions`, `comments` (index des commentaires de premier niveau et des réponses), `reactions` (clé : cible et membre), `saved_posts`, `hidden_posts`, `post_daily_views`.
+`posts` (textes alternatifs des images par identifiant de média, titre du document ; index partiels du fil par membre et par organisation, des mises en avant, des repartages, de l'image d'aperçu, des publications d'un projet), `link_previews` (aperçus demandés avant la publication, 24 heures), `post_mentions`, `comments` (index des commentaires de premier niveau et des réponses), `reactions` (clé : cible et membre), `saved_posts`, `hidden_posts`, `post_daily_views`.
 
 ## Façade publique (`index.ts`)
 
@@ -65,25 +68,27 @@ Chaque publication vue par un autre membre ajoute le lecteur à un HyperLogLog R
 
 ## Événements émis
 
-| Type                          | Agrégat     | Payload                                                          |
-| ----------------------------- | ----------- | ---------------------------------------------------------------- |
-| `content.post.created.v1`     | publication | `authorId`, `organizationId`, `visibility`, `hasLink`            |
-| `content.post.updated.v1`     | publication | `authorId`, `fields`                                             |
-| `content.post.deleted.v1`     | publication | `authorId`                                                       |
-| `content.post.reposted.v1`    | repartage   | `authorId`, `repostOfId`, `originalAuthorId`                     |
-| `content.mention.created.v1`  | publication | `authorId`, `targetType`, `targetId`                             |
-| `content.reaction.added.v1`   | cible       | `userId`, `targetType`, `targetAuthorId`, `reaction`             |
-| `content.reaction.changed.v1` | cible       | `userId`, `targetType`, `targetAuthorId`, `reaction`, `previous` |
-| `content.reaction.removed.v1` | cible       | `userId`, `targetType`, `targetAuthorId`, `previous`             |
-| `content.comment.created.v1`  | commentaire | `postId`, `authorId`, `parentId`, `postAuthorId`                 |
-| `content.comment.updated.v1`  | commentaire | `postId`, `authorId`, `parentId`, `postAuthorId`                 |
-| `content.comment.deleted.v1`  | commentaire | `postId`, `authorId`, `parentId`, `postAuthorId`, `deletedBy`    |
+| Type                                | Agrégat     | Payload                                                          |
+| ----------------------------------- | ----------- | ---------------------------------------------------------------- |
+| `content.post.created.v1`           | publication | `authorId`, `organizationId`, `visibility`, `hasLink`            |
+| `content.link-preview.requested.v1` | aperçu      | `ownerId` (interne : déclenche le job `link-preview-draft`)      |
+| `content.post.updated.v1`           | publication | `authorId`, `fields`                                             |
+| `content.post.deleted.v1`           | publication | `authorId`                                                       |
+| `content.post.reposted.v1`          | repartage   | `authorId`, `repostOfId`, `originalAuthorId`                     |
+| `content.mention.created.v1`        | publication | `authorId`, `targetType`, `targetId`                             |
+| `content.reaction.added.v1`         | cible       | `userId`, `targetType`, `targetAuthorId`, `reaction`             |
+| `content.reaction.changed.v1`       | cible       | `userId`, `targetType`, `targetAuthorId`, `reaction`, `previous` |
+| `content.reaction.removed.v1`       | cible       | `userId`, `targetType`, `targetAuthorId`, `previous`             |
+| `content.comment.created.v1`        | commentaire | `postId`, `authorId`, `parentId`, `postAuthorId`                 |
+| `content.comment.updated.v1`        | commentaire | `postId`, `authorId`, `parentId`, `postAuthorId`                 |
+| `content.comment.deleted.v1`        | commentaire | `postId`, `authorId`, `parentId`, `postAuthorId`, `deletedBy`    |
 
 Un repartage émet `content.post.reposted.v1` (pas `content.post.created.v1`). Destinés aux notifications (étape ultérieure).
 
 ## Événements consommés
 
 - `content.post.created.v1` avec lien : mise en file de l'aperçu (handler `content.queue-link-preview`).
+- `content.link-preview.requested.v1` : mise en file de l'aperçu demandé par le composeur (handler `content.queue-link-preview-draft`).
 - `media.asset.ready.v1` et `media.asset.rejected.v1` (usage `link_preview`) : attachement de l'image d'aperçu ou abandon (handler `content.link-preview-image`).
 - `profiles.profile.visibility-changed.v1` (page publique désactivée) : retrait des publications publiques (handler `content.withdraw-public-posts`).
 
@@ -93,4 +98,4 @@ identity (indirectement, par le garde d'access), profiles (cartes, page publique
 
 ## Données personnelles (RGPD)
 
-Export : publications et repartages, commentaires, réactions, publications enregistrées et masquées. Suppression : réactions, enregistrements, masquages et mentions supprimés ; publications supprimées avec leurs commentaires (les repartages d'autres membres perdent le lien) ; un commentaire auquel d'autres ont répondu devient une pierre tombale vide sous le pseudonyme ; les fichiers suivent l'effaceur de media. Contrats enregistrés auprès du module privacy (`infrastructure/content-personal-data.ts`, ADR 0074).
+Export : publications et repartages, commentaires, réactions, publications enregistrées et masquées. Suppression : réactions, enregistrements, masquages, aperçus de liens non publiés et mentions supprimés ; publications supprimées avec leurs commentaires (les repartages d'autres membres perdent le lien) ; un commentaire auquel d'autres ont répondu devient une pierre tombale vide sous le pseudonyme ; les fichiers suivent l'effaceur de media. Contrats enregistrés auprès du module privacy (`infrastructure/content-personal-data.ts`, ADR 0074).

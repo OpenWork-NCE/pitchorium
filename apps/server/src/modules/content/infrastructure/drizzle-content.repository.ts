@@ -15,6 +15,7 @@ import {
   inArray,
   isNotNull,
   isNull,
+  lt,
   notInArray,
   sql,
   type SQL,
@@ -22,6 +23,7 @@ import {
 import {
   contentComments,
   contentHiddenPosts,
+  contentLinkPreviews,
   contentPostDailyViews,
   contentPostMentions,
   contentPosts,
@@ -32,7 +34,7 @@ import { TransactionManager } from '../../../platform/database';
 import type { KeysetPosition } from '../../../platform/kernel';
 import type { CommentRecord } from '../domain/comment';
 import type { ResolvedMention } from '../domain/mentions';
-import type { LinkPreviewState, PostRecord } from '../domain/post';
+import type { LinkPreviewDraftRecord, LinkPreviewState, PostRecord } from '../domain/post';
 import {
   type CommentPatch,
   ContentRepository,
@@ -69,6 +71,18 @@ const toPost = (row: PostRow): PostRecord => ({
   createdAt: row.createdAt,
   editedAt: row.editedAt,
   deletedAt: row.deletedAt,
+});
+
+const toLinkPreview = (row: typeof contentLinkPreviews.$inferSelect): LinkPreviewDraftRecord => ({
+  id: row.id,
+  ownerId: row.ownerId,
+  url: row.url,
+  status: row.status as LinkPreviewDraftRecord['status'],
+  title: row.title,
+  description: row.description,
+  siteName: row.siteName,
+  imageMediaId: row.imageMediaId,
+  createdAt: row.createdAt,
 });
 
 const toComment = (row: CommentRow): CommentRecord => ({
@@ -118,6 +132,42 @@ export class DrizzleContentRepository extends ContentRepository {
       .from(contentPosts)
       .where(inArray(contentPosts.id, [...new Set(ids)]));
     return rows.map(toPost);
+  }
+
+  async insertLinkPreview(preview: LinkPreviewDraftRecord): Promise<void> {
+    await this.db.insert(contentLinkPreviews).values(preview);
+  }
+
+  async findLinkPreview(id: string): Promise<LinkPreviewDraftRecord | null> {
+    const [row] = await this.db
+      .select()
+      .from(contentLinkPreviews)
+      .where(eq(contentLinkPreviews.id, id));
+    return row ? toLinkPreview(row) : null;
+  }
+
+  async setLinkPreview(id: string, preview: LinkPreviewState): Promise<void> {
+    await this.db.update(contentLinkPreviews).set(preview).where(eq(contentLinkPreviews.id, id));
+  }
+
+  async deleteLinkPreview(id: string): Promise<void> {
+    await this.db.delete(contentLinkPreviews).where(eq(contentLinkPreviews.id, id));
+  }
+
+  async linkPreviewsWithImage(mediaId: string): Promise<LinkPreviewDraftRecord[]> {
+    const rows = await this.db
+      .select()
+      .from(contentLinkPreviews)
+      .where(eq(contentLinkPreviews.imageMediaId, mediaId));
+    return rows.map(toLinkPreview);
+  }
+
+  async purgeLinkPreviews(before: Date): Promise<number> {
+    const rows = await this.db
+      .delete(contentLinkPreviews)
+      .where(lt(contentLinkPreviews.createdAt, before))
+      .returning({ id: contentLinkPreviews.id });
+    return rows.length;
   }
 
   async updatePost(id: string, patch: PostPatch): Promise<void> {

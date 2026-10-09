@@ -36,6 +36,7 @@ import {
   assertRepostAllowed,
   assertVisibilityAllowed,
   effectiveVisibility,
+  type LinkPreviewDraftRecord,
   type PostAuthorContext,
   type PostRecord,
   repostTarget,
@@ -110,6 +111,7 @@ export class PostsService {
     if (body.projectId) await this.projects.assertAttachable(body.projectId, userId);
     const mentions = await this.mentions(userId, text);
     const now = this.clock.now();
+    const draft = await this.reusablePreview(userId, body.linkUrl, body.linkPreviewId);
     const post: PostRecord = {
       id: this.ids.next(),
       authorId: userId,
@@ -128,7 +130,21 @@ export class PostsService {
       documentTitle: body.documentMediaId ? (body.documentTitle ?? null) : null,
       linkUrl: body.linkUrl ?? null,
       linkPreview: body.linkUrl
-        ? { status: 'pending', title: null, description: null, siteName: null, imageMediaId: null }
+        ? draft
+          ? {
+              status: draft.status,
+              title: draft.title,
+              description: draft.description,
+              siteName: draft.siteName,
+              imageMediaId: draft.imageMediaId,
+            }
+          : {
+              status: 'pending',
+              title: null,
+              description: null,
+              siteName: null,
+              imageMediaId: null,
+            }
         : null,
       commentsDisabled: body.commentsDisabled,
       moderationStatus: 'visible',
@@ -159,6 +175,22 @@ export class PostsService {
           resource: postResource(post.id),
         });
       }
+      if (draft) {
+        await this.content.deleteLinkPreview(draft.id);
+        // A ready image is attached now; a pending one when it is ready (link-preview-image).
+        if (
+          draft.imageMediaId &&
+          (await this.media.describe(draft.imageMediaId))?.status === 'ready'
+        ) {
+          await this.media.attach({
+            mediaId: draft.imageMediaId,
+            ownerId: userId,
+            usage: 'link_preview',
+            resource: postResource(post.id),
+            resourceVisibility,
+          });
+        }
+      }
       await this.events.record(PostCreated, post.id, {
         authorId: userId,
         organizationId: post.organizationId,
@@ -168,6 +200,23 @@ export class PostsService {
       await this.recordMentions(post.id, userId, mentions);
     });
     return this.presentOne(await this.presenter.reader(userId), post);
+  }
+
+  /**
+   * The preview the composer asked for the same link (ADR 0118), when it is built: reused by
+   * the publication. Anything else (another member's, another link, still pending) is ignored
+   * and the publication builds its own.
+   */
+  private async reusablePreview(
+    userId: string,
+    linkUrl: string | undefined,
+    previewId: string | undefined,
+  ): Promise<LinkPreviewDraftRecord | null> {
+    if (!linkUrl || !previewId) return null;
+    const draft = await this.content.findLinkPreview(previewId);
+    return draft && draft.ownerId === userId && draft.url === linkUrl && draft.status !== 'pending'
+      ? draft
+      : null;
   }
 
   /** Text, visibility, language and comments; any change but comments marks it edited. */

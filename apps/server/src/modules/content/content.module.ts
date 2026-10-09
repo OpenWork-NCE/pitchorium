@@ -15,6 +15,7 @@ import { PostPresenter } from './application/post-presenter';
 import { PostsService } from './application/posts.service';
 import { FeedSourcesRegistry } from './application/feed-sources.registry';
 import { ProjectLinkRegistry } from './application/project-link.registry';
+import { LinkPreviewsService } from './application/link-previews.service';
 import { ReactionsService } from './application/reactions.service';
 import { DrizzleContentRepository } from './infrastructure/drizzle-content.repository';
 import { FrancLanguageDetector } from './infrastructure/franc.language-detector';
@@ -22,6 +23,7 @@ import { RedisPostViewCounter } from './infrastructure/redis-post-view.counter';
 import { SafeLinkPageFetcher } from './infrastructure/safe-link-page.fetcher';
 import { CommentsController } from './interface/comments.controller';
 import {
+  LinkPreviewDraftHandler,
   LinkPreviewHandler,
   LinkPreviewImageHandler,
   PublicPageHandler,
@@ -29,6 +31,7 @@ import {
 import { ContentJobsProcessor } from './interface/content-jobs.processor';
 import { CONTENT_QUEUE } from './interface/content-queue';
 import { CommentResolver, PostResolver } from './interface/content.resolvers';
+import { LinkPreviewsController } from './interface/link-previews.controller';
 import { PostsController } from './interface/posts.controller';
 
 import { ContentPersonalData } from './infrastructure/content-personal-data';
@@ -60,7 +63,7 @@ export class ContentModule {
     return {
       module: ContentModule,
       global: true,
-      controllers: [PostsController, CommentsController],
+      controllers: [PostsController, CommentsController, LinkPreviewsController],
       providers: [
         ...SHARED_PROVIDERS,
         { provide: LanguageDetector, useClass: FrancLanguageDetector },
@@ -68,6 +71,7 @@ export class ContentModule {
         FeedService,
         CommentsService,
         ReactionsService,
+        LinkPreviewsService,
         PostResolver,
         CommentResolver,
       ],
@@ -86,6 +90,7 @@ export class ContentModule {
         ContentMaintenanceService,
         ContentJobsProcessor,
         LinkPreviewHandler,
+        LinkPreviewDraftHandler,
         LinkPreviewImageHandler,
         PublicPageHandler,
       ],

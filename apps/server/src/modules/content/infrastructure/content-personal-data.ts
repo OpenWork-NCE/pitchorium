@@ -3,6 +3,7 @@ import { and, eq, sql } from '@pitchorium/db/orm';
 import {
   contentComments,
   contentHiddenPosts,
+  contentLinkPreviews,
   contentPostMentions,
   contentPosts,
   contentReactions,
@@ -77,6 +78,7 @@ export class ContentPersonalData implements OnModuleInit {
          or (r.target_type = 'comment' and r.target_id in (select id from content.comments where author_id = ${userId}))`);
     await db.delete(contentSavedPosts).where(eq(contentSavedPosts.userId, userId));
     await db.delete(contentHiddenPosts).where(eq(contentHiddenPosts.userId, userId));
+    await db.delete(contentLinkPreviews).where(eq(contentLinkPreviews.ownerId, userId));
     await db
       .delete(contentPostMentions)
       .where(

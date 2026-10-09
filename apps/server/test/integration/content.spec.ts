@@ -280,6 +280,50 @@ describe('content', () => {
     );
   });
 
+  it('previews a link before publishing, then the publication reuses the preview', async () => {
+    const asked = await ama.agent
+      .post('/v1/link-previews')
+      .send({ url: `${siteOrigin}/article` })
+      .expect(201);
+    expect(asked.body).toMatchObject({ status: 'pending', title: null, imageUrl: null });
+    const id = asked.body.id as string;
+    // Only its author reads it.
+    await kofi.agent.get(`/v1/link-previews/${id}`).expect(404);
+    const ready = await vi.waitFor(
+      async () => {
+        await deliver();
+        const read = (await ama.agent.get(`/v1/link-previews/${id}`).expect(200)).body as {
+          status: string;
+          imageUrl: string | null;
+        };
+        expect(read.status).toBe('ready');
+        expect(read.imageUrl).toBeTruthy();
+        return read;
+      },
+      { timeout: 30_000, interval: 250 },
+    );
+    expect(ready).toMatchObject({ title: 'Irrigation solaire à Thiès', siteName: 'Sahel Agri' });
+    expect(ready.imageUrl).not.toContain(siteOrigin);
+
+    const post = await publish(ama, { linkUrl: `${siteOrigin}/article`, linkPreviewId: id });
+    // Built already: the publication shows it at once, with its image, and the preview is used.
+    expect(post.link).toMatchObject({ status: 'ready', title: 'Irrigation solaire à Thiès' });
+    expect(post.link?.imageUrl).toBeTruthy();
+    await ama.agent.get(`/v1/link-previews/${id}`).expect(404);
+
+    // Another link than the one previewed: the publication builds its own preview.
+    const other = await ama.agent
+      .post('/v1/link-previews')
+      .send({ url: `${siteOrigin}/article` })
+      .expect(201);
+    const mismatch = await publish(ama, {
+      linkUrl: `${siteOrigin}/autre`,
+      linkPreviewId: other.body.id as string,
+    });
+    expect(mismatch.link).toMatchObject({ status: 'pending' });
+    await ama.agent.post('/v1/link-previews').send({ url: 'ftp://site.test/file' }).expect(400);
+  });
+
   it('refuses a repost outside of the audience of the publication', async () => {
     await connect(ama, kofi, 'kofi-mensah');
     await kofi.agent

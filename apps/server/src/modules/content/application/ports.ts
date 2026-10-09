@@ -2,7 +2,7 @@ import type { ProjectUpdateFeedEntry, ReactionCounts, ReactionType } from '@pitc
 import type { KeysetPosition } from '../../../platform/kernel';
 import type { CommentRecord } from '../domain/comment';
 import type { ResolvedMention } from '../domain/mentions';
-import type { LinkPreviewState, PostRecord } from '../domain/post';
+import type { LinkPreviewDraftRecord, LinkPreviewState, PostRecord } from '../domain/post';
 
 export type PostPatch = Partial<
   Pick<
@@ -58,6 +58,14 @@ export abstract class ContentRepository {
   abstract publicPostIdsOfMember(authorId: string): Promise<string[]>;
   abstract postsWithPreviewImage(mediaId: string): Promise<PostRecord[]>;
   abstract setPreview(postId: string, preview: LinkPreviewState): Promise<void>;
+  abstract insertLinkPreview(preview: LinkPreviewDraftRecord): Promise<void>;
+  abstract findLinkPreview(id: string): Promise<LinkPreviewDraftRecord | null>;
+  abstract setLinkPreview(id: string, preview: LinkPreviewState): Promise<void>;
+  abstract deleteLinkPreview(id: string): Promise<void>;
+  /** Previews waiting for this imported image. */
+  abstract linkPreviewsWithImage(mediaId: string): Promise<LinkPreviewDraftRecord[]>;
+  /** Deletes the previews asked before this date; returns how many. */
+  abstract purgeLinkPreviews(before: Date): Promise<number>;
 
   /** Newest network publications, at most `limit`, after the keyset position. */
   abstract networkFeed(

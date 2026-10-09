@@ -9777,6 +9777,7 @@
           "RATE_LIMITED",
           "CONTENT_POST_NOT_FOUND",
           "CONTENT_COMMENT_NOT_FOUND",
+          "CONTENT_LINK_PREVIEW_NOT_FOUND",
           "CONTENT_POST_EMPTY",
           "CONTENT_MEDIA_COMBINATION",
           "CONTENT_MEDIA_NOT_IN_POST",
@@ -9872,6 +9873,7 @@
           "RATE_LIMITED",
           "CONTENT_POST_NOT_FOUND",
           "CONTENT_COMMENT_NOT_FOUND",
+          "CONTENT_LINK_PREVIEW_NOT_FOUND",
           "CONTENT_POST_EMPTY",
           "CONTENT_MEDIA_COMBINATION",
           "CONTENT_MEDIA_NOT_IN_POST",
@@ -9995,6 +9997,7 @@
           "RATE_LIMITED",
           "CONTENT_POST_NOT_FOUND",
           "CONTENT_COMMENT_NOT_FOUND",
+          "CONTENT_LINK_PREVIEW_NOT_FOUND",
           "CONTENT_POST_EMPTY",
           "CONTENT_MEDIA_COMBINATION",
           "CONTENT_MEDIA_NOT_IN_POST",
@@ -10086,6 +10089,7 @@
           "RATE_LIMITED",
           "CONTENT_POST_NOT_FOUND",
           "CONTENT_COMMENT_NOT_FOUND",
+          "CONTENT_LINK_PREVIEW_NOT_FOUND",
           "CONTENT_POST_EMPTY",
           "CONTENT_MEDIA_COMBINATION",
           "CONTENT_MEDIA_NOT_IN_POST",
@@ -10185,6 +10189,7 @@
           "RATE_LIMITED",
           "CONTENT_POST_NOT_FOUND",
           "CONTENT_COMMENT_NOT_FOUND",
+          "CONTENT_LINK_PREVIEW_NOT_FOUND",
           "CONTENT_POST_EMPTY",
           "CONTENT_MEDIA_COMBINATION",
           "CONTENT_MEDIA_NOT_IN_POST",
@@ -10296,6 +10301,7 @@
           "RATE_LIMITED",
           "CONTENT_POST_NOT_FOUND",
           "CONTENT_COMMENT_NOT_FOUND",
+          "CONTENT_LINK_PREVIEW_NOT_FOUND",
           "CONTENT_POST_EMPTY",
           "CONTENT_MEDIA_COMBINATION",
           "CONTENT_MEDIA_NOT_IN_POST",
@@ -10386,6 +10392,7 @@
           "RATE_LIMITED",
           "CONTENT_POST_NOT_FOUND",
           "CONTENT_COMMENT_NOT_FOUND",
+          "CONTENT_LINK_PREVIEW_NOT_FOUND",
           "CONTENT_POST_EMPTY",
           "CONTENT_MEDIA_COMBINATION",
           "CONTENT_MEDIA_NOT_IN_POST",
@@ -10460,6 +10467,7 @@
           "RATE_LIMITED",
           "CONTENT_POST_NOT_FOUND",
           "CONTENT_COMMENT_NOT_FOUND",
+          "CONTENT_LINK_PREVIEW_NOT_FOUND",
           "CONTENT_POST_EMPTY",
           "CONTENT_MEDIA_COMBINATION",
           "CONTENT_MEDIA_NOT_IN_POST",
@@ -10597,6 +10605,7 @@
           "RATE_LIMITED",
           "CONTENT_POST_NOT_FOUND",
           "CONTENT_COMMENT_NOT_FOUND",
+          "CONTENT_LINK_PREVIEW_NOT_FOUND",
           "CONTENT_POST_EMPTY",
           "CONTENT_MEDIA_COMBINATION",
           "CONTENT_MEDIA_NOT_IN_POST",
@@ -10710,6 +10719,7 @@
           "RATE_LIMITED",
           "CONTENT_POST_NOT_FOUND",
           "CONTENT_COMMENT_NOT_FOUND",
+          "CONTENT_LINK_PREVIEW_NOT_FOUND",
           "CONTENT_POST_EMPTY",
           "CONTENT_MEDIA_COMBINATION",
           "CONTENT_MEDIA_NOT_IN_POST",
@@ -10807,6 +10817,7 @@
           "RATE_LIMITED",
           "CONTENT_POST_NOT_FOUND",
           "CONTENT_COMMENT_NOT_FOUND",
+          "CONTENT_LINK_PREVIEW_NOT_FOUND",
           "CONTENT_POST_EMPTY",
           "CONTENT_MEDIA_COMBINATION",
           "CONTENT_MEDIA_NOT_IN_POST",
@@ -10899,6 +10910,7 @@
           "RATE_LIMITED",
           "CONTENT_POST_NOT_FOUND",
           "CONTENT_COMMENT_NOT_FOUND",
+          "CONTENT_LINK_PREVIEW_NOT_FOUND",
           "CONTENT_POST_EMPTY",
           "CONTENT_MEDIA_COMBINATION",
           "CONTENT_MEDIA_NOT_IN_POST",
@@ -10989,6 +11001,7 @@
           "RATE_LIMITED",
           "CONTENT_POST_NOT_FOUND",
           "CONTENT_COMMENT_NOT_FOUND",
+          "CONTENT_LINK_PREVIEW_NOT_FOUND",
           "CONTENT_POST_EMPTY",
           "CONTENT_MEDIA_COMBINATION",
           "CONTENT_MEDIA_NOT_IN_POST",
@@ -11095,6 +11108,7 @@
           "RATE_LIMITED",
           "CONTENT_POST_NOT_FOUND",
           "CONTENT_COMMENT_NOT_FOUND",
+          "CONTENT_LINK_PREVIEW_NOT_FOUND",
           "CONTENT_POST_EMPTY",
           "CONTENT_MEDIA_COMBINATION",
           "CONTENT_MEDIA_NOT_IN_POST",
@@ -11187,6 +11201,7 @@
           "RATE_LIMITED",
           "CONTENT_POST_NOT_FOUND",
           "CONTENT_COMMENT_NOT_FOUND",
+          "CONTENT_LINK_PREVIEW_NOT_FOUND",
           "CONTENT_POST_EMPTY",
           "CONTENT_MEDIA_COMBINATION",
           "CONTENT_MEDIA_NOT_IN_POST",
@@ -11277,6 +11292,7 @@
           "RATE_LIMITED",
           "CONTENT_POST_NOT_FOUND",
           "CONTENT_COMMENT_NOT_FOUND",
+          "CONTENT_LINK_PREVIEW_NOT_FOUND",
           "CONTENT_POST_EMPTY",
           "CONTENT_MEDIA_COMBINATION",
           "CONTENT_MEDIA_NOT_IN_POST",
@@ -11376,6 +11392,7 @@
           "RATE_LIMITED",
           "CONTENT_POST_NOT_FOUND",
           "CONTENT_COMMENT_NOT_FOUND",
+          "CONTENT_LINK_PREVIEW_NOT_FOUND",
           "CONTENT_POST_EMPTY",
           "CONTENT_MEDIA_COMBINATION",
           "CONTENT_MEDIA_NOT_IN_POST",
@@ -11513,6 +11530,7 @@
           "RATE_LIMITED",
           "CONTENT_POST_NOT_FOUND",
           "CONTENT_COMMENT_NOT_FOUND",
+          "CONTENT_LINK_PREVIEW_NOT_FOUND",
           "CONTENT_POST_EMPTY",
           "CONTENT_MEDIA_COMBINATION",
           "CONTENT_MEDIA_NOT_IN_POST",
@@ -11631,6 +11649,7 @@
           "RATE_LIMITED",
           "CONTENT_POST_NOT_FOUND",
           "CONTENT_COMMENT_NOT_FOUND",
+          "CONTENT_LINK_PREVIEW_NOT_FOUND",
           "CONTENT_POST_EMPTY",
           "CONTENT_MEDIA_COMBINATION",
           "CONTENT_MEDIA_NOT_IN_POST",
@@ -11751,6 +11770,7 @@
           "RATE_LIMITED",
           "CONTENT_POST_NOT_FOUND",
           "CONTENT_COMMENT_NOT_FOUND",
+          "CONTENT_LINK_PREVIEW_NOT_FOUND",
           "CONTENT_POST_EMPTY",
           "CONTENT_MEDIA_COMBINATION",
           "CONTENT_MEDIA_NOT_IN_POST",
@@ -11864,6 +11884,7 @@
           "RATE_LIMITED",
           "CONTENT_POST_NOT_FOUND",
           "CONTENT_COMMENT_NOT_FOUND",
+          "CONTENT_LINK_PREVIEW_NOT_FOUND",
           "CONTENT_POST_EMPTY",
           "CONTENT_MEDIA_COMBINATION",
           "CONTENT_MEDIA_NOT_IN_POST",
@@ -11954,6 +11975,7 @@
           "RATE_LIMITED",
           "CONTENT_POST_NOT_FOUND",
           "CONTENT_COMMENT_NOT_FOUND",
+          "CONTENT_LINK_PREVIEW_NOT_FOUND",
           "CONTENT_POST_EMPTY",
           "CONTENT_MEDIA_COMBINATION",
           "CONTENT_MEDIA_NOT_IN_POST",
@@ -12067,6 +12089,7 @@
           "RATE_LIMITED",
           "CONTENT_POST_NOT_FOUND",
           "CONTENT_COMMENT_NOT_FOUND",
+          "CONTENT_LINK_PREVIEW_NOT_FOUND",
           "CONTENT_POST_EMPTY",
           "CONTENT_MEDIA_COMBINATION",
           "CONTENT_MEDIA_NOT_IN_POST",
@@ -12164,6 +12187,7 @@
           "RATE_LIMITED",
           "CONTENT_POST_NOT_FOUND",
           "CONTENT_COMMENT_NOT_FOUND",
+          "CONTENT_LINK_PREVIEW_NOT_FOUND",
           "CONTENT_POST_EMPTY",
           "CONTENT_MEDIA_COMBINATION",
           "CONTENT_MEDIA_NOT_IN_POST",
@@ -12177,6 +12201,205 @@
           "CONTENT_ORGANIZATION_ROLE_REQUIRED"
         ],
         "x-access": "content.reaction.set"
+      }
+    },
+    "/v1/link-previews": {
+      "post": {
+        "operationId": "LinkPreviewsController_request",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateLinkPreviewDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LinkPreviewDraftDto_Output"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error (RFC 9457 problem details)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "VALIDATION_FAILED": {
+                    "$ref": "#/components/examples/VALIDATION_FAILED"
+                  },
+                  "PAYLOAD_TOO_LARGE": {
+                    "$ref": "#/components/examples/PAYLOAD_TOO_LARGE"
+                  },
+                  "UNAUTHENTICATED": {
+                    "$ref": "#/components/examples/UNAUTHENTICATED"
+                  },
+                  "FORBIDDEN": {
+                    "$ref": "#/components/examples/FORBIDDEN"
+                  },
+                  "ACCESS_ORIGIN_NOT_ALLOWED": {
+                    "$ref": "#/components/examples/ACCESS_ORIGIN_NOT_ALLOWED"
+                  },
+                  "ACCESS_PREREQUISITES_MISSING": {
+                    "$ref": "#/components/examples/ACCESS_PREREQUISITES_MISSING"
+                  },
+                  "ACCESS_ACCOUNT_SUSPENDED": {
+                    "$ref": "#/components/examples/ACCESS_ACCOUNT_SUSPENDED"
+                  },
+                  "RATE_LIMITED": {
+                    "$ref": "#/components/examples/RATE_LIMITED"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "tags": [
+          "content"
+        ],
+        "summary": "Request",
+        "description": "Action `content.post.create` (session cookie).\n\nPrerequisites: email_verified.\n\nErrors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.",
+        "x-error-codes": [
+          "VALIDATION_FAILED",
+          "PAYLOAD_TOO_LARGE",
+          "UNAUTHENTICATED",
+          "FORBIDDEN",
+          "ACCESS_ORIGIN_NOT_ALLOWED",
+          "ACCESS_PREREQUISITES_MISSING",
+          "ACCESS_ACCOUNT_SUSPENDED",
+          "RATE_LIMITED",
+          "CONTENT_POST_NOT_FOUND",
+          "CONTENT_COMMENT_NOT_FOUND",
+          "CONTENT_LINK_PREVIEW_NOT_FOUND",
+          "CONTENT_POST_EMPTY",
+          "CONTENT_MEDIA_COMBINATION",
+          "CONTENT_MEDIA_NOT_IN_POST",
+          "CONTENT_PUBLIC_VISIBILITY_NOT_ALLOWED",
+          "CONTENT_VISIBILITY_NOT_ALLOWED",
+          "CONTENT_REPOST_NOT_ALLOWED",
+          "CONTENT_PROJECT_NOT_FOUND",
+          "CONTENT_MENTION_NOT_ALLOWED",
+          "CONTENT_COMMENTS_DISABLED",
+          "CONTENT_REPLY_DEPTH",
+          "CONTENT_ORGANIZATION_ROLE_REQUIRED"
+        ],
+        "x-access": "content.post.create"
+      }
+    },
+    "/v1/link-previews/{linkPreviewId}": {
+      "get": {
+        "operationId": "LinkPreviewsController_get",
+        "parameters": [
+          {
+            "name": "linkPreviewId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LinkPreviewDraftDto_Output"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error (RFC 9457 problem details)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "VALIDATION_FAILED": {
+                    "$ref": "#/components/examples/VALIDATION_FAILED"
+                  },
+                  "UNAUTHENTICATED": {
+                    "$ref": "#/components/examples/UNAUTHENTICATED"
+                  },
+                  "FORBIDDEN": {
+                    "$ref": "#/components/examples/FORBIDDEN"
+                  },
+                  "ACCESS_ORIGIN_NOT_ALLOWED": {
+                    "$ref": "#/components/examples/ACCESS_ORIGIN_NOT_ALLOWED"
+                  },
+                  "ACCESS_PREREQUISITES_MISSING": {
+                    "$ref": "#/components/examples/ACCESS_PREREQUISITES_MISSING"
+                  },
+                  "ACCESS_ACCOUNT_SUSPENDED": {
+                    "$ref": "#/components/examples/ACCESS_ACCOUNT_SUSPENDED"
+                  },
+                  "NOT_FOUND": {
+                    "$ref": "#/components/examples/NOT_FOUND"
+                  },
+                  "RATE_LIMITED": {
+                    "$ref": "#/components/examples/RATE_LIMITED"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "tags": [
+          "content"
+        ],
+        "summary": "Get",
+        "description": "Action `content.post.create` (session cookie).\n\nPrerequisites: email_verified.\n\nErrors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.",
+        "x-error-codes": [
+          "VALIDATION_FAILED",
+          "UNAUTHENTICATED",
+          "FORBIDDEN",
+          "ACCESS_ORIGIN_NOT_ALLOWED",
+          "ACCESS_PREREQUISITES_MISSING",
+          "ACCESS_ACCOUNT_SUSPENDED",
+          "NOT_FOUND",
+          "RATE_LIMITED",
+          "CONTENT_POST_NOT_FOUND",
+          "CONTENT_COMMENT_NOT_FOUND",
+          "CONTENT_LINK_PREVIEW_NOT_FOUND",
+          "CONTENT_POST_EMPTY",
+          "CONTENT_MEDIA_COMBINATION",
+          "CONTENT_MEDIA_NOT_IN_POST",
+          "CONTENT_PUBLIC_VISIBILITY_NOT_ALLOWED",
+          "CONTENT_VISIBILITY_NOT_ALLOWED",
+          "CONTENT_REPOST_NOT_ALLOWED",
+          "CONTENT_PROJECT_NOT_FOUND",
+          "CONTENT_MENTION_NOT_ALLOWED",
+          "CONTENT_COMMENTS_DISABLED",
+          "CONTENT_REPLY_DEPTH",
+          "CONTENT_ORGANIZATION_ROLE_REQUIRED"
+        ],
+        "x-access": "content.post.create"
       }
     },
     "/v1/impact/methodology": {
@@ -35625,6 +35848,7 @@
                   "NETWORK_LIST_HIDDEN",
                   "CONTENT_POST_NOT_FOUND",
                   "CONTENT_COMMENT_NOT_FOUND",
+                  "CONTENT_LINK_PREVIEW_NOT_FOUND",
                   "CONTENT_POST_EMPTY",
                   "CONTENT_MEDIA_COMBINATION",
                   "CONTENT_MEDIA_NOT_IN_POST",
@@ -45177,6 +45401,11 @@
             "maxLength": 2048,
             "format": "uri"
           },
+          "linkPreviewId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$"
+          },
           "organizationId": {
             "type": "string",
             "format": "uuid",
@@ -47773,6 +48002,74 @@
         "required": [
           "text"
         ]
+      },
+      "CreateLinkPreviewDto": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "maxLength": 2048,
+            "format": "uri"
+          }
+        },
+        "required": [
+          "url"
+        ]
+      },
+      "LinkPreviewDraftDto_Output": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "ready",
+              "failed"
+            ]
+          },
+          "title": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "siteName": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "imageUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$"
+          }
+        },
+        "required": [
+          "url",
+          "status",
+          "title",
+          "description",
+          "siteName",
+          "imageUrl",
+          "id"
+        ],
+        "additionalProperties": false
       },
       "MethodologyDto_Output": {
         "type": "object",
@@ -71312,6 +71609,7 @@
               "NETWORK_LIST_HIDDEN",
               "CONTENT_POST_NOT_FOUND",
               "CONTENT_COMMENT_NOT_FOUND",
+              "CONTENT_LINK_PREVIEW_NOT_FOUND",
               "CONTENT_POST_EMPTY",
               "CONTENT_MEDIA_COMBINATION",
               "CONTENT_MEDIA_NOT_IN_POST",
@@ -72153,6 +72451,15 @@
           "title": "Comment not found",
           "status": 404,
           "code": "CONTENT_COMMENT_NOT_FOUND",
+          "requestId": "0199c1f4-7d4e-7c2a-9b1e-3f5a6c7d8e9f"
+        }
+      },
+      "CONTENT_LINK_PREVIEW_NOT_FOUND": {
+        "value": {
+          "type": "urn:pitchorium:problem:content-link-preview-not-found",
+          "title": "Link preview not found",
+          "status": 404,
+          "code": "CONTENT_LINK_PREVIEW_NOT_FOUND",
           "requestId": "0199c1f4-7d4e-7c2a-9b1e-3f5a6c7d8e9f"
         }
       },

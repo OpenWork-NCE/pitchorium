@@ -40,6 +40,14 @@ export interface PostRecord {
   deletedAt: Date | null;
 }
 
+/** Preview of a link asked before publishing (ADR 0118), reused by the publication. */
+export interface LinkPreviewDraftRecord extends LinkPreviewState {
+  id: string;
+  ownerId: string;
+  url: string;
+  createdAt: Date;
+}
+
 /** Who publishes: a member, or a member on behalf of an organization (public page by default). */
 export type PostAuthorContext =
   { kind: 'member'; publicPageEnabled: boolean } | { kind: 'organization' };

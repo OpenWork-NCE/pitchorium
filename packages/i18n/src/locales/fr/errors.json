@@ -132,6 +132,7 @@
   "NETWORK_LIST_HIDDEN": "Ce membre ne partage pas cette liste.",
   "CONTENT_POST_NOT_FOUND": "Cette publication est introuvable.",
   "CONTENT_COMMENT_NOT_FOUND": "Ce commentaire est introuvable.",
+  "CONTENT_LINK_PREVIEW_NOT_FOUND": "Cet aperçu de lien n'existe pas ou n'existe plus.",
   "CONTENT_POST_EMPTY": "Ajoutez un texte, des images, un document ou un lien à votre publication.",
   "CONTENT_MEDIA_COMBINATION": "Une publication contient jusqu'à neuf images ou un document, pas les deux.",
   "CONTENT_MEDIA_NOT_IN_POST": "Cette image ou ce document ne fait pas partie de la publication.",

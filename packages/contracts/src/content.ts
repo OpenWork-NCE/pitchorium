@@ -60,6 +60,8 @@ export const createPostRequestSchema = z.object({
   /** Title of the document; its file name is a good default. */
   documentTitle: postDocumentTitleSchema.optional(),
   linkUrl: postLinkUrlSchema.optional(),
+  /** Preview the composer asked for the same link (ADR 0118); built again otherwise. */
+  linkPreviewId: uuidV7Schema.optional(),
   /** Publish as an organization the author is an owner or admin of. */
   organizationId: uuidV7Schema.optional(),
   /** Project the publication is attached to (projects module). */
@@ -126,6 +128,14 @@ export const linkPreviewSchema = z.object({
   /** Image imported by the platform (never the third-party URL). */
   imageUrl: z.string().nullable(),
 });
+
+/** The composer asks for the preview of a link as soon as it is pasted (ADR 0118). */
+export const createLinkPreviewRequestSchema = z.object({ url: postLinkUrlSchema });
+
+/** Preview of a link before publishing: polled until `ready` or `failed`. */
+export const linkPreviewDraftSchema = linkPreviewSchema.extend({ id: uuidV7Schema });
+
+export const linkPreviewIdParamsSchema = z.object({ linkPreviewId: uuidV7Schema });
 
 export const MENTION_TARGET_TYPES = ['member', 'organization'] as const;
 export const mentionTargetTypeSchema = z.enum(MENTION_TARGET_TYPES);
@@ -303,6 +313,8 @@ export type PostAuthor = z.infer<typeof postAuthorSchema>;
 export type PostImage = z.infer<typeof postImageSchema>;
 export type PostDocument = z.infer<typeof postDocumentSchema>;
 export type LinkPreview = z.infer<typeof linkPreviewSchema>;
+export type LinkPreviewDraft = z.infer<typeof linkPreviewDraftSchema>;
+export type CreateLinkPreviewRequest = z.infer<typeof createLinkPreviewRequestSchema>;
 export type MentionTargetType = z.infer<typeof mentionTargetTypeSchema>;
 export type Mention = z.infer<typeof mentionSchema>;
 export type ReactionCounts = z.infer<typeof reactionCountsSchema>;

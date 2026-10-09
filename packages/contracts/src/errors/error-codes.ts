@@ -125,6 +125,7 @@ export const errorCodes = {
   NETWORK_LIST_HIDDEN: { status: 403, title: 'This network list is not visible to you' },
   CONTENT_POST_NOT_FOUND: { status: 404, title: 'Publication not found' },
   CONTENT_COMMENT_NOT_FOUND: { status: 404, title: 'Comment not found' },
+  CONTENT_LINK_PREVIEW_NOT_FOUND: { status: 404, title: 'Link preview not found' },
   CONTENT_POST_EMPTY: {
     status: 422,
     title: 'A publication needs a text, images, a document or a link',

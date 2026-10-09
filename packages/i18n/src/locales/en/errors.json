@@ -132,6 +132,7 @@
   "NETWORK_LIST_HIDDEN": "This member does not share this list.",
   "CONTENT_POST_NOT_FOUND": "This publication could not be found.",
   "CONTENT_COMMENT_NOT_FOUND": "This comment could not be found.",
+  "CONTENT_LINK_PREVIEW_NOT_FOUND": "This link preview does not exist or no longer exists.",
   "CONTENT_POST_EMPTY": "Add a text, images, a document or a link to your publication.",
   "CONTENT_MEDIA_COMBINATION": "A publication holds up to nine images or one document, not both.",
   "CONTENT_MEDIA_NOT_IN_POST": "This image or document is not part of the publication.",

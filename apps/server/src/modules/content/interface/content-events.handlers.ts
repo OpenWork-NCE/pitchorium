@@ -9,8 +9,13 @@ import {
 import { MediaReady, MediaRejected } from '../../media';
 import { VisibilityChanged } from '../../profiles';
 import { ContentMaintenanceService } from '../application/content-maintenance.service';
-import { PostCreated } from '../domain/content-events';
-import { CONTENT_JOBS, CONTENT_QUEUE, type LinkPreviewJobData } from './content-queue';
+import { LinkPreviewRequested, PostCreated } from '../domain/content-events';
+import {
+  CONTENT_JOBS,
+  CONTENT_QUEUE,
+  type LinkPreviewDraftJobData,
+  type LinkPreviewJobData,
+} from './content-queue';
 
 /** Queues the preview of the link of a new publication; the fetch runs in its own job. */
 @Injectable()
@@ -24,6 +29,24 @@ export class LinkPreviewHandler implements DomainEventSubscriber {
       CONTENT_JOBS.linkPreview,
       { postId: event.aggregateId },
       { jobId: `${CONTENT_JOBS.linkPreview}-${event.aggregateId}`, attempts: 1 },
+    );
+  }
+}
+
+/** Queues the preview the composer asked for before publishing (ADR 0118). */
+@Injectable()
+@DomainEventHandler({
+  name: 'content.queue-link-preview-draft',
+  eventTypes: [LinkPreviewRequested.TYPE],
+})
+export class LinkPreviewDraftHandler implements DomainEventSubscriber {
+  constructor(@InjectQueue(CONTENT_QUEUE) private readonly queue: Queue<LinkPreviewDraftJobData>) {}
+
+  async handle(event: OutboxEnvelope): Promise<void> {
+    await this.queue.add(
+      CONTENT_JOBS.linkPreviewDraft,
+      { previewId: event.aggregateId },
+      { jobId: `${CONTENT_JOBS.linkPreviewDraft}-${event.aggregateId}`, attempts: 1 },
     );
   }
 }

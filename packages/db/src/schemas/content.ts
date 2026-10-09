@@ -87,6 +87,33 @@ export const contentPosts = contentSchema.table(
   ],
 );
 
+/**
+ * Preview of a link asked by the composer before publishing (ADR 0118): built by the worker as
+ * for a publication, reused by the publication that carries its id, purged after a day.
+ */
+export const contentLinkPreviews = contentSchema.table(
+  'link_previews',
+  {
+    id: uuid('id').primaryKey(),
+    ownerId: uuid('owner_id').notNull(),
+    url: text('url').notNull(),
+    status: text('status').notNull(),
+    title: text('title'),
+    description: text('description'),
+    siteName: text('site_name'),
+    /** Image imported through the media module (usage `link_preview`). */
+    imageMediaId: uuid('image_media_id'),
+    createdAt: timestamptz('created_at').notNull(),
+  },
+  (table) => [
+    index('link_previews_owner_idx').on(table.ownerId),
+    index('link_previews_created_idx').on(table.createdAt),
+    index('link_previews_image_idx')
+      .on(table.imageMediaId)
+      .where(sql`${table.imageMediaId} is not null`),
+  ],
+);
+
 /** Mentions resolved to stable identifiers when the publication is written. */
 export const contentPostMentions = contentSchema.table(
   'post_mentions',

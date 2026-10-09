@@ -81,6 +81,7 @@ import type {
   CreateEntrepreneurFacetDto,
   CreateEventDto,
   CreateInvitationDto,
+  CreateLinkPreviewDto,
   CreateMethodologyDto,
   CreateMissionDto,
   CreateOrganizationContributionDto,
@@ -171,6 +172,7 @@ import type {
   LegalStatusDtoOutput,
   LegalVersionsDtoOutput,
   LiftDto,
+  LinkPreviewDraftDtoOutput,
   LocaleStatusListDtoOutput,
   MediaAssetDtoOutput,
   MediaControllerDownloadParams,
@@ -16754,6 +16756,263 @@ export const useCommentsControllerUnreact = <
 > => {
   return useMutation(getCommentsControllerUnreactMutationOptions(options), queryClient);
 };
+
+export const getLinkPreviewsControllerRequestUrl = () => {
+  return `/v1/link-previews`;
+};
+
+/**
+ * Action `content.post.create` (session cookie).
+ *
+ * Prerequisites: email_verified.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Request
+ */
+export const linkPreviewsControllerRequest = async (
+  createLinkPreviewDto: CreateLinkPreviewDto,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<LinkPreviewDraftDtoOutput> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit['headers']>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(
+          h as Iterable<Iterable<string>>,
+          (entry) => Array.from(entry) as [string, string],
+        ),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+  return apiFetch<LinkPreviewDraftDtoOutput>(getLinkPreviewsControllerRequestUrl(), {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(createLinkPreviewDto),
+  });
+};
+
+export const getLinkPreviewsControllerRequestMutationKey = () =>
+  ['linkPreviewsControllerRequest'] as const;
+
+export const getLinkPreviewsControllerRequestMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof linkPreviewsControllerRequest>>,
+    TError,
+    LinkPreviewsControllerRequestMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof linkPreviewsControllerRequest>>,
+  TError,
+  LinkPreviewsControllerRequestMutationVariables,
+  TContext
+> => {
+  const mutationKey = getLinkPreviewsControllerRequestMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof linkPreviewsControllerRequest>>,
+    LinkPreviewsControllerRequestMutationVariables
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return linkPreviewsControllerRequest(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type LinkPreviewsControllerRequestMutationResult = NonNullable<
+  Awaited<ReturnType<typeof linkPreviewsControllerRequest>>
+>;
+export type LinkPreviewsControllerRequestMutationBody = CreateLinkPreviewDto;
+export type LinkPreviewsControllerRequestMutationError = ErrorType<ProblemDetails>;
+export type LinkPreviewsControllerRequestMutationVariables = { data: CreateLinkPreviewDto };
+
+/**
+ * @summary Request
+ */
+export const useLinkPreviewsControllerRequest = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof linkPreviewsControllerRequest>>,
+      TError,
+      LinkPreviewsControllerRequestMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof linkPreviewsControllerRequest>>,
+  TError,
+  LinkPreviewsControllerRequestMutationVariables,
+  TContext
+> => {
+  return useMutation(getLinkPreviewsControllerRequestMutationOptions(options), queryClient);
+};
+
+export const getLinkPreviewsControllerGetUrl = (linkPreviewId: string) => {
+  return `/v1/link-previews/${linkPreviewId}`;
+};
+
+/**
+ * Action `content.post.create` (session cookie).
+ *
+ * Prerequisites: email_verified.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Get
+ */
+export const linkPreviewsControllerGet = async (
+  linkPreviewId: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<LinkPreviewDraftDtoOutput> => {
+  return apiFetch<LinkPreviewDraftDtoOutput>(getLinkPreviewsControllerGetUrl(linkPreviewId), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getLinkPreviewsControllerGetQueryKey = (linkPreviewId: string) => {
+  return [`/v1/link-previews/${linkPreviewId}`] as const;
+};
+
+export const getLinkPreviewsControllerGetQueryOptions = <
+  TData = Awaited<ReturnType<typeof linkPreviewsControllerGet>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  linkPreviewId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof linkPreviewsControllerGet>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getLinkPreviewsControllerGetQueryKey(linkPreviewId);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof linkPreviewsControllerGet>>> = ({
+    signal,
+  }) => linkPreviewsControllerGet(linkPreviewId, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: linkPreviewId !== null && linkPreviewId !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<Awaited<ReturnType<typeof linkPreviewsControllerGet>>, TError, TData> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+};
+
+export type LinkPreviewsControllerGetQueryResult = NonNullable<
+  Awaited<ReturnType<typeof linkPreviewsControllerGet>>
+>;
+export type LinkPreviewsControllerGetQueryError = ErrorType<ProblemDetails>;
+
+export function useLinkPreviewsControllerGet<
+  TData = Awaited<ReturnType<typeof linkPreviewsControllerGet>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  linkPreviewId: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof linkPreviewsControllerGet>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof linkPreviewsControllerGet>>,
+          TError,
+          Awaited<ReturnType<typeof linkPreviewsControllerGet>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useLinkPreviewsControllerGet<
+  TData = Awaited<ReturnType<typeof linkPreviewsControllerGet>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  linkPreviewId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof linkPreviewsControllerGet>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof linkPreviewsControllerGet>>,
+          TError,
+          Awaited<ReturnType<typeof linkPreviewsControllerGet>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useLinkPreviewsControllerGet<
+  TData = Awaited<ReturnType<typeof linkPreviewsControllerGet>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  linkPreviewId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof linkPreviewsControllerGet>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Get
+ */
+
+export function useLinkPreviewsControllerGet<
+  TData = Awaited<ReturnType<typeof linkPreviewsControllerGet>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  linkPreviewId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof linkPreviewsControllerGet>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getLinkPreviewsControllerGetQueryOptions(linkPreviewId, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
 
 export const getMethodologiesControllerPublishedUrl = () => {
   return `/v1/impact/methodology`;

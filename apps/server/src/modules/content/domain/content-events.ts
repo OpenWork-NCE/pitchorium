@@ -18,6 +18,19 @@ abstract class ReactionEvent<P extends DomainEvent['payload']> extends DomainEve
   readonly aggregateType = 'reaction_target';
 }
 
+/**
+ * The composer asked for the preview of a link (ADR 0118): the worker builds it. Internal to
+ * the module, never notified.
+ */
+export class LinkPreviewRequested extends DomainEvent<{ ownerId: string }> {
+  static readonly TYPE = 'content.link-preview.requested.v1';
+  readonly type = LinkPreviewRequested.TYPE;
+  readonly aggregateType = 'link_preview';
+  constructor(props: DomainEventProps<LinkPreviewRequested['payload']>) {
+    super(props);
+  }
+}
+
 export class PostCreated extends PostEvent<{
   authorId: string;
   organizationId: string | null;

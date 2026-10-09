@@ -84,6 +84,12 @@ export const RETENTION_REGISTER: readonly RetentionEntry[] = [
     end: 'Deleted; an answered comment becomes a tombstone',
   },
   {
+    module: 'content',
+    data: 'Previews of links asked by the composer, not yet published',
+    retention: '24 hours (ADR 0118)',
+    end: 'Deleted, their imported image as an orphan',
+  },
+  {
     module: 'projects',
     data: 'Projects, teams, updates, interests',
     retention: 'Until deleted or the erasure',

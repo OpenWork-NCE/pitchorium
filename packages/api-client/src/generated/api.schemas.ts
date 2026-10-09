@@ -740,6 +740,7 @@ export const ActionPrerequisitesDtoOutputCode = {
   NETWORK_LIST_HIDDEN: 'NETWORK_LIST_HIDDEN',
   CONTENT_POST_NOT_FOUND: 'CONTENT_POST_NOT_FOUND',
   CONTENT_COMMENT_NOT_FOUND: 'CONTENT_COMMENT_NOT_FOUND',
+  CONTENT_LINK_PREVIEW_NOT_FOUND: 'CONTENT_LINK_PREVIEW_NOT_FOUND',
   CONTENT_POST_EMPTY: 'CONTENT_POST_EMPTY',
   CONTENT_MEDIA_COMBINATION: 'CONTENT_MEDIA_COMBINATION',
   CONTENT_MEDIA_NOT_IN_POST: 'CONTENT_MEDIA_NOT_IN_POST',
@@ -4495,6 +4496,8 @@ export interface CreatePostDto {
   /** @maxLength 2048 */
   linkUrl?: string;
   /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  linkPreviewId?: string;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
   organizationId?: string;
   /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
   projectId?: string;
@@ -5619,6 +5622,35 @@ export interface UpdateCommentDto {
    * @maxLength 1250
    */
   text: string;
+}
+
+export interface CreateLinkPreviewDto {
+  /** @maxLength 2048 */
+  url: string;
+}
+
+export type LinkPreviewDraftDtoOutputStatus =
+  (typeof LinkPreviewDraftDtoOutputStatus)[keyof typeof LinkPreviewDraftDtoOutputStatus];
+
+export const LinkPreviewDraftDtoOutputStatus = {
+  pending: 'pending',
+  ready: 'ready',
+  failed: 'failed',
+} as const;
+
+export interface LinkPreviewDraftDtoOutput {
+  url: string;
+  status: LinkPreviewDraftDtoOutputStatus;
+  /** @nullable */
+  title: string | null;
+  /** @nullable */
+  description: string | null;
+  /** @nullable */
+  siteName: string | null;
+  /** @nullable */
+  imageUrl: string | null;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
 }
 
 export type MethodologyDtoOutputStatus =
@@ -15901,6 +15933,7 @@ export const ProblemDetailsCode = {
   NETWORK_LIST_HIDDEN: 'NETWORK_LIST_HIDDEN',
   CONTENT_POST_NOT_FOUND: 'CONTENT_POST_NOT_FOUND',
   CONTENT_COMMENT_NOT_FOUND: 'CONTENT_COMMENT_NOT_FOUND',
+  CONTENT_LINK_PREVIEW_NOT_FOUND: 'CONTENT_LINK_PREVIEW_NOT_FOUND',
   CONTENT_POST_EMPTY: 'CONTENT_POST_EMPTY',
   CONTENT_MEDIA_COMBINATION: 'CONTENT_MEDIA_COMBINATION',
   CONTENT_MEDIA_NOT_IN_POST: 'CONTENT_MEDIA_NOT_IN_POST',
