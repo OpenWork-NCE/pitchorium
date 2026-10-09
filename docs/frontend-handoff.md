@@ -51,7 +51,7 @@ Le client ne lit pas les flags : leurs effets passent par les réponses (langues
 
 ## Comptes de démonstration
 
-`pnpm db:seed:dev` : `<identifiant avec des points>@demo.pitchorium.test` (par exemple `aissatou.ba@demo.pitchorium.test`), mot de passe `pitchorium-demo-2026` ; modératrices `claudine.pierre.louis@...` et `koffi.agbodjan@...` (double authentification à activer) ; un administrateur se crée par `pnpm admin:create --email <email>`. Données entièrement fictives.
+`pnpm db:seed:dev` : `<identifiant avec des points>@demo.pitchorium.test` (par exemple `aissatou.ba@demo.pitchorium.test`), mot de passe `pitchorium-demo-2026` ; modératrices `claudine.pierre.louis@...` et `koffi.agbodjan@...` (double authentification à activer) ; un administrateur se crée par `pnpm admin:create --email <email>`. Pages publiques ouvertes : `aissatou-ba`, `kofi-mensah` et d'autres (liste dans `apps/server/scripts/dev-seed/dataset.ts`) ; organisation vérifiée `fondation-teranga`, en attente `diaspora-invest-caraibes`, refusée `reseau-femmes-entrepreneures-sahel` ; invitation à une personne sans compte : `partenaire@demo.pitchorium.test`. Données entièrement fictives.
 
 ## Règles de visibilité à respecter à l'affichage
 

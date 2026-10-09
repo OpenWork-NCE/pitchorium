@@ -5,6 +5,7 @@ import { S3ObjectStorage } from '../src/platform/storage/s3-object-storage';
 import { DEMO_EMAIL_DOMAIN, DEMO_PASSWORD, seedDevData } from './dev-seed/seed-dev-data';
 import { sampleSuggestions, seedDevDiscovery } from './dev-seed/seed-dev-discovery';
 import { seedDevMessaging } from './dev-seed/seed-dev-messaging';
+import { DEMO_EXTERNAL_INVITEE, seedDevNetwork } from './dev-seed/seed-dev-network';
 import { createSeedContext, seedDevProjects } from './dev-seed/seed-dev-projects';
 import { DEMO_MODERATORS, seedDevTrust } from './dev-seed/seed-dev-trust';
 
@@ -34,7 +35,8 @@ async function main(): Promise<void> {
         const discovery = await seedDevDiscovery(context, clock, now);
         samples = await sampleSuggestions(context);
         const trust = await seedDevTrust(context, clock, now);
-        return { ...projects, ...messaging, ...discovery, ...trust };
+        const network = await seedDevNetwork(context, clock, now);
+        return { ...projects, ...messaging, ...discovery, ...trust, ...network };
       } finally {
         await context.close();
       }
@@ -48,6 +50,7 @@ async function main(): Promise<void> {
         `aissatou.ba@${DEMO_EMAIL_DOMAIN}), password ${DEMO_PASSWORD}.\n` +
         'Images are processed by the worker (pnpm dev). Impact methodology: DEMO, not contractual.\n' +
         `Demo moderators (enable two-factor authentication first): ${DEMO_MODERATORS.join(', ')}.\n` +
+        `Organisation invitation without an account: ${DEMO_EXTERNAL_INVITEE} (link in Mailpit).\n` +
         `Explained suggestions:\n${samples.map((line) => `- ${line}`).join('\n')}\n`,
     );
   } finally {
