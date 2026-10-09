@@ -24,7 +24,7 @@ Avant la publication (ADR 0118) : le composeur demande l'aperçu d'une adresse c
 ## Réactions, commentaires, enregistrements
 
 - Réactions `like`, `bravo`, `insightful`, `support` (J'aime, Bravo, Pertinent, Soutien) sur les publications et les commentaires, une par membre et par cible, modifiable ; compteurs par type agrégés à la lecture.
-- Commentaires de 1 250 caractères (provisoire) et réponses sur un seul niveau (`CONTENT_REPLY_DEPTH` pour une réponse à une réponse) ; email vérifié exigé ; modification par l'auteur, suppression par l'auteur ou par l'auteur de la publication ; l'auteur peut désactiver les commentaires.
+- Commentaires de 1 250 caractères (provisoire), avec leurs mentions résolues comme celles d'une publication (`mentions`, `comment_mentions`, notifiées par `content.mention.created.v1` sur la publication), et réponses sur un seul niveau (`CONTENT_REPLY_DEPTH` pour une réponse à une réponse) ; email vérifié exigé ; modification par l'auteur, suppression par l'auteur ou par l'auteur de la publication ; l'auteur peut désactiver les commentaires.
 - Enregistrer une publication (liste paginée `GET /v1/me/saved-posts`), la masquer de son propre fil.
 - Blocage (ADR 0029) : un membre bloqué de part et d'autre ne voit ni les publications ni les commentaires de l'autre, et ne peut ni commenter, ni réagir (404 comme pour une publication inconnue), ni mentionner l'autre (texte simple).
 
@@ -61,7 +61,7 @@ Chaque publication vue par un autre membre ajoute le lecteur à un HyperLogLog R
 
 ## Schéma `content`
 
-`posts` (textes alternatifs des images par identifiant de média, titre du document ; index partiels du fil par membre et par organisation, des mises en avant, des repartages, de l'image d'aperçu, des publications d'un projet), `link_previews` (aperçus demandés avant la publication, 24 heures), `post_mentions`, `comments` (index des commentaires de premier niveau et des réponses), `reactions` (clé : cible et membre), `saved_posts`, `hidden_posts`, `post_daily_views`.
+`posts` (textes alternatifs des images par identifiant de média, titre du document ; index partiels du fil par membre et par organisation, des mises en avant, des repartages, de l'image d'aperçu, des publications d'un projet), `link_previews` (aperçus demandés avant la publication, 24 heures), `post_mentions`, `comment_mentions`, `comments` (index des commentaires de premier niveau et des réponses), `reactions` (clé : cible et membre), `saved_posts`, `hidden_posts`, `post_daily_views`.
 
 ## Façade publique (`index.ts`)
 
@@ -99,4 +99,4 @@ identity (indirectement, par le garde d'access), profiles (cartes, page publique
 
 ## Données personnelles (RGPD)
 
-Export : publications et repartages, commentaires, réactions, publications enregistrées et masquées. Suppression : réactions, enregistrements, masquages, aperçus de liens non publiés et mentions supprimés ; publications supprimées avec leurs commentaires (les repartages d'autres membres perdent le lien) ; un commentaire auquel d'autres ont répondu devient une pierre tombale vide sous le pseudonyme ; les fichiers suivent l'effaceur de media. Contrats enregistrés auprès du module privacy (`infrastructure/content-personal-data.ts`, ADR 0074).
+Export : publications et repartages, commentaires, réactions, publications enregistrées et masquées. Suppression : réactions, enregistrements, masquages, aperçus de liens non publiés et mentions (publications et commentaires) supprimés ; publications supprimées avec leurs commentaires (les repartages d'autres membres perdent le lien) ; un commentaire auquel d'autres ont répondu devient une pierre tombale vide sous le pseudonyme ; les fichiers suivent l'effaceur de media. Contrats enregistrés auprès du module privacy (`infrastructure/content-personal-data.ts`, ADR 0074).

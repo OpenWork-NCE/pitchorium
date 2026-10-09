@@ -49423,6 +49423,37 @@
           "text": {
             "type": "string"
           },
+          "mentions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "token": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "member",
+                    "organization"
+                  ]
+                },
+                "key": {
+                  "type": "string"
+                },
+                "displayName": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "token",
+                "type",
+                "key",
+                "displayName"
+              ],
+              "additionalProperties": false
+            }
+          },
           "reactions": {
             "type": "object",
             "properties": {
@@ -49522,6 +49553,7 @@
           "parentId",
           "author",
           "text",
+          "mentions",
           "reactions",
           "replyCount",
           "viewerIsAuthor",
@@ -49594,6 +49626,37 @@
                 },
                 "text": {
                   "type": "string"
+                },
+                "mentions": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "token": {
+                        "type": "string"
+                      },
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "member",
+                          "organization"
+                        ]
+                      },
+                      "key": {
+                        "type": "string"
+                      },
+                      "displayName": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "token",
+                      "type",
+                      "key",
+                      "displayName"
+                    ],
+                    "additionalProperties": false
+                  }
                 },
                 "reactions": {
                   "type": "object",
@@ -49694,6 +49757,7 @@
                 "parentId",
                 "author",
                 "text",
+                "mentions",
                 "reactions",
                 "replyCount",
                 "viewerIsAuthor",

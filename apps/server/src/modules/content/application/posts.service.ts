@@ -576,7 +576,7 @@ export class PostsService {
    * Mentions resolved to stable identifiers. A member on either side of a block is unknown to
    * the author, like a handle nobody holds (ADR 0029): the token stays plain text.
    */
-  private async mentions(userId: string, text: string | null): Promise<ResolvedMention[]> {
+  async mentions(userId: string, text: string | null): Promise<ResolvedMention[]> {
     const keys = extractMentionKeys(text);
     if (keys.length === 0) return [];
     const members = await this.profiles.userIdsByHandles(keys, userId);
@@ -592,7 +592,8 @@ export class PostsService {
     return resolved;
   }
 
-  private async recordMentions(
+  /** Notifies the mentioned (`content.mention.created.v1`, aggregate: the publication). */
+  async recordMentions(
     postId: string,
     authorId: string,
     mentions: readonly ResolvedMention[],

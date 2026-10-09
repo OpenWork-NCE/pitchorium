@@ -52,6 +52,13 @@ export abstract class ContentRepository {
   abstract findPost(id: string): Promise<PostRecord | null>;
   abstract findPosts(ids: readonly string[]): Promise<PostRecord[]>;
   abstract updatePost(id: string, patch: PostPatch): Promise<void>;
+  abstract replaceCommentMentions(
+    commentId: string,
+    mentions: readonly ResolvedMention[],
+  ): Promise<void>;
+  abstract commentMentionsOf(
+    commentIds: readonly string[],
+  ): Promise<Map<string, ResolvedMention[]>>;
   abstract replaceMentions(postId: string, mentions: readonly ResolvedMention[]): Promise<void>;
   abstract mentionsOf(postIds: readonly string[]): Promise<Map<string, ResolvedMention[]>>;
   /** Live public publications of a member written in their own name. */

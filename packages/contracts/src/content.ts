@@ -273,6 +273,8 @@ export const commentSchema = z.object({
   parentId: uuidV7Schema.nullable(),
   author: memberCardSchema,
   text: z.string(),
+  /** Members and organizations mentioned, resolved when it was written (as a publication). */
+  mentions: z.array(mentionSchema),
   reactions: reactionSummarySchema,
   replyCount: z.number().int(),
   viewerIsAuthor: z.boolean(),

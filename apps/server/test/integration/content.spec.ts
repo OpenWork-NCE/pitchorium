@@ -495,7 +495,10 @@ describe('content', () => {
       return response.body as { id: string; code?: string };
     };
     const question = await comment(kofi, { text: 'Quel ticket minimum ?' });
-    const answer = await comment(ama, { text: '500 euros.', parentId: question.id });
+    const answer = await comment(ama, {
+      text: '500 euros, voyez avec @awa-ndiaye.',
+      parentId: question.id,
+    });
     expect((await comment(awa, { text: 'Et ensuite ?', parentId: answer.id }, 422)).code).toBe(
       'CONTENT_REPLY_DEPTH',
     );
@@ -521,8 +524,16 @@ describe('content', () => {
     ]);
     const replies = await awa.agent.get(`/v1/comments/${question.id}/replies`).expect(200);
     expect(replies.body.items).toEqual([
-      expect.objectContaining({ id: answer.id, parentId: question.id }),
+      expect.objectContaining({
+        id: answer.id,
+        parentId: question.id,
+        // Resolved as in a publication: the mentioned member is notified.
+        mentions: [
+          { token: '@awa-ndiaye', type: 'member', key: 'awa-ndiaye', displayName: 'Awa Ndiaye' },
+        ],
+      }),
     ]);
+    expect(await eventTypes('content.mention')).toEqual(['content.mention.created.v1']);
 
     // The author of the publication deletes a comment of someone else; a stranger cannot.
     await awa.agent.delete(`/v1/comments/${question.id}`).expect(403);

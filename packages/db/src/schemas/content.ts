@@ -160,6 +160,26 @@ export const contentComments = contentSchema.table(
   ],
 );
 
+/** Mentions of a comment, resolved like those of a publication when it is written. */
+export const contentCommentMentions = contentSchema.table(
+  'comment_mentions',
+  {
+    commentId: uuid('comment_id')
+      .notNull()
+      .references(() => contentComments.id, { onDelete: 'cascade' }),
+    targetType: text('target_type').notNull(),
+    targetId: uuid('target_id').notNull(),
+    /** Token as written, `@handle` or `@slug`. */
+    token: text('token').notNull(),
+  },
+  (table) => [
+    primaryKey({
+      name: 'comment_mentions_pk',
+      columns: [table.commentId, table.targetType, table.targetId],
+    }),
+  ],
+);
+
 /** One reaction per member and target (publication or comment), counted by aggregation. */
 export const contentReactions = contentSchema.table(
   'reactions',

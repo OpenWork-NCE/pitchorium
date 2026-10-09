@@ -13,6 +13,7 @@ import { NetworkFacade } from '../../network';
 import { type OrganizationCard, OrganizationsFacade } from '../../organizations';
 import { type MemberCard, ProfilesFacade } from '../../profiles';
 import { canView, effectiveVisibility, type PostRecord } from '../domain/post';
+import type { ResolvedMention } from '../domain/mentions';
 import { ContentRepository } from './ports';
 
 /** The reader of publications, with what decides what they may see. */
@@ -220,6 +221,58 @@ export class PostPresenter {
       const original = post.repostOfId ? byId.get(post.repostOfId) : undefined;
       return [{ ...embed(post), kind: post.kind, repostOf: original ? embed(original) : null }];
     });
+  }
+
+  /**
+   * Mentions as the reader sees them: the current handle and name of a member, the slug and name
+   * of an organization; a member hidden from the reader (blocks) is left out, its token stays
+   * plain text.
+   */
+  async mentionViews(
+    reader: Reader,
+    mentions: ReadonlyMap<string, readonly ResolvedMention[]>,
+  ): Promise<Map<string, Mention[]>> {
+    const all = [...mentions.values()].flat();
+    const [cards, organizationCards] = await Promise.all([
+      this.profiles.memberCards(
+        all.filter((m) => m.targetType === 'member').map((m) => m.targetId),
+        reader.viewerId,
+      ),
+      this.organizations.cards(
+        all.filter((m) => m.targetType === 'organization').map((m) => m.targetId),
+      ),
+    ]);
+    return new Map(
+      [...mentions].map(([id, list]) => [
+        id,
+        list.flatMap((mention): Mention[] => {
+          if (mention.targetType === 'member') {
+            const member = cards.get(mention.targetId);
+            return member
+              ? [
+                  {
+                    token: mention.token,
+                    type: 'member',
+                    key: member.handle,
+                    displayName: member.displayName,
+                  },
+                ]
+              : [];
+          }
+          const organization = organizationCards.get(mention.targetId);
+          return organization
+            ? [
+                {
+                  token: mention.token,
+                  type: 'organization',
+                  key: organization.slug,
+                  displayName: organization.name,
+                },
+              ]
+            : [];
+        }),
+      ]),
+    );
   }
 
   /** Identifiers of the publications the reader may see among these. */

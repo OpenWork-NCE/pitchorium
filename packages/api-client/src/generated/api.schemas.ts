@@ -5975,6 +5975,21 @@ export type CommentDtoOutputAuthor = {
   avatarUrl: string | null;
 };
 
+export type CommentDtoOutputMentionsItemType =
+  (typeof CommentDtoOutputMentionsItemType)[keyof typeof CommentDtoOutputMentionsItemType];
+
+export const CommentDtoOutputMentionsItemType = {
+  member: 'member',
+  organization: 'organization',
+} as const;
+
+export type CommentDtoOutputMentionsItem = {
+  token: string;
+  type: CommentDtoOutputMentionsItemType;
+  key: string;
+  displayName: string;
+};
+
 export type CommentDtoOutputReactionsCounts = {
   /**
    * @minimum -9007199254740991
@@ -6027,6 +6042,7 @@ export interface CommentDtoOutput {
   parentId: string | null;
   author: CommentDtoOutputAuthor;
   text: string;
+  mentions: CommentDtoOutputMentionsItem[];
   reactions: CommentDtoOutputReactions;
   /**
    * @minimum -9007199254740991
@@ -6048,6 +6064,21 @@ export type CommentPageDtoOutputItemsItemAuthor = {
   headline: string | null;
   /** @nullable */
   avatarUrl: string | null;
+};
+
+export type CommentPageDtoOutputItemsItemMentionsItemType =
+  (typeof CommentPageDtoOutputItemsItemMentionsItemType)[keyof typeof CommentPageDtoOutputItemsItemMentionsItemType];
+
+export const CommentPageDtoOutputItemsItemMentionsItemType = {
+  member: 'member',
+  organization: 'organization',
+} as const;
+
+export type CommentPageDtoOutputItemsItemMentionsItem = {
+  token: string;
+  type: CommentPageDtoOutputItemsItemMentionsItemType;
+  key: string;
+  displayName: string;
 };
 
 export type CommentPageDtoOutputItemsItemReactionsCounts = {
@@ -6102,6 +6133,7 @@ export type CommentPageDtoOutputItemsItem = {
   parentId: string | null;
   author: CommentPageDtoOutputItemsItemAuthor;
   text: string;
+  mentions: CommentPageDtoOutputItemsItemMentionsItem[];
   reactions: CommentPageDtoOutputItemsItemReactions;
   /**
    * @minimum -9007199254740991

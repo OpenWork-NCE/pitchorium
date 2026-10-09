@@ -2,6 +2,7 @@ import { Injectable, type OnModuleInit } from '@nestjs/common';
 import { and, eq, sql } from '@pitchorium/db/orm';
 import {
   contentComments,
+  contentCommentMentions,
   contentHiddenPosts,
   contentLinkPreviews,
   contentPostMentions,
@@ -83,6 +84,14 @@ export class ContentPersonalData implements OnModuleInit {
       .delete(contentPostMentions)
       .where(
         and(eq(contentPostMentions.targetType, 'member'), eq(contentPostMentions.targetId, userId)),
+      );
+    await db
+      .delete(contentCommentMentions)
+      .where(
+        and(
+          eq(contentCommentMentions.targetType, 'member'),
+          eq(contentCommentMentions.targetId, userId),
+        ),
       );
     // Comments without answers are deleted, deepest first; answered ones become tombstones.
     for (let round = 0; round < 10; round += 1) {

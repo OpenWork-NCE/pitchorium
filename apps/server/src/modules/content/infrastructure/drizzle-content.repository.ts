@@ -21,6 +21,7 @@ import {
   type SQL,
 } from '@pitchorium/db/orm';
 import {
+  contentCommentMentions,
   contentComments,
   contentHiddenPosts,
   contentLinkPreviews,
@@ -211,6 +212,40 @@ export class DrizzleContentRepository extends ContentRepository {
       .insert(contentPostMentions)
       .values(mentions.map((mention) => ({ postId, ...mention })))
       .onConflictDoNothing();
+  }
+
+  async replaceCommentMentions(
+    commentId: string,
+    mentions: readonly ResolvedMention[],
+  ): Promise<void> {
+    await this.db
+      .delete(contentCommentMentions)
+      .where(eq(contentCommentMentions.commentId, commentId));
+    if (mentions.length === 0) return;
+    await this.db
+      .insert(contentCommentMentions)
+      .values(mentions.map((mention) => ({ commentId, ...mention })))
+      .onConflictDoNothing();
+  }
+
+  async commentMentionsOf(commentIds: readonly string[]): Promise<Map<string, ResolvedMention[]>> {
+    const mentions = new Map<string, ResolvedMention[]>();
+    if (commentIds.length === 0) return mentions;
+    const rows = await this.db
+      .select()
+      .from(contentCommentMentions)
+      .where(inArray(contentCommentMentions.commentId, [...commentIds]));
+    for (const row of rows) {
+      mentions.set(row.commentId, [
+        ...(mentions.get(row.commentId) ?? []),
+        {
+          token: row.token,
+          targetType: row.targetType as ResolvedMention['targetType'],
+          targetId: row.targetId,
+        },
+      ]);
+    }
+    return mentions;
   }
 
   async mentionsOf(postIds: readonly string[]): Promise<Map<string, ResolvedMention[]>> {

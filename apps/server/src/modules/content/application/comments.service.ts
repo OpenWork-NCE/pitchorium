@@ -62,8 +62,11 @@ export class CommentsService {
       editedAt: null,
       deletedAt: null,
     };
+    const mentions = await this.posts.mentions(userId, body.text);
     await this.transactions.run(async () => {
       await this.content.insertComment(comment);
+      await this.content.replaceCommentMentions(comment.id, mentions);
+      await this.posts.recordMentions(post.id, userId, mentions);
       await this.events.record(CommentCreated, comment.id, {
         postId: post.id,
         authorId: userId,
@@ -82,8 +85,20 @@ export class CommentsService {
     const post = await this.content.findPost(comment.postId);
     if (!post || comment.authorId !== userId) throw notFound();
     const editedAt = this.clock.now();
+    const mentions = await this.posts.mentions(userId, text);
     await this.transactions.run(async () => {
       await this.content.updateComment(comment.id, { text, editedAt });
+      const previous = new Set(
+        ((await this.content.commentMentionsOf([comment.id])).get(comment.id) ?? []).map(
+          (mention) => `${mention.targetType}:${mention.targetId}`,
+        ),
+      );
+      await this.content.replaceCommentMentions(comment.id, mentions);
+      await this.posts.recordMentions(
+        comment.postId,
+        userId,
+        mentions.filter((mention) => !previous.has(`${mention.targetType}:${mention.targetId}`)),
+      );
       await this.events.record(CommentUpdated, comment.id, {
         postId: comment.postId,
         authorId: comment.authorId,
@@ -169,7 +184,7 @@ export class CommentsService {
   ): Promise<Comment[]> {
     const ids = comments.map((comment) => comment.id);
     const viewerId = reader.viewerId;
-    const [cards, reactions, viewerReactions, replies] = await Promise.all([
+    const [cards, reactions, viewerReactions, replies, mentions] = await Promise.all([
       this.profiles.memberCards(
         comments.map((comment) => comment.authorId),
         reader.viewerId,
@@ -179,6 +194,9 @@ export class CommentsService {
         ? this.content.viewerReactions('comment', ids, viewerId)
         : new Map<string, ReactionType>(),
       this.content.replyCounts(ids),
+      this.content
+        .commentMentionsOf(ids)
+        .then((resolved) => this.presenter.mentionViews(reader, resolved)),
     ]);
     return comments.flatMap((comment): Comment[] => {
       const card = cards.get(comment.authorId);
@@ -190,6 +208,7 @@ export class CommentsService {
           parentId: comment.parentId,
           author: memberCardView(card),
           text: comment.text,
+          mentions: mentions.get(comment.id) ?? [],
           reactions: reactionSummary(reactions.get(comment.id), viewerReactions.get(comment.id)),
           replyCount: replies.get(comment.id) ?? 0,
           viewerIsAuthor: viewerId === comment.authorId,
