@@ -107,10 +107,11 @@ export const ServerErrors: Story = {
       'kofi-mensah',
     );
     await userEvent.type(canvas.getByRole('textbox', { name: /Note/ }), 'Rencontrés à Lomé.');
-    // Far from the limit, the counter shows only while the field has the focus.
+    // Far from the limit, the counter shows only while the field has the focus; hidden, it keeps
+    // its place (the controls below do not move).
     await expect(canvas.getByText('18 sur 300 caractères')).toBeVisible();
     await userEvent.tab();
-    await expect(canvas.getByText('18 sur 300 caractères')).not.toBeVisible();
+    await waitFor(() => expect(canvas.getByText('18 sur 300 caractères')).not.toBeVisible());
     await userEvent.click(canvas.getByRole('button', { name: 'Envoyer la demande' }));
     const note = canvas.getByRole('textbox', { name: /Note/ });
     await waitFor(() => expect(note).toBeInvalid());
