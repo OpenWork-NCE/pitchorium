@@ -116,3 +116,4 @@ Un fichier par décision, numéroté, au format Contexte / Décision / Conséque
 | [0110](0110-tabular-figures.md)                          | Chiffres tabulaires                                          |
 | [0111](0111-client-side-image-crop.md)                   | Recadrage des images dans le navigateur                      |
 | [0112](0112-optimistic-network-updates.md)               | Mises à jour optimistes du réseau                            |
+| [0113](0113-display-by-relationship.md)                  | Affichage selon la relation                                  |
