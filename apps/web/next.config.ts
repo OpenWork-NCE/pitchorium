@@ -43,6 +43,9 @@ const nextConfig: NextConfig = {
   reactCompiler: true,
   poweredByHeader: false,
   typedRoutes: false,
+  // `next dev` would write an AGENTS.md of its own when it detects a coding agent: the rules of
+  // the repository live in the root AGENTS.md only.
+  agentRules: false,
   experimental: {
     // Barrel files of these packages are resolved import by import: only the used modules ship.
     optimizePackageImports: ['motion', 'radix-ui'],

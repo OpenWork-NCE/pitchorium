@@ -46,3 +46,4 @@ Captures de référence : après un changement visuel voulu, `pnpm test:e2e --pr
 
 - `src/components/brand/marks.generated.tsx`, `public/brand/`, `public/fonts/`, `assets/og/`, `src/app/{favicon.ico,icon.svg,apple-icon.png}` : `pnpm brand:sync`, à ne pas modifier à la main.
 - `e2e/__screenshots__/` : captures de référence de Playwright.
+- Aucun `AGENTS.md` propre au web : `next dev` en écrirait un quand il détecte un agent de code, ce que `agentRules: false` (`next.config.ts`) désactive ; les règles du dépôt restent dans l'`AGENTS.md` de la racine.
