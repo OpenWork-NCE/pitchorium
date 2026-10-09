@@ -471,10 +471,16 @@ function FeedElement({
       const index = Number(article.dataset.feedIndex);
       if (event.key === 'PageDown' || event.key === 'PageUp') {
         event.preventDefault();
-        const target = Math.min(
-          count - 1,
-          Math.max(0, index + (event.key === 'PageDown' ? 1 : -1)),
-        );
+        const step = event.key === 'PageDown' ? 1 : -1;
+        // An entry hidden at this width (the suggestions of a phone, on a wide screen) is
+        // passed over; one not rendered yet (virtualized) is not hidden.
+        const hidden = (at: number) => {
+          const element = list.querySelector<HTMLElement>(`[data-feed-index="${at}"]`);
+          return element !== null && element.getClientRects().length === 0;
+        };
+        let target = index + step;
+        while (target >= 0 && target < count && hidden(target)) target += step;
+        if (target < 0 || target >= count) return;
         scrollTo?.(target);
         requestAnimationFrame(() =>
           list.querySelector<HTMLElement>(`[data-feed-index="${target}"]`)?.focus(),
