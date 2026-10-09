@@ -18,6 +18,7 @@
     "start:api": "node dist/main.api.js",
     "start:worker": "node dist/main.worker.js",
     "openapi:generate": "node dist/main.openapi.js",
+    "oauth:fake": "node -r @swc-node/register test/oauth/server.ts",
     "outbox:ping": "node --env-file-if-exists=.env --import tsx scripts/emit-ping-event.mts",
     "admin:create": "node --env-file-if-exists=.env -r @swc-node/register src/main.create-admin.ts",
     "payments:reconcile": "node --env-file-if-exists=.env -r @swc-node/register src/main.reconcile.ts",

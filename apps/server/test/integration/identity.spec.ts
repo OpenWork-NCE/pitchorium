@@ -11,11 +11,7 @@ import { query, truncateAllTables } from './support/database';
 import { TEST_API_URL, TEST_WEB_APP_URL } from './support/environment';
 import { linkIn, Mailpit } from './support/mailpit';
 import { type Agent, browser, PASSWORD, signIn, signUp, twoFactorRequest } from './support/members';
-import {
-  type FakeIdentity,
-  FakeOAuthProviders,
-  type FakeProvider,
-} from './support/oauth-providers';
+import { type FakeIdentity, FakeOAuthProviders, type FakeProvider } from '../oauth/fake-providers';
 import { totp } from './support/totp';
 import { createWorkerTestingModule } from './support/worker-testing-module';
 

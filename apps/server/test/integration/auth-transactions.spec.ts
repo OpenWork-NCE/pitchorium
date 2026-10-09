@@ -9,7 +9,7 @@ import { createApiTestApp } from './support/api-app';
 import { query, truncateAllTables } from './support/database';
 import { TEST_WEB_APP_URL } from './support/environment';
 import { browser, PASSWORD } from './support/members';
-import { FakeOAuthProviders } from './support/oauth-providers';
+import { FakeOAuthProviders } from '../oauth/fake-providers';
 
 const PWNED_RANGE_URL = 'https://api.pwnedpasswords.com/range/';
 

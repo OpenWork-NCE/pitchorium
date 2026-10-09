@@ -14,7 +14,7 @@ export interface FakeIdentity {
 }
 
 /** Real provider endpoints called by Better Auth, served locally during the tests. */
-const ROUTES: Readonly<Record<string, string>> = {
+export const PROVIDER_ROUTES: Readonly<Record<string, string>> = {
   'https://oauth2.googleapis.com/token': '/google/token',
   'https://www.linkedin.com/oauth/v2/accessToken': '/linkedin/token',
   'https://api.linkedin.com/v2/userinfo': '/linkedin/userinfo',
@@ -23,39 +23,64 @@ const ROUTES: Readonly<Record<string, string>> = {
 
 const base64url = (value: Buffer | string) => Buffer.from(value).toString('base64url');
 
-async function readBody(request: IncomingMessage): Promise<URLSearchParams> {
+async function readRaw(request: IncomingMessage): Promise<string> {
   let raw = '';
   for await (const chunk of request) raw += String(chunk);
-  return new URLSearchParams(raw);
+  return raw;
 }
 
+/** Answer of the server: JSON, or a redirect of the browser. */
+type Reply = { status: number; body?: object; location?: string };
+
 /**
- * Local OIDC/OAuth 2 server standing in for Google, LinkedIn and Microsoft. `install()` reroutes
- * the provider URLs used by Better Auth (global fetch) to this server; the authorization step,
- * which happens in the browser, is replaced by issueCode().
+ * Local OIDC/OAuth 2 server standing in for Google, LinkedIn and Microsoft.
+ *
+ * - In the process of the integration tests, `install()` reroutes the provider URLs that Better
+ *   Auth calls (global fetch) to this server, and `issueCode()` replaces the consent of the
+ *   browser.
+ * - As a service of its own (`test/oauth/server.ts`, reachable from a browser), the consent page
+ *   is `GET /<provider>/authorize`: it consents at once for the next identity a test announced
+ *   (`POST /__identity`) and sends the browser back to the callback of the api with a code. The
+ *   api reroutes its own calls with `test/oauth/reroute.cjs`.
  */
 export class FakeOAuthProviders {
   private server: Server | undefined;
   private baseUrl = '';
   private readonly codes = new Map<string, { provider: FakeProvider; identity: FakeIdentity }>();
+  private readonly nextIdentities = new Map<FakeProvider, FakeIdentity[]>();
   private readonly accessTokens = new Map<string, FakeIdentity>();
   private readonly keys = generateKeyPairSync('rsa', { modulusLength: 2048 });
   private originalFetch: typeof fetch | undefined;
   private pausedTokenRequest: { reached: () => void; released: Promise<void> } | undefined;
 
-  async start(): Promise<void> {
+  /** Starts the server; in process (default), the provider URLs are rerouted to it. */
+  async start({ port = 0, host = '127.0.0.1', inProcess = true } = {}): Promise<void> {
     this.server = createServer((request, response) => {
-      void this.handle(request).then(
-        (body) => {
-          response.writeHead(body ? 200 : 400, { 'content-type': 'application/json' });
-          response.end(JSON.stringify(body ?? { error: 'invalid_grant' }));
+      void this.reply(request).then(
+        ({ status, body, location }) => {
+          if (location) {
+            response.writeHead(status, { location });
+            response.end();
+            return;
+          }
+          response.writeHead(status, { 'content-type': 'application/json' });
+          response.end(JSON.stringify(body ?? {}));
         },
         () => response.writeHead(500).end(),
       );
     });
-    await new Promise<void>((resolve) => this.server?.listen(0, '127.0.0.1', resolve));
-    this.baseUrl = `http://127.0.0.1:${(this.server.address() as AddressInfo).port}`;
-    this.install();
+    await new Promise<void>((resolve) => this.server?.listen(port, host, resolve));
+    this.baseUrl = `http://${host}:${(this.server.address() as AddressInfo).port}`;
+    if (inProcess) this.install();
+  }
+
+  get url(): string {
+    return this.baseUrl;
+  }
+
+  /** The identity the next consent of this provider gives (consent page of a browser). */
+  announce(provider: FakeProvider, identity: FakeIdentity): void {
+    this.nextIdentities.set(provider, [...(this.nextIdentities.get(provider) ?? []), identity]);
   }
 
   async stop(): Promise<void> {
@@ -88,7 +113,7 @@ export class FakeOAuthProviders {
     this.originalFetch = original;
     globalThis.fetch = (input, init) => {
       const url = input instanceof Request ? input.url : input.toString();
-      const route = ROUTES[url.split('?')[0] ?? ''];
+      const route = PROVIDER_ROUTES[url.split('?')[0] ?? ''];
       return original(route ? `${this.baseUrl}${route}` : input, init);
     };
   }
@@ -121,8 +146,40 @@ export class FakeOAuthProviders {
     return `${header}.${payload}.${base64url(signature)}`;
   }
 
-  private async handle(request: IncomingMessage): Promise<object | undefined> {
-    const [, provider, endpoint] = (request.url ?? '').split('/') as [string, FakeProvider, string];
+  private async reply(request: IncomingMessage): Promise<Reply> {
+    const url = new URL(request.url ?? '/', 'http://fake');
+    if (url.pathname === '/__health') return { status: 200, body: { ok: true } };
+    if (request.method === 'POST' && url.pathname === '/__identity') {
+      const { provider, identity } = JSON.parse(await readRaw(request)) as {
+        provider: FakeProvider;
+        identity: FakeIdentity;
+      };
+      this.announce(provider, identity);
+      return { status: 204 };
+    }
+    const [, provider, endpoint] = url.pathname.split('/') as [string, FakeProvider, string];
+    if (endpoint === 'authorize') return this.consent(provider, url.searchParams);
+    const body = await this.handle(request, provider, endpoint);
+    return body ? { status: 200, body } : { status: 400, body: { error: 'invalid_grant' } };
+  }
+
+  /** Consent of the browser: the next announced identity, then back to the callback. */
+  private consent(provider: FakeProvider, query: URLSearchParams): Reply {
+    const callback = query.get('redirect_uri');
+    const identity = this.nextIdentities.get(provider)?.shift();
+    if (!callback || !identity) return { status: 400, body: { error: 'no_identity_announced' } };
+    const target = new URL(callback);
+    target.searchParams.set('code', this.issueCode(provider, identity));
+    const state = query.get('state');
+    if (state) target.searchParams.set('state', state);
+    return { status: 302, location: target.toString() };
+  }
+
+  private async handle(
+    request: IncomingMessage,
+    provider: FakeProvider,
+    endpoint: string,
+  ): Promise<object | undefined> {
     if (endpoint === 'userinfo') {
       const token = request.headers.authorization?.replace('Bearer ', '') ?? '';
       const identity = this.accessTokens.get(token);
@@ -136,7 +193,7 @@ export class FakeOAuthProviders {
           }
         : undefined;
     }
-    const body = await readBody(request);
+    const body = new URLSearchParams(await readRaw(request));
     const paused = this.pausedTokenRequest;
     if (paused) {
       this.pausedTokenRequest = undefined;

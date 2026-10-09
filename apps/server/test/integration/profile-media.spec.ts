@@ -3,6 +3,7 @@ import type { TestingModule } from '@nestjs/testing';
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AccessModule } from '../../src/modules/access';
 import { IdentityModule } from '../../src/modules/identity';
+import { ImpactModule } from '../../src/modules/impact';
 import { MediaModule } from '../../src/modules/media';
 import { MalwareScanner } from '../../src/modules/media/application/ports';
 import { ProfilesModule } from '../../src/modules/profiles';
@@ -18,7 +19,7 @@ import { FakeMalwareScanner } from './support/fake-malware-scanner';
 import { png } from './support/files';
 import { uploadFile, waitUntilProcessed } from './support/media';
 import { browser, createMember } from './support/members';
-import { FakeOAuthProviders } from './support/oauth-providers';
+import { FakeOAuthProviders } from '../oauth/fake-providers';
 import { createWorkerTestingModule } from './support/worker-testing-module';
 
 const GOOGLE_PHOTO = 'https://lh3.googleusercontent.com/a/photo-of-amina';
@@ -57,6 +58,7 @@ describe('profile media', () => {
         IdentityModule.forWorker(),
         AccessModule.forWorker(),
         MediaModule.forWorker(),
+        ImpactModule.forWorker(),
         ProfilesModule.forWorker(),
       ],
       (builder) => builder.overrideProvider(MalwareScanner).useValue(new FakeMalwareScanner()),
