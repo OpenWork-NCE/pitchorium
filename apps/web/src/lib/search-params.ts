@@ -1,6 +1,3 @@
-/** Search parameters of a page as Next.js hands them to a server component. */
-export type SearchParams = Promise<Record<string, string | string[] | undefined>>;
-
 /** First value of a search parameter, null when absent or empty. */
 export function firstParam(
   params: Record<string, string | string[] | undefined>,

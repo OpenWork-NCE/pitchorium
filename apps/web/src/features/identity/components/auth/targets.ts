@@ -1,5 +1,5 @@
 import { routes } from '@/config/routes';
-import { REDIRECT_PARAM, safeRedirect, withRedirect } from '@/lib/auth/redirect';
+import { withRedirect } from '@/lib/auth/redirect';
 
 /**
  * Addresses of the web app handed to /v1/auth: absolute, since Better Auth redirects the browser
@@ -7,13 +7,6 @@ import { REDIRECT_PARAM, safeRedirect, withRedirect } from '@/lib/auth/redirect'
  */
 export function absoluteUrl(locale: string, path: string): string {
   return `${window.location.origin}/${locale}${path}`;
-}
-
-/** The page to return to, validated (same origin), from the query of the current screen. */
-export function readRedirect(params: URLSearchParams): string | null {
-  const value = params.get(REDIRECT_PARAM);
-  const safe = safeRedirect(value, '');
-  return safe === '' ? null : safe;
 }
 
 /** Where a sign-in lands: the resolver applies the terms first, then the page asked for. */

@@ -1,6 +1,5 @@
 import { expect, type Page } from '@playwright/test';
 
-export const API_URL = process.env.LIVE_API_URL ?? 'http://localhost:3100';
 export const MAILPIT_URL = process.env.MAILPIT_URL ?? 'http://localhost:8025';
 export const PASSWORD = 'correct horse battery staple 2026';
 

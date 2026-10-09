@@ -3,7 +3,7 @@ import { defineConfig, devices } from '@playwright/test';
 /**
  * Journeys of the authentication against the real api (PROMPT FRONT 2B): web, api, worker,
  * PostgreSQL, Valkey and Mailpit already running (`pnpm infra:up`, `pnpm dev`, or the processes
- * of verify:clean). Origins from LIVE_WEB_URL, LIVE_API_URL and MAILPIT_URL. One worker: the
+ * of verify:clean). Origins from LIVE_WEB_URL and MAILPIT_URL. One worker: the
  * journeys read the same inbox.
  */
 export default defineConfig({

@@ -3,7 +3,7 @@ import { useTranslations } from 'next-intl';
 import { useCallback } from 'react';
 
 /** Header of the Turnstile token on the /v1/auth routes (ADR 0103). */
-export const CAPTCHA_HEADER = 'x-captcha-response';
+const CAPTCHA_HEADER = 'x-captcha-response';
 
 /** A refused call of /v1/auth: its Better Auth code, its status and the wait before a retry. */
 export interface AuthFailure {
