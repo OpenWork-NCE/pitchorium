@@ -109,6 +109,7 @@ export class ProjectsFacade implements OnModuleInit {
               displayName: card.title,
               subtitle: card.summary,
               imageUrl: card.coverImageUrl,
+              slug: card.slug,
             },
           ]),
         ),

@@ -4,7 +4,7 @@ Graphe social (cahier des charges §10.2) : suivis, connexions, blocages, listes
 
 ## Suivis (ADR 0027)
 
-- Suivi unilatéral d'une cible générique (`target_type`, `target_id`) : `member` (enregistré par network), `organization` (enregistré par organizations), `project` (enregistré par projects : projets publiés et visibles, clé = identifiant du projet), et les types que d'autres modules enregistreront, sans migration. Chaque type valide sa cible par la façade du module propriétaire (`FollowTargetType.resolve`) et la décrit (`describe`) ; un type inconnu répond comme une cible inconnue (404).
+- Suivi unilatéral d'une cible générique (`target_type`, `target_id`) : `member` (enregistré par network), `organization` (enregistré par organizations), `project` (enregistré par projects : projets publiés et visibles, clé = identifiant du projet), et les types que d'autres modules enregistreront, sans migration. Chaque type valide sa cible par la façade du module propriétaire (`FollowTargetType.resolve`) et la décrit (`describe` : nom, sous-titre, image et clé de sa page, `slug` : identifiant public d'un membre, slug d'une organisation ou d'un projet) ; un type inconnu répond comme une cible inconnue (404).
 - Clé publique d'une cible : identifiant public d'un membre (`handle`, actuel ou ancien), identifiant d'une organisation. L'identifiant utilisateur n'est jamais exposé.
 - On ne se suit pas soi-même ; on ne suit pas un membre de part et d'autre d'un blocage.
 - Origine d'un suivi : `manual`, ou `connection` quand il est créé par une connexion acceptée.

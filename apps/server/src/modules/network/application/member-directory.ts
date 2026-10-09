@@ -54,6 +54,7 @@ export class MemberDirectory implements FollowTargetType, OnModuleInit {
         displayName: card.displayName,
         subtitle: card.headline,
         imageUrl: card.avatarUrl,
+        slug: card.handle,
       });
     }
     return summaries;

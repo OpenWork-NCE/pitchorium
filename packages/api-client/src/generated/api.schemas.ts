@@ -3086,6 +3086,8 @@ export type FollowDtoOutputTarget = {
   subtitle: string | null;
   /** @nullable */
   imageUrl: string | null;
+  /** @nullable */
+  slug: string | null;
 };
 
 export interface FollowDtoOutput {
@@ -3253,6 +3255,8 @@ export type FollowPageDtoOutputItemsItemTarget = {
   subtitle: string | null;
   /** @nullable */
   imageUrl: string | null;
+  /** @nullable */
+  slug: string | null;
 };
 
 export type FollowPageDtoOutputItemsItem = {

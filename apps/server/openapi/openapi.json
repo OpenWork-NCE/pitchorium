@@ -40257,6 +40257,12 @@
                   "string",
                   "null"
                 ]
+              },
+              "slug": {
+                "type": [
+                  "string",
+                  "null"
+                ]
               }
             },
             "required": [
@@ -40264,7 +40270,8 @@
               "key",
               "displayName",
               "subtitle",
-              "imageUrl"
+              "imageUrl",
+              "slug"
             ],
             "additionalProperties": false
           },
@@ -40674,6 +40681,12 @@
                         "string",
                         "null"
                       ]
+                    },
+                    "slug": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
                     }
                   },
                   "required": [
@@ -40681,7 +40694,8 @@
                     "key",
                     "displayName",
                     "subtitle",
-                    "imageUrl"
+                    "imageUrl",
+                    "slug"
                   ],
                   "additionalProperties": false
                 },

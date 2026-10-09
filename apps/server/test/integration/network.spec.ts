@@ -326,6 +326,7 @@ describe('network', () => {
       key: created.body.id,
       displayName: 'Fondation Teranga',
       subtitle: 'foundation',
+      slug: 'fondation-teranga',
     });
     const following = await kofi.agent
       .get('/v1/network/members/kofi-mensah/following?type=organization')

@@ -79,6 +79,7 @@ export class OrganizationsFacade implements OnModuleInit {
               displayName: card.name,
               subtitle: card.structureType,
               imageUrl: card.logoUrl,
+              slug: card.slug,
             },
           ]),
         ),

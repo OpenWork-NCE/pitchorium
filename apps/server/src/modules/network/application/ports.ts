@@ -168,6 +168,8 @@ export interface FollowTargetSummary {
   displayName: string;
   subtitle: string | null;
   imageUrl: string | null;
+  /** Key of the page of the target (handle, slug), null when it has none. */
+  slug: string | null;
 }
 
 /**

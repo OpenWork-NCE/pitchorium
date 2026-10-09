@@ -27,6 +27,8 @@ export const followTargetSchema = z.object({
   /** Headline of a member, type of structure of an organization. */
   subtitle: z.string().nullable(),
   imageUrl: z.string().nullable(),
+  /** Key of the page of the target: handle of a member, slug of an organization or a project. */
+  slug: z.string().nullable(),
 });
 
 export const followSchema = z.object({
