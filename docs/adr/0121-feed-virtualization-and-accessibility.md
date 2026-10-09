@@ -18,9 +18,9 @@ Le fil se lit page par page sans fin ; au bout de quelques pages, des centaines 
 - Révision après le FRONT 4 (défauts trouvés contre la vraie api) :
   - un seul virtualiseur pour la vie de la liste, inactif jusqu'à l'hydratation : les entrées gardent leurs clés au passage, React garde leurs éléments et le focus au lieu de tout rendre à nouveau ; chaque entrée est un composant aux propriétés stables, qui ne se rend pas à chaque image d'un défilement ; trois entrées rendues par le serveur au lieu de six (temps de blocage du fil mesuré : 833 ms ramenés à 615 ms au ralenti de 12) ;
   - chaque entrée a sa propre frontière `Suspense`, et les composants chargés à la demande d'une carte (`LazyPostProject`, `LazyMemberPost`) la leur : `next/dynamic` sans `loading` n'en donne aucune, et une entrée qui attendait son code suspendait la page entière (cachée, focus et défilement perdus) ;
-  - l'entrée qui a le focus reste rendue (plage contiguë étendue jusqu'à elle, dix entrées au plus), et « Page suivante » attend que l'entrée visée soit affichée, deux secondes au plus ;
+  - l'entrée quittée au clavier reste rendue jusqu'à ce que la suivante ait le focus (plage contiguë étendue jusqu'à elle, dix entrées au plus), et « Page suivante » attend que l'entrée visée soit affichée, deux secondes au plus ; un clic ne signale rien : un rendu entre l'appui et le relâchement remplaçait la cible du clic ;
   - la position est gardée dans le nettoyage d'un effet de mise en page, avant que la page suivante défile vers son haut ; le routeur garde le fil caché au lieu de le démonter, et la position est rendue quand il réapparaît ;
-  - pas d'ancrage du défilement sur la page tant que le fil est virtualisé : le navigateur déplaçait la page à chaque changement des espaces autour des entrées, sans fin, et au retour arrière bien au-delà de la position.
+  - pas d'ancrage du défilement sur l'élément du fil (le navigateur déplaçait la page à chaque changement des espaces autour des entrées, sans fin) ; sur la page, l'ancrage est suspendu le temps de rendre une position (retour arrière), jusqu'au premier geste du lecteur, et pas au-delà : une insertion au-dessus du fil, le bandeau du mode hors ligne, ne doit pas déplacer ce qu'il lit.
 
 ## Conséquences
 

@@ -70,6 +70,37 @@ function reportUnknown(type: string) {
   reportError(new Error(`Unknown type of feed item: ${type}`));
 }
 
+/** What the reader does to move: scroll anchoring comes back with the first of them. */
+const READER_MOVES = ['wheel', 'touchstart', 'keydown', 'pointerdown'] as const;
+
+/**
+ * Gives a scroll position back (a return by the history), after the scroll the router and the
+ * browser apply to the page (next frame), without scroll anchoring until the reader moves: the
+ * entries of the feed are measured again as they show, and the browser, anchored on what follows
+ * the feed, would push the page past its place. Anchoring comes back with the first move of the
+ * reader (an insertion above the feed, the banner of the offline mode, must not move what they
+ * look at), not after a delay, which the measures may outlast. Returns the cancellation.
+ */
+function restoreScroll(offset: number): () => void {
+  const root = document.documentElement;
+  const before = root.style.overflowAnchor;
+  root.style.overflowAnchor = 'none';
+  const frame = requestAnimationFrame(() => {
+    if (Math.abs(window.scrollY - offset) > 1) window.scrollTo({ top: offset });
+  });
+  const anchorAgain = () => {
+    root.style.overflowAnchor = before;
+    for (const event of READER_MOVES) window.removeEventListener(event, anchorAgain);
+  };
+  for (const event of READER_MOVES) {
+    window.addEventListener(event, anchorAgain, { passive: true, once: true });
+  }
+  return () => {
+    cancelAnimationFrame(frame);
+    anchorAgain();
+  };
+}
+
 /** The real heights of the entries in the page, for the virtualized list that takes over. */
 function measure(list: HTMLElement, scrollMargin: number): Measurements {
   let start = scrollMargin;
@@ -205,24 +236,10 @@ export function FeedList({
     return () => cancelAnimationFrame(frame);
   }, [start, entries.length]);
 
-  // No scroll anchoring on the page while the feed is virtualized: the browser would move the
-  // page each time the spaces around the entries change (anchored on what follows the feed),
-  // the list would render other entries, and so on; at a return by the history, it pushed the
-  // page far past its position.
-  useEffect(() => {
-    if (!start) return undefined;
-    const root = document.documentElement;
-    const before = root.style.overflowAnchor;
-    root.style.overflowAnchor = 'none';
-    return () => {
-      root.style.overflowAnchor = before;
-    };
-  }, [start]);
-
   // Back by the history: the scroll goes where it was, once the heights are known.
   useLayoutEffect(() => {
-    if (!start || start.restore === null) return;
-    if (Math.abs(window.scrollY - start.restore) > 1) window.scrollTo({ top: start.restore });
+    if (!start || start.restore === null) return undefined;
+    return restoreScroll(start.restore);
   }, [start]);
 
   // Leaving the feed: its position is kept for a return by the history. In a layout cleanup, run
@@ -233,11 +250,9 @@ export function FeedList({
   useLayoutEffect(() => {
     if (!start) return undefined;
     const back = takeFeedPosition();
-    const frame = back
-      ? requestAnimationFrame(() => window.scrollTo({ top: back.offset }))
-      : undefined;
+    const cancel = back ? restoreScroll(back.offset) : undefined;
     return () => {
-      if (frame !== undefined) cancelAnimationFrame(frame);
+      cancel?.();
       saveFeedPosition({
         offset: window.scrollY,
         measurements: virtualizer.measurementsCache.map((item) => ({ ...item })),
@@ -512,7 +527,10 @@ function FeedElement({
   busy: boolean;
   count: number;
   scrollTo?: (index: number) => void;
-  /** The entry that holds the focus (null when it leaves the feed). */
+  /**
+   * The entry moved to by the keys (null when the focus leaves the feed). A click does not
+   * report it: a render between the press and the release would replace the target of the click.
+   */
   onFocusEntry?: (index: number | null) => void;
   style?: React.CSSProperties;
   children: ReactNode;
@@ -536,14 +554,18 @@ function FeedElement({
         let target = index + step;
         while (target >= 0 && target < count && hidden(target)) target += step;
         if (target < 0 || target >= count) return;
+        // The entry left stays rendered until the next one has the focus.
+        onFocusEntry?.(index);
         scrollTo?.(target);
         // Virtualized, the entry is rendered once the scroll has moved, and shown once its code
         // is there: it takes the focus as soon as it can, two seconds at most.
         const focus = (frames: number) =>
           requestAnimationFrame(() => {
             const element = list.querySelector<HTMLElement>(`[data-feed-index="${target}"]`);
-            if (element && element.getClientRects().length > 0) element.focus();
-            else if (frames > 0) focus(frames - 1);
+            if (element && element.getClientRects().length > 0) {
+              element.focus();
+              onFocusEntry?.(target);
+            } else if (frames > 0) focus(frames - 1);
           });
         focus(120);
       } else if (event.ctrlKey && (event.key === 'End' || event.key === 'Home')) {
@@ -555,19 +577,13 @@ function FeedElement({
           ?.focus();
       }
     };
-    const focusIn = (event: FocusEvent) => {
-      const entry = (event.target as HTMLElement).closest<HTMLElement>('[data-feed-index]');
-      onFocusEntry?.(entry ? Number(entry.dataset.feedIndex) : null);
-    };
     const focusOut = (event: FocusEvent) => {
       if (!list.contains(event.relatedTarget as Node | null)) onFocusEntry?.(null);
     };
     list.addEventListener('keydown', navigate);
-    list.addEventListener('focusin', focusIn);
     list.addEventListener('focusout', focusOut);
     return () => {
       list.removeEventListener('keydown', navigate);
-      list.removeEventListener('focusin', focusIn);
       list.removeEventListener('focusout', focusOut);
     };
   }, [listRef, count, scrollTo, onFocusEntry]);
