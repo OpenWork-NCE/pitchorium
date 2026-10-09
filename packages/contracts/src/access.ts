@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { errorCodeSchema } from './errors/error-codes.js';
+import { errorCodeSchema } from './errors/error-code-schema.js';
 import { uuidV7Schema } from './ids.js';
 
 export const ROLES = ['member', 'moderator', 'admin'] as const;

@@ -1,5 +1,3 @@
-import { z } from 'zod';
-
 export interface ErrorCodeDefinition {
   readonly status: number;
   readonly title: string;
@@ -488,8 +486,6 @@ export const errorCodes = {
 } as const satisfies Record<string, ErrorCodeDefinition>;
 
 export type ErrorCode = keyof typeof errorCodes;
-
-export const errorCodeSchema = z.enum(Object.keys(errorCodes) as [ErrorCode, ...ErrorCode[]]);
 
 export function isErrorCode(value: string): value is ErrorCode {
   return Object.hasOwn(errorCodes, value);

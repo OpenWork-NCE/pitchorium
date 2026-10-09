@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { errorCodeSchema } from './error-codes.js';
+import { errorCodeSchema } from './error-code-schema.js';
 
 export const PROBLEM_JSON_CONTENT_TYPE = 'application/problem+json';
 

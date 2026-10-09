@@ -7,6 +7,7 @@ export * from './discovery.js';
 export * from './engagement.js';
 export * from './events.js';
 export * from './account.js';
+export * from './errors/error-code-schema.js';
 export * from './errors/error-codes.js';
 export * from './errors/problem-details.js';
 export * from './health.js';
