@@ -118,3 +118,4 @@ Un fichier par décision, numéroté, au format Contexte / Décision / Conséque
 | [0112](0112-optimistic-network-updates.md)               | Mises à jour optimistes du réseau                            |
 | [0113](0113-display-by-relationship.md)                  | Affichage selon la relation                                  |
 | [0114](0114-rate-limit-per-session.md)                   | Limitation de débit par session                              |
+| [0115](0115-relayed-visitor-address.md)                  | Adresse du visiteur relayée par le serveur du web            |

@@ -119,6 +119,8 @@ const apiEnvSchema = commonEnvSchema.extend({
   API_PORT: z.coerce.number().int().min(1).max(65535).default(3000),
   CORS_ORIGINS: urlList,
   TRUST_PROXY_HOPS: z.coerce.number().int().min(0).default(0),
+  /** Shared with the web server, which signs the address of a visitor (ADR 0115). */
+  WEB_CLIENT_ADDRESS_SECRET: z.string().min(32).optional(),
   RATE_LIMIT_TTL_SECONDS: z.coerce.number().int().positive().default(60),
   RATE_LIMIT_MAX: z.coerce.number().int().positive().default(120),
   IDEMPOTENCY_TTL_HOURS: z.coerce.number().int().positive().default(24),

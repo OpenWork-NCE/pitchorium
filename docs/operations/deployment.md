@@ -41,6 +41,15 @@ Une version de l'application tourne pendant un temps avec le schéma de la suiva
 
 `infra/production/compose.yaml` : api, worker, Caddy (TLS automatique, en-têtes) et ClamAV, PostgreSQL et Redis managés de préférence (des services locaux sont fournis en option, profil `self-hosted`). Voir `docs/operations/vm-guide.md`.
 
+## Proxys de confiance et adresse des visiteurs
+
+La limitation de débit de l'api compte une requête par session, puis par adresse du visiteur relayée par le serveur du web, puis par adresse de la requête (ADR 0114 et 0115). Les adresses ne sont justes que si les proxys sont déclarés :
+
+- api : `TRUST_PROXY_HOPS` = nombre de proxys devant l'api (Caddy dans la référence : `1` ; un CDN devant Caddy : `2`). Chacun doit ajouter l'adresse qu'il voit à `X-Forwarded-For` (Caddy le fait par défaut ; Cloudflare aussi, et donne `CF-Connecting-IP`).
+- web : `WEB_TRUST_PROXY_HOPS` = nombre de proxys devant le serveur Next.js (Vercel : `1`, la plateforme réécrit `X-Forwarded-For` ; un conteneur derrière un reverse proxy : `1`, plus un par CDN). À `0`, le web ne relaie aucune adresse : sans proxy, `X-Forwarded-For` vient du client et ne prouve rien.
+- `WEB_CLIENT_ADDRESS_SECRET` : même valeur dans l'api et dans le web, 32 caractères au moins, dans le gestionnaire de secrets ; la changer dans les deux à la fois (un écart fait seulement compter les visiteurs sur l'adresse du serveur du web jusqu'au déploiement suivant).
+- Le web joint l'api par son réseau privé de préférence (`API_INTERNAL_URL`) ; l'api ne doit jamais faire confiance à `X-Forwarded-For` au-delà de ses propres proxys.
+
 ## Environnements
 
 `docs/operations/environments.md` liste chaque variable, son type et sa valeur en local, en staging et en production.

@@ -20,18 +20,18 @@ Session Better Auth `pitchorium.session_token` (préfixe `__Secure-` en HTTPS) :
 
 ## Limitation de débit (inventaire)
 
-| Famille                               | Limite (provisoire)                                                                                                             | Où                   |
-| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | -------------------- |
-| Toute route HTTP                      | `RATE_LIMIT_MAX` (120) par session signée (ADR 0114), sinon par adresse IP, et `RATE_LIMIT_TTL_SECONDS` (60 s), compteurs Redis | `HttpThrottlerGuard` |
-| `/v1/auth/*`                          | `AUTH_RATE_LIMIT_MAX` par `AUTH_RATE_LIMIT_WINDOW_SECONDS` ; double authentification 3 par 10 s                                 | Better Auth          |
-| Signalement sans compte               | 5 par heure et par adresse                                                                                                      | `ReportsController`  |
-| Téléversements                        | `MEDIA_UPLOAD_REQUESTS_PER_HOUR` (60) par membre, quotas de fichiers et d'octets                                                | media                |
-| Demandes de connexion                 | `NETWORK_CONNECTION_REQUESTS_PER_WEEK` (100), délai après refus                                                                 | network              |
-| Premiers messages hors réseau         | `MESSAGING_REQUESTS_PER_DAY` (20)                                                                                               | messaging            |
-| Contributions et sessions de paiement | `PAYMENTS_CONTRIBUTIONS_PER_HOUR`, `PAYMENTS_SESSIONS_PER_METHOD_PER_HOUR`                                                      | payments             |
-| Traduction                            | `LOCALIZATION_MEMBER_DAILY_CHARACTERS`, plafond mensuel                                                                         | localization         |
-| Export RGPD                           | 1 par `PRIVACY_EXPORT_MIN_INTERVAL_HOURS` (24)                                                                                  | privacy              |
-| Socket.IO                             | handshake authentifié ; pas de limite par message (le temps réel n'accepte que des abonnements, aucune écriture)                | realtime             |
+| Famille                               | Limite (provisoire)                                                                                                                                                                                               | Où                   |
+| ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------- |
+| Toute route HTTP                      | `RATE_LIMIT_MAX` (120) par session signée (ADR 0114), sinon par adresse du visiteur relayée et signée par le serveur du web (ADR 0115), sinon par adresse IP, et `RATE_LIMIT_TTL_SECONDS` (60 s), compteurs Redis | `HttpThrottlerGuard` |
+| `/v1/auth/*`                          | `AUTH_RATE_LIMIT_MAX` par `AUTH_RATE_LIMIT_WINDOW_SECONDS` ; double authentification 3 par 10 s                                                                                                                   | Better Auth          |
+| Signalement sans compte               | 5 par heure et par adresse                                                                                                                                                                                        | `ReportsController`  |
+| Téléversements                        | `MEDIA_UPLOAD_REQUESTS_PER_HOUR` (60) par membre, quotas de fichiers et d'octets                                                                                                                                  | media                |
+| Demandes de connexion                 | `NETWORK_CONNECTION_REQUESTS_PER_WEEK` (100), délai après refus                                                                                                                                                   | network              |
+| Premiers messages hors réseau         | `MESSAGING_REQUESTS_PER_DAY` (20)                                                                                                                                                                                 | messaging            |
+| Contributions et sessions de paiement | `PAYMENTS_CONTRIBUTIONS_PER_HOUR`, `PAYMENTS_SESSIONS_PER_METHOD_PER_HOUR`                                                                                                                                        | payments             |
+| Traduction                            | `LOCALIZATION_MEMBER_DAILY_CHARACTERS`, plafond mensuel                                                                                                                                                           | localization         |
+| Export RGPD                           | 1 par `PRIVACY_EXPORT_MIN_INTERVAL_HOURS` (24)                                                                                                                                                                    | privacy              |
+| Socket.IO                             | handshake authentifié ; pas de limite par message (le temps réel n'accepte que des abonnements, aucune écriture)                                                                                                  | realtime             |
 
 Derrière un proxy, `TRUST_PROXY_HOPS` doit valoir le nombre exact de proxys pour que l'adresse IP retenue soit celle du client.
 

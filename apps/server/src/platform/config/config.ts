@@ -102,6 +102,8 @@ export interface ApiConfig extends CommonConfig {
     port: number;
     corsOrigins: string[];
     trustProxyHops: number;
+    /** Secret of the visitor address relayed by the web server; null: never trusted. */
+    clientAddressSecret: string | null;
     swaggerEnabled: boolean;
     /** Public origin of the api, as seen by browsers and OAuth providers. */
     publicUrl: string;
@@ -347,6 +349,7 @@ export function parseApiConfig(rawEnv: RawEnv): ApiConfig {
       port: env.API_PORT,
       corsOrigins: env.CORS_ORIGINS,
       trustProxyHops: env.TRUST_PROXY_HOPS,
+      clientAddressSecret: env.WEB_CLIENT_ADDRESS_SECRET ?? null,
       swaggerEnabled: env.NODE_ENV !== 'production',
       publicUrl: withoutTrailingSlash(env.API_PUBLIC_URL),
     },

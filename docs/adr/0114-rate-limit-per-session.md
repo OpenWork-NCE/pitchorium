@@ -16,4 +16,4 @@ L'api limite le débit de chaque client (`RATE_LIMIT_MAX` requêtes par `RATE_LI
 ## Conséquences
 
 - Un membre a sa propre limite, qu'il appelle l'api depuis son navigateur ou à travers le serveur du web.
-- Les pages publiques rendues pour un visiteur (sans session) restent comptées par l'adresse du serveur du web : question 113 (transmettre l'adresse du visiteur de façon sûre, ou exempter le serveur du web).
+- Les pages publiques rendues pour un visiteur (sans session) sont comptées par l'adresse du visiteur que le serveur du web relaie dans un en-tête signé (ADR 0115).

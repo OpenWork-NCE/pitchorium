@@ -9,13 +9,15 @@ import {
   type ThrottlerStorage,
 } from '@nestjs/throttler';
 import { API_CONFIG, type ApiConfig } from '../config';
+import { CLIENT_ADDRESS_HEADER, verifiedClientAddress } from './client-address';
 import { signedSessionToken } from './session-cookie';
 
 /**
  * Rate limiting of HTTP (WebSocket gateways get their own policy): per session for a request
  * that carries a validly signed session cookie, per address otherwise. The pages rendered by the
  * web server call the api from its own address on behalf of every member: counted per address,
- * all of them would share one limit (ADR 0114).
+ * all of them would share one limit (ADR 0114). A visitor without a session is counted by the
+ * address the web server relays in a signed header, when it is valid (ADR 0115).
  */
 @Injectable()
 export class HttpThrottlerGuard extends ThrottlerGuard {
@@ -36,11 +38,20 @@ export class HttpThrottlerGuard extends ThrottlerGuard {
   }
 
   protected override getTracker(request: Record<string, unknown>): Promise<string> {
-    const headers = request['headers'] as { cookie?: string } | undefined;
-    const token = signedSessionToken(headers?.cookie, this.config.auth.secret);
+    const headers = request['headers'] as Record<string, string | string[] | undefined> | undefined;
+    const cookie = headers?.['cookie'];
+    const token = signedSessionToken(
+      typeof cookie === 'string' ? cookie : undefined,
+      this.config.auth.secret,
+    );
     if (token) {
       return Promise.resolve(`session:${createHash('sha256').update(token).digest('hex')}`);
     }
+    const secret = this.config.http.clientAddressSecret;
+    const relayed = secret
+      ? verifiedClientAddress(headers?.[CLIENT_ADDRESS_HEADER], secret, Date.now())
+      : null;
+    if (relayed) return Promise.resolve(relayed);
     return super.getTracker(request);
   }
 }

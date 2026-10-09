@@ -81,6 +81,7 @@ Toutes les variables lues par l'api et le worker, validées au démarrage par `a
 | `API_PORT`                             | entier      | `3000`             | `3000`                    | comme production | défaut                           |
 | `CORS_ORIGINS`                         | URL (liste) | —                  | `http://localhost:3200`   | comme production | à fixer                          |
 | `TRUST_PROXY_HOPS`                     | entier      | `0`                | `0`                       | comme production | défaut                           |
+| `WEB_CLIENT_ADDRESS_SECRET`            | texte       | —                  | (valeur de développement) | clé de test      | secret partagé avec le web       |
 | `RATE_LIMIT_TTL_SECONDS`               | entier      | `60`               | `60`                      | comme production | défaut                           |
 | `RATE_LIMIT_MAX`                       | entier      | `120`              | `120`                     | comme production | défaut                           |
 | `IDEMPOTENCY_TTL_HOURS`                | entier      | `24`               | `24`                      | comme production | défaut                           |
