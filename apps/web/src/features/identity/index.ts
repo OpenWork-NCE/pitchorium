@@ -7,7 +7,8 @@ export { UserMenu } from './components/user-menu';
 export { AuthErrorScreen } from './components/auth/auth-error-screen';
 export { CheckEmailScreen, type EmailKind } from './components/auth/check-email-screen';
 export { EmailVerifiedScreen } from './components/auth/email-verified-screen';
-export { MagicLinkScreen } from './components/auth/magic-link-screen';
+export { EmailStep } from './components/auth/magic-link-screen';
+export { PasswordSignInScreen } from './components/auth/password-sign-in-screen';
 export {
   ForgotPasswordScreen,
   ResetPasswordScreen,

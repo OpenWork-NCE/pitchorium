@@ -102,11 +102,26 @@ export type MessageScope = keyof typeof CLIENT_MESSAGES;
 
 const PARAMETER = /\{\{(\w+)\}\}/g;
 
+/** A rich tag of next-intl: an opening and its closing tag, `<link>texte</link>`. */
+const RICH_TAG = /<([a-z][a-zA-Z0-9]*)>([\s\S]*?)<\/\1>/g;
+
 /**
  * The shared catalogues write parameters `{{name}}` (server emails, Crowdin); next-intl reads ICU
- * messages. Literal ICU syntax characters are quoted, then `{{name}}` becomes `{name}`.
+ * messages. Literal ICU syntax characters are quoted, `{{name}}` becomes `{name}`, and a pair of
+ * tags (`<link>...</link>`, for `t.rich`) stays a tag; a lone `<` stays a character.
  */
 export function toIcu(text: string): string {
+  let result = '';
+  let last = 0;
+  for (const match of text.matchAll(RICH_TAG)) {
+    result += parameters(text.slice(last, match.index));
+    result += `<${match[1]}>${toIcu(match[2] ?? '')}</${match[1]}>`;
+    last = match.index + match[0].length;
+  }
+  return result + parameters(text.slice(last));
+}
+
+function parameters(text: string): string {
   let result = '';
   let last = 0;
   for (const match of text.matchAll(PARAMETER)) {

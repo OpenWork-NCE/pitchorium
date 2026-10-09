@@ -12,10 +12,10 @@ import {
 
 test('magic link: a new address gets an account and starts the onboarding', async ({ page }) => {
   const email = freshEmail('magic');
-  await page.goto('/fr/sign-in/magic-link');
+  await page.goto('/fr/sign-in/email');
   await hydrated(page);
   await page.getByLabel('Adresse email').fill(email);
-  await page.getByRole('button', { name: 'Recevoir le lien' }).click();
+  await page.getByRole('button', { name: 'Recevoir un lien de connexion' }).click();
   await expect(page.getByRole('heading', { name: 'Lien envoyé' })).toBeVisible();
   await expect(page.getByRole('button', { name: /Renvoyer dans \d+ s/ })).toBeDisabled();
   await page.goto(
@@ -30,10 +30,10 @@ test('sign out from the account menu, then back in with a magic link', async ({ 
   await page.getByRole('button', { name: /Compte de/ }).click();
   await page.getByRole('menuitem', { name: 'Se déconnecter' }).click();
   await expect(page).toHaveURL(/\/fr$/);
-  await page.goto('/fr/sign-in/magic-link');
+  await page.goto('/fr/sign-in/email');
   await hydrated(page);
   await page.getByLabel('Adresse email').fill(email);
-  await page.getByRole('button', { name: 'Recevoir le lien' }).click();
+  await page.getByRole('button', { name: 'Recevoir un lien de connexion' }).click();
   await expect(page.getByRole('heading', { name: 'Lien envoyé' })).toBeVisible();
   await page.goto(
     await linkFromInbox(email, /http[^\s"<>]*\/v1\/auth\/magic-link\/verify[^\s"<>]*/),
@@ -49,7 +49,7 @@ test('sign out of every device from the security settings', async ({ page, brows
   await expect(second).toHaveURL(/\/fr\/feed$/);
   await page.goto('/fr/settings/security');
   await hydrated(page);
-  await page.getByRole('button', { name: 'Se déconnecter de tous les appareils' }).click();
+  await page.getByRole('button', { name: 'Se déconnecter partout, y compris ici' }).click();
   await expect(page).toHaveURL(/\/fr$/);
   await second.goto('/fr/settings/account');
   await expect(second).toHaveURL(/\/fr\/sign-in/);
@@ -175,7 +175,7 @@ test('a missing prerequisite opens its form, then the action runs again', async 
 test('a rate limit is shown with its delay', async ({ page, browserName }) => {
   test.skip(browserName !== 'chromium', 'One engine: the limit is per address and per minute.');
   test.slow();
-  await page.goto('/fr/sign-in');
+  await page.goto('/fr/sign-in/password');
   await hydrated(page);
   await page.getByLabel('Adresse email').fill(freshEmail('limit'));
   await page.getByLabel('Mot de passe', { exact: true }).fill('not the password at all');

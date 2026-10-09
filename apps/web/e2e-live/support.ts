@@ -126,7 +126,7 @@ export async function signInWithPassword(
   email: string,
   password = PASSWORD,
 ): Promise<void> {
-  await page.goto('/fr/sign-in');
+  await page.goto('/fr/sign-in/password');
   await hydrated(page);
   await page.getByLabel('Adresse email').fill(email);
   await page.getByRole('textbox', { name: 'Mot de passe', exact: true }).fill(password);

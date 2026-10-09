@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { MagicLinkScreen } from '@/features/identity';
+import { EmailStep } from '@/features/identity';
 import { asLocale } from '@/i18n/routing';
 import { getAuthConfiguration } from '@/lib/auth/configuration';
 import { REDIRECT_PARAM, safeRedirect } from '@/lib/auth/redirect';
@@ -11,11 +11,8 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title: t('title'), robots: { index: false, follow: false } };
 }
 
-export default async function Page({
-  params,
-  searchParams,
-}: PageProps<'/[locale]/sign-in/magic-link'>) {
+export default async function Page({ params, searchParams }: PageProps<'/[locale]/sign-in/email'>) {
   setRequestLocale(asLocale((await params).locale));
   const redirectTo = safeRedirect(firstParam(await searchParams, REDIRECT_PARAM), '') || null;
-  return <MagicLinkScreen config={await getAuthConfiguration()} redirectTo={redirectTo} />;
+  return <EmailStep config={await getAuthConfiguration()} redirectTo={redirectTo} />;
 }

@@ -8,6 +8,13 @@ describe('messages', () => {
 
   it('quotes the ICU syntax characters of plain text', () => {
     expect(toIcu("l'api {ok} <b> #1")).toBe("l''api '{'ok'}' '<'b'>' '#'1");
+    // A pair of tags is a rich tag of next-intl (t.rich), its parameters converted inside.
+    expect(toIcu('J’accepte les <link>conditions</link> (version {{version}}).')).toBe(
+      'J’accepte les <link>conditions</link> (version {version}).',
+    );
+    expect(toIcu('<nowrap>Afrique–{{x}}</nowrap> < 5 %')).toBe(
+      "<nowrap>Afrique–{x}</nowrap> '<' 5 %",
+    );
   });
 
   it('sends a route group the subtrees it reads only', () => {

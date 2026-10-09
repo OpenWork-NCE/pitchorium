@@ -13,15 +13,19 @@ import { absoluteUrl, continuePath } from './targets';
 import { useTurnstile } from './turnstile';
 
 /**
- * Sign in without a password (§7.2): a link valid 15 minutes, once. Known address or not, the
- * next screen is the same; a new address gets an account and the onboarding.
+ * The email step (§7.2): a sign-in link by default, valid 15 minutes once, which signs in a known
+ * address and creates the account of a new one; the next screen is the same either way, so that
+ * it never says whether an account exists. A password is offered as the other way.
  */
-export function MagicLinkScreen({
+export function EmailStep({
   config,
   redirectTo,
+  entry = false,
 }: {
   config: AuthConfigurationDtoOutput;
   redirectTo: string | null;
+  /** The first screen itself, when no provider is enabled. */
+  entry?: boolean;
 }) {
   const t = useTranslations('web.auth.magicLink');
   const locale = useLocale();
@@ -52,7 +56,7 @@ export function MagicLinkScreen({
   }
 
   return (
-    <AuthScreen title={t('title')} lede={t('lede')}>
+    <AuthScreen title={t(entry ? 'entryTitle' : 'title')} lede={t('lede')}>
       <Form form={form} onSubmit={submit} aria-label={t('title')}>
         <FormField
           control={form.control}
@@ -72,7 +76,7 @@ export function MagicLinkScreen({
         <FormActions>
           <Button
             type="submit"
-            className="w-full sm:w-auto"
+            className="w-full"
             loading={form.formState.isSubmitting}
             loadingLabel={t('sending')}
           >
@@ -80,14 +84,22 @@ export function MagicLinkScreen({
           </Button>
         </FormActions>
       </Form>
-      <p className="text-center text-sm">
+      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 text-sm">
         <Link
-          href={withRedirect(routes.signIn, redirectTo)}
+          href={withRedirect(routes.signInPassword, redirectTo)}
           className="link-underline-hover text-accent"
         >
-          {t('back')}
+          {t('usePassword')}
         </Link>
-      </p>
+        {entry ? null : (
+          <Link
+            href={withRedirect(routes.signIn, redirectTo)}
+            className="link-underline-hover text-muted"
+          >
+            {t('back')}
+          </Link>
+        )}
+      </div>
     </AuthScreen>
   );
 }

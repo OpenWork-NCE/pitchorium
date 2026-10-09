@@ -653,7 +653,9 @@ function AuthComposition({ children }: { children: ReactNode }) {
           homeLink: a11y('homeLink'),
           label: brand('label'),
           kicker: brand('kicker'),
-          promise: brand('promise'),
+          promise: brand.rich('promise', {
+            nowrap: (chunks) => <span className="whitespace-nowrap">{chunks}</span>,
+          }),
           lede: brand('lede'),
         }}
       >

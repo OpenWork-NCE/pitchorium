@@ -16,6 +16,12 @@ On rejoint Pitchorium en moins d'une minute, sans choix de rôle, puis on compl�
 - Un modérateur ou un administrateur sans double authentification est renvoyé de `(admin)` vers `/settings/security?required=two-factor`.
 - Liens vers les textes légaux : `NEXT_PUBLIC_LEGAL_TERMS_URL` et `NEXT_PUBLIC_LEGAL_PRIVACY_URL` (question 31) ; sans elles, la version seule est affichée.
 
+## Révision du 2026-10-09
+
+- Entrée simplifiée : les fournisseurs puis un seul « Continuer avec un email », de même poids ; l'étape email (`/sign-in/email`) envoie un lien de connexion par défaut (connexion ou inscription, même réponse pour toute adresse) et propose « Utiliser un mot de passe » (`/sign-in/password`) ; plus de liens empilés sous les boutons.
+- Panneau de marque violet profond dans les deux thèmes (token `brand-panel`), un seul logo par écran (les fonds discrets du kit portent un logotype : retirés de la colonne du formulaire), pas de vide entre le formulaire et le panneau sur un téléphone.
+- Photo de l'onboarding : l'avatar et un bouton « Ajouter une photo », à la place de la zone de dépôt.
+
 ## Conséquences
 
 - L'onboarding écrit comme l'espace membre : son budget de JavaScript est celui de l'espace membre (250 kB, `check-bundles.mjs`), le reste de `(auth)` garde 220 kB ; le QR code, la recherche des pays, les champs de langue et de fuseau et le dialogue des prérequis se chargent à la demande.

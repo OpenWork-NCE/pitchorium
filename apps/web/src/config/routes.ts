@@ -10,7 +10,9 @@ export const routes = {
   // Authentication (§7.2): one entry for every method, then the screens of each step.
   signIn: '/sign-in',
   signUp: '/sign-up',
-  magicLink: '/sign-in/magic-link',
+  /** Email step: a sign-in link by default, a password on request. */
+  magicLink: '/sign-in/email',
+  signInPassword: '/sign-in/password',
   twoFactor: '/sign-in/two-factor',
   checkEmail: '/check-email',
   emailVerified: '/email-verified',

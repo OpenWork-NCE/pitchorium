@@ -19,7 +19,9 @@ export async function AuthShell({ children }: { children: ReactNode }) {
           homeLink: a11y('homeLink'),
           label: t('label'),
           kicker: t('kicker'),
-          promise: t('promise'),
+          promise: t.rich('promise', {
+            nowrap: (chunks) => <span className="whitespace-nowrap">{chunks}</span>,
+          }),
           lede: t('lede'),
         }}
       >

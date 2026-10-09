@@ -3,19 +3,17 @@
 import { meControllerMe, meControllerUpdateProfile } from '@pitchorium/api-client';
 import { updateBaseProfileRequestSchema } from '@pitchorium/contracts';
 import { useTranslations } from 'next-intl';
-import { lazy, Suspense, useState } from 'react';
+import { lazy, Suspense, useRef, useState } from 'react';
 import {
   Avatar,
   Button,
   type ComboboxOption,
-  FileDrop,
-  type FileDropItem,
   Form,
   FormActions,
   FormField,
   Input,
   Progress,
-  Skeleton,
+  FieldSkeleton,
   useApplyProblem,
   useZodForm,
 } from '@/components/ui';
@@ -25,6 +23,11 @@ import { AVATAR_TYPES, AvatarRejectedError, uploadAvatar } from '../../lib/avata
 const Combobox = lazy(() =>
   import('@/components/ui/combobox').then((module) => ({ default: module.Combobox })),
 );
+
+type PhotoState =
+  | { step: 'idle'; preview?: undefined }
+  | { step: 'uploading' | 'processing' | 'ready'; preview: string }
+  | { step: 'rejected'; message: string; preview?: undefined };
 
 const profileStepSchema = updateBaseProfileRequestSchema.pick({
   displayName: true,
@@ -63,7 +66,9 @@ export function ProfileStep({
   const t = useTranslations('web.onboarding.profile');
   const [strength, setStrength] = useState(initial.strength);
   const [avatarUrl, setAvatarUrl] = useState(initial.avatarUrl);
-  const [photo, setPhoto] = useState<FileDropItem | null>(null);
+  const rejections = useTranslations('reference.mediaRejectionReasons');
+  const picker = useRef<HTMLInputElement>(null);
+  const [photo, setPhoto] = useState<PhotoState>({ step: 'idle' });
   const form = useZodForm(profileStepSchema, {
     defaultValues: {
       displayName: initial.displayName,
@@ -93,27 +98,25 @@ export function ProfileStep({
   }
 
   async function takePhoto(file: File) {
-    const item: FileDropItem = {
-      id: 'avatar',
-      name: file.name,
-      size: file.size,
-      state: 'uploading',
-      previewUrl: URL.createObjectURL(file),
-    };
-    setPhoto(item);
+    const preview = URL.createObjectURL(file);
+    setPhoto({ step: 'uploading', preview });
     try {
-      await uploadAvatar(file, (step) => setPhoto({ ...item, state: step }));
-      setPhoto({ ...item, state: 'ready' });
+      await uploadAvatar(file, (step) => setPhoto({ step, preview }));
+      setPhoto({ step: 'ready', preview });
       await refreshStrength();
     } catch (error) {
+      const reason = error instanceof AvatarRejectedError ? error.reason : null;
       setPhoto({
-        ...item,
-        state: 'rejected',
-        reason:
-          error instanceof AvatarRejectedError && error.reason ? error.reason : t('photoFailed'),
+        step: 'rejected',
+        message:
+          reason && rejections.has(reason as never)
+            ? rejections(reason as never)
+            : t('photoFailed'),
       });
     }
   }
+
+  const busy = photo.step === 'uploading' || photo.step === 'processing';
 
   return (
     <div className="grid gap-6">
@@ -128,18 +131,44 @@ export function ProfileStep({
           valueText={t('percent', { percent: strength })}
         />
       </div>
+      {/* The avatar and one button: the photo of the provider is already there when it exists. */}
       <div className="flex items-center gap-4">
-        <Avatar name={form.watch('displayName') ?? initial.displayName} src={avatarUrl} size="lg" />
-        <div className="min-w-0 flex-1">
-          <FileDrop
-            label={t('photo')}
-            limits={t('photoLimits')}
-            accept={AVATAR_TYPES}
-            items={photo ? [photo] : []}
-            onFiles={([file]) => file && void takePhoto(file)}
-            onRemove={() => setPhoto(null)}
-            onRetry={() => setPhoto(null)}
+        <Avatar
+          name={form.watch('displayName') ?? initial.displayName}
+          src={photo.preview ?? avatarUrl}
+          size="xl"
+        />
+        <div className="grid min-w-0 justify-items-start gap-1.5">
+          <input
+            ref={picker}
+            type="file"
+            accept={AVATAR_TYPES.join(',')}
+            hidden
+            onChange={(event) => {
+              const [file] = event.target.files ?? [];
+              event.target.value = '';
+              if (file) void takePhoto(file);
+            }}
           />
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            loading={busy}
+            loadingLabel={t(photo.step === 'processing' ? 'photoChecking' : 'photoSending')}
+            onClick={() => picker.current?.click()}
+          >
+            {t(avatarUrl || photo.preview ? 'changePhoto' : 'addPhoto')}
+          </Button>
+          <p className="text-xs text-muted">{t('photoLimits')}</p>
+          <p role="status" className="text-xs">
+            {photo.step === 'ready' ? (
+              <span className="text-success">{t('photoSaved')}</span>
+            ) : null}
+            {photo.step === 'rejected' ? (
+              <span className="text-danger">{photo.message}</span>
+            ) : null}
+          </p>
         </div>
       </div>
       <Form form={form} onSubmit={onDone} aria-label={t('formLabel')}>
@@ -186,7 +215,7 @@ export function ProfileStep({
           label={t('country')}
           optional
           render={({ field }) => (
-            <Suspense fallback={<Skeleton className="h-11" />}>
+            <Suspense fallback={<FieldSkeleton hint={t('countryPlaceholder')} />}>
               <Combobox
                 options={countries}
                 value={field.value ?? null}

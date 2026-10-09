@@ -558,7 +558,7 @@
     "brand": {
       "label": "Pitchorium",
       "kicker": "Africa, Caribbean, diaspora",
-      "promise": "The business place of the Africa–Diaspora synergy.",
+      "promise": "The business place of the <nowrap>Africa–Diaspora</nowrap> synergy.",
       "lede": "The professional network where entrepreneurs from Africa and the Caribbean meet those who want to support them from Europe and the diaspora."
     },
     "failures": {
@@ -581,17 +581,7 @@
     "signIn": {
       "title": "Join Pitchorium",
       "lede": "Sign in or create your account in a few seconds.",
-      "or": "or",
-      "continueWithEmail": "Continue with email",
-      "emailForm": "Sign in with email",
-      "email": "Email address",
-      "password": "Password",
-      "forgotPassword": "Forgot your password?",
-      "submit": "Sign in",
-      "signingIn": "Signing in",
-      "magicLink": "Get a sign-in link, without a password",
-      "noAccount": "No account yet?",
-      "signUp": "Create an account with email"
+      "continueWithEmail": "Continue with email"
     },
     "signUp": {
       "title": "Create an account",
@@ -606,12 +596,14 @@
       "signIn": "Sign in"
     },
     "magicLink": {
-      "title": "Sign-in link",
-      "lede": "Get a link by email to sign in without a password. It is valid for 15 minutes, once.",
+      "title": "Continue with email",
+      "entryTitle": "Join Pitchorium",
+      "lede": "Get a link to sign in, or to create your account if you are new. No password, valid for 15 minutes.",
       "email": "Email address",
-      "submit": "Get the link",
+      "submit": "Get a sign-in link",
       "sending": "Sending",
-      "back": "Back to sign in"
+      "usePassword": "Use a password",
+      "back": "Other methods"
     },
     "checkEmail": {
       "metaTitle": "Email sent",
@@ -715,6 +707,17 @@
         "title": "The sign-in did not complete",
         "lede": "An error occurred while signing in with the provider. Try again in a moment."
       }
+    },
+    "password": {
+      "title": "Sign in with a password",
+      "lede": "Enter the address and the password of your account.",
+      "email": "Email address",
+      "password": "Password",
+      "forgotPassword": "Forgot your password?",
+      "submit": "Sign in",
+      "signingIn": "Signing in",
+      "useLink": "Get a link instead",
+      "signUp": "Create an account with a password"
     }
   },
   "onboarding": {
@@ -779,7 +782,12 @@
       "country": "Country",
       "countryPlaceholder": "Choose a country",
       "continue": "Enter Pitchorium",
-      "skip": "Skip"
+      "skip": "Skip",
+      "addPhoto": "Add a photo",
+      "changePhoto": "Change the photo",
+      "photoSending": "Sending the photo",
+      "photoChecking": "Checking the photo",
+      "photoSaved": "Photo saved."
     }
   },
   "settings": {
@@ -866,8 +874,8 @@
         "opened": "opened on {{date}}",
         "revoke": "Close",
         "revoking": "Closing",
-        "revokeOthers": "Close the other sessions",
-        "signOutEverywhere": "Sign out of every device"
+        "revokeOthers": "Sign out the other devices",
+        "signOutEverywhere": "Sign out everywhere, here included"
       }
     },
     "preferences": {

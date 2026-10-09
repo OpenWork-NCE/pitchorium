@@ -179,6 +179,7 @@ function TwoFactorSection() {
         <div>
           <Button
             variant={enabled ? 'outline' : 'primary'}
+            className="h-auto min-h-11 py-2 whitespace-normal"
             onClick={() => {
               passwordForm.reset();
               setStep(enabled ? 'disable' : 'password');
@@ -220,7 +221,7 @@ function TwoFactorSection() {
             <li>{t('codeStep')}</li>
           </ol>
           <div className="flex flex-wrap items-center gap-4">
-            <Suspense fallback={<Skeleton className="size-48" />}>
+            <Suspense fallback={<Skeleton className="size-48" data-loading="" />}>
               <QrCode value={setup.totpURI} label={t('qrLabel')} />
             </Suspense>
             <div className="grid min-w-0 gap-1 text-sm">
@@ -410,7 +411,7 @@ function SessionsSection() {
           {t('revokeOthers')}
         </Button>
         <Button
-          variant="ghost"
+          variant="danger"
           loading={pending === 'all'}
           loadingLabel={t('revoking')}
           onClick={() => {

@@ -16,8 +16,9 @@ Comment assembler les composants (`components.md`) pour les situations récurren
 
 ## Authentification (§7, ADR 0104)
 
-- Écran partagé sur un ordinateur (`AuthFrame`) : panneau de marque à gauche, violet, motif d'élévation, promesse du §3 révélée en D4 ; le formulaire à droite. Sur un téléphone, une colonne, le formulaire d'abord. Langue et thème toujours dans le bandeau.
-- Un écran, une question : titre, phrase d'explication, formulaire, puis les liens secondaires. Boutons des fournisseurs pleine largeur, logo officiel à gauche, « Continuer avec … » ; l'email en lien secondaire.
+- Écran partagé sur un ordinateur (`AuthFrame`) : panneau de marque à gauche, violet profond dans les deux thèmes (`brand-panel`), motif d'élévation, promesse du §3 révélée en D4 (« Afrique–Diaspora » jamais coupé au tiret, taille réglée pour tenir dans le panneau) ; le formulaire à droite. Sur un téléphone, une colonne, le formulaire d'abord et le panneau juste après, sans vide. Un seul logo : les fonds discrets du kit portent leur propre logotype, la colonne du formulaire garde le fond uni. Langue et thème toujours dans le bandeau.
+- Entrée : les fournisseurs activés puis « Continuer avec un email », quatre boutons de même poids, sans liens empilés. L'étape email (`/sign-in/email`) envoie un lien de connexion par défaut, valable pour une connexion comme pour une inscription, la même réponse pour toute adresse ; « Utiliser un mot de passe » mène à `/sign-in/password` (mot de passe oublié, création d'un compte avec mot de passe). Sans fournisseur, l'étape email est l'entrée.
+- Un écran, une question : titre, phrase d'explication, formulaire, puis au plus deux liens secondaires sur une ligne. Double authentification : « Vérifier » de la largeur des six cases, juste dessous.
 - Un message ne révèle jamais l'existence d'un compte (« Si un compte utilise … ») ; une limite de fréquence dit son délai ; un lien expiré dit sa durée de validité et propose d'en recevoir un autre.
 - Attributs des gestionnaires de mots de passe : `username` et `current-password` à la connexion, `email`, `name` et `new-password` à l'inscription et à la réinitialisation (avec un champ `username` caché).
 

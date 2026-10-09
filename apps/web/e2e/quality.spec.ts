@@ -6,6 +6,8 @@ const PAGES = [
   '/en',
   '/fr/page-absente',
   '/fr/sign-in',
+  '/fr/sign-in/email',
+  '/fr/sign-in/password',
   '/fr/sign-up',
   '/fr/forgot-password',
 ];

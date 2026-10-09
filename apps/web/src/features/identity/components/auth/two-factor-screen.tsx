@@ -4,7 +4,7 @@ import { backupCodeRequestSchema, totpCodeRequestSchema } from '@pitchorium/cont
 import { ShieldCheck } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { Button, Form, FormActions, FormField, Input, OtpInput, useZodForm } from '@/components/ui';
+import { Button, Form, FormField, Input, OtpInput, useZodForm } from '@/components/ui';
 import { routes } from '@/config/routes';
 import { Link } from '@/i18n/navigation';
 import { withRedirect } from '@/lib/auth/redirect';
@@ -70,7 +70,8 @@ function TotpForm({ redirectTo }: { redirectTo: string | null }) {
   }
 
   return (
-    <Form form={form} onSubmit={submit} aria-label={t('totpLabel')}>
+    // As wide as the six boxes: « Vérifier » spans the form, right under them.
+    <Form form={form} onSubmit={submit} aria-label={t('totpLabel')} className="w-fit max-w-full">
       <FormField
         control={form.control}
         name="code"
@@ -79,16 +80,14 @@ function TotpForm({ redirectTo }: { redirectTo: string | null }) {
           <OtpInput {...field} onComplete={() => void form.handleSubmit(submit)()} />
         )}
       />
-      <FormActions>
-        <Button
-          type="submit"
-          className="w-full sm:w-auto"
-          loading={form.formState.isSubmitting}
-          loadingLabel={t('checking')}
-        >
-          {t('submit')}
-        </Button>
-      </FormActions>
+      <Button
+        type="submit"
+        className="w-full"
+        loading={form.formState.isSubmitting}
+        loadingLabel={t('checking')}
+      >
+        {t('submit')}
+      </Button>
     </Form>
   );
 }
@@ -121,16 +120,14 @@ function BackupCodeForm({ redirectTo }: { redirectTo: string | null }) {
           <Input {...field} autoComplete="one-time-code" autoCapitalize="none" spellCheck={false} />
         )}
       />
-      <FormActions>
-        <Button
-          type="submit"
-          className="w-full sm:w-auto"
-          loading={form.formState.isSubmitting}
-          loadingLabel={t('checking')}
-        >
-          {t('submit')}
-        </Button>
-      </FormActions>
+      <Button
+        type="submit"
+        className="w-full"
+        loading={form.formState.isSubmitting}
+        loadingLabel={t('checking')}
+      >
+        {t('submit')}
+      </Button>
     </Form>
   );
 }

@@ -558,7 +558,7 @@
     "brand": {
       "label": "Pitchorium",
       "kicker": "Afrique, Caraïbes, diaspora",
-      "promise": "Le lieu d’affaires de la synergie Afrique–Diaspora.",
+      "promise": "Le lieu d’affaires de la synergie <nowrap>Afrique–Diaspora</nowrap>.",
       "lede": "Le réseau professionnel où se rencontrent les entrepreneurs d’Afrique et des Caraïbes et ceux qui veulent les soutenir depuis l’Europe et la diaspora."
     },
     "failures": {
@@ -581,17 +581,7 @@
     "signIn": {
       "title": "Rejoindre Pitchorium",
       "lede": "Connectez-vous ou créez votre compte en quelques secondes.",
-      "or": "ou",
-      "continueWithEmail": "Continuer avec un email",
-      "emailForm": "Connexion par email",
-      "email": "Adresse email",
-      "password": "Mot de passe",
-      "forgotPassword": "Mot de passe oublié ?",
-      "submit": "Se connecter",
-      "signingIn": "Connexion en cours",
-      "magicLink": "Recevoir un lien de connexion, sans mot de passe",
-      "noAccount": "Pas encore de compte ?",
-      "signUp": "Créer un compte avec un email"
+      "continueWithEmail": "Continuer avec un email"
     },
     "signUp": {
       "title": "Créer un compte",
@@ -606,12 +596,14 @@
       "signIn": "Se connecter"
     },
     "magicLink": {
-      "title": "Lien de connexion",
-      "lede": "Recevez un lien par email pour vous connecter sans mot de passe. Il est valable 15 minutes, une seule fois.",
+      "title": "Continuer avec un email",
+      "entryTitle": "Rejoindre Pitchorium",
+      "lede": "Recevez un lien pour vous connecter, ou pour créer votre compte si vous êtes nouveau. Sans mot de passe, valable 15 minutes.",
       "email": "Adresse email",
-      "submit": "Recevoir le lien",
+      "submit": "Recevoir un lien de connexion",
       "sending": "Envoi en cours",
-      "back": "Revenir à la connexion"
+      "usePassword": "Utiliser un mot de passe",
+      "back": "Autres méthodes"
     },
     "checkEmail": {
       "metaTitle": "Email envoyé",
@@ -715,6 +707,17 @@
         "title": "La connexion n’a pas abouti",
         "lede": "Une erreur est survenue pendant la connexion avec le fournisseur. Réessayez dans quelques instants."
       }
+    },
+    "password": {
+      "title": "Connexion avec un mot de passe",
+      "lede": "Saisissez l’adresse et le mot de passe de votre compte.",
+      "email": "Adresse email",
+      "password": "Mot de passe",
+      "forgotPassword": "Mot de passe oublié ?",
+      "submit": "Se connecter",
+      "signingIn": "Connexion en cours",
+      "useLink": "Recevoir plutôt un lien",
+      "signUp": "Créer un compte avec un mot de passe"
     }
   },
   "onboarding": {
@@ -779,7 +782,12 @@
       "country": "Pays",
       "countryPlaceholder": "Choisir un pays",
       "continue": "Entrer dans Pitchorium",
-      "skip": "Passer"
+      "skip": "Passer",
+      "addPhoto": "Ajouter une photo",
+      "changePhoto": "Changer la photo",
+      "photoSending": "Envoi de la photo",
+      "photoChecking": "Vérification de la photo",
+      "photoSaved": "Photo enregistrée."
     }
   },
   "settings": {
@@ -866,8 +874,8 @@
         "opened": "ouverte le {{date}}",
         "revoke": "Fermer",
         "revoking": "Fermeture en cours",
-        "revokeOthers": "Fermer les autres sessions",
-        "signOutEverywhere": "Se déconnecter de tous les appareils"
+        "revokeOthers": "Déconnecter les autres appareils",
+        "signOutEverywhere": "Se déconnecter partout, y compris ici"
       }
     },
     "preferences": {
