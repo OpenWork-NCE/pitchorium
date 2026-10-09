@@ -3,12 +3,13 @@
 import { getPostsControllerReadQueryKey, postsControllerRead } from '@pitchorium/api-client';
 import type { FeedPage, Post, Suggestion } from '@pitchorium/contracts';
 import { type InfiniteData, useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
-import { useWindowVirtualizer } from '@tanstack/react-virtual';
+import { defaultRangeExtractor, useWindowVirtualizer } from '@tanstack/react-virtual';
 import { Newspaper } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import {
   type ReactNode,
   type RefObject,
+  Suspense,
   useEffect,
   useLayoutEffect,
   useMemo,
@@ -46,8 +47,10 @@ const ESTIMATED_HEIGHT = 420;
 /** Items kept rendered above and below the screen. */
 const OVERSCAN = 4;
 /** Entries rendered by the server and hydrated before the list is virtualized. */
-const FIRST_ENTRIES = 6;
+const FIRST_ENTRIES = 3;
 const HEADER_OFFSET = 88;
+/** How far from the screen the focused entry stays rendered. */
+const KEPT_FOCUS = 10;
 
 type Entry = { kind: 'item'; value: DrawnItem } | { kind: 'module'; value: Suggestion[] };
 type Measurements = FeedPosition['measurements'];
@@ -114,10 +117,14 @@ export function FeedList({
   const watch = useViewObserver();
   const listRef = useRef<HTMLDivElement>(null);
   const [leaving, setLeaving] = useState<ReadonlySet<string>>(new Set());
-  // Once hydrated: the measurements the virtualized list starts from (or the position kept).
-  const [virtual, setVirtual] = useState<{ measurements: Measurements; offset: number } | null>(
-    null,
-  );
+  // Once hydrated: where the virtualized list starts from (real heights, or the position kept).
+  const [start, setStart] = useState<{
+    measurements: Measurements;
+    /** Top of the list in the page. */
+    margin: number;
+    /** The scroll to give back after a return by the history; null otherwise. */
+    restore: number | null;
+  } | null>(null);
 
   const feed = useInfiniteQuery({
     queryKey: feedKey(),
@@ -146,21 +153,105 @@ export function FeedList({
     [items, modules],
   );
 
+  // One virtualizer for the life of the list, off until the first entries are hydrated: the
+  // entries keep their keys when it starts, so React keeps their elements (and the focus) instead
+  // of rendering the whole list again.
+  // The entry that has the focus stays rendered, even out of the screen: unmounted, it would drop
+  // the focus to the page (Page Down scrolls before the next entry is there).
+  const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
+  const virtualizer = useWindowVirtualizer({
+    count: entries.length,
+    estimateSize: () => ESTIMATED_HEIGHT,
+    overscan: OVERSCAN,
+    getItemKey: (index) => keyOf(entries, index),
+    scrollMargin: start?.margin ?? 0,
+    initialMeasurementsCache: start?.measurements ?? [],
+    enabled: start !== null,
+    // Contiguous (the entries are in the flow of the page, between two spaces): the range is
+    // stretched to the focused entry, up to ten entries away (further, the reader has scrolled
+    // away with the pointer).
+    rangeExtractor: (range) => {
+      const indexes = defaultRangeExtractor(range);
+      const first = indexes[0] ?? 0;
+      const last = indexes.at(-1) ?? 0;
+      if (focusedIndex === null || (focusedIndex >= first && focusedIndex <= last)) return indexes;
+      if (focusedIndex < first - KEPT_FOCUS || focusedIndex > last + KEPT_FOCUS) return indexes;
+      const from = Math.min(first, focusedIndex);
+      const to = Math.max(last, focusedIndex);
+      return Array.from({ length: to - from + 1 }, (_, offset) => from + offset);
+    },
+  });
+
   // Hydrated: the virtualized list takes over, from the real heights (or the position kept).
+  const position = useRef<ReturnType<typeof takeFeedPosition> | undefined>(undefined);
   useEffect(() => {
     const list = listRef.current;
-    if (!list || virtual) return;
-    const restored = takeFeedPosition();
+    if (!list || start) return;
+    // Taken once: the effect runs again when the entries change before the switch.
+    if (position.current === undefined) position.current = takeFeedPosition();
+    const restored = position.current;
     const frame = requestAnimationFrame(() => {
       const margin = list.getBoundingClientRect().top + window.scrollY;
-      setVirtual(
+      setStart(
         restored
-          ? { measurements: restored.measurements, offset: restored.offset }
-          : { measurements: measure(list, margin), offset: window.scrollY },
+          ? {
+              measurements: restored.measurements,
+              margin: restored.measurements[0]?.start ?? margin,
+              restore: restored.offset,
+            }
+          : { measurements: measure(list, margin), margin, restore: null },
       );
     });
     return () => cancelAnimationFrame(frame);
-  }, [virtual, entries.length]);
+  }, [start, entries.length]);
+
+  // No scroll anchoring on the page while the feed is virtualized: the browser would move the
+  // page each time the spaces around the entries change (anchored on what follows the feed),
+  // the list would render other entries, and so on; at a return by the history, it pushed the
+  // page far past its position.
+  useEffect(() => {
+    if (!start) return undefined;
+    const root = document.documentElement;
+    const before = root.style.overflowAnchor;
+    root.style.overflowAnchor = 'none';
+    return () => {
+      root.style.overflowAnchor = before;
+    };
+  }, [start]);
+
+  // Back by the history: the scroll goes where it was, once the heights are known.
+  useLayoutEffect(() => {
+    if (!start || start.restore === null) return;
+    if (Math.abs(window.scrollY - start.restore) > 1) window.scrollTo({ top: start.restore });
+  }, [start]);
+
+  // Leaving the feed: its position is kept for a return by the history. In a layout cleanup, run
+  // before the next page scrolls itself to its top (a passive cleanup would read that top).
+  // Back by the history, the router shows the same feed again (kept hidden, not unmounted): its
+  // effects run again, and the position goes back where it was, after the scroll the router and
+  // the browser apply to the page (next frame).
+  useLayoutEffect(() => {
+    if (!start) return undefined;
+    const back = takeFeedPosition();
+    const frame = back
+      ? requestAnimationFrame(() => window.scrollTo({ top: back.offset }))
+      : undefined;
+    return () => {
+      if (frame !== undefined) cancelAnimationFrame(frame);
+      saveFeedPosition({
+        offset: window.scrollY,
+        measurements: virtualizer.measurementsCache.map((item) => ({ ...item })),
+      });
+    };
+  }, [start, virtualizer]);
+
+  const virtualItems = start ? virtualizer.getVirtualItems() : [];
+  const lastIndex = virtualItems.at(-1)?.index ?? 0;
+  useEffect(() => {
+    if (start && lastIndex >= entries.length - 3 && feed.hasNextPage && !feed.isFetchingNextPage) {
+      void feed.fetchNextPage();
+    }
+  }, [start, lastIndex, entries.length, feed]);
 
   // A publication leaving: the ones below slide up by a transform, never by its height.
   const positions = useRef(new Map<string, number>());
@@ -249,6 +340,42 @@ export function FeedList({
     );
   }
 
+  // What an entry may do, behind stable functions: an entry renders again only when its own
+  // publication changes, not at each render of the list (each frame of a scroll).
+  const handlers = useRef({ replacePost, remove, setPages });
+  useLayoutEffect(() => {
+    handlers.current = { replacePost, remove, setPages };
+  });
+  const [actions] = useState<EntryActions>(() => ({
+    replace: (post) => handlers.current.replacePost(post),
+    remove: (itemId, reason) => handlers.current.remove(itemId, reason),
+    reposted: (repost) =>
+      handlers.current.setPages((all) =>
+        all.length
+          ? [
+              {
+                ...all[0]!,
+                items: [
+                  { type: 'repost', id: `repost:${repost.id}`, post: repost },
+                  ...all[0]!.items,
+                ],
+              },
+              ...all.slice(1),
+            ]
+          : all,
+      ),
+  }));
+  // Measured once the list is virtualized; the entries already there are measured at the switch.
+  const measuring = useRef<((element: Element | null) => void) | null>(null);
+  useLayoutEffect(() => {
+    measuring.current = start ? virtualizer.measureElement : null;
+    if (start)
+      listRef.current
+        ?.querySelectorAll(':scope > [data-index]')
+        .forEach(virtualizer.measureElement);
+  }, [start, virtualizer]);
+  const [measureRef] = useState(() => (element: Element | null) => measuring.current?.(element));
+
   /** The new publications above the first one shown, then the scroll and the focus to them. */
   async function showNewer() {
     const page = await postsControllerRead({ limit: FEED_PAGE_SIZE });
@@ -302,127 +429,51 @@ export function FeedList({
   }
 
   const setSize = feed.hasNextPage ? -1 : entries.length;
-  const renderEntry = (index: number, measureRef?: (element: Element | null) => void) => {
+  const renderEntry = (index: number) => {
     const entry = entries[index]!;
-    const key = keyOf(entries, index);
-    const position = {
-      'data-feed-index': index,
-      tabIndex: 0,
-      'aria-posinset': index + 1,
-      'aria-setsize': setSize,
-    } as const;
-    if (entry.kind === 'module') {
-      return (
-        <div
-          key={key}
-          ref={measureRef}
-          data-index={index}
-          data-feed-key={key}
-          className="pb-4 lg:hidden"
-        >
-          <SuggestionModule suggestions={entry.value} {...position} />
-        </div>
-      );
-    }
-    const item = entry.value;
-    let content: ReactNode;
-    if (item.type === 'project_update') {
-      content = (
-        <article
-          aria-label={t('projectUpdate', { project: item.update.project.title })}
-          className="rounded-xl outline-none focus-visible:outline-2 focus-visible:outline-focus"
-          {...position}
-        >
-          <ProjectUpdateCard update={item.update} />
-        </article>
-      );
-    } else if (item.type === 'suggestion') {
-      content = <FeedSuggestion suggestion={item.suggestion} {...position} />;
-    } else {
-      content = (
-        <PostCard
-          {...position}
-          ref={watch(item.post.viewerIsAuthor ? null : item.post.id)}
-          className="rounded-xl outline-none focus-visible:outline-2 focus-visible:outline-focus"
-          post={item.post}
-          signedIn
-          priority={index === 0}
-          featured={item.type === 'featured'}
-          name={
-            item.post.author.type === 'member' ? (
-              <MemberHoverCard
-                member={item.post.author.member}
-                signedIn
-                className="truncate font-semibold text-foreground hover:underline"
-              />
-            ) : undefined
-          }
-          menu={
-            <PostMenu
-              post={item.post}
-              onChange={replacePost}
-              onRemove={(reason) => remove(item.id, reason)}
-            />
-          }
-          footer={
-            <PostFooter
-              post={item.post}
-              onReposted={(repost) =>
-                setPages((all) =>
-                  all.length
-                    ? [
-                        {
-                          ...all[0]!,
-                          items: [
-                            { type: 'repost', id: `repost:${repost.id}`, post: repost },
-                            ...all[0]!.items,
-                          ],
-                        },
-                        ...all.slice(1),
-                      ]
-                    : all,
-                )
-              }
-            />
-          }
-        />
-      );
-    }
     return (
-      <div
-        key={key}
-        ref={measureRef}
-        data-index={index}
-        data-feed-key={key}
-        className="post-leave pb-4"
-        data-leaving={leaving.has(item.id) ? '' : undefined}
-      >
-        {content}
-      </div>
+      <FeedEntry
+        key={keyOf(entries, index)}
+        entryKey={keyOf(entries, index)}
+        entry={entry}
+        index={index}
+        setSize={setSize}
+        leaving={entry.kind === 'item' && leaving.has(entry.value.id)}
+        measureRef={measureRef}
+        actions={actions}
+        watch={watch}
+      />
     );
   };
 
   return (
     <>
       <NewerPill key={head ?? 'none'} head={head} onShow={showNewer} />
-      {virtual ? (
-        <VirtualEntries
-          listRef={listRef}
-          count={entries.length}
-          keyAt={(index) => keyOf(entries, index)}
-          start={virtual}
-          label={t('label')}
-          busy={feed.isFetchingNextPage}
-          onNearEnd={() => {
-            if (feed.hasNextPage && !feed.isFetchingNextPage) void feed.fetchNextPage();
-          }}
-          renderEntry={renderEntry}
-        />
-      ) : (
-        <FeedElement listRef={listRef} label={t('label')} busy={false} count={entries.length}>
-          {entries.slice(0, FIRST_ENTRIES).map((_, index) => renderEntry(index))}
-        </FeedElement>
-      )}
+      <FeedElement
+        listRef={listRef}
+        label={t('label')}
+        busy={feed.isFetchingNextPage}
+        count={entries.length}
+        scrollTo={
+          start ? (index) => virtualizer.scrollToIndex(index, { align: 'start' }) : undefined
+        }
+        onFocusEntry={setFocusedIndex}
+        // No scroll anchoring: the browser would move the page each time the paddings change, the
+        // list would render other entries, and so on, without end (seen on the live feed).
+        style={
+          start
+            ? {
+                paddingTop: virtualItems[0] ? virtualItems[0].start - start.margin : 0,
+                paddingBottom: virtualizer.getTotalSize() - (virtualItems.at(-1)?.end ?? 0),
+                overflowAnchor: 'none',
+              }
+            : undefined
+        }
+      >
+        {start
+          ? virtualItems.map((item) => renderEntry(item.index))
+          : entries.slice(0, FIRST_ENTRIES).map((_, index) => renderEntry(index))}
+      </FeedElement>
       <div className="grid gap-2" data-feed-after tabIndex={-1}>
         {feed.isFetchingNextPage ? <PostSkeleton /> : null}
         <Pagination
@@ -452,6 +503,7 @@ function FeedElement({
   busy,
   count,
   scrollTo,
+  onFocusEntry,
   style,
   children,
 }: {
@@ -460,6 +512,8 @@ function FeedElement({
   busy: boolean;
   count: number;
   scrollTo?: (index: number) => void;
+  /** The entry that holds the focus (null when it leaves the feed). */
+  onFocusEntry?: (index: number | null) => void;
   style?: React.CSSProperties;
   children: ReactNode;
 }) {
@@ -483,14 +537,15 @@ function FeedElement({
         while (target >= 0 && target < count && hidden(target)) target += step;
         if (target < 0 || target >= count) return;
         scrollTo?.(target);
-        // Virtualized, the entry is rendered once the scroll has moved: a few frames at most.
+        // Virtualized, the entry is rendered once the scroll has moved, and shown once its code
+        // is there: it takes the focus as soon as it can, two seconds at most.
         const focus = (frames: number) =>
           requestAnimationFrame(() => {
             const element = list.querySelector<HTMLElement>(`[data-feed-index="${target}"]`);
-            if (element) element.focus();
+            if (element && element.getClientRects().length > 0) element.focus();
             else if (frames > 0) focus(frames - 1);
           });
-        focus(10);
+        focus(120);
       } else if (event.ctrlKey && (event.key === 'End' || event.key === 'Home')) {
         event.preventDefault();
         document
@@ -500,9 +555,22 @@ function FeedElement({
           ?.focus();
       }
     };
+    const focusIn = (event: FocusEvent) => {
+      const entry = (event.target as HTMLElement).closest<HTMLElement>('[data-feed-index]');
+      onFocusEntry?.(entry ? Number(entry.dataset.feedIndex) : null);
+    };
+    const focusOut = (event: FocusEvent) => {
+      if (!list.contains(event.relatedTarget as Node | null)) onFocusEntry?.(null);
+    };
     list.addEventListener('keydown', navigate);
-    return () => list.removeEventListener('keydown', navigate);
-  }, [listRef, count, scrollTo]);
+    list.addEventListener('focusin', focusIn);
+    list.addEventListener('focusout', focusOut);
+    return () => {
+      list.removeEventListener('keydown', navigate);
+      list.removeEventListener('focusin', focusIn);
+      list.removeEventListener('focusout', focusOut);
+    };
+  }, [listRef, count, scrollTo, onFocusEntry]);
   return (
     <div ref={listRef} role="feed" aria-label={label} aria-busy={busy} style={style}>
       {children}
@@ -510,77 +578,107 @@ function FeedElement({
   );
 }
 
+interface EntryActions {
+  replace: (post: Post) => void;
+  remove: (itemId: string, reason: 'hidden' | 'deleted' | null) => void;
+  reposted: (repost: Post) => void;
+}
+
 /**
- * The virtualized feed, mounted once the first entries are hydrated: it starts from their
- * measured heights (or from the position kept for a return by the history), renders the entries
- * near the screen between two spaces, asks for the next page near the end and keeps its
- * position when it leaves.
+ * One entry of the feed: a publication (with its menu, its actions and its view signal), a
+ * project update, a suggestion, or the suggestions of a phone. Its props stay the same while its
+ * publication does: it does not render again with the list.
  */
-function VirtualEntries({
-  listRef,
-  count,
-  keyAt,
-  start,
-  label,
-  busy,
-  onNearEnd,
-  renderEntry,
+function FeedEntry({
+  entryKey,
+  entry,
+  index,
+  setSize,
+  leaving,
+  measureRef,
+  actions,
+  watch,
 }: {
-  listRef: RefObject<HTMLDivElement | null>;
-  count: number;
-  keyAt: (index: number) => string;
-  start: { measurements: Measurements; offset: number };
-  label: string;
-  busy: boolean;
-  onNearEnd: () => void;
-  renderEntry: (index: number, measureRef: (element: Element | null) => void) => ReactNode;
+  entryKey: string;
+  entry: Entry;
+  index: number;
+  setSize: number;
+  leaving: boolean;
+  measureRef: (element: Element | null) => void;
+  actions: EntryActions;
+  watch: ReturnType<typeof useViewObserver>;
 }) {
-  const [scrollMargin] = useState(() => start.measurements[0]?.start ?? 0);
-  const virtualizer = useWindowVirtualizer({
-    count,
-    estimateSize: () => ESTIMATED_HEIGHT,
-    overscan: OVERSCAN,
-    getItemKey: keyAt,
-    scrollMargin,
-    initialOffset: start.offset,
-    initialMeasurementsCache: start.measurements,
-  });
-
-  // Back by the history: the scroll goes where it was, once the heights are known.
-  useLayoutEffect(() => {
-    if (Math.abs(window.scrollY - start.offset) > 1) window.scrollTo({ top: start.offset });
-  }, [start.offset]);
-
-  // Leaving the feed: its position is kept for a return by the history.
-  useEffect(
-    () => () =>
-      saveFeedPosition({
-        offset: window.scrollY,
-        measurements: virtualizer.measurementsCache.map((item) => ({ ...item })),
-      }),
-    [virtualizer],
-  );
-
-  const items = virtualizer.getVirtualItems();
-  const lastIndex = items.at(-1)?.index ?? 0;
-  useEffect(() => {
-    if (lastIndex >= count - 3) onNearEnd();
-  }, [lastIndex, count, onNearEnd]);
-
-  const before = items[0] ? items[0].start - scrollMargin : 0;
-  const after = virtualizer.getTotalSize() - (items.at(-1)?.end ?? 0);
+  const t = useTranslations('web.feed');
+  const position = {
+    'data-feed-index': index,
+    tabIndex: 0,
+    'aria-posinset': index + 1,
+    'aria-setsize': setSize,
+  } as const;
+  if (entry.kind === 'module') {
+    return (
+      <div ref={measureRef} data-index={index} data-feed-key={entryKey} className="pb-4 lg:hidden">
+        <Suspense fallback={null}>
+          <SuggestionModule suggestions={entry.value} {...position} />
+        </Suspense>
+      </div>
+    );
+  }
+  const item = entry.value;
+  let content: ReactNode;
+  if (item.type === 'project_update') {
+    content = (
+      <article
+        aria-label={t('projectUpdate', { project: item.update.project.title })}
+        className="rounded-xl outline-none focus-visible:outline-2 focus-visible:outline-focus"
+        {...position}
+      >
+        <ProjectUpdateCard update={item.update} />
+      </article>
+    );
+  } else if (item.type === 'suggestion') {
+    content = <FeedSuggestion suggestion={item.suggestion} {...position} />;
+  } else {
+    content = (
+      <PostCard
+        {...position}
+        ref={watch(item.post.viewerIsAuthor ? null : item.post.id)}
+        className="rounded-xl outline-none focus-visible:outline-2 focus-visible:outline-focus"
+        post={item.post}
+        signedIn
+        priority={index === 0}
+        featured={item.type === 'featured'}
+        name={
+          item.post.author.type === 'member' ? (
+            <MemberHoverCard
+              member={item.post.author.member}
+              signedIn
+              className="truncate font-semibold text-foreground hover:underline"
+            />
+          ) : undefined
+        }
+        menu={
+          <PostMenu
+            post={item.post}
+            onChange={actions.replace}
+            onRemove={(reason) => actions.remove(item.id, reason)}
+          />
+        }
+        footer={<PostFooter post={item.post} onReposted={actions.reposted} />}
+      />
+    );
+  }
   return (
-    <FeedElement
-      listRef={listRef}
-      label={label}
-      busy={busy}
-      count={count}
-      scrollTo={(index) => virtualizer.scrollToIndex(index, { align: 'start' })}
-      // No scroll anchoring: the browser would move the page each time the paddings change, the
-      // list would render other entries, and so on, without end (seen on the live feed).
-      style={{ paddingTop: before, paddingBottom: after, overflowAnchor: 'none' }}
+    <div
+      ref={measureRef}
+      data-index={index}
+      data-feed-key={entryKey}
+      className="post-leave pb-4"
+      data-leaving={leaving ? '' : undefined}
     >
-      {items.map((item) => renderEntry(item.index, virtualizer.measureElement))}
-    </FeedElement>
+      {/* An entry that waits for code or data waits alone: without a boundary of its own, it
+          would suspend the page itself (hidden, the focus and the scroll lost). */}
+      <Suspense fallback={null}>{content}</Suspense>
+    </div>
   );
 }
