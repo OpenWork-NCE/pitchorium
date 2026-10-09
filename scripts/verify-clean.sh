@@ -107,6 +107,8 @@ step 'web: journeys against the real api' env LIVE_PROJECT="$project-live" \
   LIVE_PORT_OFFSET=$((offset + 5000)) LIVE_LOGS="$logs/live" pnpm --filter @pitchorium/web test:e2e:live
 step 'web: Storybook build' pnpm --filter @pitchorium/web build-storybook
 step 'web: Lighthouse CI' pnpm --filter @pitchorium/web lighthouse
+# On the build Lighthouse made (.next-e2e): the visitor and member views of the public pages.
+step 'web: JavaScript of the visitor and member views' pnpm --filter @pitchorium/web check:bundles .next-e2e --views
 step 'pnpm openapi:generate' pnpm openapi:generate
 step 'pnpm api-client:generate' pnpm api-client:generate
 step 'pnpm format:check' pnpm format:check

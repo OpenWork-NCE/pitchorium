@@ -102,8 +102,8 @@ jobs:
         run: pnpm --filter @pitchorium/web test:stories
       - name: Lighthouse CI (mobile profile, budgets of lighthouserc.cjs)
         run: pnpm --filter @pitchorium/web lighthouse
-      - name: Initial JavaScript per route group, no GSAP outside the editorial pages
-        run: pnpm --filter @pitchorium/web check:bundles .next-e2e
+      - name: Initial JavaScript per route group and per view of the public pages (visitor, member)
+        run: pnpm --filter @pitchorium/web check:bundles .next-e2e --views
       - if: always()
         uses: actions/upload-artifact@v7.0.1
         with:
