@@ -1,4 +1,10 @@
-import { type APIResponse, expect, type Page } from '@playwright/test';
+import {
+  type APIResponse,
+  type Browser,
+  type BrowserContext,
+  expect,
+  type Page,
+} from '@playwright/test';
 
 export const MAILPIT_URL = process.env.MAILPIT_URL ?? 'http://localhost:8025';
 export const PASSWORD = 'correct horse battery staple 2026';
@@ -14,17 +20,21 @@ interface MailpitMessage {
   Subject: string;
 }
 
-/** The first link to the api found in the last email sent to this address (Mailpit). */
+/** The first link found in the last email sent to this very address (Mailpit). */
 export async function linkFromInbox(address: string, pattern: RegExp): Promise<string> {
   let found: string | undefined;
   await expect
     .poll(
       async () => {
         const search = await fetch(
-          `${MAILPIT_URL}/api/v1/search?query=${encodeURIComponent(`to:"${address}"`)}&limit=5`,
+          `${MAILPIT_URL}/api/v1/search?query=${encodeURIComponent(`to:"${address}"`)}&limit=50`,
         );
         const { messages } = (await search.json()) as { messages: MailpitMessage[] };
-        for (const message of messages) {
+        // The search matches words: only the messages sent to this very address count.
+        const own = messages.filter((message) =>
+          message.To.some((to) => to.Address.toLowerCase() === address.toLowerCase()),
+        );
+        for (const message of own) {
           const body = (await (
             await fetch(`${MAILPIT_URL}/api/v1/message/${message.ID}`)
           ).json()) as {
@@ -265,9 +275,63 @@ export async function consentAs(
   expect(announced.status).toBe(204);
   await page.context().route(AUTHORIZE_URLS[provider], (route) => {
     const original = new URL(route.request().url());
+    const target = `${FAKE_OAUTH_URL}/${provider}/authorize${original.search}`;
+    // A page that goes on at once: WebKit refuses a redirect status from a fulfilled route.
     return route.fulfill({
-      status: 302,
-      headers: { location: `${FAKE_OAUTH_URL}/${provider}/authorize${original.search}` },
+      status: 200,
+      contentType: 'text/html',
+      body: `<!doctype html><script>location.replace(${JSON.stringify(target)})</script>`,
     });
   });
+}
+
+/** A member signed in in a browser context of their own, with its page. */
+export async function memberPage(
+  browser: Browser,
+  label: string,
+  options: MemberOptions = {},
+): Promise<{ page: Page; member: LiveMember; context: BrowserContext }> {
+  const context = await browser.newContext();
+  const page = await context.newPage();
+  const member = await apiMember(page, label, options);
+  return { page, member, context };
+}
+
+/**
+ * A PNG drawn by the browser (a gradient, no metadata), at the size a media usage requires:
+ * the media module checks the real type and the dimensions.
+ */
+export async function pngImage(page: Page, width: number, height: number) {
+  const data = await page.evaluate(
+    ([w, h]) => {
+      const canvas = document.createElement('canvas');
+      canvas.width = w;
+      canvas.height = h;
+      const context = canvas.getContext('2d')!;
+      const gradient = context.createLinearGradient(0, 0, w, h);
+      gradient.addColorStop(0, '#5b2a86');
+      gradient.addColorStop(1, '#e0a458');
+      context.fillStyle = gradient;
+      context.fillRect(0, 0, w, h);
+      return canvas.toDataURL('image/png').split(',')[1]!;
+    },
+    [width, height] as const,
+  );
+  return { name: 'image.png', mimeType: 'image/png', buffer: Buffer.from(data, 'base64') };
+}
+
+/**
+ * Chooses an option of a select or a combobox of a form by its label: opens it, types to
+ * filter a combobox (`search`), then picks the option.
+ */
+export async function choose(
+  scope: Page | ReturnType<Page['getByRole']>,
+  label: string,
+  option: string | RegExp,
+  search?: string,
+): Promise<void> {
+  const page = 'page' in scope ? scope.page() : scope;
+  await scope.getByRole('combobox', { name: label }).click();
+  if (search) await page.keyboard.type(search);
+  await page.getByRole('option', { name: option }).first().click();
 }

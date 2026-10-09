@@ -14,8 +14,11 @@ test.describe('entry of the authentication', { tag: '@critical' }, () => {
     for (const email of [known, freshEmail('unknown')]) {
       await page.goto('/fr/sign-in');
       await hydrated(page);
-      // Without any provider configured locally, the email step is the entry itself.
+      // A provider is configured (the fake Google): the email step is one choice of the entry.
       await expect(page.getByRole('heading', { name: 'Rejoindre Pitchorium' })).toBeVisible();
+      await page.getByRole('link', { name: 'Continuer avec un email' }).click();
+      await expect(page).toHaveURL(/\/fr\/sign-in\/email$/);
+      await hydrated(page);
       await expect(page.getByRole('link', { name: 'Utiliser un mot de passe' })).toBeVisible();
       await page.getByLabel('Adresse email').fill(email);
       await page.getByRole('button', { name: 'Recevoir un lien de connexion' }).click();
@@ -26,7 +29,7 @@ test.describe('entry of the authentication', { tag: '@critical' }, () => {
       );
     }
     expect(answers[0]).toBe(answers[1]);
-    await page.goto('/fr/sign-in');
+    await page.goto('/fr/sign-in/email');
     await hydrated(page);
     await page.getByRole('link', { name: 'Utiliser un mot de passe' }).click();
     await expect(

@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 import {
-  api,
+  API_URL,
   freshEmail,
   hydrated,
   linkFromInbox,
@@ -183,17 +183,29 @@ test.describe('authentication', { tag: '@critical' }, () => {
     test.skip(browserName !== 'chromium', 'One engine: the limit is per address and per minute.');
     test.slow();
     const email = freshEmail('limit');
-    // The attempts that use up the limit go straight to the api (each screen submit waits for
-    // a new Turnstile challenge); the screen then says how long to wait.
-    await expect(async () => {
-      const answer = await api(page, 'POST', '/v1/auth/sign-in/email', {
-        email,
-        password: 'not the password at all',
-      });
-      expect(answer.status()).toBe(429);
-    }).toPass({ timeout: 60_000, intervals: [0] });
     await page.goto('/fr/sign-in/password');
     await hydrated(page);
+    // The attempts that use up the limit go straight to the api (each screen submit waits for
+    // a new Turnstile challenge), from the page: the limit counts per address of the client, the
+    // one of the browser (localhost may resolve to another address for a request of Node).
+    await expect(async () => {
+      const status = await page.evaluate(
+        async ({ url, address }) =>
+          (
+            await fetch(`${url}/v1/auth/sign-in/email`, {
+              method: 'POST',
+              credentials: 'include',
+              headers: {
+                'content-type': 'application/json',
+                'x-captcha-response': 'XXXX.DUMMY.TOKEN.XXXX',
+              },
+              body: JSON.stringify({ email: address, password: 'not the password at all' }),
+            })
+          ).status,
+        { url: API_URL, address: email },
+      );
+      expect(status).toBe(429);
+    }).toPass({ timeout: 60_000, intervals: [0] });
     await page.getByLabel('Adresse email').fill(email);
     await page.getByLabel('Mot de passe', { exact: true }).fill('not the password at all');
     await page.getByRole('button', { name: 'Se connecter' }).click();
