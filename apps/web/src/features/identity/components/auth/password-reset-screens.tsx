@@ -1,7 +1,7 @@
 'use client';
 
 import type { AuthConfigurationDtoOutput } from '@pitchorium/api-client';
-import { emailRequestSchema, newPasswordRequestSchema } from '@pitchorium/contracts';
+import { emailRequest, newPasswordRequest } from '../../lib/auth-schemas';
 import { LinkIcon } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
@@ -36,7 +36,7 @@ export function ForgotPasswordScreen({
   const router = useRouter();
   const message = useAuthFailureMessage();
   const turnstile = useTurnstile(config.turnstile, 'password-reset');
-  const form = useZodForm(emailRequestSchema, { defaultValues: { email: '' } });
+  const form = useZodForm(emailRequest, { defaultValues: { email: '' } });
 
   async function submit({ email }: { email: string }) {
     if (!turnstile.ready) {
@@ -125,7 +125,7 @@ export function ResetPasswordScreen({
   const t = useTranslations('web.auth.resetPassword');
   const message = useAuthFailureMessage();
   const [done, setDone] = useState(false);
-  const form = useZodForm(newPasswordRequestSchema, { defaultValues: { newPassword: '' } });
+  const form = useZodForm(newPasswordRequest, { defaultValues: { newPassword: '' } });
 
   if (error || !token) {
     return (

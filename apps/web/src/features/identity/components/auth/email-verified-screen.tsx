@@ -1,6 +1,6 @@
 'use client';
 
-import { emailRequestSchema } from '@pitchorium/contracts';
+import { emailRequest } from '../../lib/auth-schemas';
 import { LinkIcon } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
@@ -67,7 +67,7 @@ function ResendVerification() {
   const locale = useLocale();
   const message = useAuthFailureMessage();
   const [sent, setSent] = useState(false);
-  const form = useZodForm(emailRequestSchema, { defaultValues: { email: '' } });
+  const form = useZodForm(emailRequest, { defaultValues: { email: '' } });
 
   async function submit({ email }: { email: string }) {
     const { authClient } = await import('@/lib/auth/client');

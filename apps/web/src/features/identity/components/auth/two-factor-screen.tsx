@@ -1,6 +1,6 @@
 'use client';
 
-import { backupCodeRequestSchema, totpCodeRequestSchema } from '@pitchorium/contracts';
+import { backupCodeRequest, totpCodeRequest } from '../../lib/auth-schemas';
 import { ShieldCheck } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
@@ -54,7 +54,7 @@ function TotpForm({ redirectTo }: { redirectTo: string | null }) {
   const t = useTranslations('web.auth.twoFactor');
   const locale = useLocale();
   const message = useAuthFailureMessage();
-  const form = useZodForm(totpCodeRequestSchema, { defaultValues: { code: '' } });
+  const form = useZodForm(totpCodeRequest, { defaultValues: { code: '' } });
 
   async function submit({ code }: { code: string }) {
     const { authClient } = await import('@/lib/auth/client');
@@ -96,7 +96,7 @@ function BackupCodeForm({ redirectTo }: { redirectTo: string | null }) {
   const t = useTranslations('web.auth.twoFactor');
   const locale = useLocale();
   const message = useAuthFailureMessage();
-  const form = useZodForm(backupCodeRequestSchema, { defaultValues: { code: '' } });
+  const form = useZodForm(backupCodeRequest, { defaultValues: { code: '' } });
 
   async function submit({ code }: { code: string }) {
     const { authClient } = await import('@/lib/auth/client');

@@ -1,7 +1,7 @@
 'use client';
 
 import type { AuthConfigurationDtoOutput } from '@pitchorium/api-client';
-import { signInRequestSchema } from '@pitchorium/contracts';
+import { signInRequest } from '../../lib/auth-schemas';
 import { useLocale, useTranslations } from 'next-intl';
 import {
   Button,
@@ -36,7 +36,7 @@ export function PasswordSignInScreen({
   const locale = useLocale();
   const message = useAuthFailureMessage();
   const turnstile = useTurnstile(config.turnstile, 'sign-in');
-  const form = useZodForm(signInRequestSchema, { defaultValues: { email: '', password: '' } });
+  const form = useZodForm(signInRequest, { defaultValues: { email: '', password: '' } });
 
   async function submit(values: { email: string; password: string }) {
     if (!turnstile.ready) {

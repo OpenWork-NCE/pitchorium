@@ -1,15 +1,15 @@
 'use client';
 
 import type { AuthConfigurationDtoOutput } from '@pitchorium/api-client';
-import { emailRequestSchema } from '@pitchorium/contracts';
+import { emailRequest } from '../../lib/auth-schemas';
 import { useLocale, useTranslations } from 'next-intl';
 import { Button, Form, FormActions, FormField, Input, useZodForm } from '@/components/ui';
 import { routes } from '@/config/routes';
 import { Link, useRouter } from '@/i18n/navigation';
 import { withRedirect } from '@/lib/auth/redirect';
-import { authCall, useAuthFailureMessage } from '../../lib/auth-call';
+import { useAuthFailureMessage } from '../../lib/auth-call';
 import { AuthScreen } from './auth-screen';
-import { absoluteUrl, continuePath } from './targets';
+import { sendMagicLink } from './magic-link';
 import { useTurnstile } from './turnstile';
 
 /**
@@ -32,7 +32,7 @@ export function EmailStep({
   const router = useRouter();
   const message = useAuthFailureMessage();
   const turnstile = useTurnstile(config.turnstile, 'magic-link');
-  const form = useZodForm(emailRequestSchema, { defaultValues: { email: '' } });
+  const form = useZodForm(emailRequest, { defaultValues: { email: '' } });
 
   async function submit({ email }: { email: string }) {
     if (!turnstile.ready) {
@@ -101,26 +101,5 @@ export function EmailStep({
         )}
       </div>
     </AuthScreen>
-  );
-}
-
-/** Asks the api for a sign-in link (also used by the resend of the email-sent screen). */
-export async function sendMagicLink(
-  locale: string,
-  email: string,
-  redirectTo: string | null,
-  captcha: string | null,
-) {
-  const { authClient } = await import('@/lib/auth/client');
-  return authCall(
-    (fetchOptions) =>
-      authClient.signIn.magicLink({
-        email,
-        callbackURL: absoluteUrl(locale, continuePath(redirectTo)),
-        newUserCallbackURL: absoluteUrl(locale, routes.onboarding),
-        errorCallbackURL: absoluteUrl(locale, `${routes.emailVerified}?kind=magic`),
-        fetchOptions,
-      }),
-    captcha,
   );
 }

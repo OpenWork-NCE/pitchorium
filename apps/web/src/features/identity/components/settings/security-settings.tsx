@@ -1,10 +1,5 @@
 'use client';
 
-import {
-  changePasswordRequestSchema,
-  passwordConfirmationRequestSchema,
-  totpCodeRequestSchema,
-} from '@pitchorium/contracts';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Monitor, Smartphone, Tablet } from 'lucide-react';
 import { useFormatter, useLocale, useTranslations } from 'next-intl';
@@ -30,6 +25,11 @@ import { routes } from '@/config/routes';
 import { Link, useRouter } from '@/i18n/navigation';
 import { withRedirect } from '@/lib/auth/redirect';
 import { type AuthFailure, authCall, useAuthFailureMessage } from '../../lib/auth-call';
+import {
+  changePasswordRequest,
+  passwordConfirmationRequest,
+  totpCodeRequest,
+} from '../../lib/auth-schemas';
 import { type DeviceKind, describeUserAgent } from '../../lib/user-agent';
 import { useCurrentMember } from '../current-member';
 import { useSignOut } from '../sign-out-button';
@@ -59,7 +59,7 @@ function PasswordSection() {
   const t = useTranslations('web.settings.security.password');
   const message = useAuthFailureMessage();
   const [done, setDone] = useState(false);
-  const form = useZodForm(changePasswordRequestSchema, {
+  const form = useZodForm(changePasswordRequest, {
     defaultValues: { currentPassword: '', newPassword: '' },
   });
 
@@ -140,10 +140,10 @@ function TwoFactorSection() {
   const enabled = member.user.twoFactorEnabled;
   // Until the methods are read, the password is asked: the api decides anyway.
   const hasPassword = methods.data?.some((account) => account.providerId === 'credential') ?? true;
-  const passwordForm = useZodForm(passwordConfirmationRequestSchema, {
+  const passwordForm = useZodForm(passwordConfirmationRequest, {
     defaultValues: { password: '' },
   });
-  const codeForm = useZodForm(totpCodeRequestSchema, { defaultValues: { code: '' } });
+  const codeForm = useZodForm(totpCodeRequest, { defaultValues: { code: '' } });
 
   /** A refusal for an old session leads to a new sign-in, then back here. */
   function failed(failure: AuthFailure, password: boolean) {

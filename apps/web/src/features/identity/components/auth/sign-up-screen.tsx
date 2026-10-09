@@ -1,7 +1,7 @@
 'use client';
 
 import type { AuthConfigurationDtoOutput } from '@pitchorium/api-client';
-import { signUpRequestSchema } from '@pitchorium/contracts';
+import { signUpRequest } from '../../lib/auth-schemas';
 import { useLocale, useTranslations } from 'next-intl';
 import {
   Button,
@@ -37,7 +37,7 @@ export function SignUpScreen({
   const router = useRouter();
   const message = useAuthFailureMessage();
   const turnstile = useTurnstile(config.turnstile, 'sign-up');
-  const form = useZodForm(signUpRequestSchema, {
+  const form = useZodForm(signUpRequest, {
     defaultValues: { name: '', email: '', password: '' },
   });
 

@@ -10,7 +10,7 @@ import { Link } from '@/i18n/navigation';
 import { withRedirect } from '@/lib/auth/redirect';
 import { type AuthOutcome, authCall, useAuthFailureMessage } from '../../lib/auth-call';
 import { AuthScreen } from './auth-screen';
-import { sendMagicLink } from './magic-link-screen';
+import { sendMagicLink } from './magic-link';
 import { absoluteUrl } from './targets';
 import { useTurnstile } from './turnstile';
 
