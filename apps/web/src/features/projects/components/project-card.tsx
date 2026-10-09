@@ -42,6 +42,10 @@ export function ProjectCard({
   const sector = project.sectorCode
     ? (`sectors.${project.sectorCode}` as Parameters<typeof reference>[0])
     : null;
+  // Short label on the card (« Énergie »), the full one in the tooltip and for screen readers.
+  const sectorShort = project.sectorCode
+    ? (`sectorsShort.${project.sectorCode}` as Parameters<typeof reference>[0])
+    : null;
   const country = project.countryCodes[0];
   const countryName = country
     ? new Intl.DisplayNames(locale, { type: 'region' }).of(country)
@@ -51,10 +55,15 @@ export function ProjectCard({
     <Card padding="none" className={cn('grid min-w-0 overflow-hidden', className)}>
       <div
         className={cn(
-          'relative bg-surface-sunken bg-[url(/brand/overlay-desktop.svg)] bg-cover bg-center',
+          'relative bg-cover-placeholder',
           compact ? 'aspect-[3/1]' : 'aspect-[3/1] sm:aspect-[4/1]',
         )}
       >
+        {/* The elevation pattern, brightened on the deep violet of the dark theme to stay legible. */}
+        <span
+          aria-hidden
+          className="absolute inset-0 bg-[url(/brand/overlay-desktop.svg)] bg-cover bg-center dark:brightness-[2.6]"
+        />
         {project.coverImageUrl ? (
           <Image
             src={project.coverImageUrl}
@@ -69,10 +78,12 @@ export function ProjectCard({
         {compact ? null : (
           <div className="flex flex-wrap items-center gap-2">
             <Badge tone="accent">{reference(`projectStatuses.${project.status}`)}</Badge>
-            {sector && reference.has(sector) ? (
-              // A sector may have a long name: it wraps rather than overflows.
-              <Badge className="h-auto min-h-6 max-w-full shrink rounded-lg py-0.5 whitespace-normal">
-                {reference(sector)}
+            {sector && sectorShort && reference.has(sector) ? (
+              <Badge title={reference(sector)}>
+                <span aria-hidden>
+                  {reference.has(sectorShort) ? reference(sectorShort) : reference(sector)}
+                </span>
+                <span className="sr-only">{reference(sector)}</span>
               </Badge>
             ) : null}
             {countryName ? <Badge>{countryName}</Badge> : null}
