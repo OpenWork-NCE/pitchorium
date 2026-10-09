@@ -2,7 +2,8 @@
 // Initial JavaScript per route group, compressed (Brotli), from the client reference manifests of
 // a production build (ADR 0090, ADR 0094): fails above the budget of a group, or when a library a
 // group must not carry reaches its first load (GSAP outside the editorial pages; realtime, the
-// authentication client or the query devtools on the editorial and public pages). Lists the Radix
+// authentication client or the query devtools on the editorial and public pages; the editor of
+// the composer and the viewer of the images anywhere, PROMPT FRONT 4). Lists the Radix
 // primitives of each page: only the ones its components use may appear.
 //
 //
@@ -59,6 +60,18 @@ const FORBIDDEN = [
     name: 'authentication client (Better Auth)',
     signature: /better-auth:|better-auth\.message/,
     groups: ['(marketing)', '(public)', 'other'],
+  },
+  {
+    // The editor of the composer (Tiptap, ProseMirror) loads when the composer opens (ADR 0119).
+    name: 'editor (Tiptap, ProseMirror)',
+    signature: /ProseMirror-/,
+    groups: ['(marketing)', '(public)', '(auth)', '(app)', '(admin)', 'other'],
+  },
+  {
+    // The viewer of the images (Embla) loads when an image is opened.
+    name: 'image viewer (Embla)',
+    signature: /slidesToScroll/,
+    groups: ['(marketing)', '(public)', '(auth)', '(app)', '(admin)', 'other'],
   },
   {
     name: 'query devtools',

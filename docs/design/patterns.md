@@ -47,7 +47,7 @@ Comment assembler les composants (`components.md`) pour les situations récurren
 
 - Un seul bouton de connexion change d'état : « Se connecter » (dialogue avec une note de 300 caractères au plus), « En attente » (retirer la demande), « En relation » (retirer la connexion) ; une demande reçue donne « Accepter » et « Ignorer ». « Suivre » est à côté, puis un menu « Plus d'actions » (copier le lien, partager, bloquer).
 - Chaque geste réversible s'affiche aussitôt et revient avec sa raison si l'api refuse ; bloquer, retirer une connexion, transférer ou supprimer passent par une confirmation.
-- Ni message ni signalement depuis un profil avant leurs prompts (PROMPT FRONT 4 et 8).
+- Ni message ni signalement depuis un profil avant leurs prompts (PROMPT FRONT 6 et 8).
 
 ## Suggestions (§10.2, ADR 0067)
 
@@ -59,12 +59,48 @@ Comment assembler les composants (`components.md`) pour les situations récurren
 - Un secteur a un libellé court (`reference.sectorsShort`, « Énergie ») dans les puces, les cartes et les phrases de suggestion, et son libellé complet (`reference.sectors`) en infobulle, pour les lecteurs d'écran et sur les pages de détail. Libellés courts provisoires (question 110).
 - Une liste au milieu d'une phrase passe par `formatList` (`lib/format/list.ts`, `Intl.ListFormat`) : conjonction de la langue, libellés en minuscules (« photo et photo de couverture »), sigles et noms à capitale intérieure gardés.
 
-## Fil d'actualité (§10.3)
+## Fil d'actualité (§10.3, ADR 0032, 0117, 0121)
 
-- Pas de grand titre visible au-dessus du fil : un `h1` masqué visuellement (« Accueil ») ; la place est prise par le composeur « Commencer une publication » (coquille, la publication arrive au PROMPT FRONT 4).
+- Pas de grand titre visible au-dessus du fil : un `h1` masqué visuellement (« Accueil ») ; la place est prise par « Commencer une publication », qui ouvre le composeur (aussi depuis « Publier » du bandeau, `/feed?compose=1`).
 - Sur un grand écran, la complétion du profil est la colonne gauche, les suggestions la colonne droite. Sous `lg`, la complétion du profil devient un module en tête du fil (tant que le profil est incomplet), et les suggestions des modules parmi les éléments : trois personnes après le troisième élément, puis trois tous les dix éléments (`FEED_MODULES`, `features/content`), tant qu'il en reste ; un fil plus court se termine par un module.
-- Les éléments que le web ne dessine pas encore (actualité de projet, événement) sont laissés de côté, comme le contrat le demande d'un type inconnu.
-- Pages suivantes par « Afficher plus » (`Pagination`), la fin annoncée ; la phrase de raison d'une suggestion est construite par la page avec les catalogues `discovery` et `reference` (`useSuggestionReason`).
+- Motif WAI-ARIA `feed` : chaque entrée est un article focalisable avec sa position ; Page suivante, Page précédente d'un article à l'autre, Ctrl Fin et Ctrl Début pour en sortir. Les pages suivantes arrivent quand la fin approche, « Afficher plus » reste pour le clavier, la fin est annoncée. Liste virtualisée dans le flux, position rendue au retour arrière (ADR 0121).
+- Éléments : publication, repartage (le commentaire puis l'original intégré ; « Cette publication n'est plus disponible. » quand l'original ne l'est plus), mise en avant (« À la une »), actualité de projet (carte simple, sans lien avant le PROMPT FRONT 5A), suggestion (avec sa raison) ; un événement attend le PROMPT FRONT 7 ; un type inconnu est laissé de côté et signalé à Sentry, jamais une erreur à l'écran.
+- Nouvelles publications : une pastille « N nouvelles publications » glisse du haut quand le réseau a publié (vérifiée chaque minute, onglet visible et hors économie de données) ; rien ne s'insère sans geste ; au clic, les nouvelles arrivent en tête, le défilement va à elles et le focus à la première (ADR 0117).
+- Fil vide : l'état vide dit pourquoi et propose « Trouver des personnes » (page Réseau) ; un réseau trop petit est complété par les mises en avant puis les suggestions de l'api, jamais par un fil mondial anonyme.
+
+## Publication (§10.3)
+
+- En-tête : avatar, nom avec son aperçu au survol (membre), titre, temps relatif (date complète en infobulle), icône de l'audience avec son nom pour les lecteurs d'écran, « modifiée » ; le menu « Plus d'actions » à droite.
+- Texte coupé après six lignes avec « voir plus » ; mentions liées aux profils et organisations ; adresses externes en `rel="noopener noreferrer nofollow ugc"`, dans un nouvel onglet.
+- Images : 1 dans son ratio (entre 4:5 et 16:9), 2 côte à côte, 3 dont la première haute, 4 et plus en grille de quatre dont la dernière dit « +N » ; chargées à l'approche de l'écran sur un fond sobre, avec leur texte alternatif (« Image sans description » sinon). Chaque image ouvre la visionneuse à sa place (transition partagée sobre, clavier, balayage, compteur, texte alternatif écrit sous l'image, Échap rend le focus à la miniature).
+- Document : miniature de la première page, titre, nombre de pages ; « Ouvrir » et « Télécharger » demandent une adresse signée à l'instant (fichier privé). Lien : la carte d'aperçu avec l'image importée par la plateforme. Projet rattaché : `ProjectCard` compacte, sans lien avant le PROMPT FRONT 5A.
+- Sous le contenu : le résumé des réactions (ouvre qui a réagi, un onglet par réaction), le nombre de commentaires (ouvre le fil des commentaires) et de repartages ; puis Réagir, Commenter, Repartager.
+- Réagir : un clic donne « J'aime » ou reprend la réaction donnée ; les quatre réactions apparaissent au survol après un court délai, à l'appui long sur un écran tactile, et dans le menu de la flèche au clavier ; tout s'affiche aussitôt et revient avec la raison si l'api refuse.
+- Plus d'actions : enregistrer, masquer de son fil (annulable depuis le toast), copier le lien, partager (Web Share sur un téléphone) ; pour l'auteur, modifier, couper ou rouvrir les commentaires, statistiques (membres uniques par jour), supprimer après confirmation. « Envoyer en message », « Signaler » et « Traduire » arrivent avec leurs prompts (PROMPT FRONT 6 et 8).
+- Repartage : un commentaire facultatif et l'audience ; celles qui élargiraient l'audience de l'original ne sont pas proposées, et le dialogue dit pourquoi.
+- Contenu masqué par la modération : son auteur, seul à la voir encore, lit la mention « Contenu retiré » (`Notice`) en tête.
+- Visiteur : la publication publique sans actions, avec « Se connecter pour réagir » qui ramène à la publication.
+
+## Commentaires (§10.3)
+
+- Du plus ancien au plus récent, dix par dix (« Charger plus de commentaires ») ; les réponses sur un seul niveau, ouvertes à la demande.
+- Zone de saisie avec les mentions (`@` et quelques lettres, flèches, Entrée ou Tab, Échap), compteur près de la limite, « Publier » ou Ctrl Entrée ; une réponse commence par la mention de l'auteur du commentaire.
+- Modifier (auteur), supprimer (auteur, ou auteur de la publication) après confirmation ; réagir à un commentaire comme à une publication ; « Les commentaires sont désactivés. » à la place de la zone de saisie.
+
+## Composeur (§10.3, ADR 0118 à 0120, 0122)
+
+- Un dialogue sur un ordinateur, tout l'écran sur un téléphone ; l'éditeur se charge à l'ouverture seulement.
+- Texte de 3 000 caractères (compteur), retours à la ligne, liens reconnus, mentions par `@` ; langue déclarée ou « Détection automatique » ; audience `Membres` par défaut, `Public` indisponible sans page publique, avec la raison et le lien vers les paramètres de confidentialité.
+- Jusqu'à neuf images, réorganisées en glissant, au clavier (Espace sur la poignée puis les flèches) ou par « Déplacer avant / après » ; chacune avec son texte alternatif, demandé clairement (« Sans texte alternatif » tant qu'il manque) ; états : allègement, envoi avec sa part, vérification, refus avec sa raison, échec avec « Réessayer ». Ou un PDF avec son titre (le nom du fichier par défaut).
+- Une adresse collée demande son aperçu (attente, puis la carte) ; « Retirer l'aperçu » garde le lien dans le texte. Un projet de l'équipe du membre peut être rattaché.
+- Brouillon gardé sur l'appareil pendant l'écriture, retrouvé à la réouverture (« Effacer le brouillon »), effacé après la publication et à la déconnexion.
+- Publier exige une adresse vérifiée : le formulaire du prérequis s'ouvre, puis la publication repart (`useWithPrerequisites`). Une publication se modifie dans le même composeur (texte, audience, langue, textes alternatifs, titre du document, commentaires) ; ses fichiers et son lien restent.
+
+## Publication à son adresse, enregistrements, activité
+
+- `/posts/{id}` : la publication et ses commentaires ouverts ; vue publique indexable avec ses données structurées et son image de partage, vue membre sinon, 404 pour un lecteur qui ne peut pas la voir.
+- `/saved` (menu du compte) : les publications enregistrées, la dernière enregistrée d'abord.
+- Page d'un membre et d'une organisation : section « Activité » avec leurs publications selon ce que l'api montre au lecteur ; un visiteur lit les premières rendues par le serveur et la suite à la demande.
 
 ## Conversation (§10.4)
 

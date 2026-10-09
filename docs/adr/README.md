@@ -122,3 +122,7 @@ Un fichier par décision, numéroté, au format Contexte / Décision / Conséque
 | [0116](0116-post-views-signalled-by-the-browser.md)      | Vues des publications signalées par le navigateur            |
 | [0117](0117-new-posts-without-reading-jump.md)           | Nouvelles publications sans saut de lecture                  |
 | [0118](0118-link-preview-before-publishing.md)           | Aperçu d'un lien avant la publication                        |
+| [0119](0119-composer-editor-tiptap.md)                   | Éditeur du composeur : Tiptap                                |
+| [0120](0120-client-side-image-compression.md)            | Photos allégées dans le navigateur                           |
+| [0121](0121-feed-virtualization-and-accessibility.md)    | Virtualisation et accessibilité du fil                       |
+| [0122](0122-local-drafts-of-the-composer.md)             | Brouillons locaux du composeur                               |

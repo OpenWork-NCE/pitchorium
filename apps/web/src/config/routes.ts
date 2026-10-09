@@ -58,6 +58,8 @@ export const routes = {
   /** An invitation to an organisation received by email (`/invitations/<token>`). */
   invitation: (token: string) => `/invitations/${encodeURIComponent(token)}`,
   event: (slug: string) => `/events/${encodeURIComponent(slug)}`,
+  /** A publication (§10.3): public and indexable when it is public, a member view otherwise. */
+  post: (id: string) => `/posts/${encodeURIComponent(id)}`,
   // Contextual actions of the header, opened by their section (PROMPT FRONT 3 and 4).
   compose: '/feed?compose=1',
   createProject: '/projects?create=1',
