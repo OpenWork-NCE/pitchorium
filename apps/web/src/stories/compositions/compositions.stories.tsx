@@ -68,6 +68,11 @@ import { SuggestionsList } from '@/features/discovery';
 import { ProjectCard } from '@/features/projects';
 import { ConversationThread, MessageComposer } from '@/features/messaging';
 import { NotificationItem } from '@/features/notifications';
+import { RelationshipActions } from '@/features/network';
+import { OrganizationManage } from '@/features/organizations';
+import { NuqsTestingAdapter } from 'nuqs/adapters/testing';
+import type { Organization, Relationship } from '@pitchorium/contracts';
+import { getInvitationsControllerPendingQueryKey } from '@pitchorium/api-client';
 
 const meta = {
   title: 'Compositions',
@@ -774,3 +779,165 @@ function SessionsFixture() {
     </QueryClientProvider>
   );
 }
+
+const stranger: Relationship = {
+  degree: 'second',
+  mutualConnections: { count: 3, capped: false },
+  connection: 'none',
+  requestId: null,
+  following: false,
+  followedBy: false,
+  blocked: false,
+  counts: { followers: 128, connections: 342 },
+};
+
+const RELATIONSHIPS: readonly [string, typeof members.kofi, Relationship][] = [
+  ['Aucune relation', members.kofi, stranger],
+  [
+    'Demande envoyée',
+    members.nadia,
+    { ...stranger, connection: 'request_sent', requestId: '0192f4a0-5000-7000-8000-000000000001' },
+  ],
+  [
+    'Demande reçue',
+    members.jean,
+    {
+      ...stranger,
+      connection: 'request_received',
+      requestId: '0192f4a0-5000-7000-8000-000000000002',
+      followedBy: true,
+    },
+  ],
+  [
+    'En relation, suivi',
+    members.ifeoma,
+    { ...stranger, degree: 'first', connection: 'connected', following: true, followedBy: true },
+  ],
+];
+
+/** The actions towards a member in each relationship (ADR 0113): one button that changes. */
+export const RelationshipActionsStory: Story = {
+  name: 'Relationship actions',
+  parameters: { layout: 'padded' },
+  render: () => (
+    <MemberRuntime>
+      <div className="mx-auto grid max-w-3xl gap-4 p-4">
+        {RELATIONSHIPS.map(([label, member, relationship]) => (
+          <Card key={member.handle} padding="sm" className="grid gap-3">
+            <div className="flex items-center gap-3">
+              <Avatar name={member.displayName} size="md" decorative />
+              <div className="grid">
+                <span className="font-medium">{member.displayName}</span>
+                <Text size="sm" tone="muted">
+                  {label}
+                </Text>
+              </div>
+            </div>
+            <RelationshipActions
+              handle={member.handle}
+              name={member.displayName}
+              relationship={relationship}
+              url={`https://pitchorium.test/fr/members/${member.handle}`}
+            />
+          </Card>
+        ))}
+      </div>
+    </MemberRuntime>
+  ),
+};
+
+/** The request with its note: the dialog opens from « Se connecter ». */
+export const ConnectDialogStory: Story = {
+  name: 'Connect dialog',
+  parameters: { layout: 'padded' },
+  render: () => (
+    <MemberRuntime>
+      <div className="p-4">
+        <RelationshipActions
+          handle={members.kofi.handle}
+          name={members.kofi.displayName}
+          relationship={stranger}
+          url="https://pitchorium.test/fr/members/kofi-mensah"
+        />
+      </div>
+    </MemberRuntime>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole('button', { name: 'Se connecter avec Kofi Mensah' }));
+    const dialog = await within(document.body).findByRole('dialog', {
+      name: 'Se connecter avec Kofi Mensah',
+    });
+    await userEvent.type(
+      await within(dialog).findByRole('textbox', { name: /^Note/ }),
+      'Nous nous sommes croisés au forum de Dakar.',
+    );
+  },
+};
+
+const organization: Organization = {
+  id: '0192f4a0-4000-7000-8000-000000000001',
+  slug: 'fondation-teranga',
+  name: 'Fondation Teranga',
+  structureType: 'foundation',
+  description: 'Bourses, mentorat et dons en nature pour les jeunes entrepreneures du Sahel.',
+  countryCodes: ['SN', 'ML'],
+  sectorCodes: ['education'],
+  websiteUrl: 'https://example.org',
+  foundedYear: 2016,
+  logoUrl: null,
+  logoMediaId: null,
+  coverUrl: null,
+  coverMediaId: null,
+  verification: { status: 'unverified', verified: false, verifiedAt: null },
+  members: [
+    { ...members.aissatou, role: 'owner' },
+    { ...members.kofi, role: 'admin' },
+    { ...members.nadia, role: 'member' },
+  ],
+  projects: { carried: [], supported: [] },
+  viewerRole: 'owner',
+  createdAt: '2026-09-01T09:00:00.000Z',
+};
+
+function OrganizationFixture() {
+  const [client] = useState(() => {
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { staleTime: Infinity, retry: false } },
+    });
+    queryClient.setQueryData(getInvitationsControllerPendingQueryKey(organization.id), {
+      items: [
+        {
+          id: '0192f4a0-6000-7000-8000-000000000001',
+          organizationId: organization.id,
+          email: 'partenaire@example.org',
+          role: 'admin',
+          status: 'pending',
+          expiresAt: '2026-10-22T09:00:00.000Z',
+          createdAt: '2026-10-08T09:00:00.000Z',
+        },
+      ],
+    });
+    return queryClient;
+  });
+  return (
+    <QueryClientProvider client={client}>
+      <CurrentMemberProvider member={currentUser}>
+        <AnnouncerProvider>
+          <NuqsTestingAdapter searchParams="?tab=members">
+            <div className="mx-auto max-w-3xl p-4">
+              <OrganizationManage initial={organization} created={false} />
+            </div>
+          </NuqsTestingAdapter>
+        </AnnouncerProvider>
+      </CurrentMemberProvider>
+    </QueryClientProvider>
+  );
+}
+
+/** Members, roles, invitations and ownership of an organisation, read by its owner. */
+export const OrganizationMembers: Story = {
+  name: 'Organization members',
+  parameters: { layout: 'padded' },
+  render: () => <OrganizationFixture />,
+};

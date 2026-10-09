@@ -15,6 +15,9 @@ const COMPOSITIONS = [
   'auth-two-factor',
   'onboarding-profile',
   'settings-security',
+  'relationship-actions-story',
+  'connect-dialog-story',
+  'organization-members',
 ];
 
 /** Compositions that show a loading state on purpose. */
