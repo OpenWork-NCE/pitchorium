@@ -151,12 +151,14 @@ export function Field({
             {counter ? (
               <p
                 id={counterId}
-                // Seen from 80 % of the limit, or while the focus is in the field.
+                // Seen from 80 % of the limit, or while the focus is in the field. Hidden, it keeps
+                // its place: a click that takes the focus out lands where it was aimed, the controls
+                // below never move between the press and the release.
                 data-near={near ? '' : undefined}
                 className={cn(
                   'shrink-0 text-xs tabular-nums',
                   over ? 'text-danger' : 'text-muted',
-                  !near && 'hidden group-focus-within/field:block',
+                  !near && 'invisible group-focus-within/field:visible',
                 )}
                 // Announced only near the limit, not at every keystroke.
                 aria-live={near ? 'polite' : 'off'}
