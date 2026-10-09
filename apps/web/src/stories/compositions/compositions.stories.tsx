@@ -995,10 +995,17 @@ export const ComposerEmpty: Story = {
     </MemberRuntime>
   ),
   play: async () => {
-    const dialog = await within(document.body).findByRole('dialog', {
-      name: 'Créer une publication',
-    });
-    const editor = await within(dialog).findByRole('textbox', { name: 'Texte de la publication' });
+    // The composer is loaded on its first opening.
+    const dialog = await within(document.body).findByRole(
+      'dialog',
+      { name: 'Créer une publication' },
+      { timeout: 5000 },
+    );
+    const editor = await within(dialog).findByRole(
+      'textbox',
+      { name: 'Texte de la publication' },
+      { timeout: 5000 },
+    );
     // Once the opening of the dialog has played.
     await waitFor(() => expect(editor).toBeVisible());
   },
@@ -1016,10 +1023,17 @@ export const ComposerFull: Story = {
     </MemberRuntime>
   ),
   play: async () => {
-    const dialog = await within(document.body).findByRole('dialog', {
-      name: 'Créer une publication',
-    });
-    const editor = await within(dialog).findByRole('textbox', { name: 'Texte de la publication' });
+    // The composer is loaded on its first opening.
+    const dialog = await within(document.body).findByRole(
+      'dialog',
+      { name: 'Créer une publication' },
+      { timeout: 5000 },
+    );
+    const editor = await within(dialog).findByRole(
+      'textbox',
+      { name: 'Texte de la publication' },
+      { timeout: 5000 },
+    );
     await userEvent.click(editor);
     await userEvent.keyboard('Première récolte de la saison sèche à Thiès : 40 maraîchères.');
     await expect(await within(dialog).findByText(/^61 \/ 3\D?000$/)).toBeVisible();
