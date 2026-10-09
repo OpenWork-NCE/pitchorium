@@ -16,6 +16,7 @@ export { CopyButton } from './copy-button';
 export { CountBadge } from './count-badge';
 export { DateTimeField } from './date-time-field';
 export { DescriptionList } from './description-list';
+export { DrawnCheck } from './drawn-check';
 export { Dialog, DialogClose, DialogContent, DialogTrigger } from './dialog';
 export { Drawer, DrawerClose, DrawerContent, DrawerTrigger } from './drawer';
 export {

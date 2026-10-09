@@ -504,6 +504,21 @@ html[data-theme-transition='fade']::view-transition-new(root) {
   animation-duration: var(--duration-press);
 }
 
+/* Code field: the digits of a pasted code arrive one after the other (OtpInput). */
+@media (prefers-reduced-motion: no-preference) {
+  [data-pasted] {
+    animation: otp-fill var(--duration-page) var(--ease-enter) both;
+    animation-delay: var(--otp-delay, 0ms);
+  }
+}
+
+@keyframes otp-fill {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.9);
+  }
+}
+
 /* Page transition without the View Transitions API (PageTransition). */
 @media (prefers-reduced-motion: no-preference) {
   [data-page-enter] {

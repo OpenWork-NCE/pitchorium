@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { type ComponentProps, useId, useState } from 'react';
+import { type ComponentProps, type CSSProperties, useId, useState } from 'react';
 import { cn } from '@/lib/cn';
 import { useFieldControl } from './field';
 
@@ -15,8 +15,9 @@ type OtpInputProps = Omit<ComponentProps<'input'>, 'value' | 'onChange' | 'maxLe
 
 /**
  * Code received by email or by an authenticator: one real input (`autocomplete=one-time-code`,
- * numeric keyboard, paste of the whole code), drawn as one box per digit. Screen readers and
- * password managers see a single field.
+ * numeric keyboard, paste of the whole code), drawn as one box per digit: the box of the next
+ * digit carries the focus ring, a pasted code fills the boxes one after the other. Screen readers
+ * and password managers see a single field.
  */
 export function OtpInput({
   value,
@@ -30,6 +31,8 @@ export function OtpInput({
   const control = useFieldControl(props);
   const hintId = useId();
   const [focused, setFocused] = useState(false);
+  // A paste fills several boxes at once: they arrive one after the other (otp-fill).
+  const [pasted, setPasted] = useState(0);
   const digits = value.padEnd(length, ' ').slice(0, length).split('');
   const active = Math.min(value.length, length - 1);
 
@@ -53,6 +56,7 @@ export function OtpInput({
         }}
         onChange={(event) => {
           const next = event.target.value.replace(/\D/g, '').slice(0, length);
+          setPasted(next.length - value.length > 1 ? next.length : 0);
           onChange(next);
           if (next.length === length) onComplete?.(next);
         }}
@@ -67,6 +71,8 @@ export function OtpInput({
           key={index}
           aria-hidden
           data-active={focused && index === active ? '' : undefined}
+          data-pasted={pasted > index && digit.trim() ? '' : undefined}
+          style={{ '--otp-delay': `${index * 40}ms` } as CSSProperties}
           className={cn(
             'flex size-12 items-center justify-center rounded-md border border-border-strong bg-surface font-display text-2xl font-extrabold tabular-nums transition-colors duration-(--duration-micro)',
             'data-[active]:border-focus data-[active]:outline-2 data-[active]:outline-focus',
