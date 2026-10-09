@@ -575,7 +575,9 @@ function VirtualEntries({
       busy={busy}
       count={count}
       scrollTo={(index) => virtualizer.scrollToIndex(index, { align: 'start' })}
-      style={{ paddingTop: before, paddingBottom: after }}
+      // No scroll anchoring: the browser would move the page each time the paddings change, the
+      // list would render other entries, and so on, without end (seen on the live feed).
+      style={{ paddingTop: before, paddingBottom: after, overflowAnchor: 'none' }}
     >
       {items.map((item) => renderEntry(item.index, virtualizer.measureElement))}
     </FeedElement>
