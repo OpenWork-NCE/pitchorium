@@ -1,19 +1,25 @@
+import { accessControllerPrerequisites } from '@pitchorium/api-client';
 import { notFound, redirect } from 'next/navigation';
 import { AdminShell } from '@/components/layout/admin/admin-shell';
 import { routes } from '@/config/routes';
+import { configureServerApi } from '@/lib/api/server';
 import { getCurrentMember } from '@/lib/auth/session';
 
 /**
- * Administration console: shown to a moderator or an administrator only, checked here before the
- * render, and only once their second factor is on; the api enforces the role and the second factor
- * on every route (ADR 0015, ADR 0078).
+ * Administration console: what the api answers for its moderation queue, the action every
+ * privileged role holds, decides before the render (ADR 0015, ADR 0078, ADR 0109). Without the
+ * role, the console does not exist (404); with the role but without its second factor, the member
+ * is guided to turn it on. The api enforces both on every route.
  */
 export default async function AdminLayout({ children, params }: LayoutProps<'/[locale]'>) {
   const [{ locale }, member] = await Promise.all([params, getCurrentMember()]);
   if (!member) redirect(`/${locale}${routes.signIn}`);
-  if (!member.roles.some((role) => role === 'admin' || role === 'moderator')) notFound();
-  // A privileged role works only with a second factor (ADR 0015): guided to turn it on first.
-  if (!member.user.twoFactorEnabled) {
+  configureServerApi();
+  const access = await accessControllerPrerequisites('trust.moderation.read', {
+    cache: 'no-store',
+  });
+  if (access.code === 'FORBIDDEN' || access.code === 'UNAUTHENTICATED') notFound();
+  if (access.missing.includes('two_factor')) {
     redirect(`/${locale}${routes.settingsSecurity}?required=two-factor`);
   }
   return <AdminShell>{children}</AdminShell>;

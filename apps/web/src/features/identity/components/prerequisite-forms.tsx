@@ -13,4 +13,5 @@ export const IDENTITY_PREREQUISITE_FORMS: PrerequisiteForms = {
   email_verified: lazy(() => forms().then((module) => ({ default: module.EmailVerifiedForm }))),
   legal_acceptance: lazy(() => forms().then((module) => ({ default: module.LegalForm }))),
   two_factor: lazy(() => forms().then((module) => ({ default: module.TwoFactorForm }))),
+  'profile.minimum': lazy(() => forms().then((module) => ({ default: module.MinimumProfileForm }))),
 };

@@ -920,6 +920,17 @@
     "twoFactor": {
       "body": "Turn on two-factor authentication in your security settings, then try again.",
       "action": "Open security"
+    },
+    "minimumProfile": {
+      "label": "Minimum profile",
+      "body": "Your name, your title and your country tell the member you reach out to who you are.",
+      "name": "Name",
+      "headline": "Title",
+      "headlineHint": "Your role in a few words, for example “Founder of Sahel Agri”.",
+      "country": "Country",
+      "countryPlaceholder": "Choose a country",
+      "submit": "Save and continue",
+      "saving": "Saving"
     }
   },
   "discovery": {

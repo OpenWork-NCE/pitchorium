@@ -100,7 +100,7 @@ Comment assembler les composants (`components.md`) pour les situations récurren
 ## Autorisations et prérequis
 
 - Complétion au fil de l'eau (ADR 0105) : une écriture passe par `useWithPrerequisites` ; refusée pour des éléments manquants, le formulaire de chacun s'ouvre dans un dialogue (une feuille sur un téléphone), puis l'action repart seule. « Plus tard » rend le refus.
-- L'api décide à chaque appel (`ACCESS_PREREQUISITES_MISSING`, `FORBIDDEN`) ; l'interface s'informe par `GET /v1/me/prerequisites/{action}` pour ne pas proposer une impasse.
+- L'api décide à chaque appel (`ACCESS_PREREQUISITES_MISSING`, `FORBIDDEN`) ; l'interface s'informe par `GET /v1/me/prerequisites/{action}` pour ne pas proposer une impasse. Aucune règle de prérequis n'est écrite dans le web (ADR 0109) : ni la double authentification d'un rôle, ni le profil minimum (nom, titre, pays) qu'une demande de connexion ou un premier message hors réseau exige.
 - `Can` ou `useAccess(action)` (feature `access`) : `mode="hide"` retire une action que la personne ne peut pas obtenir (administration) ; `mode="disable"` l'affiche désactivée avec sa raison (`disabledReason` : « À compléter d'abord : adresse email vérifiée ») quand elle peut la débloquer.
 - Pendant la lecture des prérequis, une action en `disable` reste active (l'api tranchera), une action en `hide` reste cachée.
 - Un refus de l'api malgré une indication favorable s'affiche comme toute erreur : son code traduit, et le lien vers ce qu'il faut compléter.

@@ -15,5 +15,5 @@ Le §7.2 (étape 4) ouvre les blocs métier au moment où ils servent. L'api ref
 
 ## Conséquences
 
-- Un élément « profil minimum » n'existe pas dans l'api : il n'est pas exigé, donc pas branché (question 108).
+- Le profil minimum (`profile.minimum` : nom, titre, pays) est défini par l'api (ADR 0109) et branché comme les autres : la feature `identity` livre son formulaire. Le web n'écrit aucune règle de prérequis : la double authentification d'un rôle privilégié se lit aussi dans la réponse de l'api (`GET /v1/me/prerequisites/trust.moderation.read`), pour la bannière comme pour l'entrée de l'administration.
 - Tests : `prerequisite-gate.spec.tsx` (ordre, rejeu, abandon, élément sans formulaire) et le parcours réel `e2e-live/auth.spec.ts`.

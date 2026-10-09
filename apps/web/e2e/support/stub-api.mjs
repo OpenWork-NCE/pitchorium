@@ -431,16 +431,26 @@ const routes = {
   },
 };
 
-/** `GET /v1/me/prerequisites/{action}`: a verified email is needed to publish or create. */
+/** Actions of the console: a privileged role, then its second factor (ADR 0015). */
+const CONSOLE_ACTIONS = ['trust.moderation.read'];
+
+/**
+ * `GET /v1/me/prerequisites/{action}`: a verified email is needed to publish or create; the
+ * console needs a privileged role, then a second factor.
+ */
 function prerequisites(request, action) {
   const email = sessionOf(request);
   if (!email) return problem(401, 'UNAUTHENTICATED');
   const account = ACCOUNTS[email];
+  if (CONSOLE_ACTIONS.includes(action) && !account.roles.some((role) => role !== 'member')) {
+    return { status: 200, body: { action, allowed: false, code: 'FORBIDDEN', missing: [] } };
+  }
   const missing = [];
   if (!account.legalUpToDate) missing.push('legal_acceptance');
   if (!account.emailVerified && ['content.post.create', 'project.create'].includes(action)) {
     missing.push('email_verified');
   }
+  if (CONSOLE_ACTIONS.includes(action) && !account.twoFactorEnabled) missing.push('two_factor');
   return {
     status: 200,
     body: {

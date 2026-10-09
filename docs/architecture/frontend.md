@@ -68,8 +68,8 @@ sequenceDiagram
 
 - Les écrans de `(auth)` lisent `GET /v1/auth-configuration` côté serveur (`lib/auth/configuration.ts`) : fournisseurs OAuth, Turnstile (script de Cloudflare chargé par ces seuls écrans, cadre permis par la CSP), versions des conditions. Le client Better Auth se charge au premier envoi ; `authCall` y ajoute le jeton Turnstile et lit le délai d'une limite.
 - Toute connexion revient à `/continue?redirectTo=` (serveur) : conditions à accepter d'abord, puis la page demandée, validée sur la même origine (`lib/auth/redirect.ts`, aussi pour le proxy). Un nouveau compte passe par `/onboarding` (conditions, intention, profil minimum).
-- Prérequis : `PrerequisiteGateProvider` (coquille membre) et `useWithPrerequisites` ouvrent le formulaire de chaque élément manquant puis rejouent l'action ; dialogue et formulaires chargés au premier refus.
-- Paramètres : `/settings/account`, `/settings/security`, `/settings/preferences`, une adresse par section ; `(admin)` renvoie un rôle privilégié sans double authentification vers la sécurité.
+- Prérequis : `PrerequisiteGateProvider` (coquille membre) et `useWithPrerequisites` ouvrent le formulaire de chaque élément manquant puis rejouent l'action ; dialogue et formulaires chargés au premier refus. Les éléments viennent tous de l'api (ADR 0109) : l'entrée de l'administration et la bannière de double authentification lisent `GET /v1/me/prerequisites/trust.moderation.read`.
+- Paramètres : `/settings/account`, `/settings/security`, `/settings/preferences`, une adresse par section ; `(admin)` renvoie vers la sécurité un rôle privilégié dont l'api demande la double authentification.
 
 ## Fournisseurs
 

@@ -920,6 +920,17 @@
     "twoFactor": {
       "body": "Activez la double authentification dans vos paramètres de sécurité, puis recommencez.",
       "action": "Ouvrir la sécurité"
+    },
+    "minimumProfile": {
+      "label": "Profil minimum",
+      "body": "Votre nom, votre titre et votre pays disent qui vous êtes au membre que vous contactez.",
+      "name": "Nom",
+      "headline": "Titre",
+      "headlineHint": "Votre rôle en quelques mots, par exemple « Fondatrice de Sahel Agri ».",
+      "country": "Pays",
+      "countryPlaceholder": "Choisir un pays",
+      "submit": "Enregistrer et continuer",
+      "saving": "Enregistrement en cours"
     }
   },
   "discovery": {

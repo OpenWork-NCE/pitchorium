@@ -1,18 +1,35 @@
 'use client';
 
 import { useLocale, useTranslations } from 'next-intl';
-import { useState } from 'react';
+import { type ReactNode, useState } from 'react';
 import { Banner, Button } from '@/components/ui';
 import { routes } from '@/config/routes';
 import { Link, usePathname } from '@/i18n/navigation';
 import { withRedirect } from '@/lib/auth/redirect';
+import { useAccess } from '@/features/access';
 import { useCurrentMember } from './current-member';
+
+/**
+ * The second factor a privileged role requires, as the api tells it for the moderation console
+ * (`GET /v1/me/prerequisites/trust.moderation.read`): no rule of the web app (ADR 0109).
+ */
+function SecondFactorBanner({ action }: { action: (label: string, href: string) => ReactNode }) {
+  const t = useTranslations('web.banners');
+  const access = useAccess('trust.moderation.read');
+  if (!access.missing.includes('two_factor')) return null;
+  return (
+    <Banner tone="info" action={action(t('twoFactor.action'), routes.settingsSecurity)}>
+      {t('twoFactor.body')}
+    </Banner>
+  );
+}
 
 /**
  * Banners of the account across the top of the member space, from the most serious (patterns.md):
  * suspension (to the decision and its appeal), terms to accept (to the step of the onboarding,
  * then back here), email to verify (resend in place), second factor required by a role. Read
- * from `GET /v1/me`; none blocks the navigation, the api decides on every call.
+ * from `GET /v1/me` and, for the second factor, from the prerequisites the api gives; none
+ * blocks the navigation, the api decides on every call.
  */
 export function AccountBanners() {
   const member = useCurrentMember();
@@ -40,9 +57,8 @@ export function AccountBanners() {
       <Link href={href}>{label}</Link>
     </Button>
   );
-  const needsSecondFactor =
-    member.roles.some((role) => role === 'moderator' || role === 'admin') &&
-    !member.user.twoFactorEnabled;
+  // Only a privileged role may lack a second factor that its console requires: the api says it.
+  const privileged = member.roles.some((role) => role !== 'member');
 
   return (
     <div data-account-banners="">
@@ -85,11 +101,7 @@ export function AccountBanners() {
           </span>
         </Banner>
       ) : null}
-      {needsSecondFactor ? (
-        <Banner tone="info" action={action(t('twoFactor.action'), routes.settingsSecurity)}>
-          {t('twoFactor.body')}
-        </Banner>
-      ) : null}
+      {privileged ? <SecondFactorBanner action={action} /> : null}
     </div>
   );
 }
