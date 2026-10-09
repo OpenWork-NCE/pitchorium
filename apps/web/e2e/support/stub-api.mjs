@@ -6,6 +6,7 @@
 // Test routes (`/__test/*`): emit a realtime event, read the log of the writes, reset the state.
 import { createServer } from 'node:http';
 import { Server } from 'socket.io';
+import { contentRoutes } from './stub-content.mjs';
 
 const port = Number(process.env.STUB_API_PORT ?? 3299);
 const origin = process.env.STUB_WEB_ORIGIN ?? 'http://localhost:3201';
@@ -97,47 +98,6 @@ const AUTHORS = [
     avatarUrl: null,
   },
 ];
-
-/** Fourteen publications: the modules of a narrow feed go after the third and the thirteenth. */
-function feedPosts() {
-  return Array.from({ length: 14 }, (_, index) => {
-    const author = AUTHORS[index % AUTHORS.length];
-    const id = `0192f4a0-2000-7000-8000-${String(index + 1).padStart(12, '0')}`;
-    return {
-      type: 'post',
-      id,
-      post: {
-        id,
-        author: { type: 'member', member: author },
-        text: `Publication ${index + 1} de ${author.displayName} : un retour d’expérience de terrain.`,
-        language: 'fr',
-        languageSource: 'detected',
-        visibility: 'members',
-        images: [],
-        document: null,
-        link: null,
-        mentions: [],
-        projectId: null,
-        commentsDisabled: false,
-        reactions: {
-          counts: { like: 12, bravo: 4, insightful: 2, support: 0 },
-          total: 18,
-          viewerReaction: null,
-        },
-        commentCount: 3,
-        repostCount: 0,
-        saved: false,
-        viewerIsAuthor: false,
-        featured: false,
-        // Relative to now: « il y a 1 heure » whatever the day (reference screenshots).
-        createdAt: new Date(Date.now() - (index + 1) * 3_600_000).toISOString(),
-        editedAt: null,
-        kind: 'post',
-        repostOf: null,
-      },
-    };
-  });
-}
 
 /** People suggested, with reasons written with the keys of the discovery namespace. */
 const SUGGESTIONS = [
@@ -566,10 +526,6 @@ const routes = {
       headers: replay ? { 'idempotent-replayed': 'true' } : {},
     };
   },
-  'GET /v1/feed': (request) =>
-    sessionOf(request)
-      ? { status: 200, body: { schemaVersion: 1, items: feedPosts(), nextCursor: null } }
-      : problem(401, 'UNAUTHENTICATED'),
   'GET /v1/discovery/suggestions': (request) =>
     sessionOf(request)
       ? { status: 200, body: { items: SUGGESTIONS, nextCursor: null } }
@@ -638,6 +594,12 @@ const routes = {
     };
   },
   'GET /__test/writes': () => ({ status: 200, body: state.writes }),
+  // Newer publications of the network the feed will be told about (ADR 0117).
+  'POST /__test/newer': async (request) => {
+    const { count } = await readJson(request);
+    state.newer = count;
+    return { status: 200, body: { newer: count } };
+  },
   'POST /__test/reset': () => {
     state = fresh();
     return { status: 200, body: { reset: true } };
@@ -712,14 +674,24 @@ const server = createServer(async (request, response) => {
     ? prerequisites(request, prerequisite[1])
     : handler
       ? await handler(request)
-      : (read ?? problem(404, 'NOT_FOUND'));
+      : (read ?? (await content(request, path)) ?? problem(404, 'NOT_FOUND'));
   const ok = result.status < 400;
   response.writeHead(result.status, {
     'content-type': ok ? 'application/json' : 'application/problem+json',
     ...cors,
     ...result.headers,
   });
-  response.end(result.status === 204 ? undefined : JSON.stringify(result.body));
+  response.end(result.raw ?? (result.status === 204 ? undefined : JSON.stringify(result.body)));
+});
+
+const content = contentRoutes({
+  origin: `http://localhost:${port}`,
+  authors: AUTHORS,
+  accounts: ACCOUNTS,
+  sessionOf,
+  problem,
+  readJson,
+  state: () => state,
 });
 
 io = new Server(server, { cors: { origin, credentials: true }, transports: ['websocket'] });

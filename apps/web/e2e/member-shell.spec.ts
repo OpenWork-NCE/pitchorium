@@ -71,6 +71,8 @@ test.describe('member shell', () => {
     await page.keyboard.press('ArrowDown');
     await expect(page.getByRole('menuitem', { name: 'Mes organisations' })).toBeFocused();
     await page.keyboard.press('ArrowDown');
+    await expect(page.getByRole('menuitem', { name: 'Publications enregistrées' })).toBeFocused();
+    await page.keyboard.press('ArrowDown');
     await expect(page.getByRole('menuitem', { name: 'Paramètres' })).toBeFocused();
     await page.keyboard.press('Escape');
     await expect(order.at(-1)!).toBeFocused();
@@ -232,6 +234,8 @@ test.describe('member shell', () => {
       tag: '@phone',
     },
     async ({ context }) => {
+      // Offline on purpose: the browser reports the requests it cannot send.
+      allowConsole(/net::ERR_INTERNET_DISCONNECTED|WebKit encountered an internal error/);
       const api = await playwrightRequest.newContext({ baseURL: API_ORIGIN });
       const first = await context.newPage();
       await signIn(first, AISSATOU);
@@ -239,7 +243,10 @@ test.describe('member shell', () => {
       await first.waitForLoadState('networkidle');
 
       await context.setOffline(true);
-      const like = first.getByRole('article').first().getByRole('button', { name: "J'aime" });
+      const like = first
+        .getByRole('article')
+        .first()
+        .getByRole('button', { name: "J'aime", exact: true });
       await like.click();
       await expect(like).toHaveAttribute('aria-pressed', 'true');
       await expect(first.getByText('1 action en attente.')).toBeVisible();
@@ -318,24 +325,25 @@ test.describe('member shell on a phone', { tag: '@phone' }, () => {
     const main = page.getByRole('main');
     // No visible title: its name for screen readers, then the composer and the profile.
     await expect(page.getByRole('heading', { level: 1, name: 'Accueil' })).toHaveClass(/sr-only/);
-    await expect(main.getByRole('link', { name: 'Commencer une publication' })).toBeVisible();
+    await expect(main.getByRole('button', { name: 'Commencer une publication' })).toBeVisible();
     await expect(main.getByRole('region', { name: 'Complétez votre profil' })).toBeVisible();
     // The side columns are not stacked under the feed.
     await expect(page.getByRole('complementary')).toHaveCount(0);
-    // The suggestions come among the items: after the third, then after the thirteenth.
-    const order = await main.evaluate((element) =>
-      [...element.querySelectorAll('article, section[aria-label]')].map((node) =>
-        node.tagName === 'ARTICLE' ? 'post' : node.getAttribute('aria-label'),
-      ),
-    );
-    expect(order.slice(0, 5)).toEqual([
-      'Complétez votre profil',
-      'post',
-      'post',
-      'post',
-      'Personnes pertinentes pour vous',
-    ]);
-    expect(order.indexOf('Personnes pertinentes pour vous', 5)).toBe(15);
+    // The suggestions come among the items of the feed: after the third, then after the
+    // thirteenth (the feed is virtualized: its entries carry their position).
+    const feed = main.getByRole('feed', { name: 'Fil d’actualité' });
+    const entry = (index: number) => feed.locator(`[data-feed-index="${index}"]`);
+    for (const index of [0, 1, 2]) {
+      await expect(entry(index)).toHaveAttribute('aria-label', /^Publication de /);
+    }
+    await expect(entry(3)).toHaveAttribute('aria-label', 'Personnes pertinentes pour vous');
+    await expect
+      .poll(async () => {
+        await page.mouse.wheel(0, 2000);
+        return entry(14).count();
+      })
+      .toBe(1);
+    await expect(entry(14)).toHaveAttribute('aria-label', 'Personnes pertinentes pour vous');
     // Neutral, without the name shown just above it.
     await expect(main.getByText('Propose du mentorat').first()).toBeVisible();
     await expect(main.getByText(/Suggéré parce que|Ifeoma Okafor propose/)).toHaveCount(0);
