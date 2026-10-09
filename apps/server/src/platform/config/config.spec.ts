@@ -88,6 +88,26 @@ describe('configuration', () => {
     ).toEqual({ provider: 'cloudflare', cloudflare: { zoneId, apiToken: 'token' } });
   });
 
+  it('allows the test adapter of the antivirus outside production only', () => {
+    expect(parseWorkerConfig(baseEnv).malwareScanner).toBe('clamav');
+    expect(parseWorkerConfig({ ...baseEnv, MALWARE_SCANNER: 'eicar-only' }).malwareScanner).toBe(
+      'eicar-only',
+    );
+    expect(
+      issuesOf(() =>
+        parseWorkerConfig({
+          ...baseEnv,
+          ...livePayments,
+          NODE_ENV: 'production',
+          CDN_PURGE_PROVIDER: 'cloudflare',
+          CLOUDFLARE_ZONE_ID: 'a'.repeat(32),
+          CLOUDFLARE_API_TOKEN: 'token',
+          MALWARE_SCANNER: 'eicar-only',
+        }),
+      ),
+    ).toEqual(['MALWARE_SCANNER: Only ClamAV is allowed in production']);
+  });
+
   it('refuses the development secret of the email links in production', () => {
     const { EMAIL_LINK_SECRET: _secret, ...withoutSecret } = livePayments;
     expect(

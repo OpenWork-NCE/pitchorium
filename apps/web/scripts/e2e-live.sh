@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Journeys of the web app against the real api (docs/architecture/frontend.md), from scratch, the
 # way the end-to-end suite of the server runs: an isolated Docker Compose project (PostgreSQL,
-# Valkey, MinIO, Mailpit, ClamAV) on dedicated ports, the migrations and the demonstration data,
+# Valkey, MinIO, Mailpit; the worker scans with the test adapter of the antivirus, ADR 0126) on
+# dedicated ports, the migrations and the demonstration data,
 # the built api, worker and web app, the fake OAuth providers (a service a browser reaches), then
 # Playwright in its official image (Chromium, Firefox, WebKit). Cloudflare Turnstile runs with its
 # official test keys. Everything this script starts is stopped by its own process group id or
@@ -35,7 +36,6 @@ export PITCHORIUM_MINIO_PORT=$((9000 + offset))
 export PITCHORIUM_MINIO_CONSOLE_PORT=$((9001 + offset))
 export PITCHORIUM_MAILPIT_SMTP_PORT=$((1025 + offset))
 export PITCHORIUM_MAILPIT_UI_PORT=$((8025 + offset))
-export PITCHORIUM_CLAMAV_PORT=$((3310 + offset))
 api_port=$((3000 + offset))
 worker_port=$((3001 + offset))
 web_port=$((3200 + offset))
@@ -45,7 +45,7 @@ export TURBO_TELEMETRY_DISABLED=1
 # A port already in use belongs to someone else: stop rather than share or kill it.
 for port in "$PITCHORIUM_POSTGRES_PORT" "$PITCHORIUM_VALKEY_PORT" "$PITCHORIUM_MINIO_PORT" \
   "$PITCHORIUM_MINIO_CONSOLE_PORT" "$PITCHORIUM_MAILPIT_SMTP_PORT" "$PITCHORIUM_MAILPIT_UI_PORT" \
-  "$PITCHORIUM_CLAMAV_PORT" "$api_port" "$worker_port" "$web_port" "$oauth_port"; do
+  "$api_port" "$worker_port" "$web_port" "$oauth_port"; do
   if (exec 3<>"/dev/tcp/127.0.0.1/$port") 2>/dev/null; then
     echo "Port $port is already in use: choose another LIVE_PORT_OFFSET." >&2
     exit 2
@@ -84,7 +84,7 @@ sed \
   -e "s#localhost:1025#localhost:$PITCHORIUM_MAILPIT_SMTP_PORT#" \
   -e "s#localhost:3200#localhost:$web_port#g" \
   -e "s#localhost:3000#localhost:$api_port#g" \
-  -e "s#^CLAMAV_PORT=.*#CLAMAV_PORT=$PITCHORIUM_CLAMAV_PORT#" \
+  -e "s#^MALWARE_SCANNER=.*#MALWARE_SCANNER=eicar-only#" \
   -e "s#^API_PORT=.*#API_PORT=$api_port#" \
   -e "s#^WORKER_HEALTH_PORT=.*#WORKER_HEALTH_PORT=$worker_port#" \
   -e "s#^QUEUE_PREFIX=.*#QUEUE_PREFIX=$project#" \
@@ -150,7 +150,7 @@ wait_ready() {
 }
 
 cd "$root"
-step 'infrastructure (Compose)' "${compose[@]}" up -d --wait postgres valkey minio mailpit clamav
+step 'infrastructure (Compose)' "${compose[@]}" up -d --wait postgres valkey minio mailpit
 step 'buckets' "${compose[@]}" run --rm minio-init
 # Built first: the demonstration data runs on the built packages (a fresh clone has none).
 if [ "${LIVE_SKIP_BUILD:-0}" != "1" ]; then

@@ -8,7 +8,7 @@ Fichiers et leurs métadonnées (cahier des charges §10.1, §10.3, §11.1, §13
 2. Le client envoie le fichier directement au stockage, puis `POST /v1/media/{mediaId}/confirm` (idempotent) : statut `processing` et événement interne `media.asset.uploaded.v1`, qui met en file le job `process` (file `media.processing`).
 3. Traitement par le worker, hors transaction (ADR 0019), idempotent :
    - lecture plafonnée à la taille maximale de l'usage ;
-   - antivirus ClamAV (ADR 0023) ;
+   - antivirus ClamAV (ADR 0023) ; les parcours de bout en bout utilisent l'adaptateur de test `EicarOnlyMalwareScanner` (`MALWARE_SCANNER=eicar-only`, refusé en production), le vrai ClamAV restant exercé par les tests d'intégration du module (fichier EICAR) et par `verify:clean` (ADR 0126) ;
    - type réel lu dans les octets magiques (`file-type`) : il doit être autorisé et égal au type déclaré ;
    - images (`sharp`) : décodage complet, dimensions minimales et maximales de l'usage, orientation EXIF appliquée aux pixels, aucune métadonnée conservée (EXIF, GPS), variantes de l'usage en WebP et AVIF ;
    - PDF (`pdfjs-dist`) : structure et arbre des pages, nombre de pages maximal, miniature de la première page en WebP et AVIF ; le PDF lui-même est conservé ;

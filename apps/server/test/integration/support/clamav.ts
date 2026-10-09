@@ -15,8 +15,4 @@ export function startClamAv(): Promise<StartedTestContainer> {
     .start();
 }
 
-/** The EICAR antivirus test file: harmless, detected by every antivirus. */
-export const EICAR = Buffer.from(
-  'X5O!P%@AP[4\\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*',
-  'ascii',
-);
+export { EICAR } from '../../../src/modules/media/infrastructure/eicar-only.malware-scanner';

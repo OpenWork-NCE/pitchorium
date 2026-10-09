@@ -172,6 +172,8 @@ export interface WorkerConfig extends CommonConfig {
     retentionMs: number;
   };
   clamav: { host: string; port: number; timeoutMs: number };
+  /** Adapter of the antivirus port: ClamAV, or the EICAR-only test adapter (ADR 0126). */
+  malwareScanner: 'clamav' | 'eicar-only';
   media: { orphanTtlMs: number; importTimeoutMs: number };
   /** Fixed interval replacing the cron pattern of every scheduled task (tests only). */
   scheduledTasks: { everyMs: number | undefined };
@@ -416,6 +418,7 @@ export function parseWorkerConfig(rawEnv: RawEnv): WorkerConfig {
       retentionMs: env.OUTBOX_RETENTION_DAYS * 86_400_000,
     },
     clamav: { host: env.CLAMAV_HOST, port: env.CLAMAV_PORT, timeoutMs: env.CLAMAV_TIMEOUT_MS },
+    malwareScanner: env.MALWARE_SCANNER,
     media: {
       orphanTtlMs: env.MEDIA_ORPHAN_TTL_HOURS * 3_600_000,
       importTimeoutMs: env.MEDIA_IMPORT_TIMEOUT_MS,

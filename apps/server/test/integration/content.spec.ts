@@ -23,7 +23,7 @@ import { OutboxRelayService } from '../../src/platform/outbox';
 import { StorageModule } from '../../src/platform/storage';
 import { createApiTestApp } from './support/api-app';
 import { query, truncateAllTables } from './support/database';
-import { FakeMalwareScanner } from './support/fake-malware-scanner';
+import { EicarOnlyMalwareScanner } from '../../src/modules/media/infrastructure/eicar-only.malware-scanner';
 import { minimalPdf, png } from './support/files';
 import { uploadFile, waitUntilProcessed } from './support/media';
 import { createMember, ensureMinimumProfile, type Member } from './support/members';
@@ -141,7 +141,7 @@ describe('content', () => {
       (builder) =>
         builder
           .overrideProvider(MalwareScanner)
-          .useValue(new FakeMalwareScanner())
+          .useValue(new EicarOnlyMalwareScanner())
           .overrideProvider(SafeHttpClient)
           .useValue(outbound),
     );

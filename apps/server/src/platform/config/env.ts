@@ -176,6 +176,8 @@ const workerEnvSchema = commonEnvSchema.extend({
   OUTBOX_BATCH_SIZE: z.coerce.number().int().positive().max(1000).default(100),
   OUTBOX_MAX_BACKOFF_MS: z.coerce.number().int().positive().default(300_000),
   OUTBOX_RETENTION_DAYS: z.coerce.number().int().min(2).max(3650).default(30),
+  /** `eicar-only`: test adapter of the end-to-end journeys (ADR 0126), refused in production. */
+  MALWARE_SCANNER: z.enum(['clamav', 'eicar-only']).default('clamav'),
   CLAMAV_HOST: z.string().min(1).default('localhost'),
   CLAMAV_PORT: z.coerce.number().int().min(1).max(65535).default(3310),
   CLAMAV_TIMEOUT_MS: z.coerce.number().int().positive().default(60_000),
@@ -373,6 +375,20 @@ function refuseScheduleOverrideInProduction(
   }
 }
 
+/** The test adapter of the antivirus lets every file through but the EICAR test file. */
+function refuseTestMalwareScannerInProduction(
+  env: z.infer<typeof workerEnvSchema>,
+  ctx: z.RefinementCtx,
+): void {
+  if (env.NODE_ENV === 'production' && env.MALWARE_SCANNER !== 'clamav') {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['MALWARE_SCANNER'],
+      message: 'Only ClamAV is allowed in production',
+    });
+  }
+}
+
 /**
  * Public files are cached for a year by the CDN (ADR 0026): in production, a file that becomes
  * private must be purged, so a purge provider is required.
@@ -403,6 +419,7 @@ export const workerEnv = workerEnvSchema
   .superRefine(requirePaymentProviders)
   .superRefine(requireTranslationProviders)
   .superRefine(refuseScheduleOverrideInProduction)
+  .superRefine(refuseTestMalwareScannerInProduction)
   .superRefine(requireCdnPurge);
 
 export type CommonEnv = z.infer<typeof commonEnvSchema>;

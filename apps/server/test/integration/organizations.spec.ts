@@ -17,7 +17,7 @@ import { StorageModule } from '../../src/platform/storage';
 import { createApiTestApp } from './support/api-app';
 import { query, truncateAllTables } from './support/database';
 import { TEST_WEB_APP_URL } from './support/environment';
-import { FakeMalwareScanner } from './support/fake-malware-scanner';
+import { EicarOnlyMalwareScanner } from '../../src/modules/media/infrastructure/eicar-only.malware-scanner';
 import { minimalPdf, png } from './support/files';
 import { linkIn, Mailpit, type ReceivedEmail } from './support/mailpit';
 import { uploadFile, waitUntilProcessed } from './support/media';
@@ -109,7 +109,7 @@ describe('organizations', () => {
         OrganizationsModule.forWorker(),
         NetworkModule.forWorker(),
       ],
-      (builder) => builder.overrideProvider(MalwareScanner).useValue(new FakeMalwareScanner()),
+      (builder) => builder.overrideProvider(MalwareScanner).useValue(new EicarOnlyMalwareScanner()),
     );
   });
 

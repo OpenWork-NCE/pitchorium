@@ -118,31 +118,32 @@ Toutes les variables lues par l'api et le worker, validées au démarrage par `a
 
 ## worker
 
-| Variable                                           | Type                           | Défaut      | Local (`.env.example`) | Staging          | Production                       |
-| -------------------------------------------------- | ------------------------------ | ----------- | ---------------------- | ---------------- | -------------------------------- |
-| `WORKER_HEALTH_PORT`                               | entier                         | `3001`      | `3001`                 | comme production | défaut                           |
-| `OUTBOX_POLL_INTERVAL_MS`                          | entier                         | `1000`      | `1000`                 | comme production | défaut                           |
-| `OUTBOX_BATCH_SIZE`                                | entier                         | `100`       | `100`                  | comme production | défaut                           |
-| `OUTBOX_MAX_BACKOFF_MS`                            | entier                         | `300_000`   | `300000`               | comme production | défaut                           |
-| `OUTBOX_RETENTION_DAYS`                            | entier                         | `30`        | `30`                   | comme production | défaut                           |
-| `CLAMAV_HOST`                                      | texte                          | `localhost` | `localhost`            | comme production | défaut                           |
-| `CLAMAV_PORT`                                      | entier                         | `3310`      | `3310`                 | comme production | défaut                           |
-| `CLAMAV_TIMEOUT_MS`                                | entier                         | `60_000`    | `60000`                | comme production | défaut                           |
-| `MEDIA_ORPHAN_TTL_HOURS`                           | entier                         | `24`        | `24`                   | comme production | défaut                           |
-| `MEDIA_IMPORT_TIMEOUT_MS`                          | entier                         | `10_000`    | `10000`                | comme production | défaut                           |
-| `SCHEDULED_TASKS_EVERY_MS`                         | entier                         | —           | —                      | comme production | interdite                        |
-| `CONTENT_LINK_PREVIEW_TIMEOUT_MS`                  | entier                         | `5000`      | `5000`                 | comme production | défaut                           |
-| `CONTENT_LINK_PREVIEW_MAX_BYTES`                   | entier                         | `1_048_576` | `1048576`              | comme production | défaut                           |
-| `PROJECTS_ENDING_SOON_HOURS`                       | entier                         | `72`        | `72`                   | comme production | défaut                           |
-| `NOTIFICATIONS_RETENTION_DAYS`                     | entier                         | `90`        | `90`                   | comme production | défaut                           |
-| `NOTIFICATIONS_FANOUT_BATCH_SIZE`                  | entier                         | `500`       | `500`                  | comme production | défaut                           |
-| `NOTIFICATIONS_UNREAD_MESSAGE_EMAIL_DELAY_MINUTES` | entier                         | `30`        | `30`                   | comme production | défaut                           |
-| `NOTIFICATIONS_DIGEST_HOUR`                        | entier                         | `8`         | `8`                    | comme production | défaut                           |
-| `NOTIFICATIONS_EVENT_REMINDER_HOURS`               | entier                         | `24`        | `24`                   | comme production | défaut                           |
-| `PAYMENTS_RECONCILIATION_LOOKBACK_DAYS`            | entier                         | `3`         | `3`                    | comme production | défaut                           |
-| `CDN_PURGE_PROVIDER`                               | énumération : none, cloudflare | `none`      | `none`                 | comme production | `cloudflare`                     |
-| `CLOUDFLARE_ZONE_ID`                               | texte                          | —           | —                      | comme production | facultative                      |
-| `CLOUDFLARE_API_TOKEN`                             | texte                          | —           | —                      | clé de test      | secret (gestionnaire de secrets) |
+| Variable                                           | Type                             | Défaut      | Local (`.env.example`) | Staging          | Production                              |
+| -------------------------------------------------- | -------------------------------- | ----------- | ---------------------- | ---------------- | --------------------------------------- |
+| `WORKER_HEALTH_PORT`                               | entier                           | `3001`      | `3001`                 | comme production | défaut                                  |
+| `OUTBOX_POLL_INTERVAL_MS`                          | entier                           | `1000`      | `1000`                 | comme production | défaut                                  |
+| `OUTBOX_BATCH_SIZE`                                | entier                           | `100`       | `100`                  | comme production | défaut                                  |
+| `OUTBOX_MAX_BACKOFF_MS`                            | entier                           | `300_000`   | `300000`               | comme production | défaut                                  |
+| `OUTBOX_RETENTION_DAYS`                            | entier                           | `30`        | `30`                   | comme production | défaut                                  |
+| `MALWARE_SCANNER`                                  | énumération : clamav, eicar-only | `clamav`    | `clamav`               | comme production | défaut ; `eicar-only` refusé (ADR 0126) |
+| `CLAMAV_HOST`                                      | texte                            | `localhost` | `localhost`            | comme production | défaut                                  |
+| `CLAMAV_PORT`                                      | entier                           | `3310`      | `3310`                 | comme production | défaut                                  |
+| `CLAMAV_TIMEOUT_MS`                                | entier                           | `60_000`    | `60000`                | comme production | défaut                                  |
+| `MEDIA_ORPHAN_TTL_HOURS`                           | entier                           | `24`        | `24`                   | comme production | défaut                                  |
+| `MEDIA_IMPORT_TIMEOUT_MS`                          | entier                           | `10_000`    | `10000`                | comme production | défaut                                  |
+| `SCHEDULED_TASKS_EVERY_MS`                         | entier                           | —           | —                      | comme production | interdite                               |
+| `CONTENT_LINK_PREVIEW_TIMEOUT_MS`                  | entier                           | `5000`      | `5000`                 | comme production | défaut                                  |
+| `CONTENT_LINK_PREVIEW_MAX_BYTES`                   | entier                           | `1_048_576` | `1048576`              | comme production | défaut                                  |
+| `PROJECTS_ENDING_SOON_HOURS`                       | entier                           | `72`        | `72`                   | comme production | défaut                                  |
+| `NOTIFICATIONS_RETENTION_DAYS`                     | entier                           | `90`        | `90`                   | comme production | défaut                                  |
+| `NOTIFICATIONS_FANOUT_BATCH_SIZE`                  | entier                           | `500`       | `500`                  | comme production | défaut                                  |
+| `NOTIFICATIONS_UNREAD_MESSAGE_EMAIL_DELAY_MINUTES` | entier                           | `30`        | `30`                   | comme production | défaut                                  |
+| `NOTIFICATIONS_DIGEST_HOUR`                        | entier                           | `8`         | `8`                    | comme production | défaut                                  |
+| `NOTIFICATIONS_EVENT_REMINDER_HOURS`               | entier                           | `24`        | `24`                   | comme production | défaut                                  |
+| `PAYMENTS_RECONCILIATION_LOOKBACK_DAYS`            | entier                           | `3`         | `3`                    | comme production | défaut                                  |
+| `CDN_PURGE_PROVIDER`                               | énumération : none, cloudflare   | `none`      | `none`                 | comme production | `cloudflare`                            |
+| `CLOUDFLARE_ZONE_ID`                               | texte                            | —           | —                      | comme production | facultative                             |
+| `CLOUDFLARE_API_TOKEN`                             | texte                            | —           | —                      | clé de test      | secret (gestionnaire de secrets)        |
 
 ## Web (`apps/web`)
 

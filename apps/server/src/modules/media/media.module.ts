@@ -19,6 +19,7 @@ import {
 } from './application/ports';
 import { AllowlistedImageFetcher } from './infrastructure/allowlisted-image.fetcher';
 import { ClamAvMalwareScanner } from './infrastructure/clamav.malware-scanner';
+import { EicarOnlyMalwareScanner } from './infrastructure/eicar-only.malware-scanner';
 import { DrizzleMediaRepository } from './infrastructure/drizzle-media.repository';
 import { FileTypeDetector } from './infrastructure/file-type.detector';
 import { PdfJsInspector } from './infrastructure/pdfjs.pdf-inspector';
@@ -31,6 +32,7 @@ import { MEDIA_QUEUE } from './interface/media-queue';
 
 import { MediaRetentionRegistry } from './application/media-retention.registry';
 import { MediaPersonalData } from './infrastructure/media-personal-data';
+import { WORKER_CONFIG, type WorkerConfig } from '../../platform/config';
 
 const SHARED_PROVIDERS: Provider[] = [
   { provide: MediaRepository, useClass: DrizzleMediaRepository },
@@ -73,7 +75,14 @@ export class MediaModule {
         MediaVisibilityService,
         MediaCdnPurgeService,
         { provide: ContentTypeDetector, useClass: FileTypeDetector },
-        { provide: MalwareScanner, useClass: ClamAvMalwareScanner },
+        {
+          provide: MalwareScanner,
+          inject: [WORKER_CONFIG],
+          useFactory: (config: WorkerConfig) =>
+            config.malwareScanner === 'eicar-only'
+              ? new EicarOnlyMalwareScanner()
+              : new ClamAvMalwareScanner(config),
+        },
         { provide: ImageProcessor, useClass: SharpImageProcessor },
         { provide: PdfInspector, useClass: PdfJsInspector },
         { provide: RemoteImageFetcher, useClass: AllowlistedImageFetcher },

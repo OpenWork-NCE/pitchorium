@@ -65,6 +65,8 @@ function environment(values: Record<string, string>, apiUrl: string, healthPort:
     PAYMENTS_MODE: 'simulated',
     // Scheduled tasks (erasures, reminders) every few seconds instead of their cron pattern.
     SCHEDULED_TASKS_EVERY_MS: '3000',
+    // Test adapter of the antivirus (ADR 0126): the real ClamAV runs in the integration tests.
+    MALWARE_SCANNER: 'eicar-only',
   };
 }
 
