@@ -3,6 +3,7 @@
 import { meControllerChangeHandle } from '@pitchorium/api-client';
 import { changeHandleRequestSchema, HANDLE_MAX_LENGTH } from '@pitchorium/contracts';
 import { useTranslations } from 'next-intl';
+import { useWatch } from 'react-hook-form';
 import {
   Button,
   Callout,
@@ -29,7 +30,8 @@ export function HandleEditor({ own, locale, onClose }: EditorProps) {
   const router = useRouter();
   const form = useZodForm(changeHandleRequestSchema, { defaultValues: { handle: own.handle } });
   const applyProblem = useApplyProblem(form);
-  const handle = form.watch('handle');
+  // Read by subscription: the compiled component renders again as it is typed.
+  const handle = useWatch({ control: form.control, name: 'handle' });
   const origin = typeof window === 'undefined' ? '' : window.location.origin;
   const address = (value: string) => `${origin}/${locale}${routes.member(value)}`;
 

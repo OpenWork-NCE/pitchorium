@@ -18,6 +18,7 @@ import {
 } from '@pitchorium/contracts';
 import { useLocale, useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
+import { useWatch } from 'react-hook-form';
 import {
   AlertDialog,
   Button,
@@ -110,7 +111,10 @@ export function ContributorForm({
   const [elsewhere, setElsewhere] = useState(
     Boolean(facet?.organizationName) && !facet?.organizationId,
   );
-  const ticket = form.watch('ticket');
+  // Read by subscription: the compiled component renders again on each change.
+  const ticket = useWatch({ control: form.control, name: 'ticket' });
+  const mentoring = useWatch({ control: form.control, name: 'mentoringAvailable' });
+  const missions = useWatch({ control: form.control, name: 'openToExpertMissions' });
 
   /** The ticket from its two bounds, null while either is missing. */
   function setTicket(bound: 'minAmountMinor' | 'maxAmountMinor', minor: string | null) {
@@ -305,14 +309,14 @@ export function ContributorForm({
       <div className="grid gap-3">
         <Checkbox
           label={t('fields.mentoring')}
-          checked={form.watch('mentoringAvailable') ?? false}
+          checked={mentoring ?? false}
           onCheckedChange={(checked) =>
             form.setValue('mentoringAvailable', checked === true, { shouldDirty: true })
           }
         />
         <Checkbox
           label={t('fields.missions')}
-          checked={form.watch('openToExpertMissions') ?? false}
+          checked={missions ?? false}
           onCheckedChange={(checked) =>
             form.setValue('openToExpertMissions', checked === true, { shouldDirty: true })
           }
