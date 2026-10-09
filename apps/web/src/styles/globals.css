@@ -433,6 +433,41 @@
   }
 }
 
+/* Feed (PROMPT FRONT 4, motion.md): the reactions of the picker appear one after the other,
+   the pill of the new publications slides from the top, a hidden publication leaves by a
+   transform, never by animating its height. Final state at once with less motion. */
+@media (prefers-reduced-motion: no-preference) {
+  .reaction-pop {
+    animation: reaction-pop var(--duration-micro) var(--ease-enter) both;
+  }
+  .pill-in {
+    animation: pill-in var(--duration-page) var(--ease-enter) both;
+  }
+  .post-leave {
+    transition:
+      transform var(--duration-page) var(--ease-curtain),
+      opacity var(--duration-page) var(--ease-curtain);
+  }
+  .post-leave[data-leaving] {
+    transform: translateX(-12%) scale(0.98);
+    opacity: 0;
+  }
+}
+
+@keyframes reaction-pop {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.6);
+  }
+}
+
+@keyframes pill-in {
+  from {
+    opacity: 0;
+    transform: translateY(-120%);
+  }
+}
+
 @keyframes count-roll {
   from {
     opacity: 0;
