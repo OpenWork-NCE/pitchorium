@@ -54,6 +54,7 @@ Chaque publication vue par un autre membre ajoute le lecteur à un HyperLogLog R
 - `PUT|DELETE /v1/posts/{postId}/reaction`, `PUT|DELETE /v1/comments/{commentId}/reaction` (`content.reaction.set`)
 - `POST /v1/posts/{postId}/comments` (`content.comment.create`, `Idempotency-Key`), `GET /v1/posts/{postId}/comments`, `GET /v1/comments/{commentId}/replies` (`content.post.read`), `PATCH /v1/comments/{commentId}` (`content.comment.update`, auteur), `DELETE /v1/comments/{commentId}` (`content.comment.delete`, auteur du commentaire ou de la publication, `CommentResolver`)
 - `POST /v1/link-previews` (`content.post.create`), `GET /v1/link-previews/{linkPreviewId}` (`content.post.create`, auteur)
+- `GET /v1/members/{handle}/posts`, `GET /v1/organizations/by-slug/{slug}/posts` (`content.post.read` : publications et repartages d'un membre, publications d'une organisation, du plus récent au plus ancien, selon ce que le lecteur peut voir ; une page peut être plus courte que `limit`, le curseur continue), `GET /v1/public/members/{handle}/posts`, `GET /v1/public/organizations/{slug}/posts` (publiques, `Cache-Control: public, max-age=60`, 404 pour un membre sans page publique)
 - `PUT|DELETE /v1/posts/{postId}/save`, `GET /v1/me/saved-posts` (`content.post.save`), `PUT|DELETE /v1/posts/{postId}/hide` (`content.post.hide`)
 - `POST /v1/posts/views` (`content.post.read`, publications vues, sans corps en réponse)
 - `GET /v1/posts/{postId}/stats` (`content.post.stats.read`, auteur)

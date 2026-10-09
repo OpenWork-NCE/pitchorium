@@ -3,6 +3,7 @@ import type { AddressInfo } from 'node:net';
 import type { NestExpressApplication } from '@nestjs/platform-express';
 import type { TestingModule } from '@nestjs/testing';
 import type { FeedItem, FeedPage, Post } from '@pitchorium/contracts';
+import request from 'supertest';
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AccessModule } from '../../src/modules/access';
 import { ContentModule } from '../../src/modules/content';
@@ -322,6 +323,67 @@ describe('content', () => {
     });
     expect(mismatch.link).toMatchObject({ status: 'pending' });
     await ama.agent.post('/v1/link-previews').send({ url: 'ftp://site.test/file' }).expect(400);
+  });
+
+  it('lists the publications of a member and of an organization as each reader may see them', async () => {
+    await ama.agent
+      .patch('/v1/me/profile/visibility')
+      .send({ publicPageEnabled: true })
+      .expect(200);
+    await connect(ama, awa, 'awa-ndiaye');
+    const open = await publish(ama, { text: 'Pour tout le monde', visibility: 'public' });
+    const members = await publish(ama, { text: 'Pour les membres' });
+    const close = await publish(ama, { text: 'Entre nous', visibility: 'connections' });
+    const texts = (page: { items: Post[] }) => page.items.map((post) => post.id);
+
+    const byConnection = (await awa.agent.get('/v1/members/ama-owusu/posts').expect(200)).body as {
+      items: Post[];
+    };
+    expect(texts(byConnection)).toEqual([close.id, members.id, open.id]);
+    const byMember = (await kofi.agent.get('/v1/members/ama-owusu/posts').expect(200)).body as {
+      items: Post[];
+    };
+    expect(texts(byMember)).toEqual([members.id, open.id]);
+    const paged = (
+      await kofi.agent.get('/v1/members/ama-owusu/posts').query({ limit: 1 }).expect(200)
+    ).body as { items: Post[]; nextCursor: string };
+    // The first row is not Kofi's to see: the page is shorter, the cursor goes on.
+    expect(paged.items).toEqual([]);
+    expect(paged.nextCursor).toEqual(expect.any(String));
+    const visitor = await request(app.getHttpServer())
+      .get('/v1/public/members/ama-owusu/posts')
+      .expect(200);
+    expect(texts(visitor.body as { items: Post[] })).toEqual([open.id]);
+    expect(visitor.headers['cache-control']).toBe('public, max-age=60');
+    // Without a public page, nothing for a visitor.
+    await request(app.getHttpServer()).get('/v1/public/members/kofi-mensah/posts').expect(404);
+    await kofi.agent.get('/v1/members/nobody-here/posts').expect(404);
+
+    const organization = (
+      await ama.agent
+        .post('/v1/organizations')
+        .set('Idempotency-Key', `organization-${Math.random()}`)
+        .send({ name: 'Coopérative de Thiès', structureType: 'foundation', countryCodes: ['SN'] })
+        .expect(201)
+    ).body as { id: string; slug: string };
+    const asOrganization = await publish(ama, {
+      text: 'Au nom de la coopérative',
+      organizationId: organization.id,
+      visibility: 'public',
+    });
+    const ofOrganization = (
+      await kofi.agent.get(`/v1/organizations/by-slug/${organization.slug}/posts`).expect(200)
+    ).body as { items: Post[] };
+    expect(texts(ofOrganization)).toEqual([asOrganization.id]);
+    const publicOfOrganization = await request(app.getHttpServer())
+      .get(`/v1/public/organizations/${organization.slug}/posts`)
+      .expect(200);
+    expect(texts(publicOfOrganization.body as { items: Post[] })).toEqual([asOrganization.id]);
+    // The member's own list keeps what they publish as themselves.
+    const own = (await ama.agent.get('/v1/members/ama-owusu/posts').expect(200)).body as {
+      items: Post[];
+    };
+    expect(texts(own)).not.toContain(asOrganization.id);
   });
 
   it('refuses a repost outside of the audience of the publication', async () => {

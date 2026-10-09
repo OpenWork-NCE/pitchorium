@@ -42,6 +42,9 @@ const PUBLIC_ROUTES = [
   'GET /v1/public/network/members/{handle}/following',
   'GET /v1/public/network/members/{handle}/connections',
   'GET /v1/public/posts/{postId}',
+  // « Activité » of a public profile and of an organization (PROMPT FRONT 4).
+  'GET /v1/public/members/{handle}/posts',
+  'GET /v1/public/organizations/{slug}/posts',
   'GET /v1/public/projects',
   'GET /v1/public/projects/{slug}',
   'GET /v1/public/projects/{projectId}/posts',

@@ -229,7 +229,11 @@ import type {
   PostDtoOutput,
   PostPageDtoOutput,
   PostStatsDtoOutput,
+  PostsControllerMemberPostsParams,
   PostsControllerNewerParams,
+  PostsControllerOrganizationPostsParams,
+  PostsControllerPublicMemberPostsParams,
+  PostsControllerPublicOrganizationPostsParams,
   PostsControllerReadParams,
   PostsControllerSavedParams,
   PrefillDtoOutput,
@@ -14821,6 +14825,692 @@ export const usePostsControllerDelete = <TError = ErrorType<ProblemDetails>, TCo
 > => {
   return useMutation(getPostsControllerDeleteMutationOptions(options), queryClient);
 };
+
+export const getPostsControllerMemberPostsUrl = (
+  handle: string,
+  params?: PostsControllerMemberPostsParams,
+) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/v1/members/${handle}/posts?${stringifiedParams}`
+    : `/v1/members/${handle}/posts`;
+};
+
+/**
+ * Action `content.post.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Member posts
+ */
+export const postsControllerMemberPosts = async (
+  handle: string,
+  params?: PostsControllerMemberPostsParams,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<PostPageDtoOutput> => {
+  return apiFetch<PostPageDtoOutput>(getPostsControllerMemberPostsUrl(handle, params), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getPostsControllerMemberPostsQueryKey = (
+  handle: string,
+  params?: PostsControllerMemberPostsParams,
+) => {
+  return [`/v1/members/${handle}/posts`, ...(params ? [params] : [])] as const;
+};
+
+export const getPostsControllerMemberPostsQueryOptions = <
+  TData = Awaited<ReturnType<typeof postsControllerMemberPosts>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  handle: string,
+  params?: PostsControllerMemberPostsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof postsControllerMemberPosts>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getPostsControllerMemberPostsQueryKey(handle, params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof postsControllerMemberPosts>>> = ({
+    signal,
+  }) => postsControllerMemberPosts(handle, params, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: handle !== null && handle !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<Awaited<ReturnType<typeof postsControllerMemberPosts>>, TError, TData> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+};
+
+export type PostsControllerMemberPostsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof postsControllerMemberPosts>>
+>;
+export type PostsControllerMemberPostsQueryError = ErrorType<ProblemDetails>;
+
+export function usePostsControllerMemberPosts<
+  TData = Awaited<ReturnType<typeof postsControllerMemberPosts>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  handle: string,
+  params: undefined | PostsControllerMemberPostsParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof postsControllerMemberPosts>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof postsControllerMemberPosts>>,
+          TError,
+          Awaited<ReturnType<typeof postsControllerMemberPosts>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function usePostsControllerMemberPosts<
+  TData = Awaited<ReturnType<typeof postsControllerMemberPosts>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  handle: string,
+  params?: PostsControllerMemberPostsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof postsControllerMemberPosts>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof postsControllerMemberPosts>>,
+          TError,
+          Awaited<ReturnType<typeof postsControllerMemberPosts>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function usePostsControllerMemberPosts<
+  TData = Awaited<ReturnType<typeof postsControllerMemberPosts>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  handle: string,
+  params?: PostsControllerMemberPostsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof postsControllerMemberPosts>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Member posts
+ */
+
+export function usePostsControllerMemberPosts<
+  TData = Awaited<ReturnType<typeof postsControllerMemberPosts>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  handle: string,
+  params?: PostsControllerMemberPostsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof postsControllerMemberPosts>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getPostsControllerMemberPostsQueryOptions(handle, params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getPostsControllerPublicMemberPostsUrl = (
+  handle: string,
+  params?: PostsControllerPublicMemberPostsParams,
+) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/v1/public/members/${handle}/posts?${stringifiedParams}`
+    : `/v1/public/members/${handle}/posts`;
+};
+
+/**
+ * Public: no session needed.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Public member posts
+ */
+export const postsControllerPublicMemberPosts = async (
+  handle: string,
+  params?: PostsControllerPublicMemberPostsParams,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<PostPageDtoOutput> => {
+  return apiFetch<PostPageDtoOutput>(getPostsControllerPublicMemberPostsUrl(handle, params), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getPostsControllerPublicMemberPostsQueryKey = (
+  handle: string,
+  params?: PostsControllerPublicMemberPostsParams,
+) => {
+  return [`/v1/public/members/${handle}/posts`, ...(params ? [params] : [])] as const;
+};
+
+export const getPostsControllerPublicMemberPostsQueryOptions = <
+  TData = Awaited<ReturnType<typeof postsControllerPublicMemberPosts>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  handle: string,
+  params?: PostsControllerPublicMemberPostsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof postsControllerPublicMemberPosts>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getPostsControllerPublicMemberPostsQueryKey(handle, params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof postsControllerPublicMemberPosts>>> = ({
+    signal,
+  }) => postsControllerPublicMemberPosts(handle, params, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: handle !== null && handle !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof postsControllerPublicMemberPosts>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type PostsControllerPublicMemberPostsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof postsControllerPublicMemberPosts>>
+>;
+export type PostsControllerPublicMemberPostsQueryError = ErrorType<ProblemDetails>;
+
+export function usePostsControllerPublicMemberPosts<
+  TData = Awaited<ReturnType<typeof postsControllerPublicMemberPosts>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  handle: string,
+  params: undefined | PostsControllerPublicMemberPostsParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof postsControllerPublicMemberPosts>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof postsControllerPublicMemberPosts>>,
+          TError,
+          Awaited<ReturnType<typeof postsControllerPublicMemberPosts>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function usePostsControllerPublicMemberPosts<
+  TData = Awaited<ReturnType<typeof postsControllerPublicMemberPosts>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  handle: string,
+  params?: PostsControllerPublicMemberPostsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof postsControllerPublicMemberPosts>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof postsControllerPublicMemberPosts>>,
+          TError,
+          Awaited<ReturnType<typeof postsControllerPublicMemberPosts>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function usePostsControllerPublicMemberPosts<
+  TData = Awaited<ReturnType<typeof postsControllerPublicMemberPosts>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  handle: string,
+  params?: PostsControllerPublicMemberPostsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof postsControllerPublicMemberPosts>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Public member posts
+ */
+
+export function usePostsControllerPublicMemberPosts<
+  TData = Awaited<ReturnType<typeof postsControllerPublicMemberPosts>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  handle: string,
+  params?: PostsControllerPublicMemberPostsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof postsControllerPublicMemberPosts>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getPostsControllerPublicMemberPostsQueryOptions(handle, params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getPostsControllerOrganizationPostsUrl = (
+  slug: string,
+  params?: PostsControllerOrganizationPostsParams,
+) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/v1/organizations/by-slug/${slug}/posts?${stringifiedParams}`
+    : `/v1/organizations/by-slug/${slug}/posts`;
+};
+
+/**
+ * Action `content.post.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Organization posts
+ */
+export const postsControllerOrganizationPosts = async (
+  slug: string,
+  params?: PostsControllerOrganizationPostsParams,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<PostPageDtoOutput> => {
+  return apiFetch<PostPageDtoOutput>(getPostsControllerOrganizationPostsUrl(slug, params), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getPostsControllerOrganizationPostsQueryKey = (
+  slug: string,
+  params?: PostsControllerOrganizationPostsParams,
+) => {
+  return [`/v1/organizations/by-slug/${slug}/posts`, ...(params ? [params] : [])] as const;
+};
+
+export const getPostsControllerOrganizationPostsQueryOptions = <
+  TData = Awaited<ReturnType<typeof postsControllerOrganizationPosts>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  slug: string,
+  params?: PostsControllerOrganizationPostsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof postsControllerOrganizationPosts>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getPostsControllerOrganizationPostsQueryKey(slug, params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof postsControllerOrganizationPosts>>> = ({
+    signal,
+  }) => postsControllerOrganizationPosts(slug, params, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: slug !== null && slug !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof postsControllerOrganizationPosts>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type PostsControllerOrganizationPostsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof postsControllerOrganizationPosts>>
+>;
+export type PostsControllerOrganizationPostsQueryError = ErrorType<ProblemDetails>;
+
+export function usePostsControllerOrganizationPosts<
+  TData = Awaited<ReturnType<typeof postsControllerOrganizationPosts>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  slug: string,
+  params: undefined | PostsControllerOrganizationPostsParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof postsControllerOrganizationPosts>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof postsControllerOrganizationPosts>>,
+          TError,
+          Awaited<ReturnType<typeof postsControllerOrganizationPosts>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function usePostsControllerOrganizationPosts<
+  TData = Awaited<ReturnType<typeof postsControllerOrganizationPosts>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  slug: string,
+  params?: PostsControllerOrganizationPostsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof postsControllerOrganizationPosts>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof postsControllerOrganizationPosts>>,
+          TError,
+          Awaited<ReturnType<typeof postsControllerOrganizationPosts>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function usePostsControllerOrganizationPosts<
+  TData = Awaited<ReturnType<typeof postsControllerOrganizationPosts>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  slug: string,
+  params?: PostsControllerOrganizationPostsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof postsControllerOrganizationPosts>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Organization posts
+ */
+
+export function usePostsControllerOrganizationPosts<
+  TData = Awaited<ReturnType<typeof postsControllerOrganizationPosts>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  slug: string,
+  params?: PostsControllerOrganizationPostsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof postsControllerOrganizationPosts>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getPostsControllerOrganizationPostsQueryOptions(slug, params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getPostsControllerPublicOrganizationPostsUrl = (
+  slug: string,
+  params?: PostsControllerPublicOrganizationPostsParams,
+) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/v1/public/organizations/${slug}/posts?${stringifiedParams}`
+    : `/v1/public/organizations/${slug}/posts`;
+};
+
+/**
+ * Public: no session needed.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Public organization posts
+ */
+export const postsControllerPublicOrganizationPosts = async (
+  slug: string,
+  params?: PostsControllerPublicOrganizationPostsParams,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<PostPageDtoOutput> => {
+  return apiFetch<PostPageDtoOutput>(getPostsControllerPublicOrganizationPostsUrl(slug, params), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getPostsControllerPublicOrganizationPostsQueryKey = (
+  slug: string,
+  params?: PostsControllerPublicOrganizationPostsParams,
+) => {
+  return [`/v1/public/organizations/${slug}/posts`, ...(params ? [params] : [])] as const;
+};
+
+export const getPostsControllerPublicOrganizationPostsQueryOptions = <
+  TData = Awaited<ReturnType<typeof postsControllerPublicOrganizationPosts>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  slug: string,
+  params?: PostsControllerPublicOrganizationPostsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof postsControllerPublicOrganizationPosts>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getPostsControllerPublicOrganizationPostsQueryKey(slug, params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof postsControllerPublicOrganizationPosts>>
+  > = ({ signal }) =>
+    postsControllerPublicOrganizationPosts(slug, params, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: slug !== null && slug !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof postsControllerPublicOrganizationPosts>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type PostsControllerPublicOrganizationPostsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof postsControllerPublicOrganizationPosts>>
+>;
+export type PostsControllerPublicOrganizationPostsQueryError = ErrorType<ProblemDetails>;
+
+export function usePostsControllerPublicOrganizationPosts<
+  TData = Awaited<ReturnType<typeof postsControllerPublicOrganizationPosts>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  slug: string,
+  params: undefined | PostsControllerPublicOrganizationPostsParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof postsControllerPublicOrganizationPosts>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof postsControllerPublicOrganizationPosts>>,
+          TError,
+          Awaited<ReturnType<typeof postsControllerPublicOrganizationPosts>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function usePostsControllerPublicOrganizationPosts<
+  TData = Awaited<ReturnType<typeof postsControllerPublicOrganizationPosts>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  slug: string,
+  params?: PostsControllerPublicOrganizationPostsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof postsControllerPublicOrganizationPosts>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof postsControllerPublicOrganizationPosts>>,
+          TError,
+          Awaited<ReturnType<typeof postsControllerPublicOrganizationPosts>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function usePostsControllerPublicOrganizationPosts<
+  TData = Awaited<ReturnType<typeof postsControllerPublicOrganizationPosts>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  slug: string,
+  params?: PostsControllerPublicOrganizationPostsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof postsControllerPublicOrganizationPosts>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Public organization posts
+ */
+
+export function usePostsControllerPublicOrganizationPosts<
+  TData = Awaited<ReturnType<typeof postsControllerPublicOrganizationPosts>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  slug: string,
+  params?: PostsControllerPublicOrganizationPostsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof postsControllerPublicOrganizationPosts>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getPostsControllerPublicOrganizationPostsQueryOptions(slug, params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
 
 export const getPostsControllerGetPublicUrl = (postId: string) => {
   return `/v1/public/posts/${postId}`;

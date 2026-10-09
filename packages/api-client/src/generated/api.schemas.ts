@@ -4918,6 +4918,418 @@ export interface RecordPostViewsDto {
   postIds: string[];
 }
 
+export type PostPageDtoOutputItemsItemAuthor =
+  | {
+      type: 'member';
+      member: {
+        /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+        handle: string;
+        displayName: string;
+        /** @nullable */
+        headline: string | null;
+        /** @nullable */
+        avatarUrl: string | null;
+      };
+    }
+  | {
+      type: 'organization';
+      organization: {
+        /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+        id: string;
+        slug: string;
+        name: string;
+        /** @nullable */
+        logoUrl: string | null;
+        verified: boolean;
+      };
+    };
+
+export type PostPageDtoOutputItemsItemLanguageSource =
+  (typeof PostPageDtoOutputItemsItemLanguageSource)[keyof typeof PostPageDtoOutputItemsItemLanguageSource];
+
+export const PostPageDtoOutputItemsItemLanguageSource = {
+  declared: 'declared',
+  detected: 'detected',
+  undetermined: 'undetermined',
+} as const;
+
+export type PostPageDtoOutputItemsItemVisibility =
+  (typeof PostPageDtoOutputItemsItemVisibility)[keyof typeof PostPageDtoOutputItemsItemVisibility];
+
+export const PostPageDtoOutputItemsItemVisibility = {
+  public: 'public',
+  members: 'members',
+  connections: 'connections',
+} as const;
+
+export type PostPageDtoOutputItemsItemImagesItemVariants = {
+  [key: string]: {
+    /**
+     * @minimum -9007199254740991
+     * @maximum 9007199254740991
+     */
+    width: number;
+    /**
+     * @minimum -9007199254740991
+     * @maximum 9007199254740991
+     */
+    height: number;
+    /** @nullable */
+    webp: string | null;
+    /** @nullable */
+    avif: string | null;
+  };
+};
+
+export type PostPageDtoOutputItemsItemImagesItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  mediaId: string;
+  url: string;
+  variants: PostPageDtoOutputItemsItemImagesItemVariants;
+  /** @nullable */
+  alt: string | null;
+};
+
+export type PostPageDtoOutputItemsItemDocument = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  mediaId: string;
+  /** @nullable */
+  thumbnailUrl: string | null;
+  pageCount: number | null;
+  /** @nullable */
+  title: string | null;
+} | null;
+
+export type PostPageDtoOutputItemsItemLinkStatus =
+  (typeof PostPageDtoOutputItemsItemLinkStatus)[keyof typeof PostPageDtoOutputItemsItemLinkStatus];
+
+export const PostPageDtoOutputItemsItemLinkStatus = {
+  pending: 'pending',
+  ready: 'ready',
+  failed: 'failed',
+} as const;
+
+export type PostPageDtoOutputItemsItemLink = {
+  url: string;
+  status: PostPageDtoOutputItemsItemLinkStatus;
+  /** @nullable */
+  title: string | null;
+  /** @nullable */
+  description: string | null;
+  /** @nullable */
+  siteName: string | null;
+  /** @nullable */
+  imageUrl: string | null;
+} | null;
+
+export type PostPageDtoOutputItemsItemMentionsItemType =
+  (typeof PostPageDtoOutputItemsItemMentionsItemType)[keyof typeof PostPageDtoOutputItemsItemMentionsItemType];
+
+export const PostPageDtoOutputItemsItemMentionsItemType = {
+  member: 'member',
+  organization: 'organization',
+} as const;
+
+export type PostPageDtoOutputItemsItemMentionsItem = {
+  token: string;
+  type: PostPageDtoOutputItemsItemMentionsItemType;
+  key: string;
+  displayName: string;
+};
+
+export type PostPageDtoOutputItemsItemReactionsCounts = {
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  like: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  bravo: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  insightful: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  support: number;
+};
+
+export type PostPageDtoOutputItemsItemReactionsViewerReaction =
+  | (typeof PostPageDtoOutputItemsItemReactionsViewerReaction)[keyof typeof PostPageDtoOutputItemsItemReactionsViewerReaction]
+  | null;
+
+export const PostPageDtoOutputItemsItemReactionsViewerReaction = {
+  like: 'like',
+  bravo: 'bravo',
+  insightful: 'insightful',
+  support: 'support',
+} as const;
+
+export type PostPageDtoOutputItemsItemReactions = {
+  counts: PostPageDtoOutputItemsItemReactionsCounts;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  total: number;
+  viewerReaction: PostPageDtoOutputItemsItemReactionsViewerReaction;
+};
+
+export type PostPageDtoOutputItemsItemKind =
+  (typeof PostPageDtoOutputItemsItemKind)[keyof typeof PostPageDtoOutputItemsItemKind];
+
+export const PostPageDtoOutputItemsItemKind = {
+  post: 'post',
+  repost: 'repost',
+} as const;
+
+export type PostPageDtoOutputItemsItemRepostOfAuthor =
+  | {
+      type: 'member';
+      member: {
+        /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+        handle: string;
+        displayName: string;
+        /** @nullable */
+        headline: string | null;
+        /** @nullable */
+        avatarUrl: string | null;
+      };
+    }
+  | {
+      type: 'organization';
+      organization: {
+        /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+        id: string;
+        slug: string;
+        name: string;
+        /** @nullable */
+        logoUrl: string | null;
+        verified: boolean;
+      };
+    };
+
+export type PostPageDtoOutputItemsItemRepostOfLanguageSource =
+  (typeof PostPageDtoOutputItemsItemRepostOfLanguageSource)[keyof typeof PostPageDtoOutputItemsItemRepostOfLanguageSource];
+
+export const PostPageDtoOutputItemsItemRepostOfLanguageSource = {
+  declared: 'declared',
+  detected: 'detected',
+  undetermined: 'undetermined',
+} as const;
+
+export type PostPageDtoOutputItemsItemRepostOfVisibility =
+  (typeof PostPageDtoOutputItemsItemRepostOfVisibility)[keyof typeof PostPageDtoOutputItemsItemRepostOfVisibility];
+
+export const PostPageDtoOutputItemsItemRepostOfVisibility = {
+  public: 'public',
+  members: 'members',
+  connections: 'connections',
+} as const;
+
+export type PostPageDtoOutputItemsItemRepostOfImagesItemVariants = {
+  [key: string]: {
+    /**
+     * @minimum -9007199254740991
+     * @maximum 9007199254740991
+     */
+    width: number;
+    /**
+     * @minimum -9007199254740991
+     * @maximum 9007199254740991
+     */
+    height: number;
+    /** @nullable */
+    webp: string | null;
+    /** @nullable */
+    avif: string | null;
+  };
+};
+
+export type PostPageDtoOutputItemsItemRepostOfImagesItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  mediaId: string;
+  url: string;
+  variants: PostPageDtoOutputItemsItemRepostOfImagesItemVariants;
+  /** @nullable */
+  alt: string | null;
+};
+
+export type PostPageDtoOutputItemsItemRepostOfDocument = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  mediaId: string;
+  /** @nullable */
+  thumbnailUrl: string | null;
+  pageCount: number | null;
+  /** @nullable */
+  title: string | null;
+} | null;
+
+export type PostPageDtoOutputItemsItemRepostOfLinkStatus =
+  (typeof PostPageDtoOutputItemsItemRepostOfLinkStatus)[keyof typeof PostPageDtoOutputItemsItemRepostOfLinkStatus];
+
+export const PostPageDtoOutputItemsItemRepostOfLinkStatus = {
+  pending: 'pending',
+  ready: 'ready',
+  failed: 'failed',
+} as const;
+
+export type PostPageDtoOutputItemsItemRepostOfLink = {
+  url: string;
+  status: PostPageDtoOutputItemsItemRepostOfLinkStatus;
+  /** @nullable */
+  title: string | null;
+  /** @nullable */
+  description: string | null;
+  /** @nullable */
+  siteName: string | null;
+  /** @nullable */
+  imageUrl: string | null;
+} | null;
+
+export type PostPageDtoOutputItemsItemRepostOfMentionsItemType =
+  (typeof PostPageDtoOutputItemsItemRepostOfMentionsItemType)[keyof typeof PostPageDtoOutputItemsItemRepostOfMentionsItemType];
+
+export const PostPageDtoOutputItemsItemRepostOfMentionsItemType = {
+  member: 'member',
+  organization: 'organization',
+} as const;
+
+export type PostPageDtoOutputItemsItemRepostOfMentionsItem = {
+  token: string;
+  type: PostPageDtoOutputItemsItemRepostOfMentionsItemType;
+  key: string;
+  displayName: string;
+};
+
+export type PostPageDtoOutputItemsItemRepostOfReactionsCounts = {
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  like: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  bravo: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  insightful: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  support: number;
+};
+
+export type PostPageDtoOutputItemsItemRepostOfReactionsViewerReaction =
+  | (typeof PostPageDtoOutputItemsItemRepostOfReactionsViewerReaction)[keyof typeof PostPageDtoOutputItemsItemRepostOfReactionsViewerReaction]
+  | null;
+
+export const PostPageDtoOutputItemsItemRepostOfReactionsViewerReaction = {
+  like: 'like',
+  bravo: 'bravo',
+  insightful: 'insightful',
+  support: 'support',
+} as const;
+
+export type PostPageDtoOutputItemsItemRepostOfReactions = {
+  counts: PostPageDtoOutputItemsItemRepostOfReactionsCounts;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  total: number;
+  viewerReaction: PostPageDtoOutputItemsItemRepostOfReactionsViewerReaction;
+};
+
+export type PostPageDtoOutputItemsItemRepostOf = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  author: PostPageDtoOutputItemsItemRepostOfAuthor;
+  /** @nullable */
+  text: string | null;
+  /** @nullable */
+  language: string | null;
+  languageSource: PostPageDtoOutputItemsItemRepostOfLanguageSource;
+  visibility: PostPageDtoOutputItemsItemRepostOfVisibility;
+  images: PostPageDtoOutputItemsItemRepostOfImagesItem[];
+  document: PostPageDtoOutputItemsItemRepostOfDocument;
+  link: PostPageDtoOutputItemsItemRepostOfLink;
+  mentions: PostPageDtoOutputItemsItemRepostOfMentionsItem[];
+  projectId: string | null;
+  commentsDisabled: boolean;
+  reactions: PostPageDtoOutputItemsItemRepostOfReactions;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  commentCount: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  repostCount: number;
+  saved: boolean;
+  viewerIsAuthor: boolean;
+  featured: boolean;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+  editedAt: string | null;
+} | null;
+
+export type PostPageDtoOutputItemsItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  author: PostPageDtoOutputItemsItemAuthor;
+  /** @nullable */
+  text: string | null;
+  /** @nullable */
+  language: string | null;
+  languageSource: PostPageDtoOutputItemsItemLanguageSource;
+  visibility: PostPageDtoOutputItemsItemVisibility;
+  images: PostPageDtoOutputItemsItemImagesItem[];
+  document: PostPageDtoOutputItemsItemDocument;
+  link: PostPageDtoOutputItemsItemLink;
+  mentions: PostPageDtoOutputItemsItemMentionsItem[];
+  projectId: string | null;
+  commentsDisabled: boolean;
+  reactions: PostPageDtoOutputItemsItemReactions;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  commentCount: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  repostCount: number;
+  saved: boolean;
+  viewerIsAuthor: boolean;
+  featured: boolean;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+  editedAt: string | null;
+  kind: PostPageDtoOutputItemsItemKind;
+  repostOf: PostPageDtoOutputItemsItemRepostOf;
+};
+
+export interface PostPageDtoOutput {
+  items: PostPageDtoOutputItemsItem[];
+  /** @nullable */
+  nextCursor: string | null;
+}
+
 export type UpdatePostDtoVisibility =
   (typeof UpdatePostDtoVisibility)[keyof typeof UpdatePostDtoVisibility];
 
@@ -6904,418 +7316,6 @@ export type ProjectCardPageDtoOutputItemsItem = {
 
 export interface ProjectCardPageDtoOutput {
   items: ProjectCardPageDtoOutputItemsItem[];
-  /** @nullable */
-  nextCursor: string | null;
-}
-
-export type PostPageDtoOutputItemsItemAuthor =
-  | {
-      type: 'member';
-      member: {
-        /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
-        handle: string;
-        displayName: string;
-        /** @nullable */
-        headline: string | null;
-        /** @nullable */
-        avatarUrl: string | null;
-      };
-    }
-  | {
-      type: 'organization';
-      organization: {
-        /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
-        id: string;
-        slug: string;
-        name: string;
-        /** @nullable */
-        logoUrl: string | null;
-        verified: boolean;
-      };
-    };
-
-export type PostPageDtoOutputItemsItemLanguageSource =
-  (typeof PostPageDtoOutputItemsItemLanguageSource)[keyof typeof PostPageDtoOutputItemsItemLanguageSource];
-
-export const PostPageDtoOutputItemsItemLanguageSource = {
-  declared: 'declared',
-  detected: 'detected',
-  undetermined: 'undetermined',
-} as const;
-
-export type PostPageDtoOutputItemsItemVisibility =
-  (typeof PostPageDtoOutputItemsItemVisibility)[keyof typeof PostPageDtoOutputItemsItemVisibility];
-
-export const PostPageDtoOutputItemsItemVisibility = {
-  public: 'public',
-  members: 'members',
-  connections: 'connections',
-} as const;
-
-export type PostPageDtoOutputItemsItemImagesItemVariants = {
-  [key: string]: {
-    /**
-     * @minimum -9007199254740991
-     * @maximum 9007199254740991
-     */
-    width: number;
-    /**
-     * @minimum -9007199254740991
-     * @maximum 9007199254740991
-     */
-    height: number;
-    /** @nullable */
-    webp: string | null;
-    /** @nullable */
-    avif: string | null;
-  };
-};
-
-export type PostPageDtoOutputItemsItemImagesItem = {
-  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
-  mediaId: string;
-  url: string;
-  variants: PostPageDtoOutputItemsItemImagesItemVariants;
-  /** @nullable */
-  alt: string | null;
-};
-
-export type PostPageDtoOutputItemsItemDocument = {
-  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
-  mediaId: string;
-  /** @nullable */
-  thumbnailUrl: string | null;
-  pageCount: number | null;
-  /** @nullable */
-  title: string | null;
-} | null;
-
-export type PostPageDtoOutputItemsItemLinkStatus =
-  (typeof PostPageDtoOutputItemsItemLinkStatus)[keyof typeof PostPageDtoOutputItemsItemLinkStatus];
-
-export const PostPageDtoOutputItemsItemLinkStatus = {
-  pending: 'pending',
-  ready: 'ready',
-  failed: 'failed',
-} as const;
-
-export type PostPageDtoOutputItemsItemLink = {
-  url: string;
-  status: PostPageDtoOutputItemsItemLinkStatus;
-  /** @nullable */
-  title: string | null;
-  /** @nullable */
-  description: string | null;
-  /** @nullable */
-  siteName: string | null;
-  /** @nullable */
-  imageUrl: string | null;
-} | null;
-
-export type PostPageDtoOutputItemsItemMentionsItemType =
-  (typeof PostPageDtoOutputItemsItemMentionsItemType)[keyof typeof PostPageDtoOutputItemsItemMentionsItemType];
-
-export const PostPageDtoOutputItemsItemMentionsItemType = {
-  member: 'member',
-  organization: 'organization',
-} as const;
-
-export type PostPageDtoOutputItemsItemMentionsItem = {
-  token: string;
-  type: PostPageDtoOutputItemsItemMentionsItemType;
-  key: string;
-  displayName: string;
-};
-
-export type PostPageDtoOutputItemsItemReactionsCounts = {
-  /**
-   * @minimum -9007199254740991
-   * @maximum 9007199254740991
-   */
-  like: number;
-  /**
-   * @minimum -9007199254740991
-   * @maximum 9007199254740991
-   */
-  bravo: number;
-  /**
-   * @minimum -9007199254740991
-   * @maximum 9007199254740991
-   */
-  insightful: number;
-  /**
-   * @minimum -9007199254740991
-   * @maximum 9007199254740991
-   */
-  support: number;
-};
-
-export type PostPageDtoOutputItemsItemReactionsViewerReaction =
-  | (typeof PostPageDtoOutputItemsItemReactionsViewerReaction)[keyof typeof PostPageDtoOutputItemsItemReactionsViewerReaction]
-  | null;
-
-export const PostPageDtoOutputItemsItemReactionsViewerReaction = {
-  like: 'like',
-  bravo: 'bravo',
-  insightful: 'insightful',
-  support: 'support',
-} as const;
-
-export type PostPageDtoOutputItemsItemReactions = {
-  counts: PostPageDtoOutputItemsItemReactionsCounts;
-  /**
-   * @minimum -9007199254740991
-   * @maximum 9007199254740991
-   */
-  total: number;
-  viewerReaction: PostPageDtoOutputItemsItemReactionsViewerReaction;
-};
-
-export type PostPageDtoOutputItemsItemKind =
-  (typeof PostPageDtoOutputItemsItemKind)[keyof typeof PostPageDtoOutputItemsItemKind];
-
-export const PostPageDtoOutputItemsItemKind = {
-  post: 'post',
-  repost: 'repost',
-} as const;
-
-export type PostPageDtoOutputItemsItemRepostOfAuthor =
-  | {
-      type: 'member';
-      member: {
-        /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
-        handle: string;
-        displayName: string;
-        /** @nullable */
-        headline: string | null;
-        /** @nullable */
-        avatarUrl: string | null;
-      };
-    }
-  | {
-      type: 'organization';
-      organization: {
-        /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
-        id: string;
-        slug: string;
-        name: string;
-        /** @nullable */
-        logoUrl: string | null;
-        verified: boolean;
-      };
-    };
-
-export type PostPageDtoOutputItemsItemRepostOfLanguageSource =
-  (typeof PostPageDtoOutputItemsItemRepostOfLanguageSource)[keyof typeof PostPageDtoOutputItemsItemRepostOfLanguageSource];
-
-export const PostPageDtoOutputItemsItemRepostOfLanguageSource = {
-  declared: 'declared',
-  detected: 'detected',
-  undetermined: 'undetermined',
-} as const;
-
-export type PostPageDtoOutputItemsItemRepostOfVisibility =
-  (typeof PostPageDtoOutputItemsItemRepostOfVisibility)[keyof typeof PostPageDtoOutputItemsItemRepostOfVisibility];
-
-export const PostPageDtoOutputItemsItemRepostOfVisibility = {
-  public: 'public',
-  members: 'members',
-  connections: 'connections',
-} as const;
-
-export type PostPageDtoOutputItemsItemRepostOfImagesItemVariants = {
-  [key: string]: {
-    /**
-     * @minimum -9007199254740991
-     * @maximum 9007199254740991
-     */
-    width: number;
-    /**
-     * @minimum -9007199254740991
-     * @maximum 9007199254740991
-     */
-    height: number;
-    /** @nullable */
-    webp: string | null;
-    /** @nullable */
-    avif: string | null;
-  };
-};
-
-export type PostPageDtoOutputItemsItemRepostOfImagesItem = {
-  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
-  mediaId: string;
-  url: string;
-  variants: PostPageDtoOutputItemsItemRepostOfImagesItemVariants;
-  /** @nullable */
-  alt: string | null;
-};
-
-export type PostPageDtoOutputItemsItemRepostOfDocument = {
-  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
-  mediaId: string;
-  /** @nullable */
-  thumbnailUrl: string | null;
-  pageCount: number | null;
-  /** @nullable */
-  title: string | null;
-} | null;
-
-export type PostPageDtoOutputItemsItemRepostOfLinkStatus =
-  (typeof PostPageDtoOutputItemsItemRepostOfLinkStatus)[keyof typeof PostPageDtoOutputItemsItemRepostOfLinkStatus];
-
-export const PostPageDtoOutputItemsItemRepostOfLinkStatus = {
-  pending: 'pending',
-  ready: 'ready',
-  failed: 'failed',
-} as const;
-
-export type PostPageDtoOutputItemsItemRepostOfLink = {
-  url: string;
-  status: PostPageDtoOutputItemsItemRepostOfLinkStatus;
-  /** @nullable */
-  title: string | null;
-  /** @nullable */
-  description: string | null;
-  /** @nullable */
-  siteName: string | null;
-  /** @nullable */
-  imageUrl: string | null;
-} | null;
-
-export type PostPageDtoOutputItemsItemRepostOfMentionsItemType =
-  (typeof PostPageDtoOutputItemsItemRepostOfMentionsItemType)[keyof typeof PostPageDtoOutputItemsItemRepostOfMentionsItemType];
-
-export const PostPageDtoOutputItemsItemRepostOfMentionsItemType = {
-  member: 'member',
-  organization: 'organization',
-} as const;
-
-export type PostPageDtoOutputItemsItemRepostOfMentionsItem = {
-  token: string;
-  type: PostPageDtoOutputItemsItemRepostOfMentionsItemType;
-  key: string;
-  displayName: string;
-};
-
-export type PostPageDtoOutputItemsItemRepostOfReactionsCounts = {
-  /**
-   * @minimum -9007199254740991
-   * @maximum 9007199254740991
-   */
-  like: number;
-  /**
-   * @minimum -9007199254740991
-   * @maximum 9007199254740991
-   */
-  bravo: number;
-  /**
-   * @minimum -9007199254740991
-   * @maximum 9007199254740991
-   */
-  insightful: number;
-  /**
-   * @minimum -9007199254740991
-   * @maximum 9007199254740991
-   */
-  support: number;
-};
-
-export type PostPageDtoOutputItemsItemRepostOfReactionsViewerReaction =
-  | (typeof PostPageDtoOutputItemsItemRepostOfReactionsViewerReaction)[keyof typeof PostPageDtoOutputItemsItemRepostOfReactionsViewerReaction]
-  | null;
-
-export const PostPageDtoOutputItemsItemRepostOfReactionsViewerReaction = {
-  like: 'like',
-  bravo: 'bravo',
-  insightful: 'insightful',
-  support: 'support',
-} as const;
-
-export type PostPageDtoOutputItemsItemRepostOfReactions = {
-  counts: PostPageDtoOutputItemsItemRepostOfReactionsCounts;
-  /**
-   * @minimum -9007199254740991
-   * @maximum 9007199254740991
-   */
-  total: number;
-  viewerReaction: PostPageDtoOutputItemsItemRepostOfReactionsViewerReaction;
-};
-
-export type PostPageDtoOutputItemsItemRepostOf = {
-  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
-  id: string;
-  author: PostPageDtoOutputItemsItemRepostOfAuthor;
-  /** @nullable */
-  text: string | null;
-  /** @nullable */
-  language: string | null;
-  languageSource: PostPageDtoOutputItemsItemRepostOfLanguageSource;
-  visibility: PostPageDtoOutputItemsItemRepostOfVisibility;
-  images: PostPageDtoOutputItemsItemRepostOfImagesItem[];
-  document: PostPageDtoOutputItemsItemRepostOfDocument;
-  link: PostPageDtoOutputItemsItemRepostOfLink;
-  mentions: PostPageDtoOutputItemsItemRepostOfMentionsItem[];
-  projectId: string | null;
-  commentsDisabled: boolean;
-  reactions: PostPageDtoOutputItemsItemRepostOfReactions;
-  /**
-   * @minimum -9007199254740991
-   * @maximum 9007199254740991
-   */
-  commentCount: number;
-  /**
-   * @minimum -9007199254740991
-   * @maximum 9007199254740991
-   */
-  repostCount: number;
-  saved: boolean;
-  viewerIsAuthor: boolean;
-  featured: boolean;
-  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
-  createdAt: string;
-  editedAt: string | null;
-} | null;
-
-export type PostPageDtoOutputItemsItem = {
-  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
-  id: string;
-  author: PostPageDtoOutputItemsItemAuthor;
-  /** @nullable */
-  text: string | null;
-  /** @nullable */
-  language: string | null;
-  languageSource: PostPageDtoOutputItemsItemLanguageSource;
-  visibility: PostPageDtoOutputItemsItemVisibility;
-  images: PostPageDtoOutputItemsItemImagesItem[];
-  document: PostPageDtoOutputItemsItemDocument;
-  link: PostPageDtoOutputItemsItemLink;
-  mentions: PostPageDtoOutputItemsItemMentionsItem[];
-  projectId: string | null;
-  commentsDisabled: boolean;
-  reactions: PostPageDtoOutputItemsItemReactions;
-  /**
-   * @minimum -9007199254740991
-   * @maximum 9007199254740991
-   */
-  commentCount: number;
-  /**
-   * @minimum -9007199254740991
-   * @maximum 9007199254740991
-   */
-  repostCount: number;
-  saved: boolean;
-  viewerIsAuthor: boolean;
-  featured: boolean;
-  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
-  createdAt: string;
-  editedAt: string | null;
-  kind: PostPageDtoOutputItemsItemKind;
-  repostOf: PostPageDtoOutputItemsItemRepostOf;
-};
-
-export interface PostPageDtoOutput {
-  items: PostPageDtoOutputItemsItem[];
   /** @nullable */
   nextCursor: string | null;
 }
@@ -16369,6 +16369,58 @@ export type PostsControllerNewerParams = {
    * @maxLength 512
    */
   head: string;
+};
+
+export type PostsControllerMemberPostsParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+};
+
+export type PostsControllerPublicMemberPostsParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+};
+
+export type PostsControllerOrganizationPostsParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+};
+
+export type PostsControllerPublicOrganizationPostsParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
 };
 
 export type PostsControllerSavedParams = {

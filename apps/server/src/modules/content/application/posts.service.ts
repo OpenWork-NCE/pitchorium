@@ -457,6 +457,69 @@ export class PostsService {
     return { postId, days: await this.content.dailyViews(postId) };
   }
 
+  /**
+   * Publications and reposts of a member, newest first (« Activité » of their page), as the
+   * reader may see them: visibility, blocks and moderation applied by the presenter. Without a
+   * reader, the public ones of a member who keeps a public page. Unknown or hidden: 404.
+   */
+  async memberPosts(
+    viewerId: string | null,
+    handle: string,
+    query: CursorPageQuery,
+  ): Promise<CursorPage<Post>> {
+    const userId = (await this.profiles.userIdsByHandles([handle], viewerId)).get(handle);
+    if (!userId) throw new DomainError('PROFILES_PROFILE_NOT_FOUND', 'Profile not found');
+    if (viewerId === null && !(await this.profiles.visibilityOf(userId))?.publicPageEnabled) {
+      throw new DomainError('PROFILES_PROFILE_NOT_FOUND', 'Profile not found');
+    }
+    return this.authoredPage(viewerId, { memberId: userId }, query);
+  }
+
+  /** Publications of an organization, newest first, as the reader may see them. */
+  async organizationPosts(
+    viewerId: string | null,
+    slug: string,
+    query: CursorPageQuery,
+  ): Promise<CursorPage<Post>> {
+    const organizationId = (await this.organizations.idsBySlugs([slug])).get(slug);
+    if (!organizationId) throw new DomainError('ORGANIZATIONS_NOT_FOUND', 'Organization not found');
+    return this.authoredPage(viewerId, { organizationId }, query);
+  }
+
+  private async authoredPage(
+    viewerId: string | null,
+    author: { memberId: string } | { organizationId: string },
+    query: CursorPageQuery,
+  ): Promise<CursorPage<Post>> {
+    const rows = await this.content.authoredPosts(
+      author,
+      decodeKeyset(query.cursor),
+      query.limit + 1,
+    );
+    const page = rows.slice(0, query.limit);
+    const reader = viewerId
+      ? await this.presenter.reader(viewerId)
+      : { viewerId: null, blocked: new Set<string>(), connections: new Set<string>() };
+    const views = await this.presenter.present(
+      reader,
+      await this.content.findPosts(page.map((row) => row.id)),
+    );
+    const byId = new Map(
+      views
+        // Without a reader, only what anyone may read.
+        .filter((post) => viewerId !== null || post.visibility === 'public')
+        .map((post) => [post.id, post]),
+    );
+    const last = page.at(-1);
+    return {
+      items: page.flatMap((row) => byId.get(row.id) ?? []),
+      nextCursor:
+        rows.length > query.limit && last
+          ? encodeKeyset({ at: last.createdAt, key: last.id })
+          : null,
+    };
+  }
+
   /** A live publication the reader may see; 404 otherwise (blocks included). */
   async readable(reader: Reader, postId: string): Promise<PostRecord> {
     const post = await this.content.findPost(postId);

@@ -27,7 +27,7 @@ import {
   type MyProject,
   myProjectSchema,
   type Post as PostView,
-  postSchema,
+  postPageSchema,
   type Project,
   type ProjectCard,
   projectCardPageSchema,
@@ -39,7 +39,6 @@ import {
   replaceTiersRequestSchema,
   setProjectDocumentsRequestSchema,
   setProjectGalleryRequestSchema,
-  cursorPageSchema,
   updateProjectRequestSchema,
 } from '@pitchorium/contracts';
 import type { Response } from 'express';
@@ -55,7 +54,7 @@ import { ProjectResolver } from './project.resolver';
 class ProjectDto extends createZodDto(projectSchema) {}
 class ProjectCardPageDto extends createZodDto(projectCardPageSchema) {}
 class MyProjectsDto extends createZodDto(z.object({ items: z.array(myProjectSchema) })) {}
-class PostPageDto extends createZodDto(cursorPageSchema(postSchema)) {}
+class PostPageDto extends createZodDto(postPageSchema) {}
 class CreateProjectDto extends createZodDto(createProjectRequestSchema) {}
 class UpdateProjectDto extends createZodDto(updateProjectRequestSchema) {}
 class ChangeProjectSlugDto extends createZodDto(changeProjectSlugRequestSchema) {}

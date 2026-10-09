@@ -273,6 +273,30 @@ export class DrizzleContentRepository extends ContentRepository {
     return result.rows.map((row) => ({ id: row.id, createdAt: new Date(row.created_at) }));
   }
 
+  /** Through the partial feed indexes, read backwards (`posts_member_feed_idx`, `..._organization_...`). */
+  async authoredPosts(
+    author: { memberId: string } | { organizationId: string },
+    after: KeysetPosition | null,
+    limit: number,
+  ): Promise<FeedEntry[]> {
+    return this.db
+      .select({ id: contentPosts.id, createdAt: contentPosts.createdAt })
+      .from(contentPosts)
+      .where(
+        and(
+          'memberId' in author
+            ? and(eq(contentPosts.authorId, author.memberId), isNull(contentPosts.organizationId))
+            : eq(contentPosts.organizationId, author.organizationId),
+          isNull(contentPosts.deletedAt),
+          after
+            ? sql`(${contentPosts.createdAt}, ${contentPosts.id}) < (${after.at}, ${after.key}::uuid)`
+            : undefined,
+        ),
+      )
+      .orderBy(desc(contentPosts.createdAt), desc(contentPosts.id))
+      .limit(limit);
+  }
+
   async countNetworkFeed(query: NetworkFeedQuery, cap: number): Promise<number> {
     return (await this.networkFeed(query, null, cap)).length;
   }

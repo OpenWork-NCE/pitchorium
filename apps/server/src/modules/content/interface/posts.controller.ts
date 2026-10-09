@@ -25,7 +25,10 @@ import {
   type FeedPage,
   feedPageSchema,
   type Post,
+  memberPostsParamsSchema,
+  organizationPostsParamsSchema,
   postIdParamsSchema,
+  postPageSchema,
   recordPostViewsRequestSchema,
   postSchema,
   type PostStats,
@@ -59,6 +62,9 @@ class CreateRepostDto extends createZodDto(createRepostRequestSchema) {}
 class SetReactionDto extends createZodDto(setReactionRequestSchema) {}
 class PostIdParamsDto extends createZodDto(postIdParamsSchema) {}
 class PageQueryDto extends createZodDto(cursorPageQuerySchema) {}
+class PostPageDto extends createZodDto(postPageSchema) {}
+class MemberPostsParamsDto extends createZodDto(memberPostsParamsSchema) {}
+class OrganizationPostsParamsDto extends createZodDto(organizationPostsParamsSchema) {}
 class RecordPostViewsDto extends createZodDto(recordPostViewsRequestSchema) {}
 
 /** Signals of publications seen per member and per minute: one per screen of the feed or so. */
@@ -132,6 +138,61 @@ export class PostsController {
   @ApiOkResponse({ type: PostDto.Output })
   get(@CurrentPrincipal() principal: Principal, @Param() params: PostIdParamsDto): Promise<Post> {
     return this.posts.get(principal.userId, params.postId);
+  }
+
+  /** « Activité » of a member: their publications and reposts the reader may see. */
+  @Get('members/:handle/posts')
+  @RequireAction('content.post.read')
+  @ZodSerializerDto(PostPageDto)
+  @ApiOkResponse({ type: PostPageDto.Output })
+  memberPosts(
+    @CurrentPrincipal() principal: Principal,
+    @Param() params: MemberPostsParamsDto,
+    @Query() query: PageQueryDto,
+  ): Promise<CursorPage<Post>> {
+    return this.posts.memberPosts(principal.userId, params.handle, query);
+  }
+
+  /** Without an account: the public publications of a member who keeps a public page. */
+  @Get('public/members/:handle/posts')
+  @Public()
+  @ZodSerializerDto(PostPageDto)
+  @ApiOkResponse({ type: PostPageDto.Output })
+  async publicMemberPosts(
+    @Param() params: MemberPostsParamsDto,
+    @Query() query: PageQueryDto,
+    @Res({ passthrough: true }) response: Response,
+  ): Promise<CursorPage<Post>> {
+    const page = await this.posts.memberPosts(null, params.handle, query);
+    response.setHeader('Cache-Control', PUBLIC_POST_CACHE);
+    return page;
+  }
+
+  /** « Activité » of an organization: its publications the reader may see. */
+  @Get('organizations/by-slug/:slug/posts')
+  @RequireAction('content.post.read')
+  @ZodSerializerDto(PostPageDto)
+  @ApiOkResponse({ type: PostPageDto.Output })
+  organizationPosts(
+    @CurrentPrincipal() principal: Principal,
+    @Param() params: OrganizationPostsParamsDto,
+    @Query() query: PageQueryDto,
+  ): Promise<CursorPage<Post>> {
+    return this.posts.organizationPosts(principal.userId, params.slug, query);
+  }
+
+  @Get('public/organizations/:slug/posts')
+  @Public()
+  @ZodSerializerDto(PostPageDto)
+  @ApiOkResponse({ type: PostPageDto.Output })
+  async publicOrganizationPosts(
+    @Param() params: OrganizationPostsParamsDto,
+    @Query() query: PageQueryDto,
+    @Res({ passthrough: true }) response: Response,
+  ): Promise<CursorPage<Post>> {
+    const page = await this.posts.organizationPosts(null, params.slug, query);
+    response.setHeader('Cache-Control', PUBLIC_POST_CACHE);
+    return page;
   }
 
   /** Without an account: a public publication whose author keeps a public page. */

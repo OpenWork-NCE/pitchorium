@@ -296,10 +296,14 @@ export const recordPostViewsRequestSchema = z.object({
 });
 
 export const postIdParamsSchema = z.object({ postId: uuidV7Schema });
+export const memberPostsParamsSchema = z.object({ handle: z.string().min(1).max(100) });
+export const organizationPostsParamsSchema = z.object({ slug: z.string().min(1).max(100) });
 export const commentIdParamsSchema = z.object({ commentId: uuidV7Schema });
 
 export const commentPageSchema = cursorPageSchema(commentSchema);
 export const savedPostPageSchema = cursorPageSchema(savedPostSchema);
+/** Publications of a member or an organization, newest first, as the reader may see them. */
+export const postPageSchema = cursorPageSchema(postSchema);
 
 export type PostVisibility = z.infer<typeof postVisibilitySchema>;
 export type ReactionType = z.infer<typeof reactionTypeSchema>;

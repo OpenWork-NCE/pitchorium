@@ -75,6 +75,12 @@ export abstract class ContentRepository {
   ): Promise<FeedEntry[]>;
   /** Network publications counted up to `cap` (editorial complement threshold). */
   abstract countNetworkFeed(query: NetworkFeedQuery, cap: number): Promise<number>;
+  /** Publications and reposts of a member (not as an organization) or of an organization. */
+  abstract authoredPosts(
+    author: { memberId: string } | { organizationId: string },
+    after: KeysetPosition | null,
+    limit: number,
+  ): Promise<FeedEntry[]>;
   /** Readable publications of the network after `since`, by others than the reader, up to cap. */
   abstract countNewerNetworkFeed(
     query: NetworkFeedQuery,
