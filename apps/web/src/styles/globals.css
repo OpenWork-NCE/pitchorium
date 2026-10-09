@@ -294,6 +294,43 @@
     filter: blur(4px);
   }
 
+  /*
+   * Label swap of a button (motion catalogue): the labels share one cell, the width of the
+   * longest; the inactive ones are hidden, and the new one rises from below in a fade.
+   */
+  .label-swap {
+    display: inline-grid;
+  }
+
+  .label-swap > * {
+    grid-area: 1 / 1;
+    text-align: center;
+    transition:
+      opacity var(--duration-page) var(--ease-enter),
+      transform var(--duration-page) var(--ease-enter);
+  }
+
+  .label-swap > :not([data-active]) {
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(-40%);
+    transition:
+      opacity var(--duration-micro) var(--ease-enter),
+      transform var(--duration-micro) var(--ease-enter),
+      visibility 0s linear var(--duration-micro);
+  }
+
+  .label-swap > [data-active] {
+    animation: label-swap-in var(--duration-page) var(--ease-enter);
+  }
+
+  @keyframes label-swap-in {
+    from {
+      opacity: 0;
+      transform: translateY(40%);
+    }
+  }
+
   /* Reveal on scroll (E1): scroll-driven where supported, IntersectionObserver otherwise. */
   @supports (animation-timeline: view()) {
     @media (prefers-reduced-motion: no-preference) {
