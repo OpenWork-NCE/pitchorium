@@ -38,6 +38,11 @@ export function CreateOrganizationForm() {
   }
 
   async function submit(values: CreateOrganizationRequest) {
+    // Enter in a field of the first step goes to the next one: the creation waits for the second.
+    if (step === 0) {
+      setStep(1);
+      return;
+    }
     try {
       const organization = await withPrerequisites(() =>
         organizationsControllerCreate({
@@ -73,12 +78,14 @@ export function CreateOrganizationForm() {
         />
         <FormActions>
           {step === 0 ? (
-            <Button type="button" onClick={() => void next()}>
+            // Own keys: React never turns this button into the submit one during its click.
+            <Button key="next" type="button" onClick={() => void next()}>
               {t('next')}
             </Button>
           ) : (
             <>
               <Button
+                key="submit"
                 type="submit"
                 loading={form.formState.isSubmitting}
                 loadingLabel={t('creating')}

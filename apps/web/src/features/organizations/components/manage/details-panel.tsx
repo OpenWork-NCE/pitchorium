@@ -12,6 +12,7 @@ import {
 import { ORGANIZATION_SLUG_MAX_LENGTH, type Organization } from '@pitchorium/contracts';
 import { useLocale, useTranslations } from 'next-intl';
 import { lazy, Suspense, useState } from 'react';
+import { useWatch } from 'react-hook-form';
 import {
   AlertDialog,
   Avatar,
@@ -188,7 +189,8 @@ function SlugCard({ organization }: PanelProps) {
   const applyProblem = useApplyProblem(form, {
     fields: { ORGANIZATIONS_SLUG_TAKEN: 'slug', ORGANIZATIONS_SLUG_RESERVED: 'slug' },
   });
-  const slug = form.watch('slug');
+  // Read by subscription: the compiled component renders again as it is typed.
+  const slug = useWatch({ control: form.control, name: 'slug' });
   const origin = typeof window === 'undefined' ? '' : window.location.origin;
   const address = (value: string) => `${origin}/${locale}${routes.organization(value)}`;
 
