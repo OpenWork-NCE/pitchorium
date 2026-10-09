@@ -20,7 +20,7 @@ Le fil se lit page par page sans fin ; au bout de quelques pages, des centaines 
   - chaque entrée a sa propre frontière `Suspense`, et les composants chargés à la demande d'une carte (`LazyPostProject`, `LazyMemberPost`) la leur : `next/dynamic` sans `loading` n'en donne aucune, et une entrée qui attendait son code suspendait la page entière (cachée, focus et défilement perdus) ;
   - l'entrée quittée au clavier reste rendue jusqu'à ce que la suivante ait le focus (plage contiguë étendue jusqu'à elle, dix entrées au plus), et « Page suivante » attend que l'entrée visée soit affichée, deux secondes au plus ; un clic ne signale rien : un rendu entre l'appui et le relâchement remplaçait la cible du clic ;
   - la position est gardée dans le nettoyage d'un effet de mise en page, avant que la page suivante défile vers son haut ; le routeur garde le fil caché au lieu de le démonter, et la position est rendue quand il réapparaît ;
-  - pas d'ancrage du défilement sur l'élément du fil (le navigateur déplaçait la page à chaque changement des espaces autour des entrées, sans fin) ; sur la page, l'ancrage est suspendu le temps de rendre une position (retour arrière), jusqu'au premier geste du lecteur, et pas au-delà : une insertion au-dessus du fil, le bandeau du mode hors ligne, ne doit pas déplacer ce qu'il lit.
+  - pas d'ancrage du défilement sur la page tant que le fil est virtualisé, comme le demande TanStack Virtual : ancré sur ce qui suit le fil, le navigateur déplaçait la page à chaque changement des espaces autour des entrées, combattait le défilement du lecteur et poussait une position rendue bien au-delà. Conséquence acceptée : une insertion au-dessus du fil (le bandeau du mode hors ligne) décale ce qui est lu.
 
 ## Conséquences
 

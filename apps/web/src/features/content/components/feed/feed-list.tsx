@@ -70,35 +70,15 @@ function reportUnknown(type: string) {
   reportError(new Error(`Unknown type of feed item: ${type}`));
 }
 
-/** What the reader does to move: scroll anchoring comes back with the first of them. */
-const READER_MOVES = ['wheel', 'touchstart', 'keydown', 'pointerdown'] as const;
-
 /**
  * Gives a scroll position back (a return by the history), after the scroll the router and the
- * browser apply to the page (next frame), without scroll anchoring until the reader moves: the
- * entries of the feed are measured again as they show, and the browser, anchored on what follows
- * the feed, would push the page past its place. Anchoring comes back with the first move of the
- * reader (an insertion above the feed, the banner of the offline mode, must not move what they
- * look at), not after a delay, which the measures may outlast. Returns the cancellation.
+ * browser apply to the page (next frame). Returns the cancellation.
  */
 function restoreScroll(offset: number): () => void {
-  const root = document.documentElement;
-  const before = root.style.overflowAnchor;
-  root.style.overflowAnchor = 'none';
   const frame = requestAnimationFrame(() => {
     if (Math.abs(window.scrollY - offset) > 1) window.scrollTo({ top: offset });
   });
-  const anchorAgain = () => {
-    root.style.overflowAnchor = before;
-    for (const event of READER_MOVES) window.removeEventListener(event, anchorAgain);
-  };
-  for (const event of READER_MOVES) {
-    window.addEventListener(event, anchorAgain, { passive: true, once: true });
-  }
-  return () => {
-    cancelAnimationFrame(frame);
-    anchorAgain();
-  };
+  return () => cancelAnimationFrame(frame);
 }
 
 /** The real heights of the entries in the page, for the virtualized list that takes over. */
@@ -235,6 +215,20 @@ export function FeedList({
     });
     return () => cancelAnimationFrame(frame);
   }, [start, entries.length]);
+
+  // No scroll anchoring on the page while the feed is virtualized (as TanStack Virtual asks):
+  // anchored on what follows the feed, the browser moved the page each time the spaces around
+  // the entries changed, fought the scroll of the reader, and pushed a position given back far
+  // past its place.
+  useEffect(() => {
+    if (!start) return undefined;
+    const root = document.documentElement;
+    const before = root.style.overflowAnchor;
+    root.style.overflowAnchor = 'none';
+    return () => {
+      root.style.overflowAnchor = before;
+    };
+  }, [start]);
 
   // Back by the history: the scroll goes where it was, once the heights are known.
   useLayoutEffect(() => {
