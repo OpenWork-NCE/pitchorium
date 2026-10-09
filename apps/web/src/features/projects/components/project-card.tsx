@@ -18,6 +18,8 @@ interface ProjectCardProps {
   tiers?: readonly ProjectTier[];
   /** Level of the title in the outline of the page. */
   headingLevel?: 2 | 3;
+  /** Without the link to the page of the project (a page not delivered yet). */
+  linked?: boolean;
   className?: string;
 }
 
@@ -31,6 +33,7 @@ export function ProjectCard({
   variant = 'full',
   tiers = [],
   headingLevel = 3,
+  linked = true,
   className,
 }: ProjectCardProps) {
   const t = useTranslations('web.projects.card');
@@ -130,13 +133,15 @@ export function ProjectCard({
           ) : (
             <span />
           )}
-          <Button asChild variant="secondary" size="sm">
-            <Link href={routes.project(project.slug)}>
-              {t('view')}
-              <span className="sr-only"> {project.title}</span>
-              <ArrowRight aria-hidden />
-            </Link>
-          </Button>
+          {linked ? (
+            <Button asChild variant="secondary" size="sm">
+              <Link href={routes.project(project.slug)}>
+                {t('view')}
+                <span className="sr-only"> {project.title}</span>
+                <ArrowRight aria-hidden />
+              </Link>
+            </Button>
+          ) : null}
         </div>
       </div>
     </Card>
