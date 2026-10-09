@@ -33,7 +33,14 @@ export default async function Page({ params }: PageProps<'/[locale]/invitations/
   configureServerApi();
   const valid = invitationTokenRequestSchema.safeParse({ token }).success;
   const [preview, member] = await Promise.all([
-    valid ? invitationsControllerPreview({ token }, { cache: 'no-store' }).catch(() => null) : null,
+    valid
+      ? invitationsControllerPreview(
+          { token },
+          // A public read: without the session of the reader, which the api would only accept
+          // with a trusted Origin, as for any write carrying a session cookie (CSRF, ADR 0021).
+          { cache: 'no-store', headers: { cookie: '' } },
+        ).catch(() => null)
+      : null,
     getCurrentMember(),
   ]);
   if (!preview) {
