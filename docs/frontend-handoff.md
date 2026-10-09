@@ -15,7 +15,7 @@ Ce que l'application web (`apps/web`, `docs/architecture/frontend.md`) doit savo
 
 - `GET /v1/legal-documents/current` (public) : versions en vigueur des conditions et de la politique de confidentialité ; `POST /v1/me/legal-acceptances` avec les deux versions et la déclaration d'âge.
 - Tant que les versions en vigueur ne sont pas acceptées, la plupart des actions répondent `403 ACCESS_PREREQUISITES_MISSING` avec `missing: ["legal_acceptance", ...]` ; les droits RGPD, le compte et la situation de modération restent accessibles.
-- `missing` liste tout ce qu'il faut compléter (`email_verified`, `kyc_verified`, `two_factor`, `profile.entrepreneur_facet`, `profile.contributor_facet`, `payout_account`) : ouvrir le bon formulaire (onboarding progressif, §7.2). `GET /v1/me/prerequisites/{action}` répond sans tenter l'action (par exemple `project.publish`, `payment.collection.open`).
+- `missing` liste tout ce qu'il faut compléter (`email_verified`, `kyc_verified`, `two_factor`, `profile.minimum` : nom, titre et pays, `profile.entrepreneur_facet`, `profile.contributor_facet`, `payout_account`) : ouvrir le bon formulaire (onboarding progressif, §7.2). `GET /v1/me/prerequisites/{action}` répond sans tenter l'action (par exemple `project.publish`, `payment.collection.open`).
 
 ## En-têtes
 

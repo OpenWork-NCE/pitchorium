@@ -581,6 +581,30 @@ describe('access policies', () => {
     expect(decide('access.roles.read', stale)).toEqual({ allowed: true });
   });
 
+  it('asks for the minimum profile before a connection request, with the email at once', () => {
+    const anonymousLooking = {
+      ...facts('member'),
+      missingProvidedElements: ['profile.minimum' as const],
+    };
+    expect(decide('network.connection.request', anonymousLooking)).toEqual({
+      allowed: false,
+      code: 'ACCESS_PREREQUISITES_MISSING',
+      missing: ['profile.minimum'],
+    });
+    expect(
+      decide('network.connection.request', {
+        ...anonymousLooking,
+        actor: actor({ emailVerified: false }),
+      }),
+    ).toEqual({
+      allowed: false,
+      code: 'ACCESS_PREREQUISITES_MISSING',
+      missing: ['email_verified', 'profile.minimum'],
+    });
+    // Following needs nothing of the kind.
+    expect(decide('network.follow', anonymousLooking)).toEqual({ allowed: true });
+  });
+
   it('opens collected contributions once KYC and payout account are complete', () => {
     const ready = {
       ...facts('entrepreneur'),

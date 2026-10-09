@@ -435,6 +435,7 @@
     "kyc_verified": "Identité vérifiée (KYC)",
     "two_factor": "Double authentification",
     "profile": {
+      "minimum": "Profil minimum (nom, titre et pays)",
       "entrepreneur_facet": "Volet entrepreneur",
       "contributor_facet": "Volet contributeur"
     },

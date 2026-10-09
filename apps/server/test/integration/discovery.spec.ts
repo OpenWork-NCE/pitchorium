@@ -21,7 +21,7 @@ import { QUEUE_NAMES } from '../../src/platform/queue';
 import { createApiTestApp } from './support/api-app';
 import { query, truncateAllTables } from './support/database';
 import { createFullWorker, notificationOf } from './support/full-worker';
-import { createMember, type Member } from './support/members';
+import { createMember, ensureMinimumProfile, type Member } from './support/members';
 import { handleOf } from './support/messaging';
 import { publishedProject } from './support/payments';
 
@@ -347,6 +347,7 @@ describe('discovery', () => {
       .expect(204);
 
     // A connection is no longer a suggestion.
+    await ensureMinimumProfile(fatou);
     const sent = await fatou.agent
       .post('/v1/network/connection-requests')
       .set('Idempotency-Key', randomUUID())

@@ -435,6 +435,7 @@
     "kyc_verified": "Verified identity (KYC)",
     "two_factor": "Two-factor authentication",
     "profile": {
+      "minimum": "Minimum profile (name, title and country)",
       "entrepreneur_facet": "Entrepreneur section",
       "contributor_facet": "Contributor section"
     },

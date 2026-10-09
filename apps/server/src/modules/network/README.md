@@ -11,7 +11,7 @@ Graphe social (cahier des charges §10.2) : suivis, connexions, blocages, listes
 
 ## Connexions (ADR 0028)
 
-- Demande avec note facultative de 300 caractères ; email vérifié exigé (action `network.connection.request`). Acceptation ou refus par le destinataire, retrait par l'émetteur. Une seule demande en attente entre deux membres, dans un sens ou dans l'autre ; une demande qui croise une demande en attente du destinataire l'accepte.
+- Demande avec note facultative de 300 caractères ; email vérifié et profil minimum (nom, titre, pays) exigés (action `network.connection.request`, ADR 0109). Acceptation ou refus par le destinataire, retrait par l'émetteur. Une seule demande en attente entre deux membres, dans un sens ou dans l'autre ; une demande qui croise une demande en attente du destinataire l'accepte.
 - Une connexion acceptée crée le suivi mutuel (origine `connection`, un suivi manuel existant est conservé). Chacun peut cesser de suivre l'autre sans rompre la connexion. Supprimer la connexion retire les suivis d'origine `connection`, pas les suivis manuels.
 - Anti-abus, valeurs provisoires et configurables (`docs/open-questions.md`) : plafond de demandes sur sept jours glissants (`NETWORK_CONNECTION_REQUESTS_PER_WEEK`, 100), délai avant une nouvelle demande après un refus (`NETWORK_DECLINE_COOLDOWN_DAYS`, 21 jours), expiration des demandes en attente (`NETWORK_REQUEST_TTL_DAYS`, 30 jours ; tâche planifiée toutes les 15 minutes, et fermeture à la volée).
 - Les écritures entre deux membres sont sérialisées par un verrou transactionnel sur la paire.

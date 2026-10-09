@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import type { ContributorFacet, EntrepreneurFacet, ProfileVisibility } from '@pitchorium/contracts';
 import { TransactionManager } from '../../../platform/database';
 import { isEligibleCompanyCountry } from '../domain/facet-rules';
+import { hasMinimumProfile } from '../domain/profile';
 import { ProfileUpdated } from '../domain/profile-events';
 import { OrganizationDirectoryRegistry } from './organization-directory.registry';
 import {
@@ -117,6 +118,12 @@ export class ProfilesFacade {
   async countryOf(userId: string): Promise<string | null> {
     const [base] = await this.profiles.findBaseProfiles([userId]);
     return base?.countryCode ?? null;
+  }
+
+  /** Name, title and country are filled (the `profile.minimum` prerequisite). */
+  async hasMinimumProfile(userId: string): Promise<boolean> {
+    const [base] = await this.profiles.findBaseProfiles([userId]);
+    return base ? hasMinimumProfile(base) : false;
   }
 
   /** Privacy settings of a member, null without profile. */

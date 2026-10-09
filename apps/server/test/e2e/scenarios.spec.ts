@@ -157,6 +157,15 @@ describe('social', () => {
   it('connects two new members who then exchange a message in real time', async () => {
     const ama = await newMember('Ama Test');
     const kwame = await newMember('Kwame Test');
+    // A connection request says who sends it: name, title and country (profile.minimum).
+    const refused = await ama.post('/v1/network/connection-requests', { handle: kwame.handle });
+    expect(refused.body).toMatchObject({ code: 'ACCESS_PREREQUISITES_MISSING' });
+    expect(refused.body.missing).toEqual(['profile.minimum']);
+    const profiled = await ama.call('PATCH', '/v1/me/profile', {
+      headline: 'Fondatrice de Volta Solar',
+      countryCode: 'GH',
+    });
+    expect(profiled.status, JSON.stringify(profiled.body)).toBe(200);
     const requested = await ama.post('/v1/network/connection-requests', { handle: kwame.handle });
     expect(requested.status, JSON.stringify(requested.body)).toBe(201);
     const accepted = await kwame.post(

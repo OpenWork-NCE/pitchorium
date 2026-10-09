@@ -70,6 +70,29 @@ export async function createMember(
   return { agent, email, userId: user.id };
 }
 
+const withMinimumProfile = new WeakSet<Agent>();
+
+/**
+ * Name, title and country of a member who sends a connection request or a first message out of
+ * network (the `profile.minimum` prerequisite), filled once and only where they are missing. The
+ * country is one no fixture uses, so that no matching rule changes.
+ */
+export async function ensureMinimumProfile(member: Member): Promise<void> {
+  if (withMinimumProfile.has(member.agent)) return;
+  const profile = (await member.agent.get('/v1/me/profile').expect(200)).body as {
+    headline: string | null;
+    countryCode: string | null;
+  };
+  const patch = {
+    ...(profile.headline ? {} : { headline: 'Membre' }),
+    ...(profile.countryCode ? {} : { countryCode: 'IS' }),
+  };
+  if (Object.keys(patch).length > 0) {
+    await member.agent.patch('/v1/me/profile').send(patch).expect(200);
+  }
+  withMinimumProfile.add(member.agent);
+}
+
 /** Window of the rate limit of Better Auth on `/two-factor/*`: 3 requests per 10 seconds. */
 const TWO_FACTOR_WINDOW_MS = 10_000;
 

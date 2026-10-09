@@ -49,6 +49,7 @@ function isSatisfied(element: PrerequisiteElement, facts: AccessFacts, actor: Ac
       return facts.kycVerified;
     case 'two_factor':
       return actor.twoFactorEnabled;
+    case 'profile.minimum':
     case 'profile.entrepreneur_facet':
     case 'profile.contributor_facet':
     case 'payout_account':

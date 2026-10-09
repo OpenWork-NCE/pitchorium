@@ -163,6 +163,8 @@ export const PREREQUISITE_ELEMENTS = [
   'email_verified',
   'kyc_verified',
   'two_factor',
+  /** Name, title and country (provisional, docs/open-questions.md). */
+  'profile.minimum',
   'profile.entrepreneur_facet',
   'profile.contributor_facet',
   'payout_account',

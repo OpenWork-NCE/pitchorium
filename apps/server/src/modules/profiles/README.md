@@ -15,7 +15,7 @@ Profils personne (cahier des charges §5, §7.2, §10.1) : profil de base, volet
 - Force du profil : calcul déterministe et pondérations provisoires dans `domain/profile-strength.ts` ; niveaux `beginner` (< 40 %), `intermediate` (≥ 40 %), `advanced` (≥ 70 %), `complete` (100 %).
 - Confidentialité : page publique désactivée par défaut ; visibilité `public`, `members` ou `private` pour les détails du volet entrepreneur, ceux du volet contributeur et les listes de réseau (stockée ici, appliquée par le module network).
 - Données de référence : pays et régions UN M49, secteurs (sections CITI/ISIC rév. 4, provisoires), stades (provisoires), libellés dans le namespace i18n `reference`.
-- Prérequis `profile.entrepreneur_facet` et `profile.contributor_facet` fournis au module access.
+- Prérequis `profile.minimum` (nom, titre et pays, provisoire, ADR 0109 : `hasMinimumProfile` du domaine, aussi par la façade), `profile.entrepreneur_facet` et `profile.contributor_facet` fournis au module access.
 
 ## Routes
 

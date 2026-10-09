@@ -83,8 +83,9 @@ export const ACTION_POLICIES: Readonly<Record<Action, ActionPolicy>> = {
   // Network (§10.2): reading lists and relationships, following, connecting, blocking.
   'network.read': {},
   'network.follow': {},
-  // A connection request reaches another member: the requester must have proved their email.
-  'network.connection.request': { requires: ['email_verified'] },
+  // A connection request reaches another member: the requester must have proved their email and
+  // say who they are (name, title, country: the minimum profile, provisional).
+  'network.connection.request': { requires: ['email_verified', 'profile.minimum'] },
   'network.connection.respond': {},
   'network.connection.remove': {},
   'network.block': {},

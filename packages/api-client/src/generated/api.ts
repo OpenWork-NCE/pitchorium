@@ -10517,7 +10517,7 @@ export const getConnectionsControllerRequestUrl = () => {
 /**
  * Action `network.connection.request` (session cookie).
  *
- * Prerequisites: email_verified.
+ * Prerequisites: email_verified, profile.minimum.
  *
  * Idempotent: the `Idempotency-Key` header is required, a replay returns the stored answer.
  *

@@ -924,6 +924,7 @@ export const ActionPrerequisitesDtoOutputMissingItem = {
   email_verified: 'email_verified',
   kyc_verified: 'kyc_verified',
   two_factor: 'two_factor',
+  profileminimum: 'profile.minimum',
   profileentrepreneur_facet: 'profile.entrepreneur_facet',
   profilecontributor_facet: 'profile.contributor_facet',
   payout_account: 'payout_account',

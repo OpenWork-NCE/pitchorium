@@ -79,6 +79,7 @@ Valeurs provisoires livrées et documentées : la plateforme fonctionne avec ell
 - **28.** Les pondérations de la force du profil et les seuils des niveaux Débutant, Intermédiaire, Avancé, Complet (§7.2) : règle provisoire dans `apps/server/src/modules/profiles/domain/profile-strength.ts`.
 - **29.** Le contenu minimal du volet entrepreneur exigé avant de publier un projet (provisoirement : entreprise, secteur, stade, pays de l'entreprise) et du volet contributeur (au moins une casquette et le type de structure).
 - **30.** La longueur maximale du pitch (provisoirement 2 600 caractères, comme la présentation) et la liste des identifiants publics réservés.
+- **111.** Le profil minimum exigé avant une demande de connexion ou un premier message hors réseau : provisoirement nom, titre et pays de résidence, sans la photo (élément `profile.minimum`, ADR 0109).
 
 ### Fichiers
 
@@ -178,7 +179,6 @@ Valeurs provisoires livrées et documentées : la plateforme fonctionne avec ell
 ### Frontend
 
 - **110.** Les libellés courts des secteurs (`reference.sectorsShort`), provisoires, utilisés dans les puces, les cartes et les phrases de suggestion ; le libellé complet reste en infobulle et sur les pages de détail. À valider (et à traduire) : `agriculture_forestry_fishing` « Agriculture », `mining_quarrying` « Extraction », `manufacturing` « Industrie », `energy` « Énergie », `water_waste` « Eau et déchets », `construction` « Construction », `trade` « Commerce », `transport_storage` « Transport », `accommodation_food` « Hôtellerie », `information_communication` « Numérique », `finance_insurance` « Finance », `real_estate` « Immobilier », `professional_scientific_technical` « Conseil », `administrative_support` « Services aux entreprises », `public_administration` « Administration », `education` « Éducation », `health_social_work` « Santé », `arts_entertainment_recreation` « Culture », `other_services` « Autres services », `households` « Ménages », `extraterritorial_organizations` « Organisations internationales ».
-- **108.** Le « profil minimum » comme prérequis d'une action : l'api n'en définit pas ; le mécanisme de complétion (ADR 0105) le prendrait en charge si une action l'exigeait.
 - **109.** Le délai de renvoi d'un email de connexion ou de vérification (60 s affichées, provisoire) et la page d'appel d'une suspension (`/settings/moderation`, livrée au PROMPT FRONT 8 ; le lien de la bannière y mène déjà).
 - **93.** Les budgets de performance proposés (ADR 0090 et 0094, `docs/architecture/frontend.md`) : JavaScript initial compressé par groupe de routes, framework compris (`(marketing)` 190 kB, `(public)` et `(auth)` 220 kB, `(app)` 250 kB, `(admin)` 260 kB), Lighthouse mobile (performance 90, accessibilité, bonnes pratiques et SEO 100, LCP 2,5 s, CLS 0,1, TBT 300 ms) et INP sous 200 ms.
 - **94.** La « matière » du mouvement (`docs/design/motion.md`) : le motif d'élévation des fonds de marque, ton sur ton, comme sur un papier mat, sans grain ni WebGL ; le dialecte éditorial D4 des pages publiques.

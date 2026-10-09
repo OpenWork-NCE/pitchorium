@@ -7,7 +7,7 @@ import {
   isEligibleCompanyCountry,
 } from './facet-rules';
 import { assertHandleAllowed, handleBaseFromName } from './handle';
-import { DEFAULT_VISIBILITY, type Profile } from './profile';
+import { DEFAULT_VISIBILITY, hasMinimumProfile, type Profile } from './profile';
 import { PROFILE_STRENGTH_WEIGHTS, profileStrength } from './profile-strength';
 
 function codeOf(run: () => void): string | undefined {
@@ -117,6 +117,18 @@ describe('profile strength', () => {
   it('counts a blank headline as missing', () => {
     const blank: Profile = { ...emptyProfile, base: { ...emptyProfile.base, headline: '   ' } };
     expect(profileStrength(blank).missing).toContain('headline');
+  });
+});
+
+describe('minimum profile', () => {
+  const filled = { displayName: 'Awa Diallo', headline: 'Fondatrice', countryCode: 'SN' };
+
+  it('needs a name, a title and a country', () => {
+    expect(hasMinimumProfile(filled)).toBe(true);
+    expect(hasMinimumProfile({ ...filled, headline: null })).toBe(false);
+    expect(hasMinimumProfile({ ...filled, headline: '   ' })).toBe(false);
+    expect(hasMinimumProfile({ ...filled, countryCode: null })).toBe(false);
+    expect(hasMinimumProfile({ ...filled, displayName: ' ' })).toBe(false);
   });
 });
 

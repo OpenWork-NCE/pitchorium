@@ -7347,7 +7347,7 @@
           "network"
         ],
         "summary": "Request",
-        "description": "Action `network.connection.request` (session cookie).\n\nPrerequisites: email_verified.\n\nIdempotent: the `Idempotency-Key` header is required, a replay returns the stored answer.\n\nErrors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.",
+        "description": "Action `network.connection.request` (session cookie).\n\nPrerequisites: email_verified, profile.minimum.\n\nIdempotent: the `Idempotency-Key` header is required, a replay returns the stored answer.\n\nErrors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.",
         "x-error-codes": [
           "VALIDATION_FAILED",
           "PAYLOAD_TOO_LARGE",
@@ -35174,6 +35174,7 @@
                 "email_verified",
                 "kyc_verified",
                 "two_factor",
+                "profile.minimum",
                 "profile.entrepreneur_facet",
                 "profile.contributor_facet",
                 "payout_account"

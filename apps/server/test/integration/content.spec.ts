@@ -24,7 +24,7 @@ import { query, truncateAllTables } from './support/database';
 import { FakeMalwareScanner } from './support/fake-malware-scanner';
 import { minimalPdf, png } from './support/files';
 import { uploadFile, waitUntilProcessed } from './support/media';
-import { createMember, type Member } from './support/members';
+import { createMember, ensureMinimumProfile, type Member } from './support/members';
 import { createWorkerTestingModule } from './support/worker-testing-module';
 
 /** Publications, reposts, reactions, comments, blocks, feed and statistics (§10.3). */
@@ -56,6 +56,7 @@ describe('content', () => {
   }
 
   async function connect(a: Member, b: Member, bHandle: string): Promise<void> {
+    await ensureMinimumProfile(a);
     const sent = await a.agent
       .post('/v1/network/connection-requests')
       .set('Idempotency-Key', `request-${Math.random()}`)

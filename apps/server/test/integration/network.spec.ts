@@ -15,7 +15,7 @@ import { MailerModule } from '../../src/platform/mailer';
 import { StorageModule } from '../../src/platform/storage';
 import { createApiTestApp } from './support/api-app';
 import { query, truncateAllTables } from './support/database';
-import { browser, createMember, type Member } from './support/members';
+import { browser, createMember, ensureMinimumProfile, type Member } from './support/members';
 import { createWorkerTestingModule } from './support/worker-testing-module';
 
 const ENTREPRENEUR = {
@@ -41,6 +41,7 @@ describe('network', () => {
     ).map((event) => event.event_type);
 
   async function requestConnection(from: Member, handle: string, note?: string) {
+    await ensureMinimumProfile(from);
     return from.agent
       .post('/v1/network/connection-requests')
       .set('Idempotency-Key', `request-${handle}-${Math.random()}`)

@@ -183,6 +183,16 @@ export const updateBaseProfileRequestSchema = z
   })
   .partial();
 
+/**
+ * Minimum profile (`profile.minimum`, ADR 0109): a name, a title and a country, what another
+ * member needs to know who reaches them. Provisional (docs/open-questions.md).
+ */
+export const minimumProfileSchema = z.object({
+  displayName: z.string().trim().min(1).max(100),
+  headline: z.string().trim().min(1).max(HEADLINE_MAX_LENGTH),
+  countryCode: countryCodeSchema,
+});
+
 export const setIntentionRequestSchema = z.object({
   /** Null clears the intention (the step was skipped). */
   intention: intentionSchema.nullable(),
@@ -348,6 +358,7 @@ export type PositiveMoney = z.infer<typeof positiveMoneySchema>;
 export type TicketRange = z.infer<typeof ticketRangeSchema>;
 export type ProfileLinks = z.infer<typeof profileLinksSchema>;
 export type UpdateBaseProfileRequest = z.infer<typeof updateBaseProfileRequestSchema>;
+export type MinimumProfile = z.infer<typeof minimumProfileSchema>;
 export type ProfileVisibility = z.infer<typeof profileVisibilitySchema>;
 export type UpdateProfileVisibilityRequest = z.infer<typeof updateProfileVisibilityRequestSchema>;
 export type CreateEntrepreneurFacetRequest = z.infer<typeof createEntrepreneurFacetRequestSchema>;

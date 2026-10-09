@@ -5,7 +5,7 @@ import { v7 } from 'uuid';
 import { expect } from 'vitest';
 import { query } from './database';
 import { TEST_WEB_APP_URL } from './environment';
-import { type Member, signIn } from './members';
+import { ensureMinimumProfile, type Member, signIn } from './members';
 
 export async function handleOf(member: Member): Promise<string> {
   return ((await member.agent.get('/v1/me').expect(200)).body as { profile: { handle: string } })
@@ -14,7 +14,7 @@ export async function handleOf(member: Member): Promise<string> {
 
 /** Both members get their profile (created on first read), then connect. */
 export async function connectMembers(a: Member, b: Member): Promise<void> {
-  await handleOf(a);
+  await ensureMinimumProfile(a);
   const sent = await a.agent
     .post('/v1/network/connection-requests')
     .set('Idempotency-Key', randomUUID())
@@ -50,6 +50,7 @@ export async function readyMedia(
 
 /** Starts or continues the direct conversation with a member over HTTP. */
 export async function write(from: Member, toHandle: string, body: string, status = 201) {
+  await ensureMinimumProfile(from);
   const response = await from.agent
     .post('/v1/messaging/conversations')
     .set('Idempotency-Key', randomUUID())
