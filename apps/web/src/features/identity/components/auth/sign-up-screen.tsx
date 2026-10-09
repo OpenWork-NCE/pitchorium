@@ -42,7 +42,9 @@ export function SignUpScreen({
   });
 
   async function submit(values: { name: string; email: string; password: string }) {
-    if (!turnstile.ready) {
+    // A submit made while the challenge runs waits for it rather than failing (ADR 0103).
+    const passed = await turnstile.challenge();
+    if (!passed) {
       form.setError('root.server', {
         message: message({ code: 'MISSING_RESPONSE', status: 400, retryAfter: null }),
       });
@@ -56,7 +58,7 @@ export function SignUpScreen({
           callbackURL: absoluteUrl(locale, routes.emailVerified),
           fetchOptions,
         }),
-      turnstile.token,
+      passed.token,
     );
     turnstile.reset();
     if (!outcome.ok) {

@@ -35,13 +35,15 @@ export function EmailStep({
   const form = useZodForm(emailRequest, { defaultValues: { email: '' } });
 
   async function submit({ email }: { email: string }) {
-    if (!turnstile.ready) {
+    // A submit made while the challenge runs waits for it rather than failing (ADR 0103).
+    const passed = await turnstile.challenge();
+    if (!passed) {
       form.setError('root.server', {
         message: message({ code: 'MISSING_RESPONSE', status: 400, retryAfter: null }),
       });
       return;
     }
-    const outcome = await sendMagicLink(locale, email, redirectTo, turnstile.token);
+    const outcome = await sendMagicLink(locale, email, redirectTo, passed.token);
     turnstile.reset();
     if (!outcome.ok) {
       form.setError('root.server', { message: message(outcome.failure) });

@@ -20,6 +20,9 @@ declare global {
 
 const SCRIPT_URL = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
 
+/** How long a submit waits for the challenge to finish before saying it failed. */
+const CHALLENGE_WAIT_MS = 15_000;
+
 let scriptLoading: Promise<TurnstileApi> | undefined;
 
 /** Loads the script of Cloudflare once, on the screens that need it only (ADR 0103). */
@@ -47,6 +50,12 @@ export interface TurnstileState {
   ready: boolean;
   /** A token is single use: a new challenge after each call. */
   reset: () => void;
+  /**
+   * The token of the next call: at once when ready, else once Cloudflare gives it (a submit made
+   * while the challenge runs waits, at most CHALLENGE_WAIT_MS). `{ token: null }` when Turnstile
+   * is off; null when no token came (failure or wait over).
+   */
+  challenge: () => Promise<{ token: string | null } | null>;
   /** The widget, to place in the form (empty when Turnstile is off). */
   widget: React.ReactNode;
 }
@@ -62,6 +71,15 @@ export function useTurnstile(settings: TurnstileSettings | null, action: string)
   const widgetId = useRef<string | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [failed, setFailed] = useState(false);
+  /** The submits waiting for a token, answered by the next one or a failure. */
+  const waiting = useRef<((token: string | null) => void)[]>([]);
+  const latest = useRef<string | null>(null);
+  const settle = useCallback((value: string | null) => {
+    latest.current = value;
+    const pending = waiting.current;
+    waiting.current = [];
+    for (const answer of pending) answer(value);
+  }, []);
 
   useEffect(() => {
     if (!settings || !container.current) return;
@@ -79,27 +97,54 @@ export function useTurnstile(settings: TurnstileSettings | null, action: string)
           callback: (value: string) => {
             setToken(value);
             setFailed(false);
+            settle(value);
           },
-          'expired-callback': () => setToken(null),
+          'expired-callback': () => {
+            setToken(null);
+            latest.current = null;
+          },
           'error-callback': () => {
             setToken(null);
             setFailed(true);
+            settle(null);
           },
         });
       },
-      () => !cancelled && setFailed(true),
+      () => {
+        if (cancelled) return;
+        setFailed(true);
+        settle(null);
+      },
     );
     return () => {
       cancelled = true;
       if (widgetId.current) window.turnstile?.remove(widgetId.current);
       widgetId.current = null;
     };
-  }, [settings, action, locale]);
+  }, [settings, action, locale, settle]);
 
   const reset = useCallback(() => {
     setToken(null);
+    latest.current = null;
     if (widgetId.current) window.turnstile?.reset(widgetId.current);
   }, []);
+
+  const challenge = useCallback(async (): Promise<{ token: string | null } | null> => {
+    if (!settings) return { token: null };
+    if (latest.current) return { token: latest.current };
+    const value = await new Promise<string | null>((resolve) => {
+      const done = (answer: string | null) => {
+        clearTimeout(timer);
+        resolve(answer);
+      };
+      const timer = setTimeout(() => {
+        waiting.current = waiting.current.filter((answer) => answer !== done);
+        resolve(null);
+      }, CHALLENGE_WAIT_MS);
+      waiting.current.push(done);
+    });
+    return value ? { token: value } : null;
+  }, [settings]);
 
   const widget = settings ? (
     <div className="grid gap-1">
@@ -112,5 +157,5 @@ export function useTurnstile(settings: TurnstileSettings | null, action: string)
     </div>
   ) : null;
 
-  return { token, ready: !settings || token !== null, reset, widget };
+  return { token, ready: !settings || token !== null, reset, challenge, widget };
 }

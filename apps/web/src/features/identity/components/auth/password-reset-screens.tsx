@@ -39,7 +39,9 @@ export function ForgotPasswordScreen({
   const form = useZodForm(emailRequest, { defaultValues: { email: '' } });
 
   async function submit({ email }: { email: string }) {
-    if (!turnstile.ready) {
+    // A submit made while the challenge runs waits for it rather than failing (ADR 0103).
+    const passed = await turnstile.challenge();
+    if (!passed) {
       form.setError('root.server', {
         message: message({ code: 'MISSING_RESPONSE', status: 400, retryAfter: null }),
       });
@@ -53,7 +55,7 @@ export function ForgotPasswordScreen({
           redirectTo: absoluteUrl(locale, routes.resetPassword),
           fetchOptions,
         }),
-      turnstile.token,
+      passed.token,
     );
     turnstile.reset();
     if (!outcome.ok) {

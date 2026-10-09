@@ -59,10 +59,11 @@ export function CheckEmailScreen({
     if (!email) return;
     setState('sending');
     setError(null);
+    const passed = (await turnstile.challenge()) ?? { token: null };
     const { authClient } = await import('@/lib/auth/client');
     let outcome: AuthOutcome<unknown>;
     if (kind === 'magic') {
-      outcome = await sendMagicLink(locale, email, redirectTo, turnstile.token);
+      outcome = await sendMagicLink(locale, email, redirectTo, passed.token);
     } else if (kind === 'reset') {
       outcome = await authCall(
         (fetchOptions) =>
@@ -71,7 +72,7 @@ export function CheckEmailScreen({
             redirectTo: absoluteUrl(locale, routes.resetPassword),
             fetchOptions,
           }),
-        turnstile.token,
+        passed.token,
       );
     } else {
       outcome = await authCall((fetchOptions) =>
@@ -107,7 +108,7 @@ export function CheckEmailScreen({
             type="button"
             variant="outline"
             className="w-full"
-            disabled={wait > 0 || !turnstile.ready}
+            disabled={wait > 0}
             loading={state === 'sending'}
             loadingLabel={t('sending')}
             onClick={() => void resend()}

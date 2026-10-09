@@ -39,7 +39,9 @@ export function PasswordSignInScreen({
   const form = useZodForm(signInRequest, { defaultValues: { email: '', password: '' } });
 
   async function submit(values: { email: string; password: string }) {
-    if (!turnstile.ready) {
+    // A submit made while the challenge runs waits for it rather than failing (ADR 0103).
+    const passed = await turnstile.challenge();
+    if (!passed) {
       form.setError('root.server', {
         message: message({ code: 'MISSING_RESPONSE', status: 400, retryAfter: null }),
       });
@@ -48,7 +50,7 @@ export function PasswordSignInScreen({
     const { authClient } = await import('@/lib/auth/client');
     const outcome = await authCall<{ twoFactorRedirect?: boolean }>(
       (fetchOptions) => authClient.signIn.email({ ...values, fetchOptions }),
-      turnstile.token,
+      passed.token,
     );
     turnstile.reset();
     if (!outcome.ok) {
