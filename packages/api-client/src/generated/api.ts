@@ -144,6 +144,7 @@ import type {
   FlagListDtoOutput,
   FollowDtoOutput,
   FollowPageDtoOutput,
+  FollowStateDtoOutput,
   FollowerPageDtoOutput,
   FollowsControllerFollowersParams,
   GlossaryDtoOutput,
@@ -10565,6 +10566,156 @@ export const useVerificationControllerRevoke = <
 > => {
   return useMutation(getVerificationControllerRevokeMutationOptions(options), queryClient);
 };
+
+export const getFollowsControllerStateUrl = (targetType: string, targetKey: string) => {
+  return `/v1/network/follows/${targetType}/${targetKey}`;
+};
+
+/**
+ * Action `network.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary State
+ */
+export const followsControllerState = async (
+  targetType: string,
+  targetKey: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<FollowStateDtoOutput> => {
+  return apiFetch<FollowStateDtoOutput>(getFollowsControllerStateUrl(targetType, targetKey), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getFollowsControllerStateQueryKey = (targetType: string, targetKey: string) => {
+  return [`/v1/network/follows/${targetType}/${targetKey}`] as const;
+};
+
+export const getFollowsControllerStateQueryOptions = <
+  TData = Awaited<ReturnType<typeof followsControllerState>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  targetType: string,
+  targetKey: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof followsControllerState>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getFollowsControllerStateQueryKey(targetType, targetKey);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof followsControllerState>>> = ({ signal }) =>
+    followsControllerState(targetType, targetKey, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled:
+      targetType !== null &&
+      targetType !== undefined &&
+      targetKey !== null &&
+      targetKey !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<Awaited<ReturnType<typeof followsControllerState>>, TError, TData> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+};
+
+export type FollowsControllerStateQueryResult = NonNullable<
+  Awaited<ReturnType<typeof followsControllerState>>
+>;
+export type FollowsControllerStateQueryError = ErrorType<ProblemDetails>;
+
+export function useFollowsControllerState<
+  TData = Awaited<ReturnType<typeof followsControllerState>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  targetType: string,
+  targetKey: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof followsControllerState>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof followsControllerState>>,
+          TError,
+          Awaited<ReturnType<typeof followsControllerState>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useFollowsControllerState<
+  TData = Awaited<ReturnType<typeof followsControllerState>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  targetType: string,
+  targetKey: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof followsControllerState>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof followsControllerState>>,
+          TError,
+          Awaited<ReturnType<typeof followsControllerState>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useFollowsControllerState<
+  TData = Awaited<ReturnType<typeof followsControllerState>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  targetType: string,
+  targetKey: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof followsControllerState>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary State
+ */
+
+export function useFollowsControllerState<
+  TData = Awaited<ReturnType<typeof followsControllerState>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  targetType: string,
+  targetKey: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof followsControllerState>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getFollowsControllerStateQueryOptions(targetType, targetKey, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
 
 export const getFollowsControllerFollowUrl = (targetType: string, targetKey: string) => {
   return `/v1/network/follows/${targetType}/${targetKey}`;

@@ -38,7 +38,7 @@ Graphe social (cahier des charges §10.2) : suivis, connexions, blocages, listes
 
 ## Routes
 
-- `PUT|DELETE /v1/network/follows/{targetType}/{targetKey}` (`network.follow`), `GET /v1/network/follows/{targetType}/{targetKey}/followers` (`network.read`)
+- `PUT|DELETE /v1/network/follows/{targetType}/{targetKey}` (`network.follow`), `GET /v1/network/follows/{targetType}/{targetKey}` (`network.read` : suivi ou non par le lecteur, et nombre d'abonnés, `null` pour un membre, dont le nombre suit la visibilité de ses listes), `GET /v1/network/follows/{targetType}/{targetKey}/followers` (`network.read`)
 - `POST /v1/network/connection-requests` (`network.connection.request`, `Idempotency-Key`), `GET /v1/me/network/connection-requests?direction=received|sent` (`network.read`), `POST /v1/network/connection-requests/{requestId}/accept`, `POST .../decline`, `DELETE /v1/network/connection-requests/{requestId}` (retrait) (`network.connection.respond`)
 - `DELETE /v1/network/connections/{handle}` (`network.connection.remove`)
 - `PUT|DELETE /v1/network/blocks/{handle}` (`network.block`), `GET /v1/me/network/blocks` (`network.read`)

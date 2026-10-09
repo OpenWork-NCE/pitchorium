@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import type { Follow } from '@pitchorium/contracts';
+import type { Follow, FollowState } from '@pitchorium/contracts';
 import { TransactionManager } from '../../../platform/database';
 import { Clock, DomainError } from '../../../platform/kernel';
 import { FollowCreated, FollowRemoved } from '../domain/network-events';
@@ -45,6 +45,19 @@ export class FollowsService {
     const summary = (await this.targets.describe(targetType, [targetId])).get(targetId);
     if (!summary) throw new DomainError('NETWORK_TARGET_NOT_FOUND', 'Follow target not found');
     return { target: { type: targetType, ...summary }, followedAt: followedAt.toISOString() };
+  }
+
+  /** Whether the reader follows a target, and how many members do (not for a member). */
+  async state(userId: string, targetType: string, targetKey: string): Promise<FollowState> {
+    const targetId = await this.targets.resolve(targetType, targetKey);
+    if (targetType === MEMBER_TARGET) await this.assertMemberReachable(userId, targetId);
+    const [follow, followers] = await Promise.all([
+      this.network.findFollow(userId, targetType, targetId),
+      targetType === MEMBER_TARGET
+        ? Promise.resolve(null)
+        : this.network.countFollowers(targetType, targetId),
+    ]);
+    return { following: follow !== null, followers };
   }
 
   /** Stopping to follow a connection keeps the connection (ADR 0028). */

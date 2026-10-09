@@ -7,6 +7,8 @@ import {
   type Follower,
   followerPageSchema,
   followSchema,
+  type FollowState,
+  followStateSchema,
   followTargetParamsSchema,
 } from '@pitchorium/contracts';
 import { createZodDto, ZodSerializerDto } from 'nestjs-zod';
@@ -15,6 +17,7 @@ import { FollowsService } from '../application/follows.service';
 import { NetworkReadsService } from '../application/network-reads.service';
 
 class FollowDto extends createZodDto(followSchema) {}
+class FollowStateDto extends createZodDto(followStateSchema) {}
 class FollowerPageDto extends createZodDto(followerPageSchema) {}
 class FollowTargetParamsDto extends createZodDto(followTargetParamsSchema) {}
 class PageQueryDto extends createZodDto(cursorPageQuerySchema) {}
@@ -30,6 +33,18 @@ export class FollowsController {
     private readonly follows: FollowsService,
     private readonly reads: NetworkReadsService,
   ) {}
+
+  /** Whether the reader follows the target, and its number of followers (not for a member). */
+  @Get(':targetType/:targetKey')
+  @RequireAction('network.read')
+  @ZodSerializerDto(FollowStateDto)
+  @ApiOkResponse({ type: FollowStateDto.Output })
+  state(
+    @CurrentPrincipal() principal: Principal,
+    @Param() params: FollowTargetParamsDto,
+  ): Promise<FollowState> {
+    return this.follows.state(principal.userId, params.targetType, params.targetKey);
+  }
 
   @Put(':targetType/:targetKey')
   @RequireAction('network.follow')

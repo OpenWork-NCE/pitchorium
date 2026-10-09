@@ -34,6 +34,15 @@ export const followSchema = z.object({
   followedAt: z.iso.datetime(),
 });
 
+/**
+ * The reader and a target: whether they follow it, and how many members do; null for a member,
+ * whose count follows the visibility of their lists (read in the relationship).
+ */
+export const followStateSchema = z.object({
+  following: z.boolean(),
+  followers: z.number().int().nonnegative().nullable(),
+});
+
 export const followerSchema = z.object({
   member: memberCardSchema,
   followedAt: z.iso.datetime(),
@@ -149,6 +158,7 @@ export const profileVisitPageSchema = cursorPageSchema(profileVisitSchema);
 
 export type FollowTarget = z.infer<typeof followTargetSchema>;
 export type Follow = z.infer<typeof followSchema>;
+export type FollowState = z.infer<typeof followStateSchema>;
 export type Follower = z.infer<typeof followerSchema>;
 export type Connection = z.infer<typeof connectionSchema>;
 export type ConnectionRequestStatus = z.infer<typeof connectionRequestStatusSchema>;

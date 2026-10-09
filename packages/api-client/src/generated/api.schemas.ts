@@ -2871,6 +2871,11 @@ export interface RevocationDto {
   reason: string;
 }
 
+export interface FollowStateDtoOutput {
+  following: boolean;
+  followers: number | null;
+}
+
 export type FollowDtoOutputTarget = {
   /** @pattern ^[a-z][a-z_]{1,31}$ */
   type: string;

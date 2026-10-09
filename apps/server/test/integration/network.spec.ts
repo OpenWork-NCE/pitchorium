@@ -4,6 +4,7 @@ import type { CursorPage, Follower, Organization } from '@pitchorium/contracts';
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AccessModule } from '../../src/modules/access';
 import { IdentityModule } from '../../src/modules/identity';
+import { ImpactModule } from '../../src/modules/impact';
 import { MediaModule } from '../../src/modules/media';
 import { NetworkModule } from '../../src/modules/network';
 import { NetworkMaintenanceService } from '../../src/modules/network/application/network-maintenance.service';
@@ -77,6 +78,7 @@ describe('network', () => {
         IdentityModule.forWorker(),
         AccessModule.forWorker(),
         MediaModule.forWorker(),
+        ImpactModule.forWorker(),
         ProfilesModule.forWorker(),
         OrganizationsModule.forWorker(),
         NetworkModule.forWorker(),
@@ -335,6 +337,18 @@ describe('network', () => {
     expect(followers.body.items).toEqual([
       expect.objectContaining({ member: expect.objectContaining({ handle: 'kofi-mensah' }) }),
     ]);
+    // The state of the button of a page: followed or not, and how many follow it.
+    const state = await kofi.agent
+      .get(`/v1/network/follows/organization/${created.body.id as string}`)
+      .expect(200);
+    expect(state.body).toEqual({ following: true, followers: 1 });
+    const notFollowing = await ama.agent
+      .get(`/v1/network/follows/organization/${created.body.id as string}`)
+      .expect(200);
+    expect(notFollowing.body).toEqual({ following: false, followers: 1 });
+    // A member: their count follows the visibility of their lists, never given here.
+    const member = await ama.agent.get('/v1/network/follows/member/kofi-mensah').expect(200);
+    expect(member.body).toEqual({ following: false, followers: null });
     await kofi.agent
       .put('/v1/network/follows/project/0199a1b2-0000-7000-8000-000000000001')
       .expect(404);

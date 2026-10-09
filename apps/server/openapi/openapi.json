@@ -7172,6 +7172,111 @@
       }
     },
     "/v1/network/follows/{targetType}/{targetKey}": {
+      "get": {
+        "operationId": "FollowsController_state",
+        "parameters": [
+          {
+            "name": "targetType",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "pattern": "^[a-z][a-z_]{1,31}$",
+              "type": "string"
+            }
+          },
+          {
+            "name": "targetKey",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "minLength": 1,
+              "maxLength": 100,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FollowStateDto_Output"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error (RFC 9457 problem details)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "VALIDATION_FAILED": {
+                    "$ref": "#/components/examples/VALIDATION_FAILED"
+                  },
+                  "UNAUTHENTICATED": {
+                    "$ref": "#/components/examples/UNAUTHENTICATED"
+                  },
+                  "FORBIDDEN": {
+                    "$ref": "#/components/examples/FORBIDDEN"
+                  },
+                  "ACCESS_ORIGIN_NOT_ALLOWED": {
+                    "$ref": "#/components/examples/ACCESS_ORIGIN_NOT_ALLOWED"
+                  },
+                  "ACCESS_PREREQUISITES_MISSING": {
+                    "$ref": "#/components/examples/ACCESS_PREREQUISITES_MISSING"
+                  },
+                  "ACCESS_ACCOUNT_SUSPENDED": {
+                    "$ref": "#/components/examples/ACCESS_ACCOUNT_SUSPENDED"
+                  },
+                  "NOT_FOUND": {
+                    "$ref": "#/components/examples/NOT_FOUND"
+                  },
+                  "RATE_LIMITED": {
+                    "$ref": "#/components/examples/RATE_LIMITED"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "tags": [
+          "network"
+        ],
+        "summary": "State",
+        "description": "Action `network.read` (session cookie).\n\nErrors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.",
+        "x-error-codes": [
+          "VALIDATION_FAILED",
+          "UNAUTHENTICATED",
+          "FORBIDDEN",
+          "ACCESS_ORIGIN_NOT_ALLOWED",
+          "ACCESS_PREREQUISITES_MISSING",
+          "ACCESS_ACCOUNT_SUSPENDED",
+          "NOT_FOUND",
+          "RATE_LIMITED",
+          "NETWORK_TARGET_NOT_FOUND",
+          "NETWORK_MEMBER_NOT_FOUND",
+          "NETWORK_SELF_RELATION",
+          "NETWORK_ALREADY_CONNECTED",
+          "NETWORK_REQUEST_ALREADY_PENDING",
+          "NETWORK_REQUEST_COOLDOWN",
+          "NETWORK_WEEKLY_REQUEST_LIMIT",
+          "NETWORK_REQUEST_NOT_FOUND",
+          "NETWORK_REQUEST_NOT_PENDING",
+          "NETWORK_NOT_CONNECTED",
+          "NETWORK_MEMBER_BLOCKED",
+          "NETWORK_LIST_HIDDEN"
+        ],
+        "x-access": "network.read"
+      },
       "put": {
         "operationId": "FollowsController_follow",
         "parameters": [
@@ -39673,6 +39778,31 @@
         "required": [
           "reason"
         ]
+      },
+      "FollowStateDto_Output": {
+        "type": "object",
+        "properties": {
+          "following": {
+            "type": "boolean"
+          },
+          "followers": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "following",
+          "followers"
+        ],
+        "additionalProperties": false
       },
       "FollowDto_Output": {
         "type": "object",
