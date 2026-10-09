@@ -3542,6 +3542,7 @@ export type FeedPageDtoOutputItemsItem =
         saved: boolean;
         viewerIsAuthor: boolean;
         featured: boolean;
+        moderation: 'visible' | 'hidden';
         /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
         createdAt: string;
         editedAt: string | null;
@@ -3677,6 +3678,7 @@ export type FeedPageDtoOutputItemsItem =
           saved: boolean;
           viewerIsAuthor: boolean;
           featured: boolean;
+          moderation: 'visible' | 'hidden';
           /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
           createdAt: string;
           editedAt: string | null;
@@ -3817,6 +3819,7 @@ export type FeedPageDtoOutputItemsItem =
         saved: boolean;
         viewerIsAuthor: boolean;
         featured: boolean;
+        moderation: 'visible' | 'hidden';
         /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
         createdAt: string;
         editedAt: string | null;
@@ -3952,6 +3955,7 @@ export type FeedPageDtoOutputItemsItem =
           saved: boolean;
           viewerIsAuthor: boolean;
           featured: boolean;
+          moderation: 'visible' | 'hidden';
           /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
           createdAt: string;
           editedAt: string | null;
@@ -4092,6 +4096,7 @@ export type FeedPageDtoOutputItemsItem =
         saved: boolean;
         viewerIsAuthor: boolean;
         featured: boolean;
+        moderation: 'visible' | 'hidden';
         /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
         createdAt: string;
         editedAt: string | null;
@@ -4227,6 +4232,7 @@ export type FeedPageDtoOutputItemsItem =
           saved: boolean;
           viewerIsAuthor: boolean;
           featured: boolean;
+          moderation: 'visible' | 'hidden';
           /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
           createdAt: string;
           editedAt: string | null;
@@ -4667,6 +4673,14 @@ export type PostDtoOutputReactions = {
   viewerReaction: PostDtoOutputReactionsViewerReaction;
 };
 
+export type PostDtoOutputModeration =
+  (typeof PostDtoOutputModeration)[keyof typeof PostDtoOutputModeration];
+
+export const PostDtoOutputModeration = {
+  visible: 'visible',
+  hidden: 'hidden',
+} as const;
+
 export type PostDtoOutputKind = (typeof PostDtoOutputKind)[keyof typeof PostDtoOutputKind];
 
 export const PostDtoOutputKind = {
@@ -4837,6 +4851,14 @@ export type PostDtoOutputRepostOfReactions = {
   viewerReaction: PostDtoOutputRepostOfReactionsViewerReaction;
 };
 
+export type PostDtoOutputRepostOfModeration =
+  (typeof PostDtoOutputRepostOfModeration)[keyof typeof PostDtoOutputRepostOfModeration];
+
+export const PostDtoOutputRepostOfModeration = {
+  visible: 'visible',
+  hidden: 'hidden',
+} as const;
+
 export type PostDtoOutputRepostOf = {
   /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
   id: string;
@@ -4867,6 +4889,7 @@ export type PostDtoOutputRepostOf = {
   saved: boolean;
   viewerIsAuthor: boolean;
   featured: boolean;
+  moderation: PostDtoOutputRepostOfModeration;
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
   createdAt: string;
   editedAt: string | null;
@@ -4902,6 +4925,7 @@ export interface PostDtoOutput {
   saved: boolean;
   viewerIsAuthor: boolean;
   featured: boolean;
+  moderation: PostDtoOutputModeration;
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
   createdAt: string;
   editedAt: string | null;
@@ -5081,6 +5105,14 @@ export type PostPageDtoOutputItemsItemReactions = {
   viewerReaction: PostPageDtoOutputItemsItemReactionsViewerReaction;
 };
 
+export type PostPageDtoOutputItemsItemModeration =
+  (typeof PostPageDtoOutputItemsItemModeration)[keyof typeof PostPageDtoOutputItemsItemModeration];
+
+export const PostPageDtoOutputItemsItemModeration = {
+  visible: 'visible',
+  hidden: 'hidden',
+} as const;
+
 export type PostPageDtoOutputItemsItemKind =
   (typeof PostPageDtoOutputItemsItemKind)[keyof typeof PostPageDtoOutputItemsItemKind];
 
@@ -5252,6 +5284,14 @@ export type PostPageDtoOutputItemsItemRepostOfReactions = {
   viewerReaction: PostPageDtoOutputItemsItemRepostOfReactionsViewerReaction;
 };
 
+export type PostPageDtoOutputItemsItemRepostOfModeration =
+  (typeof PostPageDtoOutputItemsItemRepostOfModeration)[keyof typeof PostPageDtoOutputItemsItemRepostOfModeration];
+
+export const PostPageDtoOutputItemsItemRepostOfModeration = {
+  visible: 'visible',
+  hidden: 'hidden',
+} as const;
+
 export type PostPageDtoOutputItemsItemRepostOf = {
   /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
   id: string;
@@ -5282,6 +5322,7 @@ export type PostPageDtoOutputItemsItemRepostOf = {
   saved: boolean;
   viewerIsAuthor: boolean;
   featured: boolean;
+  moderation: PostPageDtoOutputItemsItemRepostOfModeration;
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
   createdAt: string;
   editedAt: string | null;
@@ -5317,6 +5358,7 @@ export type PostPageDtoOutputItemsItem = {
   saved: boolean;
   viewerIsAuthor: boolean;
   featured: boolean;
+  moderation: PostPageDtoOutputItemsItemModeration;
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
   createdAt: string;
   editedAt: string | null;
@@ -5426,6 +5468,39 @@ export interface ReactionSummaryDtoOutput {
    */
   total: number;
   viewerReaction: ReactionSummaryDtoOutputViewerReaction;
+}
+
+export type ReactorPageDtoOutputItemsItemMember = {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
+  displayName: string;
+  /** @nullable */
+  headline: string | null;
+  /** @nullable */
+  avatarUrl: string | null;
+};
+
+export type ReactorPageDtoOutputItemsItemType =
+  (typeof ReactorPageDtoOutputItemsItemType)[keyof typeof ReactorPageDtoOutputItemsItemType];
+
+export const ReactorPageDtoOutputItemsItemType = {
+  like: 'like',
+  bravo: 'bravo',
+  insightful: 'insightful',
+  support: 'support',
+} as const;
+
+export type ReactorPageDtoOutputItemsItem = {
+  member: ReactorPageDtoOutputItemsItemMember;
+  type: ReactorPageDtoOutputItemsItemType;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  reactedAt: string;
+};
+
+export interface ReactorPageDtoOutput {
+  items: ReactorPageDtoOutputItemsItem[];
+  /** @nullable */
+  nextCursor: string | null;
 }
 
 export type SavedPostPageDtoOutputItemsItemPostAuthor =
@@ -5590,6 +5665,14 @@ export type SavedPostPageDtoOutputItemsItemPostReactions = {
   total: number;
   viewerReaction: SavedPostPageDtoOutputItemsItemPostReactionsViewerReaction;
 };
+
+export type SavedPostPageDtoOutputItemsItemPostModeration =
+  (typeof SavedPostPageDtoOutputItemsItemPostModeration)[keyof typeof SavedPostPageDtoOutputItemsItemPostModeration];
+
+export const SavedPostPageDtoOutputItemsItemPostModeration = {
+  visible: 'visible',
+  hidden: 'hidden',
+} as const;
 
 export type SavedPostPageDtoOutputItemsItemPostKind =
   (typeof SavedPostPageDtoOutputItemsItemPostKind)[keyof typeof SavedPostPageDtoOutputItemsItemPostKind];
@@ -5762,6 +5845,14 @@ export type SavedPostPageDtoOutputItemsItemPostRepostOfReactions = {
   viewerReaction: SavedPostPageDtoOutputItemsItemPostRepostOfReactionsViewerReaction;
 };
 
+export type SavedPostPageDtoOutputItemsItemPostRepostOfModeration =
+  (typeof SavedPostPageDtoOutputItemsItemPostRepostOfModeration)[keyof typeof SavedPostPageDtoOutputItemsItemPostRepostOfModeration];
+
+export const SavedPostPageDtoOutputItemsItemPostRepostOfModeration = {
+  visible: 'visible',
+  hidden: 'hidden',
+} as const;
+
 export type SavedPostPageDtoOutputItemsItemPostRepostOf = {
   /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
   id: string;
@@ -5792,6 +5883,7 @@ export type SavedPostPageDtoOutputItemsItemPostRepostOf = {
   saved: boolean;
   viewerIsAuthor: boolean;
   featured: boolean;
+  moderation: SavedPostPageDtoOutputItemsItemPostRepostOfModeration;
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
   createdAt: string;
   editedAt: string | null;
@@ -5827,6 +5919,7 @@ export type SavedPostPageDtoOutputItemsItemPost = {
   saved: boolean;
   viewerIsAuthor: boolean;
   featured: boolean;
+  moderation: SavedPostPageDtoOutputItemsItemPostModeration;
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
   createdAt: string;
   editedAt: string | null;
@@ -10154,6 +10247,14 @@ export type ConversationPageDtoOutputItemsItemLastMessageSharedPostPostReactions
   viewerReaction: ConversationPageDtoOutputItemsItemLastMessageSharedPostPostReactionsViewerReaction;
 };
 
+export type ConversationPageDtoOutputItemsItemLastMessageSharedPostPostModeration =
+  (typeof ConversationPageDtoOutputItemsItemLastMessageSharedPostPostModeration)[keyof typeof ConversationPageDtoOutputItemsItemLastMessageSharedPostPostModeration];
+
+export const ConversationPageDtoOutputItemsItemLastMessageSharedPostPostModeration = {
+  visible: 'visible',
+  hidden: 'hidden',
+} as const;
+
 export type ConversationPageDtoOutputItemsItemLastMessageSharedPostPostKind =
   (typeof ConversationPageDtoOutputItemsItemLastMessageSharedPostPostKind)[keyof typeof ConversationPageDtoOutputItemsItemLastMessageSharedPostPostKind];
 
@@ -10327,6 +10428,14 @@ export type ConversationPageDtoOutputItemsItemLastMessageSharedPostPostRepostOfR
   viewerReaction: ConversationPageDtoOutputItemsItemLastMessageSharedPostPostRepostOfReactionsViewerReaction;
 };
 
+export type ConversationPageDtoOutputItemsItemLastMessageSharedPostPostRepostOfModeration =
+  (typeof ConversationPageDtoOutputItemsItemLastMessageSharedPostPostRepostOfModeration)[keyof typeof ConversationPageDtoOutputItemsItemLastMessageSharedPostPostRepostOfModeration];
+
+export const ConversationPageDtoOutputItemsItemLastMessageSharedPostPostRepostOfModeration = {
+  visible: 'visible',
+  hidden: 'hidden',
+} as const;
+
 export type ConversationPageDtoOutputItemsItemLastMessageSharedPostPostRepostOf = {
   /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
   id: string;
@@ -10357,6 +10466,7 @@ export type ConversationPageDtoOutputItemsItemLastMessageSharedPostPostRepostOf 
   saved: boolean;
   viewerIsAuthor: boolean;
   featured: boolean;
+  moderation: ConversationPageDtoOutputItemsItemLastMessageSharedPostPostRepostOfModeration;
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
   createdAt: string;
   editedAt: string | null;
@@ -10392,6 +10502,7 @@ export type ConversationPageDtoOutputItemsItemLastMessageSharedPostPost = {
   saved: boolean;
   viewerIsAuthor: boolean;
   featured: boolean;
+  moderation: ConversationPageDtoOutputItemsItemLastMessageSharedPostPostModeration;
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
   createdAt: string;
   editedAt: string | null;
@@ -10695,6 +10806,14 @@ export type MessageDtoOutputSharedPostPostReactions = {
   viewerReaction: MessageDtoOutputSharedPostPostReactionsViewerReaction;
 };
 
+export type MessageDtoOutputSharedPostPostModeration =
+  (typeof MessageDtoOutputSharedPostPostModeration)[keyof typeof MessageDtoOutputSharedPostPostModeration];
+
+export const MessageDtoOutputSharedPostPostModeration = {
+  visible: 'visible',
+  hidden: 'hidden',
+} as const;
+
 export type MessageDtoOutputSharedPostPostKind =
   (typeof MessageDtoOutputSharedPostPostKind)[keyof typeof MessageDtoOutputSharedPostPostKind];
 
@@ -10866,6 +10985,14 @@ export type MessageDtoOutputSharedPostPostRepostOfReactions = {
   viewerReaction: MessageDtoOutputSharedPostPostRepostOfReactionsViewerReaction;
 };
 
+export type MessageDtoOutputSharedPostPostRepostOfModeration =
+  (typeof MessageDtoOutputSharedPostPostRepostOfModeration)[keyof typeof MessageDtoOutputSharedPostPostRepostOfModeration];
+
+export const MessageDtoOutputSharedPostPostRepostOfModeration = {
+  visible: 'visible',
+  hidden: 'hidden',
+} as const;
+
 export type MessageDtoOutputSharedPostPostRepostOf = {
   /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
   id: string;
@@ -10896,6 +11023,7 @@ export type MessageDtoOutputSharedPostPostRepostOf = {
   saved: boolean;
   viewerIsAuthor: boolean;
   featured: boolean;
+  moderation: MessageDtoOutputSharedPostPostRepostOfModeration;
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
   createdAt: string;
   editedAt: string | null;
@@ -10931,6 +11059,7 @@ export type MessageDtoOutputSharedPostPost = {
   saved: boolean;
   viewerIsAuthor: boolean;
   featured: boolean;
+  moderation: MessageDtoOutputSharedPostPostModeration;
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
   createdAt: string;
   editedAt: string | null;
@@ -11217,6 +11346,14 @@ export type ConversationDtoOutputLastMessageSharedPostPostReactions = {
   viewerReaction: ConversationDtoOutputLastMessageSharedPostPostReactionsViewerReaction;
 };
 
+export type ConversationDtoOutputLastMessageSharedPostPostModeration =
+  (typeof ConversationDtoOutputLastMessageSharedPostPostModeration)[keyof typeof ConversationDtoOutputLastMessageSharedPostPostModeration];
+
+export const ConversationDtoOutputLastMessageSharedPostPostModeration = {
+  visible: 'visible',
+  hidden: 'hidden',
+} as const;
+
 export type ConversationDtoOutputLastMessageSharedPostPostKind =
   (typeof ConversationDtoOutputLastMessageSharedPostPostKind)[keyof typeof ConversationDtoOutputLastMessageSharedPostPostKind];
 
@@ -11388,6 +11525,14 @@ export type ConversationDtoOutputLastMessageSharedPostPostRepostOfReactions = {
   viewerReaction: ConversationDtoOutputLastMessageSharedPostPostRepostOfReactionsViewerReaction;
 };
 
+export type ConversationDtoOutputLastMessageSharedPostPostRepostOfModeration =
+  (typeof ConversationDtoOutputLastMessageSharedPostPostRepostOfModeration)[keyof typeof ConversationDtoOutputLastMessageSharedPostPostRepostOfModeration];
+
+export const ConversationDtoOutputLastMessageSharedPostPostRepostOfModeration = {
+  visible: 'visible',
+  hidden: 'hidden',
+} as const;
+
 export type ConversationDtoOutputLastMessageSharedPostPostRepostOf = {
   /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
   id: string;
@@ -11418,6 +11563,7 @@ export type ConversationDtoOutputLastMessageSharedPostPostRepostOf = {
   saved: boolean;
   viewerIsAuthor: boolean;
   featured: boolean;
+  moderation: ConversationDtoOutputLastMessageSharedPostPostRepostOfModeration;
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
   createdAt: string;
   editedAt: string | null;
@@ -11453,6 +11599,7 @@ export type ConversationDtoOutputLastMessageSharedPostPost = {
   saved: boolean;
   viewerIsAuthor: boolean;
   featured: boolean;
+  moderation: ConversationDtoOutputLastMessageSharedPostPostModeration;
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
   createdAt: string;
   editedAt: string | null;
@@ -11741,6 +11888,14 @@ export type MessagePageDtoOutputItemsItemSharedPostPostReactions = {
   viewerReaction: MessagePageDtoOutputItemsItemSharedPostPostReactionsViewerReaction;
 };
 
+export type MessagePageDtoOutputItemsItemSharedPostPostModeration =
+  (typeof MessagePageDtoOutputItemsItemSharedPostPostModeration)[keyof typeof MessagePageDtoOutputItemsItemSharedPostPostModeration];
+
+export const MessagePageDtoOutputItemsItemSharedPostPostModeration = {
+  visible: 'visible',
+  hidden: 'hidden',
+} as const;
+
 export type MessagePageDtoOutputItemsItemSharedPostPostKind =
   (typeof MessagePageDtoOutputItemsItemSharedPostPostKind)[keyof typeof MessagePageDtoOutputItemsItemSharedPostPostKind];
 
@@ -11912,6 +12067,14 @@ export type MessagePageDtoOutputItemsItemSharedPostPostRepostOfReactions = {
   viewerReaction: MessagePageDtoOutputItemsItemSharedPostPostRepostOfReactionsViewerReaction;
 };
 
+export type MessagePageDtoOutputItemsItemSharedPostPostRepostOfModeration =
+  (typeof MessagePageDtoOutputItemsItemSharedPostPostRepostOfModeration)[keyof typeof MessagePageDtoOutputItemsItemSharedPostPostRepostOfModeration];
+
+export const MessagePageDtoOutputItemsItemSharedPostPostRepostOfModeration = {
+  visible: 'visible',
+  hidden: 'hidden',
+} as const;
+
 export type MessagePageDtoOutputItemsItemSharedPostPostRepostOf = {
   /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
   id: string;
@@ -11942,6 +12105,7 @@ export type MessagePageDtoOutputItemsItemSharedPostPostRepostOf = {
   saved: boolean;
   viewerIsAuthor: boolean;
   featured: boolean;
+  moderation: MessagePageDtoOutputItemsItemSharedPostPostRepostOfModeration;
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
   createdAt: string;
   editedAt: string | null;
@@ -11977,6 +12141,7 @@ export type MessagePageDtoOutputItemsItemSharedPostPost = {
   saved: boolean;
   viewerIsAuthor: boolean;
   featured: boolean;
+  moderation: MessagePageDtoOutputItemsItemSharedPostPostModeration;
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
   createdAt: string;
   editedAt: string | null;
@@ -16422,6 +16587,30 @@ export type PostsControllerPublicOrganizationPostsParams = {
    */
   limit?: number;
 };
+
+export type PostsControllerReactorsParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+  type?: PostsControllerReactorsType;
+};
+
+export type PostsControllerReactorsType =
+  (typeof PostsControllerReactorsType)[keyof typeof PostsControllerReactorsType];
+
+export const PostsControllerReactorsType = {
+  like: 'like',
+  bravo: 'bravo',
+  insightful: 'insightful',
+  support: 'support',
+} as const;
 
 export type PostsControllerSavedParams = {
   /**

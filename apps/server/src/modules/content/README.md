@@ -43,7 +43,7 @@ Chaque publication vue par un autre membre ajoute le lecteur à un HyperLogLog R
 
 ## Modération
 
-`moderation_status` (`visible`, `hidden`, `removed`) des publications et des commentaires, modifiable par la façade pour le module trust ; une publication `hidden` reste visible de son auteur seulement. Mise en avant éditoriale par l'interface unique de l'administration (`PUT|DELETE /v1/admin/highlights/post/{postId}`, `moderator` ou `admin` avec double authentification, journal d'audit), par `ContentFacade.setPostFeatured`.
+`moderation_status` (`visible`, `hidden`, `removed`) des publications et des commentaires, modifiable par la façade pour le module trust ; une publication `hidden` reste visible de son auteur seulement, qui en lit l'état (`moderation: 'hidden'`, `visible` sinon). Mise en avant éditoriale par l'interface unique de l'administration (`PUT|DELETE /v1/admin/highlights/post/{postId}`, `moderator` ou `admin` avec double authentification, journal d'audit), par `ContentFacade.setPostFeatured`.
 
 ## Routes
 
@@ -51,7 +51,7 @@ Chaque publication vue par un autre membre ajoute le lecteur à un HyperLogLog R
 - `POST /v1/posts` (`content.post.create`, `Idempotency-Key`), `GET /v1/posts/{postId}` (`content.post.read`), `GET /v1/public/posts/{postId}` (public, `Cache-Control: public, max-age=60`)
 - `PATCH /v1/posts/{postId}` (`content.post.update`), `DELETE /v1/posts/{postId}` (`content.post.delete`) : auteur (`PostResolver` ; une publication que le membre ne peut pas lire répond `404`, comme une absente, `test/integration/idor.spec.ts`)
 - `POST /v1/posts/{postId}/reposts` (`content.post.repost`, `Idempotency-Key`)
-- `PUT|DELETE /v1/posts/{postId}/reaction`, `PUT|DELETE /v1/comments/{commentId}/reaction` (`content.reaction.set`)
+- `PUT|DELETE /v1/posts/{postId}/reaction`, `PUT|DELETE /v1/comments/{commentId}/reaction` (`content.reaction.set`), `GET /v1/posts/{postId}/reactions?type=` (`content.post.read` : qui a réagi, du plus récent au plus ancien, par réaction ou toutes, sans les membres bloqués de part et d'autre)
 - `POST /v1/posts/{postId}/comments` (`content.comment.create`, `Idempotency-Key`), `GET /v1/posts/{postId}/comments`, `GET /v1/comments/{commentId}/replies` (`content.post.read`), `PATCH /v1/comments/{commentId}` (`content.comment.update`, auteur), `DELETE /v1/comments/{commentId}` (`content.comment.delete`, auteur du commentaire ou de la publication, `CommentResolver`)
 - `POST /v1/link-previews` (`content.post.create`), `GET /v1/link-previews/{linkPreviewId}` (`content.post.create`, auteur)
 - `GET /v1/members/{handle}/posts`, `GET /v1/organizations/by-slug/{slug}/posts` (`content.post.read` : publications et repartages d'un membre, publications d'une organisation, du plus récent au plus ancien, selon ce que le lecteur peut voir ; une page peut être plus courte que `limit`, le curseur continue), `GET /v1/public/members/{handle}/posts`, `GET /v1/public/organizations/{slug}/posts` (publiques, `Cache-Control: public, max-age=60`, 404 pour un membre sans page publique)

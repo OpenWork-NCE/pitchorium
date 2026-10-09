@@ -234,6 +234,7 @@ import type {
   PostsControllerOrganizationPostsParams,
   PostsControllerPublicMemberPostsParams,
   PostsControllerPublicOrganizationPostsParams,
+  PostsControllerReactorsParams,
   PostsControllerReadParams,
   PostsControllerSavedParams,
   PrefillDtoOutput,
@@ -260,6 +261,7 @@ import type {
   QuoteDtoOutput,
   QuoteRequestDto,
   ReactionSummaryDtoOutput,
+  ReactorPageDtoOutput,
   ReadAllDtoOutput,
   ReadConversationDto,
   ReadResultDtoOutput,
@@ -15963,6 +15965,170 @@ export const usePostsControllerUnreact = <TError = ErrorType<ProblemDetails>, TC
 > => {
   return useMutation(getPostsControllerUnreactMutationOptions(options), queryClient);
 };
+
+export const getPostsControllerReactorsUrl = (
+  postId: string,
+  params?: PostsControllerReactorsParams,
+) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/v1/posts/${postId}/reactions?${stringifiedParams}`
+    : `/v1/posts/${postId}/reactions`;
+};
+
+/**
+ * Action `content.post.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Reactors
+ */
+export const postsControllerReactors = async (
+  postId: string,
+  params?: PostsControllerReactorsParams,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<ReactorPageDtoOutput> => {
+  return apiFetch<ReactorPageDtoOutput>(getPostsControllerReactorsUrl(postId, params), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getPostsControllerReactorsQueryKey = (
+  postId: string,
+  params?: PostsControllerReactorsParams,
+) => {
+  return [`/v1/posts/${postId}/reactions`, ...(params ? [params] : [])] as const;
+};
+
+export const getPostsControllerReactorsQueryOptions = <
+  TData = Awaited<ReturnType<typeof postsControllerReactors>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  postId: string,
+  params?: PostsControllerReactorsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof postsControllerReactors>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getPostsControllerReactorsQueryKey(postId, params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof postsControllerReactors>>> = ({
+    signal,
+  }) => postsControllerReactors(postId, params, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: postId !== null && postId !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<Awaited<ReturnType<typeof postsControllerReactors>>, TError, TData> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+};
+
+export type PostsControllerReactorsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof postsControllerReactors>>
+>;
+export type PostsControllerReactorsQueryError = ErrorType<ProblemDetails>;
+
+export function usePostsControllerReactors<
+  TData = Awaited<ReturnType<typeof postsControllerReactors>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  postId: string,
+  params: undefined | PostsControllerReactorsParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof postsControllerReactors>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof postsControllerReactors>>,
+          TError,
+          Awaited<ReturnType<typeof postsControllerReactors>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function usePostsControllerReactors<
+  TData = Awaited<ReturnType<typeof postsControllerReactors>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  postId: string,
+  params?: PostsControllerReactorsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof postsControllerReactors>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof postsControllerReactors>>,
+          TError,
+          Awaited<ReturnType<typeof postsControllerReactors>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function usePostsControllerReactors<
+  TData = Awaited<ReturnType<typeof postsControllerReactors>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  postId: string,
+  params?: PostsControllerReactorsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof postsControllerReactors>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Reactors
+ */
+
+export function usePostsControllerReactors<
+  TData = Awaited<ReturnType<typeof postsControllerReactors>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  postId: string,
+  params?: PostsControllerReactorsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof postsControllerReactors>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getPostsControllerReactorsQueryOptions(postId, params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
 
 export const getPostsControllerSaveUrl = (postId: string) => {
   return `/v1/posts/${postId}/save`;

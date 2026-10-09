@@ -6,7 +6,7 @@ import type { FeedItem, FeedPage, Post } from '@pitchorium/contracts';
 import request from 'supertest';
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AccessModule } from '../../src/modules/access';
-import { ContentModule } from '../../src/modules/content';
+import { ContentFacade, ContentModule } from '../../src/modules/content';
 import { ContentMaintenanceService } from '../../src/modules/content/application/content-maintenance.service';
 import { IdentityModule } from '../../src/modules/identity';
 import { ImpactModule } from '../../src/modules/impact';
@@ -384,6 +384,35 @@ describe('content', () => {
       items: Post[];
     };
     expect(texts(own)).not.toContain(asOrganization.id);
+  });
+
+  it('lists who reacted by reaction, and tells its author a publication is hidden', async () => {
+    const post = await publish(ama, { text: 'Qui réagit ?' });
+    await kofi.agent.put(`/v1/posts/${post.id}/reaction`).send({ type: 'like' }).expect(200);
+    await awa.agent.put(`/v1/posts/${post.id}/reaction`).send({ type: 'bravo' }).expect(200);
+    const all = (await ama.agent.get(`/v1/posts/${post.id}/reactions`).expect(200)).body as {
+      items: { member: { handle: string }; type: string }[];
+    };
+    expect(all.items.map((item) => [item.member.handle, item.type])).toEqual([
+      ['awa-ndiaye', 'bravo'],
+      ['kofi-mensah', 'like'],
+    ]);
+    const likes = (
+      await ama.agent.get(`/v1/posts/${post.id}/reactions`).query({ type: 'like' }).expect(200)
+    ).body as { items: { member: { handle: string } }[] };
+    expect(likes.items.map((item) => item.member.handle)).toEqual(['kofi-mensah']);
+    // A blocked member is left out of the list of the member who blocked them.
+    await ama.agent.put('/v1/network/blocks/kofi-mensah').expect(204);
+    const afterBlock = (await ama.agent.get(`/v1/posts/${post.id}/reactions`).expect(200)).body as {
+      items: { member: { handle: string } }[];
+    };
+    expect(afterBlock.items.map((item) => item.member.handle)).toEqual(['awa-ndiaye']);
+
+    expect(post.moderation).toBe('visible');
+    await app.get(ContentFacade).setPostModerationStatus(post.id, 'hidden');
+    const own = (await ama.agent.get(`/v1/posts/${post.id}`).expect(200)).body as Post;
+    expect(own.moderation).toBe('hidden');
+    await awa.agent.get(`/v1/posts/${post.id}`).expect(404);
   });
 
   it('refuses a repost outside of the audience of the publication', async () => {

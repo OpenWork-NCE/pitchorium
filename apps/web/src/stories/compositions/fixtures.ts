@@ -125,6 +125,7 @@ function post(
     saved: false,
     viewerIsAuthor: false,
     featured: false,
+    moderation: 'visible',
     createdAt: hoursAgo(hours),
     editedAt: null,
     kind: 'post',

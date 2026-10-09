@@ -207,6 +207,8 @@ export class PostPresenter {
         saved: saved.has(post.id),
         viewerIsAuthor: viewerId !== null && viewerId === post.authorId,
         featured: post.featuredAt !== null,
+        // Only its author still reads a hidden publication (canView): the state is for them.
+        moderation: post.moderationStatus === 'hidden' ? 'hidden' : 'visible',
         createdAt: post.createdAt.toISOString(),
         editedAt: post.editedAt?.toISOString() ?? null,
       };

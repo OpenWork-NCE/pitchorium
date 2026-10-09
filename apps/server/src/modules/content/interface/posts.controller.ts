@@ -35,6 +35,9 @@ import {
   postStatsSchema,
   type ReactionSummary,
   reactionSummarySchema,
+  reactorPageSchema,
+  reactorsQuerySchema,
+  type Reactor,
   type SavedPost,
   savedPostPageSchema,
   setReactionRequestSchema,
@@ -60,6 +63,8 @@ class CreatePostDto extends createZodDto(createPostRequestSchema) {}
 class UpdatePostDto extends createZodDto(updatePostRequestSchema) {}
 class CreateRepostDto extends createZodDto(createRepostRequestSchema) {}
 class SetReactionDto extends createZodDto(setReactionRequestSchema) {}
+class ReactorPageDto extends createZodDto(reactorPageSchema) {}
+class ReactorsQueryDto extends createZodDto(reactorsQuerySchema) {}
 class PostIdParamsDto extends createZodDto(postIdParamsSchema) {}
 class PageQueryDto extends createZodDto(cursorPageQuerySchema) {}
 class PostPageDto extends createZodDto(postPageSchema) {}
@@ -256,6 +261,19 @@ export class PostsController {
     @Body() body: SetReactionDto,
   ): Promise<ReactionSummary> {
     return this.reactions.react(principal.userId, { type: 'post', id: params.postId }, body.type);
+  }
+
+  /** Who reacted, newest first, by reaction or all (the dialog of the reactions). */
+  @Get('posts/:postId/reactions')
+  @RequireAction('content.post.read')
+  @ZodSerializerDto(ReactorPageDto)
+  @ApiOkResponse({ type: ReactorPageDto.Output })
+  reactors(
+    @CurrentPrincipal() principal: Principal,
+    @Param() params: PostIdParamsDto,
+    @Query() query: ReactorsQueryDto,
+  ): Promise<CursorPage<Reactor>> {
+    return this.reactions.reactors(principal.userId, params.postId, query.type ?? null, query);
   }
 
   @Delete('posts/:postId/reaction')

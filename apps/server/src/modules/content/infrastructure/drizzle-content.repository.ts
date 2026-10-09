@@ -134,6 +134,36 @@ export class DrizzleContentRepository extends ContentRepository {
     return rows.map(toPost);
   }
 
+  async reactors(
+    target: ReactionTarget,
+    type: ReactionType | null,
+    excluded: readonly string[],
+    after: KeysetPosition | null,
+    limit: number,
+  ): Promise<{ userId: string; type: ReactionType; at: Date }[]> {
+    const rows = await this.db
+      .select({
+        userId: contentReactions.userId,
+        type: contentReactions.type,
+        at: contentReactions.updatedAt,
+      })
+      .from(contentReactions)
+      .where(
+        and(
+          eq(contentReactions.targetType, target.type),
+          eq(contentReactions.targetId, target.id),
+          type ? eq(contentReactions.type, type) : undefined,
+          excluded.length > 0 ? notInArray(contentReactions.userId, [...excluded]) : undefined,
+          after
+            ? sql`(${contentReactions.updatedAt}, ${contentReactions.userId}) < (${after.at}, ${after.key}::uuid)`
+            : undefined,
+        ),
+      )
+      .orderBy(desc(contentReactions.updatedAt), desc(contentReactions.userId))
+      .limit(limit);
+    return rows.map((row) => ({ ...row, type: row.type as ReactionType }));
+  }
+
   async insertLinkPreview(preview: LinkPreviewDraftRecord): Promise<void> {
     await this.db.insert(contentLinkPreviews).values(preview);
   }

@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { uuidV7Schema } from './ids.js';
 import { mediaVariantSchema } from './media.js';
-import { cursorPageSchema } from './pagination.js';
+import { cursorPageQuerySchema, cursorPageSchema } from './pagination.js';
 import { languageCodeSchema, memberCardSchema } from './profiles.js';
 import { feedSuggestionSchema } from './discovery.js';
 import { eventCardSchema } from './events.js';
@@ -181,6 +181,11 @@ const postFields = {
   saved: z.boolean(),
   viewerIsAuthor: z.boolean(),
   featured: z.boolean(),
+  /**
+   * `hidden` by the moderation: only its author still receives it, with this state (the others
+   * never do); `visible` otherwise.
+   */
+  moderation: z.enum(['visible', 'hidden']),
   createdAt: z.iso.datetime(),
   /** Shown as « modifié » when not null. */
   editedAt: z.iso.datetime().nullable(),
@@ -279,6 +284,18 @@ export const commentSchema = z.object({
 
 export const setReactionRequestSchema = z.object({ type: reactionTypeSchema });
 
+/** Who reacted to a publication, newest first, by reaction or all. */
+export const reactorsQuerySchema = cursorPageQuerySchema.extend({
+  type: reactionTypeSchema.optional(),
+});
+
+export const reactorSchema = z.object({
+  member: memberCardSchema,
+  type: reactionTypeSchema,
+  reactedAt: z.iso.datetime(),
+});
+export const reactorPageSchema = cursorPageSchema(reactorSchema);
+
 export const savedPostSchema = z.object({ savedAt: z.iso.datetime(), post: postSchema });
 
 export const postStatsSchema = z.object({
@@ -332,4 +349,5 @@ export type CreateCommentRequest = z.infer<typeof createCommentRequestSchema>;
 export type Comment = z.infer<typeof commentSchema>;
 export type SavedPost = z.infer<typeof savedPostSchema>;
 export type PostStats = z.infer<typeof postStatsSchema>;
+export type Reactor = z.infer<typeof reactorSchema>;
 export type RecordPostViewsRequest = z.infer<typeof recordPostViewsRequestSchema>;

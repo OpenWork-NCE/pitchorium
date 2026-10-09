@@ -114,6 +114,14 @@ export abstract class ContentRepository {
     at: Date,
   ): Promise<void>;
   abstract deleteReaction(target: ReactionTarget, userId: string): Promise<void>;
+  /** Who reacted to a target, newest first, without the given members (blocks). */
+  abstract reactors(
+    target: ReactionTarget,
+    type: ReactionType | null,
+    excluded: readonly string[],
+    after: KeysetPosition | null,
+    limit: number,
+  ): Promise<{ userId: string; type: ReactionType; at: Date }[]>;
   abstract reactionCounts(
     type: ReactionTarget['type'],
     ids: readonly string[],

@@ -1,7 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import type { ReactionSummary, ReactionType } from '@pitchorium/contracts';
+import type {
+  CursorPage,
+  CursorPageQuery,
+  Reactor,
+  ReactionSummary,
+  ReactionType,
+} from '@pitchorium/contracts';
 import { TransactionManager } from '../../../platform/database';
-import { Clock, DomainError } from '../../../platform/kernel';
+import { Clock, DomainError, decodeKeyset, encodeKeyset } from '../../../platform/kernel';
+import { ProfilesFacade } from '../../profiles';
 import { ReactionAdded, ReactionChanged, ReactionRemoved } from '../domain/content-events';
 import { reactionChange } from '../domain/reactions';
 import { CommentsService } from './comments.service';
@@ -21,7 +28,56 @@ export class ReactionsService {
     private readonly events: ContentEventsRecorder,
     private readonly transactions: TransactionManager,
     private readonly clock: Clock,
+    private readonly profiles: ProfilesFacade,
   ) {}
+
+  /**
+   * Who reacted to a publication the reader may see, newest first, by reaction or all: members on
+   * either side of a block with the reader are left out, as are members the reader may not see.
+   */
+  async reactors(
+    userId: string,
+    postId: string,
+    type: ReactionType | null,
+    query: CursorPageQuery,
+  ): Promise<CursorPage<Reactor>> {
+    const reader = await this.presenter.reader(userId);
+    await this.posts.readable(reader, postId);
+    const rows = await this.content.reactors(
+      { type: 'post', id: postId },
+      type,
+      [...reader.blocked],
+      decodeKeyset(query.cursor),
+      query.limit + 1,
+    );
+    const page = rows.slice(0, query.limit);
+    const cards = await this.profiles.memberCards(
+      page.map((row) => row.userId),
+      userId,
+    );
+    const last = page.at(-1);
+    return {
+      items: page.flatMap((row) => {
+        const card = cards.get(row.userId);
+        return card
+          ? [
+              {
+                member: {
+                  handle: card.handle,
+                  displayName: card.displayName,
+                  headline: card.headline,
+                  avatarUrl: card.avatarUrl,
+                },
+                type: row.type,
+                reactedAt: row.at.toISOString(),
+              },
+            ]
+          : [];
+      }),
+      nextCursor:
+        rows.length > query.limit && last ? encodeKeyset({ at: last.at, key: last.userId }) : null,
+    };
+  }
 
   /** `type` null removes the reaction. */
   async react(
