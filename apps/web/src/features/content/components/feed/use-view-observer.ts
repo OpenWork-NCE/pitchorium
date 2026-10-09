@@ -2,6 +2,7 @@
 
 import { postsControllerViews } from '@pitchorium/api-client';
 import { useCallback, useEffect, useRef } from 'react';
+import { registerPendingViews } from '@/lib/views/pending-views';
 import {
   createViewSignal,
   SEEN_AFTER_MS,
@@ -14,11 +15,16 @@ interface Watcher {
   observer: IntersectionObserver;
   timers: Map<Element, ReturnType<typeof setTimeout>>;
   ids: WeakMap<Element, string>;
+  /** Signals sent and not answered yet (a sign-out waits for them). */
+  inflight: Set<Promise<unknown>>;
 }
 
 function createWatcher(): Watcher {
+  const inflight = new Set<Promise<unknown>>();
   const signal = createViewSignal((postIds) => {
-    void postsControllerViews({ postIds }, { keepalive: true }).catch(() => undefined);
+    const sending = postsControllerViews({ postIds }, { keepalive: true }).catch(() => undefined);
+    inflight.add(sending);
+    void sending.finally(() => inflight.delete(sending));
   });
   const timers = new Map<Element, ReturnType<typeof setTimeout>>();
   const ids = new WeakMap<Element, string>();
@@ -44,7 +50,7 @@ function createWatcher(): Watcher {
     },
     { threshold: [0, SEEN_RATIO, 1] },
   );
-  return { signal, observer, timers, ids };
+  return { signal, observer, timers, ids, inflight };
 }
 
 /**
@@ -70,6 +76,13 @@ export function useViewObserver(): (
       if (document.visibilityState === 'hidden') current.signal.flush();
     };
     const flush = () => current.signal.flush();
+    const unregister = registerPendingViews({
+      send: async () => {
+        current.signal.flush();
+        await Promise.all(current.inflight);
+      },
+      stop: () => current.signal.dispose(),
+    });
     document.addEventListener('visibilitychange', leave);
     window.addEventListener('pagehide', flush);
     return () => {
@@ -77,6 +90,7 @@ export function useViewObserver(): (
       window.removeEventListener('pagehide', flush);
       current.observer.disconnect();
       current.timers.forEach((timer) => clearTimeout(timer));
+      unregister();
       current.signal.flush();
       current.signal.dispose();
       watcher.current = null;

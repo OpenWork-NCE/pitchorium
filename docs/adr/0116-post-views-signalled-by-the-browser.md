@@ -8,7 +8,7 @@ L'auteur d'une publication voit le nombre de membres uniques qui l'ont vue, par 
 
 ## Décision
 
-- Une page du fil chargée n'est plus une vue. Le navigateur signale les publications vues : visibles à 50 % au moins pendant une seconde au moins (`IntersectionObserver`), regroupées et envoyées par `POST /v1/posts/views` (`{ postIds }`, 50 au plus par signal, `POST_VIEWS_MAX_PER_SIGNAL`), au plus toutes les quelques secondes et au départ de la page.
+- Une page du fil chargée n'est plus une vue. Le navigateur signale les publications vues : visibles à 50 % au moins pendant une seconde au moins (`IntersectionObserver`), regroupées et envoyées par `POST /v1/posts/views` (`{ postIds }`, 50 au plus par signal, `POST_VIEWS_MAX_PER_SIGNAL`), au plus toutes les quelques secondes et au départ de la page. Une déconnexion envoie d'abord les vues en attente et attend leur réponse (`lib/views/pending-views.ts`) : après, la session n'existe plus et l'api les refuserait.
 - La route est idempotente par nature : chaque membre compte une fois par publication et par jour (HyperLogLog), un signal répété ne change rien, sans `Idempotency-Key`. Elle est limitée à 30 signaux par minute et par membre (`@Throttle`), en plus de la limite générale.
 - L'api ne croit pas le navigateur sur la visibilité : seules les publications que le membre peut lire (blocages, visibilité, modération) comptent, jamais les siennes ; une publication inconnue est ignorée sans erreur (un signal ne révèle rien).
 - L'ouverture de la page d'une publication (`GET /v1/posts/{postId}`) reste une vue. Une lecture sans compte (`/v1/public/posts/{postId}`) n'en est pas une : le compte est celui de membres uniques.
