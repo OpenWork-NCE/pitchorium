@@ -51,10 +51,14 @@ export const impactCriterionSchema = z.object({
     .array(impactScaleLevelSchema)
     .min(2)
     .max(IMPACT_SCALE_LEVELS_MAX)
-    .refine((levels) => uniqueBy(levels, (level) => level.key), { message: 'Duplicate keys' })
-    .refine((levels) => uniqueBy(levels, (level) => level.value), { message: 'Duplicate values' })
+    .refine((levels) => uniqueBy(levels, (level) => level.key), {
+      params: { reason: 'duplicate_keys' },
+    })
+    .refine((levels) => uniqueBy(levels, (level) => level.value), {
+      params: { reason: 'duplicate_values' },
+    })
     .refine((levels) => levels.some((level) => level.value > 0), {
-      message: 'The scale needs a level above 0',
+      params: { reason: 'scale_without_positive_level' },
     }),
 });
 
@@ -65,7 +69,7 @@ export const impactMethodologyDraftSchema = z.object({
     .min(1)
     .max(IMPACT_CRITERIA_MAX)
     .refine((criteria) => uniqueBy(criteria, (criterion) => criterion.key), {
-      message: 'Duplicate keys',
+      params: { reason: 'duplicate_keys' },
     }),
 });
 

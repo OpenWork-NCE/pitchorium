@@ -10,6 +10,11 @@ export const validationIssueSchema = z.object({
   pointer: z.string(),
   /** Machine-readable issue code, for example "invalid_type" or "too_small". */
   code: z.string(),
+  /**
+   * The precise reason when the code has several: the format of an `invalid_format` (`url`,
+   * `email`, `regex`) or the reason of a refinement (`https_required`, `linkedin_host`).
+   */
+  reason: z.string().optional(),
 });
 
 /** RFC 9457 problem details, extended with a stable `code` and the request id. */
@@ -24,6 +29,11 @@ export const problemDetailsSchema = z.object({
   errors: z.array(validationIssueSchema).optional(),
   /** Elements to complete before retrying, with ACCESS_PREREQUISITES_MISSING. */
   missing: z.array(z.string()).optional(),
+  /**
+   * The precise reason of a code that has several (EVENTS_SCHEDULE_INVALID: `ends_before_start`,
+   * `too_long`, `already_over`): clients show the message of this reason.
+   */
+  reason: z.string().optional(),
 });
 
 export type ValidationIssue = z.infer<typeof validationIssueSchema>;

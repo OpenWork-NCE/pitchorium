@@ -110,26 +110,39 @@ const languageNames = new Intl.DisplayNames(['en'], { type: 'language', fallback
 export const languageCodeSchema = z
   .string()
   .regex(/^[a-z]{2}$/)
-  .refine((code) => languageNames.of(code) !== undefined, { message: 'Unknown language' });
+  .refine((code) => languageNames.of(code) !== undefined, {
+    params: { reason: 'unknown_language' },
+  });
 
 /** Reference data codes (sectors, stages) are checked against the database. */
 export const referenceCodeSchema = z.string().regex(/^[a-z0-9_]{1,48}$/);
 
-export const httpsUrlSchema = z.url({ protocol: /^https$/ }).max(2048);
+/**
+ * An https address. Each refusal carries one precise reason (`reason` of the issue): a malformed
+ * address is `invalid_format` (format `url`), a well-formed http one `https_required`; the checks
+ * stop at the first refusal.
+ */
+export const httpsUrlSchema = z
+  .url({ protocol: /^https?$/, abort: true })
+  .max(2048)
+  .refine((value) => value.startsWith('https://'), {
+    params: { reason: 'https_required' },
+    abort: true,
+  });
 
 export const linkedinUrlSchema = httpsUrlSchema.refine(
   (value) => {
     const host = new URL(value).hostname;
     return host === 'linkedin.com' || host.endsWith('.linkedin.com');
   },
-  { message: 'Must be a linkedin.com URL' },
+  { params: { reason: 'linkedin_host' } },
 );
 
 const isoCurrency = new Set(Intl.supportedValuesOf('currency'));
 const positiveMinorUnitsSchema = z.string().regex(/^[1-9]\d{0,17}$/);
 const nonNegativeMinorUnitsSchema = z.string().regex(/^(0|[1-9]\d{0,17})$/);
 const knownCurrencySchema = currencyCodeSchema.refine((code) => isoCurrency.has(code), {
-  message: 'Unknown ISO 4217 currency',
+  params: { reason: 'unknown_currency' },
 });
 
 export const positiveMoneySchema = z.object({
@@ -148,7 +161,9 @@ function uniqueArray<T extends z.ZodType>(item: T, max: number) {
   return z
     .array(item)
     .max(max)
-    .refine((values) => new Set(values).size === values.length, { message: 'Duplicate values' });
+    .refine((values) => new Set(values).size === values.length, {
+      params: { reason: 'duplicate_values' },
+    });
 }
 
 export const profileLinksSchema = z.object({

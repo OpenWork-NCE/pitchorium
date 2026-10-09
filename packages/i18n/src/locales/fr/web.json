@@ -299,7 +299,7 @@
       },
       "invalid_format": {
         "email": "Saisissez une adresse email complète, par exemple nom@exemple.org.",
-        "url": "Saisissez une adresse web complète, commençant par https://.",
+        "url": "Saisissez une adresse web complète, par exemple https://exemple.org.",
         "uuid": "Cet identifiant n’est pas reconnu : reprenez-le depuis sa page.",
         "date": "Saisissez une date complète : jour, mois et année.",
         "datetime": "Saisissez une date et une heure complètes.",
@@ -317,14 +317,21 @@
       },
       "linkedin": {
         "custom": "Saisissez l’adresse d’un profil sur linkedin.com, par exemple https://www.linkedin.com/in/votre-nom.",
-        "invalid_format": "Saisissez l’adresse d’un profil sur linkedin.com, par exemple https://www.linkedin.com/in/votre-nom."
+        "invalid_format": "Cette adresse n’est pas valide : saisissez l’adresse complète d’un profil, par exemple https://www.linkedin.com/in/votre-nom.",
+        "url": "Cette adresse n’est pas valide : saisissez l’adresse complète d’un profil, par exemple https://www.linkedin.com/in/votre-nom.",
+        "https_required": "L’adresse du profil doit commencer par https:// (http:// n’est pas accepté).",
+        "linkedin_host": "Saisissez l’adresse d’un profil sur linkedin.com, par exemple https://www.linkedin.com/in/votre-nom."
       },
       "website": {
-        "invalid_format": "Saisissez l’adresse complète du site, commençant par https:// (http:// n’est pas accepté)."
+        "invalid_format": "Cette adresse n’est pas valide : saisissez l’adresse complète du site, par exemple https://exemple.org.",
+        "url": "Cette adresse n’est pas valide : saisissez l’adresse complète du site, par exemple https://exemple.org.",
+        "https_required": "L’adresse du site doit commencer par https:// (http:// n’est pas accepté)."
       },
       "onlineUrl": {
-        "invalid_format": "Saisissez le lien complet de la visioconférence, commençant par https:// (http:// n’est pas accepté).",
-        "required": "Ajoutez le lien de la visioconférence : il est obligatoire pour un événement en ligne ou hybride."
+        "invalid_format": "Ce lien n’est pas une adresse web valide : copiez le lien complet de la visioconférence, par exemple https://meet.exemple.org/atelier.",
+        "required": "Ajoutez le lien de la visioconférence : il est obligatoire pour un événement en ligne ou hybride.",
+        "url": "Ce lien n’est pas une adresse web valide : copiez le lien complet de la visioconférence, par exemple https://meet.exemple.org/atelier.",
+        "https_required": "Le lien de la visioconférence doit commencer par https:// (http:// n’est pas accepté)."
       },
       "startsAt": {
         "required": "Indiquez la date et l’heure de début.",
@@ -364,6 +371,24 @@
     },
     "problems": {
       "EVENTS_SCHEDULE_INVALID": "Vérifiez les dates : la fin doit être après le début, l’événement dure {{days}} jours au plus et ne peut pas être déjà terminé."
+    },
+    "reasons": {
+      "https_required": "L’adresse doit commencer par https:// (http:// n’est pas accepté).",
+      "linkedin_host": "Saisissez l’adresse d’un profil sur linkedin.com.",
+      "unknown_time_zone": "Choisissez un fuseau horaire de la liste.",
+      "duplicate_keys": "Chaque élément doit avoir une clé différente.",
+      "duplicate_values": "Retirez les éléments en double.",
+      "scale_without_positive_level": "L’échelle doit avoir au moins un niveau au-dessus de 0.",
+      "unknown_language": "Choisissez une langue de la liste.",
+      "unknown_currency": "Choisissez une devise de la liste.",
+      "project_or_entrepreneur": "Indiquez soit un projet, soit une personne accompagnée, pas les deux."
+    },
+    "problemReasons": {
+      "EVENTS_SCHEDULE_INVALID": {
+        "ends_before_start": "La fin doit être après le début.",
+        "too_long": "Un événement dure {{days}} jours au plus : rapprochez la fin du début.",
+        "already_over": "Cet événement est déjà terminé : choisissez une fin à venir."
+      }
     }
   },
   "access": {

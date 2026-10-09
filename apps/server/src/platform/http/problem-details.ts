@@ -28,11 +28,28 @@ function escapePointerSegment(segment: PropertyKey): string {
   return String(segment).replaceAll('~', '~0').replaceAll('/', '~1');
 }
 
+/**
+ * The precise reason of an issue when its code has several: the format of an `invalid_format`
+ * (`url`, `email`), or the `reason` a refinement of the contracts declares (`https_required`).
+ */
+function reasonOf(issue: ZodError['issues'][number]): string | undefined {
+  if (issue.code === 'invalid_format') return issue.format;
+  if (issue.code === 'custom') {
+    const reason = (issue.params as Record<string, unknown> | undefined)?.['reason'];
+    return typeof reason === 'string' ? reason : undefined;
+  }
+  return undefined;
+}
+
 export function toValidationIssues(error: ZodError): ValidationIssue[] {
-  return error.issues.map((issue) => ({
-    pointer: `/${issue.path.map(escapePointerSegment).join('/')}`,
-    code: issue.code,
-  }));
+  return error.issues.map((issue) => {
+    const reason = reasonOf(issue);
+    return {
+      pointer: `/${issue.path.map(escapePointerSegment).join('/')}`,
+      code: issue.code,
+      ...(reason ? { reason } : {}),
+    };
+  });
 }
 
 /** Errors raised by Express middlewares (body parser) carry an HTTP status but no Nest type. */
@@ -46,7 +63,7 @@ function middlewareStatus(exception: unknown): number | undefined {
 
 export function problemFromCode(
   code: ErrorCode,
-  extras: Partial<Pick<ProblemDetails, 'detail' | 'errors' | 'status' | 'missing'>> = {},
+  extras: Partial<Pick<ProblemDetails, 'detail' | 'errors' | 'status' | 'missing' | 'reason'>> = {},
 ): ProblemDetails {
   const definition = errorCodes[code];
   return {
@@ -57,6 +74,7 @@ export function problemFromCode(
     ...(extras.detail ? { detail: extras.detail } : {}),
     ...(extras.errors ? { errors: extras.errors } : {}),
     ...(extras.missing ? { missing: extras.missing } : {}),
+    ...(extras.reason ? { reason: extras.reason } : {}),
   };
 }
 
@@ -66,6 +84,12 @@ function missingOf(error: DomainError): string[] | undefined {
   return Array.isArray(missing) && missing.every((item) => typeof item === 'string')
     ? missing
     : undefined;
+}
+
+/** The precise reason of a code that has several (`details.reason`, a short identifier). */
+function reasonDetailOf(error: DomainError): string | undefined {
+  const reason = error.details['reason'];
+  return typeof reason === 'string' && /^[a-z][a-z0-9_]{0,63}$/.test(reason) ? reason : undefined;
 }
 
 /**
@@ -88,9 +112,11 @@ function isRedisUnavailable(exception: unknown): boolean {
 export function toProblem(exception: unknown): ProblemDetails {
   if (exception instanceof DomainError) {
     const missing = missingOf(exception);
+    const reason = reasonDetailOf(exception);
     return problemFromCode(exception.code, {
       detail: exception.message,
       ...(missing ? { missing } : {}),
+      ...(reason ? { reason } : {}),
     });
   }
   if (exception instanceof ZodValidationException) {

@@ -68,7 +68,9 @@ const uniqueArray = <T extends z.ZodType>(item: T, max: number) =>
   z
     .array(item)
     .max(max)
-    .refine((values) => new Set(values).size === values.length, { message: 'Duplicate values' });
+    .refine((values) => new Set(values).size === values.length, {
+      params: { reason: 'duplicate_values' },
+    });
 
 /** Amounts are positive; their currency is checked by the module (EUR, ADR 0037). */
 const projectFields = {

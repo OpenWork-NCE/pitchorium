@@ -45,7 +45,7 @@ export const declareTimeEntryRequestSchema = z
     description: z.string().trim().min(1).max(TIME_ENTRY_DESCRIPTION_MAX_LENGTH),
   })
   .refine((value) => (value.projectId === undefined) !== (value.entrepreneurHandle === undefined), {
-    message: 'Give either projectId or entrepreneurHandle',
+    params: { reason: 'project_or_entrepreneur' },
     path: ['projectId'],
   });
 

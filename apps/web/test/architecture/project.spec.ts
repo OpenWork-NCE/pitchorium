@@ -23,6 +23,40 @@ const VARIABLES = [
   ...readFileSync(join(root, 'src/lib/env.ts'), 'utf8').matchAll(/^ {4}([A-Z][A-Z0-9_]+): /gm),
 ].map((match) => match[1]!);
 
+const contractsDir = join(root, '../../packages/contracts/src');
+const contractSources = readdirSync(contractsDir)
+  .filter((name) => name.endsWith('.ts'))
+  .map((name) => readFileSync(join(contractsDir, name), 'utf8'));
+
+describe('reasons of the refinements of the contracts (A11)', () => {
+  it('name a reason and never an English message, which would reach the forms', () => {
+    // Each refinement up to the next one, the next declaration or a blank line.
+    const refinements = contractSources.flatMap((source) =>
+      source
+        .split('.refine(')
+        .slice(1)
+        .map((rest) => rest.split(/\.refine\(|\n\n|\nexport /)[0]!),
+    );
+    expect(refinements.length).toBeGreaterThan(5);
+    expect(refinements.filter((body) => /\bmessage:/.test(body))).toEqual([]);
+    expect(refinements.filter((body) => !/reason: '[a-z_]+'/.test(body))).toEqual([]);
+  });
+
+  it('give every reason a French message of the forms', () => {
+    const forms = JSON.parse(
+      readFileSync(join(root, '../../packages/i18n/src/locales/fr/web.json'), 'utf8'),
+    ).forms as { reasons: Record<string, string>; fields: Record<string, Record<string, string>> };
+    const reasons = new Set(
+      contractSources.flatMap((source) =>
+        [...source.matchAll(/reason: '([a-z_]+)'/g)].map((match) => match[1]!),
+      ),
+    );
+    const said = (reason: string) =>
+      reason in forms.reasons || Object.values(forms.fields).some((messages) => reason in messages);
+    expect([...reasons].filter((reason) => !said(reason))).toEqual([]);
+  });
+});
+
 describe('project rules of the web app', () => {
   it('documents every configuration variable in the matrix and in .env.example', () => {
     const matrix = readFileSync(join(root, '../../docs/operations/environments.md'), 'utf8');

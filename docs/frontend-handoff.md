@@ -26,7 +26,7 @@ Ce que l'application web (`apps/web`, `docs/architecture/frontend.md`) doit savo
 
 ## Erreurs et langues
 
-- Toute erreur hors `/v1/auth` suit RFC 9457 (`application/problem+json`) avec un `code` stable : afficher `errors.<code>` de `@pitchorium/i18n`, jamais `title` ni `detail` (techniques, en anglais). Erreurs de validation : `errors: [{ pointer, code }]` (JSON Pointer, code Zod) pour placer le message sur le champ.
+- Toute erreur hors `/v1/auth` suit RFC 9457 (`application/problem+json`) avec un `code` stable : afficher `errors.<code>` de `@pitchorium/i18n`, jamais `title` ni `detail` (techniques, en anglais). Erreurs de validation : `errors: [{ pointer, code, reason? }]` (JSON Pointer, code Zod, raison précise : format `url` ou `email`, raison d'un raffinement comme `https_required`) pour placer sur le champ le message de la raison réelle ; un problème métier à plusieurs causes porte aussi `reason` (`EVENTS_SCHEDULE_INVALID` : `ends_before_start`, `too_long`, `already_over`, ADR 0106).
 - L'api ne renvoie jamais de texte traduit : statuts, types, motifs sont des codes à libeller par le namespace `reference` (`reference.<groupe>.<valeur>`).
 - Langues actives : `GET /v1/locales` (public, pour un visiteur) et `activeLocales` de `GET /v1/me` (FR et EN au lancement) ; ne jamais proposer une langue absente de cette liste.
 

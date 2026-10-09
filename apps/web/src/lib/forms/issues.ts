@@ -1,9 +1,10 @@
 /**
  * Translation of validation issues, from Zod in the browser and from the api (RFC 9457 `errors`,
- * which carry the Zod code only). Keys under `web.forms` (docs/design/patterns.md): a message of
- * the field when it has one (`fields.<field>.<code>`, the rule it expects, its allowed domains),
- * a message of the rule of a refinement (`rules.<rule>`), then the message of the code with its
- * bounds.
+ * which carry the Zod code and its precise reason). Keys under `web.forms`
+ * (docs/design/patterns.md), from the most precise: the rule of a refinement of the web
+ * (`rules.<rule>`), the reason for this field (`fields.<field>.<reason>`), the code for this field
+ * (`fields.<field>.<code>`), the reason (`reasons.<reason>`), then the code with its bounds. The
+ * message always says the reason the value was refused, never another rule of the field.
  */
 
 /** What the translator of `web.forms` accepts, with `has` to look for a specific message. */
@@ -21,8 +22,21 @@ export interface IssueLike {
   maximum?: number | bigint;
   format?: string;
   inclusive?: boolean;
-  /** `rule` names the message of a refinement of the web (`rules.<rule>`). */
+  /**
+   * `rule` names the message of a refinement of the web (`rules.<rule>`), `reason` the precise
+   * reason of a refinement of the contracts (`https_required`).
+   */
   params?: Record<string, unknown>;
+  /** The precise reason given by the api (`reason` of RFC 9457 `errors`). */
+  reason?: string;
+}
+
+/** The precise reason of an issue: given by the api, declared by a refinement, or its format. */
+function reasonOf(issue: IssueLike): string | undefined {
+  if (issue.reason) return issue.reason;
+  const declared = issue.params?.['reason'];
+  if (typeof declared === 'string') return declared;
+  return issue.code === 'invalid_format' ? issue.format : undefined;
 }
 
 const SIZED_ORIGINS = new Set(['string', 'number', 'array', 'set', 'file']);
@@ -72,7 +86,12 @@ export function issueMessage(
 
   const rule = issue.params?.['rule'];
   if (typeof rule === 'string' && t.has(`rules.${rule}`)) return t(`rules.${rule}`, values);
+  const reason = required ? undefined : reasonOf(issue);
+  if (field && reason && t.has(`fields.${field}.${reason}`)) {
+    return t(`fields.${field}.${reason}`, values);
+  }
   if (field && t.has(`fields.${field}.${code}`)) return t(`fields.${field}.${code}`, values);
+  if (reason && t.has(`reasons.${reason}`)) return t(`reasons.${reason}`, values);
 
   switch (code) {
     case 'required':
@@ -94,8 +113,8 @@ export function issueMessage(
         ? t(`issues.too_big.${issue.origin}`, values)
         : t('issues.too_big.generic');
     case 'invalid_format':
-      return issue.format && FORMATS.has(issue.format)
-        ? t(`issues.invalid_format.${issue.format}`)
+      return reason && FORMATS.has(reason)
+        ? t(`issues.invalid_format.${reason}`)
         : t('issues.invalid_format.generic');
     case 'invalid_value':
     case 'invalid_union':
@@ -117,10 +136,17 @@ export function serverIssueMessage(
   path: string,
   rules: Partial<IssueLike> = {},
   format?: (value: number) => string,
+  reason?: string,
 ): string {
   return issueMessage(
     t,
-    { ...rules, code, input: code === 'invalid_type' ? null : undefined },
+    {
+      ...rules,
+      code,
+      input: code === 'invalid_type' ? null : undefined,
+      // The reason of the api replaces the format the schema of the form declares.
+      ...(reason ? { reason } : {}),
+    },
     path,
     format,
   );

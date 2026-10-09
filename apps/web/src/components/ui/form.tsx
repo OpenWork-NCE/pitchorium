@@ -142,26 +142,35 @@ export function useApplyProblem<Values extends FieldValues>(
         const rules = schema ? boundsOf(schema, issue.path) : {};
         form.setError(issue.path as FieldPath<Values>, {
           type: 'server',
-          message: serverIssueMessage(t, issue.code, issue.path, rules, format),
+          message: serverIssueMessage(t, issue.code, issue.path, rules, format, issue.reason),
         });
         placed = true;
       }
       const code = error.problem.code;
       const mapped = problemFields[code];
       const target = typeof mapped === 'string' ? mapped : mapped?.field;
+      const values = typeof mapped === 'object' ? mapped.values : undefined;
+      // The message of the precise reason first (EVENTS_SCHEDULE_INVALID: `too_long`), so that
+      // the form never names another rule than the one the value broke.
+      const reasonKey = error.problem.reason
+        ? `problemReasons.${code}.${error.problem.reason}`
+        : undefined;
+      const reasoned = reasonKey && t.has(reasonKey) ? t(reasonKey, values) : undefined;
       if (!placed && target && known.has(target.split('.')[0] ?? '')) {
         form.setError(target as FieldPath<Values>, {
           type: code,
-          message: t.has(`problems.${code}`)
-            ? t(`problems.${code}`, typeof mapped === 'object' ? mapped.values : undefined)
-            : errors.has(code)
-              ? errors(code)
-              : t('unexpected'),
+          message:
+            reasoned ??
+            (t.has(`problems.${code}`)
+              ? t(`problems.${code}`, values)
+              : errors.has(code)
+                ? errors(code)
+                : t('unexpected')),
         });
         placed = true;
       }
       if (!placed) {
-        const message = errors.has(code) ? errors(code) : t('unexpected');
+        const message = reasoned ?? (errors.has(code) ? errors(code) : t('unexpected'));
         form.setError('root.server', {
           type: code,
           message: error.requestId

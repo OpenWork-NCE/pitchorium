@@ -5,6 +5,8 @@ export interface FieldIssue {
   /** Dotted path of react-hook-form (`members.0.email`), the root form for an empty pointer. */
   path: string;
   code: string;
+  /** The precise reason the api gives when the code has several (`url`, `https_required`). */
+  reason?: string;
 }
 
 /** `/members/0/email` to `members.0.email`, with the escapes of RFC 6901 undone. */
@@ -21,5 +23,6 @@ export function fieldIssues(problem: ProblemDetails): FieldIssue[] {
   return (problem.errors ?? []).map((issue) => ({
     path: pointerToPath(issue.pointer),
     code: issue.code,
+    ...(issue.reason ? { reason: issue.reason } : {}),
   }));
 }

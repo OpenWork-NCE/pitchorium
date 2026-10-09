@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 import { ApiProblemError } from '@pitchorium/api-client';
+import { httpsUrlSchema } from '@pitchorium/contracts';
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { z } from 'zod';
@@ -10,7 +11,7 @@ import { Input } from './input';
 
 const schema = z.object({
   title: z.string().trim().min(1).max(20),
-  website: z.url({ protocol: /^https$/ }),
+  website: httpsUrlSchema,
   endsAt: z.string().optional(),
 });
 
@@ -57,7 +58,7 @@ describe('Form', () => {
     const links = screen.getAllByRole('link');
     expect(links.map((link) => link.textContent)).toEqual([
       'Titre : Renseignez ce champ.',
-      'Site : Saisissez l’adresse complète du site, commençant par https:// (http:// n’est pas accepté).',
+      'Site : L’adresse du site doit commencer par https:// (http:// n’est pas accepté).',
     ]);
     fireEvent.click(links[1]!);
     expect(document.activeElement).toBe(screen.getByRole('textbox', { name: 'Site' }));

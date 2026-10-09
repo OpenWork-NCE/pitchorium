@@ -57,7 +57,7 @@ Une action refusée faute d'éléments complétés répond `403 ACCESS_PREREQUIS
 - Exception : `/v1/auth` répond au format de Better Auth `{ code, message }` ; `authErrorTranslationKey` (`packages/contracts/src/auth-errors.ts`) donne la clé de traduction de ces codes (ADR 0020).
 - Les codes sont déclarés dans `packages/contracts/src/errors/error-codes.ts` avec leur statut HTTP et un titre technique anglais. Chaque nouveau code reçoit une traduction FR et EN dans `packages/i18n/src/locales/*/errors.json` (vérifié par `pnpm i18n:check`).
 - Un échec métier attendu lève une `DomainError(code, message)`. Seul ce message est exposé dans `detail` ; toute autre erreur devient `INTERNAL_ERROR` sans détail, journalisée et envoyée à Sentry.
-- Les erreurs de validation listent `errors: [{ pointer, code }]`, où `pointer` est un JSON Pointer et `code` le code d'issue Zod.
+- Les erreurs de validation listent `errors: [{ pointer, code, reason? }]`, où `pointer` est un JSON Pointer, `code` le code d'issue Zod et `reason` la raison précise quand le code en a plusieurs (format d'un `invalid_format`, `params.reason` d'un raffinement). Un raffinement des contrats déclare `params: { reason }` et jamais de `message` anglais, qui atteindrait les formulaires (test `project.spec.ts` du web). Une `DomainError` à plusieurs causes passe `details.reason` (identifiant court), exposé comme `reason` du problème (ADR 0106).
 - Seul membre d'extension exposé depuis `DomainError.details` : `missing` (prérequis).
 
 ## Argent

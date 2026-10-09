@@ -46,6 +46,27 @@ describe('event lifecycle', () => {
     ).toBe('EVENTS_SCHEDULE_INVALID');
   });
 
+  it('names the reason of each refusal of the schedule', () => {
+    const start = new Date('2026-11-12T17:00:00Z');
+    const reason = (run: () => unknown) => {
+      try {
+        run();
+        return null;
+      } catch (error) {
+        return error instanceof DomainError ? error.details['reason'] : 'unexpected';
+      }
+    };
+    expect(reason(() => assertSchedule(start, start, null))).toBe('ends_before_start');
+    expect(reason(() => assertSchedule(start, new Date('2026-12-12T17:00:00Z'), null))).toBe(
+      'too_long',
+    );
+    expect(
+      reason(() =>
+        assertSchedule(start, new Date('2026-11-12T19:00:00Z'), new Date('2026-11-13T00:00:00Z')),
+      ),
+    ).toBe('already_over');
+  });
+
   it('requires a place in person, a link online, both when hybrid', () => {
     const place = { name: 'Impact Hub', address: null, city: 'Dakar', countryCode: 'SN' };
     expect(code(() => assertFormatFields('in_person', place, null))).toBeNull();

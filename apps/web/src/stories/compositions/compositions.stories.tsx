@@ -353,13 +353,14 @@ function EventForm() {
         attempt.current += 1;
         applyProblem(
           attempt.current === 1
-            ? new ApiProblemError(
+            ? // A rule only the api checks: an event lasts EVENT_MAX_DURATION_DAYS at most.
+              new ApiProblemError(
                 {
                   type: 'about:blank',
-                  title: 'Validation failed',
-                  status: 400,
-                  code: 'VALIDATION_FAILED',
-                  errors: [{ pointer: '/onlineUrl', code: 'invalid_format' }],
+                  title: 'The dates of the event are invalid',
+                  status: 422,
+                  code: 'EVENTS_SCHEDULE_INVALID',
+                  reason: 'too_long',
                 },
                 '01JD7Q2XC5D6',
               )
@@ -515,17 +516,17 @@ export const FormWithServerErrors: Story = {
       within(first).getByRole('link', { name: 'Fin : La fin doit être après le début.' }),
     );
     await expect(end.getByRole('spinbutton', { name: 'Jour' })).toHaveFocus();
-    await userEvent.click(end.getByRole('spinbutton', { name: 'Heures' }));
-    await userEvent.keyboard('19');
-    // Then the api: each error says the rule its field expects.
+    // Fifteen days later: the browser accepts it, the api refuses it with its precise reason.
+    await userEvent.keyboard('051220261900');
     await userEvent.click(canvas.getByRole('button', { name: 'Publier l’événement' }));
     const summary = await canvas.findByRole('group', { name: 'Le formulaire contient 1 erreur.' });
     await waitFor(() => expect(summary).toHaveFocus());
-    await expect(within(summary).getAllByRole('link')).toHaveLength(1);
-    await expect(canvas.getByRole('textbox', { name: 'Lien de la visioconférence' })).toBeInvalid();
     await expect(
-      canvas.getByRole('textbox', { name: 'Lien de la visioconférence' }),
-    ).toHaveAccessibleDescription(/commençant par https:\/\//);
+      within(summary).getByRole('link', {
+        name: 'Fin : Un événement dure 14 jours au plus : rapprochez la fin du début.',
+      }),
+    ).toBeVisible();
+    await expect(canvas.getByRole('textbox', { name: 'Lien de la visioconférence' })).toBeValid();
   },
 };
 

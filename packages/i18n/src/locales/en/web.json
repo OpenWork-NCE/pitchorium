@@ -299,7 +299,7 @@
       },
       "invalid_format": {
         "email": "Enter a full email address, for example name@example.org.",
-        "url": "Enter a full web address, starting with https://.",
+        "url": "Enter a full web address, for example https://example.org.",
         "uuid": "This identifier is not recognised: copy it again from its page.",
         "date": "Enter a full date: day, month and year.",
         "datetime": "Enter a full date and time.",
@@ -317,14 +317,21 @@
       },
       "linkedin": {
         "custom": "Enter the address of a profile on linkedin.com, for example https://www.linkedin.com/in/your-name.",
-        "invalid_format": "Enter the address of a profile on linkedin.com, for example https://www.linkedin.com/in/your-name."
+        "invalid_format": "This address is not valid: enter the full address of a profile, for example https://www.linkedin.com/in/your-name.",
+        "url": "This address is not valid: enter the full address of a profile, for example https://www.linkedin.com/in/your-name.",
+        "https_required": "The address of the profile must start with https:// (http:// is not accepted).",
+        "linkedin_host": "Enter the address of a profile on linkedin.com, for example https://www.linkedin.com/in/your-name."
       },
       "website": {
-        "invalid_format": "Enter the full address of the site, starting with https:// (http:// is not accepted)."
+        "invalid_format": "This address is not valid: enter the full address of the site, for example https://example.org.",
+        "url": "This address is not valid: enter the full address of the site, for example https://example.org.",
+        "https_required": "The address of the site must start with https:// (http:// is not accepted)."
       },
       "onlineUrl": {
-        "invalid_format": "Enter the full link of the video call, starting with https:// (http:// is not accepted).",
-        "required": "Add the link of the video call: it is required for an online or hybrid event."
+        "invalid_format": "This link is not a valid web address: copy the full link of the video call, for example https://meet.example.org/workshop.",
+        "required": "Add the link of the video call: it is required for an online or hybrid event.",
+        "url": "This link is not a valid web address: copy the full link of the video call, for example https://meet.example.org/workshop.",
+        "https_required": "The link of the video call must start with https:// (http:// is not accepted)."
       },
       "startsAt": {
         "required": "Enter the date and time of the start.",
@@ -364,6 +371,24 @@
     },
     "problems": {
       "EVENTS_SCHEDULE_INVALID": "Check the dates: the end must be after the start, the event lasts {{days}} days at most and cannot be over already."
+    },
+    "reasons": {
+      "https_required": "The address must start with https:// (http:// is not accepted).",
+      "linkedin_host": "Enter the address of a profile on linkedin.com.",
+      "unknown_time_zone": "Choose a time zone from the list.",
+      "duplicate_keys": "Each item needs a different key.",
+      "duplicate_values": "Remove the duplicates.",
+      "scale_without_positive_level": "The scale needs at least one level above 0.",
+      "unknown_language": "Choose a language from the list.",
+      "unknown_currency": "Choose a currency from the list.",
+      "project_or_entrepreneur": "Give either a project or a person supported, not both."
+    },
+    "problemReasons": {
+      "EVENTS_SCHEDULE_INVALID": {
+        "ends_before_start": "The end must be after the start.",
+        "too_long": "An event lasts {{days}} days at most: bring the end closer to the start.",
+        "already_over": "This event is already over: choose an end in the future."
+      }
     }
   },
   "access": {

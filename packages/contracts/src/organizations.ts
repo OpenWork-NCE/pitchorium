@@ -44,7 +44,9 @@ function uniqueArray<T extends z.ZodType>(item: T, min: number, max: number) {
     .array(item)
     .min(min)
     .max(max)
-    .refine((values) => new Set(values).size === values.length, { message: 'Duplicate values' });
+    .refine((values) => new Set(values).size === values.length, {
+      params: { reason: 'duplicate_values' },
+    });
 }
 
 const organizationFields = {

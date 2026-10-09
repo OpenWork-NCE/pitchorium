@@ -87,17 +87,24 @@ export function assertDraft(event: EventRecord): void {
 
 /**
  * The end follows the start, the event lasts EVENT_MAX_DURATION_DAYS at most, and a published
- * event is not over yet.
+ * event is not over yet; each refusal names its reason (`ends_before_start`, `too_long`,
+ * `already_over`), sent to the client in the problem (`reason`).
  */
 export function assertSchedule(startsAt: Date, endsAt: Date, now: Date | null): void {
   if (endsAt.getTime() <= startsAt.getTime()) {
-    throw new DomainError('EVENTS_SCHEDULE_INVALID', 'The end must follow the start');
+    throw new DomainError('EVENTS_SCHEDULE_INVALID', 'The end must follow the start', {
+      reason: 'ends_before_start',
+    });
   }
   if (endsAt.getTime() - startsAt.getTime() > EVENT_MAX_DURATION_DAYS * DAY_MS) {
-    throw new DomainError('EVENTS_SCHEDULE_INVALID', 'The event is too long');
+    throw new DomainError('EVENTS_SCHEDULE_INVALID', 'The event is too long', {
+      reason: 'too_long',
+    });
   }
   if (now && endsAt.getTime() <= now.getTime()) {
-    throw new DomainError('EVENTS_SCHEDULE_INVALID', 'The event is already over');
+    throw new DomainError('EVENTS_SCHEDULE_INVALID', 'The event is already over', {
+      reason: 'already_over',
+    });
   }
 }
 

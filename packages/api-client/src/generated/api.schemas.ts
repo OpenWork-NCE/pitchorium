@@ -15683,6 +15683,7 @@ export const ProblemDetailsCode = {
 export type ProblemDetailsErrorsItem = {
   pointer: string;
   code: string;
+  reason?: string;
 };
 
 export interface ProblemDetails {
@@ -15699,6 +15700,7 @@ export interface ProblemDetails {
   requestId?: string;
   errors?: ProblemDetailsErrorsItem[];
   missing?: string[];
+  reason?: string;
 }
 
 export type PrivacyControllerRightsRequestsParams = {

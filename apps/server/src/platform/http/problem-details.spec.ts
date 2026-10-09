@@ -2,6 +2,7 @@ import { BadRequestException, HttpException, NotFoundException } from '@nestjs/c
 import { ThrottlerException } from '@nestjs/throttler';
 import { ZodValidationException } from 'nestjs-zod';
 import { describe, expect, it } from 'vitest';
+import { httpsUrlSchema, linkedinUrlSchema } from '@pitchorium/contracts';
 import { z } from 'zod';
 import { DomainError } from '../kernel';
 import { toProblem } from './problem-details';
@@ -27,6 +28,37 @@ describe('toProblem', () => {
       { pointer: '/items/0/a~1b', code: 'invalid_type' },
       { pointer: '/limit', code: 'invalid_type' },
     ]);
+  });
+
+  it('gives each refused address its precise reason, one issue per field', () => {
+    const schema = z.object({
+      website: httpsUrlSchema,
+      onlineUrl: httpsUrlSchema,
+      linkedin: linkedinUrlSchema,
+      other: linkedinUrlSchema,
+    });
+    const result = schema.safeParse({
+      website: 'exemple.org',
+      onlineUrl: 'http://meet.example.org/atelier',
+      linkedin: 'https://example.org/in/awa',
+      other: 'not an address',
+    });
+    expect(toProblem(new ZodValidationException(result.error)).errors).toEqual([
+      { pointer: '/website', code: 'invalid_format', reason: 'url' },
+      { pointer: '/onlineUrl', code: 'custom', reason: 'https_required' },
+      { pointer: '/linkedin', code: 'custom', reason: 'linkedin_host' },
+      { pointer: '/other', code: 'invalid_format', reason: 'url' },
+    ]);
+    expect(httpsUrlSchema.safeParse('https://meet.example.org/atelier').success).toBe(true);
+  });
+
+  it('exposes the reason of a domain error, a short identifier only', () => {
+    expect(
+      toProblem(new DomainError('EVENTS_SCHEDULE_INVALID', 'Too long', { reason: 'too_long' })),
+    ).toMatchObject({ code: 'EVENTS_SCHEDULE_INVALID', reason: 'too_long' });
+    expect(
+      toProblem(new DomainError('CONFLICT', 'x', { reason: 'Not <an> identifier' })),
+    ).not.toHaveProperty('reason');
   });
 
   it('answers 503 while Redis is unreachable, without leaking the client message', () => {
