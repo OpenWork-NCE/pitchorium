@@ -41,6 +41,7 @@ Captures de référence : après un changement visuel voulu, `pnpm test:e2e --pr
 - Aucune couleur en dur : tokens de `src/styles/tokens.css`, contraste AA testé.
 - Mouvement : primitives de `components/motion`, état final immédiat avec moins de mouvement ; GSAP seulement dans les pages éditoriales.
 - Écritures métier : par l'api depuis le navigateur, jamais par une Server Action.
+- Profils, organisations et réseau : la page affiche ce que l'api donne au lecteur (ADR 0113), les gestes réversibles s'affichent aussitôt et reviennent sur un refus (ADR 0112), une image se cadre dans le navigateur par `ImageCropDialog` (ADR 0111).
 
 ## Fichiers générés ou copiés
 

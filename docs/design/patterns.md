@@ -33,6 +33,22 @@ Comment assembler les composants (`components.md`) pour les situations récurren
 - Une action impossible dit pourquoi (« C'est votre seule méthode de connexion … ») au lieu d'un bouton désactivé muet ; une action sensible redemande le mot de passe.
 - Une session se décrit par son type d'appareil (icône et libellé), son navigateur, son système et sa dernière activité, jamais par un lieu : l'adresse IP n'est pas géolocalisée (ADR 0107).
 
+- « Confidentialité et réseau » : chaque réglage s'applique dès qu'il change (interrupteur, liste), s'affiche avant la réponse et revient si l'api refuse ; un déblocage dit ce qui ne revient pas (connexions et suivis retirés par le blocage).
+
+## Profils et organisations (§10.1, §10.7, ADR 0113)
+
+- L'en-tête porte couverture, photo ou logo, nom, titre ou type, lieu, langues, liens et badge ; la page affiche ce que l'api donne au lecteur, un groupe caché est dit comme tel, jamais reconstruit.
+- Le propriétaire modifie chaque partie en place, dans un dialogue (feuille du bas sur téléphone) ; la force du profil mène directement à la partie à compléter ; un changement d'adresse montre la nouvelle adresse et explique la redirection de l'ancienne.
+- Une image (photo, logo, couverture) se cadre dans le navigateur au ratio de sa place, puis s'envoie avec sa progression sur un anneau et ses vérifications (ADR 0111).
+- Organisation : création guidée en deux étapes (identité, présentation), gestion par onglets (page, membres, vérification) ; la règle du dernier propriétaire est annoncée avant d'être rencontrée ; la suppression demande de saisir le nom.
+- Un nom de membre dans une liste ouvre son aperçu au survol et au focus (`MemberHoverCard`) ; le lien reste le premier accès.
+
+## Relations (§10.2, ADR 0112)
+
+- Un seul bouton de connexion change d'état : « Se connecter » (dialogue avec une note de 300 caractères au plus), « En attente » (retirer la demande), « En relation » (retirer la connexion) ; une demande reçue donne « Accepter » et « Ignorer ». « Suivre » est à côté, puis un menu « Plus d'actions » (copier le lien, partager, bloquer).
+- Chaque geste réversible s'affiche aussitôt et revient avec sa raison si l'api refuse ; bloquer, retirer une connexion, transférer ou supprimer passent par une confirmation.
+- Ni message ni signalement depuis un profil avant leurs prompts (PROMPT FRONT 4 et 8).
+
 ## Suggestions (§10.2, ADR 0067)
 
 - Chaque suggestion porte son action : « Se connecter » pour une personne (demande de connexion, prérequis complétés sur place), « Suivre » pour une organisation ou un projet ; puis « Pas intéressé », exécuté aussitôt et annulable depuis le toast (`notify.undoable`).
