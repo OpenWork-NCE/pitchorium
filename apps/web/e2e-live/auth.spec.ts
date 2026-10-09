@@ -133,7 +133,13 @@ test.describe('authentication', { tag: '@critical' }, () => {
     await page.goto('/fr/settings/security');
     await hydrated(page);
     await expect(page.getByText('Cet appareil', { exact: true })).toBeVisible();
+    // Revoked once the api has answered: the button changes as soon as it is pressed, so waiting
+    // on it let the other browser come back before the revocation (seen in Firefox and Chromium).
+    const revoked = page.waitForResponse(
+      (response) => response.url().includes('/v1/auth/revoke-session') && response.ok(),
+    );
     await page.getByRole('button', { name: 'Fermer', exact: true }).first().click();
+    await revoked;
     await expect(page.getByRole('button', { name: 'Fermer', exact: true })).toHaveCount(0);
 
     await second.goto('/fr/settings/account');

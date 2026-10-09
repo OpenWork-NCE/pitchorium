@@ -503,16 +503,33 @@ test.describe('the feed of a demonstration member', () => {
     expect(results.violations).toEqual([]);
   });
 
-  // Against the real api, the position kept is not given back after a return by the history
-  // (the feed comes back at its top): under study, not verified (PROMPT FRONT 4).
-  test.fixme('comes back to the same publication and passes axe', async ({ page }) => {
+  test('moves from one publication to the next with Page Down, keeping the focus', async ({
+    page,
+  }) => {
+    await signInWithPassword(page, 'aissatou.ba@demo.pitchorium.test', 'pitchorium-demo-2026');
+    await page.waitForURL(/\/fr\/feed/);
+    await hydrated(page);
+    const feed = page.getByRole('feed', { name: 'Fil d’actualité' });
+    await feed.locator('[data-feed-index="0"]').focus();
+    const focused = () =>
+      page.evaluate(() => Number(document.activeElement?.getAttribute('data-feed-index') ?? -1));
+    let index = 0;
+    // Further than the entries of the server: the list is virtualized on the way.
+    for (let step = 0; step < 6; step += 1) {
+      await page.keyboard.press('PageDown');
+      await expect.poll(focused).toBeGreaterThan(index);
+      index = await focused();
+    }
+    await page.keyboard.press('PageUp');
+    await expect.poll(focused).toBeLessThan(index);
+  });
+
+  test('comes back to the same publication after a return by the history', async ({ page }) => {
     await signInWithPassword(page, 'aissatou.ba@demo.pitchorium.test', 'pitchorium-demo-2026');
     await page.waitForURL(/\/fr\/feed/);
     await hydrated(page);
     const feed = page.getByRole('feed', { name: 'Fil d’actualité' });
     await expect(feed).toBeVisible();
-    const results = await new AxeBuilder({ page }).analyze();
-    expect(results.violations).toEqual([]);
 
     // Down the virtualized feed, to its seventh entry.
     const entry = feed.locator('[data-feed-index="6"]');
@@ -522,6 +539,8 @@ test.describe('the feed of a demonstration member', () => {
         return entry.count();
       })
       .toBe(1);
+    await page.waitForTimeout(300);
+    const left = await page.evaluate(() => Math.round(window.scrollY));
     // Read and followed in one step: the virtualized entry may leave the page between two.
     const name = await page.evaluate(() => {
       const link = document.querySelector<HTMLAnchorElement>('[data-feed-index="6"] a');
@@ -532,7 +551,14 @@ test.describe('the feed of a demonstration member', () => {
     expect(name).toBeTruthy();
     await expect(page.getByRole('heading', { level: 1, name: name ?? '' })).toBeVisible();
     await page.goBack();
-    await expect(feed.locator('[data-feed-index="6"]')).toBeInViewport();
+    // Back at the same place, the same entries around.
+    await expect
+      .poll(() => page.evaluate(() => Math.round(window.scrollY)))
+      .toBeGreaterThanOrEqual(left - 2);
+    expect(Math.abs((await page.evaluate(() => Math.round(window.scrollY))) - left)).toBeLessThan(
+      3,
+    );
+    await expect(feed.locator('[data-feed-index="6"]')).toHaveCount(1);
   });
 
   test('a mention of a member opens their page from the publication', async ({ page }) => {
