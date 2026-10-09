@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  Bookmark,
   Building2,
   CircleUser,
   Keyboard,
@@ -105,6 +106,12 @@ export function UserMenuPanel({
             <Link href={routes.settingsOrganizations}>
               <Building2 aria-hidden />
               {t('organizations')}
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href={routes.saved}>
+              <Bookmark aria-hidden />
+              {t('saved')}
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
