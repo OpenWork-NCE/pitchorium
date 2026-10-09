@@ -38,6 +38,11 @@ const FEED_MESSAGES = [
   'web.feed',
   'web.discovery',
   'web.content',
+  'web.composer',
+  'web.activity',
+  'web.post',
+  'web.saved',
+  'reference.postVisibilities',
   'web.projects',
   'web.profile',
   'discovery',
@@ -60,6 +65,12 @@ export const CLIENT_MESSAGES = {
     ...MENTIONS,
     // The lists of a member read by a visitor: their next pages and what may go wrong.
     'web.network.lists',
+    // The publications of a page (activity, a public publication): their parts read in the
+    // browser (images, document, cut text) and the next ones of an activity.
+    'web.content',
+    'web.activity',
+    'reference.postVisibilities',
+    'reference.reactionTypes',
     'errors.INTERNAL_ERROR',
     'errors.RATE_LIMITED',
     'errors.NETWORK_LIST_HIDDEN',

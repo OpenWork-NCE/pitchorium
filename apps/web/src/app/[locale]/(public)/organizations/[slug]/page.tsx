@@ -6,6 +6,7 @@ import { SingleColumnLayout } from '@/components/layout/page-layouts';
 import { Button } from '@/components/ui';
 import { routes } from '@/config/routes';
 import { siteConfig } from '@/config/site';
+import { ActivitySection } from '@/features/content';
 import { LazyFollowButton } from '@/features/network';
 import { OrganizationProfile, organizationJsonLd } from '@/features/organizations';
 import { Link } from '@/i18n/navigation';
@@ -76,6 +77,12 @@ export default async function Page({ params }: PageProps<'/[locale]/organization
         locale={locale}
         actions={actions}
       />
+      <div className="mx-auto mt-8 w-full max-w-[42.5rem]">
+        <ActivitySection
+          author={{ kind: 'organization', slug: organization.slug }}
+          signedIn={resource.view === 'member'}
+        />
+      </div>
       {resource.view === 'visitor' ? (
         <script
           type="application/ld+json"

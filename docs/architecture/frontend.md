@@ -78,6 +78,13 @@ sequenceDiagram
 - Mises à jour optimistes avec retour arrière (ADR 0112) ; compteurs d'invitations lus dans la clé des compteurs, écrite par le temps réel.
 - Référencement : JSON-LD `Person` et `Organization` sur les vues publiques, images Open Graph et X par ressource (`lib/seo/resource-share-image.tsx`), plan du site lu dans les listes publiques de l'api, `noindex` sur les vues membres, la gestion et les invitations.
 
+## Fil, publications et médias (PROMPT FRONT 4)
+
+- Pages : `/feed` (fil virtualisé, ADR 0121), `/posts/{id}` (`(public)`, vue publique indexable avec JSON-LD `SocialMediaPosting` et image de partage `next/og`, vue membre sinon, 404), `/saved` (`(app)`), section « Activité » des pages d'un membre et d'une organisation.
+- Feature `content` : carte de publication partagée par le serveur et le navigateur (îlots clients : images, document, projet), actions d'un membre chargées en morceaux (menu et sélecteur de réactions au premier usage, commentaires, repartage et statistiques à l'ouverture), composeur chargé à l'ouverture (Tiptap, ADR 0119 ; photos allégées, ADR 0120 ; brouillon local, ADR 0122 ; aperçu de lien demandé au collage, ADR 0118). Limites des contrats recopiées dans `lib/limits.ts` (testées) : aucune constante des contrats ne fait entrer Zod dans le fil.
+- Données : première page du fil, du profil ou de la publication lue par le serveur ; TanStack Query ensuite (`initialData`) ; réactions et commentaires en mutations gardées hors ligne (ADR 0102) ; tête du fil et `GET /v1/feed/newer` pour la pastille des nouveautés (ADR 0117) ; vues signalées par lots (`POST /v1/posts/views`, `keepalive`, ADR 0116).
+- Visiteur : la carte sans actions ; la suite d'une activité est chargée au premier « Afficher plus » (vue visiteur légère, ADR 0094).
+
 ## Fournisseurs
 
 Chaque groupe ne charge que ce qu'il utilise (ADR 0094) :

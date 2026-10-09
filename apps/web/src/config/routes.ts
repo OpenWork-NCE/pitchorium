@@ -60,6 +60,8 @@ export const routes = {
   event: (slug: string) => `/events/${encodeURIComponent(slug)}`,
   /** A publication (§10.3): public and indexable when it is public, a member view otherwise. */
   post: (id: string) => `/posts/${encodeURIComponent(id)}`,
+  /** The publications the member saved. */
+  saved: '/saved',
   // Contextual actions of the header, opened by their section (PROMPT FRONT 3 and 4).
   compose: '/feed?compose=1',
   createProject: '/projects?create=1',
@@ -76,6 +78,7 @@ export const MEMBER_SEGMENTS = [
   'messages',
   'notifications',
   'profile',
+  'saved',
   'settings',
 ] as const;
 

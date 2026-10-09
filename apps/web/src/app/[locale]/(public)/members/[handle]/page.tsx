@@ -7,6 +7,7 @@ import { Button } from '@/components/ui';
 import { routes } from '@/config/routes';
 import { siteConfig } from '@/config/site';
 import { LazyRelationshipActions, ProfileViewsSummary } from '@/features/network';
+import { ActivitySection } from '@/features/content';
 import { MemberProfile, personJsonLd } from '@/features/profiles';
 import { Link } from '@/i18n/navigation';
 import { asLocale } from '@/i18n/routing';
@@ -84,6 +85,12 @@ export default async function Page({ params }: PageProps<'/[locale]/members/[han
         actions={actions}
         aside={owner ? <ProfileViewsSummary /> : undefined}
       />
+      <div className="mx-auto mt-8 w-full max-w-[42.5rem]">
+        <ActivitySection
+          author={{ kind: 'member', handle: profile.handle }}
+          signedIn={member !== null}
+        />
+      </div>
       {resource.view === 'visitor' ? (
         <script
           type="application/ld+json"

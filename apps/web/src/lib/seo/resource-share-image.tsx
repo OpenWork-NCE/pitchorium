@@ -1,6 +1,7 @@
 import 'server-only';
 import {
   organizationsControllerForPublic,
+  postsControllerGetPublic,
   profilesControllerForPublic,
 } from '@pitchorium/api-client';
 import { createTranslator } from 'next-intl';
@@ -11,9 +12,9 @@ import { messagesFor } from '@/lib/i18n/messages';
 import { renderShareImage, type ShareFormat, shareImageSize } from './share-image';
 
 /**
- * Share images of the public pages of members and organisations (ADR 0101): read from their
- * public view only, so that a page closed to visitors shares the default image of the locale
- * and nothing of its content.
+ * Share images of the public pages of members, organisations and publications (ADR 0101): read
+ * from their public view only, so that a page closed to visitors shares the default image of the
+ * locale and nothing of its content.
  */
 interface Shared {
   title: string;
@@ -49,14 +50,42 @@ const readOrganization = cache(async (locale: string, slug: string): Promise<Sha
   return { title: organization.name, subtitle: reference(organization.structureType) };
 });
 
-async function shared(kind: 'member' | 'organization', locale: string, key: string) {
-  const found = kind === 'member' ? await readMember(key) : await readOrganization(locale, key);
+const readPost = cache(async (locale: string, id: string): Promise<Shared | null> => {
+  if (!/^[0-9a-f-]{36}$/i.test(id)) return null;
+  configureServerApi();
+  const post = await postsControllerGetPublic(id).catch(() => null);
+  if (!post) return null;
+  const lang = asLocale(locale);
+  // The messages are typed loosely here (a tree): the parameter of the title is given as is.
+  const t = createTranslator({
+    locale: lang,
+    messages: messagesFor(lang),
+    namespace: 'web.post',
+  }) as unknown as (key: 'title', values: { name: string }) => string;
+  const name =
+    post.author.type === 'member' ? post.author.member.displayName : post.author.organization.name;
+  const text = post.text?.replace(/\s+/g, ' ').trim() ?? '';
+  return {
+    title: t('title', { name }),
+    subtitle: text ? (text.length > 140 ? `${text.slice(0, 137)}…` : text) : null,
+  };
+});
+
+type SharedKind = 'member' | 'organization' | 'post';
+
+async function shared(kind: SharedKind, locale: string, key: string) {
+  const found =
+    kind === 'member'
+      ? await readMember(key)
+      : kind === 'organization'
+        ? await readOrganization(locale, key)
+        : await readPost(locale, key);
   return found ?? defaultText(locale);
 }
 
 export async function resourceImageMetadata(
   format: ShareFormat,
-  kind: 'member' | 'organization',
+  kind: SharedKind,
   locale: string,
   key: string,
 ) {
@@ -66,7 +95,7 @@ export async function resourceImageMetadata(
 
 export async function renderResourceImage(
   format: ShareFormat,
-  kind: 'member' | 'organization',
+  kind: SharedKind,
   locale: string,
   key: string,
 ) {
