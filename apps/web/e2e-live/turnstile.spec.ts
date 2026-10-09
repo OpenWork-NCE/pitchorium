@@ -32,20 +32,22 @@ async function fillSignUp(page: Page, email: string) {
  * Cloudflare Turnstile in the browser (A3, ADR 0103): the widget of the test keys, the script
  * and the frame the policy allows, and nothing else; a challenge that fails stops the sign-up.
  */
-test.describe('Cloudflare Turnstile', { tag: '@critical' }, () => {
-  test('a passed challenge lets the sign-up through, without any CSP violation', async ({
-    page,
-  }) => {
-    const violations = await watchCsp(page);
-    await page.goto('/fr/sign-up');
-    await hydrated(page);
-    await expect
-      .poll(() => page.frames().some((frame) => frame.url().startsWith(CHALLENGES)))
-      .toBe(true);
-    await fillSignUp(page, freshEmail('turnstile-pass'));
-    await expect(page.getByRole('heading', { name: 'Vérifiez votre adresse' })).toBeVisible();
-    expect(await violations()).toEqual([]);
-  });
+test.describe('Cloudflare Turnstile', () => {
+  test(
+    'a passed challenge lets the sign-up through, without any CSP violation',
+    { tag: '@critical' },
+    async ({ page }) => {
+      const violations = await watchCsp(page);
+      await page.goto('/fr/sign-up');
+      await hydrated(page);
+      await expect
+        .poll(() => page.frames().some((frame) => frame.url().startsWith(CHALLENGES)))
+        .toBe(true);
+      await fillSignUp(page, freshEmail('turnstile-pass'));
+      await expect(page.getByRole('heading', { name: 'Vérifiez votre adresse' })).toBeVisible();
+      expect(await violations()).toEqual([]);
+    },
+  );
 
   test('a failed challenge stops the sign-up and says so', async ({ page }) => {
     // The challenge fails on purpose: its frame reports it.

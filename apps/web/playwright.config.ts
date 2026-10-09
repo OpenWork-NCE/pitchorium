@@ -1,4 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
+import { ciOptions, trace } from './e2e/support/ci-options';
 
 const WEB_PORT = 3201;
 const API_PORT = 3299;
@@ -14,18 +15,17 @@ const CHROMIUM_ONLY = [/visual\.spec\.ts/, /responsiveness\.spec\.ts/];
  * phone (tag `@phone`): part of the diaspora reads Pitchorium in Safari on an iPhone. `test:e2e`
  * runs in the official Playwright image (same engines, fonts and rendering locally and in CI)
  * where the screenshots of Chromium are compared; `test:e2e:native` skips them. One worker: the
- * stub api keeps one state (sessions, counters, log of the writes) for every test.
+ * stub api keeps one state (sessions, counters, log of the writes) for every test. With
+ * E2E_SKIP_BUILD=1 the build of .next-e2e already there is served (the CI builds it once per run).
  */
 export default defineConfig({
   testDir: 'e2e',
   fullyParallel: true,
   workers: 1,
-  forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 1 : 0,
-  reporter: process.env.CI ? [['github'], ['html', { open: 'never' }]] : 'list',
+  ...ciOptions,
   snapshotPathTemplate: '{testDir}/__screenshots__/{testFilePath}/{arg}{ext}',
   expect: { toHaveScreenshot: { maxDiffPixelRatio: 0.01, animations: 'disabled' } },
-  use: { baseURL: webOrigin, trace: 'retain-on-failure' },
+  use: { baseURL: webOrigin, trace },
   projects: [
     { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
     {
@@ -58,7 +58,7 @@ export default defineConfig({
     },
     {
       // Explicit binaries: the Docker image has no pnpm to put node_modules/.bin on the PATH.
-      command: `./node_modules/.bin/next build && ./node_modules/.bin/next start --port ${WEB_PORT}`,
+      command: `${process.env.E2E_SKIP_BUILD === '1' ? '' : './node_modules/.bin/next build && '}./node_modules/.bin/next start --port ${WEB_PORT}`,
       url: `${webOrigin}/fr`,
       timeout: 300_000,
       reuseExistingServer: false,

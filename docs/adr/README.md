@@ -127,3 +127,4 @@ Un fichier par décision, numéroté, au format Contexte / Décision / Conséque
 | [0121](0121-feed-virtualization-and-accessibility.md)       | Virtualisation et accessibilité du fil                       |
 | [0122](0122-local-drafts-of-the-composer.md)                | Brouillons locaux du composeur                               |
 | [0126](0126-test-malware-scanner-in-end-to-end-journeys.md) | Adaptateur de test de l'antivirus dans les parcours          |
+| [0127](0127-tagging-of-critical-journeys.md)                | Étiquetage des parcours critiques                            |

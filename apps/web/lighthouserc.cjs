@@ -15,6 +15,28 @@
  */
 const VISITOR = process.env.LHCI_VISITOR === '1';
 
+/**
+ * Pages measured (docs/architecture/testing.md, ADR 0123): every followed page at level 3 (`all`,
+ * the default), one page of each kind at each push (`representative`: editorial, authentication,
+ * feed, public profile, public publication). The thresholds are the same.
+ */
+const REPRESENTATIVE = process.env.LHCI_SCOPE === 'representative';
+const ORIGIN = 'http://localhost:3201';
+const MEMBER_PAGES = REPRESENTATIVE
+  ? ['/fr', '/fr/feed', '/fr/sign-in']
+  : ['/fr', '/en', '/fr/feed', '/fr/sign-in', '/fr/onboarding/terms'];
+const VISITOR_PAGES = REPRESENTATIVE
+  ? [
+      '/fr/members/aissatou-ba',
+      // A public publication with five images (e2e/support/stub-content.mjs).
+      '/fr/posts/0192f4a0-2000-7000-8000-000000000004',
+    ]
+  : [
+      '/fr/members/aissatou-ba',
+      '/fr/organizations/fondation-teranga',
+      '/fr/posts/0192f4a0-2000-7000-8000-000000000004',
+    ];
+
 /** Thresholds of every page (ADR 0090). */
 const THRESHOLDS = {
   'categories:performance': ['error', { minScore: 0.9 }],
@@ -30,20 +52,7 @@ module.exports = {
     collect: {
       startServerCommand: 'node e2e/support/serve.mjs',
       startServerReadyPattern: 'Ready in',
-      url: VISITOR
-        ? [
-            'http://localhost:3201/fr/members/aissatou-ba',
-            'http://localhost:3201/fr/organizations/fondation-teranga',
-            // A public publication with five images (e2e/support/stub-content.mjs).
-            'http://localhost:3201/fr/posts/0192f4a0-2000-7000-8000-000000000004',
-          ]
-        : [
-            'http://localhost:3201/fr',
-            'http://localhost:3201/en',
-            'http://localhost:3201/fr/feed',
-            'http://localhost:3201/fr/sign-in',
-            'http://localhost:3201/fr/onboarding/terms',
-          ],
+      url: (VISITOR ? VISITOR_PAGES : MEMBER_PAGES).map((path) => `${ORIGIN}${path}`),
       numberOfRuns: Number(process.env.LHCI_RUNS ?? 3),
       settings: {
         // Reduced motion: the accessibility audit judges the contrast at rest, not in the middle

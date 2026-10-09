@@ -36,78 +36,84 @@ async function createOrganization(page: Page, name: string): Promise<void> {
 }
 
 /** Organisations against the real api (§10.7). */
-test.describe('organisations', { tag: '@critical' }, () => {
-  test('a member creates an organisation, edits it and finds it in their organisations', async ({
-    browser,
-  }) => {
-    const { page, context } = await memberPage(browser, 'org-create', { name: 'Nadia Benali' });
-    const name = `Fondation Sahel ${Date.now()}`;
-    await createOrganization(page, name);
+test.describe('organisations', () => {
+  test(
+    'a member creates an organisation, edits it and finds it in their organisations',
+    { tag: '@critical' },
+    async ({ browser }) => {
+      const { page, context } = await memberPage(browser, 'org-create', { name: 'Nadia Benali' });
+      const name = `Fondation Sahel ${Date.now()}`;
+      await createOrganization(page, name);
 
-    await page.getByLabel('Site web').fill('https://example.org');
-    const saved = page.waitForResponse(
-      (response) =>
-        response.request().method() === 'PATCH' && response.url().includes('/v1/organizations/'),
-    );
-    await page.getByRole('button', { name: 'Enregistrer', exact: true }).click();
-    expect((await saved).ok()).toBe(true);
+      await page.getByLabel('Site web').fill('https://example.org');
+      const saved = page.waitForResponse(
+        (response) =>
+          response.request().method() === 'PATCH' && response.url().includes('/v1/organizations/'),
+      );
+      await page.getByRole('button', { name: 'Enregistrer', exact: true }).click();
+      expect((await saved).ok()).toBe(true);
 
-    await page.getByRole('link', { name: `Retour à la page de ${name}` }).click();
-    await expect(page.getByRole('heading', { level: 1, name })).toBeVisible();
-    await expect(
-      page.getByText('Bourses et mentorat pour les entrepreneures du Sahel.'),
-    ).toBeVisible();
-    await expect(page.getByText('Propriétaire').first()).toBeVisible();
-    await expect(page.getByRole('link', { name: /Site web/ })).toBeVisible();
+      await page.getByRole('link', { name: `Retour à la page de ${name}` }).click();
+      await expect(page.getByRole('heading', { level: 1, name })).toBeVisible();
+      await expect(
+        page.getByText('Bourses et mentorat pour les entrepreneures du Sahel.'),
+      ).toBeVisible();
+      await expect(page.getByText('Propriétaire').first()).toBeVisible();
+      await expect(page.getByRole('link', { name: /Site web/ })).toBeVisible();
 
-    await hydrated(page);
-    await page.getByRole('button', { name: /Compte de/ }).click();
-    await page.getByRole('menuitem', { name: 'Mes organisations' }).click();
-    await expect(
-      page.getByRole('list', { name: 'Mes organisations' }).getByText(name),
-    ).toBeVisible();
-    await context.close();
-  });
+      await hydrated(page);
+      await page.getByRole('button', { name: /Compte de/ }).click();
+      await page.getByRole('menuitem', { name: 'Mes organisations' }).click();
+      await expect(
+        page.getByRole('list', { name: 'Mes organisations' }).getByText(name),
+      ).toBeVisible();
+      await context.close();
+    },
+  );
 
-  test('an invited member accepts, gets a role, then the ownership', async ({ browser }) => {
-    const owner = await memberPage(browser, 'org-owner', { name: 'Thierry Lacroix' });
-    const invitee = await memberPage(browser, 'org-invitee', { name: 'Fatou Sow' });
-    const name = `Diaspora Invest ${Date.now()}`;
-    await createOrganization(owner.page, name);
-    await expect(owner.page.getByText(/Vous êtes le seul propriétaire/)).toHaveCount(0);
+  test(
+    'an invited member accepts, gets a role, then the ownership',
+    { tag: '@critical' },
+    async ({ browser }) => {
+      const owner = await memberPage(browser, 'org-owner', { name: 'Thierry Lacroix' });
+      const invitee = await memberPage(browser, 'org-invitee', { name: 'Fatou Sow' });
+      const name = `Diaspora Invest ${Date.now()}`;
+      await createOrganization(owner.page, name);
+      await expect(owner.page.getByText(/Vous êtes le seul propriétaire/)).toHaveCount(0);
 
-    await owner.page.getByRole('tab', { name: 'Membres' }).click();
-    await expect(owner.page.getByText(/Vous êtes le seul propriétaire/)).toBeVisible();
-    await owner.page.getByLabel('Adresse email').fill(invitee.member.email);
-    await owner.page.getByRole('button', { name: 'Envoyer l’invitation' }).click();
-    await expect(
-      owner.page
-        .getByRole('list', { name: 'Invitations en attente' })
-        .getByText(invitee.member.email),
-    ).toBeVisible();
+      await owner.page.getByRole('tab', { name: 'Membres' }).click();
+      await expect(owner.page.getByText(/Vous êtes le seul propriétaire/)).toBeVisible();
+      await owner.page.getByLabel('Adresse email').fill(invitee.member.email);
+      await owner.page.getByRole('button', { name: 'Envoyer l’invitation' }).click();
+      await expect(
+        owner.page
+          .getByRole('list', { name: 'Invitations en attente' })
+          .getByText(invitee.member.email),
+      ).toBeVisible();
 
-    await invitee.page.goto(inFrench(await linkFromInbox(invitee.member.email, INVITATION_LINK)));
-    await hydrated(invitee.page);
-    await expect(invitee.page.getByRole('heading', { name: `Rejoindre ${name}` })).toBeVisible();
-    await invitee.page.getByRole('button', { name: 'Accepter' }).click();
-    await expect(invitee.page.getByRole('heading', { level: 1, name })).toBeVisible();
+      await invitee.page.goto(inFrench(await linkFromInbox(invitee.member.email, INVITATION_LINK)));
+      await hydrated(invitee.page);
+      await expect(invitee.page.getByRole('heading', { name: `Rejoindre ${name}` })).toBeVisible();
+      await invitee.page.getByRole('button', { name: 'Accepter' }).click();
+      await expect(invitee.page.getByRole('heading', { level: 1, name })).toBeVisible();
 
-    await owner.page.reload();
-    await hydrated(owner.page);
-    const row = owner.page.locator(`[data-member="${invitee.member.handle}"]`);
-    await choose(row, 'Rôle de Fatou Sow', 'Administrateur');
-    await expect(row.getByRole('combobox', { name: 'Rôle de Fatou Sow' })).toHaveText(
-      /Administrateur/,
-    );
+      await owner.page.reload();
+      await hydrated(owner.page);
+      const row = owner.page.locator(`[data-member="${invitee.member.handle}"]`);
+      await choose(row, 'Rôle de Fatou Sow', 'Administrateur');
+      await expect(row.getByRole('combobox', { name: 'Rôle de Fatou Sow' })).toHaveText(
+        /Administrateur/,
+      );
 
-    await choose(owner.page, 'Nouveau propriétaire', 'Fatou Sow');
-    await owner.page.getByRole('button', { name: 'Transférer' }).click();
-    await owner.page.getByRole('alertdialog').getByRole('button', { name: 'Transférer' }).click();
-    // The former owner stays admin: the new owner is no longer theirs to manage.
-    await expect(row.getByText('Propriétaire')).toBeVisible();
-    await owner.context.close();
-    await invitee.context.close();
-  });
+      await choose(owner.page, 'Nouveau propriétaire', 'Fatou Sow');
+      await owner.page.getByRole('button', { name: 'Transférer' }).click();
+      await owner.page.getByRole('alertdialog').getByRole('button', { name: 'Transférer' }).click();
+      // The former owner stays admin: the new owner is no longer theirs to manage.
+      await expect(row.getByText('Propriétaire')).toBeVisible();
+      await owner.context.close();
+      await invitee.context.close();
+    },
+  );
 
   test('a person without an account signs up, then accepts the invitation', async ({ browser }) => {
     const owner = await memberPage(browser, 'org-external', { name: 'Claudine Pierre-Louis' });

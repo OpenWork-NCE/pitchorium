@@ -12,7 +12,10 @@
 #   LIVE_PROJECT        Compose project name (default: pitchorium-live)
 #   LIVE_PORT_OFFSET    added to the default port of every service and process (default: 30000)
 #   LIVE_KEEP           1 keeps the Compose project and prints the logs directory
-#   LIVE_SKIP_BUILD     1 reuses the builds of a previous run (local iterations only)
+#   LIVE_SKIP_BUILD     1 reuses the builds already there (a previous run, or the build job of the
+#                       CI with the same LIVE_PORT_OFFSET: the addresses are part of the web build)
+#   LIVE_BUILD_ONLY     1 builds the packages, the api, the worker and the web app, then stops
+#   PLAYWRIGHT_FAIL_ON_FLAKY  1 fails on a journey that only passes on its retry (level 3)
 #   LIVE_LOGS           directory of the logs of the services and processes (default: a new one)
 # Arguments go to `playwright test` (for instance a file or --project=chromium).
 set -euo pipefail
@@ -43,7 +46,7 @@ oauth_port=$((3400 + offset))
 export TURBO_TELEMETRY_DISABLED=1
 
 # A port already in use belongs to someone else: stop rather than share or kill it.
-for port in "$PITCHORIUM_POSTGRES_PORT" "$PITCHORIUM_VALKEY_PORT" "$PITCHORIUM_MINIO_PORT" \
+[ "${LIVE_BUILD_ONLY:-0}" = "1" ] || for port in "$PITCHORIUM_POSTGRES_PORT" "$PITCHORIUM_VALKEY_PORT" "$PITCHORIUM_MINIO_PORT" \
   "$PITCHORIUM_MINIO_CONSOLE_PORT" "$PITCHORIUM_MAILPIT_SMTP_PORT" "$PITCHORIUM_MAILPIT_UI_PORT" \
   "$api_port" "$worker_port" "$web_port" "$oauth_port"; do
   if (exec 3<>"/dev/tcp/127.0.0.1/$port") 2>/dev/null; then
@@ -57,6 +60,10 @@ groups=()
 
 cleanup() {
   local status=$?
+  if [ "${LIVE_BUILD_ONLY:-0}" = "1" ]; then
+    echo "Logs: $logs"
+    exit "$status"
+  fi
   # Only the process groups this script started, by their recorded id (AGENTS.md, rule 9).
   for group in "${groups[@]}"; do kill -TERM -- "-$group" 2>/dev/null || true; done
   for group in "${groups[@]}"; do
@@ -150,8 +157,6 @@ wait_ready() {
 }
 
 cd "$root"
-step 'infrastructure (Compose)' "${compose[@]}" up -d --wait postgres valkey minio mailpit
-step 'buckets' "${compose[@]}" run --rm minio-init
 # Built first: the demonstration data runs on the built packages (a fresh clone has none).
 if [ "${LIVE_SKIP_BUILD:-0}" != "1" ]; then
   step 'build of the api, the worker and the packages' \
@@ -160,6 +165,9 @@ if [ "${LIVE_SKIP_BUILD:-0}" != "1" ]; then
   # not carry the addresses of this run.
   step 'build of the web app' bash -c 'cd apps/web && exec node_modules/.bin/next build'
 fi
+[ "${LIVE_BUILD_ONLY:-0}" = "1" ] && exit 0
+step 'infrastructure (Compose)' "${compose[@]}" up -d --wait postgres valkey minio mailpit
+step 'buckets' "${compose[@]}" run --rm minio-init
 step 'migrations' pnpm db:migrate
 step 'reference data' pnpm db:seed
 step 'demonstration data' pnpm --filter @pitchorium/server db:seed:dev
@@ -176,6 +184,7 @@ wait_ready web "http://localhost:$web_port/fr/sign-in"
 echo "Journeys (Playwright $image)"
 docker run --rm --init --ipc=host --network host \
   --user "$(id -u):$(id -g)" -e HOME=/tmp -e CI="${CI:-}" \
+  -e PLAYWRIGHT_FAIL_ON_FLAKY="${PLAYWRIGHT_FAIL_ON_FLAKY:-}" \
   -e LIVE_WEB_URL="http://localhost:$web_port" \
   -e LIVE_API_URL="http://localhost:$api_port" \
   -e MAILPIT_URL="http://localhost:$PITCHORIUM_MAILPIT_UI_PORT" \

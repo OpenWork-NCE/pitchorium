@@ -15,25 +15,29 @@ import {
  * browser (its consent page) and on the server (its token endpoint), with the linking policy of
  * ADR 0014. A4: an account without a password turns the second factor on (ADR 0108).
  */
-test.describe('sign-in with Google', { tag: '@critical' }, () => {
+test.describe('sign-in with Google', () => {
   async function continueWithGoogle(page: Page) {
     await page.goto('/fr/sign-in');
     await hydrated(page);
     await page.getByRole('button', { name: 'Continuer avec Google' }).click();
   }
 
-  test('a new address gets an account, then the onboarding', async ({ page }) => {
-    const email = freshEmail('google-new');
-    await consentAs(page, 'google', {
-      subject: `google-${email}`,
-      email,
-      emailVerified: true,
-      name: 'Ama Owusu',
-    });
-    await continueWithGoogle(page);
-    await acceptTerms(page);
-    await expect(page.getByRole('heading', { name: 'Qu’est-ce qui vous amène ?' })).toBeVisible();
-  });
+  test(
+    'a new address gets an account, then the onboarding',
+    { tag: '@critical' },
+    async ({ page }) => {
+      const email = freshEmail('google-new');
+      await consentAs(page, 'google', {
+        subject: `google-${email}`,
+        email,
+        emailVerified: true,
+        name: 'Ama Owusu',
+      });
+      await continueWithGoogle(page);
+      await acceptTerms(page);
+      await expect(page.getByRole('heading', { name: 'Qu’est-ce qui vous amène ?' })).toBeVisible();
+    },
+  );
 
   test('an account whose address is verified on both sides is linked at once', async ({
     page,
@@ -54,39 +58,47 @@ test.describe('sign-in with Google', { tag: '@critical' }, () => {
     await other.close();
   });
 
-  test('an account whose address is not verified is never linked', async ({ page, browser }) => {
-    const member = await apiMember(page, 'google-unlinkable', { verified: false });
-    const other = await browser.newPage();
-    await consentAs(other, 'google', {
-      subject: `google-${member.email}`,
-      email: member.email,
-      emailVerified: true,
-      name: 'Quelqu’un d’autre',
-    });
-    await continueWithGoogle(other);
-    await expect(
-      other.getByRole('heading', { name: 'Cette adresse a déjà un compte' }),
-    ).toBeVisible();
-    await expect(
-      other.getByRole('link', { name: 'Se connecter, puis relier le compte' }),
-    ).toBeVisible();
-    await other.close();
-  });
+  test(
+    'an account whose address is not verified is never linked',
+    { tag: '@critical' },
+    async ({ page, browser }) => {
+      const member = await apiMember(page, 'google-unlinkable', { verified: false });
+      const other = await browser.newPage();
+      await consentAs(other, 'google', {
+        subject: `google-${member.email}`,
+        email: member.email,
+        emailVerified: true,
+        name: 'Quelqu’un d’autre',
+      });
+      await continueWithGoogle(other);
+      await expect(
+        other.getByRole('heading', { name: 'Cette adresse a déjà un compte' }),
+      ).toBeVisible();
+      await expect(
+        other.getByRole('link', { name: 'Se connecter, puis relier le compte' }),
+      ).toBeVisible();
+      await other.close();
+    },
+  );
 
-  test('an address the provider has not verified stays to verify', async ({ page }) => {
-    const email = freshEmail('google-unverified');
-    await consentAs(page, 'google', {
-      subject: `google-${email}`,
-      email,
-      emailVerified: false,
-      name: 'Kwame Asante',
-    });
-    await continueWithGoogle(page);
-    await acceptTerms(page);
-    await expect(page.getByRole('heading', { name: 'Qu’est-ce qui vous amène ?' })).toBeVisible();
-    await page.goto('/fr/feed');
-    await expect(page.getByText(`Vérifiez votre adresse ${email}`)).toBeVisible();
-  });
+  test(
+    'an address the provider has not verified stays to verify',
+    { tag: '@critical' },
+    async ({ page }) => {
+      const email = freshEmail('google-unverified');
+      await consentAs(page, 'google', {
+        subject: `google-${email}`,
+        email,
+        emailVerified: false,
+        name: 'Kwame Asante',
+      });
+      await continueWithGoogle(page);
+      await acceptTerms(page);
+      await expect(page.getByRole('heading', { name: 'Qu’est-ce qui vous amène ?' })).toBeVisible();
+      await page.goto('/fr/feed');
+      await expect(page.getByText(`Vérifiez votre adresse ${email}`)).toBeVisible();
+    },
+  );
 
   test('an account without a password turns the second factor on, then is asked for it', async ({
     page,

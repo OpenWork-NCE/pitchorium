@@ -1,9 +1,11 @@
 #!/usr/bin/env sh
 # Lighthouse CI on the production build of the end-to-end tests (ADR 0090): mobile profile,
 # budgets of lighthouserc.cjs. Chrome is found by chrome-launcher (CHROME_PATH to choose it).
+# LHCI_RUNS: runs per page (3 by default); LHCI_SCOPE=representative: one page of each kind
+# (ADR 0123); LHCI_SKIP_BUILD=1: the .next-e2e build already there (built once per CI run).
 set -eu
 cd "$(dirname "$0")/.."
-NEXT_DIST_DIR=.next-e2e \
+[ "${LHCI_SKIP_BUILD:-0}" = "1" ] || NEXT_DIST_DIR=.next-e2e \
   NEXT_PUBLIC_SITE_URL=http://localhost:3201 \
   NEXT_PUBLIC_API_URL=http://localhost:3299 \
   NEXT_PUBLIC_CDN_URL=http://localhost:3299/files \

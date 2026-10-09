@@ -4,41 +4,43 @@ import { allowConsole, expect, hydrated, memberPage, test } from './support';
  * The network against the real api (§10.2): two members in their own browser contexts, the
  * request with its note, its acceptance from the network page, the follow, the block.
  */
-test.describe('network', { tag: '@critical' }, () => {
-  test('a request with its note is accepted from the invitations of the network', async ({
-    browser,
-  }) => {
-    const a = await memberPage(browser, 'net-a', { name: 'Awa Diallo' });
-    const b = await memberPage(browser, 'net-b', { name: 'Bakary Traoré' });
+test.describe('network', () => {
+  test(
+    'a request with its note is accepted from the invitations of the network',
+    { tag: '@critical' },
+    async ({ browser }) => {
+      const a = await memberPage(browser, 'net-a', { name: 'Awa Diallo' });
+      const b = await memberPage(browser, 'net-b', { name: 'Bakary Traoré' });
 
-    await a.page.goto(`/fr/members/${b.member.handle}`);
-    await hydrated(a.page);
-    await a.page.getByRole('button', { name: 'Se connecter avec Bakary Traoré' }).click();
-    const dialog = a.page.getByRole('dialog', { name: 'Se connecter avec Bakary Traoré' });
-    await dialog.getByLabel('Note').fill('Nous nous sommes croisés au forum de Dakar.');
-    await dialog.getByRole('button', { name: 'Envoyer la demande' }).click();
-    await expect(
-      a.page.getByRole('button', { name: /Demande envoyée à Bakary Traoré/ }),
-    ).toBeVisible();
+      await a.page.goto(`/fr/members/${b.member.handle}`);
+      await hydrated(a.page);
+      await a.page.getByRole('button', { name: 'Se connecter avec Bakary Traoré' }).click();
+      const dialog = a.page.getByRole('dialog', { name: 'Se connecter avec Bakary Traoré' });
+      await dialog.getByLabel('Note').fill('Nous nous sommes croisés au forum de Dakar.');
+      await dialog.getByRole('button', { name: 'Envoyer la demande' }).click();
+      await expect(
+        a.page.getByRole('button', { name: /Demande envoyée à Bakary Traoré/ }),
+      ).toBeVisible();
 
-    await b.page.goto('/fr/network');
-    await hydrated(b.page);
-    await expect(b.page.getByRole('tab', { name: /Invitations\s*1/ })).toBeVisible();
-    await expect(b.page.getByText('Nous nous sommes croisés au forum de Dakar.')).toBeVisible();
-    await b.page.getByRole('button', { name: 'Accepter Awa Diallo' }).click();
-    await expect(b.page.getByText('Vous êtes connectés avec Awa Diallo.').first()).toBeVisible();
+      await b.page.goto('/fr/network');
+      await hydrated(b.page);
+      await expect(b.page.getByRole('tab', { name: /Invitations\s*1/ })).toBeVisible();
+      await expect(b.page.getByText('Nous nous sommes croisés au forum de Dakar.')).toBeVisible();
+      await b.page.getByRole('button', { name: 'Accepter Awa Diallo' }).click();
+      await expect(b.page.getByText('Vous êtes connectés avec Awa Diallo.').first()).toBeVisible();
 
-    await a.page.reload();
-    await expect(
-      a.page.getByRole('button', { name: /En relation avec Bakary Traoré/ }),
-    ).toBeVisible();
-    await a.page.goto('/fr/network?view=lists');
-    await expect(
-      a.page.getByRole('list', { name: 'Connexions' }).getByText('Bakary Traoré'),
-    ).toBeVisible();
-    await a.context.close();
-    await b.context.close();
-  });
+      await a.page.reload();
+      await expect(
+        a.page.getByRole('button', { name: /En relation avec Bakary Traoré/ }),
+      ).toBeVisible();
+      await a.page.goto('/fr/network?view=lists');
+      await expect(
+        a.page.getByRole('list', { name: 'Connexions' }).getByText('Bakary Traoré'),
+      ).toBeVisible();
+      await a.context.close();
+      await b.context.close();
+    },
+  );
 
   test('a pending request is withdrawn, a follow kept after a reload', async ({ browser }) => {
     const a = await memberPage(browser, 'net-withdraw', { name: 'Awa Diallo' });
@@ -92,33 +94,37 @@ test.describe('network', { tag: '@critical' }, () => {
     await d.context.close();
   });
 
-  test('a blocked member disappears, then comes back once unblocked', async ({ browser }) => {
-    // The blocked member's page is absent on purpose.
-    allowConsole(/status of 404 \(Not Found\)/);
-    const a = await memberPage(browser, 'net-block', { name: 'Awa Diallo' });
-    const e = await memberPage(browser, 'net-e', { name: 'Esther Mbala' });
-    await a.page.goto(`/fr/members/${e.member.handle}`);
-    await hydrated(a.page);
-    await a.page.getByRole('button', { name: 'Plus d’actions pour Esther Mbala' }).click();
-    await a.page.getByRole('menuitem', { name: 'Bloquer' }).click();
-    await a.page
-      .getByRole('alertdialog')
-      .getByRole('button', { name: 'Bloquer Esther Mbala' })
-      .click();
-    await expect(a.page).toHaveURL(/\/fr\/feed/);
-    expect((await a.page.goto(`/fr/members/${e.member.handle}`))?.status()).toBe(404);
+  test(
+    'a blocked member disappears, then comes back once unblocked',
+    { tag: '@critical' },
+    async ({ browser }) => {
+      // The blocked member's page is absent on purpose.
+      allowConsole(/status of 404 \(Not Found\)/);
+      const a = await memberPage(browser, 'net-block', { name: 'Awa Diallo' });
+      const e = await memberPage(browser, 'net-e', { name: 'Esther Mbala' });
+      await a.page.goto(`/fr/members/${e.member.handle}`);
+      await hydrated(a.page);
+      await a.page.getByRole('button', { name: 'Plus d’actions pour Esther Mbala' }).click();
+      await a.page.getByRole('menuitem', { name: 'Bloquer' }).click();
+      await a.page
+        .getByRole('alertdialog')
+        .getByRole('button', { name: 'Bloquer Esther Mbala' })
+        .click();
+      await expect(a.page).toHaveURL(/\/fr\/feed/);
+      expect((await a.page.goto(`/fr/members/${e.member.handle}`))?.status()).toBe(404);
 
-    await a.page.goto('/fr/settings/privacy');
-    await hydrated(a.page);
-    const blocked = a.page.getByRole('list', { name: 'Membres bloqués' });
-    await expect(blocked.getByText('Esther Mbala')).toBeVisible();
-    await blocked.getByRole('button', { name: 'Débloquer' }).click();
-    await a.page.getByRole('alertdialog').getByRole('button', { name: 'Débloquer' }).click();
-    await expect(a.page.getByText('Vous n’avez bloqué personne.')).toBeVisible();
-    expect((await a.page.goto(`/fr/members/${e.member.handle}`))?.status()).toBe(200);
-    await a.context.close();
-    await e.context.close();
-  });
+      await a.page.goto('/fr/settings/privacy');
+      await hydrated(a.page);
+      const blocked = a.page.getByRole('list', { name: 'Membres bloqués' });
+      await expect(blocked.getByText('Esther Mbala')).toBeVisible();
+      await blocked.getByRole('button', { name: 'Débloquer' }).click();
+      await a.page.getByRole('alertdialog').getByRole('button', { name: 'Débloquer' }).click();
+      await expect(a.page.getByText('Vous n’avez bloqué personne.')).toBeVisible();
+      expect((await a.page.goto(`/fr/members/${e.member.handle}`))?.status()).toBe(200);
+      await a.context.close();
+      await e.context.close();
+    },
+  );
 });
 
 test('a visit appears for the visited member, anonymous when private', async ({ browser }) => {

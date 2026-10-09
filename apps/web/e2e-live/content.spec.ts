@@ -117,47 +117,51 @@ async function choose(page: Page, button: Locator, files: Parameters<Page['setIn
   await chooser.setFiles(files);
 }
 
-test.describe('publications', { tag: '@critical' }, () => {
-  test('a publication mentions a member, who is notified', async ({ browser }) => {
-    const mentionedName = uniqueName('Bintou');
-    const b = await memberPage(browser, 'post-mentioned', { name: mentionedName });
-    const a = await memberPage(browser, 'post-author', { name: uniqueName('Awa') });
+test.describe('publications', () => {
+  test(
+    'a publication mentions a member, who is notified',
+    { tag: '@critical' },
+    async ({ browser }) => {
+      const mentionedName = uniqueName('Bintou');
+      const b = await memberPage(browser, 'post-mentioned', { name: mentionedName });
+      const a = await memberPage(browser, 'post-author', { name: uniqueName('Awa') });
 
-    const dialog = await openComposer(a.page);
-    const editor = dialog.getByRole('textbox', { name: 'Texte de la publication' });
-    await editor.pressSequentially('Merci ');
-    // The search of the api indexes a new member within seconds: typed again until found.
-    const surname = mentionedName.split(' ')[1]!;
-    await expect(async () => {
-      await editor.pressSequentially(`@${surname.slice(0, 5)}`);
-      try {
-        await expect(dialog.getByRole('option', { name: new RegExp(surname) })).toBeVisible({
-          timeout: 3_000,
-        });
-      } catch (error) {
-        for (let typed = 0; typed < 6; typed += 1) await editor.press('Backspace');
-        throw error;
-      }
-    }).toPass({ timeout: 30_000 });
-    await editor.press('Enter');
-    await editor.pressSequentially('pour la visite de la coopérative.');
-    await expect(dialog.getByText(/\/ 3\D?000$/)).toBeVisible();
-    await publish(dialog);
+      const dialog = await openComposer(a.page);
+      const editor = dialog.getByRole('textbox', { name: 'Texte de la publication' });
+      await editor.pressSequentially('Merci ');
+      // The search of the api indexes a new member within seconds: typed again until found.
+      const surname = mentionedName.split(' ')[1]!;
+      await expect(async () => {
+        await editor.pressSequentially(`@${surname.slice(0, 5)}`);
+        try {
+          await expect(dialog.getByRole('option', { name: new RegExp(surname) })).toBeVisible({
+            timeout: 3_000,
+          });
+        } catch (error) {
+          for (let typed = 0; typed < 6; typed += 1) await editor.press('Backspace');
+          throw error;
+        }
+      }).toPass({ timeout: 30_000 });
+      await editor.press('Enter');
+      await editor.pressSequentially('pour la visite de la coopérative.');
+      await expect(dialog.getByText(/\/ 3\D?000$/)).toBeVisible();
+      await publish(dialog);
 
-    const post = postWith(a.page, 'pour la visite de la coopérative.');
-    await expect(post.getByRole('link', { name: mentionedName })).toBeVisible();
+      const post = postWith(a.page, 'pour la visite de la coopérative.');
+      await expect(post.getByRole('link', { name: mentionedName })).toBeVisible();
 
-    // Written by the worker from the event of the publication.
-    // (the page of the notifications comes later: the counter of the header says it).
-    await expect(async () => {
-      await b.page.goto('/fr/feed');
-      await expect(
-        b.page.getByRole('link', { name: /^Notifications\s?, 1 notification non lue$/ }),
-      ).toBeVisible({ timeout: 3_000 });
-    }).toPass({ timeout: 60_000 });
-    await a.context.close();
-    await b.context.close();
-  });
+      // Written by the worker from the event of the publication.
+      // (the page of the notifications comes later: the counter of the header says it).
+      await expect(async () => {
+        await b.page.goto('/fr/feed');
+        await expect(
+          b.page.getByRole('link', { name: /^Notifications\s?, 1 notification non lue$/ }),
+        ).toBeVisible({ timeout: 3_000 });
+      }).toPass({ timeout: 60_000 });
+      await a.context.close();
+      await b.context.close();
+    },
+  );
 
   test('five photos are made lighter, described and read in the viewer by keyboard', async ({
     browser,
@@ -291,93 +295,101 @@ test.describe('publications', { tag: '@critical' }, () => {
   });
 });
 
-test.describe('reactions, comments and actions', { tag: '@critical' }, () => {
-  test('reacts by a click, from the keyboard menu and by a long press', async ({ browser }) => {
-    const a = await memberPage(browser, 'react-a');
-    const id = await apiPost(a.page, 'Une publication à laquelle réagir.');
-    await a.page.goto(`/fr/posts/${id}`);
-    await hydrated(a.page);
-    const post = postWith(a.page, 'Une publication à laquelle réagir.');
+test.describe('reactions, comments and actions', () => {
+  test(
+    'reacts by a click, from the keyboard menu and by a long press',
+    { tag: '@critical' },
+    async ({ browser }) => {
+      const a = await memberPage(browser, 'react-a');
+      const id = await apiPost(a.page, 'Une publication à laquelle réagir.');
+      await a.page.goto(`/fr/posts/${id}`);
+      await hydrated(a.page);
+      const post = postWith(a.page, 'Une publication à laquelle réagir.');
 
-    const like = post.getByRole('button', { name: "J'aime", exact: true });
-    await like.click();
-    await expect(like).toHaveAttribute('aria-pressed', 'true');
-    await expect(post.getByText('1 réaction')).toBeVisible();
+      const like = post.getByRole('button', { name: "J'aime", exact: true });
+      await like.click();
+      await expect(like).toHaveAttribute('aria-pressed', 'true');
+      await expect(post.getByText('1 réaction')).toBeVisible();
 
-    await post.getByRole('button', { name: 'Choisir une réaction' }).focus();
-    await a.page.keyboard.press('Enter');
-    await a.page.getByRole('menuitemradio', { name: 'Bravo' }).click();
-    // The main button of the reactions comes first (the bar of the picker may be open too).
-    const current = post.getByRole('button', { name: 'Bravo', exact: true }).first();
-    await expect(current).toHaveAttribute('aria-pressed', 'true');
-    await a.page.mouse.move(0, 0);
-    await expect(post.getByRole('toolbar', { name: 'Réactions' })).toBeHidden();
+      await post.getByRole('button', { name: 'Choisir une réaction' }).focus();
+      await a.page.keyboard.press('Enter');
+      await a.page.getByRole('menuitemradio', { name: 'Bravo' }).click();
+      // The main button of the reactions comes first (the bar of the picker may be open too).
+      const current = post.getByRole('button', { name: 'Bravo', exact: true }).first();
+      await expect(current).toHaveAttribute('aria-pressed', 'true');
+      await a.page.mouse.move(0, 0);
+      await expect(post.getByRole('toolbar', { name: 'Réactions' })).toBeHidden();
 
-    // A long press of a finger opens the bar of the reactions.
-    await current.dispatchEvent('pointerdown', { pointerType: 'touch', isPrimary: true });
-    await a.page.waitForTimeout(700);
-    await current.dispatchEvent('pointerup', { pointerType: 'touch', isPrimary: true });
-    const bar = post.getByRole('toolbar', { name: 'Réactions' });
-    // Kept once the api has answered: shown at once, the reaction may still be on its way, and a
-    // reload before the answer would lose it (seen in WebKit).
-    const kept = a.page.waitForResponse(
-      (response) =>
-        /\/v1\/posts\/[^/]+\/reaction$/.test(new URL(response.url()).pathname) &&
-        response.request().method() === 'PUT' &&
-        response.ok(),
-    );
-    await bar.getByRole('button', { name: 'Soutien' }).click();
-    await expect(
-      post.getByRole('button', { name: 'Soutien', exact: true }).first(),
-    ).toHaveAttribute('aria-pressed', 'true');
-    await kept;
-    await a.page.reload();
-    await expect(
-      postWith(a.page, 'Une publication à laquelle réagir.').getByRole('button', {
-        name: 'Soutien',
-        exact: true,
-      }),
-    ).toHaveAttribute('aria-pressed', 'true');
-    await a.context.close();
-  });
+      // A long press of a finger opens the bar of the reactions.
+      await current.dispatchEvent('pointerdown', { pointerType: 'touch', isPrimary: true });
+      await a.page.waitForTimeout(700);
+      await current.dispatchEvent('pointerup', { pointerType: 'touch', isPrimary: true });
+      const bar = post.getByRole('toolbar', { name: 'Réactions' });
+      // Kept once the api has answered: shown at once, the reaction may still be on its way, and a
+      // reload before the answer would lose it (seen in WebKit).
+      const kept = a.page.waitForResponse(
+        (response) =>
+          /\/v1\/posts\/[^/]+\/reaction$/.test(new URL(response.url()).pathname) &&
+          response.request().method() === 'PUT' &&
+          response.ok(),
+      );
+      await bar.getByRole('button', { name: 'Soutien' }).click();
+      await expect(
+        post.getByRole('button', { name: 'Soutien', exact: true }).first(),
+      ).toHaveAttribute('aria-pressed', 'true');
+      await kept;
+      await a.page.reload();
+      await expect(
+        postWith(a.page, 'Une publication à laquelle réagir.').getByRole('button', {
+          name: 'Soutien',
+          exact: true,
+        }),
+      ).toHaveAttribute('aria-pressed', 'true');
+      await a.context.close();
+    },
+  );
 
-  test('comments, replies, edits and deletes a comment', async ({ browser }) => {
-    const a = await memberPage(browser, 'comment-a');
-    const id = await apiPost(a.page, 'Une publication à commenter.');
-    await a.page.goto(`/fr/posts/${id}`);
-    await hydrated(a.page);
-    const thread = a.page.getByRole('region', { name: 'Commentaires' });
-    // The fields of the comments offer mentions: comboboxes.
-    await thread.getByRole('combobox', { name: 'Ajouter un commentaire' }).fill('Premier avis.');
-    await thread.getByRole('button', { name: 'Publier' }).click();
-    // The first comment, by its place: its text changes below.
-    const comment = thread.getByRole('article', { name: /^Commentaire de / }).first();
-    await expect(comment.getByText('Premier avis.')).toBeVisible();
+  test(
+    'comments, replies, edits and deletes a comment',
+    { tag: '@critical' },
+    async ({ browser }) => {
+      const a = await memberPage(browser, 'comment-a');
+      const id = await apiPost(a.page, 'Une publication à commenter.');
+      await a.page.goto(`/fr/posts/${id}`);
+      await hydrated(a.page);
+      const thread = a.page.getByRole('region', { name: 'Commentaires' });
+      // The fields of the comments offer mentions: comboboxes.
+      await thread.getByRole('combobox', { name: 'Ajouter un commentaire' }).fill('Premier avis.');
+      await thread.getByRole('button', { name: 'Publier' }).click();
+      // The first comment, by its place: its text changes below.
+      const comment = thread.getByRole('article', { name: /^Commentaire de / }).first();
+      await expect(comment.getByText('Premier avis.')).toBeVisible();
 
-    await comment.getByRole('button', { name: 'Répondre' }).click();
-    await thread.getByRole('combobox', { name: /^Répondre à / }).fill('Une réponse.');
-    await thread.getByRole('button', { name: 'Publier' }).last().click();
-    await expect(thread.getByText('Une réponse.')).toBeVisible();
+      await comment.getByRole('button', { name: 'Répondre' }).click();
+      await thread.getByRole('combobox', { name: /^Répondre à / }).fill('Une réponse.');
+      await thread.getByRole('button', { name: 'Publier' }).last().click();
+      await expect(thread.getByText('Une réponse.')).toBeVisible();
 
-    await comment.getByRole('button', { name: 'Modifier' }).first().click();
-    await comment.getByRole('combobox', { name: 'Modifier' }).fill('Premier avis, précisé.');
-    await comment.getByRole('button', { name: 'Enregistrer' }).click();
-    await expect(thread.getByText('Premier avis, précisé.')).toBeVisible();
-    await expect(comment.getByText(/· modifié$/)).toBeVisible();
+      await comment.getByRole('button', { name: 'Modifier' }).first().click();
+      await comment.getByRole('combobox', { name: 'Modifier' }).fill('Premier avis, précisé.');
+      await comment.getByRole('button', { name: 'Enregistrer' }).click();
+      await expect(thread.getByText('Premier avis, précisé.')).toBeVisible();
+      await expect(comment.getByText(/· modifié$/)).toBeVisible();
 
-    // The reply is the innermost comment holding its text (its parent holds it too).
-    const reply = thread
-      .getByRole('article', { name: /^Commentaire de / })
-      .filter({ hasText: 'Une réponse.' })
-      .last();
-    await reply.getByRole('button', { name: 'Supprimer' }).click();
-    await a.page
-      .getByRole('alertdialog')
-      .getByRole('button', { name: 'Supprimer le commentaire' })
-      .click();
-    await expect(thread.getByText('Une réponse.')).toBeHidden();
-    await a.context.close();
-  });
+      // The reply is the innermost comment holding its text (its parent holds it too).
+      const reply = thread
+        .getByRole('article', { name: /^Commentaire de / })
+        .filter({ hasText: 'Une réponse.' })
+        .last();
+      await reply.getByRole('button', { name: 'Supprimer' }).click();
+      await a.page
+        .getByRole('alertdialog')
+        .getByRole('button', { name: 'Supprimer le commentaire' })
+        .click();
+      await expect(thread.getByText('Une réponse.')).toBeHidden();
+      await a.context.close();
+    },
+  );
 
   test('saves a publication, hides it and brings it back', async ({ browser }) => {
     const b = await memberPage(browser, 'save-b', { name: uniqueName('Bakary') });
@@ -454,29 +466,31 @@ test.describe('reactions, comments and actions', { tag: '@critical' }, () => {
   });
 });
 
-test.describe('pages of publications', { tag: '@critical' }, () => {
-  test('a public publication is read by a visitor, a members one is not found', async ({
-    browser,
-  }) => {
-    allowConsole(/status of 404 \(Not Found\)/);
-    const a = await memberPage(browser, 'page-public', { name: uniqueName('Ines') });
-    await ok(api(a.page, 'PATCH', '/v1/me/profile/visibility', { publicPageEnabled: true }));
-    const open = await apiPost(a.page, 'Une publication ouverte à tous.', 'public');
-    const closed = await apiPost(a.page, 'Une publication réservée aux membres.');
+test.describe('pages of publications', () => {
+  test(
+    'a public publication is read by a visitor, a members one is not found',
+    { tag: '@critical' },
+    async ({ browser }) => {
+      allowConsole(/status of 404 \(Not Found\)/);
+      const a = await memberPage(browser, 'page-public', { name: uniqueName('Ines') });
+      await ok(api(a.page, 'PATCH', '/v1/me/profile/visibility', { publicPageEnabled: true }));
+      const open = await apiPost(a.page, 'Une publication ouverte à tous.', 'public');
+      const closed = await apiPost(a.page, 'Une publication réservée aux membres.');
 
-    const visitor = await browser.newContext();
-    const anonymous = await visitor.newPage();
-    const response = await anonymous.goto(`/fr/posts/${open}`);
-    expect(response?.status()).toBe(200);
-    await expect(postWith(anonymous, 'Une publication ouverte à tous.')).toBeVisible();
-    await expect(anonymous.locator('meta[name="robots"]')).toHaveAttribute('content', /^index/);
-    const jsonLd = await anonymous.locator('script[type="application/ld+json"]').textContent();
-    expect(JSON.parse(jsonLd ?? '{}')).toMatchObject({ '@type': 'SocialMediaPosting' });
-    await expect(anonymous.getByRole('link', { name: 'Se connecter pour réagir' })).toBeVisible();
-    expect((await anonymous.goto(`/fr/posts/${closed}`))?.status()).toBe(404);
-    await visitor.close();
-    await a.context.close();
-  });
+      const visitor = await browser.newContext();
+      const anonymous = await visitor.newPage();
+      const response = await anonymous.goto(`/fr/posts/${open}`);
+      expect(response?.status()).toBe(200);
+      await expect(postWith(anonymous, 'Une publication ouverte à tous.')).toBeVisible();
+      await expect(anonymous.locator('meta[name="robots"]')).toHaveAttribute('content', /^index/);
+      const jsonLd = await anonymous.locator('script[type="application/ld+json"]').textContent();
+      expect(JSON.parse(jsonLd ?? '{}')).toMatchObject({ '@type': 'SocialMediaPosting' });
+      await expect(anonymous.getByRole('link', { name: 'Se connecter pour réagir' })).toBeVisible();
+      expect((await anonymous.goto(`/fr/posts/${closed}`))?.status()).toBe(404);
+      await visitor.close();
+      await a.context.close();
+    },
+  );
 
   test('the pill brings the publications written meanwhile', async ({ browser }) => {
     const b = await memberPage(browser, 'newer-b', { name: uniqueName('Bakary') });
