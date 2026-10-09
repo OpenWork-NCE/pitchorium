@@ -34,7 +34,6 @@ import { CursorList, useCursorList } from './cursor-list';
 import { useProblemMessage } from './use-relationship';
 
 export const LIST_TABS = ['connections', 'followers', 'following'] as const;
-export type ListTab = (typeof LIST_TABS)[number];
 
 /** A member in a list: photo, name with its preview, title, then what the row adds. */
 export function MemberRow({
