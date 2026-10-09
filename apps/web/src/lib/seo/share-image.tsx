@@ -19,9 +19,14 @@ export function shareImageSize(format: ShareFormat): { width: number; height: nu
 
 /**
  * Share image of a page: its text in Bricolage Grotesque 800, violet, in the area the discreet
- * background reserves for text (top left, above the logo).
+ * background reserves for text (top left, above the logo); a resource adds a line under its name
+ * (a title, a type of structure).
  */
-export async function renderShareImage(format: ShareFormat, text: string): Promise<ImageResponse> {
+export async function renderShareImage(
+  format: ShareFormat,
+  text: string,
+  subtitle?: string | null,
+): Promise<ImageResponse> {
   const background = BACKGROUNDS[format];
   const [image, font] = await Promise.all([
     readFile(join(process.cwd(), 'assets', 'og', background.file)),
@@ -48,9 +53,15 @@ export async function renderShareImage(format: ShareFormat, text: string): Promi
           fontSize: 54 * scale,
           lineHeight: 1.12,
           color: brandColors.violet,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 18 * scale,
         }}
       >
-        {text}
+        <div style={{ display: 'flex' }}>{text}</div>
+        {subtitle ? (
+          <div style={{ display: 'flex', fontSize: 32 * scale, lineHeight: 1.2 }}>{subtitle}</div>
+        ) : null}
       </div>
     </div>,
     {

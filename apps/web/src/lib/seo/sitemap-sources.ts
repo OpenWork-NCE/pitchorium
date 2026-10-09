@@ -1,6 +1,8 @@
 import 'server-only';
 import {
   eventsControllerPublicList,
+  organizationsControllerPublicPages,
+  profilesControllerPublicPages,
   projectsControllerPublicShowcase,
 } from '@pitchorium/api-client';
 import { routes } from '@/config/routes';
@@ -30,8 +32,8 @@ async function every<T>(
 
 /**
  * Addresses of the public pages of resources (ADR 0101), from the public lists of the api: the
- * projects of the showcase and the public events. Profiles and organisations have no public list
- * yet (docs/open-questions.md, 104).
+ * projects of the showcase, the public events, the profiles whose owner opened the public page,
+ * the organisations. A member view is never listed.
  */
 export const PUBLIC_SITEMAP_SOURCES: (() => Promise<string[]>)[] = [
   async () => {
@@ -47,5 +49,19 @@ export const PUBLIC_SITEMAP_SOURCES: (() => Promise<string[]>)[] = [
       eventsControllerPublicList({ limit: 100, ...(cursor ? { cursor } : {}) }),
     );
     return events.map((event) => routes.event(event.slug));
+  },
+  async () => {
+    configureServerApi();
+    const profiles = await every((cursor) =>
+      profilesControllerPublicPages({ limit: 100, ...(cursor ? { cursor } : {}) }),
+    );
+    return profiles.map((profile) => routes.member(profile.handle));
+  },
+  async () => {
+    configureServerApi();
+    const organizations = await every((cursor) =>
+      organizationsControllerPublicPages({ limit: 100, ...(cursor ? { cursor } : {}) }),
+    );
+    return organizations.map((organization) => routes.organization(organization.slug));
   },
 ];

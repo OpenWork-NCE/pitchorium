@@ -1,6 +1,6 @@
 # 0101. Une adresse par ressource
 
-Statut : acceptée (2026-10-08). Ferme la question 103.
+Statut : acceptée (2026-10-08), révisée le 2026-10-09 (plan du site). Ferme les questions 103 et 104.
 
 ## Contexte
 
@@ -13,7 +13,8 @@ L'espace membre occupait `/projects` et `/profile`, alors que les pages publique
 - Règles de rendu (`lib/resources/view.ts`) : un membre lit la ressource comme membre (`GET /v1/profiles/{handle}`, `/v1/organizations/by-slug/{slug}`, `/v1/projects/by-slug/{slug}`, `/v1/events/by-slug/{slug}`, vue enrichie, ou ressource réservée aux membres) ; un visiteur lit sa vue publique (`GET /v1/public/...`). Une ressource absente pour le lecteur (404 ou 403 de l'api) répond 404 : un brouillon, un profil sans page publique ou un événement réservé aux membres n'existe pas pour un visiteur, et s'affiche normalement pour un membre autorisé, à la même adresse.
 - Indexation : la vue publique est indexée (`index, follow`), avec son adresse canonique et les alternatives des langues actives ; la vue membre ne l'est jamais (un robot n'a pas de session). Le groupe n'a pas d'écran de chargement : la page attend sa ressource, et un 404 est un vrai statut 404, pas une page d'erreur servie en 200.
 - `/{locale}/profile` (« Profil » du bandeau) redirige vers `/{locale}/members/{handle}` du membre connecté ; `projects` sort des segments réservés à l'espace membre (`MEMBER_SEGMENTS`).
-- Sitemap : la page d'accueil, la vitrine, puis les projets de la vitrine publique et les événements publics (listes publiques de l'api) ; les profils et organisations publics, sans liste publique dans l'api, n'y sont pas encore (question 104). `robots.txt` autorise les pages de ressources.
+- Sitemap : la page d'accueil, la vitrine, puis les projets de la vitrine publique, les événements publics, les profils dont la page publique est ouverte (`GET /v1/public/profiles`) et les organisations (`GET /v1/public/organizations`), listes publiques paginées de l'api ; jamais une vue membre. `robots.txt` autorise les pages de ressources.
+- Partage : un profil public et une organisation ont leurs images Open Graph et X (nom, titre ou type de structure), lues dans leur vue publique seulement ; une page fermée aux visiteurs partage l'image par défaut de la langue.
 - Contenu des pages : la structure, les coquilles et les règles de rendu sont livrées ici ; chaque page arrive avec son PROMPT FRONT.
 
 ## Conséquences
