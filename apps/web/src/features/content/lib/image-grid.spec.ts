@@ -6,6 +6,8 @@ describe('grid of the images of a publication', () => {
     expect(imageGrid(1)).toMatchObject({ grid: 'single', shown: 1, more: 0 });
     expect(imageGrid(2).cells.map((cell) => cell.ratio)).toEqual(['4/5', '4/5']);
     expect(imageGrid(3).cells.map((cell) => cell.span)).toEqual([2, 1, 1]);
+    // The tall image stretches to the two squares beside it.
+    expect(imageGrid(3).cells[0]?.ratio).toBe('auto');
     expect(imageGrid(4)).toMatchObject({ grid: 'four', shown: 4, more: 0 });
   });
 

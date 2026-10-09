@@ -42,8 +42,9 @@ export function imageGrid(count: number): ImageGridLayout {
       shown: 3,
       more: 0,
       grid: 'three',
+      // The tall image fills the height of the two squares beside it.
       cells: [
-        { ratio: '4/5', span: 2 },
+        { ratio: 'auto', span: 2 },
         { ratio: '1/1', span: 1 },
         { ratio: '1/1', span: 1 },
       ],

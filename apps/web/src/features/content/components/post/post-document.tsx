@@ -51,7 +51,7 @@ export function PostDocument({
   }
 
   return (
-    <div className="flex items-center gap-3 rounded-lg border border-border bg-surface-sunken p-3">
+    <div className="flex flex-wrap items-center gap-3 rounded-lg border border-border bg-surface-sunken p-3">
       <span className="flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-md bg-surface">
         {document.thumbnailUrl ? (
           // eslint-disable-next-line @next/next/no-img-element -- presigned thumbnail of a private file.
@@ -65,7 +65,7 @@ export function PostDocument({
           <FileText aria-hidden className="size-6 text-muted" />
         )}
       </span>
-      <span className="grid min-w-0 flex-1 gap-0.5">
+      <span className="grid min-w-40 flex-1 gap-0.5">
         <span className="truncate font-semibold">{title}</span>
         {document.pageCount ? (
           <span className="text-sm text-muted">
@@ -74,7 +74,7 @@ export function PostDocument({
         ) : null}
       </span>
       {signedIn ? (
-        <span className="flex flex-wrap gap-1">
+        <span className="flex shrink-0 flex-wrap gap-1">
           <Button
             variant="ghost"
             size="sm"
