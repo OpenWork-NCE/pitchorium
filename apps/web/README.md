@@ -9,7 +9,7 @@ cp apps/web/.env.example apps/web/.env   # NEXT_PUBLIC_API_URL : l'api locale
 pnpm dev                                 # api, worker et web (http://localhost:3200)
 ```
 
-L'api doit lister `http://localhost:3200` dans `WEB_APP_URL` et `CORS_ORIGINS` (`apps/server/.env.example`). Si le port 3000 de l'api est pris, `API_PORT` et `API_PUBLIC_URL` dans `apps/server/.env`, `NEXT_PUBLIC_API_URL` dans `apps/web/.env`. Page de santé de l'api en développement : `/fr/health`.
+Aucune variable à ajouter après la copie : `test/architecture/environment.spec.ts` vérifie que `.env.example` satisfait le schéma de `src/lib/env.ts` et en liste chaque variable. L'api doit lister `http://localhost:3200` dans `WEB_APP_URL` et `CORS_ORIGINS` (`apps/server/.env.example`). Si le port 3000 de l'api est pris, `API_PORT` et `API_PUBLIC_URL` dans `apps/server/.env`, `NEXT_PUBLIC_API_URL` dans `apps/web/.env`. Page de santé de l'api en développement : `/fr/health`.
 
 ## Commandes
 
