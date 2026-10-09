@@ -114,13 +114,13 @@ describe('Form', () => {
   it('shows the counter from 80 % of the limit, otherwise while the field has the focus', () => {
     renderWithProviders(<EventForm />);
     const title = screen.getByRole('textbox', { name: 'Titre' });
-    // Far from the limit: hidden, shown by `:focus-within` only.
-    expect(screen.getByText('0 sur 20 caractères').className).toContain(
-      'group-focus-within/field:block',
-    );
+    // Far from the limit: invisible but in place, shown by `:focus-within` only.
+    const far = screen.getByText('0 sur 20 caractères').className;
+    expect(far).toContain('invisible');
+    expect(far).toContain('group-focus-within/field:visible');
     fireEvent.change(title, { target: { value: 'Atelier de trésor' } });
     const near = screen.getByText('17 sur 20 caractères');
-    expect(near.className).not.toContain('hidden');
+    expect(near.className).not.toContain('invisible');
     expect(near.hasAttribute('data-near')).toBe(true);
   });
 
