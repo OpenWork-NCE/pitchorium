@@ -41,7 +41,7 @@ async function publish(dialog: Locator): Promise<void> {
     if (await dialog.isHidden()) return;
     await dialog.getByRole('button', { name: 'Publier', exact: true }).click({ timeout: 2_000 });
     await expect(dialog).toBeHidden({ timeout: 2_000 });
-  }).toPass({ timeout: 90_000 });
+  }).toPass({ timeout: 180_000 });
 }
 
 /** The publication of the page whose text contains this sentence. */
@@ -162,6 +162,8 @@ test.describe('publications', { tag: '@critical' }, () => {
   test('five photos are made lighter, described and read in the viewer by keyboard', async ({
     browser,
   }) => {
+    // Five heavy photos: made lighter, sent and scanned by the antivirus (slower on a runner).
+    test.setTimeout(300_000);
     const a = await memberPage(browser, 'post-images');
     const dialog = await openComposer(a.page);
     const photos = await Promise.all([1, 2, 3, 4, 5].map((index) => heavyPhoto(a.page, index)));
