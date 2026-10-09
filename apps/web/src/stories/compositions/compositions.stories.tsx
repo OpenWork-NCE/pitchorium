@@ -9,6 +9,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Download, Filter, UserCog } from 'lucide-react';
 import { type ReactNode, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
+import { useWatch } from 'react-hook-form';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
 import { endsAfterStart } from '@/lib/forms/rules';
 import { MemberHeader } from '@/components/layout/member/member-header';
@@ -349,7 +350,7 @@ function EventForm() {
     },
   });
   const attempt = useRef(0);
-  const timeZone = form.watch('timeZone');
+  const timeZone = useWatch({ control: form.control, name: 'timeZone' });
   return (
     <Form
       form={form}

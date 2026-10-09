@@ -75,6 +75,16 @@ export function createWebConfig({ tsconfigRootDir, ignores = [] }) {
         ...jsxA11y.flatConfigs.strict.rules,
         'pitchorium/no-client-route-file': 'error',
         'no-restricted-imports': ['error', GSAP_IMPORTS],
+        // Under the React Compiler, `watch` of react-hook-form renders nothing again: a value
+        // read while typing goes through `useWatch` (its subscription).
+        'no-restricted-syntax': [
+          'error',
+          {
+            selector: "CallExpression[callee.object.name='form'][callee.property.name='watch']",
+            message:
+              'Read a value of the form with useWatch: watch does not re-render a compiled component.',
+          },
+        ],
       },
     },
     {

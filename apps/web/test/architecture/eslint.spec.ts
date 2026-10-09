@@ -132,6 +132,15 @@ describe('architecture rules of the web app', { timeout: 60_000 }, () => {
     ).toContain('react-hooks/rules-of-hooks');
   });
 
+  it('reads a value of a form by subscription, never by watch', async () => {
+    expect(
+      await rulesFor(
+        'src/features/content/violation.tsx',
+        "import { useForm } from 'react-hook-form';\nexport function X() {\n  const form = useForm<{ name: string }>();\n  return form.watch('name');\n}\n",
+      ),
+    ).toContain('no-restricted-syntax');
+  });
+
   it('refuses "use client" on a whole page or layout', async () => {
     expect(
       await rulesFor(
