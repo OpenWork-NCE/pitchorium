@@ -4,6 +4,7 @@ import { meControllerMe, meControllerUpdateProfile } from '@pitchorium/api-clien
 import { updateBaseProfileRequestSchema } from '@pitchorium/contracts';
 import { useTranslations } from 'next-intl';
 import { lazy, Suspense, useRef, useState } from 'react';
+import { useWatch } from 'react-hook-form';
 import {
   Avatar,
   Button,
@@ -77,6 +78,8 @@ export function ProfileStep({
     } as ProfileStepValues,
   });
   const applyProblem = useApplyProblem(form);
+  // Read by subscription: the initials of the avatar follow the name as it is typed.
+  const displayName = useWatch({ control: form.control, name: 'displayName' });
 
   async function refreshStrength() {
     const member = await meControllerMe();
@@ -134,7 +137,7 @@ export function ProfileStep({
       {/* The avatar and one button: the photo of the provider is already there when it exists. */}
       <div className="flex items-center gap-4">
         <Avatar
-          name={form.watch('displayName') ?? initial.displayName}
+          name={displayName ?? initial.displayName}
           src={photo.preview ?? avatarUrl}
           size="xl"
         />
