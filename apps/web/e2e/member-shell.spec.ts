@@ -69,6 +69,8 @@ test.describe('member shell', () => {
     await expect(page.getByRole('menu')).toBeVisible();
     await expect(page.getByRole('menuitem', { name: 'Profil' })).toBeFocused();
     await page.keyboard.press('ArrowDown');
+    await expect(page.getByRole('menuitem', { name: 'Mes organisations' })).toBeFocused();
+    await page.keyboard.press('ArrowDown');
     await expect(page.getByRole('menuitem', { name: 'Paramètres' })).toBeFocused();
     await page.keyboard.press('Escape');
     await expect(order.at(-1)!).toBeFocused();

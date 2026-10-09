@@ -9,6 +9,12 @@
  * (e2e/responsiveness.spec.ts). The initial JavaScript per route group is checked on the build by
  * scripts/check-bundles.mjs; the script budget below also counts the chunks loaded on demand.
  */
+/**
+ * Second pass of scripts/lighthouse.sh (LHCI_VISITOR=1): the public pages of resources read by a
+ * visitor, without the session of the first pass, which would give their member view.
+ */
+const VISITOR = process.env.LHCI_VISITOR === '1';
+
 /** Thresholds of every page (ADR 0090). */
 const THRESHOLDS = {
   'categories:performance': ['error', { minScore: 0.9 }],
@@ -24,13 +30,18 @@ module.exports = {
     collect: {
       startServerCommand: 'node e2e/support/serve.mjs',
       startServerReadyPattern: 'Ready in',
-      url: [
-        'http://localhost:3201/fr',
-        'http://localhost:3201/en',
-        'http://localhost:3201/fr/feed',
-        'http://localhost:3201/fr/sign-in',
-        'http://localhost:3201/fr/onboarding/terms',
-      ],
+      url: VISITOR
+        ? [
+            'http://localhost:3201/fr/members/aissatou-ba',
+            'http://localhost:3201/fr/organizations/fondation-teranga',
+          ]
+        : [
+            'http://localhost:3201/fr',
+            'http://localhost:3201/en',
+            'http://localhost:3201/fr/feed',
+            'http://localhost:3201/fr/sign-in',
+            'http://localhost:3201/fr/onboarding/terms',
+          ],
       numberOfRuns: Number(process.env.LHCI_RUNS ?? 3),
       settings: {
         // Reduced motion: the accessibility audit judges the contrast at rest, not in the middle
@@ -38,10 +49,14 @@ module.exports = {
         chromeFlags: '--no-sandbox --headless=new --force-prefers-reduced-motion',
         // Session of a demonstration account of the stub api, for the shell of the member space:
         // the cookie reaches the server render; the browser calls of the api carry the header.
-        extraHeaders: JSON.stringify({
-          Cookie: 'pitchorium.session_token=aissatou.ba%40demo.pitchorium.test',
-          'X-Stub-Session': 'aissatou.ba@demo.pitchorium.test',
-        }),
+        ...(VISITOR
+          ? {}
+          : {
+              extraHeaders: JSON.stringify({
+                Cookie: 'pitchorium.session_token=aissatou.ba%40demo.pitchorium.test',
+                'X-Stub-Session': 'aissatou.ba@demo.pitchorium.test',
+              }),
+            }),
         throttlingMethod: 'devtools',
         throttling: {
           rttMs: 150,
@@ -79,6 +94,11 @@ module.exports = {
               { maxNumericValue: 250, aggregationMethod: 'pessimistic' },
             ],
           },
+        },
+        {
+          // Public pages of resources read by a visitor (ADR 0101): indexed, SEO included.
+          matchingUrlPattern: 'localhost:3201/fr/(members|organizations)/[a-z0-9-]+$',
+          assertions: { ...THRESHOLDS, 'categories:seo': ['error', { minScore: 1 }] },
         },
         {
           // Authentication and first step of the onboarding (ADR 0104): not indexed either.

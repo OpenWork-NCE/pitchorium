@@ -10,4 +10,8 @@ NEXT_DIST_DIR=.next-e2e \
   NEXT_PUBLIC_VERCEL_ANALYTICS=false \
   NEXT_PUBLIC_SENTRY_DSN= \
   ./node_modules/.bin/next build
-exec ./node_modules/.bin/lhci autorun
+# Signed in for the member space, then as a visitor for the public pages of resources.
+./node_modules/.bin/lhci collect
+LHCI_VISITOR=1 ./node_modules/.bin/lhci collect --additive
+./node_modules/.bin/lhci assert
+exec ./node_modules/.bin/lhci upload

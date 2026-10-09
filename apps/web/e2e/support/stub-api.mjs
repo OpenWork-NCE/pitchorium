@@ -23,6 +23,8 @@ const ACCOUNTS = {
     legalUpToDate: true,
     suspended: false,
     twoFactorEnabled: false,
+    // The public page is open: visitors and search engines read it (ADR 0101).
+    publicPage: true,
   },
   'kofi.mensah@demo.pitchorium.test': {
     name: 'Kofi Mensah',
@@ -187,6 +189,110 @@ function projectOf(slug) {
   };
 }
 
+/** The profile of an account as the api gives it to a reader (privacy applied). */
+function profileOf(account) {
+  const entrepreneur =
+    account.handle === 'aissatou-ba'
+      ? {
+          companyName: 'Ferme solaire de Thiès',
+          sectorCode: 'energy',
+          stageCode: 'early_revenue',
+          companyCountryCode: 'SN',
+          companyCity: 'Thiès',
+          teamSize: 12,
+          foundedYear: 2021,
+          pitch:
+            'Des séchoirs et des pompes solaires en location pour les coopératives maraîchères.',
+          needs: ['funding', 'mentoring'],
+          soughtExpertise: ['Financement de la transition énergétique'],
+          fundingTarget: null,
+        }
+      : null;
+  return {
+    handle: account.handle,
+    displayName: account.name,
+    headline: account.headline,
+    bio: 'Je construis des solutions solaires pour les coopératives agricoles du Sénégal.',
+    countryCode: 'SN',
+    city: 'Thiès',
+    languages: ['fr', 'wo'],
+    links: { website: 'https://example.org', linkedin: null },
+    avatarUrl: null,
+    avatarMediaId: null,
+    coverUrl: null,
+    coverMediaId: null,
+    facets: { entrepreneur: entrepreneur !== null, contributor: false },
+    entrepreneur,
+    entrepreneurImpact: null,
+    contributor: null,
+    contributorOrganization: null,
+  };
+}
+
+/** The profile of its owner: the same, with its settings and its strength. */
+function ownProfileOf(email) {
+  const account = ACCOUNTS[email];
+  return {
+    ...profileOf(account),
+    userId: currentUser(email).user.id,
+    intention: 'carry_project',
+    visibility: {
+      publicPageEnabled: account.publicPage,
+      entrepreneurDetails: 'members',
+      contributorDetails: 'members',
+      networkLists: 'members',
+    },
+    strength: { level: 'intermediate', percent: 60, missing: ['avatar', 'cover', 'facet'] },
+    createdAt: '2026-09-01T09:00:00.000Z',
+    updatedAt: '2026-10-01T09:00:00.000Z',
+  };
+}
+
+const RELATIONSHIP = {
+  degree: 'second',
+  mutualConnections: { count: 3, capped: false },
+  connection: 'none',
+  requestId: null,
+  following: false,
+  followedBy: false,
+  blocked: false,
+  counts: { followers: 128, connections: 342 },
+};
+
+/** The organisation of the stub, public, verified, with a member who opened their page. */
+const ORGANIZATION = {
+  id: '0192f4a0-4000-7000-8000-000000000001',
+  slug: 'fondation-teranga',
+  name: 'Fondation Teranga',
+  structureType: 'foundation',
+  description:
+    'Bourses, mentorat et dons en nature pour les jeunes femmes entrepreneures du Sénégal et du Mali.',
+  countryCodes: ['SN', 'ML'],
+  sectorCodes: ['education', 'agriculture_forestry_fishing'],
+  websiteUrl: 'https://example.org',
+  foundedYear: 2016,
+  logoUrl: null,
+  logoMediaId: null,
+  coverUrl: null,
+  coverMediaId: null,
+  verification: { status: 'verified', verified: true, verifiedAt: '2026-09-15T09:00:00.000Z' },
+  members: [
+    {
+      handle: 'aissatou-ba',
+      displayName: 'Aïssatou Ba',
+      headline: 'Fondatrice, Ferme solaire de Thiès',
+      avatarUrl: null,
+      role: 'owner',
+    },
+  ],
+  projects: { carried: [], supported: [] },
+  viewerRole: null,
+  createdAt: '2026-09-01T09:00:00.000Z',
+};
+
+/** A page of a list read cursor by cursor, empty. */
+const EMPTY_PAGE = { items: [], nextCursor: null };
+
 /**
  * A reaction to a publication (`PUT` or `DELETE /v1/posts/{id}/reaction`), logged with its
  * Idempotency-Key: a key seen before is a replay, answered without applying it again.
@@ -231,9 +337,53 @@ function resource(request, path) {
   if (profile) {
     const account = Object.values(ACCOUNTS).find((candidate) => candidate.handle === profile[2]);
     if (!account || (!profile[1] && !sessionOf(request))) return problem(404, 'PROFILES_NOT_FOUND');
+    // A visitor reads only the page a member opened to everyone.
+    if (profile[1] && !account.publicPage) return problem(404, 'PROFILES_NOT_FOUND');
+    return { status: 200, body: profileOf(account) };
+  }
+  const relationship = /^\/v1\/network\/members\/([\w-]+)\/relationship$/.exec(path);
+  if (relationship) {
+    const email = sessionOf(request);
+    if (!email) return problem(401, 'UNAUTHENTICATED');
+    const self = ACCOUNTS[email].handle === relationship[1];
     return {
       status: 200,
-      body: { handle: account.handle, displayName: account.name, headline: account.headline },
+      body: self
+        ? { ...RELATIONSHIP, degree: 'self', mutualConnections: { count: 0, capped: false } }
+        : RELATIONSHIP,
+    };
+  }
+  if (/^\/v1\/(public\/)?network\/members\/[\w-]+\/(connections|followers|following)$/.test(path)) {
+    return { status: 200, body: EMPTY_PAGE };
+  }
+  const organization = /^\/v1\/(?:public\/organizations|organizations\/by-slug)\/([\w-]+)$/.exec(
+    path,
+  );
+  if (organization) {
+    if (organization[1] !== ORGANIZATION.slug) return problem(404, 'ORGANIZATIONS_NOT_FOUND');
+    const member = path.startsWith('/v1/organizations/') ? sessionOf(request) : undefined;
+    if (path.startsWith('/v1/organizations/') && !member) return problem(401, 'UNAUTHENTICATED');
+    const viewerRole = member && ACCOUNTS[member].handle === 'aissatou-ba' ? 'owner' : null;
+    return { status: 200, body: { ...ORGANIZATION, viewerRole } };
+  }
+  if (/^\/v1\/network\/follows\/(organization|project)\/[\w-]+$/.test(path)) {
+    return sessionOf(request)
+      ? { status: 200, body: { following: false, followers: 54 } }
+      : problem(401, 'UNAUTHENTICATED');
+  }
+  if (path === '/v1/public/profiles') {
+    const items = Object.values(ACCOUNTS)
+      .filter((account) => account.publicPage)
+      .map((account) => ({ handle: account.handle, updatedAt: '2026-10-01T09:00:00.000Z' }));
+    return { status: 200, body: { items, nextCursor: null } };
+  }
+  if (path === '/v1/public/organizations') {
+    return {
+      status: 200,
+      body: {
+        items: [{ slug: ORGANIZATION.slug, updatedAt: '2026-10-01T09:00:00.000Z' }],
+        nextCursor: null,
+      },
     };
   }
   if (path === '/v1/public/projects' || path === '/v1/projects') {
@@ -423,6 +573,37 @@ const routes = {
     const { kind, key } = await readJson(request);
     state.writes.push({ route: 'dismiss', email, kind, key, at: new Date().toISOString() });
     return { status: 204, body: null };
+  },
+  'GET /v1/me/profile': (request) => {
+    const email = sessionOf(request);
+    return email ? { status: 200, body: ownProfileOf(email) } : problem(401, 'UNAUTHENTICATED');
+  },
+  'GET /v1/me/profile-views/summary': (request) =>
+    sessionOf(request)
+      ? {
+          status: 200,
+          body: { last7Days: 12, last30Days: 47, last90Days: 131, retentionDays: 90 },
+        }
+      : problem(401, 'UNAUTHENTICATED'),
+  'GET /v1/me/profile-views': (request) =>
+    sessionOf(request) ? { status: 200, body: EMPTY_PAGE } : problem(401, 'UNAUTHENTICATED'),
+  'GET /v1/me/network/settings': (request) =>
+    sessionOf(request)
+      ? { status: 200, body: { privateProfileViews: false } }
+      : problem(401, 'UNAUTHENTICATED'),
+  'GET /v1/me/network/blocks': (request) =>
+    sessionOf(request) ? { status: 200, body: EMPTY_PAGE } : problem(401, 'UNAUTHENTICATED'),
+  'GET /v1/me/network/connection-requests': (request) =>
+    sessionOf(request) ? { status: 200, body: EMPTY_PAGE } : problem(401, 'UNAUTHENTICATED'),
+  'GET /v1/me/organizations': (request) => {
+    const email = sessionOf(request);
+    if (!email) return problem(401, 'UNAUTHENTICATED');
+    const owner = ACCOUNTS[email].handle === 'aissatou-ba';
+    const { id, slug, name, logoUrl } = ORGANIZATION;
+    return {
+      status: 200,
+      body: { items: owner ? [{ id, slug, name, logoUrl, verified: true, role: 'owner' }] : [] },
+    };
   },
   'GET /__test/writes': () => ({ status: 200, body: state.writes }),
   'POST /__test/reset': () => {

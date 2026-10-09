@@ -52,3 +52,40 @@ for (const viewport of VIEWPORTS) {
     });
   }
 }
+
+/**
+ * Pages of resources (PROMPT FRONT 3): the public page of a member as a visitor reads it, and an
+ * organisation as its owner reads it (stub api).
+ */
+const RESOURCE_PAGES = [
+  { name: 'member-profile', path: '/fr/members/aissatou-ba', member: null },
+  {
+    name: 'organization',
+    path: '/fr/organizations/fondation-teranga',
+    member: 'aissatou.ba@demo.pitchorium.test',
+  },
+] as const;
+
+for (const resource of RESOURCE_PAGES) {
+  for (const viewport of VIEWPORTS) {
+    for (const colorScheme of ['light', 'dark'] as const) {
+      test(`${resource.name} ${viewport.name} ${colorScheme}`, async ({ browser }) => {
+        const context = await browser.newContext({
+          viewport: { width: viewport.width, height: viewport.height },
+          colorScheme,
+          reducedMotion: 'reduce',
+        });
+        const page = await context.newPage();
+        if (resource.member) await signIn(page, resource.member);
+        await page.goto(resource.path);
+        await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+        await page.evaluate(() => document.fonts.ready);
+        await expect(page).toHaveScreenshot(
+          `${resource.name}-${viewport.name}-${colorScheme}.png`,
+          { fullPage: true },
+        );
+        await context.close();
+      });
+    }
+  }
+}

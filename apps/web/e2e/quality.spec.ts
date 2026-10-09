@@ -10,6 +10,9 @@ const PAGES = [
   '/fr/sign-in/password',
   '/fr/sign-up',
   '/fr/forgot-password',
+  // Pages of resources a visitor reads (PROMPT FRONT 3).
+  '/fr/members/aissatou-ba',
+  '/fr/organizations/fondation-teranga',
 ];
 
 test.describe('accessibility', () => {
