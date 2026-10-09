@@ -5,7 +5,8 @@ import { translate } from './translate.js';
 const LABELLED_PARAMS: Readonly<Record<string, string>> = {
   need: 'entrepreneurNeeds',
   hat: 'contributorHats',
-  sector: 'sectors',
+  // The short label (« Énergie »): the full one goes in the tooltip and on the detail pages.
+  sector: 'sectorsShort',
   instrument: 'fundingInstruments',
 };
 
@@ -15,7 +16,7 @@ function labelled(locale: Locale, params: Readonly<Record<string, string>>) {
   const values: Record<string, string> = {};
   for (const [name, value] of Object.entries(params)) {
     const group = LABELLED_PARAMS[name];
-    if (group) values[name] = lowerFirst(translate(locale, 'reference', `${group}.${value}`));
+    if (group) values[name] = translate(locale, 'reference', `${group}.${value}`);
     else if (name === 'country')
       values[name] = translate(locale, 'reference', `countries.${value}`);
     else if (name === 'language') {
@@ -26,9 +27,10 @@ function labelled(locale: Locale, params: Readonly<Record<string, string>>) {
 }
 
 /**
- * Reason sentence of a suggestion (discovery module, ADR 0067) in a locale: « Suggéré parce que
- * vous cherchez « mentorat » et Amina est mentor et que Amina intervient dans votre pays,
- * Sénégal ». Codes of needs, hats, sectors, instruments, countries and languages are labelled.
+ * Reason sentence of a suggestion (discovery module, ADR 0067) in a locale: « Propose du mentorat
+ * · secteur commun : Énergie ». Neutral in gender and without the name shown above it; the second
+ * reason continues the sentence (lower-case first letter). Codes of needs, hats, sectors (short
+ * labels), instruments, countries and languages are labelled.
  */
 export function suggestionSentenceText(locale: Locale, sentence: SuggestionSentence): string {
   const [first, second] = sentence.clauses.map((clause) =>
@@ -36,6 +38,6 @@ export function suggestionSentenceText(locale: Locale, sentence: SuggestionSente
   );
   return translate(locale, 'discovery', sentence.key, {
     first: first ?? '',
-    second: second ?? '',
+    second: second ? lowerFirst(second) : '',
   });
 }

@@ -54,12 +54,17 @@ describe('reason sentences', () => {
       'reasons.shared_sector',
     ]);
     expect(sentenceOf(match.reasons.slice(0, 1)).key).toBe('sentences.one');
+    // Neutral, without the name shown above the reason, the short label of the sector.
     expect(suggestionSentenceText('fr', sentence)).toBe(
-      'Suggéré parce que vous cherchez « mentorat » et Amina est mentor et que vous partagez le secteur « agriculture, sylviculture et pêche » avec Amina',
+      'Peut répondre à votre besoin : Mentorat · secteur commun : Agriculture',
     );
     expect(suggestionSentenceText('en', sentenceOf(match.reasons.slice(2, 3)))).toBe(
-      'Suggested because Amina works in your country, Senegal',
+      'Works in your country: Senegal',
     );
+    for (const reason of match.reasons) {
+      expect(reason.params).not.toHaveProperty('name');
+      expect(suggestionSentenceText('fr', sentenceOf([reason]))).not.toMatch(/Amina/);
+    }
   });
 
   it('has a French and an English text for every reason the rules produce', () => {

@@ -54,7 +54,7 @@ flowchart TD
   l --> c[Carte + phrase de raison]
 ```
 
-- Une règle donne un poids et une raison (clé `reasons.<règle>` du namespace `discovery`, paramètres : codes et nom) ; la phrase principale assemble les deux plus lourdes : « Suggéré parce que vous cherchez « mentorat » et Amina est mentor et que Amina intervient dans votre pays, Sénégal ».
+- Une règle donne un poids et une raison (clé `reasons.<règle>` du namespace `discovery`, paramètres : codes seulement, jamais le nom affiché au-dessus) ; la phrase principale assemble les deux plus lourdes en propositions courtes et neutres en genre, jointes par « · » : « Propose du mentorat · secteur commun : Énergie » (libellés courts des secteurs).
 - Mise à jour incrémentale : un profil modifié recalcule les listes de son membre, et sa propre ligne dans les listes des membres qu'il concerne (les relations sont symétriques : les mêmes filtres vus depuis le candidat trouvent les sujets, 2 000 au plus) ; une liste qui ne le concerne plus le perd.
 
 ## Page Découvrir

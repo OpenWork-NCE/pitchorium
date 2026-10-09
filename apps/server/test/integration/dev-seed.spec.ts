@@ -230,9 +230,8 @@ describe('development data', () => {
       );
       expect(Number(indexed?.count)).toBeGreaterThan(20);
       const samples = await sampleSuggestions(context);
-      expect(samples.filter((line) => line.includes('Suggéré parce que'))).toHaveLength(
-        samples.length,
-      );
+      // Every sample list has a suggestion and its reason sentence.
+      expect(samples.filter((line) => line.endsWith('no suggestion'))).toEqual([]);
       const withDiscovery = await counts();
       expect(await seedDevDiscovery(context, clock)).toMatchObject({
         events: 0,

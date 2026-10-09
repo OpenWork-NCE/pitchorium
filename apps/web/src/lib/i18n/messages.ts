@@ -45,6 +45,7 @@ const FEED_MESSAGES = [
   'reference.entrepreneurNeeds',
   'reference.contributorHats',
   'reference.sectors',
+  'reference.sectorsShort',
   'reference.fundingInstruments',
   'reference.countries',
 ] as const;

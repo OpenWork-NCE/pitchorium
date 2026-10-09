@@ -295,7 +295,7 @@ describe('discovery', () => {
       'ticket_fits_target',
     ]);
     expect(suggestionSentenceText('fr', aminaSuggestion!.sentence)).toBe(
-      'Suggéré parce que vous cherchez « mentorat » et Amina Diallo est mentor et que vous partagez le secteur « agriculture, sylviculture et pêche » avec Amina Diallo',
+      'Peut répondre à votre besoin : Mentorat · secteur commun : Agriculture',
     );
     const complementary = await suggestions(fatou, 'complementary_entrepreneurs');
     expect(complementary.map((item) => item.candidate.title)).toEqual(['Kofi Mensah']);

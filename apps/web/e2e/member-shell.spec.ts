@@ -315,9 +315,9 @@ test.describe('member shell on a phone', { tag: '@phone' }, () => {
       'Personnes pertinentes pour vous',
     ]);
     expect(order.indexOf('Personnes pertinentes pour vous', 5)).toBe(15);
-    await expect(
-      main.getByText('Suggéré parce que Ifeoma Okafor propose du mentorat'),
-    ).toBeVisible();
+    // Neutral, without the name shown just above it.
+    await expect(main.getByText('Propose du mentorat').first()).toBeVisible();
+    await expect(main.getByText(/Suggéré parce que|Ifeoma Okafor propose/)).toHaveCount(0);
   });
 });
 

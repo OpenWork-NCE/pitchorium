@@ -33,6 +33,7 @@ Comment assembler les composants (`components.md`) pour les situations récurren
 
 ## Données de référence
 
+- Un secteur a un libellé court (`reference.sectorsShort`, « Énergie ») dans les puces, les cartes et les phrases de suggestion, et son libellé complet (`reference.sectors`) en infobulle, pour les lecteurs d'écran et sur les pages de détail. Libellés courts provisoires (question 110).
 - Une liste au milieu d'une phrase passe par `formatList` (`lib/format/list.ts`, `Intl.ListFormat`) : conjonction de la langue, libellés en minuscules (« photo et photo de couverture »), sigles et noms à capitale intérieure gardés.
 
 ## Fil d'actualité (§10.3)

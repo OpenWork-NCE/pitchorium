@@ -70,11 +70,11 @@ describe('matching rules', () => {
     expect(match.score).toBe(35 + 20 + 20 + 15 + 15);
     expect(match.reasons[0]).toMatchObject({
       key: 'reasons.need_matches_hat',
-      params: { need: 'mentoring', hat: 'mentor', name: 'Amina' },
+      params: { need: 'mentoring', hat: 'mentor' },
     });
+    // The name is shown above the reason: the reason never repeats it.
     expect(match.reasons.find((r) => r.rule === 'country_in_intervention')?.params).toEqual({
       country: 'SN',
-      name: 'Amina',
     });
   });
 

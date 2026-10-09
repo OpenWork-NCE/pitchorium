@@ -161,7 +161,8 @@ const SUGGESTIONS = [
     hats: [],
   },
   score: 40,
-  sentence: { key: 'sentences.one', clauses: [{ key: reason, params: { name: title } }] },
+  // As the api: the reasons carry codes only, never the name shown above them.
+  sentence: { key: 'sentences.one', clauses: [{ key: reason, params: {} }] },
   reasons: [],
   rulesVersion: 1,
 }));

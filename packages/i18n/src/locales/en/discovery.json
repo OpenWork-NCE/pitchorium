@@ -1,38 +1,38 @@
 {
   "sentences": {
-    "one": "Suggested because {{first}}",
-    "two": "Suggested because {{first}} and {{second}}"
+    "one": "{{first}}",
+    "two": "{{first}} · {{second}}"
   },
   "reasons": {
-    "need_matches_hat": "you look for « {{need}} » and {{name}} is a {{hat}}",
-    "hat_matches_need": "{{name}} looks for « {{need}} », which you bring as a {{hat}}",
-    "mentoring_available": "{{name}} offers mentoring",
-    "mentoring_wanted": "{{name}} looks for mentoring, which you offer",
-    "shared_sector": "you share the sector « {{sector}} » with {{name}}",
+    "need_matches_hat": "Can answer your need: {{need}}",
+    "hat_matches_need": "Looks for what you bring: {{need}}",
+    "mentoring_available": "Offers mentoring",
+    "mentoring_wanted": "Looks for mentoring, which you offer",
+    "shared_sector": "Shared sector: {{sector}}",
     "country_in_intervention": {
-      "seeker": "{{name}} works in your country, {{country}}",
-      "team": "{{name}} works in a country of the project, {{country}}"
+      "seeker": "Works in your country: {{country}}",
+      "team": "Works in a country of the project: {{country}}"
     },
-    "intervenes_in_country": "{{name}} is based in a country where you work, {{country}}",
+    "intervenes_in_country": "In a country where you work: {{country}}",
     "ticket_fits_target": {
-      "seeker": "your funding target fits the ticket of {{name}}",
-      "helper": "the funding target of {{name}} fits your ticket",
-      "project": "the goal of {{name}} fits your ticket",
-      "team": "the goal of the project fits the ticket of {{name}}"
+      "seeker": "Your funding target fits their ticket",
+      "helper": "Their funding target fits your ticket",
+      "project": "Its goal fits your ticket",
+      "team": "The goal of the project fits their ticket"
     },
     "instruments_compatible": {
-      "helper": "{{name}} accepts « {{instrument}} », which you practise",
-      "team": "{{name}} practises « {{instrument}} », which the project accepts"
+      "helper": "Instrument you use: {{instrument}}",
+      "team": "Instrument the project accepts: {{instrument}}"
     },
-    "same_country_other_sector": "{{name}} also runs a business in your country, {{country}}, in the sector « {{sector}} »",
-    "same_sector_other_country": "{{name}} also runs a business in the sector « {{sector}} », in another country: {{country}}",
-    "mission_matches_need": "the mission « {{name}} » answers your need « {{need}} »",
-    "mission_matches_hat": "the mission « {{name}} » looks for a {{hat}}, like you",
+    "same_country_other_sector": "Same country ({{country}}), other sector: {{sector}}",
+    "same_sector_other_country": "Same sector ({{sector}}), other country: {{country}}",
+    "mission_matches_need": "Answers your need: {{need}}",
+    "mission_matches_hat": "Looks for your profile: {{hat}}",
     "mission_reachable": {
-      "remote": "the mission « {{name}} » is remote",
-      "country": "the mission « {{name}} » takes place in one of your countries, {{country}}"
+      "remote": "Remote",
+      "country": "In one of your countries: {{country}}"
     },
-    "event_in_country": "« {{name}} » takes place in one of your countries, {{country}}",
-    "shared_language": "« {{name}} » is held in {{language}}, a language you speak"
+    "event_in_country": "In one of your countries: {{country}}",
+    "shared_language": "Language you speak: {{language}}"
   }
 }

@@ -164,54 +164,52 @@ function fitsTicket(target: Money | null, ticket: ContributorSide['ticket']): bo
 }
 
 /** The entrepreneur needs what the contributor offers, from the entrepreneur's side. */
-function asSeeker(seeker: EntrepreneurSide, helper: ContributorSide, name: string) {
+function asSeeker(seeker: EntrepreneurSide, helper: ContributorSide) {
   const need = first(seeker.needs, (item) =>
     NEED_TO_HATS[item].some((hat) => helper.hats.includes(hat)),
   );
   const hat = need ? NEED_TO_HATS[need].find((item) => helper.hats.includes(item)) : undefined;
   const country = helper.interventionCountries.includes(seeker.companyCountry);
   return [
-    need && hat ? reason('need_matches_hat', 'need_matches_hat', { need, hat, name }) : null,
+    need && hat ? reason('need_matches_hat', 'need_matches_hat', { need, hat }) : null,
     seeker.needs.includes('mentoring') && helper.mentoringAvailable
-      ? reason('mentoring_available', 'mentoring_available', { name })
+      ? reason('mentoring_available', 'mentoring_available', {})
       : null,
     helper.sectors.includes(seeker.sector)
-      ? reason('shared_sector', 'shared_sector', { sector: seeker.sector, name })
+      ? reason('shared_sector', 'shared_sector', { sector: seeker.sector })
       : null,
     country
       ? reason('country_in_intervention', 'country_in_intervention.seeker', {
           country: seeker.companyCountry,
-          name,
         })
       : null,
     fitsTicket(seeker.fundingTarget, helper.ticket)
-      ? reason('ticket_fits_target', 'ticket_fits_target.seeker', { name })
+      ? reason('ticket_fits_target', 'ticket_fits_target.seeker', {})
       : null,
   ];
 }
 
 /** The same relation from the contributor's side. */
-function asHelper(helper: ContributorSide, seeker: EntrepreneurSide, name: string) {
+function asHelper(helper: ContributorSide, seeker: EntrepreneurSide) {
   const need = first(seeker.needs, (item) =>
     NEED_TO_HATS[item].some((hat) => helper.hats.includes(hat)),
   );
   const hat = need ? NEED_TO_HATS[need].find((item) => helper.hats.includes(item)) : undefined;
   return [
-    need && hat ? reason('hat_matches_need', 'hat_matches_need', { need, hat, name }) : null,
+    need && hat ? reason('hat_matches_need', 'hat_matches_need', { need, hat }) : null,
     helper.mentoringAvailable && seeker.needs.includes('mentoring')
-      ? reason('mentoring_wanted', 'mentoring_wanted', { name })
+      ? reason('mentoring_wanted', 'mentoring_wanted', {})
       : null,
     helper.sectors.includes(seeker.sector)
-      ? reason('shared_sector', 'shared_sector', { sector: seeker.sector, name })
+      ? reason('shared_sector', 'shared_sector', { sector: seeker.sector })
       : null,
     helper.interventionCountries.includes(seeker.companyCountry)
       ? reason('intervenes_in_country', 'intervenes_in_country', {
           country: seeker.companyCountry,
-          name,
         })
       : null,
     fitsTicket(seeker.fundingTarget, helper.ticket)
-      ? reason('ticket_fits_target', 'ticket_fits_target.helper', { name })
+      ? reason('ticket_fits_target', 'ticket_fits_target.helper', {})
       : null,
   ];
 }
@@ -224,10 +222,10 @@ export function matchPerson(viewer: PersonProfile, candidate: PersonProfile): Ma
   if (viewer.userId === candidate.userId) return compose([]);
   return compose([
     ...(viewer.entrepreneur && candidate.contributor
-      ? asSeeker(viewer.entrepreneur, candidate.contributor, candidate.name)
+      ? asSeeker(viewer.entrepreneur, candidate.contributor)
       : []),
     ...(viewer.contributor && candidate.entrepreneur
-      ? asHelper(viewer.contributor, candidate.entrepreneur, candidate.name)
+      ? asHelper(viewer.contributor, candidate.entrepreneur)
       : []),
   ]);
 }
@@ -247,14 +245,12 @@ export function matchComplementary(viewer: PersonProfile, candidate: PersonProfi
       ? reason('same_country_other_sector', 'same_country_other_sector', {
           country: theirs.companyCountry,
           sector: theirs.sector,
-          name: candidate.name,
         })
       : null,
     sameSector && !sameCountry
       ? reason('same_sector_other_country', 'same_sector_other_country', {
           sector: theirs.sector,
           country: theirs.companyCountry,
-          name: candidate.name,
         })
       : null,
   ]);
@@ -264,43 +260,36 @@ export function matchComplementary(viewer: PersonProfile, candidate: PersonProfi
 export function matchProject(viewer: PersonProfile, project: ProjectProfile): Match {
   const helper = viewer.contributor;
   if (!helper || project.ownerId === viewer.userId) return compose([]);
-  return compose(projectReasons(helper, project, project.title, 'helper'));
+  return compose(projectReasons(helper, project, 'helper'));
 }
 
 /** Potential contributors of a project, shown to its team (§11.4). */
 export function matchContributor(project: ProjectProfile, candidate: PersonProfile): Match {
   const helper = candidate.contributor;
   if (!helper || project.ownerId === candidate.userId) return compose([]);
-  return compose(projectReasons(helper, project, candidate.name, 'team'));
+  return compose(projectReasons(helper, project, 'team'));
 }
 
-function projectReasons(
-  helper: ContributorSide,
-  project: ProjectProfile,
-  name: string,
-  side: 'helper' | 'team',
-) {
+function projectReasons(helper: ContributorSide, project: ProjectProfile, side: 'helper' | 'team') {
   const sector = project.sector && helper.sectors.includes(project.sector) ? project.sector : null;
   const country = first(project.countries, (item) => helper.interventionCountries.includes(item));
   const instrument = first(project.instruments, (item) => helper.instruments.includes(item));
   return [
-    sector ? reason('shared_sector', 'shared_sector', { sector, name }) : null,
+    sector ? reason('shared_sector', 'shared_sector', { sector }) : null,
     country
       ? side === 'helper'
-        ? reason('intervenes_in_country', 'intervenes_in_country', { country, name })
-        : reason('country_in_intervention', 'country_in_intervention.team', { country, name })
+        ? reason('intervenes_in_country', 'intervenes_in_country', { country })
+        : reason('country_in_intervention', 'country_in_intervention.team', { country })
       : null,
     fitsTicket(project.goal, helper.ticket)
       ? reason(
           'ticket_fits_target',
           `ticket_fits_target.${side === 'helper' ? 'project' : 'team'}`,
-          {
-            name,
-          },
+          {},
         )
       : null,
     instrument
-      ? reason('instruments_compatible', `instruments_compatible.${side}`, { instrument, name })
+      ? reason('instruments_compatible', `instruments_compatible.${side}`, { instrument })
       : null,
   ];
 }
@@ -333,40 +322,38 @@ export function matchMission(viewer: PersonProfile, mission: MissionProfile): Ma
       ? viewer.entrepreneur?.needs.includes(need) === true
       : viewer.contributor?.hats.includes(hat) === true;
   if (!relevant) return compose([]);
-  const name = mission.title;
   const sector = first(mission.sectors, (item) => sectorsOf(viewer).includes(item));
   const country = first(mission.countries, (item) => countriesOf(viewer).includes(item));
   const language = first(mission.languages, (item) => viewer.languages.includes(item));
   return compose([
     mission.direction === 'offer'
-      ? reason('mission_matches_need', 'mission_matches_need', { need, name })
-      : reason('mission_matches_hat', 'mission_matches_hat', { hat, name }),
-    sector ? reason('shared_sector', 'shared_sector', { sector, name }) : null,
+      ? reason('mission_matches_need', 'mission_matches_need', { need })
+      : reason('mission_matches_hat', 'mission_matches_hat', { hat }),
+    sector ? reason('shared_sector', 'shared_sector', { sector }) : null,
     mission.remote
-      ? reason('mission_reachable', 'mission_reachable.remote', { name })
+      ? reason('mission_reachable', 'mission_reachable.remote', {})
       : country
-        ? reason('mission_reachable', 'mission_reachable.country', { country, name })
+        ? reason('mission_reachable', 'mission_reachable.country', { country })
         : null,
-    language ? reason('shared_language', 'shared_language', { language, name }) : null,
+    language ? reason('shared_language', 'shared_language', { language }) : null,
   ]);
 }
 
 /** Events for the viewer: their sectors, their countries, a language they speak. */
 export function matchEvent(viewer: PersonProfile, event: EventProfile): Match {
   if (event.organizerId === viewer.userId) return compose([]);
-  const name = event.title;
   const sector = first(event.sectors, (item) => sectorsOf(viewer).includes(item));
   const country = first(event.countries, (item) => countriesOf(viewer).includes(item));
   const reasons = compose([
-    sector ? reason('shared_sector', 'shared_sector', { sector, name }) : null,
-    country ? reason('event_in_country', 'event_in_country', { country, name }) : null,
+    sector ? reason('shared_sector', 'shared_sector', { sector }) : null,
+    country ? reason('event_in_country', 'event_in_country', { country }) : null,
   ]);
   // The language alone never suggests an event.
   if (reasons.reasons.length === 0) return reasons;
   return compose([
     ...reasons.reasons,
     viewer.languages.includes(event.language)
-      ? reason('shared_language', 'shared_language', { language: event.language, name })
+      ? reason('shared_language', 'shared_language', { language: event.language })
       : null,
   ]);
 }
