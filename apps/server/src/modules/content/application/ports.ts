@@ -13,6 +13,8 @@ export type PostPatch = Partial<
     | 'visibility'
     | 'linkPreview'
     | 'commentsDisabled'
+    | 'imageAlts'
+    | 'documentTitle'
     | 'moderationStatus'
     | 'featuredAt'
     | 'featuredBy'

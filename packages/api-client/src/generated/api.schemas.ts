@@ -742,6 +742,7 @@ export const ActionPrerequisitesDtoOutputCode = {
   CONTENT_COMMENT_NOT_FOUND: 'CONTENT_COMMENT_NOT_FOUND',
   CONTENT_POST_EMPTY: 'CONTENT_POST_EMPTY',
   CONTENT_MEDIA_COMBINATION: 'CONTENT_MEDIA_COMBINATION',
+  CONTENT_MEDIA_NOT_IN_POST: 'CONTENT_MEDIA_NOT_IN_POST',
   CONTENT_PUBLIC_VISIBILITY_NOT_ALLOWED: 'CONTENT_PUBLIC_VISIBILITY_NOT_ALLOWED',
   CONTENT_VISIBILITY_NOT_ALLOWED: 'CONTENT_VISIBILITY_NOT_ALLOWED',
   CONTENT_REPOST_NOT_ALLOWED: 'CONTENT_REPOST_NOT_ALLOWED',
@@ -3465,6 +3466,8 @@ export type FeedPageDtoOutputItemsItem =
               avif: string | null;
             };
           };
+          /** @nullable */
+          alt: string | null;
         }[];
         document: {
           /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
@@ -3472,6 +3475,8 @@ export type FeedPageDtoOutputItemsItem =
           /** @nullable */
           thumbnailUrl: string | null;
           pageCount: number | null;
+          /** @nullable */
+          title: string | null;
         } | null;
         link: {
           url: string;
@@ -3596,6 +3601,8 @@ export type FeedPageDtoOutputItemsItem =
                 avif: string | null;
               };
             };
+            /** @nullable */
+            alt: string | null;
           }[];
           document: {
             /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
@@ -3603,6 +3610,8 @@ export type FeedPageDtoOutputItemsItem =
             /** @nullable */
             thumbnailUrl: string | null;
             pageCount: number | null;
+            /** @nullable */
+            title: string | null;
           } | null;
           link: {
             url: string;
@@ -3732,6 +3741,8 @@ export type FeedPageDtoOutputItemsItem =
               avif: string | null;
             };
           };
+          /** @nullable */
+          alt: string | null;
         }[];
         document: {
           /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
@@ -3739,6 +3750,8 @@ export type FeedPageDtoOutputItemsItem =
           /** @nullable */
           thumbnailUrl: string | null;
           pageCount: number | null;
+          /** @nullable */
+          title: string | null;
         } | null;
         link: {
           url: string;
@@ -3863,6 +3876,8 @@ export type FeedPageDtoOutputItemsItem =
                 avif: string | null;
               };
             };
+            /** @nullable */
+            alt: string | null;
           }[];
           document: {
             /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
@@ -3870,6 +3885,8 @@ export type FeedPageDtoOutputItemsItem =
             /** @nullable */
             thumbnailUrl: string | null;
             pageCount: number | null;
+            /** @nullable */
+            title: string | null;
           } | null;
           link: {
             url: string;
@@ -3999,6 +4016,8 @@ export type FeedPageDtoOutputItemsItem =
               avif: string | null;
             };
           };
+          /** @nullable */
+          alt: string | null;
         }[];
         document: {
           /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
@@ -4006,6 +4025,8 @@ export type FeedPageDtoOutputItemsItem =
           /** @nullable */
           thumbnailUrl: string | null;
           pageCount: number | null;
+          /** @nullable */
+          title: string | null;
         } | null;
         link: {
           url: string;
@@ -4130,6 +4151,8 @@ export type FeedPageDtoOutputItemsItem =
                 avif: string | null;
               };
             };
+            /** @nullable */
+            alt: string | null;
           }[];
           document: {
             /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
@@ -4137,6 +4160,8 @@ export type FeedPageDtoOutputItemsItem =
             /** @nullable */
             thumbnailUrl: string | null;
             pageCount: number | null;
+            /** @nullable */
+            title: string | null;
           } | null;
           link: {
             url: string;
@@ -4434,19 +4459,28 @@ export const CreatePostDtoVisibility = {
   connections: 'connections',
 } as const;
 
+export type CreatePostDtoImagesItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  mediaId: string;
+  /** @maxLength 1000 */
+  alt?: string;
+};
+
 export interface CreatePostDto {
   /** @maxLength 3000 */
   text?: string;
   visibility?: CreatePostDtoVisibility;
   /** @pattern ^[a-z]{2}$ */
   language?: string;
-  /**
-   * @maxItems 9
-   * @items.pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$
-   */
-  imageMediaIds?: string[];
+  /** @maxItems 9 */
+  images?: CreatePostDtoImagesItem[];
   /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
   documentMediaId?: string;
+  /**
+   * @minLength 1
+   * @maxLength 200
+   */
+  documentTitle?: string;
   /** @maxLength 2048 */
   linkUrl?: string;
   /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
@@ -4524,6 +4558,8 @@ export type PostDtoOutputImagesItem = {
   mediaId: string;
   url: string;
   variants: PostDtoOutputImagesItemVariants;
+  /** @nullable */
+  alt: string | null;
 };
 
 export type PostDtoOutputDocument = {
@@ -4532,6 +4568,8 @@ export type PostDtoOutputDocument = {
   /** @nullable */
   thumbnailUrl: string | null;
   pageCount: number | null;
+  /** @nullable */
+  title: string | null;
 } | null;
 
 export type PostDtoOutputLinkStatus =
@@ -4690,6 +4728,8 @@ export type PostDtoOutputRepostOfImagesItem = {
   mediaId: string;
   url: string;
   variants: PostDtoOutputRepostOfImagesItemVariants;
+  /** @nullable */
+  alt: string | null;
 };
 
 export type PostDtoOutputRepostOfDocument = {
@@ -4698,6 +4738,8 @@ export type PostDtoOutputRepostOfDocument = {
   /** @nullable */
   thumbnailUrl: string | null;
   pageCount: number | null;
+  /** @nullable */
+  title: string | null;
 } | null;
 
 export type PostDtoOutputRepostOfLinkStatus =
@@ -4862,12 +4904,21 @@ export const UpdatePostDtoVisibility = {
   connections: 'connections',
 } as const;
 
+export type UpdatePostDtoImageAltsItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  mediaId: string;
+  alt: string | null;
+};
+
 export interface UpdatePostDto {
   /** @maxLength 3000 */
   text?: string;
   visibility?: UpdatePostDtoVisibility;
   language?: string | null;
   commentsDisabled?: boolean;
+  /** @maxItems 9 */
+  imageAlts?: UpdatePostDtoImageAltsItem[];
+  documentTitle?: string | null;
 }
 
 export type CreateRepostDtoVisibility =
@@ -5010,6 +5061,8 @@ export type SavedPostPageDtoOutputItemsItemPostImagesItem = {
   mediaId: string;
   url: string;
   variants: SavedPostPageDtoOutputItemsItemPostImagesItemVariants;
+  /** @nullable */
+  alt: string | null;
 };
 
 export type SavedPostPageDtoOutputItemsItemPostDocument = {
@@ -5018,6 +5071,8 @@ export type SavedPostPageDtoOutputItemsItemPostDocument = {
   /** @nullable */
   thumbnailUrl: string | null;
   pageCount: number | null;
+  /** @nullable */
+  title: string | null;
 } | null;
 
 export type SavedPostPageDtoOutputItemsItemPostLinkStatus =
@@ -5177,6 +5232,8 @@ export type SavedPostPageDtoOutputItemsItemPostRepostOfImagesItem = {
   mediaId: string;
   url: string;
   variants: SavedPostPageDtoOutputItemsItemPostRepostOfImagesItemVariants;
+  /** @nullable */
+  alt: string | null;
 };
 
 export type SavedPostPageDtoOutputItemsItemPostRepostOfDocument = {
@@ -5185,6 +5242,8 @@ export type SavedPostPageDtoOutputItemsItemPostRepostOfDocument = {
   /** @nullable */
   thumbnailUrl: string | null;
   pageCount: number | null;
+  /** @nullable */
+  title: string | null;
 } | null;
 
 export type SavedPostPageDtoOutputItemsItemPostRepostOfLinkStatus =
@@ -6865,6 +6924,8 @@ export type PostPageDtoOutputItemsItemImagesItem = {
   mediaId: string;
   url: string;
   variants: PostPageDtoOutputItemsItemImagesItemVariants;
+  /** @nullable */
+  alt: string | null;
 };
 
 export type PostPageDtoOutputItemsItemDocument = {
@@ -6873,6 +6934,8 @@ export type PostPageDtoOutputItemsItemDocument = {
   /** @nullable */
   thumbnailUrl: string | null;
   pageCount: number | null;
+  /** @nullable */
+  title: string | null;
 } | null;
 
 export type PostPageDtoOutputItemsItemLinkStatus =
@@ -7032,6 +7095,8 @@ export type PostPageDtoOutputItemsItemRepostOfImagesItem = {
   mediaId: string;
   url: string;
   variants: PostPageDtoOutputItemsItemRepostOfImagesItemVariants;
+  /** @nullable */
+  alt: string | null;
 };
 
 export type PostPageDtoOutputItemsItemRepostOfDocument = {
@@ -7040,6 +7105,8 @@ export type PostPageDtoOutputItemsItemRepostOfDocument = {
   /** @nullable */
   thumbnailUrl: string | null;
   pageCount: number | null;
+  /** @nullable */
+  title: string | null;
 } | null;
 
 export type PostPageDtoOutputItemsItemRepostOfLinkStatus =
@@ -9940,6 +10007,8 @@ export type ConversationPageDtoOutputItemsItemLastMessageSharedPostPostImagesIte
   mediaId: string;
   url: string;
   variants: ConversationPageDtoOutputItemsItemLastMessageSharedPostPostImagesItemVariants;
+  /** @nullable */
+  alt: string | null;
 };
 
 export type ConversationPageDtoOutputItemsItemLastMessageSharedPostPostDocument = {
@@ -9948,6 +10017,8 @@ export type ConversationPageDtoOutputItemsItemLastMessageSharedPostPostDocument 
   /** @nullable */
   thumbnailUrl: string | null;
   pageCount: number | null;
+  /** @nullable */
+  title: string | null;
 } | null;
 
 export type ConversationPageDtoOutputItemsItemLastMessageSharedPostPostLinkStatus =
@@ -10108,6 +10179,8 @@ export type ConversationPageDtoOutputItemsItemLastMessageSharedPostPostRepostOfI
   mediaId: string;
   url: string;
   variants: ConversationPageDtoOutputItemsItemLastMessageSharedPostPostRepostOfImagesItemVariants;
+  /** @nullable */
+  alt: string | null;
 };
 
 export type ConversationPageDtoOutputItemsItemLastMessageSharedPostPostRepostOfDocument = {
@@ -10116,6 +10189,8 @@ export type ConversationPageDtoOutputItemsItemLastMessageSharedPostPostRepostOfD
   /** @nullable */
   thumbnailUrl: string | null;
   pageCount: number | null;
+  /** @nullable */
+  title: string | null;
 } | null;
 
 export type ConversationPageDtoOutputItemsItemLastMessageSharedPostPostRepostOfLinkStatus =
@@ -10473,6 +10548,8 @@ export type MessageDtoOutputSharedPostPostImagesItem = {
   mediaId: string;
   url: string;
   variants: MessageDtoOutputSharedPostPostImagesItemVariants;
+  /** @nullable */
+  alt: string | null;
 };
 
 export type MessageDtoOutputSharedPostPostDocument = {
@@ -10481,6 +10558,8 @@ export type MessageDtoOutputSharedPostPostDocument = {
   /** @nullable */
   thumbnailUrl: string | null;
   pageCount: number | null;
+  /** @nullable */
+  title: string | null;
 } | null;
 
 export type MessageDtoOutputSharedPostPostLinkStatus =
@@ -10640,6 +10719,8 @@ export type MessageDtoOutputSharedPostPostRepostOfImagesItem = {
   mediaId: string;
   url: string;
   variants: MessageDtoOutputSharedPostPostRepostOfImagesItemVariants;
+  /** @nullable */
+  alt: string | null;
 };
 
 export type MessageDtoOutputSharedPostPostRepostOfDocument = {
@@ -10648,6 +10729,8 @@ export type MessageDtoOutputSharedPostPostRepostOfDocument = {
   /** @nullable */
   thumbnailUrl: string | null;
   pageCount: number | null;
+  /** @nullable */
+  title: string | null;
 } | null;
 
 export type MessageDtoOutputSharedPostPostRepostOfLinkStatus =
@@ -10987,6 +11070,8 @@ export type ConversationDtoOutputLastMessageSharedPostPostImagesItem = {
   mediaId: string;
   url: string;
   variants: ConversationDtoOutputLastMessageSharedPostPostImagesItemVariants;
+  /** @nullable */
+  alt: string | null;
 };
 
 export type ConversationDtoOutputLastMessageSharedPostPostDocument = {
@@ -10995,6 +11080,8 @@ export type ConversationDtoOutputLastMessageSharedPostPostDocument = {
   /** @nullable */
   thumbnailUrl: string | null;
   pageCount: number | null;
+  /** @nullable */
+  title: string | null;
 } | null;
 
 export type ConversationDtoOutputLastMessageSharedPostPostLinkStatus =
@@ -11154,6 +11241,8 @@ export type ConversationDtoOutputLastMessageSharedPostPostRepostOfImagesItem = {
   mediaId: string;
   url: string;
   variants: ConversationDtoOutputLastMessageSharedPostPostRepostOfImagesItemVariants;
+  /** @nullable */
+  alt: string | null;
 };
 
 export type ConversationDtoOutputLastMessageSharedPostPostRepostOfDocument = {
@@ -11162,6 +11251,8 @@ export type ConversationDtoOutputLastMessageSharedPostPostRepostOfDocument = {
   /** @nullable */
   thumbnailUrl: string | null;
   pageCount: number | null;
+  /** @nullable */
+  title: string | null;
 } | null;
 
 export type ConversationDtoOutputLastMessageSharedPostPostRepostOfLinkStatus =
@@ -11503,6 +11594,8 @@ export type MessagePageDtoOutputItemsItemSharedPostPostImagesItem = {
   mediaId: string;
   url: string;
   variants: MessagePageDtoOutputItemsItemSharedPostPostImagesItemVariants;
+  /** @nullable */
+  alt: string | null;
 };
 
 export type MessagePageDtoOutputItemsItemSharedPostPostDocument = {
@@ -11511,6 +11604,8 @@ export type MessagePageDtoOutputItemsItemSharedPostPostDocument = {
   /** @nullable */
   thumbnailUrl: string | null;
   pageCount: number | null;
+  /** @nullable */
+  title: string | null;
 } | null;
 
 export type MessagePageDtoOutputItemsItemSharedPostPostLinkStatus =
@@ -11670,6 +11765,8 @@ export type MessagePageDtoOutputItemsItemSharedPostPostRepostOfImagesItem = {
   mediaId: string;
   url: string;
   variants: MessagePageDtoOutputItemsItemSharedPostPostRepostOfImagesItemVariants;
+  /** @nullable */
+  alt: string | null;
 };
 
 export type MessagePageDtoOutputItemsItemSharedPostPostRepostOfDocument = {
@@ -11678,6 +11775,8 @@ export type MessagePageDtoOutputItemsItemSharedPostPostRepostOfDocument = {
   /** @nullable */
   thumbnailUrl: string | null;
   pageCount: number | null;
+  /** @nullable */
+  title: string | null;
 } | null;
 
 export type MessagePageDtoOutputItemsItemSharedPostPostRepostOfLinkStatus =
@@ -15784,6 +15883,7 @@ export const ProblemDetailsCode = {
   CONTENT_COMMENT_NOT_FOUND: 'CONTENT_COMMENT_NOT_FOUND',
   CONTENT_POST_EMPTY: 'CONTENT_POST_EMPTY',
   CONTENT_MEDIA_COMBINATION: 'CONTENT_MEDIA_COMBINATION',
+  CONTENT_MEDIA_NOT_IN_POST: 'CONTENT_MEDIA_NOT_IN_POST',
   CONTENT_PUBLIC_VISIBILITY_NOT_ALLOWED: 'CONTENT_PUBLIC_VISIBILITY_NOT_ALLOWED',
   CONTENT_VISIBILITY_NOT_ALLOWED: 'CONTENT_VISIBILITY_NOT_ALLOWED',
   CONTENT_REPOST_NOT_ALLOWED: 'CONTENT_REPOST_NOT_ALLOWED',

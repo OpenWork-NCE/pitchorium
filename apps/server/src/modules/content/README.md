@@ -5,13 +5,14 @@ Fil d'actualité (cahier des charges §10.3) : publications, repartages, mention
 ## Publications (ADR 0031)
 
 - Texte de 3 000 caractères, jusqu'à 9 images (usage media `post_image`) ou un document PDF (`post_document`), un lien http ou https avec aperçu ; au moins l'un des quatre.
+- Texte alternatif de chaque image (accessibilité, WCAG 1.1.1), écrit par l'auteur : `images: [{ mediaId, alt }]` à la création, 1 000 caractères au plus (`POST_IMAGE_ALT_MAX_LENGTH`), lu dans `images[].alt` (`null` sans texte) et modifié par `imageAlts` (`PATCH`, une image absente de la publication répond `CONTENT_MEDIA_NOT_IN_POST`) ; un changement de texte alternatif ne marque pas la publication « modifiée ». Titre du document (`documentTitle`, 200 caractères, le nom du fichier par défaut côté web), lu dans `document.title` et modifiable.
 - Visibilité `public`, `members` (défaut) ou `connections`. `public` exige la page publique de l'auteur ; si l'auteur la désactive, ses publications publiques sont lues comme `members` immédiatement, puis réécrites `members` par le worker (handler de `profiles.profile.visibility-changed.v1`) et leurs fichiers rendus privés. Réactiver la page ne rétablit rien.
 - Publication au nom d'une organisation par un `owner` ou un `admin` (`organizationId`) : `public` ou `members` ; elle apparaît dans le fil des abonnés de l'organisation.
 - Fichiers (ADR 0026) : images dans le bucket public seulement pour une publication `public`, URL présignées sinon ; document toujours privé, lu par `GET /v1/media/{mediaId}/download-url` par qui peut voir la publication (`MediaReadAuthorizer` du type de ressource `post`).
 - Mentions `@identifiant` d'un membre ou `@slug` d'une organisation (membre d'abord en cas d'homonymie), 20 au plus, résolues en identifiants stables à l'écriture et affichées avec l'identifiant et le nom actuels ; un membre de part et d'autre d'un blocage est inconnu de l'auteur et de ses lecteurs (ADR 0029) : son jeton reste du texte et sa mention n'est pas affichée.
 - Langue déclarée par l'auteur (ISO 639-1), sinon détectée (`franc-min`, 10 caractères au moins, sans le wolof), sinon `undetermined` ; stockée pour la traduction à la demande.
 - Rattachement à un projet (`projectId`) validé par le module projects (`registerProjectLinkValidator`) : seule l'équipe d'un projet publié y rattache une publication (`CONTENT_PROJECT_NOT_FOUND` sinon). La page du projet liste ses publications par la façade (`projectPosts`), selon ce que le lecteur peut voir.
-- Modification du texte, de la visibilité, de la langue (horodatage `editedAt` visible) ou de l'option de commentaires ; suppression logique par l'auteur, les fichiers sont détachés puis supprimés par le nettoyage des orphelins.
+- Modification du texte, de la visibilité, de la langue (horodatage `editedAt` visible), de l'option de commentaires, des textes alternatifs ou du titre du document (l'option de commentaires et les textes alternatifs ne marquent pas `editedAt`) ; suppression logique par l'auteur, les fichiers sont détachés puis supprimés par le nettoyage des orphelins.
 - Repartage avec commentaire facultatif : le repartage d'un repartage vise l'original ; un repartage n'élargit jamais l'audience de l'original (`public` : toute visibilité ; `members` : `members` ou `connections` ; `connections` : par son auteur seulement). L'original invisible pour le lecteur donne `repostOf: null`.
 
 ## Aperçus de liens (ADR 0033)
@@ -54,7 +55,7 @@ Chaque lecture d'une publication par un autre membre (fil ou page) ajoute le lec
 
 ## Schéma `content`
 
-`posts` (index partiels du fil par membre et par organisation, des mises en avant, des repartages, de l'image d'aperçu, des publications d'un projet), `post_mentions`, `comments` (index des commentaires de premier niveau et des réponses), `reactions` (clé : cible et membre), `saved_posts`, `hidden_posts`, `post_daily_views`.
+`posts` (textes alternatifs des images par identifiant de média, titre du document ; index partiels du fil par membre et par organisation, des mises en avant, des repartages, de l'image d'aperçu, des publications d'un projet), `post_mentions`, `comments` (index des commentaires de premier niveau et des réponses), `reactions` (clé : cible et membre), `saved_posts`, `hidden_posts`, `post_daily_views`.
 
 ## Façade publique (`index.ts`)
 

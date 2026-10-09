@@ -133,6 +133,10 @@ export const errorCodes = {
     status: 422,
     title: 'A publication holds up to nine images or one document, not both',
   },
+  CONTENT_MEDIA_NOT_IN_POST: {
+    status: 422,
+    title: 'This image or document is not part of the publication',
+  },
   CONTENT_PUBLIC_VISIBILITY_NOT_ALLOWED: {
     status: 422,
     title: 'A public publication needs the public page of the author',

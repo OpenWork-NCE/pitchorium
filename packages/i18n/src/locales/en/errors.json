@@ -134,6 +134,7 @@
   "CONTENT_COMMENT_NOT_FOUND": "This comment could not be found.",
   "CONTENT_POST_EMPTY": "Add a text, images, a document or a link to your publication.",
   "CONTENT_MEDIA_COMBINATION": "A publication holds up to nine images or one document, not both.",
+  "CONTENT_MEDIA_NOT_IN_POST": "This image or document is not part of the publication.",
   "CONTENT_PUBLIC_VISIBILITY_NOT_ALLOWED": "Enable your public page to publish publicly.",
   "CONTENT_VISIBILITY_NOT_ALLOWED": "This visibility is not available for this publication.",
   "CONTENT_REPOST_NOT_ALLOWED": "This publication cannot be reposted outside of its audience.",

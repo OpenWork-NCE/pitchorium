@@ -25,7 +25,10 @@ export interface PostRecord {
   repostOfId: string | null;
   projectId: string | null;
   imageMediaIds: string[];
+  /** Text alternatives of the images, by media id; an image without one is absent. */
+  imageAlts: Record<string, string>;
   documentMediaId: string | null;
+  documentTitle: string | null;
   linkUrl: string | null;
   linkPreview: LinkPreviewState | null;
   commentsDisabled: boolean;

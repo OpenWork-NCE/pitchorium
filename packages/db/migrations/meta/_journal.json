@@ -162,6 +162,13 @@
       "when": 1791444670002,
       "tag": "0022_admin_and_profile_highlights",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1791543616650,
+      "tag": "0023_post_image_alts",
+      "breakpoints": true
     }
   ]
 }

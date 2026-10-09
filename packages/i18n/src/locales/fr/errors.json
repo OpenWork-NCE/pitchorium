@@ -134,6 +134,7 @@
   "CONTENT_COMMENT_NOT_FOUND": "Ce commentaire est introuvable.",
   "CONTENT_POST_EMPTY": "Ajoutez un texte, des images, un document ou un lien à votre publication.",
   "CONTENT_MEDIA_COMBINATION": "Une publication contient jusqu'à neuf images ou un document, pas les deux.",
+  "CONTENT_MEDIA_NOT_IN_POST": "Cette image ou ce document ne fait pas partie de la publication.",
   "CONTENT_PUBLIC_VISIBILITY_NOT_ALLOWED": "Activez votre page publique pour publier en public.",
   "CONTENT_VISIBILITY_NOT_ALLOWED": "Cette visibilité n'est pas disponible pour cette publication.",
   "CONTENT_REPOST_NOT_ALLOWED": "Cette publication ne peut pas être repartagée en dehors de son audience.",

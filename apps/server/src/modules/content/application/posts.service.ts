@@ -53,6 +53,28 @@ export const postResource = (postId: string): MediaResourceRef => ({
 });
 
 const notFound = () => new DomainError('CONTENT_POST_NOT_FOUND', 'Publication not found');
+const mediaNotInPost = () =>
+  new DomainError('CONTENT_MEDIA_NOT_IN_POST', 'This media is not part of the publication');
+
+/** Changes that do not mark a publication « modifiée »: the comments, the text alternatives. */
+const UNMARKED_FIELDS = new Set(['commentsDisabled', 'imageAlts']);
+
+/** The text alternatives of a publication after a change; an empty one removes it. */
+function withImageAlts(
+  post: PostRecord,
+  changes: readonly { mediaId: string; alt: string | null }[],
+): Record<string, string> {
+  const alts = { ...post.imageAlts };
+  for (const { mediaId, alt } of changes) {
+    if (!post.imageMediaIds.includes(mediaId)) throw mediaNotInPost();
+    if (alt) alts[mediaId] = alt;
+    else delete alts[mediaId];
+  }
+  // Same order as the images, so that two equal maps compare equal.
+  return Object.fromEntries(
+    post.imageMediaIds.flatMap((mediaId) => (alts[mediaId] ? [[mediaId, alts[mediaId]]] : [])),
+  );
+}
 
 /** Publications and reposts (§10.3, ADR 0031). */
 @Injectable()
@@ -75,7 +97,8 @@ export class PostsService {
 
   async create(userId: string, body: CreatePostRequest): Promise<Post> {
     const text = body.text ? body.text : null;
-    const imageMediaIds = body.imageMediaIds ?? [];
+    const images = body.images ?? [];
+    const imageMediaIds = images.map((image) => image.mediaId);
     assertPublishable({
       text,
       imageCount: imageMediaIds.length,
@@ -98,7 +121,11 @@ export class PostsService {
       repostOfId: null,
       projectId: body.projectId ?? null,
       imageMediaIds,
+      imageAlts: Object.fromEntries(
+        images.flatMap((image) => (image.alt ? [[image.mediaId, image.alt]] : [])),
+      ),
       documentMediaId: body.documentMediaId ?? null,
+      documentTitle: body.documentMediaId ? (body.documentTitle ?? null) : null,
       linkUrl: body.linkUrl ?? null,
       linkPreview: body.linkUrl
         ? { status: 'pending', title: null, description: null, siteName: null, imageMediaId: null }
@@ -189,8 +216,21 @@ export class PostsService {
       patch.commentsDisabled = body.commentsDisabled;
       fields.push('commentsDisabled');
     }
+    if (body.imageAlts !== undefined) {
+      const alts = withImageAlts(post, body.imageAlts);
+      if (JSON.stringify(alts) !== JSON.stringify(post.imageAlts)) {
+        patch.imageAlts = alts;
+        fields.push('imageAlts');
+      }
+    }
+    if (body.documentTitle !== undefined && body.documentTitle !== post.documentTitle) {
+      if (post.documentMediaId === null) throw mediaNotInPost();
+      patch.documentTitle = body.documentTitle;
+      fields.push('documentTitle');
+    }
     if (fields.length > 0) {
-      if (fields.some((field) => field !== 'commentsDisabled')) patch.editedAt = now;
+      // Accessibility and presentation (comments, text alternatives) do not mark it edited.
+      if (fields.some((field) => !UNMARKED_FIELDS.has(field))) patch.editedAt = now;
       await this.transactions.run(async () => {
         await this.content.updatePost(post.id, patch);
         if (mentions) {
@@ -257,7 +297,9 @@ export class PostsService {
       repostOfId: originalId,
       projectId: null,
       imageMediaIds: [],
+      imageAlts: {},
       documentMediaId: null,
+      documentTitle: null,
       linkUrl: null,
       linkPreview: null,
       commentsDisabled: false,

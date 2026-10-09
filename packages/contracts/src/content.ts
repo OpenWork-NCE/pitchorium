@@ -12,6 +12,10 @@ export const POST_TEXT_MAX_LENGTH = 3000;
 export const POST_MAX_IMAGES = 9;
 /** Provisional, not given by the cahier des charges (docs/open-questions.md). */
 export const COMMENT_TEXT_MAX_LENGTH = 1250;
+/** Text alternative of an image, written by the author (accessibility, WCAG 1.1.1). */
+export const POST_IMAGE_ALT_MAX_LENGTH = 1000;
+/** Title of the document of a publication, shown above it (its file name by default). */
+export const POST_DOCUMENT_TITLE_MAX_LENGTH = 200;
 
 /** Audience of a publication; `members` by default, `public` needs the author's public page. */
 export const POST_VISIBILITIES = ['public', 'members', 'connections'] as const;
@@ -34,15 +38,27 @@ export const linkPreviewStatusSchema = z.enum(LINK_PREVIEW_STATUSES);
 
 export const postLinkUrlSchema = z.url({ protocol: /^https?$/ }).max(2048);
 
+export const postImageAltSchema = z.string().trim().max(POST_IMAGE_ALT_MAX_LENGTH);
+export const postDocumentTitleSchema = z.string().trim().min(1).max(POST_DOCUMENT_TITLE_MAX_LENGTH);
+
+/** A ready image of a publication (usage `post_image`) and its text alternative. */
+export const postImageInputSchema = z.object({
+  mediaId: uuidV7Schema,
+  /** Empty or absent: no text alternative (the interface asks the author for one). */
+  alt: postImageAltSchema.optional(),
+});
+
 export const createPostRequestSchema = z.object({
   text: z.string().trim().max(POST_TEXT_MAX_LENGTH).optional(),
   visibility: postVisibilitySchema.default('members'),
   /** Declared language (ISO 639-1); detected from the text otherwise. */
   language: languageCodeSchema.optional(),
-  /** Up to nine ready images (usage `post_image`), or one document. */
-  imageMediaIds: z.array(uuidV7Schema).max(POST_MAX_IMAGES).optional(),
+  /** Up to nine ready images (usage `post_image`) in their order, or one document. */
+  images: z.array(postImageInputSchema).max(POST_MAX_IMAGES).optional(),
   /** One ready PDF (usage `post_document`). */
   documentMediaId: uuidV7Schema.optional(),
+  /** Title of the document; its file name is a good default. */
+  documentTitle: postDocumentTitleSchema.optional(),
   linkUrl: postLinkUrlSchema.optional(),
   /** Publish as an organization the author is an owner or admin of. */
   organizationId: uuidV7Schema.optional(),
@@ -56,6 +72,12 @@ export const updatePostRequestSchema = z.object({
   visibility: postVisibilitySchema.optional(),
   language: languageCodeSchema.nullable().optional(),
   commentsDisabled: z.boolean().optional(),
+  /** Text alternatives of images of the publication, by image; null or empty removes one. */
+  imageAlts: z
+    .array(z.object({ mediaId: uuidV7Schema, alt: postImageAltSchema.nullable() }))
+    .max(POST_MAX_IMAGES)
+    .optional(),
+  documentTitle: postDocumentTitleSchema.nullable().optional(),
 });
 
 export const createRepostRequestSchema = z.object({
@@ -83,6 +105,8 @@ export const postImageSchema = z.object({
   /** Largest variant; a presigned URL for a non-public publication. */
   url: z.string(),
   variants: z.record(z.string(), mediaVariantSchema),
+  /** Text alternative written by the author; null when they wrote none. */
+  alt: z.string().nullable(),
 });
 
 export const postDocumentSchema = z.object({
@@ -90,6 +114,7 @@ export const postDocumentSchema = z.object({
   /** Always private: read through GET /v1/media/{mediaId}/download-url. */
   thumbnailUrl: z.string().nullable(),
   pageCount: z.number().int().nullable(),
+  title: z.string().nullable(),
 });
 
 export const linkPreviewSchema = z.object({

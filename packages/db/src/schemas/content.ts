@@ -46,7 +46,10 @@ export const contentPosts = contentSchema.table(
     repostOfId: uuid('repost_of_id').references((): AnyPgColumn => contentPosts.id),
     projectId: uuid('project_id'),
     imageMediaIds: uuid('image_media_ids').array().notNull(),
+    /** Text alternatives of the images, by media id (written by the author). */
+    imageAlts: jsonb('image_alts').$type<Record<string, string>>().notNull().default({}),
     documentMediaId: uuid('document_media_id'),
+    documentTitle: text('document_title'),
     linkUrl: text('link_url'),
     linkPreview: jsonb('link_preview').$type<LinkPreviewRecord>(),
     commentsDisabled: boolean('comments_disabled').notNull(),

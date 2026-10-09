@@ -141,13 +141,23 @@ export class PostPresenter {
         visibility: effectiveVisibility(post, card?.publicPageEnabled ?? false),
         images: post.imageMediaIds.flatMap((mediaId) => {
           const image = images.get(mediaId);
-          return image ? [{ mediaId, url: image.url, variants: image.variants }] : [];
+          return image
+            ? [
+                {
+                  mediaId,
+                  url: image.url,
+                  variants: image.variants,
+                  alt: post.imageAlts[mediaId] ?? null,
+                },
+              ]
+            : [];
         }),
         document: post.documentMediaId
           ? {
               mediaId: post.documentMediaId,
               thumbnailUrl: images.get(post.documentMediaId)?.url ?? null,
               pageCount: pages.get(post.documentMediaId) ?? null,
+              title: post.documentTitle,
             }
           : null,
         link:

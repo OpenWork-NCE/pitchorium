@@ -9779,6 +9779,7 @@
           "CONTENT_COMMENT_NOT_FOUND",
           "CONTENT_POST_EMPTY",
           "CONTENT_MEDIA_COMBINATION",
+          "CONTENT_MEDIA_NOT_IN_POST",
           "CONTENT_PUBLIC_VISIBILITY_NOT_ALLOWED",
           "CONTENT_VISIBILITY_NOT_ALLOWED",
           "CONTENT_REPOST_NOT_ALLOWED",
@@ -9901,6 +9902,7 @@
           "CONTENT_COMMENT_NOT_FOUND",
           "CONTENT_POST_EMPTY",
           "CONTENT_MEDIA_COMBINATION",
+          "CONTENT_MEDIA_NOT_IN_POST",
           "CONTENT_PUBLIC_VISIBILITY_NOT_ALLOWED",
           "CONTENT_VISIBILITY_NOT_ALLOWED",
           "CONTENT_REPOST_NOT_ALLOWED",
@@ -9999,6 +10001,7 @@
           "CONTENT_COMMENT_NOT_FOUND",
           "CONTENT_POST_EMPTY",
           "CONTENT_MEDIA_COMBINATION",
+          "CONTENT_MEDIA_NOT_IN_POST",
           "CONTENT_PUBLIC_VISIBILITY_NOT_ALLOWED",
           "CONTENT_VISIBILITY_NOT_ALLOWED",
           "CONTENT_REPOST_NOT_ALLOWED",
@@ -10109,6 +10112,7 @@
           "CONTENT_COMMENT_NOT_FOUND",
           "CONTENT_POST_EMPTY",
           "CONTENT_MEDIA_COMBINATION",
+          "CONTENT_MEDIA_NOT_IN_POST",
           "CONTENT_PUBLIC_VISIBILITY_NOT_ALLOWED",
           "CONTENT_VISIBILITY_NOT_ALLOWED",
           "CONTENT_REPOST_NOT_ALLOWED",
@@ -10198,6 +10202,7 @@
           "CONTENT_COMMENT_NOT_FOUND",
           "CONTENT_POST_EMPTY",
           "CONTENT_MEDIA_COMBINATION",
+          "CONTENT_MEDIA_NOT_IN_POST",
           "CONTENT_PUBLIC_VISIBILITY_NOT_ALLOWED",
           "CONTENT_VISIBILITY_NOT_ALLOWED",
           "CONTENT_REPOST_NOT_ALLOWED",
@@ -10271,6 +10276,7 @@
           "CONTENT_COMMENT_NOT_FOUND",
           "CONTENT_POST_EMPTY",
           "CONTENT_MEDIA_COMBINATION",
+          "CONTENT_MEDIA_NOT_IN_POST",
           "CONTENT_PUBLIC_VISIBILITY_NOT_ALLOWED",
           "CONTENT_VISIBILITY_NOT_ALLOWED",
           "CONTENT_REPOST_NOT_ALLOWED",
@@ -10407,6 +10413,7 @@
           "CONTENT_COMMENT_NOT_FOUND",
           "CONTENT_POST_EMPTY",
           "CONTENT_MEDIA_COMBINATION",
+          "CONTENT_MEDIA_NOT_IN_POST",
           "CONTENT_PUBLIC_VISIBILITY_NOT_ALLOWED",
           "CONTENT_VISIBILITY_NOT_ALLOWED",
           "CONTENT_REPOST_NOT_ALLOWED",
@@ -10519,6 +10526,7 @@
           "CONTENT_COMMENT_NOT_FOUND",
           "CONTENT_POST_EMPTY",
           "CONTENT_MEDIA_COMBINATION",
+          "CONTENT_MEDIA_NOT_IN_POST",
           "CONTENT_PUBLIC_VISIBILITY_NOT_ALLOWED",
           "CONTENT_VISIBILITY_NOT_ALLOWED",
           "CONTENT_REPOST_NOT_ALLOWED",
@@ -10615,6 +10623,7 @@
           "CONTENT_COMMENT_NOT_FOUND",
           "CONTENT_POST_EMPTY",
           "CONTENT_MEDIA_COMBINATION",
+          "CONTENT_MEDIA_NOT_IN_POST",
           "CONTENT_PUBLIC_VISIBILITY_NOT_ALLOWED",
           "CONTENT_VISIBILITY_NOT_ALLOWED",
           "CONTENT_REPOST_NOT_ALLOWED",
@@ -10706,6 +10715,7 @@
           "CONTENT_COMMENT_NOT_FOUND",
           "CONTENT_POST_EMPTY",
           "CONTENT_MEDIA_COMBINATION",
+          "CONTENT_MEDIA_NOT_IN_POST",
           "CONTENT_PUBLIC_VISIBILITY_NOT_ALLOWED",
           "CONTENT_VISIBILITY_NOT_ALLOWED",
           "CONTENT_REPOST_NOT_ALLOWED",
@@ -10795,6 +10805,7 @@
           "CONTENT_COMMENT_NOT_FOUND",
           "CONTENT_POST_EMPTY",
           "CONTENT_MEDIA_COMBINATION",
+          "CONTENT_MEDIA_NOT_IN_POST",
           "CONTENT_PUBLIC_VISIBILITY_NOT_ALLOWED",
           "CONTENT_VISIBILITY_NOT_ALLOWED",
           "CONTENT_REPOST_NOT_ALLOWED",
@@ -10900,6 +10911,7 @@
           "CONTENT_COMMENT_NOT_FOUND",
           "CONTENT_POST_EMPTY",
           "CONTENT_MEDIA_COMBINATION",
+          "CONTENT_MEDIA_NOT_IN_POST",
           "CONTENT_PUBLIC_VISIBILITY_NOT_ALLOWED",
           "CONTENT_VISIBILITY_NOT_ALLOWED",
           "CONTENT_REPOST_NOT_ALLOWED",
@@ -10991,6 +11003,7 @@
           "CONTENT_COMMENT_NOT_FOUND",
           "CONTENT_POST_EMPTY",
           "CONTENT_MEDIA_COMBINATION",
+          "CONTENT_MEDIA_NOT_IN_POST",
           "CONTENT_PUBLIC_VISIBILITY_NOT_ALLOWED",
           "CONTENT_VISIBILITY_NOT_ALLOWED",
           "CONTENT_REPOST_NOT_ALLOWED",
@@ -11080,6 +11093,7 @@
           "CONTENT_COMMENT_NOT_FOUND",
           "CONTENT_POST_EMPTY",
           "CONTENT_MEDIA_COMBINATION",
+          "CONTENT_MEDIA_NOT_IN_POST",
           "CONTENT_PUBLIC_VISIBILITY_NOT_ALLOWED",
           "CONTENT_VISIBILITY_NOT_ALLOWED",
           "CONTENT_REPOST_NOT_ALLOWED",
@@ -11178,6 +11192,7 @@
           "CONTENT_COMMENT_NOT_FOUND",
           "CONTENT_POST_EMPTY",
           "CONTENT_MEDIA_COMBINATION",
+          "CONTENT_MEDIA_NOT_IN_POST",
           "CONTENT_PUBLIC_VISIBILITY_NOT_ALLOWED",
           "CONTENT_VISIBILITY_NOT_ALLOWED",
           "CONTENT_REPOST_NOT_ALLOWED",
@@ -11314,6 +11329,7 @@
           "CONTENT_COMMENT_NOT_FOUND",
           "CONTENT_POST_EMPTY",
           "CONTENT_MEDIA_COMBINATION",
+          "CONTENT_MEDIA_NOT_IN_POST",
           "CONTENT_PUBLIC_VISIBILITY_NOT_ALLOWED",
           "CONTENT_VISIBILITY_NOT_ALLOWED",
           "CONTENT_REPOST_NOT_ALLOWED",
@@ -11431,6 +11447,7 @@
           "CONTENT_COMMENT_NOT_FOUND",
           "CONTENT_POST_EMPTY",
           "CONTENT_MEDIA_COMBINATION",
+          "CONTENT_MEDIA_NOT_IN_POST",
           "CONTENT_PUBLIC_VISIBILITY_NOT_ALLOWED",
           "CONTENT_VISIBILITY_NOT_ALLOWED",
           "CONTENT_REPOST_NOT_ALLOWED",
@@ -11550,6 +11567,7 @@
           "CONTENT_COMMENT_NOT_FOUND",
           "CONTENT_POST_EMPTY",
           "CONTENT_MEDIA_COMBINATION",
+          "CONTENT_MEDIA_NOT_IN_POST",
           "CONTENT_PUBLIC_VISIBILITY_NOT_ALLOWED",
           "CONTENT_VISIBILITY_NOT_ALLOWED",
           "CONTENT_REPOST_NOT_ALLOWED",
@@ -11662,6 +11680,7 @@
           "CONTENT_COMMENT_NOT_FOUND",
           "CONTENT_POST_EMPTY",
           "CONTENT_MEDIA_COMBINATION",
+          "CONTENT_MEDIA_NOT_IN_POST",
           "CONTENT_PUBLIC_VISIBILITY_NOT_ALLOWED",
           "CONTENT_VISIBILITY_NOT_ALLOWED",
           "CONTENT_REPOST_NOT_ALLOWED",
@@ -11751,6 +11770,7 @@
           "CONTENT_COMMENT_NOT_FOUND",
           "CONTENT_POST_EMPTY",
           "CONTENT_MEDIA_COMBINATION",
+          "CONTENT_MEDIA_NOT_IN_POST",
           "CONTENT_PUBLIC_VISIBILITY_NOT_ALLOWED",
           "CONTENT_VISIBILITY_NOT_ALLOWED",
           "CONTENT_REPOST_NOT_ALLOWED",
@@ -11863,6 +11883,7 @@
           "CONTENT_COMMENT_NOT_FOUND",
           "CONTENT_POST_EMPTY",
           "CONTENT_MEDIA_COMBINATION",
+          "CONTENT_MEDIA_NOT_IN_POST",
           "CONTENT_PUBLIC_VISIBILITY_NOT_ALLOWED",
           "CONTENT_VISIBILITY_NOT_ALLOWED",
           "CONTENT_REPOST_NOT_ALLOWED",
@@ -11959,6 +11980,7 @@
           "CONTENT_COMMENT_NOT_FOUND",
           "CONTENT_POST_EMPTY",
           "CONTENT_MEDIA_COMBINATION",
+          "CONTENT_MEDIA_NOT_IN_POST",
           "CONTENT_PUBLIC_VISIBILITY_NOT_ALLOWED",
           "CONTENT_VISIBILITY_NOT_ALLOWED",
           "CONTENT_REPOST_NOT_ALLOWED",
@@ -35419,6 +35441,7 @@
                   "CONTENT_COMMENT_NOT_FOUND",
                   "CONTENT_POST_EMPTY",
                   "CONTENT_MEDIA_COMBINATION",
+                  "CONTENT_MEDIA_NOT_IN_POST",
                   "CONTENT_PUBLIC_VISIBILITY_NOT_ALLOWED",
                   "CONTENT_VISIBILITY_NOT_ALLOWED",
                   "CONTENT_REPOST_NOT_ALLOWED",
@@ -41242,12 +41265,19 @@
                                   ],
                                   "additionalProperties": false
                                 }
+                              },
+                              "alt": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
                               }
                             },
                             "required": [
                               "mediaId",
                               "url",
-                              "variants"
+                              "variants",
+                              "alt"
                             ],
                             "additionalProperties": false
                           }
@@ -41279,12 +41309,19 @@
                                       "type": "null"
                                     }
                                   ]
+                                },
+                                "title": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
                                 }
                               },
                               "required": [
                                 "mediaId",
                                 "thumbnailUrl",
-                                "pageCount"
+                                "pageCount",
+                                "title"
                               ],
                               "additionalProperties": false
                             },
@@ -41688,12 +41725,19 @@
                                           ],
                                           "additionalProperties": false
                                         }
+                                      },
+                                      "alt": {
+                                        "type": [
+                                          "string",
+                                          "null"
+                                        ]
                                       }
                                     },
                                     "required": [
                                       "mediaId",
                                       "url",
-                                      "variants"
+                                      "variants",
+                                      "alt"
                                     ],
                                     "additionalProperties": false
                                   }
@@ -41725,12 +41769,19 @@
                                               "type": "null"
                                             }
                                           ]
+                                        },
+                                        "title": {
+                                          "type": [
+                                            "string",
+                                            "null"
+                                          ]
                                         }
                                       },
                                       "required": [
                                         "mediaId",
                                         "thumbnailUrl",
-                                        "pageCount"
+                                        "pageCount",
+                                        "title"
                                       ],
                                       "additionalProperties": false
                                     },
@@ -42200,12 +42251,19 @@
                                   ],
                                   "additionalProperties": false
                                 }
+                              },
+                              "alt": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
                               }
                             },
                             "required": [
                               "mediaId",
                               "url",
-                              "variants"
+                              "variants",
+                              "alt"
                             ],
                             "additionalProperties": false
                           }
@@ -42237,12 +42295,19 @@
                                       "type": "null"
                                     }
                                   ]
+                                },
+                                "title": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
                                 }
                               },
                               "required": [
                                 "mediaId",
                                 "thumbnailUrl",
-                                "pageCount"
+                                "pageCount",
+                                "title"
                               ],
                               "additionalProperties": false
                             },
@@ -42646,12 +42711,19 @@
                                           ],
                                           "additionalProperties": false
                                         }
+                                      },
+                                      "alt": {
+                                        "type": [
+                                          "string",
+                                          "null"
+                                        ]
                                       }
                                     },
                                     "required": [
                                       "mediaId",
                                       "url",
-                                      "variants"
+                                      "variants",
+                                      "alt"
                                     ],
                                     "additionalProperties": false
                                   }
@@ -42683,12 +42755,19 @@
                                               "type": "null"
                                             }
                                           ]
+                                        },
+                                        "title": {
+                                          "type": [
+                                            "string",
+                                            "null"
+                                          ]
                                         }
                                       },
                                       "required": [
                                         "mediaId",
                                         "thumbnailUrl",
-                                        "pageCount"
+                                        "pageCount",
+                                        "title"
                                       ],
                                       "additionalProperties": false
                                     },
@@ -43158,12 +43237,19 @@
                                   ],
                                   "additionalProperties": false
                                 }
+                              },
+                              "alt": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
                               }
                             },
                             "required": [
                               "mediaId",
                               "url",
-                              "variants"
+                              "variants",
+                              "alt"
                             ],
                             "additionalProperties": false
                           }
@@ -43195,12 +43281,19 @@
                                       "type": "null"
                                     }
                                   ]
+                                },
+                                "title": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
                                 }
                               },
                               "required": [
                                 "mediaId",
                                 "thumbnailUrl",
-                                "pageCount"
+                                "pageCount",
+                                "title"
                               ],
                               "additionalProperties": false
                             },
@@ -43604,12 +43697,19 @@
                                           ],
                                           "additionalProperties": false
                                         }
+                                      },
+                                      "alt": {
+                                        "type": [
+                                          "string",
+                                          "null"
+                                        ]
                                       }
                                     },
                                     "required": [
                                       "mediaId",
                                       "url",
-                                      "variants"
+                                      "variants",
+                                      "alt"
                                     ],
                                     "additionalProperties": false
                                   }
@@ -43641,12 +43741,19 @@
                                               "type": "null"
                                             }
                                           ]
+                                        },
+                                        "title": {
+                                          "type": [
+                                            "string",
+                                            "null"
+                                          ]
                                         }
                                       },
                                       "required": [
                                         "mediaId",
                                         "thumbnailUrl",
-                                        "pageCount"
+                                        "pageCount",
+                                        "title"
                                       ],
                                       "additionalProperties": false
                                     },
@@ -44823,19 +44930,36 @@
             "type": "string",
             "pattern": "^[a-z]{2}$"
           },
-          "imageMediaIds": {
+          "images": {
             "maxItems": 9,
             "type": "array",
             "items": {
-              "type": "string",
-              "format": "uuid",
-              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$"
+              "type": "object",
+              "properties": {
+                "mediaId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$"
+                },
+                "alt": {
+                  "type": "string",
+                  "maxLength": 1000
+                }
+              },
+              "required": [
+                "mediaId"
+              ]
             }
           },
           "documentMediaId": {
             "type": "string",
             "format": "uuid",
             "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$"
+          },
+          "documentTitle": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
           },
           "linkUrl": {
             "type": "string",
@@ -45042,12 +45166,19 @@
                     ],
                     "additionalProperties": false
                   }
+                },
+                "alt": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
                 }
               },
               "required": [
                 "mediaId",
                 "url",
-                "variants"
+                "variants",
+                "alt"
               ],
               "additionalProperties": false
             }
@@ -45079,12 +45210,19 @@
                         "type": "null"
                       }
                     ]
+                  },
+                  "title": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
                   }
                 },
                 "required": [
                   "mediaId",
                   "thumbnailUrl",
-                  "pageCount"
+                  "pageCount",
+                  "title"
                 ],
                 "additionalProperties": false
               },
@@ -45488,12 +45626,19 @@
                             ],
                             "additionalProperties": false
                           }
+                        },
+                        "alt": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
                         }
                       },
                       "required": [
                         "mediaId",
                         "url",
-                        "variants"
+                        "variants",
+                        "alt"
                       ],
                       "additionalProperties": false
                     }
@@ -45525,12 +45670,19 @@
                                 "type": "null"
                               }
                             ]
+                          },
+                          "title": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
                           }
                         },
                         "required": [
                           "mediaId",
                           "thumbnailUrl",
-                          "pageCount"
+                          "pageCount",
+                          "title"
                         ],
                         "additionalProperties": false
                       },
@@ -45826,6 +45978,47 @@
           },
           "commentsDisabled": {
             "type": "boolean"
+          },
+          "imageAlts": {
+            "maxItems": 9,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "mediaId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$"
+                },
+                "alt": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "maxLength": 1000
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "mediaId",
+                "alt"
+              ]
+            }
+          },
+          "documentTitle": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         }
       },
@@ -46125,12 +46318,19 @@
                               ],
                               "additionalProperties": false
                             }
+                          },
+                          "alt": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
                           }
                         },
                         "required": [
                           "mediaId",
                           "url",
-                          "variants"
+                          "variants",
+                          "alt"
                         ],
                         "additionalProperties": false
                       }
@@ -46162,12 +46362,19 @@
                                   "type": "null"
                                 }
                               ]
+                            },
+                            "title": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
                             }
                           },
                           "required": [
                             "mediaId",
                             "thumbnailUrl",
-                            "pageCount"
+                            "pageCount",
+                            "title"
                           ],
                           "additionalProperties": false
                         },
@@ -46571,12 +46778,19 @@
                                       ],
                                       "additionalProperties": false
                                     }
+                                  },
+                                  "alt": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ]
                                   }
                                 },
                                 "required": [
                                   "mediaId",
                                   "url",
-                                  "variants"
+                                  "variants",
+                                  "alt"
                                 ],
                                 "additionalProperties": false
                               }
@@ -46608,12 +46822,19 @@
                                           "type": "null"
                                         }
                                       ]
+                                    },
+                                    "title": {
+                                      "type": [
+                                        "string",
+                                        "null"
+                                      ]
                                     }
                                   },
                                   "required": [
                                     "mediaId",
                                     "thumbnailUrl",
-                                    "pageCount"
+                                    "pageCount",
+                                    "title"
                                   ],
                                   "additionalProperties": false
                                 },
@@ -50231,12 +50452,19 @@
                           ],
                           "additionalProperties": false
                         }
+                      },
+                      "alt": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
                       }
                     },
                     "required": [
                       "mediaId",
                       "url",
-                      "variants"
+                      "variants",
+                      "alt"
                     ],
                     "additionalProperties": false
                   }
@@ -50268,12 +50496,19 @@
                               "type": "null"
                             }
                           ]
+                        },
+                        "title": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
                         }
                       },
                       "required": [
                         "mediaId",
                         "thumbnailUrl",
-                        "pageCount"
+                        "pageCount",
+                        "title"
                       ],
                       "additionalProperties": false
                     },
@@ -50677,12 +50912,19 @@
                                   ],
                                   "additionalProperties": false
                                 }
+                              },
+                              "alt": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
                               }
                             },
                             "required": [
                               "mediaId",
                               "url",
-                              "variants"
+                              "variants",
+                              "alt"
                             ],
                             "additionalProperties": false
                           }
@@ -50714,12 +50956,19 @@
                                       "type": "null"
                                     }
                                   ]
+                                },
+                                "title": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
                                 }
                               },
                               "required": [
                                 "mediaId",
                                 "thumbnailUrl",
-                                "pageCount"
+                                "pageCount",
+                                "title"
                               ],
                               "additionalProperties": false
                             },
@@ -57171,12 +57420,19 @@
                                                   ],
                                                   "additionalProperties": false
                                                 }
+                                              },
+                                              "alt": {
+                                                "type": [
+                                                  "string",
+                                                  "null"
+                                                ]
                                               }
                                             },
                                             "required": [
                                               "mediaId",
                                               "url",
-                                              "variants"
+                                              "variants",
+                                              "alt"
                                             ],
                                             "additionalProperties": false
                                           }
@@ -57208,12 +57464,19 @@
                                                       "type": "null"
                                                     }
                                                   ]
+                                                },
+                                                "title": {
+                                                  "type": [
+                                                    "string",
+                                                    "null"
+                                                  ]
                                                 }
                                               },
                                               "required": [
                                                 "mediaId",
                                                 "thumbnailUrl",
-                                                "pageCount"
+                                                "pageCount",
+                                                "title"
                                               ],
                                               "additionalProperties": false
                                             },
@@ -57617,12 +57880,19 @@
                                                           ],
                                                           "additionalProperties": false
                                                         }
+                                                      },
+                                                      "alt": {
+                                                        "type": [
+                                                          "string",
+                                                          "null"
+                                                        ]
                                                       }
                                                     },
                                                     "required": [
                                                       "mediaId",
                                                       "url",
-                                                      "variants"
+                                                      "variants",
+                                                      "alt"
                                                     ],
                                                     "additionalProperties": false
                                                   }
@@ -57654,12 +57924,19 @@
                                                               "type": "null"
                                                             }
                                                           ]
+                                                        },
+                                                        "title": {
+                                                          "type": [
+                                                            "string",
+                                                            "null"
+                                                          ]
                                                         }
                                                       },
                                                       "required": [
                                                         "mediaId",
                                                         "thumbnailUrl",
-                                                        "pageCount"
+                                                        "pageCount",
+                                                        "title"
                                                       ],
                                                       "additionalProperties": false
                                                     },
@@ -58442,12 +58719,19 @@
                                     ],
                                     "additionalProperties": false
                                   }
+                                },
+                                "alt": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
                                 }
                               },
                               "required": [
                                 "mediaId",
                                 "url",
-                                "variants"
+                                "variants",
+                                "alt"
                               ],
                               "additionalProperties": false
                             }
@@ -58479,12 +58763,19 @@
                                         "type": "null"
                                       }
                                     ]
+                                  },
+                                  "title": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ]
                                   }
                                 },
                                 "required": [
                                   "mediaId",
                                   "thumbnailUrl",
-                                  "pageCount"
+                                  "pageCount",
+                                  "title"
                                 ],
                                 "additionalProperties": false
                               },
@@ -58888,12 +59179,19 @@
                                             ],
                                             "additionalProperties": false
                                           }
+                                        },
+                                        "alt": {
+                                          "type": [
+                                            "string",
+                                            "null"
+                                          ]
                                         }
                                       },
                                       "required": [
                                         "mediaId",
                                         "url",
-                                        "variants"
+                                        "variants",
+                                        "alt"
                                       ],
                                       "additionalProperties": false
                                     }
@@ -58925,12 +59223,19 @@
                                                 "type": "null"
                                               }
                                             ]
+                                          },
+                                          "title": {
+                                            "type": [
+                                              "string",
+                                              "null"
+                                            ]
                                           }
                                         },
                                         "required": [
                                           "mediaId",
                                           "thumbnailUrl",
-                                          "pageCount"
+                                          "pageCount",
+                                          "title"
                                         ],
                                         "additionalProperties": false
                                       },
@@ -59666,12 +59971,19 @@
                                             ],
                                             "additionalProperties": false
                                           }
+                                        },
+                                        "alt": {
+                                          "type": [
+                                            "string",
+                                            "null"
+                                          ]
                                         }
                                       },
                                       "required": [
                                         "mediaId",
                                         "url",
-                                        "variants"
+                                        "variants",
+                                        "alt"
                                       ],
                                       "additionalProperties": false
                                     }
@@ -59703,12 +60015,19 @@
                                                 "type": "null"
                                               }
                                             ]
+                                          },
+                                          "title": {
+                                            "type": [
+                                              "string",
+                                              "null"
+                                            ]
                                           }
                                         },
                                         "required": [
                                           "mediaId",
                                           "thumbnailUrl",
-                                          "pageCount"
+                                          "pageCount",
+                                          "title"
                                         ],
                                         "additionalProperties": false
                                       },
@@ -60112,12 +60431,19 @@
                                                     ],
                                                     "additionalProperties": false
                                                   }
+                                                },
+                                                "alt": {
+                                                  "type": [
+                                                    "string",
+                                                    "null"
+                                                  ]
                                                 }
                                               },
                                               "required": [
                                                 "mediaId",
                                                 "url",
-                                                "variants"
+                                                "variants",
+                                                "alt"
                                               ],
                                               "additionalProperties": false
                                             }
@@ -60149,12 +60475,19 @@
                                                         "type": "null"
                                                       }
                                                     ]
+                                                  },
+                                                  "title": {
+                                                    "type": [
+                                                      "string",
+                                                      "null"
+                                                    ]
                                                   }
                                                 },
                                                 "required": [
                                                   "mediaId",
                                                   "thumbnailUrl",
-                                                  "pageCount"
+                                                  "pageCount",
+                                                  "title"
                                                 ],
                                                 "additionalProperties": false
                                               },
@@ -60905,12 +61238,19 @@
                                           ],
                                           "additionalProperties": false
                                         }
+                                      },
+                                      "alt": {
+                                        "type": [
+                                          "string",
+                                          "null"
+                                        ]
                                       }
                                     },
                                     "required": [
                                       "mediaId",
                                       "url",
-                                      "variants"
+                                      "variants",
+                                      "alt"
                                     ],
                                     "additionalProperties": false
                                   }
@@ -60942,12 +61282,19 @@
                                               "type": "null"
                                             }
                                           ]
+                                        },
+                                        "title": {
+                                          "type": [
+                                            "string",
+                                            "null"
+                                          ]
                                         }
                                       },
                                       "required": [
                                         "mediaId",
                                         "thumbnailUrl",
-                                        "pageCount"
+                                        "pageCount",
+                                        "title"
                                       ],
                                       "additionalProperties": false
                                     },
@@ -61351,12 +61698,19 @@
                                                   ],
                                                   "additionalProperties": false
                                                 }
+                                              },
+                                              "alt": {
+                                                "type": [
+                                                  "string",
+                                                  "null"
+                                                ]
                                               }
                                             },
                                             "required": [
                                               "mediaId",
                                               "url",
-                                              "variants"
+                                              "variants",
+                                              "alt"
                                             ],
                                             "additionalProperties": false
                                           }
@@ -61388,12 +61742,19 @@
                                                       "type": "null"
                                                     }
                                                   ]
+                                                },
+                                                "title": {
+                                                  "type": [
+                                                    "string",
+                                                    "null"
+                                                  ]
                                                 }
                                               },
                                               "required": [
                                                 "mediaId",
                                                 "thumbnailUrl",
-                                                "pageCount"
+                                                "pageCount",
+                                                "title"
                                               ],
                                               "additionalProperties": false
                                             },
@@ -70724,6 +71085,7 @@
               "CONTENT_COMMENT_NOT_FOUND",
               "CONTENT_POST_EMPTY",
               "CONTENT_MEDIA_COMBINATION",
+              "CONTENT_MEDIA_NOT_IN_POST",
               "CONTENT_PUBLIC_VISIBILITY_NOT_ALLOWED",
               "CONTENT_VISIBILITY_NOT_ALLOWED",
               "CONTENT_REPOST_NOT_ALLOWED",
@@ -71580,6 +71942,15 @@
           "title": "A publication holds up to nine images or one document, not both",
           "status": 422,
           "code": "CONTENT_MEDIA_COMBINATION",
+          "requestId": "0199c1f4-7d4e-7c2a-9b1e-3f5a6c7d8e9f"
+        }
+      },
+      "CONTENT_MEDIA_NOT_IN_POST": {
+        "value": {
+          "type": "urn:pitchorium:problem:content-media-not-in-post",
+          "title": "This image or document is not part of the publication",
+          "status": 422,
+          "code": "CONTENT_MEDIA_NOT_IN_POST",
           "requestId": "0199c1f4-7d4e-7c2a-9b1e-3f5a6c7d8e9f"
         }
       },

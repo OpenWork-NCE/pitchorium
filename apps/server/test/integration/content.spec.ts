@@ -171,7 +171,11 @@ describe('content', () => {
     const both = await ama.agent
       .post('/v1/posts')
       .set('Idempotency-Key', 'both')
-      .send({ text: 'Trop', imageMediaIds: images, documentMediaId: document })
+      .send({
+        text: 'Trop',
+        images: images.map((mediaId) => ({ mediaId })),
+        documentMediaId: document,
+      })
       .expect(422);
     expect(both.body.code).toBe('CONTENT_MEDIA_COMBINATION');
     const notPublic = await ama.agent
@@ -183,7 +187,10 @@ describe('content', () => {
 
     const withImages = await publish(ama, {
       text: 'Nous lançons la récolte avec @kofi-mensah et toute la coopérative.',
-      imageMediaIds: images,
+      images: [
+        { mediaId: images[0], alt: 'Les membres de la coopérative devant les panneaux solaires' },
+        { mediaId: images[1] },
+      ],
     });
     expect(withImages).toMatchObject({
       visibility: 'members',
@@ -194,6 +201,38 @@ describe('content', () => {
       ],
     });
     expect(withImages.images).toHaveLength(2);
+    // The text alternatives, written by the author, in the order of the images.
+    expect(withImages.images.map((image) => image.alt)).toEqual([
+      'Les membres de la coopérative devant les panneaux solaires',
+      null,
+    ]);
+    const described = (
+      await ama.agent
+        .patch(`/v1/posts/${withImages.id}`)
+        .send({
+          imageAlts: [
+            { mediaId: images[0], alt: null },
+            { mediaId: images[1], alt: 'Le séchoir solaire en fonctionnement' },
+          ],
+        })
+        .expect(200)
+    ).body as Post;
+    expect(described.images.map((image) => image.alt)).toEqual([
+      null,
+      'Le séchoir solaire en fonctionnement',
+    ]);
+    // Accessibility is not an edition of the publication.
+    expect(described.editedAt).toBeNull();
+    const foreign = await ama.agent
+      .patch(`/v1/posts/${withImages.id}`)
+      .send({ imageAlts: [{ mediaId: document, alt: 'Pas une image de la publication' }] })
+      .expect(422);
+    expect(foreign.body.code).toBe('CONTENT_MEDIA_NOT_IN_POST');
+    const tooLong = await ama.agent
+      .patch(`/v1/posts/${withImages.id}`)
+      .send({ imageAlts: [{ mediaId: images[0], alt: 'a'.repeat(1001) }] })
+      .expect(400);
+    expect(tooLong.body.errors[0]).toMatchObject({ pointer: '/imageAlts/0/alt', code: 'too_big' });
     // A members-only publication: its images are private files with presigned URLs.
     expect(withImages.images[0]?.url).toContain('X-Amz-Signature=');
     expect((await fetch(withImages.images[0]?.url ?? '')).status).toBe(200);
@@ -201,8 +240,20 @@ describe('content', () => {
     const withDocument = await publish(ama, {
       text: 'Notre pitch deck',
       documentMediaId: document,
+      documentTitle: 'pitch-deck-2026.pdf',
     });
-    expect(withDocument.document).toMatchObject({ mediaId: document, pageCount: 1 });
+    expect(withDocument.document).toMatchObject({
+      mediaId: document,
+      pageCount: 1,
+      title: 'pitch-deck-2026.pdf',
+    });
+    const renamed = (
+      await ama.agent
+        .patch(`/v1/posts/${withDocument.id}`)
+        .send({ documentTitle: 'Pitch deck 2026' })
+        .expect(200)
+    ).body as Post;
+    expect(renamed.document?.title).toBe('Pitch deck 2026');
     await kofi.agent.get(`/v1/media/${document}/download-url`).expect(200);
 
     const withLink = await publish(ama, { linkUrl: `${siteOrigin}/article` });
@@ -462,7 +513,7 @@ describe('content', () => {
     const post = await publish(ama, {
       text: 'Ouvert à tous',
       visibility: 'public',
-      imageMediaIds: [image],
+      images: [{ mediaId: image, alt: 'Une parcelle irriguée' }],
     });
     const publicView = await vi.waitFor(
       async () => {
