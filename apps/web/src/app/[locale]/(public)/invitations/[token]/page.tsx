@@ -1,4 +1,4 @@
-import { invitationsControllerPreview } from '@pitchorium/api-client';
+import { ApiProblemError, invitationsControllerPreview } from '@pitchorium/api-client';
 import { invitationTokenRequestSchema } from '@pitchorium/contracts';
 import type { Metadata } from 'next';
 import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
@@ -11,6 +11,21 @@ import { asLocale } from '@/i18n/routing';
 import { configureServerApi } from '@/lib/api/server';
 import { withRedirect } from '@/lib/auth/redirect';
 import { getCurrentMember } from '@/lib/auth/session';
+
+/**
+ * An invitation the api refuses (closed, expired, already used, unknown token) is said as such;
+ * any other failure (the api unreachable, a limit) is thrown to the error screen, with its
+ * reference and a retry, rather than taken for a closed invitation.
+ */
+function closedInvitation(error: unknown): null {
+  if (
+    error instanceof ApiProblemError &&
+    ['ORGANIZATIONS_INVITATION_INVALID', 'VALIDATION_FAILED'].includes(error.problem.code)
+  ) {
+    return null;
+  }
+  throw error;
+}
 
 /** The token is in the address: never sent as a referrer, never indexed. */
 export async function generateMetadata(): Promise<Metadata> {
@@ -39,7 +54,7 @@ export default async function Page({ params }: PageProps<'/[locale]/invitations/
           // A public read: without the session of the reader, which the api would only accept
           // with a trusted Origin, as for any write carrying a session cookie (CSRF, ADR 0021).
           { cache: 'no-store', headers: { cookie: '' } },
-        ).catch(() => null)
+        ).catch(closedInvitation)
       : null,
     getCurrentMember(),
   ]);
