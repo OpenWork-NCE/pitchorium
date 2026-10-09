@@ -4,7 +4,7 @@ import { postsControllerSaved } from '@pitchorium/api-client';
 import type { SavedPost } from '@pitchorium/contracts';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { Bookmark } from 'lucide-react';
-import { useFormatter, useTranslations } from 'next-intl';
+import { useFormatter, useNow, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { EmptyState, ErrorState, Loading, Pagination } from '@/components/ui';
 import { PostSkeleton } from '../post-skeleton';
@@ -19,6 +19,9 @@ type Page = { items: SavedPost[]; nextCursor: string | null };
 export function SavedPosts({ initial }: { initial: Page | null }) {
   const t = useTranslations('web.saved');
   const format = useFormatter();
+  // The instant the dates are read from, refreshed every minute (without it, next-intl falls
+  // back to the clock of each side and the server and the browser write different texts).
+  const now = useNow({ updateInterval: 60_000 });
   const [removed, setRemoved] = useState<ReadonlySet<string>>(new Set());
   const saved = useInfiniteQuery({
     queryKey: ['content', 'saved'],
@@ -57,8 +60,9 @@ export function SavedPosts({ initial }: { initial: Page | null }) {
       <ul className="grid gap-4">
         {items.map((item) => (
           <li key={item.post.id} className="grid gap-1">
-            <p className="text-xs text-muted">
-              {t('savedAt', { date: format.relativeTime(new Date(item.savedAt)) })}
+            {/* The server and the browser read the clock seconds apart (as RelativeTime). */}
+            <p className="text-xs text-muted" suppressHydrationWarning>
+              {t('savedAt', { date: format.relativeTime(new Date(item.savedAt), now) })}
             </p>
             <MemberPost post={item.post} onRemove={(reason) => remove(item.post.id, reason)} />
           </li>
