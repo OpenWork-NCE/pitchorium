@@ -50,4 +50,13 @@ describe('grouped signal of the publications seen', () => {
     signal.flush();
     expect(send).not.toHaveBeenCalled();
   });
+
+  it('signals nothing more once disposed', () => {
+    const send = vi.fn();
+    const signal = createViewSignal(send, () => () => undefined);
+    signal.dispose();
+    signal.seen('a');
+    signal.flush();
+    expect(send).not.toHaveBeenCalled();
+  });
 });

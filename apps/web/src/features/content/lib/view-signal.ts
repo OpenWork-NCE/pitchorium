@@ -36,6 +36,7 @@ export function createViewSignal(
   const sent = new Set<string>();
   let waiting: string[] = [];
   let cancel: (() => void) | null = null;
+  let disposed = false;
   const flush = () => {
     cancel?.();
     cancel = null;
@@ -43,13 +44,15 @@ export function createViewSignal(
   };
   return {
     seen(postId) {
-      if (sent.has(postId)) return;
+      // Disposed (the page left, the member signed out): nothing more is signalled.
+      if (disposed || sent.has(postId)) return;
       sent.add(postId);
       waiting.push(postId);
       cancel ??= schedule(flush, FLUSH_DELAY_MS);
     },
     flush,
     dispose() {
+      disposed = true;
       cancel?.();
       cancel = null;
       waiting = [];
