@@ -48,6 +48,7 @@ export const ACTIONS = [
   'organization.member.leave',
   'organization.ownership.transfer',
   'organization.invitation.respond',
+  'organization.verification.read',
   'organization.verification.request',
   'organization.verification.review',
   'network.read',

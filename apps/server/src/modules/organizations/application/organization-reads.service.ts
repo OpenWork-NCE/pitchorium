@@ -1,11 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import type {
+  CursorPage,
+  CursorPageQuery,
   MyOrganization,
   Organization,
   OrganizationMemberCard,
   OrganizationRole,
+  PublicOrganizationEntry,
 } from '@pitchorium/contracts';
-import { DomainError } from '../../../platform/kernel';
+import { DomainError, decodeAfter, encodeCursor } from '../../../platform/kernel';
 import { MediaFacade } from '../../media';
 import { ProfilesFacade } from '../../profiles';
 import type { MemberRecord, OrganizationRecord } from '../domain/organization';
@@ -39,6 +42,20 @@ export class OrganizationReadsService {
   }
 
   /** A former slug answers with the current one (redirect). `viewerId` null: a visitor. */
+  /** The live organizations, by slug, for the sitemap of the web app: their pages are public. */
+  async publicPages({
+    cursor,
+    limit,
+  }: CursorPageQuery): Promise<CursorPage<PublicOrganizationEntry>> {
+    const rows = await this.organizations.slugsAfter(decodeAfter(cursor, 'slug'), limit + 1);
+    const page = rows.slice(0, limit);
+    const last = page.at(-1);
+    return {
+      items: page.map((row) => ({ slug: row.slug, updatedAt: row.updatedAt.toISOString() })),
+      nextCursor: rows.length > limit && last ? encodeCursor({ slug: last.slug }) : null,
+    };
+  }
+
   async bySlug(slug: string, viewerId: string | null): Promise<OrganizationLookup> {
     const resolved = await this.organizations.resolveSlug(slug);
     if (!resolved) throw organizationNotFound();

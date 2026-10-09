@@ -231,6 +231,7 @@ const MATRIX: Record<Action, Record<Scenario, Expected>> = {
   'organization.member.leave': organizationRoleRequired,
   'organization.ownership.transfer': organizationRoleRequired,
   'organization.invitation.respond': membersWithVerifiedEmail,
+  'organization.verification.read': organizationRoleRequired,
   'organization.verification.request': organizationRoleRequired,
   'organization.verification.review': moderatorsAndAdminsWith2fa,
   'network.read': membersWithAcceptedTerms,

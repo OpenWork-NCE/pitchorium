@@ -29,6 +29,18 @@ export class MembersService {
     private readonly transactions: TransactionManager,
   ) {}
 
+  /**
+   * The user behind a handle (current or former), to act on their membership: a member is named
+   * by the handle of their profile, never by their user id. Unknown: no such member.
+   */
+  async userIdByHandle(handle: string): Promise<string> {
+    const userId = await this.profiles.userIdOf(handle);
+    if (!userId) {
+      throw new DomainError('ORGANIZATIONS_MEMBER_NOT_FOUND', 'Organization member not found');
+    }
+    return userId;
+  }
+
   async changeRole(
     organizationId: string,
     actorId: string,

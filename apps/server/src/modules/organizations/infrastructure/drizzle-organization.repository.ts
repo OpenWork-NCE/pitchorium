@@ -114,6 +114,26 @@ export class DrizzleOrganizationRepository extends OrganizationRepository {
     return rows.map(toOrganization);
   }
 
+  async slugsAfter(
+    afterSlug: string | null,
+    limit: number,
+  ): Promise<{ slug: string; updatedAt: Date }[]> {
+    return this.db
+      .select({
+        slug: organizationsOrganizations.slug,
+        updatedAt: organizationsOrganizations.updatedAt,
+      })
+      .from(organizationsOrganizations)
+      .where(
+        and(
+          isNull(organizationsOrganizations.deletedAt),
+          afterSlug ? gt(organizationsOrganizations.slug, afterSlug) : undefined,
+        ),
+      )
+      .orderBy(asc(organizationsOrganizations.slug))
+      .limit(limit);
+  }
+
   async resolveSlug(slug: string): Promise<{ organizationId: string; current: boolean } | null> {
     const [current] = await this.db
       .select({ id: organizationsOrganizations.id })
@@ -385,6 +405,19 @@ export class DrizzleOrganizationRepository extends OrganizationRepository {
       .from(organizationsVerificationRequests)
       .where(eq(organizationsVerificationRequests.status, status))
       .orderBy(asc(organizationsVerificationRequests.createdAt))
+      .limit(limit);
+    return rows.map(toRequest);
+  }
+
+  async verificationRequestsOf(
+    organizationId: string,
+    limit: number,
+  ): Promise<VerificationRequestRecord[]> {
+    const rows = await this.db
+      .select()
+      .from(organizationsVerificationRequests)
+      .where(eq(organizationsVerificationRequests.organizationId, organizationId))
+      .orderBy(desc(organizationsVerificationRequests.createdAt))
       .limit(limit);
     return rows.map(toRequest);
   }

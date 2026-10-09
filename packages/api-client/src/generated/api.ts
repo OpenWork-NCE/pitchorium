@@ -157,6 +157,7 @@ import type {
   IntroductionDtoOutput,
   IntroductionPageDtoOutput,
   InvitationDtoOutput,
+  InvitationPreviewDtoOutput,
   InvitationTokenDto,
   InviteDto,
   JobRetryDtoOutput,
@@ -215,8 +216,10 @@ import type {
   OfflinePageDtoOutput,
   OrganizationDtoOutput,
   OrganizationInvitationsDtoOutput,
+  OrganizationsControllerPublicPagesParams,
   OverviewDtoOutput,
   OwnProfileDtoOutput,
+  OwnVerificationRequestsDtoOutput,
   PaymentOptionsDtoOutput,
   PayoutAccountDtoOutput,
   PostDtoOutput,
@@ -241,6 +244,7 @@ import type {
   ProjectsControllerShowcaseParams,
   ProofsDto,
   ProposeIntroductionDto,
+  PublicOrganizationEntryPageDtoOutput,
   PublishDto,
   QuoteDtoOutput,
   QuoteRequestDto,
@@ -2768,6 +2772,7 @@ export const getAccessControllerPrerequisitesUrl = (
     | 'organization.member.leave'
     | 'organization.ownership.transfer'
     | 'organization.invitation.respond'
+    | 'organization.verification.read'
     | 'organization.verification.request'
     | 'organization.verification.review'
     | 'network.read'
@@ -2922,6 +2927,7 @@ export const accessControllerPrerequisites = async (
     | 'organization.member.leave'
     | 'organization.ownership.transfer'
     | 'organization.invitation.respond'
+    | 'organization.verification.read'
     | 'organization.verification.request'
     | 'organization.verification.review'
     | 'network.read'
@@ -3072,6 +3078,7 @@ export const getAccessControllerPrerequisitesQueryKey = (
     | 'organization.member.leave'
     | 'organization.ownership.transfer'
     | 'organization.invitation.respond'
+    | 'organization.verification.read'
     | 'organization.verification.request'
     | 'organization.verification.review'
     | 'network.read'
@@ -3221,6 +3228,7 @@ export const getAccessControllerPrerequisitesQueryOptions = <
     | 'organization.member.leave'
     | 'organization.ownership.transfer'
     | 'organization.invitation.respond'
+    | 'organization.verification.read'
     | 'organization.verification.request'
     | 'organization.verification.review'
     | 'network.read'
@@ -3396,6 +3404,7 @@ export function useAccessControllerPrerequisites<
     | 'organization.member.leave'
     | 'organization.ownership.transfer'
     | 'organization.invitation.respond'
+    | 'organization.verification.read'
     | 'organization.verification.request'
     | 'organization.verification.review'
     | 'network.read'
@@ -3557,6 +3566,7 @@ export function useAccessControllerPrerequisites<
     | 'organization.member.leave'
     | 'organization.ownership.transfer'
     | 'organization.invitation.respond'
+    | 'organization.verification.read'
     | 'organization.verification.request'
     | 'organization.verification.review'
     | 'network.read'
@@ -3718,6 +3728,7 @@ export function useAccessControllerPrerequisites<
     | 'organization.member.leave'
     | 'organization.ownership.transfer'
     | 'organization.invitation.respond'
+    | 'organization.verification.read'
     | 'organization.verification.request'
     | 'organization.verification.review'
     | 'network.read'
@@ -3875,6 +3886,7 @@ export function useAccessControllerPrerequisites<
     | 'organization.member.leave'
     | 'organization.ownership.transfer'
     | 'organization.invitation.respond'
+    | 'organization.verification.read'
     | 'organization.verification.request'
     | 'organization.verification.review'
     | 'network.read'
@@ -7588,6 +7600,162 @@ export function useOrganizationsControllerForMember<
   return withQueryKey(query, queryOptions.queryKey);
 }
 
+export const getOrganizationsControllerPublicPagesUrl = (
+  params?: OrganizationsControllerPublicPagesParams,
+) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/v1/public/organizations?${stringifiedParams}`
+    : `/v1/public/organizations`;
+};
+
+/**
+ * Public: no session needed.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Public pages
+ */
+export const organizationsControllerPublicPages = async (
+  params?: OrganizationsControllerPublicPagesParams,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<PublicOrganizationEntryPageDtoOutput> => {
+  return apiFetch<PublicOrganizationEntryPageDtoOutput>(
+    getOrganizationsControllerPublicPagesUrl(params),
+    {
+      ...options,
+      method: 'GET',
+    },
+  );
+};
+
+export const getOrganizationsControllerPublicPagesQueryKey = (
+  params?: OrganizationsControllerPublicPagesParams,
+) => {
+  return [`/v1/public/organizations`, ...(params ? [params] : [])] as const;
+};
+
+export const getOrganizationsControllerPublicPagesQueryOptions = <
+  TData = Awaited<ReturnType<typeof organizationsControllerPublicPages>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: OrganizationsControllerPublicPagesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof organizationsControllerPublicPages>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getOrganizationsControllerPublicPagesQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof organizationsControllerPublicPages>>> = ({
+    signal,
+  }) => organizationsControllerPublicPages(params, { signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof organizationsControllerPublicPages>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type OrganizationsControllerPublicPagesQueryResult = NonNullable<
+  Awaited<ReturnType<typeof organizationsControllerPublicPages>>
+>;
+export type OrganizationsControllerPublicPagesQueryError = ErrorType<ProblemDetails>;
+
+export function useOrganizationsControllerPublicPages<
+  TData = Awaited<ReturnType<typeof organizationsControllerPublicPages>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params: undefined | OrganizationsControllerPublicPagesParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof organizationsControllerPublicPages>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof organizationsControllerPublicPages>>,
+          TError,
+          Awaited<ReturnType<typeof organizationsControllerPublicPages>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useOrganizationsControllerPublicPages<
+  TData = Awaited<ReturnType<typeof organizationsControllerPublicPages>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: OrganizationsControllerPublicPagesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof organizationsControllerPublicPages>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof organizationsControllerPublicPages>>,
+          TError,
+          Awaited<ReturnType<typeof organizationsControllerPublicPages>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useOrganizationsControllerPublicPages<
+  TData = Awaited<ReturnType<typeof organizationsControllerPublicPages>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: OrganizationsControllerPublicPagesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof organizationsControllerPublicPages>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Public pages
+ */
+
+export function useOrganizationsControllerPublicPages<
+  TData = Awaited<ReturnType<typeof organizationsControllerPublicPages>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: OrganizationsControllerPublicPagesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof organizationsControllerPublicPages>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getOrganizationsControllerPublicPagesQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
 export const getOrganizationsControllerForPublicUrl = (slug: string) => {
   return `/v1/public/organizations/${slug}`;
 };
@@ -8474,8 +8642,8 @@ export const useOrganizationsControllerRemoveCover = <
   return useMutation(getOrganizationsControllerRemoveCoverMutationOptions(options), queryClient);
 };
 
-export const getMembersControllerChangeRoleUrl = (organizationId: string, userId: string) => {
-  return `/v1/organizations/${organizationId}/members/${userId}`;
+export const getMembersControllerChangeRoleUrl = (organizationId: string, handle: string) => {
+  return `/v1/organizations/${organizationId}/members/${handle}`;
 };
 
 /**
@@ -8486,7 +8654,7 @@ export const getMembersControllerChangeRoleUrl = (organizationId: string, userId
  */
 export const membersControllerChangeRole = async (
   organizationId: string,
-  userId: string,
+  handle: string,
   changeRoleDto: ChangeRoleDto,
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<OrganizationDtoOutput> => {
@@ -8510,7 +8678,7 @@ export const membersControllerChangeRole = async (
     return headers;
   };
   return apiFetch<OrganizationDtoOutput>(
-    getMembersControllerChangeRoleUrl(organizationId, userId),
+    getMembersControllerChangeRoleUrl(organizationId, handle),
     {
       ...options,
       method: 'PATCH',
@@ -8551,9 +8719,9 @@ export const getMembersControllerChangeRoleMutationOptions = <
     Awaited<ReturnType<typeof membersControllerChangeRole>>,
     MembersControllerChangeRoleMutationVariables
   > = (props) => {
-    const { organizationId, userId, data } = props ?? {};
+    const { organizationId, handle, data } = props ?? {};
 
-    return membersControllerChangeRole(organizationId, userId, data, requestOptions);
+    return membersControllerChangeRole(organizationId, handle, data, requestOptions);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -8566,7 +8734,7 @@ export type MembersControllerChangeRoleMutationBody = ChangeRoleDto;
 export type MembersControllerChangeRoleMutationError = ErrorType<ProblemDetails>;
 export type MembersControllerChangeRoleMutationVariables = {
   organizationId: string;
-  userId: string;
+  handle: string;
   data: ChangeRoleDto;
 };
 
@@ -8596,8 +8764,8 @@ export const useMembersControllerChangeRole = <
   return useMutation(getMembersControllerChangeRoleMutationOptions(options), queryClient);
 };
 
-export const getMembersControllerRemoveUrl = (organizationId: string, userId: string) => {
-  return `/v1/organizations/${organizationId}/members/${userId}`;
+export const getMembersControllerRemoveUrl = (organizationId: string, handle: string) => {
+  return `/v1/organizations/${organizationId}/members/${handle}`;
 };
 
 /**
@@ -8608,10 +8776,10 @@ export const getMembersControllerRemoveUrl = (organizationId: string, userId: st
  */
 export const membersControllerRemove = async (
   organizationId: string,
-  userId: string,
+  handle: string,
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<void> => {
-  return apiFetch<void>(getMembersControllerRemoveUrl(organizationId, userId), {
+  return apiFetch<void>(getMembersControllerRemoveUrl(organizationId, handle), {
     ...options,
     method: 'DELETE',
   });
@@ -8647,9 +8815,9 @@ export const getMembersControllerRemoveMutationOptions = <
     Awaited<ReturnType<typeof membersControllerRemove>>,
     MembersControllerRemoveMutationVariables
   > = (props) => {
-    const { organizationId, userId } = props ?? {};
+    const { organizationId, handle } = props ?? {};
 
-    return membersControllerRemove(organizationId, userId, requestOptions);
+    return membersControllerRemove(organizationId, handle, requestOptions);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -8660,7 +8828,7 @@ export type MembersControllerRemoveMutationResult = NonNullable<
 >;
 
 export type MembersControllerRemoveMutationError = ErrorType<ProblemDetails>;
-export type MembersControllerRemoveMutationVariables = { organizationId: string; userId: string };
+export type MembersControllerRemoveMutationVariables = { organizationId: string; handle: string };
 
 /**
  * @summary Remove
@@ -9254,6 +9422,119 @@ export const useInvitationsControllerRevoke = <
   return useMutation(getInvitationsControllerRevokeMutationOptions(options), queryClient);
 };
 
+export const getInvitationsControllerPreviewUrl = () => {
+  return `/v1/public/organization-invitations/preview`;
+};
+
+/**
+ * Public: no session needed.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Preview
+ */
+export const invitationsControllerPreview = async (
+  invitationTokenDto: InvitationTokenDto,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<InvitationPreviewDtoOutput> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit['headers']>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(
+          h as Iterable<Iterable<string>>,
+          (entry) => Array.from(entry) as [string, string],
+        ),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+  return apiFetch<InvitationPreviewDtoOutput>(getInvitationsControllerPreviewUrl(), {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(invitationTokenDto),
+  });
+};
+
+export const getInvitationsControllerPreviewMutationKey = () =>
+  ['invitationsControllerPreview'] as const;
+
+export const getInvitationsControllerPreviewMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof invitationsControllerPreview>>,
+    TError,
+    InvitationsControllerPreviewMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof invitationsControllerPreview>>,
+  TError,
+  InvitationsControllerPreviewMutationVariables,
+  TContext
+> => {
+  const mutationKey = getInvitationsControllerPreviewMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof invitationsControllerPreview>>,
+    InvitationsControllerPreviewMutationVariables
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return invitationsControllerPreview(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type InvitationsControllerPreviewMutationResult = NonNullable<
+  Awaited<ReturnType<typeof invitationsControllerPreview>>
+>;
+export type InvitationsControllerPreviewMutationBody = InvitationTokenDto;
+export type InvitationsControllerPreviewMutationError = ErrorType<ProblemDetails>;
+export type InvitationsControllerPreviewMutationVariables = { data: InvitationTokenDto };
+
+/**
+ * @summary Preview
+ */
+export const useInvitationsControllerPreview = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof invitationsControllerPreview>>,
+      TError,
+      InvitationsControllerPreviewMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof invitationsControllerPreview>>,
+  TError,
+  InvitationsControllerPreviewMutationVariables,
+  TContext
+> => {
+  return useMutation(getInvitationsControllerPreviewMutationOptions(options), queryClient);
+};
+
 export const getInvitationsControllerAcceptUrl = () => {
   return `/v1/organization-invitations/accept`;
 };
@@ -9607,6 +9888,150 @@ export const useVerificationControllerRequest = <
 > => {
   return useMutation(getVerificationControllerRequestMutationOptions(options), queryClient);
 };
+
+export const getVerificationControllerHistoryUrl = (organizationId: string) => {
+  return `/v1/organizations/${organizationId}/verification-requests`;
+};
+
+/**
+ * Action `organization.verification.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary History
+ */
+export const verificationControllerHistory = async (
+  organizationId: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<OwnVerificationRequestsDtoOutput> => {
+  return apiFetch<OwnVerificationRequestsDtoOutput>(
+    getVerificationControllerHistoryUrl(organizationId),
+    {
+      ...options,
+      method: 'GET',
+    },
+  );
+};
+
+export const getVerificationControllerHistoryQueryKey = (organizationId: string) => {
+  return [`/v1/organizations/${organizationId}/verification-requests`] as const;
+};
+
+export const getVerificationControllerHistoryQueryOptions = <
+  TData = Awaited<ReturnType<typeof verificationControllerHistory>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  organizationId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof verificationControllerHistory>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getVerificationControllerHistoryQueryKey(organizationId);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof verificationControllerHistory>>> = ({
+    signal,
+  }) => verificationControllerHistory(organizationId, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: organizationId !== null && organizationId !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<Awaited<ReturnType<typeof verificationControllerHistory>>, TError, TData> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+};
+
+export type VerificationControllerHistoryQueryResult = NonNullable<
+  Awaited<ReturnType<typeof verificationControllerHistory>>
+>;
+export type VerificationControllerHistoryQueryError = ErrorType<ProblemDetails>;
+
+export function useVerificationControllerHistory<
+  TData = Awaited<ReturnType<typeof verificationControllerHistory>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  organizationId: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof verificationControllerHistory>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof verificationControllerHistory>>,
+          TError,
+          Awaited<ReturnType<typeof verificationControllerHistory>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useVerificationControllerHistory<
+  TData = Awaited<ReturnType<typeof verificationControllerHistory>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  organizationId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof verificationControllerHistory>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof verificationControllerHistory>>,
+          TError,
+          Awaited<ReturnType<typeof verificationControllerHistory>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useVerificationControllerHistory<
+  TData = Awaited<ReturnType<typeof verificationControllerHistory>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  organizationId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof verificationControllerHistory>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary History
+ */
+
+export function useVerificationControllerHistory<
+  TData = Awaited<ReturnType<typeof verificationControllerHistory>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  organizationId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof verificationControllerHistory>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getVerificationControllerHistoryQueryOptions(organizationId, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
 
 export const getVerificationControllerQueueUrl = (params?: VerificationControllerQueueParams) => {
   const normalizedParams = new URLSearchParams();

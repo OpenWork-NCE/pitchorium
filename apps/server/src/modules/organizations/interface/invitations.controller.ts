@@ -3,6 +3,8 @@ import { ApiCreatedResponse, ApiNoContentResponse, ApiOkResponse, ApiTags } from
 import {
   createInvitationRequestSchema,
   type Invitation,
+  type InvitationPreview,
+  invitationPreviewSchema,
   invitationSchema,
   invitationTokenRequestSchema,
   myOrganizationSchema,
@@ -12,12 +14,13 @@ import {
 } from '@pitchorium/contracts';
 import { createZodDto, ZodSerializerDto } from 'nestjs-zod';
 import { z } from 'zod';
-import { CurrentPrincipal, type Principal, RequireAction } from '../../../platform/http';
+import { CurrentPrincipal, type Principal, Public, RequireAction } from '../../../platform/http';
 import { Idempotent } from '../../../platform/idempotency';
 import { InvitationsService } from '../application/invitations.service';
 import { OrganizationResolver } from './organization.resolver';
 
 class InvitationDto extends createZodDto(invitationSchema) {}
+class InvitationPreviewDto extends createZodDto(invitationPreviewSchema) {}
 class OrganizationInvitationsDto extends createZodDto(
   z.object({ items: z.array(invitationSchema) }),
 ) {}
@@ -63,6 +66,19 @@ export class InvitationsController {
   @ApiNoContentResponse()
   async revoke(@Param() params: InvitationParamsDto): Promise<void> {
     await this.invitations.revoke(params.organizationId, params.invitationId);
+  }
+
+  /**
+   * What the token of an invitation received by email invites to, for the page of the invitation
+   * before any sign-in: the organization, the role and the end of validity, never the address.
+   */
+  @Post('public/organization-invitations/preview')
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  @ZodSerializerDto(InvitationPreviewDto)
+  @ApiOkResponse({ type: InvitationPreviewDto.Output })
+  preview(@Body() body: InvitationTokenDto): Promise<InvitationPreview> {
+    return this.invitations.preview(body.token);
   }
 
   @Post('organization-invitations/accept')

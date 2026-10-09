@@ -558,6 +558,7 @@ export const ActionPrerequisitesDtoOutputAction = {
   organizationmemberleave: 'organization.member.leave',
   organizationownershiptransfer: 'organization.ownership.transfer',
   organizationinvitationrespond: 'organization.invitation.respond',
+  organizationverificationread: 'organization.verification.read',
   organizationverificationrequest: 'organization.verification.request',
   organizationverificationreview: 'organization.verification.review',
   networkread: 'network.read',
@@ -2468,6 +2469,19 @@ export interface MyOrganizationsDtoOutput {
   items: MyOrganizationsDtoOutputItemsItem[];
 }
 
+export type PublicOrganizationEntryPageDtoOutputItemsItem = {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,59}$ */
+  slug: string;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  updatedAt: string;
+};
+
+export interface PublicOrganizationEntryPageDtoOutput {
+  items: PublicOrganizationEntryPageDtoOutputItemsItem[];
+  /** @nullable */
+  nextCursor: string | null;
+}
+
 export type UpdateOrganizationDtoStructureType =
   (typeof UpdateOrganizationDtoStructureType)[keyof typeof UpdateOrganizationDtoStructureType];
 
@@ -2523,8 +2537,8 @@ export interface ChangeRoleDto {
 }
 
 export interface TransferOwnershipDto {
-  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
-  userId: string;
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
+  handle: string;
 }
 
 export type CreateInvitationDtoRole =
@@ -2619,6 +2633,30 @@ export interface InvitationTokenDto {
   token: string;
 }
 
+export type InvitationPreviewDtoOutputOrganization = {
+  /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,59}$ */
+  slug: string;
+  name: string;
+  /** @nullable */
+  logoUrl: string | null;
+  verified: boolean;
+};
+
+export type InvitationPreviewDtoOutputRole =
+  (typeof InvitationPreviewDtoOutputRole)[keyof typeof InvitationPreviewDtoOutputRole];
+
+export const InvitationPreviewDtoOutputRole = {
+  admin: 'admin',
+  member: 'member',
+} as const;
+
+export interface InvitationPreviewDtoOutput {
+  organization: InvitationPreviewDtoOutputOrganization;
+  role: InvitationPreviewDtoOutputRole;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  expiresAt: string;
+}
+
 export type MyOrganizationDtoOutputRole =
   (typeof MyOrganizationDtoOutputRole)[keyof typeof MyOrganizationDtoOutputRole];
 
@@ -2710,6 +2748,36 @@ export interface VerificationRequestDtoOutput {
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
   createdAt: string;
   decidedAt: string | null;
+}
+
+export type OwnVerificationRequestsDtoOutputItemsItemStatus =
+  (typeof OwnVerificationRequestsDtoOutputItemsItemStatus)[keyof typeof OwnVerificationRequestsDtoOutputItemsItemStatus];
+
+export const OwnVerificationRequestsDtoOutputItemsItemStatus = {
+  pending: 'pending',
+  approved: 'approved',
+  rejected: 'rejected',
+} as const;
+
+export type OwnVerificationRequestsDtoOutputItemsItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  status: OwnVerificationRequestsDtoOutputItemsItemStatus;
+  declaration: string;
+  /**
+   * @minimum 0
+   * @maximum 9007199254740991
+   */
+  documentCount: number;
+  /** @nullable */
+  decisionReason: string | null;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+  decidedAt: string | null;
+};
+
+export interface OwnVerificationRequestsDtoOutput {
+  items: OwnVerificationRequestsDtoOutputItemsItem[];
 }
 
 export type VerificationQueueDtoOutputItemsItemOrganizationVerificationStatus =
@@ -15731,6 +15799,19 @@ export type MediaControllerDownloadParams = {
    * @pattern ^[a-z]{1,20}$
    */
   variant?: string;
+};
+
+export type OrganizationsControllerPublicPagesParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  cursor?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
 };
 
 export type VerificationControllerQueueParams = {

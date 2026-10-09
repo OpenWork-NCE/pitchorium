@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type {
   CreateVerificationRequest,
+  OwnVerificationRequests,
   VerificationDecisionRequest,
   VerificationQueue,
   VerificationRequest,
@@ -122,6 +123,26 @@ export class VerificationService {
         return organization ? [this.view(request, organization)] : [];
       }),
       criteria: this.config.organizations.verificationCriteria,
+    };
+  }
+
+  /**
+   * The requests of an organization as its owners and admins follow them: state, documents
+   * counted and motivation of a decision; the reviewers stay unnamed.
+   */
+  async history(organizationId: string): Promise<OwnVerificationRequests> {
+    await this.reads.require(organizationId);
+    const requests = await this.organizations.verificationRequestsOf(organizationId, QUEUE_LIMIT);
+    return {
+      items: requests.map((request) => ({
+        id: request.id,
+        status: request.status,
+        declaration: request.declaration,
+        documentCount: request.documentMediaIds.length,
+        decisionReason: request.decisionReason,
+        createdAt: request.createdAt.toISOString(),
+        decidedAt: request.decidedAt?.toISOString() ?? null,
+      })),
     };
   }
 

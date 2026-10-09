@@ -50,6 +50,14 @@ export function keysetFrom(fields: Readonly<Record<string, string>>): KeysetPosi
   return { at, key };
 }
 
+/** The position of an ascending list by one key (a handle, a slug); null without cursor. */
+export function decodeAfter(cursor: string | undefined, field: string): string | null {
+  if (cursor === undefined) return null;
+  const value = decodeCursor(cursor)[field];
+  if (!value) throw invalidCursor();
+  return value;
+}
+
 function invalidCursor(): DomainError {
   return new DomainError('BAD_REQUEST', 'Invalid pagination cursor');
 }

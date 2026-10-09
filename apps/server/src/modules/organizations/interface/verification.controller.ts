@@ -3,6 +3,8 @@ import { ApiCreatedResponse, ApiNoContentResponse, ApiOkResponse, ApiTags } from
 import {
   createVerificationRequestSchema,
   organizationIdParamsSchema,
+  type OwnVerificationRequests,
+  ownVerificationRequestsSchema,
   verificationDecisionRequestSchema,
   verificationQueueQuerySchema,
   type VerificationQueue,
@@ -19,6 +21,7 @@ import { VerificationService } from '../application/verification.service';
 import { OrganizationResolver } from './organization.resolver';
 
 class VerificationRequestDto extends createZodDto(verificationRequestSchema) {}
+class OwnVerificationRequestsDto extends createZodDto(ownVerificationRequestsSchema) {}
 class VerificationQueueDto extends createZodDto(verificationQueueSchema) {}
 class CreateVerificationRequestDto extends createZodDto(createVerificationRequestSchema) {}
 class DecisionDto extends createZodDto(verificationDecisionRequestSchema) {}
@@ -47,6 +50,15 @@ export class VerificationController {
     @Body() body: CreateVerificationRequestDto,
   ): Promise<VerificationRequest> {
     return this.verification.request(params.organizationId, principal.userId, body);
+  }
+
+  /** The requests of the organization, most recent first, as its owners and admins follow them. */
+  @Get('organizations/:organizationId/verification-requests')
+  @RequireAction('organization.verification.read', { resource: OrganizationResolver })
+  @ZodSerializerDto(OwnVerificationRequestsDto)
+  @ApiOkResponse({ type: OwnVerificationRequestsDto.Output })
+  history(@Param() params: OrganizationIdParamsDto): Promise<OwnVerificationRequests> {
+    return this.verification.history(params.organizationId);
   }
 
   /** Review queue, oldest first, with the configured criteria. */

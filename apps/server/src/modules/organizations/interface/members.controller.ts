@@ -29,7 +29,7 @@ export class MembersController {
     private readonly reads: OrganizationReadsService,
   ) {}
 
-  @Patch('members/:userId')
+  @Patch('members/:handle')
   @RequireAction('organization.member.manage', { resource: OrganizationResolver })
   @ZodSerializerDto(OrganizationDto)
   @ApiOkResponse({ type: OrganizationDto.Output })
@@ -41,13 +41,13 @@ export class MembersController {
     await this.members.changeRole(
       params.organizationId,
       principal.userId,
-      params.userId,
+      await this.members.userIdByHandle(params.handle),
       body.role,
     );
     return this.reads.byId(params.organizationId, principal.userId);
   }
 
-  @Delete('members/:userId')
+  @Delete('members/:handle')
   @RequireAction('organization.member.manage', { resource: OrganizationResolver })
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiNoContentResponse()
@@ -55,7 +55,11 @@ export class MembersController {
     @CurrentPrincipal() principal: Principal,
     @Param() params: OrganizationMemberParamsDto,
   ): Promise<void> {
-    await this.members.remove(params.organizationId, principal.userId, params.userId);
+    await this.members.remove(
+      params.organizationId,
+      principal.userId,
+      await this.members.userIdByHandle(params.handle),
+    );
   }
 
   /** The last owner cannot leave: ownership must be transferred first. */
@@ -81,7 +85,11 @@ export class MembersController {
     @Param() params: OrganizationIdParamsDto,
     @Body() body: TransferOwnershipDto,
   ): Promise<Organization> {
-    await this.members.transferOwnership(params.organizationId, principal.userId, body.userId);
+    await this.members.transferOwnership(
+      params.organizationId,
+      principal.userId,
+      await this.members.userIdByHandle(body.handle),
+    );
     return this.reads.byId(params.organizationId, principal.userId);
   }
 }

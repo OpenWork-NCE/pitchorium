@@ -74,6 +74,8 @@ export const ACTION_POLICIES: Readonly<Record<Action, ActionPolicy>> = {
   'organization.ownership.transfer': { resourceRoles: ['owner'], sensitive: true },
   // The invitation is bound to an email address: the account must have proved its own.
   'organization.invitation.respond': { requires: ['email_verified'] },
+  // Owners and admins follow the requests of their organization and the motivation of a decision.
+  'organization.verification.read': { resourceRoles: ['owner', 'admin'] },
   'organization.verification.request': {
     resourceRoles: ['owner'],
     requires: ['email_verified'],

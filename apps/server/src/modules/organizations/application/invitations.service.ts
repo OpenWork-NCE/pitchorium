@@ -1,10 +1,16 @@
 import { createHash } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
-import type { CreateInvitationRequest, Invitation, MyOrganization } from '@pitchorium/contracts';
+import type {
+  CreateInvitationRequest,
+  Invitation,
+  InvitationPreview,
+  MyOrganization,
+} from '@pitchorium/contracts';
 import { API_CONFIG, type ApiConfig } from '../../../platform/config';
 import { TransactionManager } from '../../../platform/database';
 import { Clock, DomainError, IdGenerator } from '../../../platform/kernel';
 import { IdentityFacade } from '../../identity';
+import { MediaFacade } from '../../media';
 import { type InvitationRecord, isInvitationOpen, normalizeEmail } from '../domain/organization';
 import { MemberInvited, MemberJoined } from '../domain/organization-events';
 import { OrganizationEventsRecorder } from './organization-events.recorder';
@@ -42,6 +48,7 @@ export class InvitationsService {
     private readonly organizations: OrganizationRepository,
     private readonly reads: OrganizationReadsService,
     private readonly identity: IdentityFacade,
+    private readonly media: MediaFacade,
     private readonly events: OrganizationEventsRecorder,
     private readonly transactions: TransactionManager,
     private readonly ids: IdGenerator,
@@ -99,6 +106,39 @@ export class InvitationsService {
     ) {
       throw invalid();
     }
+  }
+
+  /**
+   * What a token received by email invites to, for the page of the invitation: no session is
+   * needed, the token proves that the email reached its address. An invitation no longer open
+   * answers like an unknown token (closed when it expired).
+   */
+  async preview(token: string): Promise<InvitationPreview> {
+    const invitation = await this.organizations.findInvitationByTokenHash(
+      hashInvitationToken(token),
+    );
+    const now = this.clock.now();
+    if (!invitation || !isInvitationOpen(invitation, now)) {
+      if (invitation?.status === 'pending') {
+        await this.organizations.closeInvitation(invitation.id, 'expired', now, null);
+      }
+      throw invalid();
+    }
+    const organization = await this.organizations.findById(invitation.organizationId);
+    if (!organization || organization.deletedAt) throw invalid();
+    const logos = await this.media.images([organization.logoMediaId]);
+    return {
+      organization: {
+        slug: organization.slug,
+        name: organization.name,
+        logoUrl: organization.logoMediaId
+          ? (logos.get(organization.logoMediaId)?.url ?? null)
+          : null,
+        verified: organization.verificationStatus === 'verified',
+      },
+      role: invitation.role,
+      expiresAt: invitation.expiresAt.toISOString(),
+    };
   }
 
   async accept(userId: string, token: string): Promise<MyOrganization> {

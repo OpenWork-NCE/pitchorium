@@ -1680,6 +1680,7 @@
                 "organization.member.leave",
                 "organization.ownership.transfer",
                 "organization.invitation.respond",
+                "organization.verification.read",
                 "organization.verification.request",
                 "organization.verification.review",
                 "network.read",
@@ -4602,6 +4603,87 @@
         "x-access": "organization.read"
       }
     },
+    "/v1/public/organizations": {
+      "get": {
+        "operationId": "OrganizationsController_publicPages",
+        "parameters": [
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minLength": 1,
+              "maxLength": 512,
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicOrganizationEntryPageDto_Output"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error (RFC 9457 problem details)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "VALIDATION_FAILED": {
+                    "$ref": "#/components/examples/VALIDATION_FAILED"
+                  },
+                  "RATE_LIMITED": {
+                    "$ref": "#/components/examples/RATE_LIMITED"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "organizations"
+        ],
+        "summary": "Public pages",
+        "description": "Public: no session needed.\n\nErrors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.",
+        "x-error-codes": [
+          "VALIDATION_FAILED",
+          "RATE_LIMITED",
+          "ORGANIZATIONS_NOT_FOUND",
+          "ORGANIZATIONS_SLUG_TAKEN",
+          "ORGANIZATIONS_SLUG_RESERVED",
+          "ORGANIZATIONS_CREATION_LIMIT_REACHED",
+          "ORGANIZATIONS_MEMBER_NOT_FOUND",
+          "ORGANIZATIONS_ALREADY_MEMBER",
+          "ORGANIZATIONS_LAST_OWNER",
+          "ORGANIZATIONS_ROLE_CHANGE_FORBIDDEN",
+          "ORGANIZATIONS_INVITATION_INVALID",
+          "ORGANIZATIONS_INVITATION_EMAIL_MISMATCH",
+          "ORGANIZATIONS_VERIFICATION_INVALID_STATE",
+          "ORGANIZATIONS_VERIFICATION_REQUEST_NOT_FOUND",
+          "ORGANIZATIONS_VERIFICATION_CRITERION_UNKNOWN"
+        ],
+        "x-access": "public"
+      }
+    },
     "/v1/public/organizations/{slug}": {
       "get": {
         "operationId": "OrganizationsController_forPublic",
@@ -5414,7 +5496,7 @@
         "x-access": "organization.update"
       }
     },
-    "/v1/organizations/{organizationId}/members/{userId}": {
+    "/v1/organizations/{organizationId}/members/{handle}": {
       "patch": {
         "operationId": "MembersController_changeRole",
         "parameters": [
@@ -5429,12 +5511,11 @@
             }
           },
           {
-            "name": "userId",
+            "name": "handle",
             "required": true,
             "in": "path",
             "schema": {
-              "format": "uuid",
-              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$",
+              "pattern": "^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$",
               "type": "string"
             }
           }
@@ -5550,12 +5631,11 @@
             }
           },
           {
-            "name": "userId",
+            "name": "handle",
             "required": true,
             "in": "path",
             "schema": {
-              "format": "uuid",
-              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$",
+              "pattern": "^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$",
               "type": "string"
             }
           }
@@ -6178,6 +6258,79 @@
         "x-access": "organization.member.invite"
       }
     },
+    "/v1/public/organization-invitations/preview": {
+      "post": {
+        "operationId": "InvitationsController_preview",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InvitationTokenDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvitationPreviewDto_Output"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error (RFC 9457 problem details)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "VALIDATION_FAILED": {
+                    "$ref": "#/components/examples/VALIDATION_FAILED"
+                  },
+                  "PAYLOAD_TOO_LARGE": {
+                    "$ref": "#/components/examples/PAYLOAD_TOO_LARGE"
+                  },
+                  "RATE_LIMITED": {
+                    "$ref": "#/components/examples/RATE_LIMITED"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "organizations"
+        ],
+        "summary": "Preview",
+        "description": "Public: no session needed.\n\nErrors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.",
+        "x-error-codes": [
+          "VALIDATION_FAILED",
+          "PAYLOAD_TOO_LARGE",
+          "RATE_LIMITED",
+          "ORGANIZATIONS_NOT_FOUND",
+          "ORGANIZATIONS_SLUG_TAKEN",
+          "ORGANIZATIONS_SLUG_RESERVED",
+          "ORGANIZATIONS_CREATION_LIMIT_REACHED",
+          "ORGANIZATIONS_MEMBER_NOT_FOUND",
+          "ORGANIZATIONS_ALREADY_MEMBER",
+          "ORGANIZATIONS_LAST_OWNER",
+          "ORGANIZATIONS_ROLE_CHANGE_FORBIDDEN",
+          "ORGANIZATIONS_INVITATION_INVALID",
+          "ORGANIZATIONS_INVITATION_EMAIL_MISMATCH",
+          "ORGANIZATIONS_VERIFICATION_INVALID_STATE",
+          "ORGANIZATIONS_VERIFICATION_REQUEST_NOT_FOUND",
+          "ORGANIZATIONS_VERIFICATION_CRITERION_UNKNOWN"
+        ],
+        "x-access": "public"
+      }
+    },
     "/v1/organization-invitations/accept": {
       "post": {
         "operationId": "InvitationsController_accept",
@@ -6502,6 +6655,103 @@
           "ORGANIZATIONS_VERIFICATION_CRITERION_UNKNOWN"
         ],
         "x-access": "organization.verification.request"
+      },
+      "get": {
+        "operationId": "VerificationController_history",
+        "parameters": [
+          {
+            "name": "organizationId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OwnVerificationRequestsDto_Output"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error (RFC 9457 problem details)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "VALIDATION_FAILED": {
+                    "$ref": "#/components/examples/VALIDATION_FAILED"
+                  },
+                  "UNAUTHENTICATED": {
+                    "$ref": "#/components/examples/UNAUTHENTICATED"
+                  },
+                  "FORBIDDEN": {
+                    "$ref": "#/components/examples/FORBIDDEN"
+                  },
+                  "ACCESS_ORIGIN_NOT_ALLOWED": {
+                    "$ref": "#/components/examples/ACCESS_ORIGIN_NOT_ALLOWED"
+                  },
+                  "ACCESS_PREREQUISITES_MISSING": {
+                    "$ref": "#/components/examples/ACCESS_PREREQUISITES_MISSING"
+                  },
+                  "ACCESS_ACCOUNT_SUSPENDED": {
+                    "$ref": "#/components/examples/ACCESS_ACCOUNT_SUSPENDED"
+                  },
+                  "NOT_FOUND": {
+                    "$ref": "#/components/examples/NOT_FOUND"
+                  },
+                  "RATE_LIMITED": {
+                    "$ref": "#/components/examples/RATE_LIMITED"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "tags": [
+          "organization-verification"
+        ],
+        "summary": "History",
+        "description": "Action `organization.verification.read` (session cookie).\n\nErrors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.",
+        "x-error-codes": [
+          "VALIDATION_FAILED",
+          "UNAUTHENTICATED",
+          "FORBIDDEN",
+          "ACCESS_ORIGIN_NOT_ALLOWED",
+          "ACCESS_PREREQUISITES_MISSING",
+          "ACCESS_ACCOUNT_SUSPENDED",
+          "NOT_FOUND",
+          "RATE_LIMITED",
+          "ORGANIZATIONS_NOT_FOUND",
+          "ORGANIZATIONS_SLUG_TAKEN",
+          "ORGANIZATIONS_SLUG_RESERVED",
+          "ORGANIZATIONS_CREATION_LIMIT_REACHED",
+          "ORGANIZATIONS_MEMBER_NOT_FOUND",
+          "ORGANIZATIONS_ALREADY_MEMBER",
+          "ORGANIZATIONS_LAST_OWNER",
+          "ORGANIZATIONS_ROLE_CHANGE_FORBIDDEN",
+          "ORGANIZATIONS_INVITATION_INVALID",
+          "ORGANIZATIONS_INVITATION_EMAIL_MISMATCH",
+          "ORGANIZATIONS_VERIFICATION_INVALID_STATE",
+          "ORGANIZATIONS_VERIFICATION_REQUEST_NOT_FOUND",
+          "ORGANIZATIONS_VERIFICATION_CRITERION_UNKNOWN"
+        ],
+        "x-access": "organization.verification.read"
       }
     },
     "/v1/admin/organizations/verification-requests": {
@@ -34798,6 +35048,7 @@
               "organization.member.leave",
               "organization.ownership.transfer",
               "organization.invitation.respond",
+              "organization.verification.read",
               "organization.verification.request",
               "organization.verification.review",
               "network.read",
@@ -38558,6 +38809,44 @@
         ],
         "additionalProperties": false
       },
+      "PublicOrganizationEntryPageDto_Output": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "slug": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,59}$"
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                }
+              },
+              "required": [
+                "slug",
+                "updatedAt"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "nextCursor": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "items",
+          "nextCursor"
+        ],
+        "additionalProperties": false
+      },
       "UpdateOrganizationDto": {
         "type": "object",
         "properties": {
@@ -38664,14 +38953,13 @@
       "TransferOwnershipDto": {
         "type": "object",
         "properties": {
-          "userId": {
+          "handle": {
             "type": "string",
-            "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$"
+            "pattern": "^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$"
           }
         },
         "required": [
-          "userId"
+          "handle"
         ]
       },
       "CreateInvitationDto": {
@@ -38829,6 +39117,57 @@
         "required": [
           "token"
         ]
+      },
+      "InvitationPreviewDto_Output": {
+        "type": "object",
+        "properties": {
+          "organization": {
+            "type": "object",
+            "properties": {
+              "slug": {
+                "type": "string",
+                "pattern": "^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,59}$"
+              },
+              "name": {
+                "type": "string"
+              },
+              "logoUrl": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "verified": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "slug",
+              "name",
+              "logoUrl",
+              "verified"
+            ],
+            "additionalProperties": false
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "admin",
+              "member"
+            ]
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+          }
+        },
+        "required": [
+          "organization",
+          "role",
+          "expiresAt"
+        ],
+        "additionalProperties": false
       },
       "MyOrganizationDto_Output": {
         "type": "object",
@@ -39049,6 +39388,77 @@
           "decidedBy",
           "createdAt",
           "decidedAt"
+        ],
+        "additionalProperties": false
+      },
+      "OwnVerificationRequestsDto_Output": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "pending",
+                    "approved",
+                    "rejected"
+                  ]
+                },
+                "declaration": {
+                  "type": "string"
+                },
+                "documentCount": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "decisionReason": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "createdAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                },
+                "decidedAt": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "id",
+                "status",
+                "declaration",
+                "documentCount",
+                "decisionReason",
+                "createdAt",
+                "decidedAt"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "items"
         ],
         "additionalProperties": false
       },

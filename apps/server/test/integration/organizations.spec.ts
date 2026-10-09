@@ -3,6 +3,7 @@ import type { TestingModule } from '@nestjs/testing';
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AccessModule } from '../../src/modules/access';
 import { IdentityModule } from '../../src/modules/identity';
+import { ImpactModule } from '../../src/modules/impact';
 import { MediaModule } from '../../src/modules/media';
 import { MalwareScanner } from '../../src/modules/media/application/ports';
 import { NetworkModule } from '../../src/modules/network';
@@ -103,6 +104,7 @@ describe('organizations', () => {
         IdentityModule.forWorker(),
         AccessModule.forWorker(),
         MediaModule.forWorker(),
+        ImpactModule.forWorker(),
         ProfilesModule.forWorker(),
         OrganizationsModule.forWorker(),
         NetworkModule.forWorker(),
@@ -127,6 +129,25 @@ describe('organizations', () => {
     expect(organization).toMatchObject({ slug: 'fondation-teranga', viewerRole: 'owner' });
 
     const token = await invite(awa, organization.id, 'kofi@example.com', 'admin');
+    // The page of the invitation, before any account: what it invites to, never the address.
+    const preview = await browser(app)
+      .post('/v1/public/organization-invitations/preview')
+      .send({ token })
+      .expect(200);
+    expect(preview.body).toEqual({
+      organization: {
+        slug: 'fondation-teranga',
+        name: 'Fondation Teranga',
+        logoUrl: null,
+        verified: false,
+      },
+      role: 'admin',
+      expiresAt: expect.any(String),
+    });
+    await browser(app)
+      .post('/v1/public/organization-invitations/preview')
+      .send({ token: 'A'.repeat(43) })
+      .expect(410);
     const intruder = await createMember(app, 'intruder@example.com');
     const mismatch = await intruder.agent
       .post('/v1/organization-invitations/accept')
@@ -141,6 +162,9 @@ describe('organizations', () => {
       .send({ token })
       .expect(200);
     expect(joined.body).toMatchObject({ slug: 'fondation-teranga', role: 'admin' });
+    // Members are named by their handle: their profiles exist (created at sign-up in production).
+    await kofi.agent.get('/v1/me/profile').expect(200);
+    await awa.agent.get('/v1/me/profile').expect(200);
     const reused = await kofi.agent
       .post('/v1/organization-invitations/accept')
       .send({ token })
@@ -148,7 +172,7 @@ describe('organizations', () => {
     expect(reused.body.code).toBe('ORGANIZATIONS_INVITATION_INVALID');
 
     await awa.agent
-      .patch(`/v1/organizations/${organization.id}/members/${kofi.userId}`)
+      .patch(`/v1/organizations/${organization.id}/members/kofi-mensah`)
       .send({ role: 'member' })
       .expect(200);
     await emailTo('kofi@example.com', 'Votre rôle dans Fondation Teranga a changé');
@@ -162,14 +186,19 @@ describe('organizations', () => {
       .expect(403);
 
     const lastOwner = await awa.agent
-      .delete(`/v1/organizations/${organization.id}/members/${awa.userId}`)
+      .delete(`/v1/organizations/${organization.id}/members/awa-ndiaye`)
       .expect(409);
     expect(lastOwner.body.code).toBe('ORGANIZATIONS_LAST_OWNER');
+    // A member is named by their handle: an unknown one is no member.
+    const unknown = await awa.agent
+      .delete(`/v1/organizations/${organization.id}/members/nobody-here`)
+      .expect(404);
+    expect(unknown.body.code).toBe('ORGANIZATIONS_MEMBER_NOT_FOUND');
     await awa.agent.post(`/v1/organizations/${organization.id}/leave`).expect(409);
 
     const transferred = await awa.agent
       .post(`/v1/organizations/${organization.id}/ownership-transfer`)
-      .send({ userId: kofi.userId })
+      .send({ handle: 'kofi-mensah' })
       .expect(200);
     expect(transferred.body.members).toEqual([
       expect.objectContaining({ displayName: 'Kofi Mensah', role: 'owner' }),
@@ -177,7 +206,7 @@ describe('organizations', () => {
     ]);
     await emailTo('kofi@example.com', 'La propriété de Fondation Teranga a été transférée');
     const adminOnOwner = await awa.agent
-      .patch(`/v1/organizations/${organization.id}/members/${kofi.userId}`)
+      .patch(`/v1/organizations/${organization.id}/members/kofi-mensah`)
       .send({ role: 'member' })
       .expect(403);
     expect(adminOnOwner.body.code).toBe('ORGANIZATIONS_ROLE_CHANGE_FORBIDDEN');
@@ -309,6 +338,29 @@ describe('organizations', () => {
     });
     const page = await browser(app).get('/v1/public/organizations/fondation-teranga').expect(200);
     expect(page.body.verification).toMatchObject({ status: 'rejected', verified: false });
+    // The owner follows the request and reads the motivation, never the reviewer.
+    const history = await awa.agent
+      .get(`/v1/organizations/${organization.id}/verification-requests`)
+      .expect(200);
+    expect(history.body.items).toEqual([
+      {
+        id: first.id,
+        status: 'rejected',
+        declaration: expect.any(String),
+        documentCount: 1,
+        decisionReason: 'Récépissé illisible.',
+        createdAt: expect.any(String),
+        decidedAt: expect.any(String),
+      },
+    ]);
+    await reviewer.agent
+      .get(`/v1/organizations/${organization.id}/verification-requests`)
+      .expect(403);
+    // Its page is public: it is listed for the sitemap.
+    const listed = await browser(app).get('/v1/public/organizations').expect(200);
+    expect(listed.body.items).toEqual([
+      { slug: 'fondation-teranga', updatedAt: expect.any(String) },
+    ]);
     const rejected = await emailTo('awa@teranga.org', 'Vérification de Fondation Teranga refusée');
     expect(rejected.text).toContain('Récépissé illisible.');
     const again = await reviewer.agent

@@ -9,6 +9,7 @@ import {
   Patch,
   Post,
   Put,
+  Query,
   Res,
 } from '@nestjs/common';
 import {
@@ -22,12 +23,16 @@ import {
   attachMediaRequestSchema,
   changeOrganizationSlugRequestSchema,
   createOrganizationRequestSchema,
+  cursorPageQuerySchema,
+  type CursorPage,
   myOrganizationSchema,
   type MyOrganization,
   type Organization,
   organizationIdParamsSchema,
   organizationSchema,
   organizationSlugParamsSchema,
+  type PublicOrganizationEntry,
+  publicOrganizationEntryPageSchema,
   updateOrganizationRequestSchema,
 } from '@pitchorium/contracts';
 import type { Response } from 'express';
@@ -43,6 +48,8 @@ import { OrganizationsService } from '../application/organizations.service';
 import { OrganizationResolver } from './organization.resolver';
 
 class OrganizationDto extends createZodDto(organizationSchema) {}
+class PublicOrganizationEntryPageDto extends createZodDto(publicOrganizationEntryPageSchema) {}
+class PageQueryDto extends createZodDto(cursorPageQuerySchema) {}
 class MyOrganizationsDto extends createZodDto(z.object({ items: z.array(myOrganizationSchema) })) {}
 class CreateOrganizationDto extends createZodDto(createOrganizationRequestSchema) {}
 class UpdateOrganizationDto extends createZodDto(updateOrganizationRequestSchema) {}
@@ -53,6 +60,8 @@ class OrganizationSlugParamsDto extends createZodDto(organizationSlugParamsSchem
 
 /** Short shared cache: a change of the page must show quickly. */
 const PUBLIC_ORGANIZATION_CACHE = 'public, max-age=60';
+/** The list of the pages feeds the sitemap, read rarely. */
+const PUBLIC_LIST_CACHE = 'public, max-age=300';
 
 function reply(response: Response, lookup: OrganizationLookup, basePath: string): void {
   if (lookup.kind === 'moved') {
@@ -111,6 +120,19 @@ export class OrganizationsController {
   }
 
   /** Public page: members with a public profile page only. Cacheable by shared caches. */
+  /** Live organizations, by slug: the sitemap of the web app (ADR 0101). */
+  @Get('public/organizations')
+  @Public()
+  @ZodSerializerDto(PublicOrganizationEntryPageDto)
+  @ApiOkResponse({ type: PublicOrganizationEntryPageDto.Output })
+  async publicPages(
+    @Query() query: PageQueryDto,
+    @Res({ passthrough: true }) response: Response,
+  ): Promise<CursorPage<PublicOrganizationEntry>> {
+    response.setHeader('Cache-Control', PUBLIC_LIST_CACHE);
+    return this.reads.publicPages(query);
+  }
+
   @Get('public/organizations/:slug')
   @Public()
   @ApiOkResponse({ type: OrganizationDto.Output })

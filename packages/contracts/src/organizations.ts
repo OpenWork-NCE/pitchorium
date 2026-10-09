@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { uuidV7Schema } from './ids.js';
+import { cursorPageSchema } from './pagination.js';
 import {
   BIO_MAX_LENGTH,
   countryCodeSchema,
@@ -119,6 +120,13 @@ export const organizationSchema = z.object({
   createdAt: z.iso.datetime(),
 });
 
+/** A page of an organization, for the sitemap: its slug and its last change. */
+export const publicOrganizationEntrySchema = z.object({
+  slug: organizationSlugSchema,
+  updatedAt: z.iso.datetime(),
+});
+export const publicOrganizationEntryPageSchema = cursorPageSchema(publicOrganizationEntrySchema);
+
 export const myOrganizationSchema = z.object({
   id: uuidV7Schema,
   slug: organizationSlugSchema,
@@ -130,9 +138,10 @@ export const myOrganizationSchema = z.object({
 
 export const organizationIdParamsSchema = z.object({ organizationId: uuidV7Schema });
 export const organizationSlugParamsSchema = z.object({ slug: organizationSlugSchema });
+/** A member of an organization by the handle of their profile: never their user id. */
 export const organizationMemberParamsSchema = z.object({
   organizationId: uuidV7Schema,
-  userId: uuidV7Schema,
+  handle: handleSchema,
 });
 export const organizationInvitationParamsSchema = z.object({
   organizationId: uuidV7Schema,
@@ -140,7 +149,7 @@ export const organizationInvitationParamsSchema = z.object({
 });
 
 export const changeMemberRoleRequestSchema = z.object({ role: organizationRoleSchema });
-export const transferOwnershipRequestSchema = z.object({ userId: uuidV7Schema });
+export const transferOwnershipRequestSchema = z.object({ handle: handleSchema });
 
 export const createInvitationRequestSchema = z.object({
   email: z.email().max(254),
@@ -201,6 +210,36 @@ export const verificationRequestSchema = z.object({
   decidedAt: z.iso.datetime().nullable(),
 });
 
+/**
+ * A verification request as its organization follows it (owners and admins): its state, its
+ * documents counted and the motivation of a decision, without the reviewers.
+ */
+export const ownVerificationRequestSchema = z.object({
+  id: uuidV7Schema,
+  status: z.enum(['pending', 'approved', 'rejected']),
+  declaration: z.string(),
+  documentCount: z.number().int().nonnegative(),
+  decisionReason: z.string().nullable(),
+  createdAt: z.iso.datetime(),
+  decidedAt: z.iso.datetime().nullable(),
+});
+
+export const ownVerificationRequestsSchema = z.object({
+  items: z.array(ownVerificationRequestSchema),
+});
+
+/** What the token of an invitation received by email invites to (page of the invitation). */
+export const invitationPreviewSchema = z.object({
+  organization: z.object({
+    slug: organizationSlugSchema,
+    name: z.string(),
+    logoUrl: z.string().nullable(),
+    verified: z.boolean(),
+  }),
+  role: invitableRoleSchema,
+  expiresAt: z.iso.datetime(),
+});
+
 export const verificationQueueQuerySchema = z.object({
   status: z.enum(['pending', 'approved', 'rejected']).default('pending'),
 });
@@ -239,10 +278,14 @@ export type OrganizationMemberCard = z.infer<typeof organizationMemberCardSchema
 export type OrganizationProjectRef = z.infer<typeof organizationProjectRefSchema>;
 export type Organization = z.infer<typeof organizationSchema>;
 export type MyOrganization = z.infer<typeof myOrganizationSchema>;
+export type PublicOrganizationEntry = z.infer<typeof publicOrganizationEntrySchema>;
 export type CreateInvitationRequest = z.infer<typeof createInvitationRequestSchema>;
 export type Invitation = z.infer<typeof invitationSchema>;
 export type CreateVerificationRequest = z.infer<typeof createVerificationRequestSchema>;
 export type VerificationSignals = z.infer<typeof verificationSignalsSchema>;
 export type VerificationRequest = z.infer<typeof verificationRequestSchema>;
 export type VerificationQueue = z.infer<typeof verificationQueueSchema>;
+export type OwnVerificationRequest = z.infer<typeof ownVerificationRequestSchema>;
+export type OwnVerificationRequests = z.infer<typeof ownVerificationRequestsSchema>;
+export type InvitationPreview = z.infer<typeof invitationPreviewSchema>;
 export type VerificationDecisionRequest = z.infer<typeof verificationDecisionRequestSchema>;

@@ -49,6 +49,11 @@ export abstract class OrganizationRepository {
   /** Deleted organizations included: callers decide. */
   abstract findById(id: string): Promise<OrganizationRecord | null>;
   abstract findByIds(ids: readonly string[]): Promise<OrganizationRecord[]>;
+  /** Live organizations, by ascending slug, after one (sitemap). */
+  abstract slugsAfter(
+    afterSlug: string | null,
+    limit: number,
+  ): Promise<{ slug: string; updatedAt: Date }[]>;
   /** Ids of the live organizations, by ascending id (search index rebuild). */
   abstract idsAfter(after: string | null, limit: number): Promise<string[]>;
   /** Current slug first, then former slugs (redirects). */
@@ -89,6 +94,11 @@ export abstract class OrganizationRepository {
   abstract findVerificationRequest(id: string): Promise<VerificationRequestRecord | null>;
   abstract verificationRequests(
     status: VerificationRequestStatus,
+    limit: number,
+  ): Promise<VerificationRequestRecord[]>;
+  /** Requests of one organization, the most recent first. */
+  abstract verificationRequestsOf(
+    organizationId: string,
     limit: number,
   ): Promise<VerificationRequestRecord[]>;
   /** Records the decision of a pending request; false when it was decided meanwhile. */
