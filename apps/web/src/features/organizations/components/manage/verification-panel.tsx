@@ -136,7 +136,7 @@ function RequestForm({ organization }: { organization: Organization }) {
   const queryClient = useQueryClient();
   const [documents, setDocuments] = useState<Document[]>([]);
   const form = useZodForm(createVerificationRequest, {
-    defaultValues: { declaration: '', certified: false as never, documentMediaIds: [] },
+    defaultValues: { declaration: '', certified: false as never },
   });
   const applyProblem = useApplyProblem(form);
   const ready = documents.flatMap((document) => (document.mediaId ? [document.mediaId] : []));

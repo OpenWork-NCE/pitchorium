@@ -12,5 +12,8 @@ export const changeOrganizationSlugRequest = () =>
   contracts().then((module) => module.changeOrganizationSlugRequestSchema);
 export const createInvitationRequest = () =>
   contracts().then((module) => module.createInvitationRequestSchema);
+/** The documents are sent apart (FileDrop): the form checks the declaration and the certification. */
 export const createVerificationRequest = () =>
-  contracts().then((module) => module.createVerificationRequestSchema);
+  contracts().then((module) =>
+    module.createVerificationRequestSchema.omit({ documentMediaIds: true }),
+  );
