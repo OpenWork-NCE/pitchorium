@@ -96,6 +96,9 @@ Valeurs provisoires livrées et documentées : la plateforme fonctionne avec ell
 
 - **42.** Le seuil du complément éditorial du fil (provisoirement 10 publications du réseau, `CONTENT_FEED_EDITORIAL_THRESHOLD`) et la composition de l'équipe éditoriale qui met en avant (aujourd'hui les rôles `moderator` et `admin` avec double authentification ; voir aussi la question 6).
 - **43.** La longueur maximale d'un commentaire (provisoirement 1 250 caractères) et le nombre maximal de mentions par publication (provisoirement 20).
+- **114.** Les limites d'une publication que le §10.3 ne fixe pas (provisoires, `packages/contracts/src/content.ts`) : texte alternatif d'une image de 1 000 caractères au plus, titre d'un document de 200 caractères (le nom du fichier par défaut), mentions d'un commentaire au même plafond que celles d'une publication (20).
+- **115.** Les réglages du fil et de ses statistiques (provisoires) : nouvelles publications vérifiées chaque minute, onglet visible, comptées jusqu'à 20 (« Plus de 20 », ADR 0117) ; une vue comptée quand la moitié d'une publication reste une seconde à l'écran, signalée par lots de 50 au plus, 30 signaux par minute et par membre (ADR 0116) ; aperçu de lien demandé et jamais publié effacé après 24 heures (ADR 0118).
+- **116.** L'allègement des photos dans le navigateur (provisoire, ADR 0120) : plus grand côté ramené à 2 048 px, JPEG de qualité 0,82, fichier de moins de 1 Mo et de moins de 2 048 px envoyé tel quel ; et la conservation du brouillon du composeur sur l'appareil (ADR 0122) : texte gardé jusqu'à la publication ou la déconnexion, fichiers oubliés après 20 heures.
 
 ### Projets
 
