@@ -2,7 +2,7 @@
 
 import type { PostImage } from '@pitchorium/contracts';
 import { useTranslations } from 'next-intl';
-import { lazy, Suspense, useState } from 'react';
+import { lazy, Suspense, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
 import { cn } from '@/lib/cn';
 import { useMotionPreference } from '@/components/motion';
@@ -43,6 +43,7 @@ function singleRatio(image: PostImage): string {
 export function PostImages({ images, postId }: { images: readonly PostImage[]; postId: string }) {
   const t = useTranslations('web.content.images');
   const [open, setOpen] = useState<number | null>(null);
+  const tiles = useRef<(HTMLButtonElement | null)[]>([]);
   const reduced = useMotionPreference() === 'reduced';
   const layout = imageGrid(images.length);
   const show = (index: number) => {
@@ -74,6 +75,9 @@ export function PostImages({ images, postId }: { images: readonly PostImage[]; p
               style={layout.grid === 'single' ? { aspectRatio: singleRatio(image) } : undefined}
             >
               <button
+                ref={(element) => {
+                  tiles.current[index] = element;
+                }}
                 type="button"
                 onClick={() => show(index)}
                 onPointerEnter={() => void loadViewer()}
@@ -112,7 +116,13 @@ export function PostImages({ images, postId }: { images: readonly PostImage[]; p
             images={images}
             startIndex={open}
             transitionName={`post-${postId}-${open}`}
-            onClose={() => setOpen(null)}
+            onClose={() => {
+              // The focus goes back to the thumbnail that opened the viewer (WebKit never
+              // focuses a button on a click, and the viewer leaves with its focus scope).
+              const opened = open;
+              setOpen(null);
+              requestAnimationFrame(() => tiles.current[opened]?.focus());
+            }}
           />
         </Suspense>
       ) : null}

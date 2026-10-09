@@ -482,9 +482,14 @@ function FeedElement({
         while (target >= 0 && target < count && hidden(target)) target += step;
         if (target < 0 || target >= count) return;
         scrollTo?.(target);
-        requestAnimationFrame(() =>
-          list.querySelector<HTMLElement>(`[data-feed-index="${target}"]`)?.focus(),
-        );
+        // Virtualized, the entry is rendered once the scroll has moved: a few frames at most.
+        const focus = (frames: number) =>
+          requestAnimationFrame(() => {
+            const element = list.querySelector<HTMLElement>(`[data-feed-index="${target}"]`);
+            if (element) element.focus();
+            else if (frames > 0) focus(frames - 1);
+          });
+        focus(10);
       } else if (event.ctrlKey && (event.key === 'End' || event.key === 'Home')) {
         event.preventDefault();
         document
