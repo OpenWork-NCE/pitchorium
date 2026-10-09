@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { decodeCursor, decodeKeyset, encodeCursor, encodeKeyset, keysetFrom } from './cursor';
+import {
+  decodeAfter,
+  decodeCursor,
+  decodeKeyset,
+  encodeCursor,
+  encodeKeyset,
+  keysetFrom,
+} from './cursor';
 import { DomainError } from './domain-error';
 
 describe('pagination cursors', () => {
@@ -25,6 +32,14 @@ describe('pagination cursors', () => {
     expect(() => keysetFrom({ at: 'yesterday', key: 'k' })).toThrow(DomainError);
     expect(() => keysetFrom({ key: 'k' })).toThrow(DomainError);
     expect(() => keysetFrom({ at: '2026-10-07T12:00:00.000Z' })).toThrow(
+      'Invalid pagination cursor',
+    );
+  });
+
+  it('reads the position of an ascending list by one key', () => {
+    expect(decodeAfter(undefined, 'handle')).toBeNull();
+    expect(decodeAfter(encodeCursor({ handle: 'awa-diallo' }), 'handle')).toBe('awa-diallo');
+    expect(() => decodeAfter(encodeCursor({ slug: 'x' }), 'handle')).toThrow(
       'Invalid pagination cursor',
     );
   });
