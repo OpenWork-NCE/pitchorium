@@ -151,7 +151,7 @@ test.describe('member shell', () => {
     const publish = page.getByRole('button', { name: 'Publier' });
     await expect(publish).toHaveAttribute('aria-disabled', 'true');
     await expect(publish).toHaveAccessibleDescription(
-      'À compléter d’abord : Acceptation des conditions, Email vérifié.',
+      'À compléter d’abord : acceptation des conditions et email vérifié.',
     );
   });
 

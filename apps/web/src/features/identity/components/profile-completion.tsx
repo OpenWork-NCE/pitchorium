@@ -4,6 +4,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { Avatar, Button, Card, Heading, Progress, Text } from '@/components/ui';
 import { routes } from '@/config/routes';
 import { Link } from '@/i18n/navigation';
+import { formatList } from '@/lib/format/list';
 import { useCurrentMember } from './current-member';
 
 /** Elements of the profile named in the module, the rest summed up by the percentage. */
@@ -44,7 +45,7 @@ export function ProfileCompletion({ variant }: { variant: 'card' | 'module' }) {
       {named.length > 0 ? (
         <p className="text-xs text-muted">
           {t('missing', {
-            list: new Intl.ListFormat(locale, { type: 'conjunction' }).format(named),
+            list: formatList(named, locale),
           })}
         </p>
       ) : null}

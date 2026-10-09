@@ -195,7 +195,7 @@ export const ProfileCardStory: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getAllByRole('progressbar', { name: 'Force du profil' })).toHaveLength(2);
-    await expect(canvas.getAllByText('À ajouter : Photo et Photo de couverture.')).toHaveLength(2);
+    await expect(canvas.getAllByText('À ajouter : photo et photo de couverture.')).toHaveLength(2);
   },
 };
 

@@ -2,8 +2,9 @@
 
 import type { Action } from '@pitchorium/contracts';
 import { useAccessControllerPrerequisites } from '@pitchorium/api-client';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import type { ReactNode } from 'react';
+import { formatList } from '@/lib/format/list';
 
 export interface Access {
   /** Indicative: the api decides on every call (ACCESS_PREREQUISITES_MISSING otherwise). */
@@ -23,6 +24,7 @@ export interface Access {
 export function useAccess(action: Action): Access {
   const t = useTranslations('reference.prerequisiteElements');
   const shell = useTranslations('web.access');
+  const locale = useLocale();
   const query = useAccessControllerPrerequisites(action, { query: { staleTime: 30_000 } });
   const missing = query.data?.missing ?? [];
   return {
@@ -30,7 +32,12 @@ export function useAccess(action: Action): Access {
     pending: query.isPending,
     reason:
       missing.length > 0
-        ? shell('missing', { list: missing.map((element) => t(element)).join(', ') })
+        ? shell('missing', {
+            list: formatList(
+              missing.map((element) => t(element)),
+              locale,
+            ),
+          })
         : query.data && !query.data.allowed
           ? shell('denied')
           : undefined,

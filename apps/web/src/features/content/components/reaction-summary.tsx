@@ -2,6 +2,7 @@ import type { ReactionSummary as ReactionSummaryData } from '@pitchorium/contrac
 import { HeartHandshake, Lightbulb, type LucideIcon, PartyPopper, ThumbsUp } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { cn } from '@/lib/cn';
+import { formatList } from '@/lib/format/list';
 
 type ReactionType = keyof ReactionSummaryData['counts'];
 
@@ -38,8 +39,9 @@ export function ReactionSummary({
     .map(([type]) => type);
   const count = new Intl.NumberFormat(locale).format(reactions.total);
   const plural = new Intl.PluralRules(locale).select(reactions.total) === 'one' ? 'one' : 'other';
-  const list = new Intl.ListFormat(locale, { type: 'conjunction' }).format(
+  const list = formatList(
     main.map((type) => names(type)),
+    locale,
   );
   return (
     <span className={cn('inline-flex items-center gap-2', className)}>
