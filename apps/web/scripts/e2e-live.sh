@@ -151,9 +151,7 @@ wait_ready() {
 cd "$root"
 step 'infrastructure (Compose)' "${compose[@]}" up -d --wait postgres valkey minio mailpit clamav
 step 'buckets' "${compose[@]}" run --rm minio-init
-step 'migrations' pnpm db:migrate
-step 'reference data' pnpm db:seed
-step 'demonstration data' pnpm --filter @pitchorium/server db:seed:dev
+# Built first: the demonstration data runs on the built packages (a fresh clone has none).
 if [ "${LIVE_SKIP_BUILD:-0}" != "1" ]; then
   step 'build of the api, the worker and the packages' \
     pnpm turbo run build --filter=@pitchorium/server... --filter=@pitchorium/web^...
@@ -161,6 +159,9 @@ if [ "${LIVE_SKIP_BUILD:-0}" != "1" ]; then
   # not carry the addresses of this run.
   step 'build of the web app' bash -c 'cd apps/web && exec node_modules/.bin/next build'
 fi
+step 'migrations' pnpm db:migrate
+step 'reference data' pnpm db:seed
+step 'demonstration data' pnpm --filter @pitchorium/server db:seed:dev
 
 start oauth bash -c "cd apps/server && exec node -r @swc-node/register test/oauth/server.ts"
 start api bash -c "cd apps/server && exec node -r @swc-node/register -r ./test/oauth/reroute.ts dist/main.api.js"
