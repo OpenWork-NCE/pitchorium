@@ -9,6 +9,7 @@ const base = {
   development: false,
   apiUrl: 'https://api.pitchorium.example',
   cdnUrl: 'https://cdn.pitchorium.example/public',
+  uploadUrl: 'https://account.r2.cloudflarestorage.com',
   vercelAnalytics: false,
   https: true,
 };
@@ -25,10 +26,10 @@ describe('content security policy', () => {
     expect(directive(csp, 'upgrade-insecure-requests')).toBeDefined();
   });
 
-  it('lists the exact origins of the api, the files and the embedded videos', () => {
+  it('lists the exact origins of the api, the files, the uploads and the embedded videos', () => {
     const csp = buildCsp(base);
     expect(directive(csp, 'connect-src')).toBe(
-      "connect-src 'self' https://api.pitchorium.example wss://api.pitchorium.example",
+      "connect-src 'self' https://api.pitchorium.example wss://api.pitchorium.example https://account.r2.cloudflarestorage.com",
     );
     expect(directive(csp, 'img-src')).toContain('https://cdn.pitchorium.example');
     expect(directive(csp, 'frame-src')).toBe(

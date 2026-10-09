@@ -24,6 +24,8 @@ export const env = createEnv({
     NEXT_PUBLIC_API_URL: z.url(),
     /** Public base URL of the files (S3_PUBLIC_BASE_URL of the api): images and CSP. */
     NEXT_PUBLIC_CDN_URL: z.url().optional(),
+    /** Endpoint of the object storage (S3_ENDPOINT of the api, public): uploads allowed by the CSP. */
+    NEXT_PUBLIC_UPLOAD_URL: z.url().optional(),
     /** Sentry is active only when a DSN is set. */
     NEXT_PUBLIC_SENTRY_DSN: z.url().optional(),
     NEXT_PUBLIC_SENTRY_ENVIRONMENT: z.string().min(1).default('development'),
@@ -37,6 +39,7 @@ export const env = createEnv({
     NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
     NEXT_PUBLIC_CDN_URL: process.env.NEXT_PUBLIC_CDN_URL,
+    NEXT_PUBLIC_UPLOAD_URL: process.env.NEXT_PUBLIC_UPLOAD_URL,
     NEXT_PUBLIC_SENTRY_DSN: process.env.NEXT_PUBLIC_SENTRY_DSN,
     NEXT_PUBLIC_SENTRY_ENVIRONMENT: process.env.NEXT_PUBLIC_SENTRY_ENVIRONMENT,
     NEXT_PUBLIC_VERCEL_ANALYTICS: process.env.NEXT_PUBLIC_VERCEL_ANALYTICS,

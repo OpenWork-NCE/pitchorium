@@ -108,6 +108,7 @@ sed \
   echo "NEXT_PUBLIC_API_URL=http://localhost:$api_port"
   echo "API_INTERNAL_URL=http://localhost:$api_port"
   echo "NEXT_PUBLIC_CDN_URL=http://localhost:$PITCHORIUM_MINIO_PORT/pitchorium-public"
+  echo "NEXT_PUBLIC_UPLOAD_URL=http://localhost:$PITCHORIUM_MINIO_PORT"
   echo "NEXT_PUBLIC_VERCEL_ANALYTICS=false"
 } >>"$env_file"
 while IFS='=' read -r key value; do export "$key=$value"; done <"$env_file"

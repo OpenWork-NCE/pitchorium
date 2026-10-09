@@ -9,6 +9,8 @@ export interface CspOptions {
   development: boolean;
   apiUrl: string;
   cdnUrl?: string | undefined;
+  /** Endpoint of the object storage the browser sends a file to (presigned URLs, ADR 0111). */
+  uploadUrl?: string | undefined;
   sentryDsn?: string | undefined;
   vercelAnalytics: boolean;
   /** Only an HTTPS site upgrades its subresource requests. */
@@ -71,6 +73,7 @@ export function buildCsp(options: CspOptions): string {
   const nonce = `'nonce-${options.nonce}'`;
   const api = origin(options.apiUrl);
   const cdn = options.cdnUrl ? [origin(options.cdnUrl)] : [];
+  const upload = options.uploadUrl ? [origin(options.uploadUrl)] : [];
   const sentry = options.sentryDsn ? sentryTarget(options.sentryDsn) : undefined;
   const vercel = options.vercelAnalytics;
 
@@ -95,6 +98,7 @@ export function buildCsp(options: CspOptions): string {
       "'self'",
       api,
       socketOrigin(options.apiUrl),
+      ...upload,
       ...(sentry ? [sentry.ingest] : []),
       ...(vercel ? [VERCEL_VITALS] : []),
     ],
