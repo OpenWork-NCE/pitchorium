@@ -22,7 +22,9 @@ const BUDGETS_KB = {
   // budget, checked before the rest of the authentication group.
   '(auth)/onboarding': 250,
   '(marketing)': 190,
-  '(public)': 220,
+  // A member reads a resource (profile, organisation, network) in the shell of the member space,
+  // as in (app); the manifest counts both shells, a visitor downloads the public one only.
+  '(public)': 250,
   '(auth)': 220,
   '(app)': 250,
   '(admin)': 260,
