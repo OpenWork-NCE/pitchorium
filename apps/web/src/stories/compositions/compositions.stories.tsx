@@ -1,6 +1,7 @@
 import {
   getAccessControllerPrerequisitesQueryKey,
   getNotificationsControllerCountersQueryKey,
+  getPostsControllerStatsQueryKey,
 } from '@pitchorium/api-client';
 import { createEventRequestSchema, EVENT_MAX_DURATION_DAYS } from '@pitchorium/contracts';
 import { ApiProblemError } from '@pitchorium/api-client';
@@ -13,7 +14,7 @@ import { useWatch } from 'react-hook-form';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
 import { endsAfterStart } from '@/lib/forms/rules';
 import { MemberHeader } from '@/components/layout/member/member-header';
-import { Main, ThreeColumnLayout } from '@/components/layout/page-layouts';
+import { Main, SingleColumnLayout, ThreeColumnLayout } from '@/components/layout/page-layouts';
 import { AdminPage } from '@/components/layout/admin/admin-page';
 import {
   AnnouncerProvider,
@@ -54,6 +55,11 @@ import {
   adminMembers,
   counters,
   currentUser,
+  feedVariantsPage,
+  galleryComments,
+  galleryPost,
+  galleryStats,
+  longPost,
   feedPage,
   members,
   notifications,
@@ -64,7 +70,7 @@ import {
   STORY_NOW,
   tiers,
 } from './fixtures';
-import { FeedComposer, FeedStream, PostSkeleton } from '@/features/content';
+import { FeedComposer, FeedStream, LazyMemberPost, PostSkeleton } from '@/features/content';
 import { SuggestionsList } from '@/features/discovery';
 import { ProjectCard } from '@/features/projects';
 import { ConversationThread, MessageComposer } from '@/features/messaging';
@@ -83,11 +89,19 @@ export default meta;
 type Story = StoryObj;
 
 /** The runtime of the member space, fed with fixtures: no request leaves the story. */
-function MemberRuntime({ children }: { children: ReactNode }) {
+function MemberRuntime({
+  children,
+  seed,
+}: {
+  children: ReactNode;
+  /** What the story reads, put in the cache before it renders. */
+  seed?: (client: QueryClient) => void;
+}) {
   const [client] = useState(() => {
     const queryClient = new QueryClient({
       defaultOptions: { queries: { staleTime: Infinity, retry: false } },
     });
+    seed?.(queryClient);
     queryClient.setQueryData(getNotificationsControllerCountersQueryKey(), counters);
     for (const action of ['content.post.create', 'project.create'] as const) {
       queryClient.setQueryData(getAccessControllerPrerequisitesQueryKey(action), {
@@ -945,4 +959,165 @@ export const OrganizationMembers: Story = {
   name: 'Organization members',
   parameters: { layout: 'padded' },
   render: () => <OrganizationFixture />,
+};
+
+/** Every kind of entry of the feed: images, document, link, repost, highlight, project update. */
+export const FeedVariants: Story = {
+  name: 'Feed variants',
+  render: () => (
+    <MemberRuntime>
+      <SingleColumnLayout width="prose">
+        <Heading level={1} size="page" className="sr-only">
+          Accueil
+        </Heading>
+        <FeedStream initialPage={feedVariantsPage} suggestions={[]} />
+      </SingleColumnLayout>
+    </MemberRuntime>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByRole('feed', { name: 'Fil d’actualité' })).toBeVisible();
+    await expect(await canvas.findByText('À la une')).toBeVisible();
+    await expect(canvas.getAllByText('Rapport de saison 2026')[0]).toBeVisible();
+    await expect(canvas.getByRole('button', { name: 'Agrandir l’image 1 sur 5' })).toBeVisible();
+  },
+};
+
+/** The composer, opened from the feed. */
+export const ComposerEmpty: Story = {
+  name: 'Composer empty',
+  parameters: { nextjs: { navigation: { pathname: '/feed', query: { compose: '1' } } } },
+  render: () => (
+    <MemberRuntime>
+      <SingleColumnLayout width="prose">
+        <FeedComposer />
+      </SingleColumnLayout>
+    </MemberRuntime>
+  ),
+  play: async () => {
+    const dialog = await within(document.body).findByRole('dialog', {
+      name: 'Créer une publication',
+    });
+    const editor = await within(dialog).findByRole('textbox', { name: 'Texte de la publication' });
+    // Once the opening of the dialog has played.
+    await waitFor(() => expect(editor).toBeVisible());
+  },
+};
+
+/** The composer with a written text: its counter, its audience and its language. */
+export const ComposerFull: Story = {
+  name: 'Composer full',
+  parameters: { nextjs: { navigation: { pathname: '/feed', query: { compose: '1' } } } },
+  render: () => (
+    <MemberRuntime>
+      <SingleColumnLayout width="prose">
+        <FeedComposer />
+      </SingleColumnLayout>
+    </MemberRuntime>
+  ),
+  play: async () => {
+    const dialog = await within(document.body).findByRole('dialog', {
+      name: 'Créer une publication',
+    });
+    const editor = await within(dialog).findByRole('textbox', { name: 'Texte de la publication' });
+    await userEvent.click(editor);
+    await userEvent.keyboard('Première récolte de la saison sèche à Thiès : 40 maraîchères.');
+    await expect(await within(dialog).findByText(/^61 \/ 3\D?000$/)).toBeVisible();
+  },
+};
+
+/** A publication on its page, its comments open. */
+export const PostPage: Story = {
+  name: 'Post page',
+  render: () => (
+    <MemberRuntime
+      seed={(client) =>
+        client.setQueryData(['content', 'comments', galleryPost.id], {
+          pages: [galleryComments],
+          pageParams: [undefined],
+        })
+      }
+    >
+      <SingleColumnLayout width="prose">
+        <LazyMemberPost post={galleryPost} full commentsOpen />
+      </SingleColumnLayout>
+    </MemberRuntime>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const thread = await canvas.findByRole('region', { name: 'Commentaires' });
+    await expect(
+      within(thread).getByText('Quel délai de retour sur investissement pour une coopérative ?'),
+    ).toBeVisible();
+  },
+};
+
+/** The reactions, offered after the pointer rests on « J'aime ». */
+export const ReactionPicker: Story = {
+  name: 'Reaction picker',
+  render: () => (
+    <MemberRuntime>
+      <SingleColumnLayout width="prose">
+        <LazyMemberPost post={longPost} />
+      </SingleColumnLayout>
+    </MemberRuntime>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.hover(await canvas.findByRole('button', { name: "J'aime" }));
+    const bar = await canvas.findByRole('toolbar', { name: 'Réactions' }, { timeout: 3000 });
+    await expect(within(bar).getAllByRole('button')).toHaveLength(4);
+  },
+};
+
+/** The viewer of the images, opened on the first one. */
+export const ImageViewer: Story = {
+  name: 'Image viewer',
+  render: () => (
+    <MemberRuntime>
+      <SingleColumnLayout width="prose">
+        <LazyMemberPost post={galleryPost} />
+      </SingleColumnLayout>
+    </MemberRuntime>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(await canvas.findByRole('button', { name: 'Agrandir l’image 1 sur 5' }));
+    // The viewer is loaded on the first opening.
+    const viewer = await within(document.body).findByRole(
+      'dialog',
+      { name: /^Images de la publication/ },
+      { timeout: 5000 },
+    );
+    await expect(await within(viewer).findByText('1 / 5')).toBeVisible();
+  },
+};
+
+/** The statistics of a publication, for its author. */
+export const PostStatistics: Story = {
+  name: 'Post statistics',
+  render: () => (
+    <MemberRuntime
+      seed={(client) =>
+        client.setQueryData(getPostsControllerStatsQueryKey(galleryPost.id), galleryStats)
+      }
+    >
+      <SingleColumnLayout width="prose">
+        <LazyMemberPost post={galleryPost} />
+      </SingleColumnLayout>
+    </MemberRuntime>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(await canvas.findByRole('button', { name: 'Plus d’actions' }));
+    await userEvent.click(
+      await within(document.body).findByRole('menuitem', { name: 'Statistiques' }),
+    );
+    const dialog = await within(document.body).findByRole('dialog', {
+      name: 'Statistiques de la publication',
+    });
+    const chart = within(dialog).getByRole('img', { name: 'Membres uniques par jour' });
+    // Once the opening of the dialog has played.
+    await waitFor(() => expect(chart).toBeVisible());
+  },
 };

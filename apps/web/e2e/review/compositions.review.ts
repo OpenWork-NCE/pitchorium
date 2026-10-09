@@ -18,6 +18,13 @@ const COMPOSITIONS = [
   'relationship-actions-story',
   'connect-dialog-story',
   'organization-members',
+  'feed-variants',
+  'composer-empty',
+  'composer-full',
+  'post-page',
+  'reaction-picker',
+  'image-viewer',
+  'post-statistics',
 ];
 
 /** Compositions that show a loading state on purpose. */

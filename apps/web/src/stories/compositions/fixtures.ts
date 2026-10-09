@@ -1,5 +1,7 @@
 import type {
+  Comment,
   Counters,
+  CursorPage,
   DiscoveryCard,
   FeedPage,
   Suggestion,
@@ -9,6 +11,7 @@ import type {
   Message,
   Notification,
   Post,
+  PostStats,
   ProjectCard,
   ProjectTier,
 } from '@pitchorium/contracts';
@@ -377,3 +380,215 @@ export const adminMembers: MemberSummary[] = [
   emailVerified: Boolean(emailVerified),
   createdAt: at(`${String(day)}T10:00:00Z`),
 }));
+
+/** An abstract picture (gradient and circles, no text), inline: no file to serve. */
+function picture(hue: number, width = 1200, height = 800): string {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="hsl(${hue},60%,45%)"/><stop offset="1" stop-color="hsl(${(hue + 50) % 360},60%,28%)"/></linearGradient></defs><rect width="100%" height="100%" fill="url(#g)"/><circle cx="${width * 0.3}" cy="${height * 0.6}" r="${height * 0.3}" fill="hsl(${(hue + 120) % 360},70%,65%)" fill-opacity="0.45"/><circle cx="${width * 0.75}" cy="${height * 0.3}" r="${height * 0.2}" fill="hsl(${(hue + 200) % 360},70%,70%)" fill-opacity="0.4"/></svg>`;
+  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+}
+
+const ALTS = [
+  'Rangées de salades sous des panneaux solaires, au lever du jour.',
+  'Une maraîchère ouvre la vanne d’une pompe solaire.',
+  'Le bassin de la coopérative, rempli à ras bord.',
+  'Des cagettes de tomates prêtes pour le marché.',
+  'L’équipe de la coopérative devant le local technique.',
+  'Le carnet partagé des pannes, ouvert sur une table.',
+];
+
+function postImages(count: number, hue: number, described = true): Post['images'] {
+  return Array.from({ length: count }, (_, index) => {
+    const url = picture((hue + index * 37) % 360);
+    return {
+      mediaId: `0192f4a0-2600-7000-8000-${String(hue * 10 + index).padStart(12, '0')}`,
+      url,
+      variants: {
+        large: { width: 1200, height: 800, webp: url, avif: null },
+        medium: { width: 1200, height: 800, webp: url, avif: null },
+      },
+      alt: described ? (ALTS[index % ALTS.length] ?? null) : null,
+    };
+  });
+}
+
+const variant = (
+  n: number,
+  author: MemberCard,
+  text: string,
+  fields: Partial<Post> = {},
+): Post => ({
+  ...post(`0192f4a0-2500-7000-8000-${String(n).padStart(12, '0')}`, author, text, n * 3, 8 + n),
+  ...fields,
+});
+
+/** A publication with its text cut, a mention, an image and an edit. */
+export const longPost: Post = variant(
+  1,
+  members.aissatou,
+  [
+    'Six mois après l’installation de la pompe solaire, la coopérative arrose deux fois plus de parcelles avec la même eau.',
+    'Ce qui a marché : former deux techniciennes du village, garder un stock de pièces à Thiès, tenir un carnet partagé des pannes.',
+    'Ce qui reste difficile : le financement du stockage, et le transport des récoltes pendant la saison des pluies.',
+    'Merci à @kofi-mensah pour ses conseils sur le plan de trésorerie.',
+  ].join('\n\n'),
+  {
+    mentions: [
+      { token: '@kofi-mensah', type: 'member', key: 'kofi-mensah', displayName: 'Kofi Mensah' },
+    ],
+    images: postImages(1, 30),
+    editedAt: hoursAgo(1),
+  },
+);
+
+/** A publication of the reader with five images, for the viewer and the statistics. */
+export const galleryPost: Post = variant(
+  4,
+  members.aissatou,
+  'La tournée des coopératives en cinq images.',
+  { images: postImages(5, 200), viewerIsAuthor: true, commentCount: 4 },
+);
+
+/** The first page of a feed with every kind of entry the web draws. */
+export const feedVariantsPage: FeedPage = {
+  schemaVersion: 1,
+  head: null,
+  nextCursor: null,
+  items: [
+    { type: 'post', id: 'post:1', post: longPost },
+    {
+      type: 'featured',
+      id: 'featured:9',
+      post: variant(9, members.jean, 'Trois projets agricoles à suivre cette saison.', {
+        featured: true,
+      }),
+    },
+    {
+      type: 'post',
+      id: 'post:2',
+      post: variant(2, members.kofi, 'Deux images de l’atelier d’Accra.', {
+        images: postImages(2, 90),
+      }),
+    },
+    {
+      type: 'post',
+      id: 'post:3',
+      post: variant(3, members.nadia, 'Trois dossiers retenus cette semaine.', {
+        images: postImages(3, 150, false),
+        visibility: 'members',
+      }),
+    },
+    { type: 'post', id: 'post:4', post: galleryPost },
+    {
+      type: 'post',
+      id: 'post:5',
+      post: variant(5, members.jean, 'Notre rapport de saison, avant la réunion de jeudi.', {
+        document: {
+          mediaId: '0192f4a0-2700-7000-8000-000000000001',
+          thumbnailUrl: picture(260, 480, 640),
+          pageCount: 12,
+          title: 'Rapport de saison 2026',
+        },
+        visibility: 'connections',
+      }),
+    },
+    {
+      type: 'post',
+      id: 'post:6',
+      post: variant(6, members.ifeoma, 'À lire sur l’irrigation solaire.', {
+        link: {
+          url: 'https://sahel.example/irrigation',
+          status: 'ready',
+          title: 'Irrigation solaire à Thiès',
+          description: 'Une coopérative de quarante maraîchères arrose ses parcelles au soleil.',
+          siteName: 'Sahel Agri',
+          imageUrl: picture(45),
+        },
+      }),
+    },
+    {
+      type: 'repost',
+      id: 'repost:7',
+      post: variant(7, members.nadia, 'À lire, surtout la partie sur le stockage.', {
+        kind: 'repost',
+        repostOf: variant(8, members.kofi, 'Le rapport annuel du club est en ligne.'),
+      }),
+    },
+    {
+      type: 'project_update',
+      id: 'project_update:1',
+      update: {
+        id: '0192f4a0-2800-7000-8000-000000000001',
+        projectId: project.id,
+        author: members.aissatou,
+        text: 'Premier palier atteint : la pompe est commandée.',
+        images: [],
+        publishedAt: hoursAgo(30),
+        editedAt: null,
+        project: {
+          id: project.id,
+          slug: project.slug,
+          title: project.title,
+          coverImageUrl: null,
+        },
+      },
+    },
+    {
+      type: 'post',
+      id: 'post:10',
+      post: variant(10, members.aissatou, 'Une publication que la modération a masquée.', {
+        viewerIsAuthor: true,
+        moderation: 'hidden',
+      }),
+    },
+  ],
+};
+
+function comment(
+  n: number,
+  author: MemberCard,
+  text: string,
+  fields: Partial<Comment> = {},
+): Comment {
+  return {
+    id: `0192f4a0-2900-7000-8000-${String(n).padStart(12, '0')}`,
+    postId: galleryPost.id,
+    parentId: null,
+    author,
+    text,
+    mentions: [],
+    reactions: {
+      counts: { like: n % 3, bravo: 0, insightful: n % 2, support: 0 },
+      total: (n % 3) + (n % 2),
+      viewerReaction: null,
+    },
+    replyCount: 0,
+    viewerIsAuthor: false,
+    viewerCanDelete: true,
+    createdAt: hoursAgo(10 - n),
+    editedAt: null,
+    ...fields,
+  };
+}
+
+/** The first page of the comments of the gallery, one of them answered. */
+export const galleryComments: CursorPage<Comment> = {
+  nextCursor: null,
+  items: [
+    comment(1, members.kofi, 'Quel délai de retour sur investissement pour une coopérative ?', {
+      replyCount: 1,
+    }),
+    comment(2, members.nadia, 'Bravo à toute l’équipe, la Fondation suit ce projet.', {
+      editedAt: hoursAgo(2),
+    }),
+    comment(3, members.jean, 'Le stockage reste le point dur, nous en parlons jeudi ?'),
+  ],
+};
+
+/** A week of views of the gallery, for its author. */
+export const galleryStats: PostStats = {
+  postId: galleryPost.id,
+  days: [3, 5, 8, 6, 9, 12, 7].map((uniqueViewers, index) => ({
+    day: `2026-10-0${index + 2}`,
+    uniqueViewers,
+  })),
+};
