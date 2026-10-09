@@ -79,6 +79,53 @@ export const oauthProviderSchema = z.enum(OAUTH_PROVIDERS);
 /** Minimum length of a password (§7, identity module). */
 export const MIN_PASSWORD_LENGTH = 12;
 
+/** Longest password accepted by /v1/auth. */
+export const MAX_PASSWORD_LENGTH = 128;
+
+/** Display name typed at sign-up (the profile keeps the same bound). */
+export const ACCOUNT_NAME_MAX_LENGTH = 100;
+
+const emailField = z.email().max(254);
+const passwordField = z.string().min(MIN_PASSWORD_LENGTH).max(MAX_PASSWORD_LENGTH);
+
+/**
+ * Inputs of the /v1/auth routes as the web app validates them before Better Auth validates them
+ * again (sign-up, sign-in, links sent by email, new password, second factor).
+ */
+export const signUpRequestSchema = z.object({
+  name: z.string().trim().min(1).max(ACCOUNT_NAME_MAX_LENGTH),
+  email: emailField,
+  password: passwordField,
+});
+
+export const signInRequestSchema = z.object({
+  email: emailField,
+  /** Any length: a refused password answers like an unknown account. */
+  password: z.string().min(1).max(MAX_PASSWORD_LENGTH),
+});
+
+export const emailRequestSchema = z.object({ email: emailField });
+
+export const newPasswordRequestSchema = z.object({ newPassword: passwordField });
+
+export const changePasswordRequestSchema = z.object({
+  currentPassword: z.string().min(1).max(MAX_PASSWORD_LENGTH),
+  newPassword: passwordField,
+});
+
+/** Code of an authenticator application (TOTP, six digits). */
+export const totpCodeRequestSchema = z.object({ code: z.string().regex(/^\d{6}$/) });
+
+/** Backup code of the second factor, as Better Auth prints it. */
+export const backupCodeRequestSchema = z.object({
+  code: z.string().trim().min(6).max(32),
+});
+
+/** Password typed again to confirm a sensitive change (second factor). */
+export const passwordConfirmationRequestSchema = z.object({
+  password: z.string().min(1).max(MAX_PASSWORD_LENGTH),
+});
+
 /** How the web app shows Cloudflare Turnstile: only when an interaction is needed, or always. */
 export const TURNSTILE_APPEARANCES = ['interaction-only', 'always'] as const;
 
