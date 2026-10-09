@@ -6,7 +6,7 @@ import { createEventRequestSchema, EVENT_MAX_DURATION_DAYS } from '@pitchorium/c
 import { ApiProblemError } from '@pitchorium/api-client';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Download, Filter, UserPlus } from 'lucide-react';
+import { Download, Filter, UserCog } from 'lucide-react';
 import { type ReactNode, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
@@ -610,7 +610,11 @@ export const AdminTable: Story = {
                 actions: true,
                 align: 'end',
                 cell: (row) => (
-                  <IconButton size="sm" label={`Inviter ${row.name}`} icon={<UserPlus />} />
+                  <IconButton
+                    size="sm"
+                    label={`Gérer les rôles (${row.name})`}
+                    icon={<UserCog />}
+                  />
                 ),
               },
             ]}
@@ -633,10 +637,12 @@ export const AdminTable: Story = {
     await expect(within(table).getByRole('columnheader', { name: 'Email vérifié' })).toBeVisible();
     // An action with an icon only shows its name in a tooltip, on hover and on focus (the
     // button names itself, the tooltip is hidden from assistive technologies).
-    await userEvent.hover(within(table).getByRole('button', { name: 'Inviter Aïssatou Ba' }));
+    await userEvent.hover(
+      within(table).getByRole('button', { name: 'Gérer les rôles (Aïssatou Ba)' }),
+    );
     await waitFor(() =>
       expect(document.querySelector('[data-radix-popper-content-wrapper]')).toHaveTextContent(
-        'Inviter Aïssatou Ba',
+        'Gérer les rôles (Aïssatou Ba)',
       ),
     );
   },
