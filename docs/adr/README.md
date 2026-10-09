@@ -114,3 +114,4 @@ Un fichier par décision, numéroté, au format Contexte / Décision / Conséque
 | [0108](0108-second-factor-without-password.md)           | Double authentification d'un compte sans mot de passe        |
 | [0109](0109-minimum-profile-prerequisite.md)             | Profil minimum, prérequis défini par l'api                   |
 | [0110](0110-tabular-figures.md)                          | Chiffres tabulaires                                          |
+| [0111](0111-client-side-image-crop.md)                   | Recadrage des images dans le navigateur                      |
