@@ -120,7 +120,7 @@ export function Table<Row>({
                           <dd
                             className={cn(
                               'min-w-0 wrap-anywhere',
-                              column.align === 'end' && 'tabular-nums',
+                              column.align === 'end' && 'font-numeric tabular-nums',
                             )}
                           >
                             {column.cell(row)}
@@ -244,7 +244,9 @@ export function Table<Row>({
                           className={cn(
                             cell,
                             column.rowHeader && 'font-medium',
-                            column.align === 'end' ? 'text-right tabular-nums' : 'text-left',
+                            column.align === 'end'
+                              ? 'text-right font-numeric tabular-nums'
+                              : 'text-left',
                             index === 0 && sticky(false),
                             column.className,
                           )}

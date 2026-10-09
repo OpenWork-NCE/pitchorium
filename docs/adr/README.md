@@ -113,3 +113,4 @@ Un fichier par décision, numéroté, au format Contexte / Décision / Conséque
 | [0107](0107-sessions-without-ip-geolocation.md)          | Sessions sans géolocalisation de l'adresse IP                |
 | [0108](0108-second-factor-without-password.md)           | Double authentification d'un compte sans mot de passe        |
 | [0109](0109-minimum-profile-prerequisite.md)             | Profil minimum, prérequis défini par l'api                   |
+| [0110](0110-tabular-figures.md)                          | Chiffres tabulaires                                          |

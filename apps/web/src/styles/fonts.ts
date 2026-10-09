@@ -70,10 +70,37 @@ export const fallback = localFont({
   ],
 });
 
+/**
+ * Tabular figures of Bricolage Grotesque (digits and their separators, weights 400 to 600, text
+ * optical size) for the numbers of tables and counters: Poppins has no tabular figures (ADR 0110).
+ * The unicode-range equals FIGURE_RANGES of scripts/brand-sync.mjs (checked by a test); downloaded
+ * only by a page that sets a number in `font-numeric`.
+ */
+export const figures = localFont({
+  src: [
+    {
+      path: '../../public/fonts/bricolage-grotesque-figures.woff2',
+      weight: '400 600',
+      style: 'normal',
+    },
+  ],
+  variable: '--font-figures',
+  display: 'swap',
+  preload: false,
+  adjustFontFallback: false,
+  declarations: [
+    {
+      prop: 'unicode-range',
+      value: 'U+0025, U+002B-002E, U+0030-0039, U+00A0, U+2009, U+202F, U+2212',
+    },
+  ],
+});
+
 export const fontVariables = [
   poppins.variable,
   poppinsStrong.variable,
   bricolage.variable,
   edu.variable,
   fallback.variable,
+  figures.variable,
 ].join(' ');

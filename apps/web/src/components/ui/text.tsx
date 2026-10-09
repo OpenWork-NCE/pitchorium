@@ -17,7 +17,7 @@ export const textVariants = cva('', {
     /** Long text: limited to 68 characters per line. */
     prose: { true: 'max-w-[68ch] text-pretty', false: '' },
     /** Figures of the same width, for amounts and counters. */
-    numeric: { true: 'tabular-nums', false: '' },
+    numeric: { true: 'font-numeric tabular-nums', false: '' },
   },
   defaultVariants: {
     size: 'base',

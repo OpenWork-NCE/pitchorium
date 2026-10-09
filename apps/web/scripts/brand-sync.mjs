@@ -160,6 +160,22 @@ const FALLBACK_RANGES = [
   [0x20b5, 0x20b5],
 ];
 
+/**
+ * Characters of a number: digits and what sits between them (signs, separators of thousands and
+ * decimals, the spaces of French grouping, percent). Served by the figures subset of Bricolage
+ * Grotesque, which has tabular figures (`tnum`, every digit 580 units wide), unlike Poppins: the
+ * numeric columns and counters align (docs/design/typography.md, ADR 0110).
+ */
+const FIGURE_RANGES = [
+  [0x0025, 0x0025],
+  [0x002b, 0x002e],
+  [0x0030, 0x0039],
+  [0x00a0, 0x00a0],
+  [0x2009, 0x2009],
+  [0x202f, 0x202f],
+  [0x2212, 0x2212],
+];
+
 const FONTS = [
   {
     output: 'poppins-400.woff2',
@@ -189,6 +205,13 @@ const FONTS = [
     // Rare accents only (brand guide): Latin-1 and typographic punctuation.
     ranges: ACCENT_RANGES,
     axes: { wght: 500 },
+  },
+  {
+    // Figures for numbers set in body sizes: text optical size, weights of the body text.
+    output: 'bricolage-grotesque-figures.woff2',
+    source: { kit: '05-polices/Bricolage-Grotesque/BricolageGrotesque-Variable.ttf' },
+    ranges: FIGURE_RANGES,
+    axes: { wdth: 100, opsz: 14, wght: { min: 400, max: 600 } },
   },
   {
     output: 'noto-sans-fallback.woff2',

@@ -68,6 +68,10 @@
   --font-sans: var(--font-poppins), var(--font-fallback), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-bricolage), var(--font-fallback), ui-sans-serif, system-ui, sans-serif;
   --font-hand: var(--font-edu), cursive;
+  /* Numbers of tables and counters: tabular figures of Bricolage, the rest in Poppins (ADR 0110). */
+  --font-numeric:
+    var(--font-figures), var(--font-poppins), var(--font-fallback), ui-sans-serif, system-ui,
+    sans-serif;
 
   /* Fluid scale on the 18 / 29 / 47 progression of the brand guide (ratio close to 1.618). */
   --text-xs: 0.75rem;

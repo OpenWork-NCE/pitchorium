@@ -18,7 +18,9 @@ interface StatProps {
 
 /**
  * A key figure: the value counts up once when it comes into view (H17, snapped to its step,
- * formatted on each frame), its final value rendered by the server and kept with less motion.
+ * formatted on each frame), its final value rendered by the server and kept with less motion. Set
+ * in Bricolage Grotesque 800 with its tabular figures: the width stays put while it counts
+ * (ADR 0110).
  */
 export function Stat({ label, value, format, step = 1, hint, className }: StatProps) {
   return (

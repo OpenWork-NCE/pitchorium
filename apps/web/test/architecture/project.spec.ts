@@ -83,19 +83,33 @@ describe('project rules of the web app', () => {
     expect(offenders).toEqual([]);
   });
 
-  it('declares the fallback font for exactly the ranges the brand sync subsets', () => {
+  /** The ranges a list of the brand sync subsets, written as a CSS unicode-range. */
+  function syncedRanges(list: string): string[] {
     const script = readFileSync(join(root, 'scripts/brand-sync.mjs'), 'utf8');
-    const block = /const FALLBACK_RANGES = \[([\s\S]*?)\];/.exec(script)?.[1] ?? '';
-    const ranges = [...block.matchAll(/\[0x([0-9a-f]+), 0x([0-9a-f]+)\]/g)].map(
-      ([, start, end]) => {
-        const from = start!.toUpperCase().padStart(4, '0');
-        const to = end!.toUpperCase().padStart(4, '0');
-        return from === to ? `U+${from}` : `U+${from}-${to}`;
-      },
-    );
+    const block = new RegExp(`const ${list} = \\[([\\s\\S]*?)\\];`).exec(script)?.[1] ?? '';
+    return [...block.matchAll(/\[0x([0-9a-f]+), 0x([0-9a-f]+)\]/g)].map(([, start, end]) => {
+      const from = start!.toUpperCase().padStart(4, '0');
+      const to = end!.toUpperCase().padStart(4, '0');
+      return from === to ? `U+${from}` : `U+${from}-${to}`;
+    });
+  }
+
+  /** The unicode-range declared by a font of fonts.ts. */
+  function declaredRanges(font: string): string[] | undefined {
     const fonts = readFileSync(join(root, 'src/styles/fonts.ts'), 'utf8');
-    const declared = /'(U\+[^']+)'/.exec(fonts)?.[1]?.split(', ');
+    const declaration = fonts.slice(fonts.indexOf(`export const ${font} = localFont(`));
+    return /'(U\+[^']+)'/.exec(declaration)?.[1]?.split(', ');
+  }
+
+  it('declares the fallback font for exactly the ranges the brand sync subsets', () => {
+    const ranges = syncedRanges('FALLBACK_RANGES');
     expect(ranges.length).toBeGreaterThan(10);
-    expect(declared).toEqual(ranges);
+    expect(declaredRanges('fallback')).toEqual(ranges);
+  });
+
+  it('declares the figures for exactly the characters of a number the brand sync keeps', () => {
+    const ranges = syncedRanges('FIGURE_RANGES');
+    expect(ranges).toContain('U+0030-0039');
+    expect(declaredRanges('figures')).toEqual(ranges);
   });
 });

@@ -48,17 +48,17 @@ Contrat visuel de l'application web : chaque composant de `apps/web/src/componen
 
 ## Hiérarchie typographique appliquée
 
-| Rôle                       | Police et graisse              | Taille      | Où                                                   |
-| -------------------------- | ------------------------------ | ----------- | ---------------------------------------------------- |
-| Titre éditorial (`h1`)     | Bricolage Grotesque 800        | `text-5xl`  | pages publiques éditoriales seulement                |
-| Titre de page (`h1`)       | Bricolage Grotesque 800        | `text-3xl`  | toute page de l'espace membre et de l'administration |
-| Titre de section (`h2`)    | Bricolage Grotesque 800        | `text-2xl`  | sections d'une page                                  |
-| Titre de carte (`h3`)      | Poppins 600                    | `text-lg`   | cartes, panneaux, dialogues                          |
-| Surtitre (`Kicker`)        | Poppins 500, capitales         | `text-xs`   | au-dessus d'un titre, une fois par bloc              |
-| Texte courant              | Poppins 400                    | `text-base` | 16 à 17 px, interligne 1,5, 68 caractères au plus    |
-| Texte secondaire           | Poppins 400, `muted`           | `text-sm`   | métadonnées, aides, horodatages                      |
-| Libellés, boutons, onglets | Poppins 500                    | `text-sm`   | contrôles                                            |
-| Nombres                    | police du rôle, `tabular-nums` | du rôle     | montants, compteurs, statistiques, tableaux          |
+| Rôle                       | Police et graisse                                                                                       | Taille      | Où                                                   |
+| -------------------------- | ------------------------------------------------------------------------------------------------------- | ----------- | ---------------------------------------------------- |
+| Titre éditorial (`h1`)     | Bricolage Grotesque 800                                                                                 | `text-5xl`  | pages publiques éditoriales seulement                |
+| Titre de page (`h1`)       | Bricolage Grotesque 800                                                                                 | `text-3xl`  | toute page de l'espace membre et de l'administration |
+| Titre de section (`h2`)    | Bricolage Grotesque 800                                                                                 | `text-2xl`  | sections d'une page                                  |
+| Titre de carte (`h3`)      | Poppins 600                                                                                             | `text-lg`   | cartes, panneaux, dialogues                          |
+| Surtitre (`Kicker`)        | Poppins 500, capitales                                                                                  | `text-xs`   | au-dessus d'un titre, une fois par bloc              |
+| Texte courant              | Poppins 400                                                                                             | `text-base` | 16 à 17 px, interligne 1,5, 68 caractères au plus    |
+| Texte secondaire           | Poppins 400, `muted`                                                                                    | `text-sm`   | métadonnées, aides, horodatages                      |
+| Libellés, boutons, onglets | Poppins 500                                                                                             | `text-sm`   | contrôles                                            |
+| Nombres                    | chiffres tabulaires de Bricolage Grotesque (`font-numeric`), `tabular-nums` ; Bricolage 800 pour `Stat` | du rôle     | montants, compteurs, statistiques, tableaux          |
 
 - **Edu AU VIC WA NT Hand** (`font-hand`) : rares accents éditoriaux des pages publiques (une annotation, un mot souligné à la main), au plus une fois par écran, jamais pour un logo, un formulaire, un texte long, une information nécessaire, ni dans l'espace membre, l'administration ou l'authentification. Un test d'architecture refuse `font-hand` hors de `features/marketing` et des pages `(marketing)`.
 - Une seule police de titre et une seule de texte : jamais une troisième famille, jamais de faux gras.

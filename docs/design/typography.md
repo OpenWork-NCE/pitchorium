@@ -6,14 +6,15 @@ Guide de marque : titres en Bricolage Grotesque 800, texte courant en Poppins (t
 
 Écrits par `pnpm brand:sync` dans `apps/web/public/fonts` (WOFF2) et chargés par `next/font/local` (`apps/web/src/styles/fonts.ts`), avec les licences OFL à côté.
 
-| Fichier                           | Source                                                                   | Poids     | Octets  | Chargement                  |
-| --------------------------------- | ------------------------------------------------------------------------ | --------- | ------- | --------------------------- |
-| `bricolage-grotesque-800.woff2`   | kit (`BricolageGrotesque-800.ttf`), chasse 100, taille optique 96 figées | 800       | 33 384  | préchargé                   |
-| `poppins-400.woff2`               | kit (`Poppins-Regular.ttf`, identique au dépôt Google Fonts)             | 400       | 11 248  | préchargé                   |
-| `poppins-500.woff2`               | dépôt Google Fonts `ofl/poppins/Poppins-Medium.ttf`                      | 500       | 10 976  | à l'usage                   |
-| `poppins-600.woff2`               | dépôt Google Fonts `ofl/poppins/Poppins-SemiBold.ttf`                    | 600       | 11 316  | à l'usage                   |
-| `edu-au-vic-wa-nt-hand-500.woff2` | kit (variable), instance 500, Latin-1 seulement                          | 500       | 164 032 | à l'usage, jamais préchargé |
-| `noto-sans-fallback.woff2`        | dépôt Google Fonts `ofl/notosans/NotoSans[wdth,wght].ttf`, chasse 100    | 400 à 800 | 42 416  | selon `unicode-range`       |
+| Fichier                             | Source                                                                   | Poids     | Octets  | Chargement                  |
+| ----------------------------------- | ------------------------------------------------------------------------ | --------- | ------- | --------------------------- |
+| `bricolage-grotesque-800.woff2`     | kit (`BricolageGrotesque-800.ttf`), chasse 100, taille optique 96 figées | 800       | 33 384  | préchargé                   |
+| `poppins-400.woff2`                 | kit (`Poppins-Regular.ttf`, identique au dépôt Google Fonts)             | 400       | 11 248  | préchargé                   |
+| `poppins-500.woff2`                 | dépôt Google Fonts `ofl/poppins/Poppins-Medium.ttf`                      | 500       | 10 976  | à l'usage                   |
+| `poppins-600.woff2`                 | dépôt Google Fonts `ofl/poppins/Poppins-SemiBold.ttf`                    | 600       | 11 316  | à l'usage                   |
+| `edu-au-vic-wa-nt-hand-500.woff2`   | kit (variable), instance 500, Latin-1 seulement                          | 500       | 164 032 | à l'usage, jamais préchargé |
+| `noto-sans-fallback.woff2`          | dépôt Google Fonts `ofl/notosans/NotoSans[wdth,wght].ttf`, chasse 100    | 400 à 800 | 42 416  | selon `unicode-range`       |
+| `bricolage-grotesque-figures.woff2` | kit (variable), chiffres et séparateurs, taille optique 14, chasse 100   | 400 à 600 | 9 860   | selon `unicode-range`       |
 
 Le dépôt Google Fonts est figé au commit `5e8a3ba899557829a76cfdac30fa512bda91d7ca` ; chaque fichier distant est contrôlé par son SHA-256. Licence SIL Open Font License 1.1 pour les quatre familles. Aucun faux gras : les poids 500 et 600 sont de vrais fichiers, sous le même nom de famille « Poppins » que le 400.
 
@@ -31,6 +32,14 @@ Contrôle fonttools 4.66.1 (`TTFont.getBestCmap`) sur les fichiers du kit et du 
 - Edu AU VIC WA NT Hand : mêmes manques ; réservée aux accents en français et en anglais.
 
 Repli : Noto Sans (OFL), conçue pour couvrir ces écritures, en sous-ensemble limité aux caractères manquants (`unicode-range` U+014A-014B, U+0181, U+0186, U+0189-018A, U+018E-0192, U+0194, U+0198-0199, U+019D, U+01B2-01B4, U+01CD-01DC, U+01F8-01F9, U+0253-0254, U+0256-0257, U+025B, U+0263, U+0272, U+028B, U+0300-036F, U+1E00-1EFF, U+20A3, U+20A6, U+20B5), variable de 400 à 800 pour suivre le poids du texte. Il se place après Poppins et Bricolage dans `font-sans` et `font-display` : le navigateur ne le télécharge que pour une page qui contient l'un de ces caractères. Un test vérifie que la `unicode-range` déclarée égale les plages du sous-ensemble.
+
+## Chiffres tabulaires (ADR 0110)
+
+Contrôle fonttools 4.66.1, le 2026-10-09 : Poppins n'a pas de chiffres tabulaires (ni `tnum`, ni chiffres de même largeur) ; Bricolage Grotesque a `tnum` (580 unités par chiffre en taille d'affichage, 616 en taille de texte), gardé par l'instance 800 servie ; Noto Sans a des chiffres de même largeur (572 unités), absents de son sous-ensemble de repli.
+
+- Colonnes numériques de `Table` (`align: 'end'`) et `Text numeric` : pile `font-numeric` (les chiffres et leurs séparateurs de `bricolage-grotesque-figures.woff2`, le reste en Poppins) avec `tabular-nums`.
+- `Stat` : Bricolage Grotesque 800 avec `tabular-nums`, sa largeur fixe pendant le comptage.
+- Plages du sous-ensemble (`FIGURE_RANGES` de `scripts/brand-sync.mjs`, `unicode-range` vérifiée par un test) : U+0025, U+002B-002E, U+0030-0039, U+00A0, U+2009, U+202F, U+2212.
 
 ## Hiérarchie
 
