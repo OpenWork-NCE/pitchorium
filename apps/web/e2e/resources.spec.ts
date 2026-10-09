@@ -67,6 +67,22 @@ test.describe('profiles and organisations', () => {
     expect((await page.goto('/fr/members/kofi-mensah'))?.status()).toBe(404);
   });
 
+  test('gives a visitor the lists of a member rendered by the server, as links', async ({
+    page,
+  }) => {
+    await page.goto('/fr/members/aissatou-ba/network');
+    const lists = page.getByRole('navigation', { name: 'Réseau de Aïssatou Ba' });
+    await expect(lists.getByRole('link', { name: 'Connexions' })).toHaveAttribute(
+      'aria-current',
+      'page',
+    );
+    await expect(page.getByText('Aucune connexion à afficher.')).toBeVisible();
+    await lists.getByRole('link', { name: 'Abonnements' }).click();
+    await expect(page).toHaveURL(/\?tab=following$/);
+    await expect(page.getByRole('navigation', { name: 'Type d’abonnement' })).toBeVisible();
+    await expect(page.getByRole('tab')).toHaveCount(0);
+  });
+
   test('gives a member the member view, never indexed, with the relationship', async ({ page }) => {
     await signIn(page, 'claudine.pierre.louis@demo.pitchorium.test');
     await page.goto('/fr/members/aissatou-ba');

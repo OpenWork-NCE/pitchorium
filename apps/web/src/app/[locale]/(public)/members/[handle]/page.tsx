@@ -6,7 +6,7 @@ import { SingleColumnLayout } from '@/components/layout/page-layouts';
 import { Button } from '@/components/ui';
 import { routes } from '@/config/routes';
 import { siteConfig } from '@/config/site';
-import { ProfileViewsSummary, RelationshipActions } from '@/features/network';
+import { LazyRelationshipActions, ProfileViewsSummary } from '@/features/network';
 import { MemberProfile, personJsonLd } from '@/features/profiles';
 import { Link } from '@/i18n/navigation';
 import { asLocale } from '@/i18n/routing';
@@ -65,7 +65,7 @@ export default async function Page({ params }: PageProps<'/[locale]/members/[han
         </Link>
       </Button>
     ) : relationship && !owner ? (
-      <RelationshipActions
+      <LazyRelationshipActions
         handle={profile.handle}
         name={profile.displayName}
         relationship={relationship}

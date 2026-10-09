@@ -23,6 +23,16 @@ Le socle (PROMPT FRONT 0) chargeait sur chaque page les fournisseurs de toutes :
 - Lighthouse mobile sur la page éditoriale : performance 100, accessibilité 100, LCP 1,5 s, TBT de 2 à 29 ms, scripts transférés 248 kB.
 - Coquille de l'espace membre : mesurée avec sa livraison (ADR 0099).
 
+## Vues des pages de ressources (complément du 2026-10-09, PROMPT FRONT 4)
+
+Une page de ressource (`(public)`, ADR 0101) sert un visiteur et un membre à la même adresse. Le manifeste d'un groupe réunissait les deux cadres : un visiteur téléchargeait le cadre de l'espace membre (temps réel, bandeau, raccourcis) et les actions d'un membre sans jamais les afficher.
+
+- Le cadre client de l'espace membre (`MemberFrame` : données, temps réel, état d'URL, bandeau, bannières) est chargé à la demande par `LazyMemberShell` dans `(public)` ; l'espace membre `(app)` garde `MemberShell`, qui l'importe directement.
+- Le cadre public ne monte ni TanStack Query ni nuqs : une partie de page qui lit l'api depuis le navigateur les apporte (`ClientData`, chargé à la demande).
+- Les actions d'un membre et les outils du propriétaire sont des îlots chargés à la demande (`LazyRelationshipActions`, `LazyFollowButton`, `LazyMemberLists`, `owner-tools.tsx`) ; les listes du réseau d'un membre, pour un visiteur, sont rendues par le serveur (`VisitorMemberLists` : listes en liens, « Afficher plus » par une requête simple).
+- `check:bundles --views` sert le build des tests de bout en bout avec l'api simulée et lit chaque page de ressource comme visiteur et comme membre : le JavaScript que charge son HTML (scripts et préchargements, sans les polyfills `noModule`) est mesuré par vue, 190 kB pour un visiteur (le cadre public seul), 250 kB pour un membre. Un chargement à la demande n'échappe pas à la mesure : préchargé par le HTML d'une vue, il compte dans cette vue.
+- Mesures (build des tests de bout en bout) : profil 177,1 kB en visiteur (211,4 kB avant) et 217,7 kB en membre ; réseau d'un membre 178,8 et 228,7 kB ; organisation 184,1 et 215,1 kB ; vitrine et projet 165,1 et 194,9 kB.
+
 ## Conséquences
 
 - Un nouveau composant client lit ses textes dans un sous-arbre listé par `CLIENT_MESSAGES` pour son groupe ; un test vérifie que chaque chemin existe.

@@ -16,7 +16,7 @@ import { routes } from '@/config/routes';
 import { Link as LocaleLink } from '@/i18n/navigation';
 import { countryName } from '@/lib/format/countries';
 import { formatNames } from '@/lib/format/list';
-import { EditButton } from './profile-editor';
+import { EditButton } from './owner-tools';
 
 type Translate = Awaited<ReturnType<typeof getTranslations<'reference'>>>;
 

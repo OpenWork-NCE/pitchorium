@@ -22,9 +22,8 @@ import { countryName } from '@/lib/format/countries';
 import { formatList } from '@/lib/format/list';
 import { pluralOf } from '@/lib/i18n/plural-of';
 import { languageName } from '../lib/options';
-import { EditButton, ProfileEditorProvider } from './profile-editor';
+import { EditButton, ProfileEditorProvider, ProfileStrength } from './owner-tools';
 import { ContributorSection, EntrepreneurSection } from './profile-facets';
-import { ProfileStrength } from './profile-strength';
 
 export interface MemberProfileProps {
   profile: ProfileView;

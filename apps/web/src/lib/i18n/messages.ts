@@ -54,7 +54,16 @@ const FEED_MESSAGES = [
 export const CLIENT_MESSAGES = {
   document: DOCUMENT_MESSAGES,
   marketing: [...DOCUMENT_MESSAGES, 'web.home'],
-  public: [...DOCUMENT_MESSAGES, ...DESIGN_SYSTEM_MESSAGES, ...MENTIONS],
+  public: [
+    ...DOCUMENT_MESSAGES,
+    ...DESIGN_SYSTEM_MESSAGES,
+    ...MENTIONS,
+    // The lists of a member read by a visitor: their next pages and what may go wrong.
+    'web.network.lists',
+    'errors.INTERNAL_ERROR',
+    'errors.RATE_LIMITED',
+    'errors.NETWORK_LIST_HIDDEN',
+  ],
   auth: [
     ...DOCUMENT_MESSAGES,
     ...DESIGN_SYSTEM_MESSAGES,

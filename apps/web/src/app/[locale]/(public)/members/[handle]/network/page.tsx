@@ -1,13 +1,24 @@
 import type { Metadata } from 'next';
 import { notFound, permanentRedirect } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { ClientData } from '@/components/layout/client-data';
 import { SingleColumnLayout } from '@/components/layout/page-layouts';
 import { Heading, Link } from '@/components/ui';
 import { routes } from '@/config/routes';
-import { MemberLists } from '@/features/network';
+import {
+  LazyMemberLists,
+  VISITOR_FOLLOW_TYPES,
+  VISITOR_LIST_TABS,
+  VisitorMemberLists,
+} from '@/features/network';
 import { asLocale } from '@/i18n/routing';
 import { getCurrentMember } from '@/lib/auth/session';
 import { readProfile } from '../read-profile';
+
+/** A value of the address among the allowed ones, the default otherwise. */
+function oneOf<T extends string>(values: readonly T[], value: unknown, fallback: T): T {
+  return values.find((candidate) => candidate === value) ?? fallback;
+}
 
 export async function generateMetadata({
   params,
@@ -27,8 +38,11 @@ export async function generateMetadata({
  * Connections, followers and follows of a member (§10.2), as their privacy allows it: the api
  * answers, a hidden list says so. Absent for the reader when the profile is (ADR 0101).
  */
-export default async function Page({ params }: PageProps<'/[locale]/members/[handle]/network'>) {
-  const { locale: raw, handle } = await params;
+export default async function Page({
+  params,
+  searchParams,
+}: PageProps<'/[locale]/members/[handle]/network'>) {
+  const [{ locale: raw, handle }, query] = await Promise.all([params, searchParams]);
   const locale = asLocale(raw);
   setRequestLocale(locale);
   const resource = await readProfile(handle);
@@ -50,12 +64,24 @@ export default async function Page({ params }: PageProps<'/[locale]/members/[han
             {t('title', { name: profile.displayName })}
           </Heading>
         </div>
-        <MemberLists
-          handle={profile.handle}
-          name={profile.displayName}
-          self={member?.profile.handle === profile.handle}
-          signedIn={member !== null}
-        />
+        {member ? (
+          <ClientData>
+            <LazyMemberLists
+              handle={profile.handle}
+              name={profile.displayName}
+              self={member.profile.handle === profile.handle}
+              signedIn
+            />
+          </ClientData>
+        ) : (
+          // A visitor: the lists rendered by the server, light (ADR 0094).
+          <VisitorMemberLists
+            handle={profile.handle}
+            name={profile.displayName}
+            tab={oneOf(VISITOR_LIST_TABS, query['tab'], 'connections')}
+            type={oneOf(VISITOR_FOLLOW_TYPES, query['type'], 'all')}
+          />
+        )}
       </div>
     </SingleColumnLayout>
   );

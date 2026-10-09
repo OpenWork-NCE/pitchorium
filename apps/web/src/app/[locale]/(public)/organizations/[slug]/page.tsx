@@ -6,7 +6,7 @@ import { SingleColumnLayout } from '@/components/layout/page-layouts';
 import { Button } from '@/components/ui';
 import { routes } from '@/config/routes';
 import { siteConfig } from '@/config/site';
-import { FollowButton } from '@/features/network';
+import { LazyFollowButton } from '@/features/network';
 import { OrganizationProfile, organizationJsonLd } from '@/features/organizations';
 import { Link } from '@/i18n/navigation';
 import { asLocale } from '@/i18n/routing';
@@ -61,7 +61,7 @@ export default async function Page({ params }: PageProps<'/[locale]/organization
         <Link href={withRedirect(routes.signIn, path)}>{t('joinToFollow')}</Link>
       </Button>
     ) : follow ? (
-      <FollowButton
+      <LazyFollowButton
         type="organization"
         targetKey={organization.id}
         name={organization.name}
