@@ -375,12 +375,13 @@ describe('projects', () => {
       })
       .expect(201);
     const facade = app.get(ProjectsFacade);
+    const contributionIds = Array.from(
+      { length: 50 },
+      (_, index) => `01999999-0000-7000-8000-${String(index).padStart(12, '0')}`,
+    );
     const results = await Promise.allSettled(
-      Array.from({ length: 50 }, (_, index) =>
-        facade.reserve(
-          reward.body.id as string,
-          `01999999-0000-7000-8000-${String(index).padStart(12, '0')}`,
-        ),
+      contributionIds.map((contributionId) =>
+        facade.reserve(reward.body.id as string, contributionId),
       ),
     );
     expect(results.filter((result) => result.status === 'fulfilled')).toHaveLength(10);
@@ -397,8 +398,12 @@ describe('projects', () => {
       available: 0,
       soldOut: true,
     });
-    await facade.release('01999999-0000-7000-8000-000000000000');
-    await facade.confirm('01999999-0000-7000-8000-000000000001');
+    // Which ten reservations win the race is not known in advance: two of the winners.
+    const [released, confirmed] = contributionIds.filter(
+      (_, index) => results[index]?.status === 'fulfilled',
+    );
+    await facade.release(released!);
+    await facade.confirm(confirmed!);
     const after = (await kofi.agent.get(`/v1/projects/${project.id}`).expect(200)).body as Project;
     expect(after.rewards.find((item) => item.id === reward.body.id)?.available).toBe(1);
   });
