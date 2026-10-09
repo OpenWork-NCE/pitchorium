@@ -20,6 +20,7 @@
     "notifications": "Notifications",
     "profile": "Profile",
     "organizations": "My organizations",
+    "saved": "Saved posts",
     "settings": "Settings",
     "followedProjects": "Followed projects",
     "publish": "Publish",
@@ -265,7 +266,7 @@
   "notices": {
     "machineTranslation": "{{mention}} ({{provider}}).",
     "notTaxReceipt": "This confirmation is not a tax receipt.",
-    "moderated": "This content was hidden by moderation."
+    "moderated": "Content removed: moderation hid this content."
   },
   "forms": {
     "summary": {
@@ -495,6 +496,126 @@
     "comments": {
       "one": "{{count}} comment",
       "other": "{{count}} comments"
+    },
+    "featured": "Featured",
+    "visibility": "Visible to: {{audience}}",
+    "repostedBy": "{{name}} reposted",
+    "repostUnavailable": "This post is no longer available.",
+    "images": {
+      "label": "Images of the post",
+      "open": "Enlarge image {{index}} of {{count}}",
+      "more": "+{{count}}",
+      "moreLabel": "and {{count}} more images",
+      "noAlt": "Image without description"
+    },
+    "viewer": {
+      "title": "Images of the post",
+      "counter": "{{index}} / {{count}}",
+      "previous": "Previous image",
+      "next": "Next image",
+      "description": "Description of the image",
+      "slide": "image"
+    },
+    "document": {
+      "fallbackTitle": "PDF document",
+      "pages": {
+        "one": "{{count}} page",
+        "other": "{{count}} pages"
+      },
+      "open": "Open",
+      "download": "Download",
+      "failed": "The document could not open. Try again in a moment."
+    },
+    "link": {
+      "label": "Link preview",
+      "pending": "Preview being prepared"
+    },
+    "project": {
+      "label": "Linked project",
+      "unavailable": "Project not available"
+    },
+    "reposts": {
+      "one": "{{count}} repost",
+      "other": "{{count}} reposts"
+    },
+    "reactionsDialog": {
+      "title": "Reactions",
+      "all": "All",
+      "empty": "No reaction of this kind.",
+      "error": "The list could not load."
+    },
+    "actions": {
+      "label": "Actions on the post",
+      "chooseReaction": "Choose a reaction",
+      "reactionsMenu": "Reactions",
+      "comment": "Comment",
+      "repost": "Repost",
+      "more": "More actions",
+      "save": "Save",
+      "unsave": "Remove from saved",
+      "saved": "Post saved.",
+      "unsaved": "Post removed from your saved posts.",
+      "hide": "Hide from my feed",
+      "hidden": "Post hidden from your feed.",
+      "undo": "Undo",
+      "copyLink": "Copy link",
+      "copied": "Link copied.",
+      "share": "Share",
+      "edit": "Edit",
+      "delete": "Delete",
+      "deleteTitle": "Delete this post?",
+      "deleteBody": "It will disappear from the feed, with its comments and reactions. This cannot be undone.",
+      "deleteConfirm": "Delete the post",
+      "deleted": "Post deleted.",
+      "stats": "Statistics",
+      "disableComments": "Turn off comments",
+      "enableComments": "Turn comments back on",
+      "signInToReact": "Sign in to react"
+    },
+    "repost": {
+      "title": "Repost",
+      "comment": "Your comment",
+      "audience": "Audience",
+      "widenNotAllowed": "A repost cannot widen the audience of the original post.",
+      "noAudience": "This post is reserved to the connections of its author: it cannot be reposted.",
+      "submit": "Repost",
+      "done": "Post reposted."
+    },
+    "commentsThread": {
+      "title": "Comments",
+      "label": "Add a comment",
+      "placeholder": "Add a comment…",
+      "replyLabel": "Reply to {{name}}",
+      "reply": "Reply",
+      "send": "Post",
+      "edit": "Edit",
+      "save": "Save",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "deleteTitle": "Delete this comment?",
+      "deleteBody": "The comment will disappear for everyone. This cannot be undone.",
+      "deleteConfirm": "Delete the comment",
+      "deleted": "Comment deleted.",
+      "showReplies": {
+        "one": "Show the reply",
+        "other": "Show the {{count}} replies"
+      },
+      "hideReplies": "Hide replies",
+      "more": "Load more comments",
+      "moreReplies": "Load more replies",
+      "empty": "No comment yet.",
+      "disabled": "Comments are turned off.",
+      "error": "The comments could not load.",
+      "commentBy": "Comment by {{name}}",
+      "edited": "edited"
+    },
+    "stats": {
+      "title": "Statistics of the post",
+      "description": "Unique members who saw it, per day. The numbers are approximate and updated every ten minutes.",
+      "chart": "Unique members per day",
+      "day": "{{date}}: {{count}}",
+      "empty": "Nobody has seen it yet.",
+      "error": "The statistics could not load."
     }
   },
   "messaging": {
@@ -705,7 +826,18 @@
     "emptyTitle": "Your feed is still empty",
     "emptyBody": "Follow members, organisations and projects: their posts will come here.",
     "error": "The feed could not load.",
-    "moreError": "The next posts could not load. Try again in a moment."
+    "moreError": "The next posts could not load. Try again in a moment.",
+    "label": "News feed",
+    "newPosts": {
+      "one": "{{count}} new post",
+      "other": "{{count}} new posts",
+      "capped": "More than {{count}} new posts"
+    },
+    "end": "You have seen it all.",
+    "emptyAction": "Find people",
+    "suggestionsLabel": "Suggestions",
+    "projectUpdate": "Update of the project {{project}}",
+    "projectUpdateLabel": "Project update"
   },
   "profile": {
     "completion": {
@@ -1579,5 +1711,73 @@
       "manage": "Manage",
       "membership": "My membership"
     }
+  },
+  "composer": {
+    "title": "Create a post",
+    "editTitle": "Edit the post",
+    "editor": "Text of the post",
+    "placeholder": "What do you want to talk about?",
+    "counter": "{{count}} / {{max}}",
+    "publish": "Post",
+    "publishing": "Posting",
+    "save": "Save",
+    "saving": "Saving",
+    "published": "Post published.",
+    "updated": "Post updated.",
+    "empty": "Write a text, or add images, a document or a link.",
+    "tooLong": "Shorten the text to {{max}} characters at most.",
+    "pending": "Wait until the files are sent.",
+    "visibility": "Audience",
+    "publicPageDisabled": "Posting publicly needs your public page.",
+    "privacySettings": "Privacy settings",
+    "language": "Language",
+    "languageAuto": "Automatic detection",
+    "comments": "Allow comments",
+    "addImages": "Add images",
+    "addDocument": "Add a PDF",
+    "imagesLimit": "Nine images at most per post.",
+    "imagesOrDocument": "A post holds images or a document, not both.",
+    "images": "Images of the post",
+    "imageLabel": "Image {{index}} of {{count}}",
+    "alt": "Alternative text of image {{index}}",
+    "altHint": "Describe the image for people who cannot see it: what it shows and why it matters.",
+    "altMissing": "No alternative text",
+    "moveBefore": "Move before",
+    "moveAfter": "Move after",
+    "reorder": "Reorder: drag, or Space then the arrow keys",
+    "moved": "Image moved to position {{index}} of {{count}}.",
+    "remove": "Remove",
+    "retry": "Try again",
+    "compressing": "Making the photo lighter",
+    "sending": "Sending: {{percent}} %",
+    "checking": "Checking",
+    "uploadFailed": "The upload failed.",
+    "documentTitle": "Title of the document",
+    "linkPending": "Preparing the preview",
+    "linkFailed": "No preview for this link: it stays in the text.",
+    "removePreview": "Remove the preview",
+    "project": "Linked project",
+    "projectNone": "No project",
+    "mentions": "Members and organizations to mention",
+    "mentionsEmpty": "No result",
+    "draftRestored": "Your draft was found again.",
+    "discardDraft": "Discard the draft"
+  },
+  "saved": {
+    "title": "Saved posts",
+    "description": "The posts you saved, newest first.",
+    "emptyTitle": "No saved post",
+    "emptyBody": "Save a post from its “More actions” menu to find it here.",
+    "savedAt": "Saved {{date}}"
+  },
+  "post": {
+    "title": "Post by {{name}}",
+    "fallbackTitle": "Post",
+    "backToFeed": "Back to the feed"
+  },
+  "activity": {
+    "title": "Activity",
+    "empty": "No post yet.",
+    "more": "Show more posts"
   }
 }

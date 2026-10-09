@@ -20,6 +20,7 @@
     "notifications": "Notifications",
     "profile": "Profil",
     "organizations": "Mes organisations",
+    "saved": "Publications enregistrées",
     "settings": "Paramètres",
     "followedProjects": "Projets suivis",
     "publish": "Publier",
@@ -265,7 +266,7 @@
   "notices": {
     "machineTranslation": "{{mention}} ({{provider}}).",
     "notTaxReceipt": "Cette confirmation n’est pas un reçu fiscal.",
-    "moderated": "Ce contenu a été masqué par la modération."
+    "moderated": "Contenu retiré : la modération a masqué ce contenu."
   },
   "forms": {
     "summary": {
@@ -486,7 +487,7 @@
   },
   "content": {
     "postBy": "Publication de {{name}}",
-    "edited": "modifié",
+    "edited": "modifiée",
     "reactions": {
       "one": "{{count}} réaction",
       "other": "{{count}} réactions"
@@ -495,6 +496,126 @@
     "comments": {
       "one": "{{count}} commentaire",
       "other": "{{count}} commentaires"
+    },
+    "featured": "À la une",
+    "visibility": "Visible par : {{audience}}",
+    "repostedBy": "{{name}} a repartagé",
+    "repostUnavailable": "Cette publication n’est plus disponible.",
+    "images": {
+      "label": "Images de la publication",
+      "open": "Agrandir l’image {{index}} sur {{count}}",
+      "more": "+{{count}}",
+      "moreLabel": "et {{count}} autres images",
+      "noAlt": "Image sans description"
+    },
+    "viewer": {
+      "title": "Images de la publication",
+      "counter": "{{index}} / {{count}}",
+      "previous": "Image précédente",
+      "next": "Image suivante",
+      "description": "Description de l’image",
+      "slide": "image"
+    },
+    "document": {
+      "fallbackTitle": "Document PDF",
+      "pages": {
+        "one": "{{count}} page",
+        "other": "{{count}} pages"
+      },
+      "open": "Ouvrir",
+      "download": "Télécharger",
+      "failed": "Le document n’a pas pu s’ouvrir. Réessayez dans un instant."
+    },
+    "link": {
+      "label": "Aperçu du lien",
+      "pending": "Aperçu en préparation"
+    },
+    "project": {
+      "label": "Projet lié",
+      "unavailable": "Projet non disponible"
+    },
+    "reposts": {
+      "one": "{{count}} repartage",
+      "other": "{{count}} repartages"
+    },
+    "reactionsDialog": {
+      "title": "Réactions",
+      "all": "Toutes",
+      "empty": "Aucune réaction de ce type.",
+      "error": "La liste n’a pas pu se charger."
+    },
+    "actions": {
+      "label": "Actions sur la publication",
+      "chooseReaction": "Choisir une réaction",
+      "reactionsMenu": "Réactions",
+      "comment": "Commenter",
+      "repost": "Repartager",
+      "more": "Plus d’actions",
+      "save": "Enregistrer",
+      "unsave": "Retirer des enregistrements",
+      "saved": "Publication enregistrée.",
+      "unsaved": "Publication retirée de vos enregistrements.",
+      "hide": "Masquer de mon fil",
+      "hidden": "Publication masquée de votre fil.",
+      "undo": "Annuler",
+      "copyLink": "Copier le lien",
+      "copied": "Lien copié.",
+      "share": "Partager",
+      "edit": "Modifier",
+      "delete": "Supprimer",
+      "deleteTitle": "Supprimer cette publication ?",
+      "deleteBody": "Elle disparaîtra du fil, avec ses commentaires et ses réactions. Cette action est définitive.",
+      "deleteConfirm": "Supprimer la publication",
+      "deleted": "Publication supprimée.",
+      "stats": "Statistiques",
+      "disableComments": "Désactiver les commentaires",
+      "enableComments": "Réactiver les commentaires",
+      "signInToReact": "Se connecter pour réagir"
+    },
+    "repost": {
+      "title": "Repartager la publication",
+      "comment": "Votre commentaire",
+      "audience": "Audience",
+      "widenNotAllowed": "Un repartage ne peut pas élargir l’audience de la publication d’origine.",
+      "noAudience": "Cette publication est réservée aux relations de son auteur : elle ne peut pas être repartagée.",
+      "submit": "Repartager",
+      "done": "Publication repartagée."
+    },
+    "commentsThread": {
+      "title": "Commentaires",
+      "label": "Ajouter un commentaire",
+      "placeholder": "Ajouter un commentaire…",
+      "replyLabel": "Répondre à {{name}}",
+      "reply": "Répondre",
+      "send": "Publier",
+      "edit": "Modifier",
+      "save": "Enregistrer",
+      "cancel": "Annuler",
+      "delete": "Supprimer",
+      "deleteTitle": "Supprimer ce commentaire ?",
+      "deleteBody": "Le commentaire disparaîtra pour tous. Cette action est définitive.",
+      "deleteConfirm": "Supprimer le commentaire",
+      "deleted": "Commentaire supprimé.",
+      "showReplies": {
+        "one": "Afficher la réponse",
+        "other": "Afficher les {{count}} réponses"
+      },
+      "hideReplies": "Masquer les réponses",
+      "more": "Charger plus de commentaires",
+      "moreReplies": "Charger plus de réponses",
+      "empty": "Aucun commentaire pour l’instant.",
+      "disabled": "Les commentaires sont désactivés.",
+      "error": "Les commentaires n’ont pas pu se charger.",
+      "commentBy": "Commentaire de {{name}}",
+      "edited": "modifié"
+    },
+    "stats": {
+      "title": "Statistiques de la publication",
+      "description": "Membres uniques qui l’ont vue, par jour. Les nombres sont approchés et mis à jour toutes les dix minutes.",
+      "chart": "Membres uniques par jour",
+      "day": "{{date}} : {{count}}",
+      "empty": "Personne ne l’a encore vue.",
+      "error": "Les statistiques n’ont pas pu se charger."
     }
   },
   "messaging": {
@@ -705,7 +826,18 @@
     "emptyTitle": "Votre fil est encore vide",
     "emptyBody": "Suivez des membres, des organisations et des projets : leurs publications viendront ici.",
     "error": "Le fil n’a pas pu se charger.",
-    "moreError": "Les publications suivantes n’ont pas pu se charger. Réessayez dans un instant."
+    "moreError": "Les publications suivantes n’ont pas pu se charger. Réessayez dans un instant.",
+    "label": "Fil d’actualité",
+    "newPosts": {
+      "one": "{{count}} nouvelle publication",
+      "other": "{{count}} nouvelles publications",
+      "capped": "Plus de {{count}} nouvelles publications"
+    },
+    "end": "Vous avez tout vu.",
+    "emptyAction": "Trouver des personnes",
+    "suggestionsLabel": "Suggestions",
+    "projectUpdate": "Actualité du projet {{project}}",
+    "projectUpdateLabel": "Actualité de projet"
   },
   "profile": {
     "completion": {
@@ -1579,5 +1711,73 @@
       "manage": "Gérer",
       "membership": "Mon adhésion"
     }
+  },
+  "composer": {
+    "title": "Créer une publication",
+    "editTitle": "Modifier la publication",
+    "editor": "Texte de la publication",
+    "placeholder": "De quoi voulez-vous parler ?",
+    "counter": "{{count}} / {{max}}",
+    "publish": "Publier",
+    "publishing": "Publication en cours",
+    "save": "Enregistrer",
+    "saving": "Enregistrement en cours",
+    "published": "Publication publiée.",
+    "updated": "Publication modifiée.",
+    "empty": "Écrivez un texte, ou ajoutez des images, un document ou un lien.",
+    "tooLong": "Raccourcissez le texte à {{max}} caractères au plus.",
+    "pending": "Attendez la fin de l’envoi des fichiers.",
+    "visibility": "Audience",
+    "publicPageDisabled": "Publier en public demande votre page publique.",
+    "privacySettings": "Paramètres de confidentialité",
+    "language": "Langue",
+    "languageAuto": "Détection automatique",
+    "comments": "Autoriser les commentaires",
+    "addImages": "Ajouter des images",
+    "addDocument": "Ajouter un PDF",
+    "imagesLimit": "Neuf images au plus par publication.",
+    "imagesOrDocument": "Une publication contient des images ou un document, pas les deux.",
+    "images": "Images de la publication",
+    "imageLabel": "Image {{index}} sur {{count}}",
+    "alt": "Texte alternatif de l’image {{index}}",
+    "altHint": "Décrivez l’image pour les personnes qui ne la voient pas : ce qu’elle montre et pourquoi elle compte.",
+    "altMissing": "Sans texte alternatif",
+    "moveBefore": "Déplacer avant",
+    "moveAfter": "Déplacer après",
+    "reorder": "Réorganiser : glisser, ou Espace puis les flèches",
+    "moved": "Image déplacée en position {{index}} sur {{count}}.",
+    "remove": "Retirer",
+    "retry": "Réessayer",
+    "compressing": "Allègement de la photo",
+    "sending": "Envoi : {{percent}} %",
+    "checking": "Vérification",
+    "uploadFailed": "L’envoi n’a pas abouti.",
+    "documentTitle": "Titre du document",
+    "linkPending": "Préparation de l’aperçu",
+    "linkFailed": "Pas d’aperçu pour ce lien : il restera dans le texte.",
+    "removePreview": "Retirer l’aperçu",
+    "project": "Projet lié",
+    "projectNone": "Aucun projet",
+    "mentions": "Membres et organisations à mentionner",
+    "mentionsEmpty": "Aucun résultat",
+    "draftRestored": "Votre brouillon a été retrouvé.",
+    "discardDraft": "Effacer le brouillon"
+  },
+  "saved": {
+    "title": "Publications enregistrées",
+    "description": "Les publications que vous avez enregistrées, de la plus récente à la plus ancienne.",
+    "emptyTitle": "Aucune publication enregistrée",
+    "emptyBody": "Enregistrez une publication depuis son menu « Plus d’actions » pour la retrouver ici.",
+    "savedAt": "Enregistrée {{date}}"
+  },
+  "post": {
+    "title": "Publication de {{name}}",
+    "fallbackTitle": "Publication",
+    "backToFeed": "Retour au fil"
+  },
+  "activity": {
+    "title": "Activité",
+    "empty": "Aucune publication pour l’instant.",
+    "more": "Afficher plus de publications"
   }
 }
