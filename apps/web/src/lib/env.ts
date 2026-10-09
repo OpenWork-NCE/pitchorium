@@ -16,6 +16,10 @@ export const env = createEnv({
   server: {
     /** Origin of the api seen by the Next.js server (private network); NEXT_PUBLIC_API_URL otherwise. */
     API_INTERNAL_URL: z.url().optional(),
+    /** Shared with the api: signs the address of a visitor relayed to it (ADR 0115). */
+    WEB_CLIENT_ADDRESS_SECRET: z.string().min(32).optional(),
+    /** Trusted proxies in front of this server; 0: no visitor address is relayed. */
+    WEB_TRUST_PROXY_HOPS: z.coerce.number().int().min(0).default(0),
   },
   client: {
     /** Public origin of the web app (canonical URLs, sitemap, share images). */

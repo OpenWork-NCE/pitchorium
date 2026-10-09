@@ -55,7 +55,7 @@ sequenceDiagram
   S-->>Q: événements : invalidation, compteurs
 ```
 
-- Premier rendu : les Server Components lisent l'api avec `lib/api/server.ts` (origine `API_INTERNAL_URL`, cookie et `Accept-Language` de la requête entrante, rien d'autre). Le membre courant est lu une fois par requête (`lib/auth/session.ts`).
+- Premier rendu : les Server Components lisent l'api avec `lib/api/server.ts` (origine `API_INTERNAL_URL`, cookie et `Accept-Language` de la requête entrante, et l'adresse du visiteur signée pour la limitation de débit de l'api, `X-Pitchorium-Client-Address`, ADR 0115, derrière `WEB_TRUST_PROXY_HOPS` proxys de confiance). Le membre courant est lu une fois par requête (`lib/auth/session.ts`).
 - Messages du navigateur : chaque groupe envoie ses sous-arbres (`CLIENT_MESSAGES`) ; l'espace membre y ajoute ceux du fil et des suggestions (`discovery`, libellés de `reference`), pour construire une phrase de raison dans le navigateur aussi.
 - Navigateur : `lib/api/browser.ts` configure le client généré (`credentials: include`, `Accept-Language`, une `Idempotency-Key` par POST, sauf clé fournie par l'appelant pour son intention). Toute réponse non 2xx devient une `ApiProblemError` (code RFC 9457, `X-Request-Id`) ; l'interface affiche `errors.<code>`.
 - `QueryClient` (`lib/query/query-client.ts`) : données fraîches une minute (pas de nouvelle lecture juste après l'hydratation), conservées cinq minutes, pas de relecture au focus (le temps réel invalide), pas de nouvel essai sur une erreur 4xx, deux sur une erreur réseau ou 5xx, aucune mutation rejouée automatiquement. Un client par requête sur le serveur (`lib/query/server.ts`), un par onglet dans le navigateur ; fourni par les groupes qui lisent l'api depuis le navigateur (`DataProvider`).
