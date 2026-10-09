@@ -15,6 +15,7 @@ import {
 } from '@/components/ui';
 import { cropToBlob, IMAGE_FORMATS, type ImageKind } from '../lib/crop';
 import { MediaRejectedError, type UploadStep, uploadMedia } from '../lib/upload';
+import { documentNonce } from '@/lib/security/document-nonce';
 
 const ACCEPTED = 'image/jpeg,image/png,image/webp';
 const MIN_ZOOM = 1;
@@ -151,6 +152,8 @@ export function ImageCropDialog({
                 maxZoom={MAX_ZOOM}
                 aspect={format.aspect}
                 cropShape={round ? 'round' : 'rect'}
+                // Its style needs the nonce of the document (ADR 0088).
+                nonce={documentNonce()}
                 showGrid={false}
                 onCropChange={setCrop}
                 onZoomChange={setZoom}

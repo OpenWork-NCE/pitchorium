@@ -7,6 +7,7 @@ import type { ComponentProps, ReactNode } from 'react';
 import { cn } from '@/lib/cn';
 import { useFieldControl } from './field';
 import { controlClasses } from './input';
+import { documentNonce } from '@/lib/security/document-nonce';
 
 export interface SelectOption<T extends string> {
   value: T;
@@ -65,6 +66,8 @@ export function Select<T extends string>({
       </Primitive.Trigger>
       <Primitive.Portal>
         <Primitive.Content
+          // The style of its viewport (scrollbar) needs the nonce of the document (ADR 0088).
+          nonce={documentNonce()}
           position="popper"
           sideOffset={6}
           collisionPadding={8}
