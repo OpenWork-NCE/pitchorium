@@ -12,6 +12,7 @@ import { EditorContent, useEditor } from '@tiptap/react';
 import type { SuggestionKeyDownProps, SuggestionProps } from '@tiptap/suggestion';
 import { useTranslations } from 'next-intl';
 import { useEffect, useId, useRef, useState } from 'react';
+import { documentNonce } from '@/lib/security/document-nonce';
 import type { EditorNode } from '../../lib/mention-text';
 import { firstUrl } from '../../lib/post-text';
 import { MentionList } from '../mentions/mention-list';
@@ -64,6 +65,8 @@ export function Editor({
 
   const editor = useEditor({
     immediatelyRender: false,
+    // The base styles Tiptap inserts carry the nonce of the policy (ADR 0088).
+    injectNonce: documentNonce(),
     content: initial ?? undefined,
     extensions: [
       Document,
