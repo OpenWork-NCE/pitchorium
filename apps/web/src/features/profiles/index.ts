@@ -7,4 +7,5 @@ export { MemberHoverCard } from './components/member-hover-card';
 export { MemberProfile } from './components/member-profile';
 export { PROFILE_PREREQUISITE_FORMS } from './components/prerequisite-forms';
 export { personJsonLd } from './lib/json-ld';
+export { languageName, languageOptions } from './lib/options';
 export { VisibilitySettings } from './components/visibility-settings';

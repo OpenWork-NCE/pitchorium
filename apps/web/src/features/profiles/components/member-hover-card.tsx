@@ -35,6 +35,8 @@ export function MemberHoverCard({
       trigger={
         <Link
           href={routes.member(member.handle)}
+          // Lists and feeds name dozens of members: their pages are not fetched in advance.
+          prefetch={false}
           className={className ?? 'link-underline-hover font-medium text-foreground'}
         >
           {children ?? member.displayName}
