@@ -8,3 +8,4 @@ export * from './trusted-origins';
 export * from './principal';
 export * from './public.decorator';
 export * from './raw-http-handler';
+export { SESSION_COOKIE_PREFIX, signedSessionToken } from './session-cookie';

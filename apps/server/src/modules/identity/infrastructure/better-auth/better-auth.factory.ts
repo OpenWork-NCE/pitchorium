@@ -33,9 +33,11 @@ import { checkPwnedPassword } from './pwned-passwords';
 import { secondFactorEverywhere } from './second-factor';
 import { RedisRateLimitStorage } from './redis-rate-limit.storage';
 import { transactionalDatabase } from './transactional-database';
+import { SESSION_COOKIE_PREFIX } from '../../../../platform/http';
 
 export const AUTH_BASE_PATH = '/v1/auth';
-export const AUTH_COOKIE_PREFIX = 'pitchorium';
+/** The prefix the rate limiting reads too (platform/http/session-cookie.ts). */
+export const AUTH_COOKIE_PREFIX = SESSION_COOKIE_PREFIX;
 /** Set by the HTTP handler from the Express client IP (honours TRUST_PROXY_HOPS). */
 export const CLIENT_IP_HEADER = 'x-pitchorium-client-ip';
 
