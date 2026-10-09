@@ -24,7 +24,8 @@ export function configureHttpApp(app: NestExpressApplication, config: ApiConfig)
   app.enableCors({
     origin: config.http.corsOrigins.length > 0 ? config.http.corsOrigins : false,
     credentials: true,
-    exposedHeaders: [REQUEST_ID_HEADER, IDEMPOTENT_REPLAYED_HEADER, 'Retry-After'],
+    // X-Retry-After: the wait of a rate limit of /v1/auth (Better Auth), shown by the sign-in.
+    exposedHeaders: [REQUEST_ID_HEADER, IDEMPOTENT_REPLAYED_HEADER, 'Retry-After', 'X-Retry-After'],
   });
   app.use(httpMetricsMiddleware(app.get(Metrics)));
   // Raw handlers (Better Auth) read the request stream themselves: they precede the body parsers.
