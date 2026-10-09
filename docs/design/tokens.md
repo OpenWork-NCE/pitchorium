@@ -73,7 +73,7 @@ Chaque statut a sa variante `-subtle` (fond d'un message). Le thème sombre repo
 - Espaces : pas de 0,25 rem (`p-4` = 16 px), gouttière de 16 px sur mobile.
 - Rayons : `xs` 4 px, `sm` 6 px, `md` 10 px, `lg` 14 px, `xl` 20 px, `2xl` 28 px, boutons en pilule.
 - Ombres `xs` à `lg`, teinte du noir de marque, plus marquées en sombre.
-- Couches : `--z-raised` 10, `--z-sticky` 30, `--z-header` 40, `--z-overlay` 50, `--z-modal` 60, `--z-toast` 70, `--z-skip-link` 80.
+- Couches : `--z-raised` 10, `--z-sticky` 30, `--z-header` 40, `--z-modal` 60, `--z-overlay` 65 (au-dessus des dialogues : un menu, une liste ou un panneau ouvert depuis un dialogue s'affiche par-dessus), `--z-toast` 70, `--z-skip-link` 80.
 - Points de rupture : `xs` 384 px, `sm` 640 px, `md` 768 px, `lg` 1 024 px, `xl` 1 280 px, `2xl` 1 536 px.
 
 ## Mouvement

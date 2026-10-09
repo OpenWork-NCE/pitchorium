@@ -126,8 +126,9 @@
   --z-raised: 10;
   --z-sticky: 30;
   --z-header: 40;
-  --z-overlay: 50;
   --z-modal: 60;
+  /* Above the modals: a popover, a menu or a list opened from a dialog shows over it. */
+  --z-overlay: 65;
   --z-toast: 70;
   --z-skip-link: 80;
 }
