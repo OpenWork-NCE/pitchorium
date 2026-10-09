@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  Building2,
   CircleUser,
   Keyboard,
   Languages,
@@ -98,6 +99,12 @@ export function UserMenuPanel({
             <Link href={routes.profile}>
               <CircleUser aria-hidden />
               {t('profile')}
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href={routes.settingsOrganizations}>
+              <Building2 aria-hidden />
+              {t('organizations')}
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>

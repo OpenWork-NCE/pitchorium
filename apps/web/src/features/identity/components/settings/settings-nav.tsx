@@ -13,6 +13,7 @@ export const SETTINGS_SECTIONS = [
   { id: 'account', href: routes.settingsAccount },
   { id: 'security', href: routes.settingsSecurity },
   { id: 'privacy', href: routes.settingsPrivacy },
+  { id: 'organizations', href: routes.settingsOrganizations },
   { id: 'preferences', href: routes.settingsPreferences },
 ] as const;
 
