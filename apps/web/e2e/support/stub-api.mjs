@@ -510,6 +510,38 @@ const routes = {
   }),
   'POST /v1/auth/send-verification-email': (request) =>
     sessionOf(request) ? { status: 200, body: { status: true } } : problem(401, 'UNAUTHENTICATED'),
+  // Lists of the forms of a profile and an organization: a few entries of each (labels: i18n).
+  'GET /v1/reference-data': () => ({
+    status: 200,
+    body: {
+      countries: ['SN', 'CI', 'CM', 'FR', 'HT'].map((code) => ({
+        code,
+        labelKey: `countries.${code}`,
+        m49Region: code === 'FR' ? '150' : code === 'HT' ? '019' : '002',
+        m49SubRegion: null,
+        m49IntermediateRegion: code === 'HT' ? '029' : null,
+        eligibleForCompany: code !== 'FR',
+      })),
+      sectors: [
+        { code: 'energy', labelKey: 'sectors.energy', isicSection: 'D' },
+        {
+          code: 'agriculture_forestry_fishing',
+          labelKey: 'sectors.agriculture_forestry_fishing',
+          isicSection: 'A',
+        },
+      ],
+      stages: ['idea', 'prototype'].map((code) => ({ code, labelKey: `stages.${code}` })),
+      intentions: [],
+      contributorHats: [],
+      structureTypes: ['foundation', 'company'].map((code) => ({
+        code,
+        labelKey: `structureTypes.${code}`,
+      })),
+      fundingInstruments: [],
+      patronageTypes: [],
+      entrepreneurNeeds: [],
+    },
+  }),
   'GET /v1/me': (request) => {
     const email = sessionOf(request);
     return email ? { status: 200, body: currentUser(email) } : problem(401, 'UNAUTHENTICATED');

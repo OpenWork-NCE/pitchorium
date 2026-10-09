@@ -1,5 +1,5 @@
 import AxeBuilder from '@axe-core/playwright';
-import { expect, test } from './support/fixtures';
+import { allowConsole, expect, test } from './support/fixtures';
 
 const PAGES = [
   '/fr',
@@ -21,6 +21,8 @@ test.describe('accessibility', () => {
       test(`${path} has no axe violation in the ${colorScheme} theme`, async ({ browser }) => {
         const context = await browser.newContext({ colorScheme, reducedMotion: 'reduce' });
         const page = await context.newPage();
+        // The page that does not exist answers 404 on purpose.
+        if (path === '/fr/page-absente') allowConsole(/status of 404 \(Not Found\)/);
         await page.goto(path);
         const results = await new AxeBuilder({ page })
           .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'])

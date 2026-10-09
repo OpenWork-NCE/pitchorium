@@ -1,5 +1,4 @@
-import { expect, test } from '@playwright/test';
-import { hydrated, memberPage } from './support';
+import { allowConsole, expect, hydrated, memberPage, test } from './support';
 
 /**
  * The network against the real api (§10.2): two members in their own browser contexts, the
@@ -69,6 +68,8 @@ test.describe('network', { tag: '@critical' }, () => {
   });
 
   test('a refused follow comes back at once to its previous state', async ({ browser }) => {
+    // The api is made to refuse the follow.
+    allowConsole(/status of 503 .*\/v1\/network\/follows\//);
     const a = await memberPage(browser, 'net-rollback', { name: 'Awa Diallo' });
     const d = await memberPage(browser, 'net-d', { name: 'Didier Kamga' });
     await a.page.goto(`/fr/members/${d.member.handle}`);
@@ -92,6 +93,8 @@ test.describe('network', { tag: '@critical' }, () => {
   });
 
   test('a blocked member disappears, then comes back once unblocked', async ({ browser }) => {
+    // The blocked member's page is absent on purpose.
+    allowConsole(/status of 404 \(Not Found\)/);
     const a = await memberPage(browser, 'net-block', { name: 'Awa Diallo' });
     const e = await memberPage(browser, 'net-e', { name: 'Esther Mbala' });
     await a.page.goto(`/fr/members/${e.member.handle}`);

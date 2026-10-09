@@ -1,6 +1,6 @@
 import AxeBuilder from '@axe-core/playwright';
 import { request as playwrightRequest } from '@playwright/test';
-import { API_ORIGIN, expect, signIn, stub, test } from './support/fixtures';
+import { allowConsole, API_ORIGIN, expect, signIn, stub, test } from './support/fixtures';
 
 const AISSATOU = 'aissatou.ba@demo.pitchorium.test';
 const KOFI = 'kofi.mensah@demo.pitchorium.test';
@@ -193,6 +193,8 @@ test.describe('member shell', () => {
     context,
   }) => {
     const api = await playwrightRequest.newContext({ baseURL: API_ORIGIN });
+    // Offline on purpose: the browser reports the requests it cannot send.
+    allowConsole(/net::ERR_INTERNET_DISCONNECTED|WebKit encountered an internal error/);
     await signIn(page, AISSATOU);
     await page.goto('/fr/feed');
     await expect(page.getByRole('link', { name: /^Notifications\s?, 3/ })).toBeVisible();
@@ -380,6 +382,7 @@ test.describe('administration shell', () => {
   });
 
   test('does not exist for a member without the role', async ({ page }) => {
+    allowConsole(/status of 404 \(Not Found\)/);
     await signIn(page, AISSATOU);
     const response = await page.goto('/fr/admin');
     expect(response?.status()).toBe(404);

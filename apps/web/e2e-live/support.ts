@@ -5,6 +5,13 @@ import {
   expect,
   type Page,
 } from '@playwright/test';
+import { guardedTest } from '../e2e/support/console-guard';
+
+export { allowConsole } from '../e2e/support/console-guard';
+export { expect };
+
+/** Every journey against the real api fails on any error of the browser (console-guard.ts). */
+export const test = guardedTest;
 
 export const MAILPIT_URL = process.env.MAILPIT_URL ?? 'http://localhost:8025';
 export const PASSWORD = 'correct horse battery staple 2026';
@@ -139,6 +146,15 @@ export async function onboardedMember(page: Page, label: string): Promise<string
   await expect(page.getByRole('heading', { name: 'Qu’est-ce qui vous amène ?' })).toBeVisible();
   await page.goto('/fr/feed');
   return email;
+}
+
+/**
+ * Forgets the session of the page: it leaves the page first, so that no call of the page still
+ * running reaches the api without its cookie (a 401 the journey would not have caused).
+ */
+export async function forgetSession(page: Page): Promise<void> {
+  await page.goto('about:blank');
+  await page.context().clearCookies();
 }
 
 /** Signs in through the email form of the sign-in page. */

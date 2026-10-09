@@ -1,4 +1,4 @@
-import { expect, test } from './support/fixtures';
+import { allowConsole, expect, test } from './support/fixtures';
 
 test.describe('provisional home page', () => {
   test('renders in French with the brand, the fonts and the active locales', async ({ page }) => {
@@ -77,6 +77,8 @@ test.describe('locales', () => {
 
 test.describe('errors', () => {
   test('answers 404 with the localised page', async ({ page }) => {
+    // The browser reports the 404 of the document it opens on purpose.
+    allowConsole(/status of 404 \(Not Found\)/);
     const response = await page.goto('/fr/cette-page-n-existe-pas');
     expect(response?.status()).toBe(404);
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Cette page n’existe pas.');

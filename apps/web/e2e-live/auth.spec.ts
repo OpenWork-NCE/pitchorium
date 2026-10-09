@@ -1,6 +1,8 @@
-import { expect, test } from '@playwright/test';
 import {
+  allowConsole,
   API_URL,
+  expect,
+  forgetSession,
   freshEmail,
   hydrated,
   linkFromInbox,
@@ -8,6 +10,7 @@ import {
   PASSWORD,
   signInWithPassword,
   signUpAndVerify,
+  test,
   totp,
 } from './support';
 
@@ -63,7 +66,7 @@ test.describe('authentication', { tag: '@critical' }, () => {
     page,
   }) => {
     const email = await onboardedMember(page, 'reset');
-    await page.context().clearCookies();
+    await forgetSession(page);
     await page.goto('/fr/forgot-password');
     await hydrated(page);
     await page.getByLabel('Adresse email').fill(email);
@@ -98,7 +101,7 @@ test.describe('authentication', { tag: '@critical' }, () => {
     await expect(page.getByText('Double authentification activée.')).toBeVisible();
     const backupCode = (await page.locator('ul.font-mono li').first().textContent())!.trim();
 
-    await page.context().clearCookies();
+    await forgetSession(page);
     await signInWithPassword(page, email);
     await expect(page.getByRole('heading', { name: 'Double authentification' })).toBeVisible();
     await hydrated(page);
@@ -108,7 +111,7 @@ test.describe('authentication', { tag: '@critical' }, () => {
       .fill(await totp(secret, Date.now() + 30_000));
     await expect(page).toHaveURL(/\/fr\/feed$/);
 
-    await page.context().clearCookies();
+    await forgetSession(page);
     await signInWithPassword(page, email);
     await expect(page.getByRole('heading', { name: 'Double authentification' })).toBeVisible();
     await hydrated(page);
@@ -156,6 +159,8 @@ test.describe('authentication', { tag: '@critical' }, () => {
   });
 
   test('a missing prerequisite opens its form, then the action runs again', async ({ page }) => {
+    // Without the terms the api refuses the feed and the counters on purpose.
+    allowConsole(/status of 403 \(Forbidden\)/);
     // Without the terms the api refuses the feed: the retry opens their form, then reloads.
     await signUpAndVerify(page, freshEmail('gate'));
     await page.goto('/fr/feed');
@@ -180,6 +185,8 @@ test.describe('authentication', { tag: '@critical' }, () => {
   });
 
   test('a rate limit is shown with its delay', async ({ page, browserName }) => {
+    // Wrong passwords, then the limit: refusals on purpose.
+    allowConsole(/status of (401|429) .*\/v1\/auth\/sign-in\/email/);
     test.skip(browserName !== 'chromium', 'One engine: the limit is per address and per minute.');
     test.slow();
     const email = freshEmail('limit');

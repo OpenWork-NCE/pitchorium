@@ -1,5 +1,5 @@
-import { expect, type Page, test } from '@playwright/test';
-import { freshEmail, hydrated, PASSWORD } from './support';
+import { type Page } from '@playwright/test';
+import { allowConsole, expect, freshEmail, hydrated, PASSWORD, test } from './support';
 
 /** Test keys of Cloudflare Turnstile: the live environment uses the one that always passes. */
 const PASSING_SITE_KEY = '1x00000000000000000000AA';
@@ -48,6 +48,10 @@ test.describe('Cloudflare Turnstile', { tag: '@critical' }, () => {
   });
 
   test('a failed challenge stops the sign-up and says so', async ({ page }) => {
+    // The challenge fails on purpose: its frame reports it.
+    allowConsole(
+      /Failed to load resource.*challenges\.cloudflare\.com|status of 4\d\d .*\/v1\/auth\//,
+    );
     const violations = await watchCsp(page);
     // The page as the api would configure it with the test key that always fails.
     await page.route(/\/fr\/sign-up$/, async (route) => {

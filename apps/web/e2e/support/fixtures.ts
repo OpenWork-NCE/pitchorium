@@ -1,7 +1,13 @@
-import { type APIRequestContext, test as base, expect, type Page } from '@playwright/test';
+import { type APIRequestContext, expect, type Page } from '@playwright/test';
+import { guardedTest } from './console-guard';
 
-/** Violations of the Content Security Policy reported by the page, collected from the start. */
-export const test = base.extend<{ cspViolations: string[] }>({
+export { allowConsole } from './console-guard';
+
+/**
+ * Violations of the Content Security Policy reported by the page, collected from the start; any
+ * error of the browser fails the journey (console-guard.ts).
+ */
+export const test = guardedTest.extend<{ cspViolations: string[] }>({
   cspViolations: async ({ page }, provide) => {
     const violations: string[] = [];
     await page.exposeFunction('reportCspViolation', (entry: string) => violations.push(entry));

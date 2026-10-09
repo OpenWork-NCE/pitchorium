@@ -1,13 +1,16 @@
-import { expect, type Page, test } from '@playwright/test';
+import { type Page } from '@playwright/test';
 import {
   acceptTerms,
+  allowConsole,
   choose,
+  expect,
   freshEmail,
   hydrated,
   linkFromInbox,
   memberPage,
   pngImage,
   signUpAndVerify,
+  test,
 } from './support';
 
 const INVITATION_LINK = /http[^\s"<>]*\/invitations\/[A-Za-z0-9_-]{43}/;
@@ -141,6 +144,8 @@ test.describe('organisations', { tag: '@critical' }, () => {
   test('the owner requests the verification with a document, then deletes the page', async ({
     browser,
   }) => {
+    // The deleted page is opened again on purpose.
+    allowConsole(/status of 404 \(Not Found\)/);
     test.setTimeout(180_000);
     const { page, context } = await memberPage(browser, 'org-verify', { name: 'Aïssatou Ba' });
     const name = `Femmes du Sahel ${Date.now()}`;

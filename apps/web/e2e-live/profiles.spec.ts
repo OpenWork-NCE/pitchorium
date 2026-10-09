@@ -1,5 +1,4 @@
-import { expect, test } from '@playwright/test';
-import { api, choose, hydrated, memberPage, pngImage } from './support';
+import { allowConsole, api, choose, expect, hydrated, memberPage, pngImage, test } from './support';
 
 /** The profile of a member against the real api (§10.1). */
 test.describe('profiles', { tag: '@critical' }, () => {
@@ -67,6 +66,8 @@ test.describe('profiles', { tag: '@critical' }, () => {
   });
 
   test('the public page is closed to visitors until its owner opens it', async ({ browser }) => {
+    // The closed page is opened by a visitor on purpose.
+    allowConsole(/status of 404 \(Not Found\)/);
     const { page, member, context } = await memberPage(browser, 'profile-public', {
       name: 'Ines Mbeki',
     });

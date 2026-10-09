@@ -1,4 +1,4 @@
-import { expect, signIn, test } from './support/fixtures';
+import { allowConsole, expect, signIn, test } from './support/fixtures';
 
 const AISSATOU = 'aissatou.ba@demo.pitchorium.test';
 
@@ -19,6 +19,7 @@ test.describe('pages of resources', () => {
   });
 
   test('answers 404 to a visitor for a resource that is not public', async ({ page }) => {
+    allowConsole(/status of 404 \(Not Found\)/);
     const response = await page.goto('/fr/projects/projet-en-preparation');
     expect(response?.status()).toBe(404);
   });
@@ -63,7 +64,8 @@ test.describe('profiles and organisations', () => {
     expect(data).toMatchObject({ '@type': 'Person', name: 'Aïssatou Ba' });
     await expect(page.getByRole('link', { name: 'Se connecter pour échanger' })).toBeVisible();
     await expect(page.getByRole('button', { name: /Se connecter avec/ })).toHaveCount(0);
-    // A closed public page is absent for a visitor.
+    // A closed public page is absent for a visitor: a 404 on purpose.
+    allowConsole(/status of 404 \(Not Found\)/);
     expect((await page.goto('/fr/members/kofi-mensah'))?.status()).toBe(404);
   });
 

@@ -1,5 +1,14 @@
-import { expect, type Page, test } from '@playwright/test';
-import { acceptTerms, apiMember, consentAs, freshEmail, hydrated, totp } from './support';
+import { type Page } from '@playwright/test';
+import {
+  acceptTerms,
+  apiMember,
+  consentAs,
+  expect,
+  freshEmail,
+  hydrated,
+  test,
+  totp,
+} from './support';
 
 /**
  * Sign-in with a provider against the real api (A2): the fake providers stand in for Google in the

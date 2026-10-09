@@ -1,5 +1,12 @@
-import { expect, test } from '@playwright/test';
-import { acceptTerms, freshEmail, hydrated, signUpAndVerify } from './support';
+import {
+  acceptTerms,
+  allowConsole,
+  expect,
+  freshEmail,
+  hydrated,
+  signUpAndVerify,
+  test,
+} from './support';
 
 /** Critical journeys: Chromium, Firefox and WebKit (playwright.live.config.ts). */
 test.describe('sign-up and onboarding', { tag: '@critical' }, () => {
@@ -45,6 +52,8 @@ test.describe('sign-up and onboarding', { tag: '@critical' }, () => {
   });
 
   test('the terms cannot be skipped: a sign-in lands on them first', async ({ page }) => {
+    // The feed is opened before the terms: refused on purpose.
+    allowConsole(/status of 403 \(Forbidden\)/);
     await signUpAndVerify(page, freshEmail('terms'));
     await page.goto('/fr/feed');
     await page.goto('/fr/continue?redirectTo=%2Ffr%2Ffeed');

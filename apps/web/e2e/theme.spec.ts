@@ -1,9 +1,10 @@
-import { expect, test } from './support/fixtures';
+import { allowConsole, expect, test } from './support/fixtures';
 
 test.describe('theme', () => {
   test('applies a stored dark theme before any script of the app runs', async ({ page }) => {
     await page.addInitScript(() => localStorage.setItem('theme', 'dark'));
     // Without the JavaScript chunks only the inline theme script can act: no flash possible.
+    allowConsole(/Failed to load resource: net::ERR_FAILED .*\/_next\/static\/chunks\//);
     await page.route('**/_next/static/chunks/**/*.js', (route) => route.abort());
     await page.goto('/fr');
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');

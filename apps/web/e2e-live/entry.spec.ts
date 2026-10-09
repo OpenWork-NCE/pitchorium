@@ -1,5 +1,4 @@
-import { expect, test } from '@playwright/test';
-import { freshEmail, hydrated, onboardedMember } from './support';
+import { expect, forgetSession, freshEmail, hydrated, onboardedMember, test } from './support';
 
 /** Critical journeys: Chromium, Firefox and WebKit (playwright.live.config.ts). */
 test.describe('entry of the authentication', { tag: '@critical' }, () => {
@@ -9,7 +8,7 @@ test.describe('entry of the authentication', { tag: '@critical' }, () => {
     page,
   }) => {
     const known = await onboardedMember(page, 'entry');
-    await page.context().clearCookies();
+    await forgetSession(page);
     const answers: string[] = [];
     for (const email of [known, freshEmail('unknown')]) {
       await page.goto('/fr/sign-in');
