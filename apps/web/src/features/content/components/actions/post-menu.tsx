@@ -41,6 +41,12 @@ export function PostMenu(props: PostMenuProps) {
       onBlur={() => {
         setFocused(false);
       }}
+      // At the press already: the panel may take the place of the button before the release,
+      // and the click would then be lost (seen in Firefox).
+      onPointerDown={() => {
+        setOpen(true);
+        void load();
+      }}
       onClick={() => {
         setOpen(true);
         void load();
