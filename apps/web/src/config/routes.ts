@@ -7,7 +7,23 @@
  */
 export const routes = {
   home: '/',
+  // Authentication (§7.2): one entry for every method, then the screens of each step.
   signIn: '/sign-in',
+  signUp: '/sign-up',
+  magicLink: '/sign-in/magic-link',
+  twoFactor: '/sign-in/two-factor',
+  checkEmail: '/check-email',
+  emailVerified: '/email-verified',
+  forgotPassword: '/forgot-password',
+  resetPassword: '/reset-password',
+  authError: '/auth/error',
+  /** Where every sign-in lands: the terms to accept first, then the requested page. */
+  continue: '/continue',
+  // Progressive onboarding (§7.2): terms, intention, minimum profile.
+  onboarding: '/onboarding',
+  onboardingTerms: '/onboarding/terms',
+  onboardingIntention: '/onboarding/intention',
+  onboardingProfile: '/onboarding/profile',
   health: '/health',
   // Member space (§6.1): the sections of the header.
   feed: '/feed',
@@ -19,6 +35,11 @@ export const routes = {
   notifications: '/notifications',
   profile: '/profile',
   settings: '/settings',
+  settingsAccount: '/settings/account',
+  settingsSecurity: '/settings/security',
+  settingsPreferences: '/settings/preferences',
+  /** Decision and appeal of a moderated account (page of the PROMPT FRONT 8). */
+  moderation: '/settings/moderation',
   // Pages of a resource, one address for visitors and members (ADR 0101), the showcase included.
   project: (slug: string) => `/projects/${encodeURIComponent(slug)}`,
   member: (handle: string) => `/members/${encodeURIComponent(handle)}`,
@@ -45,6 +66,9 @@ export const MEMBER_SEGMENTS = [
 
 export const ADMIN_SEGMENTS = ['admin'] as const;
 
+/** Pages of the authentication group that need a session: the onboarding and its entry. */
+export const SIGNED_IN_AUTH_SEGMENTS = ['onboarding', 'continue'] as const;
+
 /** Name of the Better Auth session cookie, with the `__Secure-` prefix over HTTPS. */
 export const SESSION_COOKIES = ['pitchorium.session_token', '__Secure-pitchorium.session_token'];
 
@@ -53,6 +77,7 @@ export function requiresSession(pathname: string): boolean {
   const segment = pathname.split('/')[1] ?? '';
   return (
     (MEMBER_SEGMENTS as readonly string[]).includes(segment) ||
-    (ADMIN_SEGMENTS as readonly string[]).includes(segment)
+    (ADMIN_SEGMENTS as readonly string[]).includes(segment) ||
+    (SIGNED_IN_AUTH_SEGMENTS as readonly string[]).includes(segment)
   );
 }

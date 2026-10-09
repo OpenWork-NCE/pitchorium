@@ -86,6 +86,9 @@ test.describe('errors', () => {
 
   test('sends the member space to the sign-in page without a session', async ({ page }) => {
     await page.goto('/fr/feed');
-    await expect(page).toHaveURL(/\/fr\/sign-in\?next=%2Ffr%2Ffeed$/);
+    await expect(page).toHaveURL(/\/fr\/sign-in\?redirectTo=%2Ffr%2Ffeed$/);
+    await expect(
+      page.getByRole('heading', { name: 'Rejoindre Pitchorium', level: 1 }),
+    ).toBeVisible();
   });
 });

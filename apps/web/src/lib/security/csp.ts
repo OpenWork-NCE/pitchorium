@@ -64,6 +64,9 @@ export function sentryTarget(dsn: string): SentryTarget {
   };
 }
 
+/** Origin of the frames of Cloudflare Turnstile (sign-in screens). */
+const TURNSTILE_FRAMES = 'https://challenges.cloudflare.com';
+
 export function buildCsp(options: CspOptions): string {
   const nonce = `'nonce-${options.nonce}'`;
   const api = origin(options.apiUrl);
@@ -96,7 +99,9 @@ export function buildCsp(options: CspOptions): string {
       ...(vercel ? [VERCEL_VITALS] : []),
     ],
     'media-src': ["'self'", ...cdn],
-    'frame-src': VIDEO_FRAMES,
+    // Cloudflare Turnstile draws its challenge in a frame (ADR 0103); its script is loaded by
+    // ours ('strict-dynamic').
+    'frame-src': [...VIDEO_FRAMES, TURNSTILE_FRAMES],
     'worker-src': ["'self'", 'blob:'],
     'manifest-src': ["'self'"],
     'object-src': ["'none'"],

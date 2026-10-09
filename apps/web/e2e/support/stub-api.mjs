@@ -44,6 +44,17 @@ const ACCOUNTS = {
     suspended: false,
     twoFactorEnabled: false,
   },
+  'koffi.agbodjan@demo.pitchorium.test': {
+    name: 'Koffi Agbodjan',
+    handle: 'koffi-agbodjan',
+    headline: 'Modérateur',
+    roles: ['member', 'moderator'],
+    emailVerified: true,
+    legalUpToDate: true,
+    suspended: false,
+    // A privileged role works with a second factor only (ADR 0015): the console opens.
+    twoFactorEnabled: true,
+  },
   'moussa.diop@demo.pitchorium.test': {
     name: 'Moussa Diop',
     handle: 'moussa-diop',
@@ -315,6 +326,15 @@ let io;
 /** Routes of the stub: `[method path]` to a handler returning `{ status, body, headers? }`. */
 const routes = {
   'GET /v1/locales': () => ({ status: 200, body: { defaultLocale: 'fr', locales: ['fr', 'en'] } }),
+  'GET /v1/auth-configuration': () => ({
+    status: 200,
+    body: {
+      oauthProviders: ['google', 'linkedin', 'microsoft'],
+      turnstile: null,
+      legal: { termsVersion: 'stub-2026-10', privacyVersion: 'stub-2026-10', minimumAge: 18 },
+      minPasswordLength: 12,
+    },
+  }),
   'GET /v1/health/ready': () => ({
     status: 200,
     body: { status: 'ok', checks: { database: { status: 'up', latencyMs: 1 } } },

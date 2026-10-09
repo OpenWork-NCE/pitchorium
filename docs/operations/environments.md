@@ -147,17 +147,19 @@ Toutes les variables lues par l'api et le worker, validées au démarrage par `a
 
 Validées par `apps/web/src/lib/env.ts` au chargement de `next.config.ts` : `next build` échoue sur une valeur invalide. Les variables `NEXT_PUBLIC_` sont inscrites dans le JavaScript du navigateur au build : un changement demande un nouveau build. `WEB_PORT` est lue par les scripts `dev:web` et `start`, `SENTRY_AUTH_TOKEN`, `SENTRY_ORG` et `SENTRY_PROJECT` par le build seulement.
 
-| Variable                         | Type                     | Défaut        | Local (`.env.example`)                    | Staging           | Production                                |
-| -------------------------------- | ------------------------ | ------------- | ----------------------------------------- | ----------------- | ----------------------------------------- |
-| `WEB_PORT`                       | entier                   | `3200`        | `3200`                                    | selon l'hébergeur | selon l'hébergeur                         |
-| `NEXT_PUBLIC_SITE_URL`           | URL                      | —             | `http://localhost:3200`                   | URL du site       | URL HTTPS du site (question 25)           |
-| `NEXT_PUBLIC_API_URL`            | URL                      | —             | `http://localhost:3000`                   | URL de l'api      | `API_PUBLIC_URL` de l'api                 |
-| `API_INTERNAL_URL`               | URL                      | —             | vide (origine publique)                   | réseau privé      | réseau privé de l'hébergeur si possible   |
-| `NEXT_PUBLIC_CDN_URL`            | URL                      | —             | `http://localhost:9000/pitchorium-public` | comme production  | `S3_PUBLIC_BASE_URL` de l'api             |
-| `NEXT_PUBLIC_SENTRY_DSN`         | URL                      | —             | vide                                      | projet de test    | DSN du projet web (question 26)           |
-| `NEXT_PUBLIC_SENTRY_ENVIRONMENT` | texte                    | `development` | `development`                             | `staging`         | `production`                              |
-| `NEXT_PUBLIC_VERCEL_ANALYTICS`   | booléen (`true`/`false`) | `false`       | `false`                                   | comme production  | `true` sur Vercel seulement (question 96) |
-| `SENTRY_AUTH_TOKEN`              | texte                    | —             | vide                                      | secret de la CI   | secret de la CI (cartes de sources)       |
-| `SENTRY_ORG`, `SENTRY_PROJECT`   | texte                    | —             | vide                                      | comme production  | organisation et projet Sentry             |
+| Variable                         | Type                     | Défaut        | Local (`.env.example`)                    | Staging           | Production                                                    |
+| -------------------------------- | ------------------------ | ------------- | ----------------------------------------- | ----------------- | ------------------------------------------------------------- |
+| `WEB_PORT`                       | entier                   | `3200`        | `3200`                                    | selon l'hébergeur | selon l'hébergeur                                             |
+| `NEXT_PUBLIC_SITE_URL`           | URL                      | —             | `http://localhost:3200`                   | URL du site       | URL HTTPS du site (question 25)                               |
+| `NEXT_PUBLIC_API_URL`            | URL                      | —             | `http://localhost:3000`                   | URL de l'api      | `API_PUBLIC_URL` de l'api                                     |
+| `API_INTERNAL_URL`               | URL                      | —             | vide (origine publique)                   | réseau privé      | réseau privé de l'hébergeur si possible                       |
+| `NEXT_PUBLIC_CDN_URL`            | URL                      | —             | `http://localhost:9000/pitchorium-public` | comme production  | `S3_PUBLIC_BASE_URL` de l'api                                 |
+| `NEXT_PUBLIC_SENTRY_DSN`         | URL                      | —             | vide                                      | projet de test    | DSN du projet web (question 26)                               |
+| `NEXT_PUBLIC_SENTRY_ENVIRONMENT` | texte                    | `development` | `development`                             | `staging`         | `production`                                                  |
+| `NEXT_PUBLIC_VERCEL_ANALYTICS`   | booléen (`true`/`false`) | `false`       | `false`                                   | comme production  | `true` sur Vercel seulement (question 96)                     |
+| `NEXT_PUBLIC_LEGAL_TERMS_URL`    | URL                      | —             | —                                         | comme production  | texte publié des CGU (question 31)                            |
+| `NEXT_PUBLIC_LEGAL_PRIVACY_URL`  | URL                      | —             | —                                         | comme production  | texte publié de la politique de confidentialité (question 31) |
+| `SENTRY_AUTH_TOKEN`              | texte                    | —             | vide                                      | secret de la CI   | secret de la CI (cartes de sources)                           |
+| `SENTRY_ORG`, `SENTRY_PROJECT`   | texte                    | —             | vide                                      | comme production  | organisation et projet Sentry                                 |
 
 L'origine du web doit figurer dans `WEB_APP_URL` et `CORS_ORIGINS` (ou `AUTH_TRUSTED_ORIGINS`) de l'api ; le cookie de session est partagé par le domaine parent (`AUTH_COOKIE_DOMAIN`).

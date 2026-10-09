@@ -21,6 +21,7 @@
     "test:stories:native": "vitest run --project stories-light --project stories-dark",
     "test:e2e": "sh scripts/e2e-docker.sh",
     "test:e2e:native": "playwright test",
+    "test:e2e:live": "playwright test -c playwright.live.config.ts",
     "check:bundles": "node scripts/check-bundles.mjs",
     "lighthouse": "sh scripts/lighthouse.sh",
     "storybook": "storybook dev --port 6006",
@@ -62,6 +63,7 @@
     "socket.io-client": "4.8.4",
     "sonner": "2.0.8",
     "tailwind-merge": "3.7.0",
+    "uqr": "0.1.3",
     "vaul": "1.1.2",
     "zod": "4.6.5"
   },

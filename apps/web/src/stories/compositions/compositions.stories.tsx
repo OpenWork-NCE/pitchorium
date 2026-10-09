@@ -8,6 +8,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Download, Filter, UserPlus } from 'lucide-react';
 import { type ReactNode, useRef, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
 import { endsAfterStart } from '@/lib/forms/rules';
 import { MemberHeader } from '@/components/layout/member/member-header';
@@ -38,7 +39,15 @@ import {
   useApplyProblem,
   useZodForm,
 } from '@/components/ui';
-import { CurrentMemberProvider, ProfileCompletion } from '@/features/identity';
+import {
+  CurrentMemberProvider,
+  ProfileCompletion,
+  ProfileOnboardingStep,
+  SecuritySettings,
+  SignInScreen,
+  TwoFactorScreen,
+} from '@/features/identity';
+import { AuthFrame } from '@/components/layout/shells/auth-frame';
 import { ActiveLocalesProvider } from '@/features/localization';
 import {
   adminMembers,
@@ -51,6 +60,7 @@ import {
   suggestions,
   thread,
   threadReadBy,
+  STORY_NOW,
   tiers,
 } from './fixtures';
 import { FeedComposer, FeedStream, PostSkeleton } from '@/features/content';
@@ -630,3 +640,123 @@ export const AdminTable: Story = {
     );
   },
 };
+
+/** The split screen of the authentication, its brand panel and a form (AuthShell). */
+function AuthComposition({ children }: { children: ReactNode }) {
+  const brand = useTranslations('web.auth.brand');
+  const a11y = useTranslations('web.a11y');
+  return (
+    <ActiveLocalesProvider locales={['fr', 'en']}>
+      <AuthFrame
+        texts={{
+          homeLink: a11y('homeLink'),
+          label: brand('label'),
+          kicker: brand('kicker'),
+          promise: brand('promise'),
+          lede: brand('lede'),
+        }}
+      >
+        {children}
+      </AuthFrame>
+    </ActiveLocalesProvider>
+  );
+}
+
+const authConfiguration = {
+  oauthProviders: ['google', 'linkedin', 'microsoft'] as ('google' | 'linkedin' | 'microsoft')[],
+  turnstile: null,
+  legal: { termsVersion: '2026-10', privacyVersion: '2026-10', minimumAge: 18 },
+  minPasswordLength: 12,
+};
+
+/** One entry for every method (§7.2): the providers first, email as the secondary path. */
+export const AuthSignIn: Story = {
+  name: 'Auth sign in',
+  parameters: { nextjs: { navigation: { pathname: '/sign-in' } } },
+  render: () => (
+    <AuthComposition>
+      <SignInScreen config={authConfiguration} redirectTo={null} />
+    </AuthComposition>
+  ),
+};
+
+/** Second factor at sign-in: six digits, or a backup code. */
+export const AuthTwoFactor: Story = {
+  name: 'Auth two factor',
+  parameters: { nextjs: { navigation: { pathname: '/sign-in/two-factor' } } },
+  render: () => (
+    <AuthComposition>
+      <TwoFactorScreen redirectTo={null} />
+    </AuthComposition>
+  ),
+};
+
+/** Last step of the onboarding: photo, name, title, country, the strength of the profile. */
+export const OnboardingProfile: Story = {
+  name: 'Onboarding profile',
+  parameters: { nextjs: { navigation: { pathname: '/onboarding/profile' } } },
+  render: () => (
+    <AuthComposition>
+      <ProfileOnboardingStep
+        countries={[
+          { value: 'SN', label: 'Sénégal' },
+          { value: 'CI', label: 'Côte d’Ivoire' },
+          { value: 'FR', label: 'France' },
+        ]}
+        initial={{
+          displayName: currentUser.profile.displayName,
+          headline: null,
+          countryCode: 'SN',
+          avatarUrl: null,
+          strength: 35,
+        }}
+      />
+    </AuthComposition>
+  ),
+};
+
+/** Security settings: password, second factor, the sessions of the account. */
+export const SettingsSecurity: Story = {
+  name: 'Settings security',
+  parameters: { layout: 'padded', nextjs: { navigation: { pathname: '/settings/security' } } },
+  render: () => <SessionsFixture />,
+};
+
+function SessionsFixture() {
+  const [client] = useState(() => {
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { staleTime: Infinity, retry: false } },
+    });
+    queryClient.setQueryData(['identity', 'sessions'], {
+      currentToken: 'this-device',
+      rows: [
+        {
+          id: 'session-1',
+          token: 'this-device',
+          userAgent:
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Safari/605.1.15',
+          createdAt: '2026-10-01T09:00:00.000Z',
+          updatedAt: STORY_NOW.toISOString(),
+        },
+        {
+          id: 'session-2',
+          token: 'phone',
+          userAgent:
+            'Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0 Mobile Safari/537.36',
+          createdAt: '2026-09-12T18:30:00.000Z',
+          updatedAt: '2026-10-07T21:10:00.000Z',
+        },
+      ],
+    });
+    return queryClient;
+  });
+  return (
+    <QueryClientProvider client={client}>
+      <CurrentMemberProvider member={currentUser}>
+        <div className="mx-auto max-w-3xl">
+          <SecuritySettings twoFactorRequired={false} />
+        </div>
+      </CurrentMemberProvider>
+    </QueryClientProvider>
+  );
+}

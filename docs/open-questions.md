@@ -39,7 +39,7 @@ Sans réponse, la plateforme ne peut pas ouvrir au public : chaque point conditi
 
 ### Textes légaux et conformité
 
-- **31.** Les textes des CGU et de la politique de confidentialité, et leurs identifiants de version (`LEGAL_TERMS_VERSION`, `LEGAL_PRIVACY_VERSION`, actuellement `draft-2026-10` en local).
+- **31.** Les textes des CGU et de la politique de confidentialité, leurs identifiants de version (`LEGAL_TERMS_VERSION`, `LEGAL_PRIVACY_VERSION`, actuellement `draft-2026-10` en local) et leurs adresses publiées, liées depuis l'onboarding (`NEXT_PUBLIC_LEGAL_TERMS_URL`, `NEXT_PUBLIC_LEGAL_PRIVACY_URL` ; sans elles, la version seule est affichée).
 - **20.** Les durées de conservation (messages, signalements, journal d'audit, comptes supprimés) et la procédure RGPD de suppression.
 - **81.** Les obligations du règlement européen sur les services numériques (DSA) réellement applicables à Pitchorium (hébergeur, plateforme en ligne, exemption des petites entreprises), le point de contact des autorités et des utilisateurs, le format du rapport de transparence. Le flux livré est conçu pour être compatible (ADR 0072), sans engagement de conformité.
 - **84.** La conservation des signalements, des coordonnées des notifiants sans compte et des décisions de modération (voir aussi la question 20 et `docs/compliance/retention.md`).
@@ -177,6 +177,10 @@ Valeurs provisoires livrées et documentées : la plateforme fonctionne avec ell
 
 ### Frontend
 
+- **106.** Le lieu approximatif des sessions (paramètres de sécurité) : l'api garde l'adresse IP mais aucune géolocalisation n'est choisie (prestataire, base locale, précision, mention RGPD) ; seuls l'appareil et la dernière activité sont affichés.
+- **107.** Un compte créé par Google, LinkedIn ou Microsoft n'a pas de mot de passe : Better Auth exige le mot de passe pour activer la double authentification. Faut-il proposer de définir un mot de passe (`set-password`) ou une autre réauthentification ?
+- **108.** Le « profil minimum » comme prérequis d'une action : l'api n'en définit pas ; le mécanisme de complétion (ADR 0105) le prendrait en charge si une action l'exigeait.
+- **109.** Le délai de renvoi d'un email de connexion ou de vérification (60 s affichées, provisoire) et la page d'appel d'une suspension (`/settings/moderation`, livrée au PROMPT FRONT 8 ; le lien de la bannière y mène déjà).
 - **93.** Les budgets de performance proposés (ADR 0090 et 0094, `docs/architecture/frontend.md`) : JavaScript initial compressé par groupe de routes, framework compris (`(marketing)` 190 kB, `(public)` et `(auth)` 220 kB, `(app)` 250 kB, `(admin)` 260 kB), Lighthouse mobile (performance 90, accessibilité, bonnes pratiques et SEO 100, LCP 2,5 s, CLS 0,1, TBT 300 ms) et INP sous 200 ms.
 - **94.** La « matière » du mouvement (`docs/design/motion.md`) : le motif d'élévation des fonds de marque, ton sur ton, comme sur un papier mat, sans grain ni WebGL ; le dialecte éditorial D4 des pages publiques.
 - **95.** La variante d'interface du logo horizontal sur fond sombre : le kit ne la fournit qu'avec son rectangle `#121212` ; la version transparente utilisée par le web est déduite (même dessin, fond retiré, `docs/design/brand-usage.md`). De même, l'icône d'application sombre (fond violet) retenue pour le manifeste et l'icône d'écran d'accueil.

@@ -31,7 +31,7 @@ describe('proxy', () => {
     const response = await proxy(request('/en/feed?tab=all'));
     expect(response.status).toBe(307);
     expect(response.headers.get('location')).toBe(
-      'http://localhost:3200/en/sign-in?next=%2Fen%2Ffeed%3Ftab%3Dall',
+      'http://localhost:3200/en/sign-in?redirectTo=%2Fen%2Ffeed%3Ftab%3Dall',
     );
   });
 

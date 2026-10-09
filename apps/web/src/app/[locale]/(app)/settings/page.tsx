@@ -1,14 +1,7 @@
-import type { Metadata } from 'next';
-import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { SectionPlaceholder } from '@/components/layout/member/section-placeholder';
-import { asLocale } from '@/i18n/routing';
+import { redirect } from 'next/navigation';
+import { routes } from '@/config/routes';
 
-export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations('web.nav');
-  return { title: t('settings'), robots: { index: false, follow: false } };
-}
-
+/** The settings open on the account. */
 export default async function Page({ params }: PageProps<'/[locale]/settings'>) {
-  setRequestLocale(asLocale((await params).locale));
-  return <SectionPlaceholder section="settings" />;
+  redirect(`/${(await params).locale}${routes.settingsAccount}`);
 }

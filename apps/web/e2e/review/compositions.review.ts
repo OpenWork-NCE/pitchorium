@@ -11,6 +11,10 @@ const COMPOSITIONS = [
   'conversation',
   'form-with-server-errors',
   'admin-table',
+  'auth-sign-in',
+  'auth-two-factor',
+  'onboarding-profile',
+  'settings-security',
 ];
 
 const VIEWPORTS = [

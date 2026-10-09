@@ -333,6 +333,30 @@
       "endsAt": {
         "required": "Indiquez la date et l’heure de fin.",
         "invalid_format": "Indiquez la date et l’heure de fin."
+      },
+      "terms": {
+        "invalid_value": "Cochez cette case pour continuer."
+      },
+      "privacy": {
+        "invalid_value": "Cochez cette case pour continuer."
+      },
+      "adult": {
+        "invalid_value": "Cochez cette case pour continuer."
+      },
+      "email": {
+        "invalid_format": "Saisissez une adresse email complète, par exemple nom@exemple.org."
+      },
+      "password": {
+        "too_small": "Saisissez au moins {{minimum}} caractères."
+      },
+      "newPassword": {
+        "too_small": "Saisissez au moins {{minimum}} caractères."
+      },
+      "code": {
+        "invalid_format": "Saisissez les 6 chiffres du code."
+      },
+      "currentPassword": {
+        "too_small": "Saisissez votre mot de passe actuel."
       }
     },
     "rules": {
@@ -504,5 +528,353 @@
     "project": "Projet",
     "event": "Événement",
     "showcase": "Projets en financement"
+  },
+  "auth": {
+    "brand": {
+      "label": "Pitchorium",
+      "kicker": "Afrique, Caraïbes, diaspora",
+      "promise": "Le lieu d’affaires de la synergie Afrique–Diaspora.",
+      "lede": "Le réseau professionnel où se rencontrent les entrepreneurs d’Afrique et des Caraïbes et ceux qui veulent les soutenir depuis l’Europe et la diaspora."
+    },
+    "failures": {
+      "rateLimited": "Trop de tentatives. Réessayez dans {{seconds}} secondes.",
+      "rateLimitedShort": "Trop de tentatives. Réessayez dans quelques instants.",
+      "network": "Connexion impossible. Vérifiez votre réseau, puis réessayez.",
+      "unexpected": "Une erreur inattendue est survenue. Réessayez."
+    },
+    "turnstile": {
+      "failed": "La vérification anti-spam n’a pas pu se charger. Rechargez la page."
+    },
+    "oauth": {
+      "redirecting": "Redirection en cours",
+      "continueWith": {
+        "google": "Continuer avec Google",
+        "linkedin": "Continuer avec LinkedIn",
+        "microsoft": "Continuer avec Microsoft"
+      }
+    },
+    "signIn": {
+      "title": "Rejoindre Pitchorium",
+      "lede": "Connectez-vous ou créez votre compte en quelques secondes.",
+      "or": "ou",
+      "continueWithEmail": "Continuer avec un email",
+      "emailForm": "Connexion par email",
+      "email": "Adresse email",
+      "password": "Mot de passe",
+      "forgotPassword": "Mot de passe oublié ?",
+      "submit": "Se connecter",
+      "signingIn": "Connexion en cours",
+      "magicLink": "Recevoir un lien de connexion, sans mot de passe",
+      "noAccount": "Pas encore de compte ?",
+      "signUp": "Créer un compte avec un email"
+    },
+    "signUp": {
+      "title": "Créer un compte",
+      "lede": "Votre nom, votre email et un mot de passe : vous complèterez le reste plus tard.",
+      "name": "Nom",
+      "email": "Adresse email",
+      "password": "Mot de passe",
+      "passwordHint": "{{length}} caractères au moins. Une phrase facile à retenir fonctionne bien.",
+      "submit": "Créer mon compte",
+      "creating": "Création en cours",
+      "haveAccount": "Déjà un compte ?",
+      "signIn": "Se connecter"
+    },
+    "magicLink": {
+      "title": "Lien de connexion",
+      "lede": "Recevez un lien par email pour vous connecter sans mot de passe. Il est valable 15 minutes, une seule fois.",
+      "email": "Adresse email",
+      "submit": "Recevoir le lien",
+      "sending": "Envoi en cours",
+      "back": "Revenir à la connexion"
+    },
+    "checkEmail": {
+      "metaTitle": "Email envoyé",
+      "verify": {
+        "title": "Vérifiez votre adresse",
+        "lede": "Si {{email}} peut recevoir un lien de vérification, il vient de partir. Ouvrez-le pour activer votre compte.",
+        "ledeNoEmail": "Ouvrez le lien reçu par email pour activer votre compte."
+      },
+      "magic": {
+        "title": "Lien envoyé",
+        "lede": "Si {{email}} peut recevoir un lien de connexion, il vient de partir. Il est valable 15 minutes.",
+        "ledeNoEmail": "Ouvrez le lien reçu par email pour vous connecter."
+      },
+      "reset": {
+        "title": "Consultez vos emails",
+        "lede": "Si un compte utilise {{email}}, un lien de réinitialisation vient de partir. Il est valable 30 minutes.",
+        "ledeNoEmail": "Ouvrez le lien reçu par email pour choisir un nouveau mot de passe."
+      },
+      "spam": "Rien reçu ? Regardez dans les courriers indésirables, ou renvoyez l’email.",
+      "resend": "Renvoyer l’email",
+      "resendIn": "Renvoyer dans {{seconds}} s",
+      "sending": "Envoi en cours",
+      "sent": "Email renvoyé.",
+      "back": "Revenir à la connexion"
+    },
+    "emailVerified": {
+      "title": "Adresse vérifiée",
+      "lede": "Votre compte est activé. Encore deux questions, toutes facultatives sauf les conditions.",
+      "continue": "Continuer",
+      "expired": {
+        "title": "Ce lien a expiré"
+      },
+      "invalid": {
+        "title": "Ce lien n’est plus valable"
+      },
+      "verifyLede": "Un lien de vérification sert une fois et reste valable 24 heures. Demandez-en un nouveau.",
+      "magicLede": "Un lien de connexion sert une fois et reste valable 15 minutes. Demandez-en un nouveau.",
+      "newMagicLink": "Recevoir un nouveau lien",
+      "email": "Adresse email",
+      "resend": "Recevoir un nouveau lien",
+      "sending": "Envoi en cours",
+      "resent": "Si cette adresse attend une vérification, un nouveau lien vient de partir."
+    },
+    "forgotPassword": {
+      "title": "Mot de passe oublié",
+      "lede": "Indiquez votre adresse : si un compte l’utilise, vous recevrez un lien pour choisir un nouveau mot de passe.",
+      "email": "Adresse email",
+      "submit": "Recevoir le lien",
+      "sending": "Envoi en cours",
+      "back": "Revenir à la connexion"
+    },
+    "resetPassword": {
+      "title": "Nouveau mot de passe",
+      "lede": "Choisissez un nouveau mot de passe. Vos autres sessions seront fermées.",
+      "password": "Nouveau mot de passe",
+      "passwordHint": "{{length}} caractères au moins.",
+      "submit": "Enregistrer le mot de passe",
+      "saving": "Enregistrement en cours",
+      "invalid": {
+        "title": "Ce lien n’est plus valable",
+        "lede": "Un lien de réinitialisation sert une fois et reste valable 30 minutes.",
+        "action": "Demander un nouveau lien"
+      },
+      "done": {
+        "title": "Mot de passe modifié",
+        "lede": "Toutes vos sessions ont été fermées. Connectez-vous avec votre nouveau mot de passe.",
+        "action": "Se connecter"
+      }
+    },
+    "twoFactor": {
+      "title": "Double authentification",
+      "totpLede": "Saisissez le code à 6 chiffres affiché par votre application d’authentification.",
+      "backupLede": "Saisissez l’un de vos codes de secours. Chaque code ne sert qu’une fois.",
+      "totpLabel": "Code de l’application",
+      "backupLabel": "Code de secours",
+      "submit": "Vérifier",
+      "checking": "Vérification en cours",
+      "useBackup": "Utiliser un code de secours",
+      "useTotp": "Utiliser l’application d’authentification",
+      "back": "Revenir à la connexion"
+    },
+    "oauthError": {
+      "metaTitle": "Connexion interrompue",
+      "retry": "Revenir à la connexion",
+      "denied": {
+        "title": "Connexion annulée",
+        "lede": "L’accès a été refusé chez le fournisseur. Vous pouvez réessayer, ou utiliser une autre méthode."
+      },
+      "unverified": {
+        "title": "Adresse non vérifiée",
+        "lede": "Le fournisseur n’a pas confirmé votre adresse email. Vérifiez-la chez lui, ou connectez-vous par email."
+      },
+      "notLinkable": {
+        "title": "Cette adresse a déjà un compte",
+        "lede": "Pour protéger ce compte, nous ne le relions pas automatiquement à ce fournisseur.",
+        "step1": "Connectez-vous avec la méthode que vous utilisez d’habitude (email, ou un autre fournisseur).",
+        "step2": "Dans Paramètres, Compte, reliez ensuite ce fournisseur : vous pourrez l’utiliser pour vous connecter.",
+        "action": "Se connecter, puis relier le compte"
+      },
+      "generic": {
+        "title": "La connexion n’a pas abouti",
+        "lede": "Une erreur est survenue pendant la connexion avec le fournisseur. Réessayez dans quelques instants."
+      }
+    }
+  },
+  "onboarding": {
+    "progress": "Étapes de l’arrivée",
+    "steps": {
+      "terms": "Conditions",
+      "intention": "Intention",
+      "profile": "Profil"
+    },
+    "terms": {
+      "title": "Conditions d’utilisation",
+      "lede": "Avant d’entrer, acceptez les textes qui encadrent Pitchorium.",
+      "formLabel": "Acceptation des conditions",
+      "names": {
+        "terms": "Conditions d’utilisation",
+        "privacy": "Politique de confidentialité",
+        "adult": "Déclaration d’âge"
+      },
+      "acceptTerms": "J’accepte les <link>conditions d’utilisation</link> (version {{version}}).",
+      "acceptPrivacy": "J’ai lu la <link>politique de confidentialité</link> (version {{version}}).",
+      "declareAge": "Je déclare avoir au moins {{age}} ans.",
+      "submit": "Accepter et continuer",
+      "saving": "Enregistrement en cours",
+      "failed": "L’acceptation n’a pas été enregistrée. Réessayez."
+    },
+    "intention": {
+      "title": "Qu’est-ce qui vous amène ?",
+      "lede": "Une seule question, pour orienter vos suggestions. Vous pourrez la modifier à tout moment.",
+      "question": "Qu’est-ce qui vous amène ?",
+      "options": {
+        "carry_project": {
+          "label": "Je porte un projet",
+          "description": "Une entreprise ou un projet en Afrique ou dans les Caraïbes."
+        },
+        "support_projects": {
+          "label": "Je souhaite soutenir des projets",
+          "description": "Don, mécénat, mentorat, mise en relation, temps."
+        },
+        "both_or_exploring": {
+          "label": "Les deux, ou je découvre",
+          "description": "Vous préciserez vos casquettes dans votre profil."
+        }
+      },
+      "choose": "Choisissez une réponse, ou passez cette étape.",
+      "continue": "Continuer",
+      "skip": "Passer",
+      "saving": "Enregistrement en cours",
+      "failed": "Votre réponse n’a pas été enregistrée. Réessayez, ou passez cette étape."
+    },
+    "profile": {
+      "title": "Votre profil",
+      "lede": "De quoi vous reconnaître. Tout est facultatif et se complète plus tard.",
+      "formLabel": "Profil minimum",
+      "strength": "Force du profil",
+      "percent": "{{percent}} %",
+      "photo": "Photo",
+      "photoLimits": "JPEG, PNG ou WebP.",
+      "photoFailed": "La photo n’a pas pu être enregistrée. Réessayez.",
+      "name": "Nom affiché",
+      "headline": "Titre",
+      "headlineHint": "Votre rôle, en une ligne : « Fondatrice d’une coopérative de karité ».",
+      "country": "Pays",
+      "countryPlaceholder": "Choisir un pays",
+      "continue": "Entrer dans Pitchorium",
+      "skip": "Passer"
+    }
+  },
+  "settings": {
+    "title": "Paramètres",
+    "navLabel": "Sections des paramètres",
+    "sections": {
+      "account": "Compte",
+      "security": "Sécurité",
+      "preferences": "Préférences"
+    },
+    "account": {
+      "email": {
+        "title": "Adresse email",
+        "address": "Adresse",
+        "verified": "Vérifiée",
+        "unverified": "À vérifier"
+      },
+      "methods": {
+        "title": "Méthodes de connexion",
+        "description": "Les comptes avec lesquels vous pouvez vous connecter à Pitchorium.",
+        "link": "Relier {{provider}}",
+        "linking": "Redirection en cours",
+        "unlink": "Retirer {{provider}}",
+        "unlinking": "Retrait en cours",
+        "lastMethodShort": "Seule méthode",
+        "lastMethod": "C’est votre seule méthode de connexion : reliez-en une autre avant de la retirer, sinon vous ne pourriez plus vous connecter."
+      },
+      "legal": {
+        "title": "Conditions acceptées",
+        "description": "Versions des textes que vous avez acceptées.",
+        "terms": "Conditions d’utilisation",
+        "privacy": "Politique de confidentialité",
+        "none": "Aucune"
+      }
+    },
+    "security": {
+      "twoFactorRequired": {
+        "title": "Double authentification requise",
+        "body": "Votre rôle de modération ou d’administration exige la double authentification. Activez-la ci-dessous pour accéder à la console."
+      },
+      "password": {
+        "title": "Mot de passe",
+        "description": "Changer de mot de passe ferme vos autres sessions : seul cet appareil reste connecté.",
+        "current": "Mot de passe actuel",
+        "new": "Nouveau mot de passe",
+        "newHint": "12 caractères au moins.",
+        "submit": "Changer le mot de passe",
+        "saving": "Enregistrement en cours",
+        "done": "Mot de passe changé. Vos autres sessions ont été fermées."
+      },
+      "twoFactor": {
+        "title": "Double authentification",
+        "description": "Un code de votre application d’authentification vous sera demandé à chaque connexion par mot de passe.",
+        "on": "Activée",
+        "off": "Désactivée",
+        "enable": "Activer la double authentification",
+        "disable": "Désactiver",
+        "disableConfirm": "Désactiver la double authentification",
+        "confirmPassword": "Mot de passe",
+        "confirmPasswordHint": "Confirmez votre identité avant ce changement.",
+        "continue": "Continuer",
+        "cancel": "Annuler",
+        "checking": "Vérification en cours",
+        "scanStep": "Scannez ce QR code avec votre application d’authentification, ou saisissez la clé à la main.",
+        "codeStep": "Saisissez le code à 6 chiffres qu’elle affiche.",
+        "qrLabel": "QR code de la double authentification",
+        "manualKey": "Clé à saisir à la main",
+        "copyKey": "Copier la clé",
+        "codeLabel": "Code de l’application",
+        "activate": "Activer",
+        "activated": "Double authentification activée.",
+        "backupCodes": "Gardez ces codes de secours en lieu sûr : chacun permet de vous connecter une fois si vous n’avez plus votre téléphone. Ils ne seront plus affichés.",
+        "copyCodes": "Copier les codes",
+        "downloadCodes": "Télécharger les codes",
+        "codesSaved": "J’ai gardé mes codes"
+      },
+      "sessions": {
+        "title": "Sessions actives",
+        "description": "Les appareils connectés à votre compte. Fermez une session que vous ne reconnaissez pas.",
+        "device": "{{browser}}, {{system}}",
+        "unknownDevice": "Appareil inconnu",
+        "thisDevice": "Cet appareil",
+        "lastActive": "Dernière activité",
+        "opened": "ouverte le {{date}}",
+        "revoke": "Fermer",
+        "revoking": "Fermeture en cours",
+        "revokeOthers": "Fermer les autres sessions",
+        "signOutEverywhere": "Se déconnecter de tous les appareils"
+      }
+    },
+    "preferences": {
+      "title": "Langue et fuseau horaire",
+      "description": "La langue de l’interface et des emails, le fuseau des dates et des récapitulatifs.",
+      "language": "Langue",
+      "timeZone": "Fuseau horaire",
+      "timeZoneHint": "Les dates et les récapitulatifs par email suivent ce fuseau.",
+      "save": "Enregistrer",
+      "saving": "Enregistrement en cours",
+      "saved": "Préférences enregistrées.",
+      "failed": "Les préférences n’ont pas été enregistrées. Réessayez.",
+      "themeTitle": "Thème",
+      "themeDescription": "Clair, sombre, ou celui de votre appareil. Gardé sur cet appareil."
+    }
+  },
+  "prerequisites": {
+    "title": "À compléter : {{element}}",
+    "description": "Cette action demande d’abord cet élément. Une fois complété, elle reprend toute seule.",
+    "later": "Plus tard",
+    "email": {
+      "body": "Ouvrez le lien de vérification envoyé à {{email}}, puis revenez ici.",
+      "send": "Renvoyer le lien",
+      "sending": "Envoi en cours",
+      "sent": "Lien envoyé.",
+      "done": "C’est fait",
+      "checking": "Vérification en cours",
+      "pending": "L’adresse n’est pas encore vérifiée. Ouvrez le lien reçu, puis réessayez."
+    },
+    "twoFactor": {
+      "body": "Activez la double authentification dans vos paramètres de sécurité, puis recommencez.",
+      "action": "Ouvrir la sécurité"
+    }
   }
 }

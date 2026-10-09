@@ -32,7 +32,7 @@ describe('content security policy', () => {
     );
     expect(directive(csp, 'img-src')).toContain('https://cdn.pitchorium.example');
     expect(directive(csp, 'frame-src')).toBe(
-      'frame-src https://www.youtube-nocookie.com https://player.vimeo.com',
+      'frame-src https://www.youtube-nocookie.com https://player.vimeo.com https://challenges.cloudflare.com',
     );
   });
 

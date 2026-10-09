@@ -29,6 +29,9 @@ export const env = createEnv({
     NEXT_PUBLIC_SENTRY_ENVIRONMENT: z.string().min(1).default('development'),
     /** Vercel Analytics and Speed Insights, only on a Vercel deployment. */
     NEXT_PUBLIC_VERCEL_ANALYTICS: flag,
+    // Published texts of the terms and the privacy policy (question 31): links of the onboarding.
+    NEXT_PUBLIC_LEGAL_TERMS_URL: z.url().optional(),
+    NEXT_PUBLIC_LEGAL_PRIVACY_URL: z.url().optional(),
   },
   experimental__runtimeEnv: {
     NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
@@ -37,6 +40,8 @@ export const env = createEnv({
     NEXT_PUBLIC_SENTRY_DSN: process.env.NEXT_PUBLIC_SENTRY_DSN,
     NEXT_PUBLIC_SENTRY_ENVIRONMENT: process.env.NEXT_PUBLIC_SENTRY_ENVIRONMENT,
     NEXT_PUBLIC_VERCEL_ANALYTICS: process.env.NEXT_PUBLIC_VERCEL_ANALYTICS,
+    NEXT_PUBLIC_LEGAL_TERMS_URL: process.env.NEXT_PUBLIC_LEGAL_TERMS_URL,
+    NEXT_PUBLIC_LEGAL_PRIVACY_URL: process.env.NEXT_PUBLIC_LEGAL_PRIVACY_URL,
   },
   emptyStringAsUndefined: true,
 });

@@ -18,6 +18,9 @@ const appDir = join(buildDir, 'server/app');
  * (React and the Next.js runtime weigh about 112 kB): docs/architecture/frontend.md.
  */
 const BUDGETS_KB = {
+  // The onboarding writes like the member space (TanStack Query, upload, country search): its
+  // budget, checked before the rest of the authentication group.
+  '(auth)/onboarding': 250,
   '(marketing)': 190,
   '(public)': 220,
   '(auth)': 220,

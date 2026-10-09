@@ -1,7 +1,14 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from './support/fixtures';
 
-const PAGES = ['/fr', '/en', '/fr/page-absente'];
+const PAGES = [
+  '/fr',
+  '/en',
+  '/fr/page-absente',
+  '/fr/sign-in',
+  '/fr/sign-up',
+  '/fr/forgot-password',
+];
 
 test.describe('accessibility', () => {
   for (const path of PAGES) {

@@ -5,6 +5,7 @@ import { API_ORIGIN, expect, signIn, stub, test } from './support/fixtures';
 const AISSATOU = 'aissatou.ba@demo.pitchorium.test';
 const KOFI = 'kofi.mensah@demo.pitchorium.test';
 const CLAUDINE = 'claudine.pierre.louis@demo.pitchorium.test';
+const KOFFI = 'koffi.agbodjan@demo.pitchorium.test';
 const MOUSSA = 'moussa.diop@demo.pitchorium.test';
 
 // The realtime events and the log of the writes are shared by the whole stub: one at a time.
@@ -338,8 +339,15 @@ test.describe('member shell, its accessibility', () => {
 });
 
 test.describe('administration shell', () => {
-  test('opens to a moderator, with its side navigation and breadcrumbs', async ({ page }) => {
+  test('guides a moderator without a second factor to turn it on first', async ({ page }) => {
     await signIn(page, CLAUDINE);
+    await page.goto('/fr/admin/moderation');
+    await expect(page).toHaveURL(/\/fr\/settings\/security\?required=two-factor$/);
+    await expect(page.getByText('Double authentification requise')).toBeVisible();
+  });
+
+  test('opens to a moderator, with its side navigation and breadcrumbs', async ({ page }) => {
+    await signIn(page, KOFFI);
     await page.goto('/fr/admin/moderation');
     await expect(page.getByRole('heading', { level: 1, name: 'Modération' })).toBeVisible();
     await expect(page.getByRole('navigation', { name: 'Fil d’Ariane' })).toContainText(

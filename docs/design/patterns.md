@@ -14,6 +14,23 @@ Comment assembler les composants (`components.md`) pour les situations récurren
 - Le bouton d'envoi passe en `loading` (même largeur) pendant l'appel ; il n'est jamais désactivé pour cause de champs invalides : l'envoi montre les erreurs.
 - Actions du formulaire (`FormActions`) : l'action principale d'abord dans le document ; sur un téléphone, empilées en pleine largeur, l'action principale en haut ; à partir de `sm`, en ligne, alignées à droite, l'action principale à droite.
 
+## Authentification (§7, ADR 0104)
+
+- Écran partagé sur un ordinateur (`AuthFrame`) : panneau de marque à gauche, violet, motif d'élévation, promesse du §3 révélée en D4 ; le formulaire à droite. Sur un téléphone, une colonne, le formulaire d'abord. Langue et thème toujours dans le bandeau.
+- Un écran, une question : titre, phrase d'explication, formulaire, puis les liens secondaires. Boutons des fournisseurs pleine largeur, logo officiel à gauche, « Continuer avec … » ; l'email en lien secondaire.
+- Un message ne révèle jamais l'existence d'un compte (« Si un compte utilise … ») ; une limite de fréquence dit son délai ; un lien expiré dit sa durée de validité et propose d'en recevoir un autre.
+- Attributs des gestionnaires de mots de passe : `username` et `current-password` à la connexion, `email`, `name` et `new-password` à l'inscription et à la réinitialisation (avec un champ `username` caché).
+
+## Onboarding (§7.2)
+
+- `Stepper` des trois étapes en tête ; les conditions sont obligatoires (trois cases, liens vers les textes), l'intention et le profil se passent (« Passer » en action discrète à côté de l'action principale).
+- Le profil s'enregistre champ par champ, au départ du champ : la barre de force, calculée par l'api, avance à chaque champ rempli.
+
+## Paramètres
+
+- Navigation par sections à gauche (en haut sur un téléphone), une adresse par section ; chaque bloc est une carte avec son titre et ce qu'il fait.
+- Une action impossible dit pourquoi (« C'est votre seule méthode de connexion … ») au lieu d'un bouton désactivé muet ; une action sensible redemande le mot de passe.
+
 ## Fil d'actualité (§10.3)
 
 - Pas de grand titre visible au-dessus du fil : un `h1` masqué visuellement (« Accueil ») ; la place est prise par le composeur « Commencer une publication » (coquille, la publication arrive au PROMPT FRONT 4).
@@ -69,6 +86,7 @@ Comment assembler les composants (`components.md`) pour les situations récurren
 
 ## Autorisations et prérequis
 
+- Complétion au fil de l'eau (ADR 0105) : une écriture passe par `useWithPrerequisites` ; refusée pour des éléments manquants, le formulaire de chacun s'ouvre dans un dialogue (une feuille sur un téléphone), puis l'action repart seule. « Plus tard » rend le refus.
 - L'api décide à chaque appel (`ACCESS_PREREQUISITES_MISSING`, `FORBIDDEN`) ; l'interface s'informe par `GET /v1/me/prerequisites/{action}` pour ne pas proposer une impasse.
 - `Can` ou `useAccess(action)` (feature `access`) : `mode="hide"` retire une action que la personne ne peut pas obtenir (administration) ; `mode="disable"` l'affiche désactivée avec sa raison (`disabledReason` : « À compléter d'abord : adresse email vérifiée ») quand elle peut la débloquer.
 - Pendant la lecture des prérequis, une action en `disable` reste active (l'api tranchera), une action en `hide` reste cachée.
@@ -76,4 +94,4 @@ Comment assembler les composants (`components.md`) pour les situations récurren
 
 ## Comptes et bannières
 
-Bannières de l'espace membre, de la plus grave à la moins grave, une seule action chacune : compte suspendu (avec la voie d'appel), conditions à accepter, adresse email à vérifier, prérequis manquants, hors ligne. Elles lisent `GET /v1/me` et l'état du réseau ; aucune ne bloque la navigation.
+Bannières de l'espace membre, de la plus grave à la moins grave, une seule action chacune : compte suspendu (vers la décision et l'appel), conditions à accepter (vers l'étape de l'onboarding, puis retour à la page), adresse email à vérifier (renvoi sur place), double authentification exigée par un rôle, prérequis manquants, hors ligne. Elles lisent `GET /v1/me` et l'état du réseau ; aucune ne bloque la navigation.

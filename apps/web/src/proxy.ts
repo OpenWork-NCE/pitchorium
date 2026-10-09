@@ -7,6 +7,7 @@ import { routing } from '@/i18n/routing';
 import { env } from '@/lib/env';
 import { getActiveLocales } from '@/lib/i18n/active-locales';
 import { buildCsp, createNonce } from '@/lib/security/csp';
+import { REDIRECT_PARAM } from '@/lib/auth/redirect';
 
 /** One next-intl handler per set of active locales: detection only picks an active locale. */
 const handlers = new Map<string, ReturnType<typeof createMiddleware>>();
@@ -67,7 +68,7 @@ export async function proxy(request: NextRequest): Promise<NextResponse> {
   ) {
     const url = request.nextUrl.clone();
     url.pathname = `/${locale}${routes.signIn}`;
-    url.search = `?next=${encodeURIComponent(`${pathname}${search}`)}`;
+    url.search = `?${REDIRECT_PARAM}=${encodeURIComponent(`${pathname}${search}`)}`;
     return withSecurity(NextResponse.redirect(url), csp);
   }
 

@@ -1,7 +1,12 @@
 import type { CountersDtoOutput, CurrentUserDtoOutput } from '@pitchorium/api-client';
 import type { ReactNode } from 'react';
 import { AnnouncerProvider, ShortcutsProvider } from '@/components/ui';
-import { AccountBanners, CurrentMemberProvider } from '@/features/identity';
+import { PrerequisiteGateProvider } from '@/features/access';
+import {
+  AccountBanners,
+  CurrentMemberProvider,
+  IDENTITY_PREREQUISITE_FORMS,
+} from '@/features/identity';
 import { RealtimeProvider } from '@/lib/realtime/realtime-provider';
 import { DataProvider } from '../data-provider';
 import { InteractiveRuntime } from '../interactive-runtime';
@@ -31,16 +36,18 @@ export function MemberShell({ member, counters, children }: MemberShellProps) {
           <UrlStateProvider>
             <CurrentMemberProvider member={member}>
               <AnnouncerProvider>
-                <ShortcutsProvider>
-                  <div className="flex min-h-dvh flex-col [--header-height:4.5rem]">
-                    <MemberHeader initialCounters={counters} />
-                    <AccountBanners />
-                    <OfflineBanner />
-                    <div className="flex-1">{children}</div>
-                  </div>
-                  <RouteFocus />
-                  <PersistedMutations memberId={member.user.id} />
-                </ShortcutsProvider>
+                <PrerequisiteGateProvider forms={IDENTITY_PREREQUISITE_FORMS}>
+                  <ShortcutsProvider>
+                    <div className="flex min-h-dvh flex-col [--header-height:4.5rem]">
+                      <MemberHeader initialCounters={counters} />
+                      <AccountBanners />
+                      <OfflineBanner />
+                      <div className="flex-1">{children}</div>
+                    </div>
+                    <RouteFocus />
+                    <PersistedMutations memberId={member.user.id} />
+                  </ShortcutsProvider>
+                </PrerequisiteGateProvider>
               </AnnouncerProvider>
             </CurrentMemberProvider>
           </UrlStateProvider>

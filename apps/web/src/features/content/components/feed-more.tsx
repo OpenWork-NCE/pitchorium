@@ -6,6 +6,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { ErrorState, Loading, Pagination } from '@/components/ui';
+import { useWithPrerequisites } from '@/features/access';
 import { FEED_PAGE_SIZE, FeedEntries, feedSlices } from './feed-entries';
 import { PostSkeleton } from './post-skeleton';
 
@@ -26,6 +27,7 @@ interface FeedMoreProps {
  * The rest of the feed is rendered by the server, without code to hydrate (ADR 0094).
  */
 export function FeedMore({ cursor, shown, modules, first = false }: FeedMoreProps) {
+  const withPrerequisites = useWithPrerequisites();
   const t = useTranslations('web.feed');
   const [started, setStarted] = useState(first);
   const feed = useInfiniteQuery({
@@ -54,7 +56,13 @@ export function FeedMore({ cursor, shown, modules, first = false }: FeedMoreProp
     );
   }
   if (feed.isError && !feed.data) {
-    return <ErrorState title={t('error')} onRetry={() => void feed.refetch()} />;
+    // Refused for a missing element (terms changed), the retry opens its form first.
+    const retry = () =>
+      withPrerequisites(async () => {
+        const result = await feed.refetch();
+        if (result.error) throw result.error;
+      }).catch(() => undefined);
+    return <ErrorState title={t('error')} onRetry={() => void retry()} />;
   }
 
   const { slices, total } = feedSlices(feed.data.pages, modules, shown);

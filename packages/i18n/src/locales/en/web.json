@@ -333,6 +333,30 @@
       "endsAt": {
         "required": "Enter the date and time of the end.",
         "invalid_format": "Enter the date and time of the end."
+      },
+      "terms": {
+        "invalid_value": "Tick this box to continue."
+      },
+      "privacy": {
+        "invalid_value": "Tick this box to continue."
+      },
+      "adult": {
+        "invalid_value": "Tick this box to continue."
+      },
+      "email": {
+        "invalid_format": "Enter a complete email address, for example name@example.org."
+      },
+      "password": {
+        "too_small": "Enter at least {{minimum}} characters."
+      },
+      "newPassword": {
+        "too_small": "Enter at least {{minimum}} characters."
+      },
+      "code": {
+        "invalid_format": "Enter the 6 digits of the code."
+      },
+      "currentPassword": {
+        "too_small": "Enter your current password."
       }
     },
     "rules": {
@@ -504,5 +528,353 @@
     "project": "Project",
     "event": "Event",
     "showcase": "Projects raising funds"
+  },
+  "auth": {
+    "brand": {
+      "label": "Pitchorium",
+      "kicker": "Africa, Caribbean, diaspora",
+      "promise": "The business place of the Africa–Diaspora synergy.",
+      "lede": "The professional network where entrepreneurs from Africa and the Caribbean meet those who want to support them from Europe and the diaspora."
+    },
+    "failures": {
+      "rateLimited": "Too many attempts. Try again in {{seconds}} seconds.",
+      "rateLimitedShort": "Too many attempts. Try again shortly.",
+      "network": "Cannot connect. Check your network, then try again.",
+      "unexpected": "An unexpected error occurred. Please try again."
+    },
+    "turnstile": {
+      "failed": "The anti-spam check could not load. Reload the page."
+    },
+    "oauth": {
+      "redirecting": "Redirecting",
+      "continueWith": {
+        "google": "Continue with Google",
+        "linkedin": "Continue with LinkedIn",
+        "microsoft": "Continue with Microsoft"
+      }
+    },
+    "signIn": {
+      "title": "Join Pitchorium",
+      "lede": "Sign in or create your account in a few seconds.",
+      "or": "or",
+      "continueWithEmail": "Continue with email",
+      "emailForm": "Sign in with email",
+      "email": "Email address",
+      "password": "Password",
+      "forgotPassword": "Forgot your password?",
+      "submit": "Sign in",
+      "signingIn": "Signing in",
+      "magicLink": "Get a sign-in link, without a password",
+      "noAccount": "No account yet?",
+      "signUp": "Create an account with email"
+    },
+    "signUp": {
+      "title": "Create an account",
+      "lede": "Your name, your email and a password: you will complete the rest later.",
+      "name": "Name",
+      "email": "Email address",
+      "password": "Password",
+      "passwordHint": "At least {{length}} characters. A sentence that is easy to remember works well.",
+      "submit": "Create my account",
+      "creating": "Creating",
+      "haveAccount": "Already have an account?",
+      "signIn": "Sign in"
+    },
+    "magicLink": {
+      "title": "Sign-in link",
+      "lede": "Get a link by email to sign in without a password. It is valid for 15 minutes, once.",
+      "email": "Email address",
+      "submit": "Get the link",
+      "sending": "Sending",
+      "back": "Back to sign in"
+    },
+    "checkEmail": {
+      "metaTitle": "Email sent",
+      "verify": {
+        "title": "Verify your address",
+        "lede": "If {{email}} can receive a verification link, it has just been sent. Open it to activate your account.",
+        "ledeNoEmail": "Open the link you received by email to activate your account."
+      },
+      "magic": {
+        "title": "Link sent",
+        "lede": "If {{email}} can receive a sign-in link, it has just been sent. It is valid for 15 minutes.",
+        "ledeNoEmail": "Open the link you received by email to sign in."
+      },
+      "reset": {
+        "title": "Check your email",
+        "lede": "If an account uses {{email}}, a reset link has just been sent. It is valid for 30 minutes.",
+        "ledeNoEmail": "Open the link you received by email to choose a new password."
+      },
+      "spam": "Nothing received? Look in your spam folder, or send the email again.",
+      "resend": "Send the email again",
+      "resendIn": "Send again in {{seconds}} s",
+      "sending": "Sending",
+      "sent": "Email sent again.",
+      "back": "Back to sign in"
+    },
+    "emailVerified": {
+      "title": "Address verified",
+      "lede": "Your account is active. Two more questions, all optional except the terms.",
+      "continue": "Continue",
+      "expired": {
+        "title": "This link has expired"
+      },
+      "invalid": {
+        "title": "This link is no longer valid"
+      },
+      "verifyLede": "A verification link works once and stays valid for 24 hours. Ask for a new one.",
+      "magicLede": "A sign-in link works once and stays valid for 15 minutes. Ask for a new one.",
+      "newMagicLink": "Get a new link",
+      "email": "Email address",
+      "resend": "Get a new link",
+      "sending": "Sending",
+      "resent": "If this address is waiting for a verification, a new link has just been sent."
+    },
+    "forgotPassword": {
+      "title": "Forgot your password",
+      "lede": "Enter your address: if an account uses it, you will get a link to choose a new password.",
+      "email": "Email address",
+      "submit": "Get the link",
+      "sending": "Sending",
+      "back": "Back to sign in"
+    },
+    "resetPassword": {
+      "title": "New password",
+      "lede": "Choose a new password. Your other sessions will be closed.",
+      "password": "New password",
+      "passwordHint": "At least {{length}} characters.",
+      "submit": "Save the password",
+      "saving": "Saving",
+      "invalid": {
+        "title": "This link is no longer valid",
+        "lede": "A reset link works once and stays valid for 30 minutes.",
+        "action": "Ask for a new link"
+      },
+      "done": {
+        "title": "Password changed",
+        "lede": "All your sessions have been closed. Sign in with your new password.",
+        "action": "Sign in"
+      }
+    },
+    "twoFactor": {
+      "title": "Two-factor authentication",
+      "totpLede": "Enter the 6-digit code shown by your authenticator app.",
+      "backupLede": "Enter one of your backup codes. Each code works only once.",
+      "totpLabel": "App code",
+      "backupLabel": "Backup code",
+      "submit": "Verify",
+      "checking": "Verifying",
+      "useBackup": "Use a backup code",
+      "useTotp": "Use the authenticator app",
+      "back": "Back to sign in"
+    },
+    "oauthError": {
+      "metaTitle": "Sign-in interrupted",
+      "retry": "Back to sign in",
+      "denied": {
+        "title": "Sign-in cancelled",
+        "lede": "Access was refused at the provider. You can try again, or use another method."
+      },
+      "unverified": {
+        "title": "Address not verified",
+        "lede": "The provider did not confirm your email address. Verify it with them, or sign in with email."
+      },
+      "notLinkable": {
+        "title": "This address already has an account",
+        "lede": "To protect that account, we do not link it to this provider automatically.",
+        "step1": "Sign in with the method you usually use (email, or another provider).",
+        "step2": "Then, in Settings, Account, link this provider: you will be able to sign in with it.",
+        "action": "Sign in, then link the account"
+      },
+      "generic": {
+        "title": "The sign-in did not complete",
+        "lede": "An error occurred while signing in with the provider. Try again in a moment."
+      }
+    }
+  },
+  "onboarding": {
+    "progress": "Steps of your arrival",
+    "steps": {
+      "terms": "Terms",
+      "intention": "Intention",
+      "profile": "Profile"
+    },
+    "terms": {
+      "title": "Terms of use",
+      "lede": "Before entering, accept the texts that frame Pitchorium.",
+      "formLabel": "Acceptance of the terms",
+      "names": {
+        "terms": "Terms of use",
+        "privacy": "Privacy policy",
+        "adult": "Age declaration"
+      },
+      "acceptTerms": "I accept the <link>terms of use</link> (version {{version}}).",
+      "acceptPrivacy": "I have read the <link>privacy policy</link> (version {{version}}).",
+      "declareAge": "I declare that I am at least {{age}} years old.",
+      "submit": "Accept and continue",
+      "saving": "Saving",
+      "failed": "The acceptance was not saved. Please try again."
+    },
+    "intention": {
+      "title": "What brings you here?",
+      "lede": "One question, to guide your suggestions. You can change it at any time.",
+      "question": "What brings you here?",
+      "options": {
+        "carry_project": {
+          "label": "I run a project",
+          "description": "A business or a project in Africa or the Caribbean."
+        },
+        "support_projects": {
+          "label": "I want to support projects",
+          "description": "Donation, patronage, mentoring, introductions, time."
+        },
+        "both_or_exploring": {
+          "label": "Both, or I am exploring",
+          "description": "You will specify your hats in your profile."
+        }
+      },
+      "choose": "Choose an answer, or skip this step.",
+      "continue": "Continue",
+      "skip": "Skip",
+      "saving": "Saving",
+      "failed": "Your answer was not saved. Try again, or skip this step."
+    },
+    "profile": {
+      "title": "Your profile",
+      "lede": "Enough to recognise you. Everything is optional and can be completed later.",
+      "formLabel": "Minimum profile",
+      "strength": "Profile strength",
+      "percent": "{{percent}}%",
+      "photo": "Photo",
+      "photoLimits": "JPEG, PNG or WebP.",
+      "photoFailed": "The photo could not be saved. Please try again.",
+      "name": "Display name",
+      "headline": "Headline",
+      "headlineHint": "Your role, in one line: “Founder of a shea butter cooperative”.",
+      "country": "Country",
+      "countryPlaceholder": "Choose a country",
+      "continue": "Enter Pitchorium",
+      "skip": "Skip"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "navLabel": "Settings sections",
+    "sections": {
+      "account": "Account",
+      "security": "Security",
+      "preferences": "Preferences"
+    },
+    "account": {
+      "email": {
+        "title": "Email address",
+        "address": "Address",
+        "verified": "Verified",
+        "unverified": "To verify"
+      },
+      "methods": {
+        "title": "Sign-in methods",
+        "description": "The accounts you can use to sign in to Pitchorium.",
+        "link": "Link {{provider}}",
+        "linking": "Redirecting",
+        "unlink": "Remove {{provider}}",
+        "unlinking": "Removing",
+        "lastMethodShort": "Only method",
+        "lastMethod": "This is your only sign-in method: link another one before removing it, otherwise you could no longer sign in."
+      },
+      "legal": {
+        "title": "Accepted terms",
+        "description": "Versions of the texts you accepted.",
+        "terms": "Terms of use",
+        "privacy": "Privacy policy",
+        "none": "None"
+      }
+    },
+    "security": {
+      "twoFactorRequired": {
+        "title": "Two-factor authentication required",
+        "body": "Your moderation or administration role requires two-factor authentication. Turn it on below to reach the console."
+      },
+      "password": {
+        "title": "Password",
+        "description": "Changing your password closes your other sessions: only this device stays signed in.",
+        "current": "Current password",
+        "new": "New password",
+        "newHint": "At least 12 characters.",
+        "submit": "Change the password",
+        "saving": "Saving",
+        "done": "Password changed. Your other sessions have been closed."
+      },
+      "twoFactor": {
+        "title": "Two-factor authentication",
+        "description": "A code from your authenticator app will be asked at every sign-in with a password.",
+        "on": "On",
+        "off": "Off",
+        "enable": "Turn on two-factor authentication",
+        "disable": "Turn off",
+        "disableConfirm": "Turn off two-factor authentication",
+        "confirmPassword": "Password",
+        "confirmPasswordHint": "Confirm your identity before this change.",
+        "continue": "Continue",
+        "cancel": "Cancel",
+        "checking": "Verifying",
+        "scanStep": "Scan this QR code with your authenticator app, or type the key by hand.",
+        "codeStep": "Enter the 6-digit code it shows.",
+        "qrLabel": "Two-factor authentication QR code",
+        "manualKey": "Key to type by hand",
+        "copyKey": "Copy the key",
+        "codeLabel": "App code",
+        "activate": "Turn on",
+        "activated": "Two-factor authentication is on.",
+        "backupCodes": "Keep these backup codes somewhere safe: each one lets you sign in once if you lose your phone. They will not be shown again.",
+        "copyCodes": "Copy the codes",
+        "downloadCodes": "Download the codes",
+        "codesSaved": "I have kept my codes"
+      },
+      "sessions": {
+        "title": "Active sessions",
+        "description": "The devices signed in to your account. Close a session you do not recognise.",
+        "device": "{{browser}}, {{system}}",
+        "unknownDevice": "Unknown device",
+        "thisDevice": "This device",
+        "lastActive": "Last active",
+        "opened": "opened on {{date}}",
+        "revoke": "Close",
+        "revoking": "Closing",
+        "revokeOthers": "Close the other sessions",
+        "signOutEverywhere": "Sign out of every device"
+      }
+    },
+    "preferences": {
+      "title": "Language and time zone",
+      "description": "The language of the interface and the emails, the time zone of dates and digests.",
+      "language": "Language",
+      "timeZone": "Time zone",
+      "timeZoneHint": "Dates and email digests follow this time zone.",
+      "save": "Save",
+      "saving": "Saving",
+      "saved": "Preferences saved.",
+      "failed": "The preferences were not saved. Please try again.",
+      "themeTitle": "Theme",
+      "themeDescription": "Light, dark, or the one of your device. Kept on this device."
+    }
+  },
+  "prerequisites": {
+    "title": "To complete: {{element}}",
+    "description": "This action needs this first. Once completed, it resumes on its own.",
+    "later": "Later",
+    "email": {
+      "body": "Open the verification link sent to {{email}}, then come back here.",
+      "send": "Send the link again",
+      "sending": "Sending",
+      "sent": "Link sent.",
+      "done": "Done",
+      "checking": "Checking",
+      "pending": "The address is not verified yet. Open the link you received, then try again."
+    },
+    "twoFactor": {
+      "body": "Turn on two-factor authentication in your security settings, then try again.",
+      "action": "Open security"
+    }
   }
 }
