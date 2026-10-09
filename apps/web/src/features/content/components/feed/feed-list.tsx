@@ -346,6 +346,7 @@ export function FeedList({
           className="rounded-xl outline-none focus-visible:outline-2 focus-visible:outline-focus"
           post={item.post}
           signedIn
+          priority={index === 0}
           featured={item.type === 'featured'}
           name={
             item.post.author.type === 'member' ? (

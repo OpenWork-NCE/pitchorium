@@ -31,6 +31,8 @@ interface PostCardProps extends Omit<ComponentProps<'article'>, 'children'> {
   full?: boolean;
   /** Address to come back to after a visitor signs in. */
   returnTo?: string;
+  /** Its first image is the largest paint of the page (first of a feed, its own page). */
+  priority?: boolean;
 }
 
 /**
@@ -49,6 +51,7 @@ export function PostCard({
   footer,
   full = false,
   returnTo,
+  priority = full,
   className,
   ...article
 }: PostCardProps) {
@@ -67,7 +70,7 @@ export function PostCard({
           </p>
         ) : null}
         <PostHeader post={post} name={name} menu={menu} />
-        <PostBody post={post} signedIn={signedIn} full={full} />
+        <PostBody post={post} signedIn={signedIn} full={full} priority={priority} />
         {post.kind === 'repost' ? (
           post.repostOf ? (
             <div className="grid gap-3 rounded-lg border border-border p-3 sm:p-4">
@@ -108,10 +111,12 @@ function PostBody({
   post,
   signedIn,
   full,
+  priority = false,
 }: {
   post: EmbeddedPost;
   signedIn: boolean;
   full: boolean;
+  priority?: boolean;
 }) {
   return (
     <div
@@ -121,7 +126,9 @@ function PostBody({
       )}
     >
       {post.text ? <PostText text={post.text} mentions={post.mentions} full={full} /> : null}
-      {post.images.length > 0 ? <PostImages images={post.images} postId={post.id} /> : null}
+      {post.images.length > 0 ? (
+        <PostImages images={post.images} postId={post.id} priority={priority} />
+      ) : null}
       {post.document ? <PostDocument document={post.document} signedIn={signedIn} /> : null}
       {post.link ? <PostLink link={post.link} /> : null}
       {post.projectId && signedIn ? <LazyPostProject projectId={post.projectId} /> : null}

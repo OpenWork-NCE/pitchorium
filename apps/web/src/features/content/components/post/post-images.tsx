@@ -40,7 +40,16 @@ function singleRatio(image: PostImage): string {
  * the screen, on a quiet background meanwhile. The thumbnail grows a little on hover, in its
  * frame.
  */
-export function PostImages({ images, postId }: { images: readonly PostImage[]; postId: string }) {
+export function PostImages({
+  images,
+  postId,
+  priority = false,
+}: {
+  images: readonly PostImage[];
+  postId: string;
+  /** The first image is the largest paint of the page: loaded at once, first. */
+  priority?: boolean;
+}) {
   const t = useTranslations('web.content.images');
   const [open, setOpen] = useState<number | null>(null);
   const tiles = useRef<(HTMLButtonElement | null)[]>([]);
@@ -93,7 +102,8 @@ export function PostImages({ images, postId }: { images: readonly PostImage[]; p
                 <img
                   src={imageSource(image, layout.grid === 'single' ? 'full' : 'grid')}
                   alt={image.alt ?? t('noAlt')}
-                  loading="lazy"
+                  loading={priority && index === 0 ? 'eager' : 'lazy'}
+                  fetchPriority={priority && index === 0 ? 'high' : 'auto'}
                   decoding="async"
                   style={{
                     viewTransitionName: open === null ? `post-${postId}-${index}` : undefined,
