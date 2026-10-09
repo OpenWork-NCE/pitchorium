@@ -1,8 +1,5 @@
 'use client';
 
-import '@/lib/zod';
-
-import { zodResolver } from '@hookform/resolvers/zod';
 import { ApiProblemError } from '@pitchorium/api-client';
 import { CircleAlert } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
@@ -30,6 +27,7 @@ import {
   type FieldValues,
   FormProvider,
   get,
+  type Resolver,
   type UseFormProps,
   type UseFormReturn,
   useController,
@@ -42,6 +40,7 @@ import { type IssueTranslator, issueMessage, serverIssueMessage } from '@/lib/fo
 import { fieldIssues } from '@/lib/forms/problem';
 import { boundsOf } from '@/lib/forms/schema-bounds';
 import { usePlural } from '@/lib/i18n/plural';
+import { preloadWhenIdle } from '@/lib/preload';
 import { Field } from './field';
 
 /**
@@ -81,28 +80,59 @@ function useIssueTranslator(): { t: IssueTranslator; format: (value: number) => 
   return { t, format };
 }
 
+/** A schema of the contracts, or a loader of it that keeps Zod and the contracts off the first load. */
+export type SchemaSource<Schema> = Schema | (() => Promise<Schema>);
+
+/**
+ * Zod (configured without `new Function`, ADR 0088), the resolver of react-hook-form and the
+ * schema, loaded together: none of them is part of the first load of a page (ADR 0094).
+ */
+async function loadValidation<Schema extends z.ZodType<FieldValues, FieldValues>>(
+  source: SchemaSource<Schema>,
+) {
+  const [schema, { zodResolver }] = await Promise.all([
+    typeof source === 'function' ? source() : Promise.resolve(source),
+    import('@hookform/resolvers/zod'),
+    import('@/lib/zod'),
+  ]);
+  return { schema, zodResolver };
+}
+
 /**
  * react-hook-form on a schema of @pitchorium/contracts: Zod validates in the browser with the
  * messages of `web.forms` (the message of the field, of the rule, then of the code with its
- * bounds; never Zod's own English texts); the api validates again.
+ * bounds; never Zod's own English texts); the api validates again. The validation loads once the
+ * page is idle, or at the first check if that comes sooner; given a loader (`() => import(...)`)
+ * instead of a schema, the schema and Zod stay off the first load too (ADR 0094).
  */
 export function useZodForm<Schema extends z.ZodType<FieldValues, FieldValues>>(
-  schema: Schema,
+  source: SchemaSource<Schema>,
   options?: Omit<UseFormProps<z.input<Schema>, unknown, z.output<Schema>>, 'resolver'>,
 ): UseFormReturn<z.input<Schema>, unknown, z.output<Schema>> {
   const { t, format } = useIssueTranslator();
+  const validation = useRef<Promise<Resolver<z.input<Schema>, unknown, z.output<Schema>>> | null>(
+    null,
+  );
   const form = useForm<z.input<Schema>, unknown, z.output<Schema>>({
     mode: 'onTouched',
     // The summary takes the focus, then its links lead to the fields.
     shouldFocusError: false,
     ...options,
-    resolver: zodResolver(schema, {
-      error: (issue) => issueMessage(t, issue, (issue.path ?? []).map(String).join('.'), format),
-    }),
+    resolver: async (values, context, resolverOptions) =>
+      (await resolver())(values, context, resolverOptions),
   });
-  useEffect(() => {
-    schemas.set(form.control, schema);
-  }, [form.control, schema]);
+
+  function resolver() {
+    validation.current ??= loadValidation(source).then(({ schema, zodResolver }) => {
+      schemas.set(form.control, schema);
+      return zodResolver(schema, {
+        error: (issue) => issueMessage(t, issue, (issue.path ?? []).map(String).join('.'), format),
+      });
+    });
+    return validation.current;
+  }
+
+  useEffect(() => preloadWhenIdle(resolver), []); // eslint-disable-line react-hooks/exhaustive-deps
   return form;
 }
 

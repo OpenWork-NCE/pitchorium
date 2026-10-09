@@ -34,7 +34,7 @@ Règles communes :
 
 ## Formulaires
 
-Système `Field` : libellé, description, contrôle, erreur et compteur liés par leurs ids ; chaque contrôle lit son `Field` (`useFieldControl`). `Form`, `FormField` et `useZodForm` lient react-hook-form aux schémas de `@pitchorium/contracts` ; `useApplyProblem` place les erreurs RFC 9457 de l'api (ADR 0096, `patterns.md`).
+Système `Field` : libellé, description, contrôle, erreur et compteur liés par leurs ids ; chaque contrôle lit son `Field` (`useFieldControl`). `Form`, `FormField` et `useZodForm` lient react-hook-form aux schémas de `@pitchorium/contracts` ; `useApplyProblem` place les erreurs RFC 9457 de l'api (ADR 0096, `patterns.md`). `useZodForm` charge Zod et le résolveur à l'inactivité de la page ou à la première vérification ; il accepte un schéma ou une fonction qui le charge (`() => import(...)`), pour garder le schéma lui aussi hors du premier chargement d'un écran léger (authentification, ADR 0094).
 
 | Composant        | Usage                                                                                                                                                   | À faire, à éviter                                            | Story                                 |
 | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ | ------------------------------------- |
