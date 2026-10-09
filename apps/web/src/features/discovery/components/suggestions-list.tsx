@@ -19,10 +19,13 @@ interface Suggested {
  */
 export function SuggestionsList({
   suggestions,
+  title,
   headingLevel = 2,
   className,
 }: {
   suggestions: readonly Suggested[];
+  /** The heading of the list, « Personnes pertinentes pour vous » unless said otherwise. */
+  title?: string;
   headingLevel?: 2 | 3;
   className?: string;
 }) {
@@ -43,11 +46,12 @@ export function SuggestionsList({
       : [],
   );
   if (people.length === 0) return null;
+  const heading = title ?? t('suggestions');
   return (
     <Card padding="sm" className={className}>
-      <section className="grid gap-4" aria-label={t('suggestions')}>
+      <section className="grid gap-4" aria-label={heading}>
         <Heading level={headingLevel} size="label">
-          {t('suggestions')}
+          {heading}
         </Heading>
         <ul className="grid gap-4">
           {people.map(({ person, reason: text }) => (
