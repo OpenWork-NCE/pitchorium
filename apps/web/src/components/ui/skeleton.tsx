@@ -29,3 +29,28 @@ export function Loading({
     </div>
   );
 }
+
+/**
+ * A field whose control loads on demand (a search, a select): it keeps the shape of a field
+ * (border, height, hint text) so that the form does not move, and says it is loading. The review
+ * captures wait for it to be gone (`data-loading`).
+ */
+export function FieldSkeleton({ hint, className }: { hint?: string; className?: string }) {
+  const t = useTranslations('web.a11y');
+  return (
+    <div
+      role="status"
+      aria-busy="true"
+      data-loading=""
+      className={cn(
+        'flex h-11 w-full items-center rounded-md border border-border-strong bg-surface px-3 text-base text-muted',
+        className,
+      )}
+    >
+      <span aria-hidden className="truncate">
+        {hint}
+      </span>
+      <span className="sr-only">{t('loading')}</span>
+    </div>
+  );
+}

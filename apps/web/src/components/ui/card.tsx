@@ -28,5 +28,8 @@ export function Card({
   className,
   ...props
 }: ComponentProps<'div'> & VariantProps<typeof cardVariants>) {
-  return <div className={cn(cardVariants({ surface, padding }), className)} {...props} />;
+  // `data-card`: the review captures check that the content stays within its padding.
+  return (
+    <div data-card="" className={cn(cardVariants({ surface, padding }), className)} {...props} />
+  );
 }

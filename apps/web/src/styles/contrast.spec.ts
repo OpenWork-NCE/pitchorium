@@ -63,6 +63,8 @@ const PAIRS: [string, string, number][] = [
     ['accent', surface, NON_TEXT],
   ]),
   ['on-accent', 'accent', TEXT],
+  ['on-brand-panel', 'brand-panel', TEXT],
+  ['foreground', 'message-received', TEXT],
   ['on-accent', 'accent-strong', TEXT],
   ['on-accent-subtle', 'accent-subtle', TEXT],
   ['on-highlight', 'highlight', TEXT],
@@ -91,6 +93,23 @@ describe.each([
   it.each(PAIRS)('%s on %s reaches %s:1', (text, background, minimum) => {
     expect(contrast(resolve(theme, text), resolve(theme, background))).toBeGreaterThanOrEqual(
       minimum,
+    );
+  });
+});
+
+describe('brand panel (A10)', () => {
+  it('stays deep violet with a light text in both themes, never lavender', () => {
+    for (const theme of [light, dark]) {
+      expect(luminance(resolve(theme, 'brand-panel'))).toBeLessThan(0.05);
+      expect(luminance(resolve(theme, 'on-brand-panel'))).toBeGreaterThan(0.8);
+    }
+  });
+});
+
+describe('messages received (A16)', () => {
+  it('sit on a surface a step lighter than their card in the dark theme', () => {
+    expect(luminance(resolve(dark, 'message-received'))).toBeGreaterThan(
+      luminance(resolve(dark, 'surface')),
     );
   });
 });

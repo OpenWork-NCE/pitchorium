@@ -53,6 +53,7 @@ Comment assembler les composants (`components.md`) pour les situations récurren
 
 ## Chargement
 
+- Un champ dont le contrôle se charge à la demande (recherche, liste) garde la forme d'un champ pendant ce temps (`FieldSkeleton` : bordure, hauteur, texte indicatif) ; les captures de revue attendent la fin des chargements différés (`aria-busy`, `data-loading`).
 - Premier rendu par le serveur : la page arrive remplie, sans squelette.
 - Données chargées dans le navigateur : `Loading` (région annoncée « Chargement en cours ») autour de `Skeleton` de la forme exacte du contenu (mêmes hauteurs, mêmes colonnes) ; aucun décalage quand le contenu arrive.
 - Page qui attend sa navigation : `loading.tsx` du groupe, barre fine sous le bandeau.

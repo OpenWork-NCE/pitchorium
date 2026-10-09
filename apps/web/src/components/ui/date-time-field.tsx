@@ -378,11 +378,14 @@ export function DateTimeField({
               }}
               onPaste={(event) => event.preventDefault()}
               className={cn(
-                // At least 24 px wide, the minimal target (WCAG 2.5.8), with room around its
-                // digits; a year keeps the width of its four digits while empty or typed, so that
-                // nothing moves while typing.
-                'min-w-6 rounded-xs px-0.5 text-center caret-transparent outline-none focus:bg-accent focus:text-on-accent',
-                type === 'year' && (shown.empty || focusedIndex === segmentIndex) && 'min-w-[4ch]',
+                // The same room (4 px) on both sides of every segment, the year included, so that
+                // the separators fall at regular intervals (Poppins has no tabular digits); at
+                // least 24 px wide, the minimal target (WCAG 2.5.8). A year keeps the width of its
+                // four digits while empty or typed, so that nothing moves while typing.
+                'min-w-6 rounded-xs px-1 text-center caret-transparent outline-none focus:bg-accent focus:text-on-accent',
+                type === 'year' &&
+                  (shown.empty || focusedIndex === segmentIndex) &&
+                  'min-w-[calc(4ch+0.5rem)]',
                 shown.empty && 'text-muted focus:text-on-accent',
               )}
             >

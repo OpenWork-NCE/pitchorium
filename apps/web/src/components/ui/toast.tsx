@@ -26,4 +26,9 @@ export const notify = {
   info: (message: string) => void import('sonner').then(({ toast }) => toast(message)),
   error: (message: string, description?: string) =>
     void import('sonner').then(({ toast }) => toast.error(message, { description })),
+  /** An action done at once, with « Annuler » to undo it (patterns.md: no confirmation). */
+  undoable: (message: string, undo: { label: string; onUndo: () => void }) =>
+    void import('sonner').then(({ toast }) =>
+      toast(message, { action: { label: undo.label, onClick: undo.onUndo } }),
+    ),
 };

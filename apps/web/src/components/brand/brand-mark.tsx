@@ -26,6 +26,8 @@ function renderMark(mark: Mark, width: number, { label, className, animated }: M
       aria-label={label}
       aria-hidden={label ? undefined : true}
       focusable="false"
+      // Counted by the review captures: one logo per screen (docs/design/review).
+      data-brand-mark=""
       className={cn('shrink-0', animated && 'animate-brand-enter', className)}
     >
       {mark.body}

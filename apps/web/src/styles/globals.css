@@ -24,6 +24,10 @@
   --color-accent: var(--accent);
   --color-accent-strong: var(--accent-strong);
   --color-on-accent: var(--on-accent);
+  --color-brand-panel: var(--brand-panel);
+  --color-on-brand-panel: var(--on-brand-panel);
+  --color-cover-placeholder: var(--cover-placeholder);
+  --color-message-received: var(--message-received);
   --color-accent-subtle: var(--accent-subtle);
   --color-on-accent-subtle: var(--on-accent-subtle);
   --color-link: var(--link);

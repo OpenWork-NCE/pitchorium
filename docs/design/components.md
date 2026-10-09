@@ -100,17 +100,18 @@ Système `Field` : libellé, description, contrôle, erreur et compteur liés pa
 
 ## Retour
 
-| Composant             | Usage                                                                                                      | À faire, à éviter                                   | Story                  |
-| --------------------- | ---------------------------------------------------------------------------------------------------------- | --------------------------------------------------- | ---------------------- |
-| `Toaster`, `notify`   | confirmation brève (sonner), annoncée ; `ToasterLoader` et `notify` chargent sonner après le premier rendu | jamais le seul endroit d'une erreur à traiter       | Design system/Feedback |
-| `Alert`               | état d'une page ou d'une action, avec ce qu'il faut faire                                                  | `live` seulement s'il apparaît après une action     | idem                   |
-| `Callout`             | explication en marge                                                                                       | jamais une erreur                                   | idem                   |
-| `Banner`              | message du compte ou du site en haut de l'espace membre                                                    | une ligne, une action                               | idem                   |
-| `Skeleton`, `Loading` | squelettes fidèles à la mise en page, région annoncée occupée                                              | même hauteur que le contenu final                   | idem                   |
-| `Spinner`, `Progress` | action en cours dans un bouton ; progression connue ou attente                                             |                                                     | idem                   |
-| `EmptyState`          | motif de la marque, titre, texte, action                                                                   | jamais d'image générique                            | idem                   |
-| `ErrorState`          | échec d'un chargement, reprise et référence                                                                | texte du code d'erreur, jamais le message technique | idem                   |
-| `AnnouncerProvider`   | régions `aria-live` partagées (`useAnnounce`)                                                              |                                                     | (coquille)             |
+| Composant             | Usage                                                                                                                                              | À faire, à éviter                                   | Story                  |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- | ---------------------- |
+| `Toaster`, `notify`   | confirmation brève (sonner), annoncée ; `ToasterLoader` et `notify` chargent sonner après le premier rendu ; `notify.undoable` propose « Annuler » | jamais le seul endroit d'une erreur à traiter       | Design system/Feedback |
+| `Alert`               | état d'une page ou d'une action, avec ce qu'il faut faire                                                                                          | `live` seulement s'il apparaît après une action     | idem                   |
+| `Callout`             | explication en marge                                                                                                                               | jamais une erreur                                   | idem                   |
+| `Banner`              | message du compte ou du site en haut de l'espace membre                                                                                            | une ligne, une action                               | idem                   |
+| `FieldSkeleton`       | champ en cours de chargement : bordure, hauteur et texte indicatif d'un champ, annoncé occupé (`data-loading`)                                     | jamais un bloc gris à la place d'un champ           | idem                   |
+| `Skeleton`, `Loading` | squelettes fidèles à la mise en page, région annoncée occupée                                                                                      | même hauteur que le contenu final                   | idem                   |
+| `Spinner`, `Progress` | action en cours dans un bouton ; progression connue ou attente                                                                                     |                                                     | idem                   |
+| `EmptyState`          | motif de la marque, titre, texte, action                                                                                                           | jamais d'image générique                            | idem                   |
+| `ErrorState`          | échec d'un chargement, reprise et référence                                                                                                        | texte du code d'erreur, jamais le message technique | idem                   |
+| `AnnouncerProvider`   | régions `aria-live` partagées (`useAnnounce`)                                                                                                      |                                                     | (coquille)             |
 
 ## Navigation
 

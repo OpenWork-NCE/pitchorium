@@ -81,6 +81,13 @@
   --overlay: rgb(18 18 18 / 0.56);
   --logo-ink: var(--brand-violet);
   --logo-accent: var(--brand-copper);
+  /* Editorial panel of the brand (authentication): deep violet in both themes, light text. */
+  --brand-panel: var(--violet-800);
+  --on-brand-panel: var(--brand-white);
+  /* Cover without an image (projects): the elevation pattern on a surface of its own. */
+  --cover-placeholder: var(--violet-100);
+  /* A message received: a step from its card, lighter in the dark theme, never darker. */
+  --message-received: var(--neutral-100);
   --shadow-color: 18 18 18;
   --shadow-strength: 0.08;
 
@@ -160,6 +167,11 @@
   --overlay: rgb(0 0 0 / 0.64);
   --logo-ink: var(--brand-white);
   --logo-accent: var(--brand-copper);
+  /* Never lavender: light surfaces belong to the light theme. */
+  --brand-panel: var(--violet-900);
+  --on-brand-panel: var(--brand-white);
+  --cover-placeholder: var(--violet-900);
+  --message-received: #2a2830;
   --shadow-color: 0 0 0;
   --shadow-strength: 0.4;
 

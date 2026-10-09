@@ -70,7 +70,7 @@ export {
   useShortcuts,
   useShortcutsHelp,
 } from './shortcuts';
-export { Loading, Skeleton } from './skeleton';
+export { FieldSkeleton, Loading, Skeleton } from './skeleton';
 export { Slider } from './slider';
 export { Spinner } from './spinner';
 export { Stat } from './stat';

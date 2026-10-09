@@ -42,6 +42,8 @@ Dérivées en OKLCH à teinte constante, les valeurs de marque servant d'ancres 
 | `focus`            | `#614b83` | `#d6cce6` |
 | `overlay`          | noir 56 % | noir 64 % |
 
+Tokens de surfaces propres : `brand-panel` et `on-brand-panel` (panneau de marque de l'authentification : `#3e285d` en clair, `#2c1c44` en sombre, texte `#f7f7f5` ; violet profond dans les deux thèmes, jamais lavande, testé par `contrast.spec.ts`), `cover-placeholder` (couverture d'un projet sans image : `#eae4f2` en clair, `#2c1c44` en sombre, le motif d'élévation éclairci pour rester lisible), `message-received` (bulle reçue : `#efeeea` en clair, `#2a2830` en sombre, un cran plus clair que la carte, jamais plus foncé).
+
 Tokens des composants : `track` (rail d'une barre de progression), `skeleton` et `skeleton-shine` (squelettes), et six paires `avatar-N-bg` et `avatar-N-fg` pour les initiales des avatars, choisies par le nom, chacune à 4,5:1 au moins dans les deux thèmes. Le thème sombre s'applique aussi à un sous-arbre marqué `data-theme="dark"` (vue côte à côte du design system).
 
 Chaque statut a sa variante `-subtle` (fond d'un message). Le thème sombre repose sur le noir de marque, fond des logos officiels en version sombre. Les tons du logo suivent le thème : `--logo-ink` (violet, puis blanc de marque) et `--logo-accent` (cuivre).
