@@ -184,7 +184,6 @@ export function Editor({
         'aria-multiline': 'true',
         'aria-label': label,
         ...(describedBy ? { 'aria-describedby': describedBy } : {}),
-        'aria-controls': listId,
         class:
           'min-h-32 max-h-[40dvh] overflow-y-auto rounded-md px-1 py-2 text-base leading-normal outline-none [&_.mention]:font-medium [&_.mention]:text-link [&_a]:text-link [&_a]:underline [&_p.is-editor-empty:first-child]:before:pointer-events-none [&_p.is-editor-empty:first-child]:before:float-left [&_p.is-editor-empty:first-child]:before:h-0 [&_p.is-editor-empty:first-child]:before:text-muted [&_p.is-editor-empty:first-child]:before:content-[attr(data-placeholder)]',
       },
@@ -196,6 +195,15 @@ export function Editor({
     },
     onUpdate: ({ editor: current }) => onChange(current.getJSON() as EditorNode),
   });
+
+  // The list of mentions exists only while it is open: the editor points to it then only.
+  const listOpen = suggestion.position !== null;
+  useEffect(() => {
+    const dom = editor?.view.dom;
+    if (!dom) return;
+    if (listOpen) dom.setAttribute('aria-controls', listId);
+    else dom.removeAttribute('aria-controls');
+  }, [editor, listOpen, listId]);
 
   return (
     <div ref={container} className="relative">

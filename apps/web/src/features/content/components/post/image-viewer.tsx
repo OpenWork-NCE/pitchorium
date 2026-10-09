@@ -48,7 +48,7 @@ export default function ImageViewer({
   return (
     <Primitive.Root open onOpenChange={(open) => !open && onClose()}>
       <Primitive.Portal>
-        <Primitive.Overlay className="fixed inset-0 z-(--z-modal) bg-overlay backdrop-blur-sm data-[state=open]:animate-[fade-in_var(--duration-page)_var(--ease-enter)]" />
+        <Primitive.Overlay className="fixed inset-0 z-(--z-modal) bg-viewer-backdrop data-[state=open]:animate-[fade-in_var(--duration-page)_var(--ease-enter)]" />
         <Primitive.Content
           aria-describedby={undefined}
           onKeyDown={(event) => {

@@ -77,7 +77,12 @@ export function PostImages({ images, postId }: { images: readonly PostImage[]; p
                 type="button"
                 onClick={() => show(index)}
                 onPointerEnter={() => void loadViewer()}
-                aria-label={t('open', { index: index + 1, count: images.length })}
+                // The tile of the last image names what it shows: « +N », the images left.
+                aria-label={
+                  last
+                    ? `${t('open', { index: index + 1, count: images.length })}, ${t('more', { count: layout.more })}`
+                    : t('open', { index: index + 1, count: images.length })
+                }
                 className="group block size-full outline-none focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-focus"
               >
                 {/* eslint-disable-next-line @next/next/no-img-element -- variants of the media module, presigned for a private publication. */}
@@ -93,8 +98,7 @@ export function PostImages({ images, postId }: { images: readonly PostImage[]; p
                 />
                 {last ? (
                   <span className="absolute inset-0 flex items-center justify-center bg-overlay font-display text-3xl font-extrabold text-on-brand-panel">
-                    <span aria-hidden>{t('more', { count: layout.more })}</span>
-                    <span className="sr-only">{t('moreLabel', { count: layout.more })}</span>
+                    {t('more', { count: layout.more })}
                   </span>
                 ) : null}
               </button>
