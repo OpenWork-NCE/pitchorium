@@ -901,5 +901,20 @@
       "body": "Turn on two-factor authentication in your security settings, then try again.",
       "action": "Open security"
     }
+  },
+  "discovery": {
+    "suggestion": {
+      "connect": "Connect",
+      "connectWith": "Connect with {{name}}",
+      "follow": "Follow",
+      "followName": "Follow {{name}}",
+      "sending": "Sending",
+      "requested": "Request sent",
+      "following": "Following",
+      "dismiss": "Not interested",
+      "dismissName": "Not interested in {{name}}",
+      "dismissed": "Suggestion hidden.",
+      "undo": "Undo"
+    }
   }
 }

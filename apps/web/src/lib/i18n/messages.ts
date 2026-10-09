@@ -36,6 +36,7 @@ const MENTIONS = [
 /** The feed (publications, suggestions with their reasons, completion of the profile). */
 const FEED_MESSAGES = [
   'web.feed',
+  'web.discovery',
   'web.content',
   'web.projects',
   'web.profile',

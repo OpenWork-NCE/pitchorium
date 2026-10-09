@@ -31,6 +31,11 @@ Comment assembler les composants (`components.md`) pour les situations récurren
 - Navigation par sections à gauche (en haut sur un téléphone), une adresse par section ; chaque bloc est une carte avec son titre et ce qu'il fait.
 - Une action impossible dit pourquoi (« C'est votre seule méthode de connexion … ») au lieu d'un bouton désactivé muet ; une action sensible redemande le mot de passe.
 
+## Suggestions (§10.2, ADR 0067)
+
+- Chaque suggestion porte son action : « Se connecter » pour une personne (demande de connexion, prérequis complétés sur place), « Suivre » pour une organisation ou un projet ; puis « Pas intéressé », exécuté aussitôt et annulable depuis le toast (`notify.undoable`).
+- La phrase de raison ne répète pas le nom affiché juste au-dessus et reste neutre en genre : des propositions courtes jointes par « · » (« Propose du mentorat · secteur commun : Énergie »), libellés courts des secteurs.
+
 ## Données de référence
 
 - Un secteur a un libellé court (`reference.sectorsShort`, « Énergie ») dans les puces, les cartes et les phrases de suggestion, et son libellé complet (`reference.sectors`) en infobulle, pour les lecteurs d'écran et sur les pages de détail. Libellés courts provisoires (question 110).

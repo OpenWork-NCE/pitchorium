@@ -1,4 +1,5 @@
 import type { DiscoveryCard } from '@pitchorium/contracts';
+import type { ReactNode } from 'react';
 import { Avatar } from '@/components/ui';
 import { routes } from '@/config/routes';
 import { Link } from '@/i18n/navigation';
@@ -11,15 +12,18 @@ interface SuggestionItemProps {
   person: PersonCard;
   /** Reason sentence, built by the server (`suggestionSentenceText`, §11.4). */
   reason: string;
+  /** « Se connecter » and « Pas intéressé » (SuggestionActions). */
+  actions?: ReactNode;
   className?: string;
 }
 
 /**
- * A person suggested, with the reason why (§11.4: « Suggéré parce que… »). The reason shows on
+ * A person suggested, with the reason why (§11.4), neutral and without repeating the name above
+ * it (« Propose du mentorat · secteur commun : Énergie »), then its actions. The reason shows on
  * two lines at least, three at most, and whole while the pointer is over the suggestion or the
  * focus in it; it is never cut to one line, and the whole text stays in the page.
  */
-export function SuggestionItem({ person, reason, className }: SuggestionItemProps) {
+export function SuggestionItem({ person, reason, actions, className }: SuggestionItemProps) {
   return (
     <li className={cn('group flex items-start gap-3', className)}>
       <Avatar name={person.title} src={person.imageUrl} size="sm" decorative />
@@ -35,6 +39,7 @@ export function SuggestionItem({ person, reason, className }: SuggestionItemProp
         <p className="line-clamp-3 text-xs text-pretty text-muted group-focus-within:line-clamp-none group-hover:line-clamp-none">
           {reason}
         </p>
+        {actions ? <div className="pt-1.5">{actions}</div> : null}
       </div>
     </li>
   );

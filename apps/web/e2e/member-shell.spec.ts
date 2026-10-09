@@ -169,6 +169,23 @@ test.describe('member shell', () => {
     }
   });
 
+  test('acts on a suggestion: connect, not interested, then undo (A14)', async ({ page }) => {
+    const api = await playwrightRequest.newContext({ baseURL: API_ORIGIN });
+    await signIn(page, AISSATOU);
+    await page.goto('/fr/feed');
+    await page.waitForLoadState('networkidle');
+    const column = page.getByRole('complementary', { name: 'Personnes pertinentes pour vous' });
+    await column.getByRole('button', { name: 'Se connecter avec Ifeoma Okafor' }).click();
+    await expect(column.getByText('Demande envoyée')).toBeVisible();
+    await column.getByRole('button', { name: 'Pas intéressé par Amina Sow' }).click();
+    await expect(column.getByText('Amina Sow')).toHaveCount(0);
+    await page.getByRole('button', { name: 'Annuler' }).click();
+    await expect(column.getByText('Amina Sow')).toBeVisible();
+    await expect
+      .poll(async () => (await stub(api).writes()).map((write) => write.route))
+      .toEqual(['connection-request', 'dismiss', 'undo-dismiss']);
+  });
+
   test('keeps an action made offline and sends it once when back online', async ({
     page,
     context,

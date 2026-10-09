@@ -901,5 +901,20 @@
       "body": "Activez la double authentification dans vos paramètres de sécurité, puis recommencez.",
       "action": "Ouvrir la sécurité"
     }
+  },
+  "discovery": {
+    "suggestion": {
+      "connect": "Se connecter",
+      "connectWith": "Se connecter avec {{name}}",
+      "follow": "Suivre",
+      "followName": "Suivre {{name}}",
+      "sending": "Envoi en cours",
+      "requested": "Demande envoyée",
+      "following": "Suivi",
+      "dismiss": "Pas intéressé",
+      "dismissName": "Pas intéressé par {{name}}",
+      "dismissed": "Suggestion masquée.",
+      "undo": "Annuler"
+    }
   }
 }

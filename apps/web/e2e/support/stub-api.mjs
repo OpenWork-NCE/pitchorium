@@ -410,6 +410,20 @@ const routes = {
     io.emit(event, payload);
     return { status: 200, body: { emitted: event, sockets } };
   },
+  'POST /v1/network/connection-requests': async (request) => {
+    const email = sessionOf(request);
+    if (!email) return problem(401, 'UNAUTHENTICATED');
+    const { handle } = await readJson(request);
+    state.writes.push({ route: 'connection-request', email, handle, at: new Date().toISOString() });
+    return { status: 201, body: { id: `request-${handle}`, status: 'pending' } };
+  },
+  'POST /v1/discovery/dismissals': async (request) => {
+    const email = sessionOf(request);
+    if (!email) return problem(401, 'UNAUTHENTICATED');
+    const { kind, key } = await readJson(request);
+    state.writes.push({ route: 'dismiss', email, kind, key, at: new Date().toISOString() });
+    return { status: 204, body: null };
+  },
   'GET /__test/writes': () => ({ status: 200, body: state.writes }),
   'POST /__test/reset': () => {
     state = fresh();
@@ -461,6 +475,14 @@ const server = createServer(async (request, response) => {
     return;
   }
   const prerequisite = /^\/v1\/me\/prerequisites\/([\w.-]+)$/.exec(path);
+  // Undo of a « Pas intéressé » (`DELETE /v1/discovery/dismissals/{kind}/{key}`).
+  const undo = /^\/v1\/discovery\/dismissals\/(\w+)\/([\w-]+)$/.exec(path);
+  if (undo && request.method === 'DELETE') {
+    state.writes.push({ route: 'undo-dismiss', kind: undo[1], key: undo[2] });
+    response.writeHead(204, cors);
+    response.end();
+    return;
+  }
   const handler = routes[`${request.method} ${path}`];
   const read = request.method === 'GET' ? resource(request, path) : reaction(request, path);
   const result = prerequisite
@@ -474,7 +496,7 @@ const server = createServer(async (request, response) => {
     ...cors,
     ...result.headers,
   });
-  response.end(JSON.stringify(result.body));
+  response.end(result.status === 204 ? undefined : JSON.stringify(result.body));
 });
 
 io = new Server(server, { cors: { origin, credentials: true }, transports: ['websocket'] });
