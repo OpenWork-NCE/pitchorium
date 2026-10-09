@@ -122,6 +122,8 @@ test.describe('authentication', { tag: '@critical' }, () => {
   });
 
   test('sessions: one revoked from another browser is signed out', async ({ page, browser }) => {
+    // The revoked browser still signals the views of its feed once: refused, as it should be.
+    allowConsole(/status of 401 \(Unauthorized\) \(\S+\/v1\/posts\/views/);
     const email = await onboardedMember(page, 'sessions');
     const other = await browser.newContext();
     const second = await other.newPage();
