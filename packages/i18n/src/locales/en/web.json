@@ -505,7 +505,6 @@
       "label": "Images of the post",
       "open": "Enlarge image {{index}} of {{count}}",
       "more": "+{{count}}",
-      "moreLabel": "and {{count}} more images",
       "noAlt": "Image without description"
     },
     "viewer": {

@@ -505,7 +505,6 @@
       "label": "Images de la publication",
       "open": "Agrandir l’image {{index}} sur {{count}}",
       "more": "+{{count}}",
-      "moreLabel": "et {{count}} autres images",
       "noAlt": "Image sans description"
     },
     "viewer": {
