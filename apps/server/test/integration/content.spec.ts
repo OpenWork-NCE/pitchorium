@@ -481,6 +481,37 @@ describe('content', () => {
     expect((await feedOf(awa)).items.every((item) => item.type === 'post')).toBe(true);
   });
 
+  it('counts the newer publications of the network after the head of the first page', async () => {
+    await kofi.agent.put('/v1/network/follows/member/ama-owusu').expect(200);
+    await publish(ama, { text: 'Déjà lue' });
+    const first = await feedOf(kofi);
+    expect(first.head).toEqual(expect.any(String));
+    const newer = async () =>
+      (
+        await kofi.agent
+          .get('/v1/feed/newer')
+          .query({ head: first.head ?? '' })
+          .expect(200)
+      ).body as { count: number; capped: boolean };
+    expect(await newer()).toEqual({ count: 0, capped: false });
+
+    await publish(ama, { text: 'Nouvelle publication' });
+    await publish(ama, { text: 'Une autre' });
+    // Reserved to her connections: Kofi only follows her, it is not his to see.
+    await publish(ama, { text: 'Entre nous', visibility: 'connections' });
+    // The reader's own publications appear as they publish: never counted.
+    await publish(kofi, { text: 'La mienne' });
+    expect(await newer()).toEqual({ count: 2, capped: false });
+
+    for (let index = 0; index < 20; index += 1) await publish(ama, { text: `Série ${index}` });
+    expect(await newer()).toEqual({ count: 20, capped: true });
+
+    // Without any item, the head is the time of the reading.
+    const empty = await feedOf(awa);
+    expect(empty.head).toEqual(expect.any(String));
+    await awa.agent.get('/v1/feed/newer').query({ head: 'not a cursor' }).expect(400);
+  });
+
   it('counts the publications a member saw, once a day, and consolidates them for the author', async () => {
     await kofi.agent.put('/v1/network/follows/member/ama-owusu').expect(200);
     const post = await publish(ama, { text: 'Combien de vues ?' });

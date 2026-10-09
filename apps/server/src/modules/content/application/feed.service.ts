@@ -1,13 +1,16 @@
 import { Inject, Injectable } from '@nestjs/common';
 import {
   type CursorPageQuery,
+  FEED_NEWER_CAP,
   FEED_SCHEMA_VERSION,
+  type FeedNewer,
   type FeedItem,
   type FeedPage,
   type FeedSuggestion,
 } from '@pitchorium/contracts';
 import { API_CONFIG, type ApiConfig } from '../../../platform/config';
 import {
+  Clock,
   decodeCursor,
   encodeCursor,
   encodeKeyset,
@@ -31,6 +34,9 @@ export const FEED_SUGGESTIONS_MAX = 10;
 const newestFirst = (a: FeedEntry, b: FeedEntry) =>
   b.createdAt.getTime() - a.createdAt.getTime() || (a.id < b.id ? 1 : a.id > b.id ? -1 : 0);
 
+/** Key of a head without any item: every publication after its date is newer. */
+const NO_ITEM_KEY = '00000000-0000-0000-0000-000000000000';
+
 /**
  * Feed of a member (§10.3, ADR 0032): fan-out on read of the publications and reposts of the
  * followed members and organizations and of the member, merged with the updates of the
@@ -48,9 +54,25 @@ export class FeedService {
     private readonly network: NetworkFacade,
     private readonly projects: ProjectLinkRegistry,
     private readonly sources: FeedSourcesRegistry,
+    private readonly clock: Clock,
   ) {}
 
-  async feed(viewerId: string, page: CursorPageQuery): Promise<FeedPage> {
+  /**
+   * Publications of the network newer than the head of the first page the reader got, by
+   * others than the reader (theirs appear as they publish): a light count, for the pill of
+   * the new publications (ADR 0117). Project updates and events arrive at the next reading.
+   */
+  async newer(viewerId: string, head: string): Promise<FeedNewer> {
+    const since = keysetFrom(decodeCursor(head));
+    const count = await this.content.countNewerNetworkFeed(
+      await this.networkQuery(viewerId),
+      since,
+      FEED_NEWER_CAP + 1,
+    );
+    return { count: Math.min(count, FEED_NEWER_CAP), capped: count > FEED_NEWER_CAP };
+  }
+
+  private async networkQuery(viewerId: string): Promise<NetworkFeedQuery> {
     const [followed, organizations, connections, blocked] = await Promise.all([
       this.network.followedMemberIds(viewerId),
       this.network.followedIds(viewerId, ORGANIZATION_FOLLOW_TARGET),
@@ -58,13 +80,17 @@ export class FeedService {
       this.network.blockedUserIds(viewerId),
     ]);
     const blockedSet = new Set(blocked);
-    const query: NetworkFeedQuery = {
+    return {
       viewerId,
       memberAuthorIds: [...new Set([viewerId, ...followed])].filter((id) => !blockedSet.has(id)),
       organizationIds: organizations,
       connectionAuthorIds: [viewerId, ...connections],
       blockedUserIds: blocked,
     };
+  }
+
+  async feed(viewerId: string, page: CursorPageQuery): Promise<FeedPage> {
+    const query = await this.networkQuery(viewerId);
     const cursor = page.cursor ? decodeCursor(page.cursor) : null;
     const phase: Phase =
       cursor?.['phase'] === 'featured' || cursor?.['phase'] === 'suggestion'
@@ -82,6 +108,8 @@ export class FeedService {
 
     const entries: Entry[] = [];
     let nextCursor: string | null = null;
+    // Head of the first page: its newest network item, or now when the network gives none.
+    let head: string | null = null;
     let featuredAfter: KeysetPosition | null = phase === 'featured' ? after : null;
     if (phase === 'network') {
       const [posts, updates, events] = await Promise.all([
@@ -93,6 +121,14 @@ export class FeedService {
       const eventIds = new Set(events.map((event) => event.id));
       const rows = [...posts, ...updates, ...events].sort(newestFirst);
       const shown = rows.slice(0, page.limit);
+      if (cursor === null) {
+        const newest = shown[0];
+        head = encodeKeyset(
+          newest
+            ? { at: newest.createdAt, key: newest.id }
+            : { at: this.clock.now(), key: NO_ITEM_KEY },
+        );
+      }
       entries.push(
         ...shown.map((row): Entry => ({
           id: row.id,
@@ -188,6 +224,6 @@ export class FeedService {
       })),
     );
     // A loaded page is not a seen one: the browser signals what was on screen (ADR 0116).
-    return { schemaVersion: FEED_SCHEMA_VERSION, items, nextCursor };
+    return { schemaVersion: FEED_SCHEMA_VERSION, items, nextCursor, head };
   }
 }

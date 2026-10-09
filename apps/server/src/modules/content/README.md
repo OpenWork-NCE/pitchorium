@@ -32,6 +32,7 @@ Fil d'actualité (cahier des charges §10.3) : publications, repartages, mention
 - Complément éditorial : si le réseau produit moins de `CONTENT_FEED_EDITORIAL_THRESHOLD` publications (10, provisoire), le fil continue avec les publications mises en avant par un `moderator` ou un `admin` (`public` ou `members`, hors réseau du lecteur), puis avec au plus `FEED_SUGGESTIONS_MAX` (10, provisoire) suggestions expliquées du module discovery (éléments `suggestion`, source enregistrée par `registerFeedSuggestionSource`, curseur par rang). Jamais de fil mondial anonyme.
 - Actualités des projets suivis : éléments `project_update`, fournis par le module projects (`registerProjectUpdatesFeedSource`) et fusionnés avec les publications du réseau, du plus récent au plus ancien.
 - Événements des organisateurs suivis (membres et organisations) : éléments `event`, fournis par le module events (`registerEventsFeedSource`) et fusionnés de même ; le constat « réseau trop maigre » les compte aussi.
+- Tête du fil (`head`, première page seulement) : position de l'élément le plus récent du réseau ; `GET /v1/feed/newer` compte les publications et repartages plus récents, lisibles, d'autres que le lecteur, 20 au plus (`capped` au-delà), sans charger leur contenu (ADR 0117).
 - Contrat versionné (`schemaVersion: 1`) et polymorphe : éléments `post`, `repost`, `featured`, `project_update`, `event` et `suggestion` (ajoutés sans changer de version : le client ignore un type inconnu) ; `project` reste réservé au module projects.
 
 ## Statistiques (ADR 0034)
@@ -44,7 +45,7 @@ Chaque publication vue par un autre membre ajoute le lecteur à un HyperLogLog R
 
 ## Routes
 
-- `GET /v1/feed` (`content.feed.read`)
+- `GET /v1/feed` (`content.feed.read`), `GET /v1/feed/newer?head=` (`content.feed.read` : nombre de publications du réseau plus récentes que la tête de la première page, ADR 0117)
 - `POST /v1/posts` (`content.post.create`, `Idempotency-Key`), `GET /v1/posts/{postId}` (`content.post.read`), `GET /v1/public/posts/{postId}` (public, `Cache-Control: public, max-age=60`)
 - `PATCH /v1/posts/{postId}` (`content.post.update`), `DELETE /v1/posts/{postId}` (`content.post.delete`) : auteur (`PostResolver` ; une publication que le membre ne peut pas lire répond `404`, comme une absente, `test/integration/idor.spec.ts`)
 - `POST /v1/posts/{postId}/reposts` (`content.post.repost`, `Idempotency-Key`)

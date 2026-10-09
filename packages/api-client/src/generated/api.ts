@@ -139,6 +139,7 @@ import type {
   ExportDtoOutput,
   ExpressInterestDto,
   FailedJobListDtoOutput,
+  FeedNewerDtoOutput,
   FeedPageDtoOutput,
   FlagDtoOutput,
   FlagListDtoOutput,
@@ -226,6 +227,7 @@ import type {
   PostDtoOutput,
   PostPageDtoOutput,
   PostStatsDtoOutput,
+  PostsControllerNewerParams,
   PostsControllerReadParams,
   PostsControllerSavedParams,
   PrefillDtoOutput,
@@ -14113,6 +14115,152 @@ export function usePostsControllerRead<
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
   const queryOptions = getPostsControllerReadQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getPostsControllerNewerUrl = (params: PostsControllerNewerParams) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/v1/feed/newer?${stringifiedParams}` : `/v1/feed/newer`;
+};
+
+/**
+ * Action `content.feed.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Newer
+ */
+export const postsControllerNewer = async (
+  params: PostsControllerNewerParams,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<FeedNewerDtoOutput> => {
+  return apiFetch<FeedNewerDtoOutput>(getPostsControllerNewerUrl(params), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getPostsControllerNewerQueryKey = (params?: PostsControllerNewerParams) => {
+  return [`/v1/feed/newer`, ...(params ? [params] : [])] as const;
+};
+
+export const getPostsControllerNewerQueryOptions = <
+  TData = Awaited<ReturnType<typeof postsControllerNewer>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params: PostsControllerNewerParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof postsControllerNewer>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getPostsControllerNewerQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof postsControllerNewer>>> = ({ signal }) =>
+    postsControllerNewer(params, { signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof postsControllerNewer>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type PostsControllerNewerQueryResult = NonNullable<
+  Awaited<ReturnType<typeof postsControllerNewer>>
+>;
+export type PostsControllerNewerQueryError = ErrorType<ProblemDetails>;
+
+export function usePostsControllerNewer<
+  TData = Awaited<ReturnType<typeof postsControllerNewer>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params: PostsControllerNewerParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof postsControllerNewer>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof postsControllerNewer>>,
+          TError,
+          Awaited<ReturnType<typeof postsControllerNewer>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function usePostsControllerNewer<
+  TData = Awaited<ReturnType<typeof postsControllerNewer>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params: PostsControllerNewerParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof postsControllerNewer>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof postsControllerNewer>>,
+          TError,
+          Awaited<ReturnType<typeof postsControllerNewer>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function usePostsControllerNewer<
+  TData = Awaited<ReturnType<typeof postsControllerNewer>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params: PostsControllerNewerParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof postsControllerNewer>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Newer
+ */
+
+export function usePostsControllerNewer<
+  TData = Awaited<ReturnType<typeof postsControllerNewer>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params: PostsControllerNewerParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof postsControllerNewer>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getPostsControllerNewerQueryOptions(params, options);
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>;

@@ -19,6 +19,9 @@ import {
   createRepostRequestSchema,
   type CursorPage,
   cursorPageQuerySchema,
+  type FeedNewer,
+  feedNewerQuerySchema,
+  feedNewerSchema,
   type FeedPage,
   feedPageSchema,
   type Post,
@@ -45,6 +48,8 @@ import { PostResolver } from './content.resolvers';
 
 class PostDto extends createZodDto(postSchema) {}
 class FeedPageDto extends createZodDto(feedPageSchema) {}
+class FeedNewerDto extends createZodDto(feedNewerSchema) {}
+class FeedNewerQueryDto extends createZodDto(feedNewerQuerySchema) {}
 class SavedPostPageDto extends createZodDto(savedPostPageSchema) {}
 class PostStatsDto extends createZodDto(postStatsSchema) {}
 class ReactionSummaryDto extends createZodDto(reactionSummarySchema) {}
@@ -79,6 +84,21 @@ export class PostsController {
   @ApiOkResponse({ type: FeedPageDto.Output })
   read(@CurrentPrincipal() principal: Principal, @Query() query: PageQueryDto): Promise<FeedPage> {
     return this.feed.feed(principal.userId, query);
+  }
+
+  /**
+   * Publications of the network newer than the head of the first page (ADR 0117): a count,
+   * nothing else, for the pill of the new publications.
+   */
+  @Get('feed/newer')
+  @RequireAction('content.feed.read')
+  @ZodSerializerDto(FeedNewerDto)
+  @ApiOkResponse({ type: FeedNewerDto.Output })
+  newer(
+    @CurrentPrincipal() principal: Principal,
+    @Query() query: FeedNewerQueryDto,
+  ): Promise<FeedNewer> {
+    return this.feed.newer(principal.userId, query.head);
   }
 
   @HttpPost('posts')

@@ -4448,6 +4448,17 @@ export interface FeedPageDtoOutput {
   items: FeedPageDtoOutputItemsItem[];
   /** @nullable */
   nextCursor: string | null;
+  /** @nullable */
+  head: string | null;
+}
+
+export interface FeedNewerDtoOutput {
+  /**
+   * @minimum 0
+   * @maximum 20
+   */
+  count: number;
+  capped: boolean;
 }
 
 export type CreatePostDtoVisibility =
@@ -16317,6 +16328,14 @@ export type PostsControllerReadParams = {
    * @maximum 100
    */
   limit?: number;
+};
+
+export type PostsControllerNewerParams = {
+  /**
+   * @minLength 1
+   * @maxLength 512
+   */
+  head: string;
 };
 
 export type PostsControllerSavedParams = {

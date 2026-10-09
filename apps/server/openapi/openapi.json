@@ -9792,6 +9792,101 @@
         "x-access": "content.feed.read"
       }
     },
+    "/v1/feed/newer": {
+      "get": {
+        "operationId": "PostsController_newer",
+        "parameters": [
+          {
+            "name": "head",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "minLength": 1,
+              "maxLength": 512,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeedNewerDto_Output"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error (RFC 9457 problem details)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "VALIDATION_FAILED": {
+                    "$ref": "#/components/examples/VALIDATION_FAILED"
+                  },
+                  "UNAUTHENTICATED": {
+                    "$ref": "#/components/examples/UNAUTHENTICATED"
+                  },
+                  "FORBIDDEN": {
+                    "$ref": "#/components/examples/FORBIDDEN"
+                  },
+                  "ACCESS_ORIGIN_NOT_ALLOWED": {
+                    "$ref": "#/components/examples/ACCESS_ORIGIN_NOT_ALLOWED"
+                  },
+                  "ACCESS_PREREQUISITES_MISSING": {
+                    "$ref": "#/components/examples/ACCESS_PREREQUISITES_MISSING"
+                  },
+                  "ACCESS_ACCOUNT_SUSPENDED": {
+                    "$ref": "#/components/examples/ACCESS_ACCOUNT_SUSPENDED"
+                  },
+                  "RATE_LIMITED": {
+                    "$ref": "#/components/examples/RATE_LIMITED"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "tags": [
+          "content"
+        ],
+        "summary": "Newer",
+        "description": "Action `content.feed.read` (session cookie).\n\nErrors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.",
+        "x-error-codes": [
+          "VALIDATION_FAILED",
+          "UNAUTHENTICATED",
+          "FORBIDDEN",
+          "ACCESS_ORIGIN_NOT_ALLOWED",
+          "ACCESS_PREREQUISITES_MISSING",
+          "ACCESS_ACCOUNT_SUSPENDED",
+          "RATE_LIMITED",
+          "CONTENT_POST_NOT_FOUND",
+          "CONTENT_COMMENT_NOT_FOUND",
+          "CONTENT_POST_EMPTY",
+          "CONTENT_MEDIA_COMBINATION",
+          "CONTENT_MEDIA_NOT_IN_POST",
+          "CONTENT_PUBLIC_VISIBILITY_NOT_ALLOWED",
+          "CONTENT_VISIBILITY_NOT_ALLOWED",
+          "CONTENT_REPOST_NOT_ALLOWED",
+          "CONTENT_PROJECT_NOT_FOUND",
+          "CONTENT_MENTION_NOT_ALLOWED",
+          "CONTENT_COMMENTS_DISABLED",
+          "CONTENT_REPLY_DEPTH",
+          "CONTENT_ORGANIZATION_ROLE_REQUIRED"
+        ],
+        "x-access": "content.feed.read"
+      }
+    },
     "/v1/posts": {
       "post": {
         "operationId": "PostsController_create",
@@ -44992,12 +45087,37 @@
               "string",
               "null"
             ]
+          },
+          "head": {
+            "type": [
+              "string",
+              "null"
+            ]
           }
         },
         "required": [
           "schemaVersion",
           "items",
-          "nextCursor"
+          "nextCursor",
+          "head"
+        ],
+        "additionalProperties": false
+      },
+      "FeedNewerDto_Output": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 20
+          },
+          "capped": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "count",
+          "capped"
         ],
         "additionalProperties": false
       },

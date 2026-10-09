@@ -223,6 +223,23 @@ export const feedPageSchema = z.object({
   schemaVersion: z.literal(FEED_SCHEMA_VERSION),
   items: z.array(feedItemSchema),
   nextCursor: z.string().nullable(),
+  /**
+   * Position of the newest item of the network on the first page (opaque), for
+   * GET /v1/feed/newer; null on the next pages.
+   */
+  head: z.string().nullable(),
+});
+
+/** Newer publications counted at most: the interface says « 20+ ». */
+export const FEED_NEWER_CAP = 20;
+
+export const feedNewerQuerySchema = z.object({ head: z.string().min(1).max(512) });
+
+/** Publications of the network newer than the head of the feed, by others than the reader. */
+export const feedNewerSchema = z.object({
+  count: z.number().int().min(0).max(FEED_NEWER_CAP),
+  /** More than FEED_NEWER_CAP. */
+  capped: z.boolean(),
 });
 
 export const createCommentRequestSchema = z.object({
@@ -294,6 +311,7 @@ export type EmbeddedPost = z.infer<typeof embeddedPostSchema>;
 export type Post = z.infer<typeof postSchema>;
 export type FeedItem = z.infer<typeof feedItemSchema>;
 export type FeedPage = z.infer<typeof feedPageSchema>;
+export type FeedNewer = z.infer<typeof feedNewerSchema>;
 export type CreateCommentRequest = z.infer<typeof createCommentRequestSchema>;
 export type Comment = z.infer<typeof commentSchema>;
 export type SavedPost = z.infer<typeof savedPostSchema>;

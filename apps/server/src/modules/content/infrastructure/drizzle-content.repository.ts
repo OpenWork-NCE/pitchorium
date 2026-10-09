@@ -227,6 +227,45 @@ export class DrizzleContentRepository extends ContentRepository {
     return (await this.networkFeed(query, null, cap)).length;
   }
 
+  /**
+   * The same fan-out read forward from a position (GET /v1/feed/newer): each followed author
+   * costs at most `cap` entries of its partial index, nothing is loaded but identifiers.
+   */
+  async countNewerNetworkFeed(
+    query: NetworkFeedQuery,
+    since: KeysetPosition,
+    cap: number,
+  ): Promise<number> {
+    const newer = sql`(p.created_at, p.id) > (${since.at}, ${since.key}::uuid) and p.author_id <> ${query.viewerId}`;
+    const branches: SQL[] = [];
+    const others = query.memberAuthorIds.filter((id) => id !== query.viewerId);
+    if (others.length > 0) {
+      branches.push(sql`(select p.id from unnest(${uuidArray(others)}) as author(id)
+        cross join lateral (
+          select p.id from ${contentPosts} p
+          where p.author_id = author.id and p.deleted_at is null and p.organization_id is null
+            and ${this.readable(query, null)} and ${newer}
+          limit ${cap}
+        ) p)`);
+    }
+    if (query.organizationIds.length > 0) {
+      branches.push(sql`(select p.id from unnest(${uuidArray(query.organizationIds)}) as organization(id)
+        cross join lateral (
+          select p.id from ${contentPosts} p
+          where p.organization_id = organization.id and p.deleted_at is null
+            and p.organization_id is not null
+            and ${this.readable(query, null)} and ${newer}
+          limit ${cap}
+        ) p)`);
+    }
+    if (branches.length === 0) return 0;
+    const result = await this.db.execute<{ total: number | string }>(sql`
+      select count(*) as total from (
+        select id from (${sql.join(branches, sql` union all `)}) newer limit ${cap}
+      ) capped`);
+    return Number(result.rows[0]?.total ?? 0);
+  }
+
   async featuredPosts(limit: number): Promise<{ id: string; featuredAt: Date | null }[]> {
     return this.db
       .select({ id: contentPosts.id, featuredAt: contentPosts.featuredAt })

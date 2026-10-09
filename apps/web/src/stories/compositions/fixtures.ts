@@ -176,6 +176,7 @@ export const feedPage: FeedPage = {
   schemaVersion: 1,
   items: feed.map((post) => ({ type: 'post', id: post.id, post })),
   nextCursor: null,
+  head: null,
 };
 
 /** People suggested with their reasons, in the keys of the discovery namespace. */
