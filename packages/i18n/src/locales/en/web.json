@@ -407,8 +407,8 @@
   },
   "banners": {
     "suspended": {
-      "body": "Your account is suspended: you can read, but neither publish nor write. The decision and how to appeal are in your settings.",
-      "action": "See the decision"
+      "body": "Your account is suspended: you can read, but neither post nor write. The reasoned decision and how to appeal were sent to you by email and in your notifications.",
+      "action": "See my notifications"
     },
     "legal": {
       "body": "The terms of use or the privacy policy have changed. Accept them to keep publishing and contributing.",

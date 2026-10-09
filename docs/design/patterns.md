@@ -107,4 +107,4 @@ Comment assembler les composants (`components.md`) pour les situations récurren
 
 ## Comptes et bannières
 
-Bannières de l'espace membre, de la plus grave à la moins grave, une seule action chacune : compte suspendu (vers la décision et l'appel), conditions à accepter (vers l'étape de l'onboarding, puis retour à la page), adresse email à vérifier (renvoi sur place), double authentification exigée par un rôle, prérequis manquants, hors ligne. Elles lisent `GET /v1/me` et l'état du réseau ; aucune ne bloque la navigation.
+Bannières de l'espace membre, de la plus grave à la moins grave, une seule action chacune : compte suspendu (vers la notification de la décision ; le lien vers la page de l'appel n'apparaîtra qu'avec elle, PROMPT FRONT 8), conditions à accepter (vers l'étape de l'onboarding, puis retour à la page), adresse email à vérifier (renvoi sur place), double authentification exigée par un rôle, prérequis manquants, hors ligne. Elles lisent `GET /v1/me` et l'état du réseau ; aucune ne bloque la navigation.

@@ -407,8 +407,8 @@
   },
   "banners": {
     "suspended": {
-      "body": "Votre compte est suspendu : vous pouvez lire, mais ni publier ni écrire. La décision et la voie d’appel sont dans vos paramètres.",
-      "action": "Voir la décision"
+      "body": "Votre compte est suspendu : vous pouvez lire, mais ni publier ni écrire. La décision motivée et la voie d’appel vous ont été envoyées par email et dans vos notifications.",
+      "action": "Voir mes notifications"
     },
     "legal": {
       "body": "Les conditions d’utilisation ou la politique de confidentialité ont changé. Acceptez-les pour continuer à publier et à contribuer.",

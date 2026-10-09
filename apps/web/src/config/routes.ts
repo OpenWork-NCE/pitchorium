@@ -40,8 +40,6 @@ export const routes = {
   settingsAccount: '/settings/account',
   settingsSecurity: '/settings/security',
   settingsPreferences: '/settings/preferences',
-  /** Decision and appeal of a moderated account (page of the PROMPT FRONT 8). */
-  moderation: '/settings/moderation',
   // Pages of a resource, one address for visitors and members (ADR 0101), the showcase included.
   project: (slug: string) => `/projects/${encodeURIComponent(slug)}`,
   member: (handle: string) => `/members/${encodeURIComponent(handle)}`,
