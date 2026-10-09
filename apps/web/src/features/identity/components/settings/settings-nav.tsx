@@ -6,13 +6,13 @@ import { Link, usePathname } from '@/i18n/navigation';
 import { cn } from '@/lib/cn';
 
 /**
- * Sections of the settings, one address each. The sections of the next prompts (privacy and
- * network, payouts and KYC, notifications, personal data) appear only once delivered: no empty
- * page.
+ * Sections of the settings, one address each. The sections of the next prompts (payouts and KYC,
+ * notifications, personal data) appear only once delivered: no empty page.
  */
 export const SETTINGS_SECTIONS = [
   { id: 'account', href: routes.settingsAccount },
   { id: 'security', href: routes.settingsSecurity },
+  { id: 'privacy', href: routes.settingsPrivacy },
   { id: 'preferences', href: routes.settingsPreferences },
 ] as const;
 
