@@ -1,17 +1,22 @@
 import { defineConfig, devices } from '@playwright/test';
+import { ciOptions } from './e2e/support/ci-options';
 
 const PORT = 6106;
 
 /**
  * Captures of the reference compositions for the design review (docs/design/review), taken from
  * the static Storybook in the official Playwright image (scripts/review-captures.sh): the same
- * rendering as the reference screenshots of the end-to-end tests.
+ * rendering as the reference screenshots of the end-to-end tests. `review:captures` writes them
+ * (--update-snapshots=all); `review:check` compares them with the committed ones, with the
+ * tolerance of the end-to-end screenshots (level 3, docs/architecture/testing.md).
  */
 export default defineConfig({
   testDir: 'e2e/review',
   testMatch: '*.review.ts',
   fullyParallel: true,
-  reporter: 'list',
+  ...ciOptions,
+  snapshotPathTemplate: '{testDir}/../../../../docs/design/review/{arg}{ext}',
+  expect: { toHaveScreenshot: { maxDiffPixelRatio: 0.01 } },
   use: {
     baseURL: `http://localhost:${PORT}`,
     ...devices['Desktop Chrome'],

@@ -19,10 +19,13 @@ Fichiers `<composition>-<format>-<thème>.png` : format `desktop` (1280x800) ou 
 - `onboarding-profile` : dernière étape de l'onboarding, étapes en tête, barre de force du profil, photo par dépôt de fichier, nom, titre, pays, « Entrer dans Pitchorium » et « Passer ».
 - `settings-security` : paramètres de sécurité, mot de passe (fermeture des autres sessions annoncée), double authentification, sessions actives avec cet appareil marqué et révocation.
 
-## Régénérer
+## Régénérer et vérifier
 
 ```sh
-pnpm --filter @pitchorium/web review:captures
+pnpm --filter @pitchorium/web review:captures   # réécrit les captures
+pnpm --filter @pitchorium/web review:check      # les compare aux captures commitées
 ```
+
+`review:check` échoue sur un écart de plus de 1 % des pixels (tolérance des captures de bout en bout), après deux captures consécutives identiques (le fil virtualisé mesure ses entrées) ; il tourne au niveau 3 et à chaque push qui touche les composants, les stories, les styles ou les tokens (`docs/architecture/testing.md`). `REVIEW_SKIP_BUILD=1` réutilise `storybook-static`. Après un changement visuel voulu, régénérer et commiter les captures.
 
 Le script construit Storybook, le sert sur le port 6106 (refus si le port est pris), puis prend les captures dans l'image Playwright officielle (Docker requis), comme les captures de référence des tests de bout en bout. Chaque capture attend la fin des chargements différés (réseau au repos, plus aucun `aria-busy` ni `data-loading`, sauf la composition de l'état de chargement) et vérifie : qu'aucun élément ne dépasse l'un des quatre bords de la composition, sauf dans un conteneur qui défile ; que rien n'est coupé par un conteneur qui masque son débordement sans défiler (images recadrées, textes tronqués exprès et éléments déplacés par une transformation exceptés) ; qu'il n'y a qu'un logo par écran (les marques `data-brand-mark` et les fonds du kit qui portent un logotype) ; que rien ne touche le bord d'une carte (`data-card` : 8 px de sa marge intérieure au moins restent libres).

@@ -1,4 +1,3 @@
-import { join } from 'node:path';
 import { expect, test } from '@playwright/test';
 
 /** The compositions of Storybook (src/stories/compositions), by their story id. */
@@ -34,8 +33,6 @@ const VIEWPORTS = [
   { name: 'desktop', width: 1280, height: 800 },
   { name: 'mobile', width: 390, height: 844 },
 ];
-
-const OUTPUT = join(import.meta.dirname, '../../../../docs/design/review');
 
 for (const id of COMPOSITIONS) {
   for (const viewport of VIEWPORTS) {
@@ -201,8 +198,9 @@ for (const id of COMPOSITIONS) {
           return [...outside, ...cut, ...logos, ...touching];
         });
         expect(problems).toEqual([]);
-        await page.screenshot({
-          path: join(OUTPUT, `${id}-${viewport.name}-${theme}.png`),
+        // Written by review:captures, compared by review:check (playwright.review.config.ts), once
+        // two consecutive screenshots are equal (the virtualized feed measures its entries).
+        await expect(page).toHaveScreenshot(`${id}-${viewport.name}-${theme}.png`, {
           fullPage: true,
         });
         await context.close();
