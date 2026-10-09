@@ -1,4 +1,4 @@
-import { expect, type Page } from '@playwright/test';
+import { type APIResponse, expect, type Page } from '@playwright/test';
 
 export const MAILPIT_URL = process.env.MAILPIT_URL ?? 'http://localhost:8025';
 export const PASSWORD = 'correct horse battery staple 2026';
@@ -63,9 +63,20 @@ export async function signUpAndVerify(
   await expect(page.getByRole('heading', { name: 'Adresse vérifiée' })).toBeVisible();
 }
 
-/** Waits until the client components of the page answer (hydrated), before acting on them. */
+/**
+ * Waits until the client components of the page answer (hydrated), before acting on them: React
+ * has taken over the document, then the network calms down, three seconds at most, since the
+ * frame of Cloudflare Turnstile never leaves it idle.
+ */
 export async function hydrated(page: Page): Promise<void> {
-  await page.waitForLoadState('networkidle');
+  await page.waitForFunction(() => {
+    const node = document.querySelector('a[href="#main"]') ?? document.body.firstElementChild;
+    return node !== null && Object.keys(node).some((key) => key.startsWith('__reactFiber'));
+  });
+  await Promise.race([
+    page.waitForLoadState('networkidle').catch(() => undefined),
+    page.waitForTimeout(3_000),
+  ]);
 }
 
 /** Accepts the three declarations of the terms step. */
@@ -131,4 +142,132 @@ export async function signInWithPassword(
   await page.getByLabel('Adresse email').fill(email);
   await page.getByRole('textbox', { name: 'Mot de passe', exact: true }).fill(password);
   await page.getByRole('button', { name: 'Se connecter' }).click();
+}
+
+/** Origins of the run (scripts/e2e-live.sh). */
+export const WEB_URL = process.env.LIVE_WEB_URL ?? 'http://localhost:3200';
+export const API_URL = process.env.LIVE_API_URL ?? 'http://localhost:3000';
+export const FAKE_OAUTH_URL = process.env.FAKE_OAUTH_URL ?? 'http://127.0.0.1:3400';
+
+/**
+ * Token of a challenge passed with the test keys of Cloudflare Turnstile: the always-pass secret
+ * key of the live environment accepts it (ADR 0103), for the members a journey creates through
+ * the api rather than through the screens.
+ */
+const TEST_CAPTCHA_TOKEN = 'XXXX.DUMMY.TOKEN.XXXX';
+
+/** A call to the api with the cookies of the page, from the trusted origin of the web app. */
+export async function api(
+  page: Page,
+  method: string,
+  path: string,
+  data?: unknown,
+): Promise<APIResponse> {
+  return page.request.fetch(`${API_URL}${path}`, {
+    method,
+    ...(data === undefined ? {} : { data }),
+    maxRedirects: 0,
+    headers: {
+      origin: WEB_URL,
+      'x-captcha-response': TEST_CAPTCHA_TOKEN,
+      ...(method === 'GET' ? {} : { 'idempotency-key': crypto.randomUUID() }),
+    },
+  });
+}
+
+/** Expects a 2xx answer, with its body in the message otherwise. */
+export async function ok(response: Promise<APIResponse> | APIResponse): Promise<APIResponse> {
+  const answer = await response;
+  expect(answer.status(), `${answer.url()}: ${await answer.text()}`).toBeLessThan(300);
+  return answer;
+}
+
+export interface LiveMember {
+  email: string;
+  name: string;
+  handle: string;
+}
+
+interface MemberOptions {
+  name?: string;
+  /** Title and country: the minimum profile (profile.minimum, ADR 0109); none when false. */
+  profile?: { headline: string; countryCode: string } | false;
+  /** Verified email (default) or not. */
+  verified?: boolean;
+}
+
+/**
+ * A new member created through the api and signed in in the browser context of the page:
+ * verified email, terms accepted, minimum profile filled, unless the journey asks otherwise.
+ */
+export async function apiMember(
+  page: Page,
+  label: string,
+  {
+    name = 'Awa Diallo',
+    profile = { headline: 'Fondatrice', countryCode: 'SN' },
+    verified = true,
+  }: MemberOptions = {},
+): Promise<LiveMember> {
+  const email = freshEmail(label);
+  await ok(
+    api(page, 'POST', '/v1/auth/sign-up/email', {
+      email,
+      password: PASSWORD,
+      name,
+      callbackURL: `${WEB_URL}/fr/continue`,
+    }),
+  );
+  if (verified) {
+    const link = await linkFromInbox(email, /http[^\s"<>]*\/v1\/auth\/verify-email[^\s"<>]*/);
+    // The verification signs in (a session cookie of the api for this browser context).
+    await page.request.get(link, { maxRedirects: 0 });
+  } else {
+    await ok(api(page, 'POST', '/v1/auth/sign-in/email', { email, password: PASSWORD }));
+  }
+  const legal = (await (await ok(api(page, 'GET', '/v1/legal-documents/current'))).json()) as {
+    termsVersion: string;
+    privacyVersion: string;
+  };
+  await ok(
+    api(page, 'POST', '/v1/me/legal-acceptances', {
+      termsVersion: legal.termsVersion,
+      privacyVersion: legal.privacyVersion,
+      adultDeclaration: true,
+    }),
+  );
+  if (profile) await ok(api(page, 'PATCH', '/v1/me/profile', profile));
+  const own = (await (await ok(api(page, 'GET', '/v1/me/profile'))).json()) as { handle: string };
+  return { email, name, handle: own.handle };
+}
+
+type Provider = 'google' | 'linkedin' | 'microsoft';
+
+const AUTHORIZE_URLS: Readonly<Record<Provider, RegExp>> = {
+  google: /^https:\/\/accounts\.google\.com\/o\/oauth2\/v2\/auth/,
+  linkedin: /^https:\/\/www\.linkedin\.com\/oauth\/v2\/authorization/,
+  microsoft: /^https:\/\/login\.microsoftonline\.com\/common\/oauth2\/v2\.0\/authorize/,
+};
+
+/**
+ * The consent of a provider, in the browser: its page is the fake providers' one, which consents
+ * at once for the identity announced here and sends the browser back to the api with a code.
+ */
+export async function consentAs(
+  page: Page,
+  provider: Provider,
+  identity: { subject: string; email: string; emailVerified: boolean; name: string },
+): Promise<void> {
+  const announced = await fetch(`${FAKE_OAUTH_URL}/__identity`, {
+    method: 'POST',
+    body: JSON.stringify({ provider, identity }),
+  });
+  expect(announced.status).toBe(204);
+  await page.context().route(AUTHORIZE_URLS[provider], (route) => {
+    const original = new URL(route.request().url());
+    return route.fulfill({
+      status: 302,
+      headers: { location: `${FAKE_OAUTH_URL}/${provider}/authorize${original.search}` },
+    });
+  });
 }
