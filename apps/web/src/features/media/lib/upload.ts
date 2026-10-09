@@ -1,12 +1,21 @@
 import {
+  ApiProblemError,
   mediaControllerConfirm,
   mediaControllerGet,
   mediaControllerRequestUpload,
 } from '@pitchorium/api-client';
 import type { MediaUsage } from '@pitchorium/contracts';
 
-const POLL_INTERVAL_MS = 1000;
-const POLL_ATTEMPTS = 90;
+/**
+ * The checks of the worker are polled at a growing interval (1 s, then up to 5 s), for two
+ * minutes at most: nine photos sent at once stay under the rate limit of the api (120 calls a
+ * minute), and a refusal for the limit only delays the next look.
+ */
+const POLL_FIRST_MS = 1000;
+const POLL_MAX_MS = 5000;
+const POLL_DEADLINE_MS = 120_000;
+
+const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 /** Where an upload stands: sending (with its share, 0 to 1), then the checks of the worker. */
 export type UploadStep = { step: 'sending'; progress: number } | { step: 'checking' };
@@ -68,11 +77,20 @@ export async function uploadMedia(
   );
   onStep({ step: 'checking' });
   await mediaControllerConfirm(ticket.media.id);
-  for (let attempt = 0; attempt < POLL_ATTEMPTS; attempt += 1) {
-    const media = await mediaControllerGet(ticket.media.id);
+  const deadline = Date.now() + POLL_DEADLINE_MS;
+  let delay = POLL_FIRST_MS;
+  while (Date.now() < deadline) {
+    await wait(delay);
+    delay = Math.min(POLL_MAX_MS, Math.round(delay * 1.5));
+    let media;
+    try {
+      media = await mediaControllerGet(ticket.media.id);
+    } catch (error) {
+      if (error instanceof ApiProblemError && error.problem.status === 429) continue;
+      throw error;
+    }
     if (media.status === 'ready') return media.id;
     if (media.status === 'rejected') throw new MediaRejectedError(media.rejectionReason);
-    await new Promise((resolve) => setTimeout(resolve, POLL_INTERVAL_MS));
   }
   throw new Error('processing timeout');
 }
