@@ -87,7 +87,7 @@ export function ConversationThread({
                         key={message.id}
                         className={cn(
                           'rounded-2xl px-4 py-2.5 text-sm text-pretty whitespace-pre-line',
-                          mine ? 'bg-accent text-on-accent' : 'bg-surface-sunken text-foreground',
+                          mine ? 'bg-accent text-on-accent' : 'bg-message-received text-foreground',
                           // The corner on the side of the author is tighter inside a group.
                           mine
                             ? cn(
