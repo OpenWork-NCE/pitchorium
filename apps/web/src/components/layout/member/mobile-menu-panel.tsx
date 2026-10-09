@@ -103,6 +103,11 @@ export default function MobileMenuPanel({
           </div>
           <div className="flex flex-wrap gap-2">
             <Button asChild variant="outline" size="sm">
+              <Link href={routes.saved} onClick={() => onOpenChange(false)}>
+                {t('saved')}
+              </Link>
+            </Button>
+            <Button asChild variant="outline" size="sm">
               <Link href={routes.settings} onClick={() => onOpenChange(false)}>
                 {t('settings')}
               </Link>
