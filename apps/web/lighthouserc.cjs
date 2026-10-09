@@ -34,6 +34,8 @@ module.exports = {
         ? [
             'http://localhost:3201/fr/members/aissatou-ba',
             'http://localhost:3201/fr/organizations/fondation-teranga',
+            // A public publication with five images (e2e/support/stub-content.mjs).
+            'http://localhost:3201/fr/posts/0192f4a0-2000-7000-8000-000000000004',
           ]
         : [
             'http://localhost:3201/fr',
@@ -97,7 +99,7 @@ module.exports = {
         },
         {
           // Public pages of resources read by a visitor (ADR 0101): indexed, SEO included.
-          matchingUrlPattern: 'localhost:3201/fr/(members|organizations)/[a-z0-9-]+$',
+          matchingUrlPattern: 'localhost:3201/fr/(members|organizations|posts)/[a-z0-9-]+$',
           assertions: { ...THRESHOLDS, 'categories:seo': ['error', { minScore: 1 }] },
         },
         {

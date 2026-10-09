@@ -159,6 +159,8 @@ const VIEW_PAGES = [
   '/fr/organizations/fondation-teranga',
   '/fr/projects',
   '/fr/projects/ferme-solaire-thies',
+  // A public publication of e2e/support/stub-content.mjs (five images).
+  '/fr/posts/0192f4a0-2000-7000-8000-000000000004',
 ];
 const MEMBER = 'kofi.mensah@demo.pitchorium.test';
 const ORIGIN = 'http://localhost:3201';
