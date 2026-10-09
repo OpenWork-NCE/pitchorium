@@ -1,7 +1,7 @@
 'use client';
 
 import type { OAuthProvider } from '@pitchorium/contracts';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Badge, Button, DescriptionList, Skeleton } from '@/components/ui';
@@ -10,14 +10,13 @@ import { authCall, useAuthFailureMessage } from '../../lib/auth-call';
 import { absoluteUrl } from '../auth/targets';
 import { useCurrentMember } from '../current-member';
 import { SettingsSection } from './settings-section';
+import { ACCOUNTS_KEY, useSignInMethods } from './sign-in-methods';
 
 interface LinkedAccount {
   id: string;
   providerId: string;
   accountId: string;
 }
-
-const ACCOUNTS_KEY = ['identity', 'accounts'] as const;
 
 /**
  * Account (§7): the email, the sign-in methods linked to it (link one more, unlink one; the last
@@ -72,15 +71,7 @@ function LinkedAccounts({ providers }: { providers: readonly OAuthProvider[] }) 
   const queryClient = useQueryClient();
   const [pending, setPending] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const accounts = useQuery({
-    queryKey: ACCOUNTS_KEY,
-    queryFn: async () => {
-      const { authClient } = await import('@/lib/auth/client');
-      const result = await authClient.listAccounts();
-      if (result.error) throw new Error(result.error.code ?? 'accounts');
-      return result.data;
-    },
-  });
+  const accounts = useSignInMethods();
   const linked = accounts.data ?? [];
   const last = linked.length <= 1;
 

@@ -736,6 +736,11 @@ function SessionsFixture() {
     const queryClient = new QueryClient({
       defaultOptions: { queries: { staleTime: Infinity, retry: false } },
     });
+    // A password account: the second factor is confirmed by the password.
+    queryClient.setQueryData(
+      ['identity', 'accounts'],
+      [{ id: 'account-1', providerId: 'credential', accountId: 'account-1', scopes: [] }],
+    );
     queryClient.setQueryData(['identity', 'sessions'], {
       currentToken: 'this-device',
       rows: [

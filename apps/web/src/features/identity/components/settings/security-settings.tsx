@@ -7,9 +7,10 @@ import {
 } from '@pitchorium/contracts';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Monitor, Smartphone, Tablet } from 'lucide-react';
-import { useFormatter, useTranslations } from 'next-intl';
+import { useFormatter, useLocale, useTranslations } from 'next-intl';
 import { lazy, Suspense, useState } from 'react';
 import {
+  Alert,
   Badge,
   Button,
   Callout,
@@ -25,13 +26,16 @@ import {
   Skeleton,
   useZodForm,
 } from '@/components/ui';
-import { useRouter } from '@/i18n/navigation';
-import { authCall, useAuthFailureMessage } from '../../lib/auth-call';
+import { routes } from '@/config/routes';
+import { Link, useRouter } from '@/i18n/navigation';
+import { withRedirect } from '@/lib/auth/redirect';
+import { type AuthFailure, authCall, useAuthFailureMessage } from '../../lib/auth-call';
 import { type DeviceKind, describeUserAgent } from '../../lib/user-agent';
 import { useCurrentMember } from '../current-member';
 import { useSignOut } from '../sign-out-button';
 
 import { SettingsSection } from './settings-section';
+import { useSignInMethods } from './sign-in-methods';
 
 /** The QR code (and its encoder) loads only when the second factor is being turned on. */
 const QrCode = lazy(() => import('./qr-code').then((module) => ({ default: module.QrCode })));
@@ -113,47 +117,78 @@ function PasswordSection() {
 
 type TwoFactorSetup = { totpURI: string; backupCodes: string[] };
 
+type TwoFactorStep = 'idle' | 'password' | 'scan' | 'codes' | 'disable';
+
 /**
- * Second factor (TOTP): the password confirms the change, then a QR code (and the key to type by
- * hand), a first code to confirm, and the backup codes to keep. Turning it off asks for the
- * password again.
+ * Second factor (TOTP), asked after every sign-in (ADR 0108): the password confirms the change
+ * when the account has one, a recent sign-in otherwise; then a QR code (and the key to type by
+ * hand), a first code to confirm, and the backup codes to keep. Turning it off is confirmed the
+ * same way.
  */
 function TwoFactorSection() {
   const t = useTranslations('web.settings.security.twoFactor');
   const member = useCurrentMember();
   const router = useRouter();
+  const locale = useLocale();
   const message = useAuthFailureMessage();
+  const methods = useSignInMethods();
   const [setup, setSetup] = useState<TwoFactorSetup | null>(null);
-  const [step, setStep] = useState<'idle' | 'password' | 'scan' | 'codes' | 'disable'>('idle');
+  const [step, setStep] = useState<TwoFactorStep>('idle');
+  const [stale, setStale] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const enabled = member.user.twoFactorEnabled;
+  // Until the methods are read, the password is asked: the api decides anyway.
+  const hasPassword = methods.data?.some((account) => account.providerId === 'credential') ?? true;
   const passwordForm = useZodForm(passwordConfirmationRequestSchema, {
     defaultValues: { password: '' },
   });
   const codeForm = useZodForm(totpCodeRequestSchema, { defaultValues: { code: '' } });
 
-  async function confirmPassword({ password }: { password: string }) {
-    const { authClient } = await import('@/lib/auth/client');
-    if (step === 'disable') {
-      const outcome = await authCall((fetchOptions) =>
-        authClient.twoFactor.disable({ password, fetchOptions }),
-      );
-      if (!outcome.ok) {
-        passwordForm.setError('password', { type: 'server', message: message(outcome.failure) });
-        return;
-      }
+  /** A refusal for an old session leads to a new sign-in, then back here. */
+  function failed(failure: AuthFailure, password: boolean) {
+    if (failure.code?.toUpperCase() === 'SESSION_NOT_FRESH') {
+      setStale(true);
       setStep('idle');
-      router.refresh();
-      return;
+    } else if (password) {
+      passwordForm.setError('password', { type: 'server', message: message(failure) });
+    } else {
+      setError(message(failure));
     }
+  }
+
+  async function turnOn(password?: string) {
+    setError(null);
+    setStale(false);
+    const { authClient } = await import('@/lib/auth/client');
     const outcome = await authCall<TwoFactorSetup>((fetchOptions) =>
-      authClient.twoFactor.enable({ password, fetchOptions }),
+      authClient.twoFactor.enable(password ? { password, fetchOptions } : { fetchOptions }),
     );
-    if (!outcome.ok) {
-      passwordForm.setError('password', { type: 'server', message: message(outcome.failure) });
-      return;
-    }
+    if (!outcome.ok) return failed(outcome.failure, password !== undefined);
     setSetup(outcome.data);
     setStep('scan');
+  }
+
+  async function turnOff(password?: string) {
+    setError(null);
+    setStale(false);
+    const { authClient } = await import('@/lib/auth/client');
+    const outcome = await authCall((fetchOptions) =>
+      authClient.twoFactor.disable(password ? { password, fetchOptions } : { fetchOptions }),
+    );
+    if (!outcome.ok) return failed(outcome.failure, password !== undefined);
+    setStep('idle');
+    router.refresh();
+  }
+
+  async function confirmPassword({ password }: { password: string }) {
+    await (step === 'disable' ? turnOff(password) : turnOn(password));
+  }
+
+  async function withoutPassword(action: () => Promise<void>) {
+    setBusy(true);
+    await action();
+    setBusy(false);
   }
 
   async function confirmCode({ code }: { code: string }) {
@@ -177,21 +212,42 @@ function TwoFactorSection() {
       <p className="flex items-center gap-2 text-sm">
         <Badge tone={enabled ? 'success' : 'neutral'}>{t(enabled ? 'on' : 'off')}</Badge>
       </p>
+      {stale ? (
+        <Alert
+          tone="info"
+          live="status"
+          title={t('stale.title')}
+          action={
+            <Button asChild size="sm" variant="outline">
+              <Link href={withRedirect(routes.signIn, `/${locale}${routes.settingsSecurity}`)}>
+                {t('stale.action')}
+              </Link>
+            </Button>
+          }
+        >
+          {t('stale.body')}
+        </Alert>
+      ) : null}
       {step === 'idle' ? (
-        <div>
+        <div className="grid justify-items-start gap-2">
+          {!hasPassword ? <p className="text-sm text-muted">{t('withoutPassword')}</p> : null}
           <Button
             variant={enabled ? 'outline' : 'primary'}
             className="h-auto min-h-11 py-2 whitespace-normal"
+            loading={busy}
+            loadingLabel={t('checking')}
             onClick={() => {
               passwordForm.reset();
-              setStep(enabled ? 'disable' : 'password');
+              if (enabled) setStep('disable');
+              else if (hasPassword) setStep('password');
+              else void withoutPassword(() => turnOn());
             }}
           >
             {t(enabled ? 'disable' : 'enable')}
           </Button>
         </div>
       ) : null}
-      {step === 'password' || step === 'disable' ? (
+      {(step === 'password' || step === 'disable') && hasPassword ? (
         <Form form={passwordForm} onSubmit={confirmPassword} aria-label={t('confirmPassword')}>
           <input type="text" name="username" autoComplete="username" hidden readOnly />
           <FormField
@@ -215,6 +271,29 @@ function TwoFactorSection() {
             </Button>
           </FormActions>
         </Form>
+      ) : null}
+      {step === 'disable' && !hasPassword ? (
+        <div className="grid gap-3">
+          <p className="text-sm">{t('disableQuestion')}</p>
+          <FormActions>
+            <Button
+              variant="danger"
+              loading={busy}
+              loadingLabel={t('checking')}
+              onClick={() => void withoutPassword(() => turnOff())}
+            >
+              {t('disableConfirm')}
+            </Button>
+            <Button type="button" variant="ghost" onClick={() => setStep('idle')}>
+              {t('cancel')}
+            </Button>
+          </FormActions>
+        </div>
+      ) : null}
+      {error ? (
+        <p role="alert" className="text-sm text-danger">
+          {error}
+        </p>
       ) : null}
       {step === 'scan' && setup ? (
         <div className="grid gap-4">
