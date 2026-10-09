@@ -19,6 +19,7 @@
     "messages": "Messages",
     "notifications": "Notifications",
     "profile": "Profile",
+    "organizations": "My organizations",
     "settings": "Settings",
     "followedProjects": "Followed projects",
     "publish": "Publish",
@@ -521,6 +522,174 @@
       "declining": "In progress",
       "accepted": "You are connected with {{name}}.",
       "declined": "Request ignored."
+    },
+    "relationship": {
+      "connect": "Connect",
+      "connectName": "Connect with {{name}}",
+      "pending": "Pending",
+      "pendingName": "Request sent to {{name}}, pending: withdraw it",
+      "connected": "Connected",
+      "connectedName": "Connected with {{name}}: remove the connection",
+      "accept": "Accept",
+      "acceptName": "Accept the request of {{name}}",
+      "accepting": "Accepting",
+      "accepted": "You are now connected with {{name}}.",
+      "decline": "Ignore",
+      "declineName": "Ignore the request of {{name}}",
+      "declining": "In progress",
+      "declined": "Request ignored.",
+      "follow": "Follow",
+      "unfollow": "Unfollow",
+      "followName": "Follow {{name}}",
+      "unfollowName": "Unfollow {{name}}",
+      "followed": "You follow {{name}}.",
+      "unfollowed": "You no longer follow {{name}}.",
+      "withdrawTitle": "Withdraw your request to {{name}}?",
+      "withdrawDescription": "The request leaves their invitations. You can send another one later.",
+      "withdraw": "Withdraw the request",
+      "withdrawn": "Request withdrawn.",
+      "removeTitle": "Remove the connection with {{name}}?",
+      "removeDescription": "You will no longer be connected with {{name}}, who is not told. The follows you chose stay; those born of the connection stop.",
+      "remove": "Remove the connection",
+      "removed": "You are no longer connected with {{name}}."
+    },
+    "connect": {
+      "title": "Connect with {{name}}",
+      "description": "A connection is a business relationship: {{name}} has to accept it.",
+      "note": "Note",
+      "noteHint": "Recall the context, for example “We met at…”. 300 characters at most.",
+      "send": "Send the request",
+      "sending": "Sending",
+      "sent": "Request sent to {{name}}.",
+      "cancel": "Cancel"
+    },
+    "menu": {
+      "more": "More actions for {{name}}",
+      "copy": "Copy the link of the profile",
+      "copied": "Link copied.",
+      "copyFailed": "The link could not be copied.",
+      "share": "Share the profile",
+      "block": "Block",
+      "blockTitle": "Block {{name}}?",
+      "blockDescription": "You will no longer see their profile, posts or comments, and {{name}} will no longer see yours. Your connection, your follows both ways and pending requests are removed; unblocking does not restore them. {{name}} is not told. You can unblock from Settings, Privacy and network.",
+      "blockConfirm": "Block {{name}}",
+      "blocked": "Member blocked: their content no longer shows."
+    },
+    "views": {
+      "title": "Who viewed your profile",
+      "periods": {
+        "last7Days": "7 days",
+        "last30Days": "30 days",
+        "last90Days": "90 days"
+      },
+      "see": "See the visits"
+    },
+    "lists": {
+      "label": "Network of {{name}}",
+      "tabs": {
+        "connections": "Connections",
+        "followers": "Followers",
+        "following": "Following"
+      },
+      "empty": {
+        "connections": "No connection to show.",
+        "ownConnections": "You have no connection yet.",
+        "followers": "No follower yet.",
+        "following": "Nothing followed to show.",
+        "ownFollowing": "You do not follow anyone yet."
+      },
+      "hidden": {
+        "title": "List not shared",
+        "description": "This member chose not to show this list."
+      },
+      "connectedSince": "Connected since {{date}}",
+      "followerSince": "Following you since {{date}}",
+      "followingSince": "Followed since {{date}}",
+      "remove": "Remove",
+      "removeTitle": "Remove the connection with {{name}}?",
+      "removeDescription": "You will no longer be connected with {{name}}, who gets no notification.",
+      "removed": "You are no longer connected with {{name}}.",
+      "unfollow": "Unfollow",
+      "unfollowTitle": "Unfollow {{name}}?",
+      "unfollowDescription": "Their posts will no longer appear in your feed. You can follow again later.",
+      "unfollowed": "You no longer follow {{name}}.",
+      "filter": "Kind of follow",
+      "types": {
+        "all": "All",
+        "member": "Members",
+        "organization": "Organizations"
+      }
+    },
+    "page": {
+      "title": "Network",
+      "sections": "Sections of the network",
+      "tabs": {
+        "invitations": "Invitations",
+        "suggestions": "Suggestions",
+        "lists": "My network"
+      },
+      "received": "Invitations received",
+      "sent": "Invitations sent",
+      "noReceived": {
+        "title": "No pending invitation",
+        "description": "Connection requests sent to you appear here."
+      },
+      "noSent": {
+        "title": "No sent invitation pending",
+        "description": "Your requests still unanswered appear here."
+      },
+      "sentOn": "On {{date}}",
+      "withdraw": "Withdraw",
+      "withdrawTitle": "Withdraw your request to {{name}}?",
+      "withdrawDescription": "The request leaves their invitations. You can send another one later.",
+      "withdrawn": "Request withdrawn.",
+      "people": "People relevant to you",
+      "complementary": "Complementary entrepreneurs",
+      "noSuggestions": "No suggestion yet: complete your profile to receive some."
+    },
+    "member": {
+      "title": "Network of {{name}}",
+      "back": "Back to the profile of {{name}}"
+    },
+    "visits": {
+      "title": "Who viewed your profile",
+      "list": "Visits, newest first",
+      "empty": "No visit over the period kept.",
+      "retention": "Visits are kept for {{days}} days.",
+      "anonymous": "A member of the {{sector}} sector",
+      "anonymousUnknown": "A member of Pitchorium",
+      "privateNote": "Private visit",
+      "day": "On {{date}}",
+      "privateOn": "Your visits are private: the members you view see an anonymous mention, and you do not see the names of your private visitors.",
+      "privateOff": "Your visits are visible: the members you view see your name.",
+      "change": "Change in Privacy and network"
+    },
+    "privacy": {
+      "title": "Profile visits",
+      "privateVisits": "Private visits",
+      "privateVisitsHint": "Members whose profile you view see « a member of the sector… » instead of your name.",
+      "saved": "Preference saved.",
+      "failed": "The preference could not be saved. Try again.",
+      "blocked": "Blocked members",
+      "blockedHint": "A blocked member no longer sees your profile or your content, and you no longer see theirs.",
+      "noBlocked": "You have blocked no one.",
+      "blockedSince": "Blocked on {{date}}",
+      "unblock": "Unblock",
+      "unblockTitle": "Unblock {{name}}?",
+      "unblockDescription": "{{name}} will again see your profile and contact you as your settings allow. Connections and follows removed by the block do not come back.",
+      "unblocked": "{{name}} is unblocked."
+    },
+    "follow": {
+      "follow": "Follow",
+      "following": "Following",
+      "followName": "Follow {{name}}",
+      "unfollowName": "Unfollow {{name}}",
+      "followed": "You follow {{name}}.",
+      "unfollowed": "You no longer follow {{name}}.",
+      "followers": {
+        "one": "follower",
+        "other": "followers"
+      }
     }
   },
   "notifications": {
@@ -545,6 +714,231 @@
       "percent": "{{percent}} %",
       "missing": "To add: {{list}}.",
       "action": "Complete my profile"
+    },
+    "page": {
+      "joinTitle": "Join Pitchorium",
+      "joinBody": "Create your account in seconds to connect with {{name}} and follow their activity.",
+      "joinToConnect": "Sign in to connect",
+      "location": "Location",
+      "languages": "Speaks {{list}}",
+      "verifiedOrganization": "Organization verified by Pitchorium",
+      "website": "Website",
+      "linkedin": "LinkedIn",
+      "newTab": "opens in a new tab",
+      "mutual": {
+        "one": "{{count}} connection in common",
+        "other": "{{count}} connections in common"
+      },
+      "connections": {
+        "one": "connection",
+        "other": "connections"
+      },
+      "followers": {
+        "one": "follower",
+        "other": "followers"
+      },
+      "about": "About",
+      "aboutEmpty": "Introduce yourself in a few lines: your path, what you look for, what you offer.",
+      "detailsHidden": "The details of this facet are not shared with you.",
+      "address": "Address of your profile",
+      "copyAddress": "Copy the address",
+      "publicOn": "Your public page is open: visible without an account and to search engines.",
+      "publicOff": "Your public page is closed: only signed-in members see your profile.",
+      "privacySettings": "Privacy and network"
+    },
+    "entrepreneur": {
+      "title": "Entrepreneur facet",
+      "empty": "Your company, its sector and what it needs: to be found by the right contributors.",
+      "sector": "Sector",
+      "stage": "Stage",
+      "team": "Team",
+      "people": {
+        "one": "{{count}} person",
+        "other": "{{count}} people"
+      },
+      "founded": "Founded",
+      "place": "Country and city",
+      "fundingTarget": "Funding target",
+      "pitch": "Pitch",
+      "needs": "Needs",
+      "soughtExpertise": "Sought expertise"
+    },
+    "contributor": {
+      "title": "Contributor facet",
+      "empty": "Your hats, your sectors and your countries of intervention: to be found by project owners.",
+      "structure": "Type of structure",
+      "organization": "Organization",
+      "countries": "Countries of intervention",
+      "ticket": "Ticket",
+      "mentoring": "Mentoring",
+      "mentoringYes": "Available for mentoring",
+      "mentoringNo": "No mentoring for now",
+      "missions": "Expert missions",
+      "missionsYes": "Open to expert missions",
+      "missionsNo": "No mission for now",
+      "sectors": "Sectors",
+      "instruments": "Instruments",
+      "patronage": "Kinds of patronage"
+    },
+    "edit": {
+      "add": {
+        "entrepreneur": "Add the entrepreneur facet",
+        "contributor": "Add the contributor facet"
+      },
+      "buttons": {
+        "intro": "Edit the name, title and details",
+        "about": "Edit the introduction",
+        "entrepreneur": "Edit the entrepreneur facet",
+        "contributor": "Edit the contributor facet",
+        "photo": "Change the photo",
+        "cover": "Change the cover photo",
+        "handle": "Change the address of the profile",
+        "intention": "Change your intention"
+      },
+      "save": "Save",
+      "saving": "Saving",
+      "cancel": "Cancel",
+      "intro": {
+        "title": "Name, title and details"
+      },
+      "about": {
+        "title": "Introduction"
+      },
+      "fields": {
+        "name": "Name",
+        "headline": "Title",
+        "headlineHint": "Your role in a few words, for example “Founder of Sahel Agri”.",
+        "country": "Country of residence",
+        "countryPlaceholder": "Choose a country",
+        "city": "City",
+        "languages": "Languages",
+        "languagesHint": "The languages you work in.",
+        "languagesPlaceholder": "Choose languages",
+        "website": "Website",
+        "linkedin": "LinkedIn profile",
+        "linkedinHint": "An address on linkedin.com.",
+        "bio": "Introduction",
+        "bioHint": "Your path, what you look for, what you offer.",
+        "companyName": "Company",
+        "sector": "Sector",
+        "stage": "Stage",
+        "choose": "Choose",
+        "companyCountry": "Country of the company",
+        "companyCountryHint": "In Africa or the Caribbean; you may live elsewhere.",
+        "teamSize": "Team size",
+        "foundedYear": "Year founded",
+        "pitch": "Pitch",
+        "pitchHint": "The problem, your solution, where you stand.",
+        "needs": "Needs",
+        "soughtExpertise": "Sought expertise",
+        "soughtExpertiseHint": "20 at most, one by one.",
+        "soughtExpertisePlaceholder": "For example: irrigation",
+        "fundingTarget": "Funding target",
+        "currency": "Currency",
+        "hats": "Hats",
+        "hatsHint": "One or more: you can change them at any time.",
+        "structure": "Type of structure",
+        "organization": "Organization",
+        "organizationHint": "An organization you belong to on Pitchorium, or another one.",
+        "organizationElsewhere": "Another organization",
+        "organizationNone": "None",
+        "organizationName": "Name of the organization",
+        "interventionCountries": "Countries of intervention",
+        "sectors": "Sectors",
+        "ticket": "Ticket",
+        "ticketHint": "The minimum and maximum amounts of your commitments.",
+        "ticketMin": "Minimum amount",
+        "ticketMax": "Maximum amount",
+        "instruments": "Instruments",
+        "patronage": "Kinds of patronage",
+        "mentoring": "I am available for mentoring",
+        "missions": "I am open to expert missions"
+      },
+      "tags": {
+        "add": "Add",
+        "list": "Added expertise",
+        "remove": "Remove {{item}}"
+      },
+      "entrepreneur": {
+        "title": "Entrepreneur facet",
+        "createTitle": "Add the entrepreneur facet",
+        "description": "Company, sector, stage and country are enough to start.",
+        "create": "Add the facet",
+        "delete": "Delete the entrepreneur facet",
+        "deleteTitle": "Delete the entrepreneur facet?",
+        "deleteDescription": "Its information leaves your profile and the suggestions. You can create it again."
+      },
+      "contributor": {
+        "title": "Contributor facet",
+        "createTitle": "Add the contributor facet",
+        "description": "One hat and a type of structure are enough to start.",
+        "create": "Add the facet",
+        "delete": "Delete the contributor facet",
+        "deleteTitle": "Delete the contributor facet?",
+        "deleteDescription": "Its information leaves your profile and the suggestions. You can create it again."
+      },
+      "image": {
+        "avatar": {
+          "title": "Profile photo",
+          "description": "A square photo, your face clearly visible.",
+          "limits": "JPEG, PNG or WebP, 5 MB at most, 200 × 200 pixels at least.",
+          "remove": "Remove the photo",
+          "removeTitle": "Remove your photo?",
+          "removeDescription": "Your initials replace it."
+        },
+        "cover": {
+          "title": "Cover photo",
+          "description": "A wide banner, cropped to 4:1.",
+          "limits": "JPEG, PNG or WebP, 8 MB at most, 1,200 × 300 pixels at least.",
+          "remove": "Remove the cover",
+          "removeTitle": "Remove the cover?",
+          "removeDescription": "The pattern of Pitchorium replaces it."
+        }
+      },
+      "handle": {
+        "title": "Address of the profile",
+        "description": "The public handle that forms the address of your page.",
+        "label": "Public handle",
+        "hint": "Lower-case letters, digits and hyphens, 3 to 30 characters.",
+        "newAddress": "New address",
+        "redirectTitle": "Your links keep working",
+        "redirectBody": "The former address {{previous}} will lead to the new one: links already shared keep working, and it stays reserved to your profile.",
+        "submit": "Change the address"
+      },
+      "intention": {
+        "title": "What brings you here?",
+        "description": "It orients your suggestions, locking nothing.",
+        "clear": "Do not say",
+        "failed": "Your choice could not be saved. Try again."
+      }
+    },
+    "strength": {
+      "title": "Profile strength",
+      "percent": "{{percent}}%",
+      "missing": "To complete it:",
+      "facets": {
+        "entrepreneur": "Entrepreneur facet",
+        "contributor": "Contributor facet"
+      },
+      "complete": "Your profile is complete."
+    },
+    "hover": {
+      "mutual": {
+        "one": "{{count}} connection in common",
+        "other": "{{count}} connections in common"
+      }
+    },
+    "privacy": {
+      "title": "Profile and visibility",
+      "description": "Each setting applies as soon as it changes.",
+      "publicPage": "Public page",
+      "publicPageHint": "Your profile becomes visible without an account and to search engines. Closed by default.",
+      "entrepreneurDetails": "Details of the entrepreneur facet",
+      "contributorDetails": "Details of the contributor facet",
+      "networkLists": "Lists of your network",
+      "levelHint": "Public: everyone; Members: signed-in members; Private: only you.",
+      "saved": "Setting saved.",
+      "failed": "The setting could not be saved. Try again."
     }
   },
   "resources": {
@@ -796,7 +1190,9 @@
     "sections": {
       "account": "Account",
       "security": "Security",
-      "preferences": "Preferences"
+      "preferences": "Preferences",
+      "privacy": "Privacy and network",
+      "organizations": "My organizations"
     },
     "account": {
       "email": {
@@ -946,6 +1342,242 @@
       "dismissName": "Not interested in {{name}}",
       "dismissed": "Suggestion hidden.",
       "undo": "Undo"
+    }
+  },
+  "media": {
+    "image": {
+      "cropHint": "Drag the image to frame it; the slider or the wheel sets the zoom.",
+      "zoom": "Zoom",
+      "zoomValue": "{{percent}}%",
+      "save": "Save the image",
+      "another": "Choose another image",
+      "sending": "Sending the image",
+      "sendingValue": "Sending: {{percent}}%",
+      "checking": "Checking the image",
+      "choose": "Choose an image",
+      "failed": "The image could not be sent. Try again.",
+      "cancel": "Cancel"
+    }
+  },
+  "organizations": {
+    "fields": {
+      "name": "Name of the organization",
+      "structureType": "Type of structure",
+      "choose": "Choose",
+      "countries": "Countries of activity",
+      "countriesHint": "One or more countries.",
+      "countriesPlaceholder": "Choose countries",
+      "description": "Presentation",
+      "descriptionHint": "Its mission, its activities, what it is looking for.",
+      "sectors": "Sectors",
+      "sectorsPlaceholder": "Choose sectors",
+      "website": "Website",
+      "websiteHint": "An https address.",
+      "foundedYear": "Year founded"
+    },
+    "create": {
+      "title": "Create an organization",
+      "description": "Foundation, company, NGO or institution: its page presents it, its members manage it. You will be its owner.",
+      "steps": {
+        "label": "Creation of the organization",
+        "identity": "Identity",
+        "presentation": "Presentation"
+      },
+      "next": "Continue",
+      "back": "Back",
+      "submit": "Create the organization",
+      "creating": "Creating"
+    },
+    "page": {
+      "manage": "Manage",
+      "verified": "Organization verified by Pitchorium",
+      "countries": "Countries of activity",
+      "founded": "Founded in {{year}}",
+      "website": "Website",
+      "newTab": "opens in a new tab",
+      "sectors": "Sectors",
+      "about": "About",
+      "members": "Members",
+      "noMembers": "No member to show.",
+      "noPublicMembers": "No member with a public page.",
+      "projects": {
+        "carried": "Projects carried",
+        "supported": "Projects supported"
+      },
+      "joinToFollow": "Join Pitchorium to follow"
+    },
+    "manage": {
+      "title": "Management of the organization",
+      "heading": "Manage {{name}}",
+      "back": "Back to the page of {{name}}",
+      "sections": "Sections of the management",
+      "tabs": {
+        "details": "Page",
+        "members": "Members",
+        "verification": "Verification"
+      },
+      "createdTitle": "Organization created",
+      "created": "Complete its page, add a logo, then invite its members.",
+      "details": {
+        "title": "Information",
+        "save": "Save",
+        "saving": "Saving",
+        "saved": "Information saved."
+      },
+      "images": {
+        "title": "Logo and cover",
+        "logo": {
+          "change": "Change the logo",
+          "title": "Logo",
+          "description": "A square logo; its transparency is kept.",
+          "limits": "JPEG, PNG or WebP, 5 MB at most, 200 × 200 pixels at least.",
+          "remove": "Remove the logo",
+          "removeTitle": "Remove the logo?",
+          "removeDescription": "The initials of the organization replace it."
+        },
+        "cover": {
+          "change": "Change the cover",
+          "title": "Cover photo",
+          "description": "A wide banner, cropped to 4:1.",
+          "limits": "JPEG, PNG or WebP, 8 MB at most, 1,200 × 300 pixels at least.",
+          "remove": "Remove the cover",
+          "removeTitle": "Remove the cover?",
+          "removeDescription": "The pattern of Pitchorium replaces it."
+        }
+      },
+      "slug": {
+        "title": "Address of the page",
+        "description": "The identifier that forms the public address of the organization.",
+        "label": "Identifier",
+        "hint": "Lower-case letters, digits and hyphens, 3 to 60 characters.",
+        "newAddress": "New address",
+        "redirectTitle": "Existing links keep working",
+        "redirectBody": "The former address {{previous}} will lead to the new one and stays reserved to the organization.",
+        "submit": "Change the address",
+        "saving": "Saving"
+      },
+      "delete": {
+        "title": "Delete the organization",
+        "description": "Its page disappears, pending invitations are revoked and the contributor facets of its members unlinked. Its address stays reserved.",
+        "action": "Delete the organization",
+        "confirmTitle": "Delete {{name}}?",
+        "confirmDescription": "This is final: the page cannot be restored.",
+        "deleted": "{{name}} is deleted."
+      },
+      "members": {
+        "title": {
+          "one": "{{count}} member",
+          "other": "{{count}} members"
+        },
+        "list": "Members of the organization",
+        "roleOf": "Role of {{name}}",
+        "roleChanged": "{{name}} is now {{role}}.",
+        "remove": "Remove",
+        "removeTitle": "Remove {{name}} from the organization?",
+        "removeDescription": "{{name}} loses their role and their contributor facet is no longer linked to the organization.",
+        "removed": "{{name}} is removed from the organization.",
+        "lastOwner": "You are the only owner: an organization always keeps at least one owner. Transfer the ownership or name another owner before leaving or changing your role."
+      },
+      "invitations": {
+        "title": "Invite",
+        "description": "By email, a member of Pitchorium or a person without an account. The invitation is valid for a few days and works once.",
+        "email": "Email address",
+        "role": "Role",
+        "send": "Send the invitation",
+        "sending": "Sending",
+        "sent": "Invitation sent to {{email}}.",
+        "pending": "Pending invitations",
+        "none": "No pending invitation.",
+        "meta": "{{role}}, valid until {{date}}",
+        "revoke": "Revoke",
+        "revokeTitle": "Revoke the invitation of {{email}}?",
+        "revokeDescription": "The link received by email will no longer work.",
+        "revoked": "Invitation of {{email}} revoked."
+      },
+      "transfer": {
+        "title": "Transfer the ownership",
+        "description": "The chosen member becomes owner; you stay admin.",
+        "alone": "Invite another member first.",
+        "to": "New owner",
+        "choose": "Choose a member",
+        "action": "Transfer",
+        "confirmTitle": "Transfer the ownership to {{name}}?",
+        "confirmDescription": "{{name}} will manage everything, deleting the organization included. You stay admin.",
+        "done": "{{name}} is now owner."
+      },
+      "leave": {
+        "title": "Leave the organization",
+        "description": "You lose your role; your contributor facet is no longer linked to the organization.",
+        "lastOwner": "The last owner cannot leave: transfer the ownership first.",
+        "action": "Leave",
+        "confirmTitle": "Leave {{name}}?",
+        "confirmDescription": "Coming back will take a new invitation.",
+        "left": "You left {{name}}."
+      },
+      "verification": {
+        "title": "Verification",
+        "verifiedOn": "Verified by Pitchorium on {{date}}.",
+        "status": {
+          "unverified": "The verification badge is granted by Pitchorium after a review of supporting documents.",
+          "pending": "Your request is being reviewed.",
+          "verified": "Organization verified by Pitchorium.",
+          "rejected": "The last request was refused: see its reason below, then make a new request.",
+          "revoked": "The badge was withdrawn: see the reason below, then make a new request."
+        },
+        "history": "Requests",
+        "noRequest": "No request yet.",
+        "requestStatus": {
+          "pending": "Under review",
+          "approved": "Approved",
+          "rejected": "Refused"
+        },
+        "requestedOn": "Requested on {{date}}",
+        "documents": {
+          "one": "{{count}} supporting document",
+          "other": "{{count}} supporting documents"
+        },
+        "reason": "Reason of the decision of {{date}}",
+        "requestTitle": "Request the verification",
+        "requestDescription": "Attach documents that establish the existence of the organization and your mandate. They stay private: only its owners, its admins and the Pitchorium team read them.",
+        "documentsLabel": "Supporting documents",
+        "documentsLimits": "PDF, JPEG or PNG, 10 MB at most, 10 documents at most.",
+        "documentsRequired": "Attach at least one supporting document.",
+        "waitUploads": "Wait for the documents to be sent.",
+        "uploadFailed": "The document could not be sent. Try again.",
+        "declaration": "Declaration",
+        "declarationHint": "Present the organization and your role, in {{min}} characters at least.",
+        "certified": "I certify that this declaration is accurate and the attached documents authentic.",
+        "submit": "Send the request",
+        "sending": "Sending",
+        "requested": "Request sent: it is being reviewed."
+      }
+    },
+    "invitation": {
+      "title": "Invitation",
+      "heading": "Join {{name}}",
+      "body": "You are invited to join this organization on Pitchorium, with the role {{role}}. The invitation is valid until {{date}}.",
+      "visitor": "Create an account or sign in with the address that received the invitation, then come back here to answer.",
+      "signUp": "Create an account",
+      "signIn": "Sign in",
+      "accept": "Accept",
+      "accepting": "Accepting",
+      "decline": "Decline",
+      "declining": "Declining",
+      "accepted": "You joined {{name}}.",
+      "declined": "Invitation declined.",
+      "invalidTitle": "Invitation unavailable",
+      "invalid": "This invitation expired, was already used or was revoked. Ask the organization for a new one.",
+      "toFeed": "Go to the feed",
+      "toHome": "Go to the home page"
+    },
+    "mine": {
+      "title": "My organizations",
+      "description": "The organizations you are a member of and your role.",
+      "create": "Create an organization",
+      "empty": "You are not a member of any organization.",
+      "emptyHint": "Create the page of your foundation, company, NGO or institution, or join one by invitation.",
+      "manage": "Manage",
+      "membership": "My membership"
     }
   }
 }

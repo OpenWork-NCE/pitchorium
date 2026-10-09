@@ -19,6 +19,7 @@
     "messages": "Messages",
     "notifications": "Notifications",
     "profile": "Profil",
+    "organizations": "Mes organisations",
     "settings": "Paramètres",
     "followedProjects": "Projets suivis",
     "publish": "Publier",
@@ -521,6 +522,174 @@
       "declining": "En cours",
       "accepted": "Vous êtes connectés avec {{name}}.",
       "declined": "Demande ignorée."
+    },
+    "relationship": {
+      "connect": "Se connecter",
+      "connectName": "Se connecter avec {{name}}",
+      "pending": "En attente",
+      "pendingName": "Demande envoyée à {{name}}, en attente : la retirer",
+      "connected": "En relation",
+      "connectedName": "En relation avec {{name}} : retirer la connexion",
+      "accept": "Accepter",
+      "acceptName": "Accepter la demande de {{name}}",
+      "accepting": "Acceptation en cours",
+      "accepted": "Vous êtes maintenant en relation avec {{name}}.",
+      "decline": "Ignorer",
+      "declineName": "Ignorer la demande de {{name}}",
+      "declining": "En cours",
+      "declined": "Demande ignorée.",
+      "follow": "Suivre",
+      "unfollow": "Ne plus suivre",
+      "followName": "Suivre {{name}}",
+      "unfollowName": "Ne plus suivre {{name}}",
+      "followed": "Vous suivez {{name}}.",
+      "unfollowed": "Vous ne suivez plus {{name}}.",
+      "withdrawTitle": "Retirer votre demande à {{name}} ?",
+      "withdrawDescription": "La demande disparaît de ses invitations. Vous pourrez en envoyer une autre plus tard.",
+      "withdraw": "Retirer la demande",
+      "withdrawn": "Demande retirée.",
+      "removeTitle": "Retirer la connexion avec {{name}} ?",
+      "removeDescription": "Vous ne serez plus en relation avec {{name}}, qui ne reçoit aucune notification. Les suivis que vous avez choisis restent ; ceux nés de la connexion s’arrêtent.",
+      "remove": "Retirer la connexion",
+      "removed": "Vous n’êtes plus en relation avec {{name}}."
+    },
+    "connect": {
+      "title": "Se connecter avec {{name}}",
+      "description": "Une connexion est une relation d’affaires : {{name}} doit l’accepter.",
+      "note": "Note",
+      "noteHint": "Rappelez le contexte, par exemple « Nous nous sommes croisés à… ». 300 caractères au plus.",
+      "send": "Envoyer la demande",
+      "sending": "Envoi en cours",
+      "sent": "Demande envoyée à {{name}}.",
+      "cancel": "Annuler"
+    },
+    "menu": {
+      "more": "Plus d’actions pour {{name}}",
+      "copy": "Copier le lien du profil",
+      "copied": "Lien copié.",
+      "copyFailed": "Le lien n’a pas pu être copié.",
+      "share": "Partager le profil",
+      "block": "Bloquer",
+      "blockTitle": "Bloquer {{name}} ?",
+      "blockDescription": "Vous ne verrez plus son profil, ses publications ni ses commentaires, et {{name}} ne verra plus les vôtres. Votre connexion, vos suivis dans les deux sens et les demandes en cours sont supprimés ; un déblocage ne les rétablit pas. {{name}} ne reçoit aucune notification. Vous pourrez débloquer depuis Paramètres, Confidentialité et réseau.",
+      "blockConfirm": "Bloquer {{name}}",
+      "blocked": "Membre bloqué : son contenu n’apparaît plus."
+    },
+    "views": {
+      "title": "Qui a consulté votre profil",
+      "periods": {
+        "last7Days": "7 jours",
+        "last30Days": "30 jours",
+        "last90Days": "90 jours"
+      },
+      "see": "Voir les visites"
+    },
+    "lists": {
+      "label": "Réseau de {{name}}",
+      "tabs": {
+        "connections": "Connexions",
+        "followers": "Abonnés",
+        "following": "Abonnements"
+      },
+      "empty": {
+        "connections": "Aucune connexion à afficher.",
+        "ownConnections": "Vous n’avez pas encore de connexion.",
+        "followers": "Aucun abonné pour l’instant.",
+        "following": "Aucun abonnement à afficher.",
+        "ownFollowing": "Vous ne suivez encore personne."
+      },
+      "hidden": {
+        "title": "Liste non partagée",
+        "description": "Ce membre a choisi de ne pas montrer cette liste."
+      },
+      "connectedSince": "En relation depuis le {{date}}",
+      "followerSince": "Abonné depuis le {{date}}",
+      "followingSince": "Suivi depuis le {{date}}",
+      "remove": "Retirer",
+      "removeTitle": "Retirer la connexion avec {{name}} ?",
+      "removeDescription": "Vous ne serez plus en relation avec {{name}}, qui ne reçoit aucune notification.",
+      "removed": "Vous n’êtes plus en relation avec {{name}}.",
+      "unfollow": "Ne plus suivre",
+      "unfollowTitle": "Ne plus suivre {{name}} ?",
+      "unfollowDescription": "Ses publications n’apparaîtront plus dans votre fil. Vous pourrez le suivre à nouveau.",
+      "unfollowed": "Vous ne suivez plus {{name}}.",
+      "filter": "Type d’abonnement",
+      "types": {
+        "all": "Tous",
+        "member": "Membres",
+        "organization": "Organisations"
+      }
+    },
+    "page": {
+      "title": "Réseau",
+      "sections": "Sections du réseau",
+      "tabs": {
+        "invitations": "Invitations",
+        "suggestions": "Suggestions",
+        "lists": "Mon réseau"
+      },
+      "received": "Invitations reçues",
+      "sent": "Invitations envoyées",
+      "noReceived": {
+        "title": "Aucune invitation en attente",
+        "description": "Les demandes de connexion qui vous sont adressées apparaissent ici."
+      },
+      "noSent": {
+        "title": "Aucune invitation envoyée en attente",
+        "description": "Vos demandes encore sans réponse apparaissent ici."
+      },
+      "sentOn": "Le {{date}}",
+      "withdraw": "Retirer",
+      "withdrawTitle": "Retirer votre demande à {{name}} ?",
+      "withdrawDescription": "La demande disparaît de ses invitations. Vous pourrez en envoyer une autre plus tard.",
+      "withdrawn": "Demande retirée.",
+      "people": "Personnes pertinentes pour vous",
+      "complementary": "Entrepreneurs complémentaires",
+      "noSuggestions": "Aucune suggestion pour l’instant : complétez votre profil pour en recevoir."
+    },
+    "member": {
+      "title": "Réseau de {{name}}",
+      "back": "Retour au profil de {{name}}"
+    },
+    "visits": {
+      "title": "Qui a consulté votre profil",
+      "list": "Visites, les plus récentes d’abord",
+      "empty": "Aucune visite sur la période conservée.",
+      "retention": "Les visites sont conservées {{days}} jours.",
+      "anonymous": "Un membre du secteur {{sector}}",
+      "anonymousUnknown": "Un membre de Pitchorium",
+      "privateNote": "Visite privée",
+      "day": "Le {{date}}",
+      "privateOn": "Vos visites sont privées : les membres que vous consultez voient une mention anonyme, et vous ne voyez pas le nom de vos visiteurs privés.",
+      "privateOff": "Vos visites sont visibles : les membres que vous consultez voient votre nom.",
+      "change": "Modifier dans Confidentialité et réseau"
+    },
+    "privacy": {
+      "title": "Visites de profil",
+      "privateVisits": "Visites privées",
+      "privateVisitsHint": "Les membres dont vous consultez le profil voient « un membre du secteur… » plutôt que votre nom.",
+      "saved": "Préférence enregistrée.",
+      "failed": "La préférence n’a pas pu être enregistrée. Réessayez.",
+      "blocked": "Membres bloqués",
+      "blockedHint": "Un membre bloqué ne voit plus votre profil ni votre contenu, et vous ne voyez plus le sien.",
+      "noBlocked": "Vous n’avez bloqué personne.",
+      "blockedSince": "Bloqué le {{date}}",
+      "unblock": "Débloquer",
+      "unblockTitle": "Débloquer {{name}} ?",
+      "unblockDescription": "{{name}} pourra de nouveau voir votre profil et vous contacter selon vos réglages. Les connexions et suivis supprimés par le blocage ne reviennent pas.",
+      "unblocked": "{{name}} est débloqué."
+    },
+    "follow": {
+      "follow": "Suivre",
+      "following": "Suivi",
+      "followName": "Suivre {{name}}",
+      "unfollowName": "Ne plus suivre {{name}}",
+      "followed": "Vous suivez {{name}}.",
+      "unfollowed": "Vous ne suivez plus {{name}}.",
+      "followers": {
+        "one": "abonné",
+        "other": "abonnés"
+      }
     }
   },
   "notifications": {
@@ -545,6 +714,231 @@
       "percent": "{{percent}} %",
       "missing": "À ajouter : {{list}}.",
       "action": "Compléter mon profil"
+    },
+    "page": {
+      "joinTitle": "Rejoindre Pitchorium",
+      "joinBody": "Créez votre compte en quelques secondes pour vous connecter avec {{name}} et suivre son activité.",
+      "joinToConnect": "Se connecter pour échanger",
+      "location": "Localisation",
+      "languages": "Parle {{list}}",
+      "verifiedOrganization": "Organisation vérifiée par Pitchorium",
+      "website": "Site web",
+      "linkedin": "LinkedIn",
+      "newTab": "s’ouvre dans un nouvel onglet",
+      "mutual": {
+        "one": "{{count}} connexion en commun",
+        "other": "{{count}} connexions en commun"
+      },
+      "connections": {
+        "one": "connexion",
+        "other": "connexions"
+      },
+      "followers": {
+        "one": "abonné",
+        "other": "abonnés"
+      },
+      "about": "À propos",
+      "aboutEmpty": "Présentez-vous en quelques lignes : votre parcours, ce que vous cherchez, ce que vous proposez.",
+      "detailsHidden": "Les détails de ce volet ne sont pas partagés avec vous.",
+      "address": "Adresse de votre profil",
+      "copyAddress": "Copier l’adresse",
+      "publicOn": "Votre page publique est ouverte : visible sans compte et par les moteurs de recherche.",
+      "publicOff": "Votre page publique est fermée : seuls les membres connectés voient votre profil.",
+      "privacySettings": "Confidentialité et réseau"
+    },
+    "entrepreneur": {
+      "title": "Volet entrepreneur",
+      "empty": "Votre entreprise, son secteur et ce dont elle a besoin : pour être trouvé par les bons contributeurs.",
+      "sector": "Secteur",
+      "stage": "Stade",
+      "team": "Équipe",
+      "people": {
+        "one": "{{count}} personne",
+        "other": "{{count}} personnes"
+      },
+      "founded": "Année de création",
+      "place": "Pays et ville",
+      "fundingTarget": "Financement visé",
+      "pitch": "Pitch",
+      "needs": "Besoins",
+      "soughtExpertise": "Expertises recherchées"
+    },
+    "contributor": {
+      "title": "Volet contributeur",
+      "empty": "Vos casquettes, vos secteurs et vos pays d’intervention : pour être trouvé par les porteurs de projets.",
+      "structure": "Type de structure",
+      "organization": "Organisation",
+      "countries": "Pays d’intervention",
+      "ticket": "Ticket",
+      "mentoring": "Mentorat",
+      "mentoringYes": "Disponible pour du mentorat",
+      "mentoringNo": "Pas de mentorat pour l’instant",
+      "missions": "Missions d’expertise",
+      "missionsYes": "Ouvert aux missions d’expertise",
+      "missionsNo": "Pas de mission pour l’instant",
+      "sectors": "Secteurs",
+      "instruments": "Instruments",
+      "patronage": "Types de mécénat"
+    },
+    "edit": {
+      "add": {
+        "entrepreneur": "Ajouter le volet entrepreneur",
+        "contributor": "Ajouter le volet contributeur"
+      },
+      "buttons": {
+        "intro": "Modifier le nom, le titre et les coordonnées",
+        "about": "Modifier la présentation",
+        "entrepreneur": "Modifier le volet entrepreneur",
+        "contributor": "Modifier le volet contributeur",
+        "photo": "Changer la photo",
+        "cover": "Changer la photo de couverture",
+        "handle": "Changer l’adresse du profil",
+        "intention": "Changer votre intention"
+      },
+      "save": "Enregistrer",
+      "saving": "Enregistrement en cours",
+      "cancel": "Annuler",
+      "intro": {
+        "title": "Nom, titre et coordonnées"
+      },
+      "about": {
+        "title": "Présentation"
+      },
+      "fields": {
+        "name": "Nom",
+        "headline": "Titre",
+        "headlineHint": "Votre rôle en quelques mots, par exemple « Fondatrice de Sahel Agri ».",
+        "country": "Pays de résidence",
+        "countryPlaceholder": "Choisir un pays",
+        "city": "Ville",
+        "languages": "Langues",
+        "languagesHint": "Les langues dans lesquelles vous échangez.",
+        "languagesPlaceholder": "Choisir des langues",
+        "website": "Site web",
+        "linkedin": "Profil LinkedIn",
+        "linkedinHint": "Une adresse de linkedin.com.",
+        "bio": "Présentation",
+        "bioHint": "Votre parcours, ce que vous cherchez, ce que vous proposez.",
+        "companyName": "Entreprise",
+        "sector": "Secteur",
+        "stage": "Stade",
+        "choose": "Choisir",
+        "companyCountry": "Pays de l’entreprise",
+        "companyCountryHint": "En Afrique ou dans les Caraïbes ; vous pouvez résider ailleurs.",
+        "teamSize": "Taille de l’équipe",
+        "foundedYear": "Année de création",
+        "pitch": "Pitch",
+        "pitchHint": "Le problème, votre solution, où vous en êtes.",
+        "needs": "Besoins",
+        "soughtExpertise": "Expertises recherchées",
+        "soughtExpertiseHint": "20 au plus, une à une.",
+        "soughtExpertisePlaceholder": "Par exemple : irrigation",
+        "fundingTarget": "Financement visé",
+        "currency": "Devise",
+        "hats": "Casquettes",
+        "hatsHint": "Une ou plusieurs : vous pourrez en changer à tout moment.",
+        "structure": "Type de structure",
+        "organization": "Organisation",
+        "organizationHint": "Une organisation dont vous êtes membre sur Pitchorium, ou une autre.",
+        "organizationElsewhere": "Une autre organisation",
+        "organizationNone": "Aucune",
+        "organizationName": "Nom de l’organisation",
+        "interventionCountries": "Pays d’intervention",
+        "sectors": "Secteurs",
+        "ticket": "Ticket",
+        "ticketHint": "Le montant minimum et maximum de vos engagements.",
+        "ticketMin": "Montant minimum",
+        "ticketMax": "Montant maximum",
+        "instruments": "Instruments",
+        "patronage": "Types de mécénat",
+        "mentoring": "Je suis disponible pour du mentorat",
+        "missions": "Je suis ouvert aux missions d’expertise"
+      },
+      "tags": {
+        "add": "Ajouter",
+        "list": "Expertises ajoutées",
+        "remove": "Retirer {{item}}"
+      },
+      "entrepreneur": {
+        "title": "Volet entrepreneur",
+        "createTitle": "Ajouter le volet entrepreneur",
+        "description": "Entreprise, secteur, stade et pays suffisent pour commencer.",
+        "create": "Ajouter le volet",
+        "delete": "Supprimer le volet entrepreneur",
+        "deleteTitle": "Supprimer le volet entrepreneur ?",
+        "deleteDescription": "Ses informations disparaissent de votre profil et des suggestions. Vous pourrez le créer à nouveau."
+      },
+      "contributor": {
+        "title": "Volet contributeur",
+        "createTitle": "Ajouter le volet contributeur",
+        "description": "Une casquette et un type de structure suffisent pour commencer.",
+        "create": "Ajouter le volet",
+        "delete": "Supprimer le volet contributeur",
+        "deleteTitle": "Supprimer le volet contributeur ?",
+        "deleteDescription": "Ses informations disparaissent de votre profil et des suggestions. Vous pourrez le créer à nouveau."
+      },
+      "image": {
+        "avatar": {
+          "title": "Photo de profil",
+          "description": "Une photo carrée, votre visage bien visible.",
+          "limits": "JPEG, PNG ou WebP, 5 Mo au plus, 200 × 200 pixels au moins.",
+          "remove": "Retirer la photo",
+          "removeTitle": "Retirer votre photo ?",
+          "removeDescription": "Vos initiales la remplacent."
+        },
+        "cover": {
+          "title": "Photo de couverture",
+          "description": "Un bandeau en largeur, recadré au format 4:1.",
+          "limits": "JPEG, PNG ou WebP, 8 Mo au plus, 1 200 × 300 pixels au moins.",
+          "remove": "Retirer la couverture",
+          "removeTitle": "Retirer la couverture ?",
+          "removeDescription": "Le motif de Pitchorium la remplace."
+        }
+      },
+      "handle": {
+        "title": "Adresse du profil",
+        "description": "L’identifiant public qui forme l’adresse de votre page.",
+        "label": "Identifiant public",
+        "hint": "Lettres minuscules, chiffres et tirets, de 3 à 30 caractères.",
+        "newAddress": "Nouvelle adresse",
+        "redirectTitle": "Vos liens restent valables",
+        "redirectBody": "L’ancienne adresse {{previous}} mènera vers la nouvelle : les liens déjà partagés continuent de fonctionner, et elle reste réservée à votre profil.",
+        "submit": "Changer l’adresse"
+      },
+      "intention": {
+        "title": "Qu’est-ce qui vous amène ?",
+        "description": "Elle oriente vos suggestions, sans rien verrouiller.",
+        "clear": "Ne pas préciser",
+        "failed": "Votre choix n’a pas pu être enregistré. Réessayez."
+      }
+    },
+    "strength": {
+      "title": "Force du profil",
+      "percent": "{{percent}} %",
+      "missing": "Pour le compléter :",
+      "facets": {
+        "entrepreneur": "Volet entrepreneur",
+        "contributor": "Volet contributeur"
+      },
+      "complete": "Votre profil est complet."
+    },
+    "hover": {
+      "mutual": {
+        "one": "{{count}} connexion en commun",
+        "other": "{{count}} connexions en commun"
+      }
+    },
+    "privacy": {
+      "title": "Profil et visibilité",
+      "description": "Chaque réglage s’applique dès qu’il change.",
+      "publicPage": "Page publique",
+      "publicPageHint": "Votre profil devient visible sans compte et par les moteurs de recherche. Fermée par défaut.",
+      "entrepreneurDetails": "Détails du volet entrepreneur",
+      "contributorDetails": "Détails du volet contributeur",
+      "networkLists": "Listes de votre réseau",
+      "levelHint": "Public : tout le monde ; Membres : les membres connectés ; Privé : vous seul.",
+      "saved": "Réglage enregistré.",
+      "failed": "Le réglage n’a pas pu être enregistré. Réessayez."
     }
   },
   "resources": {
@@ -796,7 +1190,9 @@
     "sections": {
       "account": "Compte",
       "security": "Sécurité",
-      "preferences": "Préférences"
+      "preferences": "Préférences",
+      "privacy": "Confidentialité et réseau",
+      "organizations": "Mes organisations"
     },
     "account": {
       "email": {
@@ -946,6 +1342,242 @@
       "dismissName": "Pas intéressé par {{name}}",
       "dismissed": "Suggestion masquée.",
       "undo": "Annuler"
+    }
+  },
+  "media": {
+    "image": {
+      "cropHint": "Faites glisser l’image pour la cadrer ; le curseur ou la molette règlent le zoom.",
+      "zoom": "Zoom",
+      "zoomValue": "{{percent}} %",
+      "save": "Enregistrer l’image",
+      "another": "Choisir une autre image",
+      "sending": "Envoi de l’image",
+      "sendingValue": "Envoi : {{percent}} %",
+      "checking": "Vérification de l’image en cours",
+      "choose": "Choisir une image",
+      "failed": "L’image n’a pas pu être envoyée. Réessayez.",
+      "cancel": "Annuler"
+    }
+  },
+  "organizations": {
+    "fields": {
+      "name": "Nom de l’organisation",
+      "structureType": "Type de structure",
+      "choose": "Choisir",
+      "countries": "Pays d’activité",
+      "countriesHint": "Un ou plusieurs pays.",
+      "countriesPlaceholder": "Choisir des pays",
+      "description": "Présentation",
+      "descriptionHint": "Sa mission, ses activités, ce qu’elle cherche.",
+      "sectors": "Secteurs",
+      "sectorsPlaceholder": "Choisir des secteurs",
+      "website": "Site web",
+      "websiteHint": "Une adresse en https.",
+      "foundedYear": "Année de création"
+    },
+    "create": {
+      "title": "Créer une organisation",
+      "description": "Fondation, entreprise, ONG ou institution : sa page la présente, ses membres la gèrent. Vous en serez le propriétaire.",
+      "steps": {
+        "label": "Création de l’organisation",
+        "identity": "Identité",
+        "presentation": "Présentation"
+      },
+      "next": "Continuer",
+      "back": "Retour",
+      "submit": "Créer l’organisation",
+      "creating": "Création en cours"
+    },
+    "page": {
+      "manage": "Gérer",
+      "verified": "Organisation vérifiée par Pitchorium",
+      "countries": "Pays d’activité",
+      "founded": "Créée en {{year}}",
+      "website": "Site web",
+      "newTab": "s’ouvre dans un nouvel onglet",
+      "sectors": "Secteurs",
+      "about": "À propos",
+      "members": "Membres",
+      "noMembers": "Aucun membre à afficher.",
+      "noPublicMembers": "Aucun membre avec une page publique.",
+      "projects": {
+        "carried": "Projets portés",
+        "supported": "Projets soutenus"
+      },
+      "joinToFollow": "Rejoindre Pitchorium pour suivre"
+    },
+    "manage": {
+      "title": "Gestion de l’organisation",
+      "heading": "Gérer {{name}}",
+      "back": "Retour à la page de {{name}}",
+      "sections": "Sections de la gestion",
+      "tabs": {
+        "details": "Page",
+        "members": "Membres",
+        "verification": "Vérification"
+      },
+      "createdTitle": "Organisation créée",
+      "created": "Complétez sa page, ajoutez un logo, puis invitez ses membres.",
+      "details": {
+        "title": "Informations",
+        "save": "Enregistrer",
+        "saving": "Enregistrement en cours",
+        "saved": "Informations enregistrées."
+      },
+      "images": {
+        "title": "Logo et couverture",
+        "logo": {
+          "change": "Changer le logo",
+          "title": "Logo",
+          "description": "Un logo carré ; sa transparence est conservée.",
+          "limits": "JPEG, PNG ou WebP, 5 Mo au plus, 200 × 200 pixels au moins.",
+          "remove": "Retirer le logo",
+          "removeTitle": "Retirer le logo ?",
+          "removeDescription": "Les initiales de l’organisation le remplacent."
+        },
+        "cover": {
+          "change": "Changer la couverture",
+          "title": "Photo de couverture",
+          "description": "Une bannière large, recadrée en 4:1.",
+          "limits": "JPEG, PNG ou WebP, 8 Mo au plus, 1 200 × 300 pixels au moins.",
+          "remove": "Retirer la couverture",
+          "removeTitle": "Retirer la couverture ?",
+          "removeDescription": "Le motif de Pitchorium la remplace."
+        }
+      },
+      "slug": {
+        "title": "Adresse de la page",
+        "description": "L’identifiant qui forme l’adresse publique de l’organisation.",
+        "label": "Identifiant",
+        "hint": "Lettres minuscules, chiffres et tirets, 3 à 60 caractères.",
+        "newAddress": "Nouvelle adresse",
+        "redirectTitle": "Les liens existants continuent de fonctionner",
+        "redirectBody": "L’ancienne adresse {{previous}} mènera à la nouvelle et reste réservée à l’organisation.",
+        "submit": "Changer l’adresse",
+        "saving": "Enregistrement en cours"
+      },
+      "delete": {
+        "title": "Supprimer l’organisation",
+        "description": "Sa page disparaît, les invitations en attente sont révoquées et les volets contributeur de ses membres déliés. Son adresse reste réservée.",
+        "action": "Supprimer l’organisation",
+        "confirmTitle": "Supprimer {{name}} ?",
+        "confirmDescription": "Cette action est définitive : la page ne pourra pas être rétablie.",
+        "deleted": "{{name}} est supprimée."
+      },
+      "members": {
+        "title": {
+          "one": "{{count}} membre",
+          "other": "{{count}} membres"
+        },
+        "list": "Membres de l’organisation",
+        "roleOf": "Rôle de {{name}}",
+        "roleChanged": "{{name}} est maintenant {{role}}.",
+        "remove": "Retirer",
+        "removeTitle": "Retirer {{name}} de l’organisation ?",
+        "removeDescription": "{{name}} perd son rôle et son volet contributeur n’est plus lié à l’organisation.",
+        "removed": "{{name}} est retiré de l’organisation.",
+        "lastOwner": "Vous êtes le seul propriétaire : une organisation garde toujours au moins un propriétaire. Transférez la propriété ou nommez un autre propriétaire avant de partir ou de changer de rôle."
+      },
+      "invitations": {
+        "title": "Inviter",
+        "description": "Par email, un membre de Pitchorium ou une personne sans compte. L’invitation est valable quelques jours et ne sert qu’une fois.",
+        "email": "Adresse email",
+        "role": "Rôle",
+        "send": "Envoyer l’invitation",
+        "sending": "Envoi en cours",
+        "sent": "Invitation envoyée à {{email}}.",
+        "pending": "Invitations en attente",
+        "none": "Aucune invitation en attente.",
+        "meta": "{{role}}, valable jusqu’au {{date}}",
+        "revoke": "Révoquer",
+        "revokeTitle": "Révoquer l’invitation de {{email}} ?",
+        "revokeDescription": "Le lien reçu par email ne fonctionnera plus.",
+        "revoked": "Invitation de {{email}} révoquée."
+      },
+      "transfer": {
+        "title": "Transférer la propriété",
+        "description": "Le membre choisi devient propriétaire ; vous restez administrateur.",
+        "alone": "Invitez d’abord un autre membre.",
+        "to": "Nouveau propriétaire",
+        "choose": "Choisir un membre",
+        "action": "Transférer",
+        "confirmTitle": "Transférer la propriété à {{name}} ?",
+        "confirmDescription": "{{name}} pourra tout gérer, y compris supprimer l’organisation. Vous restez administrateur.",
+        "done": "{{name}} est maintenant propriétaire."
+      },
+      "leave": {
+        "title": "Quitter l’organisation",
+        "description": "Vous perdez votre rôle ; votre volet contributeur n’est plus lié à l’organisation.",
+        "lastOwner": "Le dernier propriétaire ne peut pas partir : transférez d’abord la propriété.",
+        "action": "Quitter",
+        "confirmTitle": "Quitter {{name}} ?",
+        "confirmDescription": "Pour revenir, il faudra une nouvelle invitation.",
+        "left": "Vous avez quitté {{name}}."
+      },
+      "verification": {
+        "title": "Vérification",
+        "verifiedOn": "Vérifiée par Pitchorium le {{date}}.",
+        "status": {
+          "unverified": "Le badge de vérification est attribué par Pitchorium après examen des pièces justificatives.",
+          "pending": "Votre demande est en cours d’examen.",
+          "verified": "Organisation vérifiée par Pitchorium.",
+          "rejected": "La dernière demande a été refusée : voyez son motif ci-dessous, puis faites une nouvelle demande.",
+          "revoked": "Le badge a été retiré : voyez le motif ci-dessous, puis faites une nouvelle demande."
+        },
+        "history": "Demandes",
+        "noRequest": "Aucune demande pour l’instant.",
+        "requestStatus": {
+          "pending": "En cours d’examen",
+          "approved": "Acceptée",
+          "rejected": "Refusée"
+        },
+        "requestedOn": "Demandée le {{date}}",
+        "documents": {
+          "one": "{{count}} pièce justificative",
+          "other": "{{count}} pièces justificatives"
+        },
+        "reason": "Motif de la décision du {{date}}",
+        "requestTitle": "Demander la vérification",
+        "requestDescription": "Joignez des pièces qui établissent l’existence de l’organisation et votre mandat. Elles restent privées : seuls ses propriétaires, ses administrateurs et l’équipe de Pitchorium les consultent.",
+        "documentsLabel": "Pièces justificatives",
+        "documentsLimits": "PDF, JPEG ou PNG, 10 Mo au plus, 10 pièces au plus.",
+        "documentsRequired": "Joignez au moins une pièce justificative.",
+        "waitUploads": "Attendez la fin de l’envoi des pièces.",
+        "uploadFailed": "La pièce n’a pas pu être envoyée. Réessayez.",
+        "declaration": "Déclaration",
+        "declarationHint": "Présentez l’organisation et votre rôle, en {{min}} caractères au moins.",
+        "certified": "Je certifie l’exactitude de cette déclaration et l’authenticité des pièces jointes.",
+        "submit": "Envoyer la demande",
+        "sending": "Envoi en cours",
+        "requested": "Demande envoyée : elle est en cours d’examen."
+      }
+    },
+    "invitation": {
+      "title": "Invitation",
+      "heading": "Rejoindre {{name}}",
+      "body": "Vous êtes invité à rejoindre cette organisation sur Pitchorium, avec le rôle {{role}}. L’invitation est valable jusqu’au {{date}}.",
+      "visitor": "Créez un compte ou connectez-vous avec l’adresse qui a reçu l’invitation, puis revenez ici pour répondre.",
+      "signUp": "Créer un compte",
+      "signIn": "Se connecter",
+      "accept": "Accepter",
+      "accepting": "Acceptation en cours",
+      "decline": "Refuser",
+      "declining": "En cours",
+      "accepted": "Vous avez rejoint {{name}}.",
+      "declined": "Invitation refusée.",
+      "invalidTitle": "Invitation indisponible",
+      "invalid": "Cette invitation a expiré, a déjà servi ou a été révoquée. Demandez-en une nouvelle à l’organisation.",
+      "toFeed": "Aller au fil",
+      "toHome": "Aller à l’accueil"
+    },
+    "mine": {
+      "title": "Mes organisations",
+      "description": "Les organisations dont vous êtes membre et votre rôle.",
+      "create": "Créer une organisation",
+      "empty": "Vous n’êtes membre d’aucune organisation.",
+      "emptyHint": "Créez la page de votre fondation, entreprise, ONG ou institution, ou rejoignez-en une sur invitation.",
+      "manage": "Gérer",
+      "membership": "Mon adhésion"
     }
   }
 }
