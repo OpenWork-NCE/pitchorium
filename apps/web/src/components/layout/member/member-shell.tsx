@@ -2,11 +2,7 @@ import type { CountersDtoOutput, CurrentUserDtoOutput } from '@pitchorium/api-cl
 import type { ReactNode } from 'react';
 import { AnnouncerProvider, ShortcutsProvider } from '@/components/ui';
 import { PrerequisiteGateProvider } from '@/features/access';
-import {
-  AccountBanners,
-  CurrentMemberProvider,
-  IDENTITY_PREREQUISITE_FORMS,
-} from '@/features/identity';
+import { AccountBanners, CurrentMemberProvider } from '@/features/identity';
 import { RealtimeProvider } from '@/lib/realtime/realtime-provider';
 import { DataProvider } from '../data-provider';
 import { InteractiveRuntime } from '../interactive-runtime';
@@ -15,6 +11,7 @@ import { UrlStateProvider } from '../url-state';
 import { MemberHeader } from './member-header';
 import { OfflineBanner } from './offline-banner';
 import { PersistedMutations } from './persisted-mutations';
+import { MEMBER_PREREQUISITE_FORMS } from './prerequisite-forms';
 
 interface MemberShellProps {
   member: CurrentUserDtoOutput;
@@ -36,7 +33,7 @@ export function MemberShell({ member, counters, children }: MemberShellProps) {
           <UrlStateProvider>
             <CurrentMemberProvider member={member}>
               <AnnouncerProvider>
-                <PrerequisiteGateProvider forms={IDENTITY_PREREQUISITE_FORMS}>
+                <PrerequisiteGateProvider forms={MEMBER_PREREQUISITE_FORMS}>
                   <ShortcutsProvider>
                     <div className="flex min-h-dvh flex-col [--header-height:4.5rem]">
                       <MemberHeader initialCounters={counters} />
