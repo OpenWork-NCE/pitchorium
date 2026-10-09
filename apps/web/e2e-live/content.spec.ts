@@ -318,10 +318,19 @@ test.describe('reactions, comments and actions', { tag: '@critical' }, () => {
     await a.page.waitForTimeout(700);
     await current.dispatchEvent('pointerup', { pointerType: 'touch', isPrimary: true });
     const bar = post.getByRole('toolbar', { name: 'Réactions' });
+    // Kept once the api has answered: shown at once, the reaction may still be on its way, and a
+    // reload before the answer would lose it (seen in WebKit).
+    const kept = a.page.waitForResponse(
+      (response) =>
+        /\/v1\/posts\/[^/]+\/reaction$/.test(new URL(response.url()).pathname) &&
+        response.request().method() === 'PUT' &&
+        response.ok(),
+    );
     await bar.getByRole('button', { name: 'Soutien' }).click();
     await expect(
       post.getByRole('button', { name: 'Soutien', exact: true }).first(),
     ).toHaveAttribute('aria-pressed', 'true');
+    await kept;
     await a.page.reload();
     await expect(
       postWith(a.page, 'Une publication à laquelle réagir.').getByRole('button', {

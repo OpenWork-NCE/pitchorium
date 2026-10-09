@@ -48,6 +48,9 @@ test.describe('authentication', { tag: '@critical' }, () => {
   });
 
   test('sign out of every device from the security settings', async ({ page, browser }) => {
+    // The other browser, signed out by design, still signals the views of its feed once when it
+    // leaves it: refused, as it should be.
+    allowConsole(/status of 401 \(Unauthorized\) \(\S+\/v1\/posts\/views/);
     const email = await onboardedMember(page, 'everywhere');
     const other = await browser.newContext();
     const second = await other.newPage();
