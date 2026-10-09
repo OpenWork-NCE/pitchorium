@@ -10,12 +10,13 @@ import { createApiTestApp } from './support/api-app';
 import { query, truncateAllTables } from './support/database';
 import { TEST_API_URL, TEST_WEB_APP_URL } from './support/environment';
 import { linkIn, Mailpit } from './support/mailpit';
-import { type Agent, browser, PASSWORD, signIn, signUp } from './support/members';
+import { type Agent, browser, PASSWORD, signIn, signUp, twoFactorRequest } from './support/members';
 import {
   type FakeIdentity,
   FakeOAuthProviders,
   type FakeProvider,
 } from './support/oauth-providers';
+import { totp } from './support/totp';
 import { createWorkerTestingModule } from './support/worker-testing-module';
 
 const AUTH_LINK = `${TEST_API_URL}/v1/auth/`;
@@ -327,6 +328,101 @@ describe('identity', () => {
         name: 'Pro',
       });
       expect((await agent.get('/v1/me').expect(200)).body.user.emailVerified).toBe(true);
+    });
+  });
+
+  describe('second factor of an account without a password (ADR 0108)', () => {
+    const identity = {
+      subject: 'google-2fa',
+      email: 'provider-only@gmail.test',
+      emailVerified: true,
+      name: 'Sans Mot de Passe',
+    };
+
+    /** Turns the second factor on from the session of a provider, without any password. */
+    async function enableWithoutPassword(agent: Agent): Promise<string> {
+      const enabled = await twoFactorRequest(() =>
+        agent.post('/v1/auth/two-factor/enable').send({}),
+      );
+      expect(enabled.status).toBe(200);
+      const uri = enabled.body.totpURI as string;
+      const verified = await twoFactorRequest(() =>
+        agent.post('/v1/auth/two-factor/verify-totp').send({ code: totp(uri) }),
+      );
+      expect(verified.status).toBe(200);
+      return uri;
+    }
+
+    it('turns it on from a recent session, never from an old one', async () => {
+      const agent = browser(app);
+      await oauth(agent, 'google', identity);
+      await query(
+        `UPDATE identity.sessions SET created_at = now() - interval '1 hour'
+         WHERE user_id = (SELECT id FROM identity.users WHERE email = $1)`,
+        [identity.email],
+      );
+      const stale = await twoFactorRequest(() => agent.post('/v1/auth/two-factor/enable').send({}));
+      expect(stale.status).toBe(403);
+      expect(stale.body).toMatchObject({ code: 'SESSION_NOT_FRESH' });
+
+      const fresh = browser(app);
+      await oauth(fresh, 'google', identity);
+      await enableWithoutPassword(fresh);
+      const me = await fresh.get('/v1/me').expect(200);
+      expect(me.body.user).toMatchObject({ twoFactorEnabled: true });
+    });
+
+    it('still asks for the password of an account that has one', async () => {
+      const agent = browser(app);
+      await verifiedPasswordAccount('with-password@example.com');
+      await signIn(agent, 'with-password@example.com');
+      const refused = await twoFactorRequest(() =>
+        agent.post('/v1/auth/two-factor/enable').send({}),
+      );
+      expect(refused.status).toBe(400);
+      expect(refused.body).toMatchObject({ code: 'INVALID_PASSWORD' });
+    });
+
+    it('asks for the code after a provider sign-in, then opens the session', async () => {
+      const first = browser(app);
+      await oauth(first, 'google', identity);
+      const uri = await enableWithoutPassword(first);
+
+      const agent = browser(app);
+      const location = await oauth(agent, 'google', identity);
+      expect(location).toBe(`${TEST_WEB_APP_URL}/sign-in/two-factor?redirectTo=%2Fhome`);
+      await agent.get('/v1/me').expect(401);
+
+      const verified = await twoFactorRequest(() =>
+        agent
+          .post('/v1/auth/two-factor/verify-totp')
+          .send({ code: totp(uri, Date.now() + 30_000) }),
+      );
+      expect(verified.status).toBe(200);
+      await agent.get('/v1/me').expect(200);
+    });
+
+    it('asks for the code after a sign-in link too', async () => {
+      const first = browser(app);
+      await oauth(first, 'google', identity);
+      await enableWithoutPassword(first);
+
+      const agent = browser(app);
+      await agent
+        .post('/v1/auth/sign-in/magic-link')
+        .send({
+          email: identity.email,
+          callbackURL: `${TEST_WEB_APP_URL}/fr/continue?redirectTo=%2Ffr%2Ffeed`,
+        })
+        .expect(200);
+      const email = await mailpit.waitFor(identity.email, 'Votre lien de connexion');
+      const verified = await agent
+        .get(pathOf(linkIn(email, `${AUTH_LINK}magic-link/verify`)))
+        .expect(302);
+      expect(verified.headers['location']).toBe(
+        `${TEST_WEB_APP_URL}/fr/sign-in/two-factor?redirectTo=%2Ffr%2Ffeed`,
+      );
+      await agent.get('/v1/me').expect(401);
     });
   });
 

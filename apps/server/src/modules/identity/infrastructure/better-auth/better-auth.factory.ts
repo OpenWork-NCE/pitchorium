@@ -30,6 +30,7 @@ import {
 import type { AuthRequestScope } from './auth-request-scope';
 import { withIdentityEvents } from './identity-events.adapter';
 import { checkPwnedPassword } from './pwned-passwords';
+import { secondFactorEverywhere } from './second-factor';
 import { RedisRateLimitStorage } from './redis-rate-limit.storage';
 import { transactionalDatabase } from './transactional-database';
 
@@ -270,7 +271,13 @@ export function createBetterAuth(deps: BetterAuthDependencies) {
           await scope.defer(() => mailer.sendMagicLink(email, locale, url));
         },
       }),
-      twoFactor({ issuer: 'Pitchorium' }),
+      // An account opened by a provider has no password to confirm the second factor: it turns
+      // it on from a recent session instead, and every way in asks for the code (ADR 0108).
+      twoFactor({ issuer: 'Pitchorium', allowPasswordless: true }),
+      secondFactorEverywhere({
+        webAppUrl: config.webAppUrl,
+        reauthenticationMaxAgeMs: config.access.reauthenticationMaxAgeMs,
+      }),
       ...(config.auth.turnstile
         ? [
             captcha({

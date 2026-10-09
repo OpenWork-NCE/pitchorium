@@ -111,3 +111,4 @@ Un fichier par décision, numéroté, au format Contexte / Décision / Conséque
 | [0105](0105-progressive-prerequisites.md)                | Complétion au fil de l'eau des prérequis                     |
 | [0106](0106-precise-reasons-of-refusals.md)              | Raison précise des refus                                     |
 | [0107](0107-sessions-without-ip-geolocation.md)          | Sessions sans géolocalisation de l'adresse IP                |
+| [0108](0108-second-factor-without-password.md)           | Double authentification d'un compte sans mot de passe        |

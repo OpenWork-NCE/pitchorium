@@ -26,4 +26,4 @@ On rejoint Pitchorium en moins d'une minute, sans choix de rôle, puis on compl�
 
 - L'onboarding écrit comme l'espace membre : son budget de JavaScript est celui de l'espace membre (250 kB, `check-bundles.mjs`), le reste de `(auth)` garde 220 kB ; le QR code, la recherche des pays, les champs de langue et de fuseau et le dialogue des prérequis se chargent à la demande.
 - Les parcours se vérifient contre la vraie api (`e2e-live`, `playwright.live.config.ts`), en plus de l'api simulée pour l'accessibilité des écrans publics.
-- Un compte sans mot de passe (OAuth seul) ne peut pas activer la double authentification : Better Auth la confirme par mot de passe (question 107).
+- Un compte sans mot de passe (OAuth seul) active la double authentification depuis une session récente, et le code est demandé après chaque moyen de connexion (ADR 0108).
