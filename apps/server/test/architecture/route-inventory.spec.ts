@@ -35,6 +35,9 @@ const PUBLIC_ROUTES = [
   'GET /v1/impact/methodology',
   'GET /v1/public/profiles/{handle}',
   'GET /v1/public/organizations/{slug}',
+  // Pages of the sitemap: the profiles whose public page is open, the organisations (ADR 0101).
+  'GET /v1/public/profiles',
+  'GET /v1/public/organizations',
   'GET /v1/public/network/members/{handle}/followers',
   'GET /v1/public/network/members/{handle}/following',
   'GET /v1/public/network/members/{handle}/connections',
@@ -59,6 +62,9 @@ const PUBLIC_ROUTES = [
   'POST /v1/notifications/unsubscribe',
   // Notices of illegal content from anyone (DSA article 16), rate limited.
   'POST /v1/public/reports',
+  // What an invitation received by email invites to: a read, the token in the body rather than
+  // in an address, never the invited address (organizations README).
+  'POST /v1/public/organization-invitations/preview',
 ];
 
 describe('route inventory', () => {
@@ -77,7 +83,11 @@ describe('route inventory', () => {
     const writes = ROUTES.filter(
       ({ access, route }) => access === 'public' && !route.startsWith('GET '),
     ).map(({ route }) => route);
-    expect(writes).toEqual(['POST /v1/notifications/unsubscribe', 'POST /v1/public/reports']);
+    expect(writes.sort()).toEqual([
+      'POST /v1/notifications/unsubscribe',
+      'POST /v1/public/organization-invitations/preview',
+      'POST /v1/public/reports',
+    ]);
   });
 
   it('protects every other route with the session and a known action policy', () => {
