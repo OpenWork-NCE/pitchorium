@@ -3,7 +3,8 @@
 import type { Organization } from '@pitchorium/contracts';
 import { useTranslations } from 'next-intl';
 import { parseAsStringLiteral, useQueryState } from 'nuqs';
-import { lazy, type ReactNode, Suspense, useState } from 'react';
+import { UrlStateProvider } from '@/components/layout/url-state';
+import { type ComponentProps, lazy, type ReactNode, Suspense, useState } from 'react';
 import { Alert, Card, Loading, Skeleton, Tabs, TabsPanel } from '@/components/ui';
 import { canManage } from '../../lib/roles';
 
@@ -47,7 +48,7 @@ const TABS = ['details', 'members', 'verification'] as const;
  * starting state; each answer of the api replaces it. A member who is neither owner nor admin
  * finds only the members, to leave.
  */
-export function OrganizationManage({
+function OrganizationManageContent({
   initial,
   created,
 }: {
@@ -97,5 +98,14 @@ export function OrganizationManage({
         ) : null}
       </Tabs>
     </div>
+  );
+}
+
+/** OrganizationManage, with the URL state it keeps its tab in (nuqs, mounted by its users only, ADR 0094). */
+export function OrganizationManage(props: ComponentProps<typeof OrganizationManageContent>) {
+  return (
+    <UrlStateProvider>
+      <OrganizationManageContent {...props} />
+    </UrlStateProvider>
   );
 }

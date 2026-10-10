@@ -2,18 +2,13 @@
 
 import type { ReactNode } from 'react';
 import { DataProvider } from './data-provider';
-import { UrlStateProvider } from './url-state';
 
 /**
- * TanStack Query and the URL state for a part of a public page that reads the api from the
- * browser (paginated lists, tabs in the address): the public shell does without them, so that a
- * page that only displays never downloads them (ADR 0094). Inside the member shell, which
- * provides both, it reuses the same client of the tab.
+ * TanStack Query for a part of a public page that reads the api from the browser (paginated
+ * lists): the public shell does without it, so that a page that only displays never downloads it
+ * (ADR 0094). Inside the member shell, which provides it, it reuses the same client of the tab.
+ * The URL state (nuqs) is mounted by the components that keep a tab or a filter in the address.
  */
 export function ClientDataProviders({ children }: { children: ReactNode }) {
-  return (
-    <DataProvider>
-      <UrlStateProvider>{children}</UrlStateProvider>
-    </DataProvider>
-  );
+  return <DataProvider>{children}</DataProvider>;
 }

@@ -77,7 +77,6 @@ import { ConversationThread, MessageComposer } from '@/features/messaging';
 import { NotificationItem } from '@/features/notifications';
 import { RelationshipActions } from '@/features/network';
 import { OrganizationManage } from '@/features/organizations';
-import { NuqsTestingAdapter } from 'nuqs/adapters/testing';
 import type { Organization, Relationship } from '@pitchorium/contracts';
 import { getInvitationsControllerPendingQueryKey } from '@pitchorium/api-client';
 
@@ -943,11 +942,9 @@ function OrganizationFixture() {
     <QueryClientProvider client={client}>
       <CurrentMemberProvider member={currentUser}>
         <AnnouncerProvider>
-          <NuqsTestingAdapter searchParams="?tab=members">
-            <div className="mx-auto max-w-3xl p-4">
-              <OrganizationManage initial={organization} created={false} />
-            </div>
-          </NuqsTestingAdapter>
+          <div className="mx-auto max-w-3xl p-4">
+            <OrganizationManage initial={organization} created={false} />
+          </div>
         </AnnouncerProvider>
       </CurrentMemberProvider>
     </QueryClientProvider>
@@ -957,7 +954,8 @@ function OrganizationFixture() {
 /** Members, roles, invitations and ownership of an organisation, read by its owner. */
 export const OrganizationMembers: Story = {
   name: 'Organization members',
-  parameters: { layout: 'padded' },
+  // The tab comes from the address, read by the URL state the component mounts (nuqs).
+  parameters: { layout: 'padded', nextjs: { navigation: { query: { tab: 'members' } } } },
   render: () => <OrganizationFixture />,
 };
 

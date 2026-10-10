@@ -12,6 +12,8 @@ import type { ConnectionRequest } from '@pitchorium/contracts';
 import { useQuery } from '@tanstack/react-query';
 import { useFormatter, useTranslations } from 'next-intl';
 import { parseAsStringLiteral, useQueryState } from 'nuqs';
+import { type ComponentProps } from 'react';
+import { UrlStateProvider } from '@/components/layout/url-state';
 import {
   AlertDialog,
   Button,
@@ -37,7 +39,7 @@ const TABS = ['invitations', 'suggestions', 'lists'] as const;
  * « Entrepreneurs complémentaires »), each with its reason and « Pas intéressé »; then their
  * connections, followers and follows, organizations included. The tab lives in the address.
  */
-export function NetworkPage({
+function NetworkPageContent({
   handle,
   name,
   counters,
@@ -224,5 +226,14 @@ function Suggestions() {
         ),
       )}
     </div>
+  );
+}
+
+/** NetworkPage, with the URL state it keeps its tab in (nuqs, mounted by its users only, ADR 0094). */
+export function NetworkPage(props: ComponentProps<typeof NetworkPageContent>) {
+  return (
+    <UrlStateProvider>
+      <NetworkPageContent {...props} />
+    </UrlStateProvider>
   );
 }

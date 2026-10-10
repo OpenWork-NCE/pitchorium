@@ -15,7 +15,8 @@ import type { Connection, Follow, Follower, MemberCard } from '@pitchorium/contr
 import { Building2, Lock } from 'lucide-react';
 import { useFormatter, useTranslations } from 'next-intl';
 import { parseAsStringLiteral, useQueryState } from 'nuqs';
-import { type ReactNode, useState } from 'react';
+import { UrlStateProvider } from '@/components/layout/url-state';
+import { type ComponentProps, type ReactNode, useState } from 'react';
 import {
   AlertDialog,
   Avatar,
@@ -72,7 +73,7 @@ function isHidden(error: unknown): boolean {
  * member allows (the api decides: a hidden list says so). On the member's own lists, a
  * connection is removed and a follow stopped after a confirmation, at once in the list.
  */
-export function MemberLists({
+function MemberListsContent({
   handle,
   name,
   self,
@@ -335,5 +336,14 @@ function Following({
         }}
       />
     </div>
+  );
+}
+
+/** MemberLists, with the URL state it keeps its tab in (nuqs, mounted by its users only, ADR 0094). */
+export function MemberLists(props: ComponentProps<typeof MemberListsContent>) {
+  return (
+    <UrlStateProvider>
+      <MemberListsContent {...props} />
+    </UrlStateProvider>
   );
 }
