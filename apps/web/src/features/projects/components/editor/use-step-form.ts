@@ -17,14 +17,14 @@ export function useStepAutosave<T extends FieldValues>(
     await save(form.getValues());
     return true;
   });
-  const values = useWatch({ control: form.control });
-  const first = useRef(true);
+  // The values compared by their content: the form may give a new object without any change (its
+  // schema arriving on demand), which must not send the draft again.
+  const signature = JSON.stringify(useWatch({ control: form.control }));
+  const saved = useRef(signature);
   useEffect(() => {
-    if (first.current) {
-      first.current = false;
-      return;
-    }
+    if (signature === saved.current) return;
+    saved.current = signature;
     autosave.schedule();
-  }, [values, autosave]);
+  }, [signature, autosave]);
   return autosave;
 }
