@@ -129,6 +129,8 @@ test.describe('contributing', () => {
 /** Reference screenshots of the quote, compared in the Playwright image only. */
 test.describe('contributing screenshots', () => {
   test.skip(!process.env.PLAYWRIGHT_IMAGE, 'Screenshots compare in the Playwright image only.');
+  // One reference per screen, drawn by Chromium, as the other reference screenshots (visual.spec).
+  test.skip(({ browserName }) => browserName !== 'chromium', 'References are drawn by Chromium.');
   for (const colorScheme of ['light', 'dark'] as const) {
     test(`quote of a contribution ${colorScheme}`, async ({ browser }) => {
       const context = await browser.newContext({
