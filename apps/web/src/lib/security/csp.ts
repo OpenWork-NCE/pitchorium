@@ -35,9 +35,6 @@ export const VAUL_STYLE_HASHES = ["'sha256-YIjArHm2rkb5J7hX9lUM1bnQ3Kp61MTfluMGk
 /** Embedded videos, in their privacy-respecting variants (ADR 0042). */
 const VIDEO_FRAMES = ['https://www.youtube-nocookie.com', 'https://player.vimeo.com'];
 
-/** Hosted checkouts the contribution flow posts to or redirects to (ADR 0043). */
-const PAYMENT_FORMS = ['https://checkout.stripe.com', 'https://checkout.flutterwave.com'];
-
 const VERCEL_SCRIPTS = 'https://va.vercel-scripts.com';
 const VERCEL_VITALS = 'https://vitals.vercel-insights.com';
 
@@ -110,7 +107,9 @@ export function buildCsp(options: CspOptions): string {
     'manifest-src': ["'self'"],
     'object-src': ["'none'"],
     'base-uri': ["'self'"],
-    'form-action': ["'self'", ...PAYMENT_FORMS],
+    // The contribution goes to the hosted page of a provider by a navigation, never by a form
+    // (ADR 0136): no origin of a provider here.
+    'form-action': ["'self'"],
     'frame-ancestors': ["'none'"],
     ...(options.https ? { 'upgrade-insecure-requests': [] } : {}),
     ...(sentry ? { 'report-uri': [sentry.report] } : {}),

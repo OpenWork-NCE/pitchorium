@@ -93,6 +93,12 @@ sequenceDiagram
 - Images : celles d'une page rendue par le serveur (héros, cartes de projet) passent par `getImageProps` de `next/image` dans un `<img>` simple, sans le composant client de l'image ; un brouillon sert ses images par adresse présignée, hors de l'optimiseur.
 - Liens avec l'existant : cartes `project_update` et projet rattaché cliquables dans le fil, section « Projets » du profil d'un membre, « Projets portés » d'une organisation, action « Créer un projet » du bandeau pour un membre qui a un volet entrepreneur, sélecteur de projet du composeur vers les vraies pages.
 
+## Contributions et versement (PROMPT FRONT 5B)
+
+- Pages : `/contributions/{id}/return` (`(app)`, retour du prestataire, adresse donnée par l'api, ADR 0137) ; le parcours « Contribuer » s'ouvre sur la page projet (`?contribute=<étape>`, ADR 0136).
+- Feature `payments` : règles d'affichage pures et testées dans `lib/` (présentation de chaque code de disponibilité, moyens disponibles et indisponibles, étapes du parcours, interrogation du retour, adresse de paiement, masquage, couverture, limites recopiées des contrats) ; entrée « Contribuer » chargée à la demande (`LazyContributeEntry`, composée par la page projet avec la vue de l'api), parcours et déclaration hors plateforme chargés à l'ouverture.
+- Données : options relues 500 ms après un changement de pays, de devise ou de montant (`usePaymentOptions`) ; devis relu de même (`useQuote`) ; contribution créée avec une `Idempotency-Key` par intention ; état du retour relu par `createPoller` ; aucun état de paiement dans le stockage du navigateur.
+
 ## Fournisseurs
 
 Chaque groupe ne charge que ce qu'il utilise (ADR 0094) :

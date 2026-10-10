@@ -156,6 +156,12 @@ export const CLIENT_MESSAGES = {
     'reference.projectStatuses',
     'reference.projectInterestKinds',
     'reference.projectTeamRoles',
+    // Contributions (PROMPT FRONT 5B): the journey, its return, the off-platform declarations.
+    'web.payments',
+    'reference.contributionKinds',
+    'reference.paymentMethods',
+    'reference.mobileMoneyOperators',
+    'reference.offlineContributionKinds',
   ],
   admin: [
     ...DOCUMENT_MESSAGES,

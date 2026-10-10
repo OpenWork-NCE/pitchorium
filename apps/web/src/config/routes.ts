@@ -73,6 +73,11 @@ export const routes = {
   post: (id: string) => `/posts/${encodeURIComponent(id)}`,
   /** The publications the member saved. */
   saved: '/saved',
+  /**
+   * Return from the hosted page of a payment provider (§9.3, ADR 0137), the address the api gives
+   * the provider: `/contributions/<id>/return`.
+   */
+  contributionReturn: (id: string) => `/contributions/${encodeURIComponent(id)}/return`,
   // Contextual actions of the header, opened by their section (PROMPT FRONT 3 and 4).
   compose: '/feed?compose=1',
   // Administration (ADR 0078): `/admin/<domain>`.
@@ -83,6 +88,7 @@ export const routes = {
 } as const;
 
 export const MEMBER_SEGMENTS = [
+  'contributions',
   'feed',
   'network',
   'messages',

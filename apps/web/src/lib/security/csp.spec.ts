@@ -53,6 +53,10 @@ describe('content security policy', () => {
     );
   });
 
+  it('sends forms to its own origin only: a payment provider is reached by a navigation', () => {
+    expect(directive(buildCsp(base), 'form-action')).toBe("form-action 'self'");
+  });
+
   it('allows eval and inline styles in development only', () => {
     const csp = buildCsp({ ...base, development: true, https: false });
     expect(directive(csp, 'script-src')).toContain("'unsafe-eval'");

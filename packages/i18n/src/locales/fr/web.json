@@ -2376,5 +2376,293 @@
       "score": "{{score}} sur 100, {{level}}",
       "prefilled": "reprise"
     }
+  },
+  "payments": {
+    "problems": {
+      "network": "La connexion a été interrompue. Vérifiez votre réseau, puis réessayez.",
+      "PAYMENTS_PROJECT_NOT_OPEN": {
+        "campaign_closed": "Cette campagne est terminée : elle ne reçoit plus de contributions.",
+        "funding_frozen": "Les contributions à ce projet sont suspendues pour le moment."
+      },
+      "PAYMENTS_HOLDER_PAYOUT_NOT_COVERED": {
+        "holder_without_covered_payout_account": "Les contributions en ligne ne sont pas encore disponibles pour ce projet."
+      },
+      "PAYMENTS_HOLDER_NOT_READY": {
+        "holder_not_verified": "Les contributions en ligne ouvriront dès que le porteur aura finalisé sa vérification."
+      },
+      "PAYMENTS_METHOD_NOT_AVAILABLE": {
+        "not_covered_by_holder_rail": "Ce moyen de paiement n’est pas proposé pour ce projet. Choisissez-en un autre.",
+        "contributor_country_not_covered": "Ce moyen de paiement n’est pas disponible depuis le pays choisi. Choisissez-en un autre ou changez de pays.",
+        "currency_not_supported": "Ce moyen de paiement n’accepte pas cette devise. Choisissez-en un autre.",
+        "amount_out_of_range": "Ce moyen de paiement n’accepte pas ce montant. Modifiez le montant ou choisissez un autre moyen."
+      },
+      "PAYMENTS_CURRENCY_NOT_AVAILABLE": {
+        "not_covered_by_holder_rail": "Ce projet ne reçoit pas de paiement dans cette devise.",
+        "contributor_country_not_covered": "Aucun moyen de paiement n’est disponible depuis le pays choisi dans cette devise. Changez de pays ou de devise.",
+        "currency_not_supported": "Cette devise n’est pas acceptée pour ce projet. Choisissez-en une autre.",
+        "amount_out_of_range": "Ce montant est hors des limites acceptées. Modifiez-le."
+      },
+      "PAYMENTS_AMOUNT_OUT_OF_RANGE": {
+        "amount_out_of_range": "Ce montant est hors des limites acceptées. Modifiez-le."
+      },
+      "PAYMENTS_PAYOUT_CHANGE_REFUSED": {
+        "same_option": "C’est déjà votre option de versement.",
+        "campaign_in_progress": "Une de vos campagnes reçoit des contributions sur ce compte : le changement sera possible après sa clôture.",
+        "payments_pending": "Des paiements sont encore en attente sur ce compte : réessayez quand ils seront terminés."
+      }
+    },
+    "methods": {
+      "withOperators": "{{method}} ({{operators}})"
+    },
+    "unavailable": {
+      "title": "Moyens non disponibles ici",
+      "yourCountry": "votre pays",
+      "reasons": {
+        "not_covered_by_holder_rail": "{{method}} n’est pas disponible pour ce projet.",
+        "contributor_country_not_covered": "{{method}} n’est pas disponible depuis ce pays ({{country}}).",
+        "currency_not_supported": "{{method}} n’est pas disponible dans cette devise.",
+        "amount_out_of_range": "{{method}} n’accepte pas ce montant."
+      },
+      "accepted": "Accepté pour ce paiement : {{methods}}.",
+      "noneAvailable": "Aucun moyen n’est disponible pour ce paiement : changez de pays, de devise ou de montant."
+    },
+    "availability": {
+      "alternativesTitle": "Vous pouvez quand même soutenir ce projet",
+      "holder_not_verified": {
+        "title": "Contributions en ligne bientôt ouvertes",
+        "body": "Les contributions en ligne ouvriront dès que le porteur aura finalisé sa vérification."
+      },
+      "holder_without_covered_payout_account": {
+        "title": "Contributions en ligne indisponibles",
+        "body": "Les contributions en ligne ne sont pas encore disponibles pour ce projet. Vous pouvez le soutenir autrement."
+      },
+      "campaign_closed": {
+        "title": "Campagne terminée",
+        "body": "Cette campagne est terminée : elle ne reçoit plus de contributions."
+      },
+      "funding_frozen": {
+        "title": "Contributions suspendues",
+        "body": "Les contributions à ce projet sont suspendues pour le moment. La page reste consultable."
+      }
+    },
+    "entry": {
+      "contribute": "Contribuer",
+      "signInToContribute": "Se connecter pour contribuer",
+      "unreadable": "Les moyens de contribuer n’ont pas pu être chargés.",
+      "declareOffline": "Vous avez contribué hors plateforme ? Déclarez-le",
+      "loveMoneyCommitment": "Prendre un engagement de love money",
+      "interest": "Manifester un intérêt",
+      "resume": {
+        "title": "Un paiement est en attente",
+        "body": "Votre contribution de {{amount}} attend son paiement. Reprenez-la plutôt que d’en créer une autre.",
+        "action": "Reprendre le paiement",
+        "cancel": "Abandonner ce paiement",
+        "canceling": "Abandon en cours"
+      }
+    },
+    "journey": {
+      "title": "Contribuer à {{title}}",
+      "progress": "Étape {{current}} sur {{total}} : {{step}}",
+      "steps": {
+        "kind": "type de contribution",
+        "country": "pays",
+        "amount": "montant",
+        "reward": "contrepartie",
+        "behalf": "au nom de",
+        "display": "affichage",
+        "method": "moyen de paiement",
+        "review": "récapitulatif"
+      },
+      "back": "Retour",
+      "next": "Continuer",
+      "loading": "Chargement de votre contribution précédente",
+      "required": {
+        "kind": "Choisissez d’abord un type de contribution.",
+        "country": "Choisissez d’abord le pays d’où vous payez.",
+        "amount": "Saisissez d’abord un montant.",
+        "method": "Choisissez d’abord un moyen de paiement.",
+        "reward": "Le montant n’atteint pas le minimum de cette contrepartie : ajustez-le ou choisissez-en une autre."
+      },
+      "kind": {
+        "label": "Comment souhaitez-vous soutenir ce projet ?",
+        "commitment": "Engagement de love money, sans paiement",
+        "descriptions": {
+          "donation": "Un don, sans contrepartie. Un don n’est pas un titre financier.",
+          "reward_crowdfunding": "Un financement avec une contrepartie choisie parmi celles du projet.",
+          "love_money": "Un engagement de proche, accompagné d’un paiement.",
+          "love_money_commitment": "Un engagement de proche, déclaré sans paiement ; l’équipe le confirme."
+        },
+        "interestTitle": "Les autres instruments ne se paient pas en ligne",
+        "interestBody": "Ce projet accepte aussi : {{instruments}}. Ces instruments passent par une manifestation d’intérêt : l’équipe vous répond hors de la plateforme.",
+        "interestAction": "Manifester un intérêt"
+      },
+      "country": {
+        "label": "Pays d’où vous payez",
+        "hint": "Les moyens de paiement proposés dépendent de ce pays. Il est prérempli avec celui de votre profil et ne vaut que pour ce paiement.",
+        "placeholder": "Choisir un pays"
+      },
+      "amount": {
+        "label": "Montant",
+        "currency": "Devise de paiement",
+        "bounds": "Entre {{min}} et {{max}}.",
+        "noCurrency": "Aucune devise n’est disponible pour ce pays. Revenez à l’étape précédente pour en choisir un autre.",
+        "equivalent": "Soit {{amount}}.",
+        "fixedParity": "Parité fixe : 1 € = {{rate}} francs CFA."
+      },
+      "reward": {
+        "label": "Contrepartie",
+        "none": "Sans contrepartie",
+        "noneHint": "Votre contribution soutient le projet sans contrepartie.",
+        "minimum": "À partir de {{amount}}",
+        "soldOut": "Épuisée",
+        "unlimited": "Sans limite de quantité",
+        "remaining": {
+          "one": "{{count}} restante",
+          "other": "{{count}} restantes"
+        },
+        "belowMinimum": "Le montant choisi n’atteint pas le minimum de cette contrepartie ({{amount}}).",
+        "adjust": "Ajuster le montant à {{amount}}"
+      },
+      "behalf": {
+        "label": "Au nom de",
+        "hint": "Une contribution au nom d’une organisation apparaît dans ses projets soutenus.",
+        "self": "En votre nom",
+        "organization": "Au nom de cette organisation, dont vous êtes propriétaire ou administrateur"
+      },
+      "display": {
+        "public": "Apparaître dans la liste des soutiens",
+        "publicHint": "Votre nom (ou celui de l’organisation) apparaît sur la page du projet, sans le montant. Désactivé par défaut.",
+        "anonymous": "Don anonyme",
+        "anonymousHint": "Votre nom n’est montré ni au public ni à l’équipe du projet."
+      },
+      "method": {
+        "label": "Moyen de paiement",
+        "hints": {
+          "card": "Visa, Mastercard et cartes internationales, sur la page sécurisée du prestataire.",
+          "sepa_debit": "Prélèvement depuis un compte bancaire de la zone SEPA ; la confirmation peut prendre quelques jours.",
+          "apple_pay": "Proposé par la page du prestataire sur les appareils compatibles.",
+          "google_pay": "Proposé par la page du prestataire sur les appareils compatibles.",
+          "paypal": "Avec votre compte PayPal.",
+          "mobile_money": "Validation sur votre téléphone, chez votre opérateur.",
+          "bank_transfer": "Virement depuis votre banque.",
+          "bank_account": "Paiement depuis votre compte bancaire.",
+          "ussd": "Code à composer sur votre téléphone."
+        },
+        "noneTitle": "Aucun moyen de paiement disponible",
+        "noneBody": "Aucun moyen n’accepte ce paiement depuis ce pays, dans cette devise ou pour ce montant. Revenez aux étapes précédentes pour les modifier."
+      },
+      "review": {
+        "quoting": "Calcul du récapitulatif",
+        "method": "Moyen de paiement : {{method}}",
+        "pay": "Payer {{amount}}",
+        "payPending": "Payer",
+        "paying": "Redirection vers le paiement sécurisé",
+        "waitQuote": "Le récapitulatif doit d’abord s’afficher.",
+        "noPaymentPage": "La page de paiement n’a pas pu être ouverte. Réessayez dans un instant.",
+        "change": {
+          "reward": "Choisir une autre contrepartie",
+          "method": "Choisir un autre moyen",
+          "amount": "Modifier le montant"
+        }
+      },
+      "commitment": {
+        "body": "Vous déclarez un engagement de love money sans paiement. L’équipe du projet le confirme ; il ne compte pas dans le montant collecté.",
+        "description": "Message pour l’équipe",
+        "declare": "Déclarer mon engagement",
+        "declaring": "Déclaration en cours",
+        "doneTitle": "Engagement déclaré",
+        "doneBody": "L’équipe du projet va le confirmer. Vous le retrouverez dans vos contributions.",
+        "close": "Terminer"
+      }
+    },
+    "quote": {
+      "amount": "Montant de votre contribution",
+      "eurEquivalent": "Équivalent en euros",
+      "commission": "Commission de Pitchorium ({{rate}})",
+      "fee": "Frais estimés du prestataire",
+      "feeUnknown": "Non estimés pour ce prestataire",
+      "holder": "Montant estimé pour le porteur",
+      "holderUnknown": "Non estimé sans frais connus",
+      "currency": "Devise",
+      "fixedParity": "Équivalent exact à la parité fixe de 1 € = {{rate}} {{currency}}.",
+      "floatingRate": "Taux du moment : 1 € = {{rate}} {{currency}} ({{at}}). Il est verrouillé à la création du paiement, pour la durée de la session."
+    },
+    "mentions": {
+      "hosted": "Pitchorium ne détient pas les fonds : vous payez sur la page sécurisée d’un prestataire agréé, qui verse au porteur et prélève la commission à la source. Aucune donnée de carte ne passe par Pitchorium.",
+      "notASecurity": "Un don n’est pas un titre financier.",
+      "noGuarantee": "Un palier débloqué n’est pas une garantie de succès du projet.",
+      "selfDeclared": "L’impact du projet est auto-déclaré, non certifié.",
+      "notTaxReceipt": "L’email de confirmation n’est pas un reçu fiscal."
+    },
+    "return": {
+      "metaTitle": "Retour du paiement",
+      "backToProject": "Revenir au projet",
+      "pending": {
+        "title": "Paiement en cours de confirmation",
+        "body": "Le prestataire confirme votre paiement. Cette page se met à jour toute seule.",
+        "checking": "Vérification en cours",
+        "slow": "La confirmation prend plus de temps que prévu. Rien n’est perdu : vous pouvez vérifier à nouveau ou revenir plus tard.",
+        "amount": "Montant : {{amount}}",
+        "later": "Vous pouvez quitter cette page : le paiement suit son cours et son état apparaîtra dans vos contributions.",
+        "checkAgain": "Vérifier à nouveau"
+      },
+      "paid": {
+        "title": "Merci, votre contribution est confirmée",
+        "body": "Le prestataire a confirmé votre paiement pour {{title}}.",
+        "tiers": "Paliers débloqués",
+        "tierUnlocked": "Palier {{position}} débloqué ({{amount}})",
+        "noGuarantee": "Un palier débloqué n’est pas une garantie de succès du projet.",
+        "email": "Un email de confirmation vous a été envoyé.",
+        "next": "Suivez le projet pour recevoir ses actualités, et partagez-le."
+      },
+      "unpaid": {
+        "failed": {
+          "title": "Le paiement n’a pas abouti",
+          "body": "Le prestataire n’a pas accepté le paiement. Vous pouvez réessayer, avec le même moyen ou un autre."
+        },
+        "expired": {
+          "title": "La session de paiement a expiré",
+          "body": "Le délai pour payer est dépassé et la contrepartie éventuelle a été libérée. Vous pouvez recommencer avec les mêmes choix."
+        },
+        "canceled": {
+          "title": "Paiement abandonné",
+          "body": "Ce paiement a été abandonné avant d’être réglé. Vous pouvez recommencer avec les mêmes choix."
+        },
+        "nothingCharged": "Aucun montant n’a été prélevé pour cette tentative.",
+        "retry": "Réessayer"
+      }
+    },
+    "files": {
+      "uploadFailed": "Le fichier n’a pas pu être envoyé. Réessayez."
+    },
+    "offline": {
+      "declare": {
+        "title": "Déclarer une contribution hors plateforme",
+        "description": "Une contribution à {{title}} faite en dehors de Pitchorium. L’équipe du projet la confirme.",
+        "teamTitle": "Déclarer une contribution reçue hors plateforme",
+        "teamDescription": "Une contribution à {{title}} reçue en dehors de Pitchorium. Le contributeur la confirme.",
+        "contributor": "Identifiant du contributeur",
+        "contributorHint": "L’identifiant public de son profil, par exemple aissatou-ba.",
+        "kind": "Nature de la contribution",
+        "kinds": {
+          "cash": "Un montant remis en espèces.",
+          "institutional_transfer": "Un virement d’une institution ou d’une entreprise.",
+          "skills_sponsorship": "Du temps ou des compétences mis à disposition, sans montant.",
+          "love_money_commitment": "Un engagement de proche, sans montant."
+        },
+        "currency": "Devise",
+        "amount": "Montant",
+        "descriptionLabel": "Précisions",
+        "proofs": "Pièces justificatives",
+        "proofsLimits": "PDF, JPEG ou PNG, {{max}} fichiers au plus. Privées : seules les parties et l’administration les lisent.",
+        "countsAfterValidation": "Un montant ne compte dans le collecté qu’après confirmation par l’autre partie et validation par Pitchorium sur pièce justificative.",
+        "notCounted": "Un engagement ou un mécénat de compétences est affiché à part ; il ne compte pas dans le montant collecté.",
+        "submit": "Déclarer",
+        "declaring": "Déclaration en cours",
+        "declared": "Contribution déclarée.",
+        "waitUploads": "Attendez la fin de l’envoi des pièces.",
+        "cancel": "Annuler"
+      }
+    }
   }
 }

@@ -4,6 +4,7 @@ import { setRequestLocale } from 'next-intl/server';
 import { SingleColumnLayout } from '@/components/layout/page-layouts';
 import { routes } from '@/config/routes';
 import { siteConfig } from '@/config/site';
+import { LazyContributeEntry, VisitorContribute } from '@/features/payments';
 import { countryNames, ProjectPage, projectJsonLd } from '@/features/projects';
 import { asLocale } from '@/i18n/routing';
 import { resourceMetadata } from '@/lib/resources/metadata';
@@ -47,6 +48,28 @@ export default async function Page({ params }: PageProps<'/[locale]/projects/[sl
     resource.view === 'member' && project.status !== 'draft'
       ? await readMemberContext(project.id)
       : { follow: null, parity: null };
+  // « Contribuer » (ADR 0136): the availability is the api's, read by the member's browser; a
+  // visitor of an open campaign signs in first.
+  const open =
+    (project.status === 'funding' || project.status === 'funded') && !project.fundingFrozen;
+  const entry = {
+    id: project.id,
+    slug: project.slug,
+    title: project.title,
+    instruments: project.funding.instruments,
+    rewards: project.rewards,
+  };
+  const contribute =
+    project.status === 'draft'
+      ? null
+      : resource.view === 'member'
+        ? {
+            block: <LazyContributeEntry project={entry} layout="stack" />,
+            bar: <LazyContributeEntry project={entry} layout="bar" />,
+          }
+        : resource.view === 'visitor' && open
+          ? { block: <VisitorContribute path={path} />, bar: <VisitorContribute path={path} /> }
+          : null;
   return (
     <SingleColumnLayout width="page">
       <ProjectPage
@@ -57,6 +80,7 @@ export default async function Page({ params }: PageProps<'/[locale]/projects/[sl
         path={path}
         follow={context.follow}
         parity={context.parity}
+        contribute={contribute}
       />
       {resource.view === 'visitor' ? (
         <script
