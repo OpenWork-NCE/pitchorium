@@ -93,7 +93,7 @@ export async function ProjectHero({
         ) : null}
         <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
           {project.owner ? (
-            <div className="flex min-w-0 items-center gap-3">
+            <div className="flex max-w-full min-w-0 items-center gap-3">
               <Avatar
                 name={project.owner.displayName}
                 src={project.owner.avatarUrl}
@@ -107,7 +107,7 @@ export async function ProjectHero({
             </div>
           ) : null}
           {project.organization ? (
-            <div className="flex min-w-0 items-center gap-3">
+            <div className="flex max-w-full min-w-0 items-center gap-3">
               <Avatar
                 name={project.organization.name}
                 src={project.organization.logoUrl}
@@ -117,7 +117,7 @@ export async function ProjectHero({
               />
               <div className="grid min-w-0 text-sm">
                 <span className="text-muted">{t('organization')}</span>
-                <span className="flex items-center gap-1.5">
+                <span className="flex min-w-0 items-center gap-1.5">
                   <Link
                     href={routes.organization(project.organization.slug)}
                     className="truncate link-underline-hover font-medium text-foreground"
