@@ -1,3 +1,5 @@
+import { createRequire } from 'node:module';
+import { relative } from 'node:path';
 import { withSentryConfig } from '@sentry/nextjs/config';
 import type { NextConfig } from 'next';
 import createNextIntlPlugin from 'next-intl/plugin';
@@ -17,6 +19,18 @@ function remotePatterns(): NonNullable<NonNullable<NextConfig['images']>['remote
     },
   ];
 }
+
+/**
+ * The messages are compiled ahead of time (src/lib/i18n/messages.ts, icu-minify): next-intl
+ * formats them with its formatter of compiled messages, and the parser of ICU messages leaves the
+ * bundles (the alias next-intl sets for its own `precompile`, relative as Turbopack wants it).
+ */
+const formatOnly = relative(
+  process.cwd(),
+  createRequire(createRequire(`${process.cwd()}/package.json`).resolve('next-intl')).resolve(
+    'use-intl/format-message/format-only',
+  ),
+);
 
 const localCdn = /^https?:\/\/(localhost|127\.0\.0\.1)(:|\/|$)/.test(env.NEXT_PUBLIC_CDN_URL ?? '');
 
@@ -46,6 +60,11 @@ const nextConfig: NextConfig = {
   // `next dev` would write an AGENTS.md of its own when it detects a coding agent: the rules of
   // the repository live in the root AGENTS.md only.
   agentRules: false,
+  turbopack: {
+    resolveAlias: {
+      'use-intl/format-message': formatOnly.startsWith('.') ? formatOnly : `./${formatOnly}`,
+    },
+  },
   experimental: {
     // Barrel files of these packages are resolved import by import: only the used modules ship.
     optimizePackageImports: ['motion', 'radix-ui'],

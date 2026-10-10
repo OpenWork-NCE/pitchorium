@@ -1,4 +1,13 @@
+import { createRequire } from 'node:module';
 import type { StorybookConfig } from '@storybook/nextjs-vite';
+
+/**
+ * Messages compiled ahead of time (src/lib/i18n/messages.ts): use-intl formats them with its
+ * formatter of compiled messages, as next.config.ts and vitest.config.mts make it do.
+ */
+const FORMAT_ONLY = createRequire(createRequire(import.meta.url).resolve('next-intl')).resolve(
+  'use-intl/format-message/format-only',
+);
 
 /**
  * Workspace packages, prebundled by Vite: left to the React Compiler's Babel pass like the app's
@@ -42,6 +51,18 @@ const config: StorybookConfig = {
   core: { disableTelemetry: true },
   viteFinal: (vite) => ({
     ...vite,
+    resolve: {
+      ...vite.resolve,
+      alias: [
+        ...(Array.isArray(vite.resolve?.alias)
+          ? (vite.resolve.alias as { find: string | RegExp; replacement: string }[])
+          : Object.entries(vite.resolve?.alias ?? {}).map(([find, replacement]) => ({
+              find,
+              replacement: replacement as string,
+            }))),
+        { find: /^use-intl\/format-message$/, replacement: FORMAT_ONLY },
+      ],
+    },
     optimizeDeps: {
       ...vite.optimizeDeps,
       include: [...(vite.optimizeDeps?.include ?? []), ...WORKSPACE_PACKAGES, ...LIBRARIES],

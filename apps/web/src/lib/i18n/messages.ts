@@ -1,5 +1,7 @@
 import type { Locale } from '@pitchorium/contracts';
 import { type CatalogTree, catalogs, localeManifest } from '@pitchorium/i18n';
+import compile from 'icu-minify/compile';
+import type { AbstractIntlMessages } from 'next-intl';
 
 /** Namespaces of `@pitchorium/i18n` the web app reads on the server. */
 export const WEB_NAMESPACES = [
@@ -12,7 +14,15 @@ export const WEB_NAMESPACES = [
 ] as const;
 
 type WebNamespace = (typeof WEB_NAMESPACES)[number];
-export type WebMessages = Record<WebNamespace, CatalogTree>;
+
+/** A message compiled ahead of time (icu-minify): a plain string stays a string. */
+export type CompiledMessage = ReturnType<typeof compile>;
+/** A tree of compiled messages, as next-intl reads them (ADR 0094). */
+export type MessageTree = { [key: string]: CompiledMessage | MessageTree };
+export type WebMessages = Record<WebNamespace, MessageTree>;
+
+const isTree = (value: CompiledMessage | MessageTree | undefined): value is MessageTree =>
+  typeof value === 'object' && !Array.isArray(value);
 
 /** Messages of every document: the header, the theme, the languages and the error page. */
 const DOCUMENT_MESSAGES = ['web.a11y', 'web.theme', 'web.locale', 'web.error'] as const;
@@ -169,11 +179,16 @@ function quote(literal: string): string {
   return literal.replace(/'/g, "''").replace(/[{}<>#|]/g, (char) => `'${char}'`);
 }
 
-function convert(tree: CatalogTree): CatalogTree {
-  return Object.fromEntries<string | CatalogTree>(
+/**
+ * ICU messages compiled once per locale (icu-minify, the format of next-intl's `precompile`):
+ * `use-intl/format-message` resolves to its formatter of compiled messages (next.config.ts,
+ * vitest.config.mts, .storybook/main.ts), and the parser of ICU messages leaves every page.
+ */
+function convert(tree: CatalogTree): MessageTree {
+  return Object.fromEntries<CompiledMessage | MessageTree>(
     Object.entries(tree).map(([key, value]) => [
       key,
-      typeof value === 'string' ? toIcu(value) : convert(value),
+      typeof value === 'string' ? compile(toIcu(value)) : convert(value),
     ]),
   );
 }
@@ -207,21 +222,22 @@ export function messagesFor(locale: Locale): WebMessages {
 }
 
 /** Copy of the subtrees at `paths` (dotted), the rest left out; an unknown path is an error. */
-export function pickMessages(messages: WebMessages, paths: readonly string[]): CatalogTree {
-  const picked: CatalogTree = {};
+export function pickMessages(messages: WebMessages, paths: readonly string[]): MessageTree {
+  const picked: MessageTree = {};
   for (const path of paths) {
     const keys = path.split('.');
-    let source: string | CatalogTree = messages;
+    let source: CompiledMessage | MessageTree = messages;
     let target = picked;
     keys.forEach((key, index) => {
-      const next: string | CatalogTree | undefined =
-        typeof source === 'object' ? source[key] : undefined;
+      const next: CompiledMessage | MessageTree | undefined = isTree(source)
+        ? source[key]
+        : undefined;
       if (next === undefined) throw new Error(`Unknown message path: ${path}`);
       if (index === keys.length - 1) {
         target[key] = next;
       } else {
         const existing = target[key];
-        target = target[key] = typeof existing === 'object' ? existing : {};
+        target = target[key] = isTree(existing) ? existing : {};
       }
       source = next;
     });
@@ -229,7 +245,10 @@ export function pickMessages(messages: WebMessages, paths: readonly string[]): C
   return picked;
 }
 
-/** Messages a route group sends to the browser (CLIENT_MESSAGES). */
-export function clientMessages(locale: Locale, scope: MessageScope): CatalogTree {
-  return pickMessages(messagesFor(locale), CLIENT_MESSAGES[scope]);
+/**
+ * Messages a route group sends to the browser (CLIENT_MESSAGES). next-intl types messages as
+ * strings; compiled ones are what its formatter of compiled messages reads.
+ */
+export function clientMessages(locale: Locale, scope: MessageScope): AbstractIntlMessages {
+  return pickMessages(messagesFor(locale), CLIENT_MESSAGES[scope]) as AbstractIntlMessages;
 }

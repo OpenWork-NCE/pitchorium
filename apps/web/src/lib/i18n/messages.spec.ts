@@ -1,3 +1,4 @@
+import { createTranslator } from 'next-intl';
 import { describe, expect, it } from 'vitest';
 import { CLIENT_MESSAGES, clientMessages, messagesFor, pickMessages, toIcu } from './messages';
 
@@ -39,5 +40,21 @@ describe('messages', () => {
     const swahili = messagesFor('sw').web as { notFound: { title: string } };
     const french = messagesFor('fr').web as { notFound: { title: string } };
     expect(swahili.notFound.title).toBe(french.notFound.title);
+  });
+
+  it('compiles the messages ahead of time, formatted by the formatter of compiled messages', () => {
+    const feed = (messagesFor('fr').web as { feed: { newPosts: { other: unknown } } }).feed;
+    expect(feed.newPosts.other).toEqual([['count'], ' nouvelles publications']);
+    const t = createTranslator({ locale: 'fr', messages: messagesFor('fr') }) as unknown as {
+      (key: string, values: Record<string, unknown>): string;
+      rich: (key: string, values: Record<string, unknown>) => unknown;
+    };
+    expect(t('web.feed.newPosts.other', { count: 3 })).toBe('3 nouvelles publications');
+    expect(
+      t.rich('web.onboarding.terms.acceptTerms', {
+        version: '2',
+        link: (text: unknown) => `[${String(text)}]`,
+      }),
+    ).toContain('[');
   });
 });

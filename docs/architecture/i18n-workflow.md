@@ -4,7 +4,7 @@ Langues de l'interface (§8) : le français est la source, l'anglais une traduct
 
 ## Catalogues
 
-`packages/i18n/src/locales/<locale>/<namespace>.json`, clés imbriquées, paramètres `{{nom}}`. Le namespace `web` contient les textes de l'application web, convertis en messages ICU au chargement (ADR 0084) ; il compte dans la complétude d'une langue avant son activation. `pnpm i18n:check` vérifie l'alignement des langues commencées sur le français (README de `@pitchorium/i18n`).
+`packages/i18n/src/locales/<locale>/<namespace>.json`, clés imbriquées, paramètres `{{nom}}`. Le namespace `web` contient les textes de l'application web, convertis en messages ICU puis compilés au chargement (`icu-minify`, ADR 0084) ; il compte dans la complétude d'une langue avant son activation. `pnpm i18n:check` vérifie l'alignement des langues commencées sur le français (README de `@pitchorium/i18n`).
 
 ## Outil (Crowdin, sans compte à ce jour)
 

@@ -53,6 +53,7 @@ Dernières versions stables au 2026-10-08, figées exactement (ADR 0012). Publi�
 | `eslint-plugin-react-hooks`   | 7.1.1   |
 | `eslint-plugin-storybook`     | 10.6.1  |
 | `gsap`                        | 3.15.0  |
+| `icu-minify`                  | 4.14.9  |
 | `jsdom`                       | 30.1.2  |
 | `lucide-react`                | 1.53.0  |
 | `motion`                      | 14.0.0  |

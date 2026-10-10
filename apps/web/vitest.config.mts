@@ -1,14 +1,25 @@
+import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
 import react from '@vitejs/plugin-react';
 import { playwright } from '@vitest/browser-playwright';
 import { defineConfig } from 'vitest/config';
 
-const alias = {
-  '@': fileURLToPath(new URL('./src', import.meta.url)),
+const alias = [
+  { find: '@', replacement: fileURLToPath(new URL('./src', import.meta.url)) },
   // Next.js resolves it to an empty module on the server; tests run outside Next.js.
-  'server-only': fileURLToPath(new URL('./test/support/empty.ts', import.meta.url)),
-};
+  {
+    find: 'server-only',
+    replacement: fileURLToPath(new URL('./test/support/empty.ts', import.meta.url)),
+  },
+  // Messages compiled ahead of time (src/lib/i18n/messages.ts): the formatter next.config.ts uses.
+  {
+    find: /^use-intl\/format-message$/,
+    replacement: createRequire(createRequire(import.meta.url).resolve('next-intl')).resolve(
+      'use-intl/format-message/format-only',
+    ),
+  },
+];
 
 /**
  * Stories of the design system run as tests in Chromium (addon-vitest): their `play` function
@@ -52,8 +63,9 @@ export default defineConfig({
           include: ['src/**/*.spec.{ts,tsx}', 'test/**/*.spec.ts'],
           setupFiles: ['./test/support/setup.ts'],
           restoreMocks: true,
-          // next-intl imports `next/server` without extension: Vite resolves it, Node's ESM loader not.
-          server: { deps: { inline: ['next-intl'] } },
+          // next-intl imports `next/server` without extension: Vite resolves it, Node's ESM loader
+          // not. use-intl, inlined too, gets the formatter of compiled messages (alias above).
+          server: { deps: { inline: ['next-intl', 'use-intl'] } },
           env: {
             NEXT_PUBLIC_SITE_URL: 'http://localhost:3200',
             NEXT_PUBLIC_API_URL: 'http://api.test',
