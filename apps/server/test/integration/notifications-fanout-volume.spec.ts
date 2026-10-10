@@ -192,7 +192,9 @@ describe('notifications fan-out volume', () => {
     expect(
       await count(`SELECT count(*) FROM notifications.notifications WHERE type = 'project_update'`),
     ).toBe(FOLLOWERS);
-    expect(await mailpit.count()).toBe(FOLLOWERS);
+    // Only the emails of the followers: the verification email of the owner, sent by the worker,
+    // may land after the mailbox was cleared.
+    expect(await mailpit.countMatching('to:follower-')).toBe(FOLLOWERS);
     expect(jobCount).toBeLessThanOrEqual(MAX_JOBS);
 
     // A batch resumed after a failure in its emails sends only those not marked as sent.
@@ -208,7 +210,7 @@ describe('notifications fan-out volume', () => {
     );
     await mailpit.clear();
     await worker.get(NotificationsMaintenanceService).deliverBatch(batch!.payload);
-    expect(await mailpit.count()).toBe(50);
+    expect(await mailpit.countMatching('to:follower-')).toBe(50);
     expect(await emailed()).toBe(FOLLOWERS);
   }, 900_000);
 });

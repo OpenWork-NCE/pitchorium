@@ -29,6 +29,14 @@ export class Mailpit {
     return ((await response.json()) as { total: number }).total;
   }
 
+  /** Number of emails matching a search of Mailpit (`to:follower-`, for example). */
+  async countMatching(search: string): Promise<number> {
+    const response = await fetch(
+      `${this.baseUrl}/api/v1/search?query=${encodeURIComponent(search)}&limit=1`,
+    );
+    return ((await response.json()) as { messages_count: number }).messages_count;
+  }
+
   async messagesTo(address: string): Promise<MailpitSummary[]> {
     const response = await fetch(
       `${this.baseUrl}/api/v1/search?query=${encodeURIComponent(`to:"${address}"`)}`,
