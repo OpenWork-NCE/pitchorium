@@ -300,14 +300,16 @@ export function BarChart({
           aria-hidden
         >
           {series.map((datum, index) => (
+            // Centred on its bar; with one label out of two, it may use the column of its
+            // hidden neighbours on each side, never cut.
             <span
               key={datum.key}
               className={cn(
-                'truncate text-center',
+                'flex min-w-0 justify-center whitespace-nowrap',
                 thin && (count - 1 - index) % 2 === 1 && 'max-sm:invisible',
               )}
             >
-              {datum.label}
+              <span>{datum.label}</span>
             </span>
           ))}
         </div>

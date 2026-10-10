@@ -24,7 +24,9 @@ interface StatProps {
  */
 export function Stat({ label, value, format, step = 1, hint, className }: StatProps) {
   return (
-    <div className={cn('grid gap-1', className)}>
+    // Rows at their own height from the top: stats side by side, stretched to the tallest one,
+    // keep their values on one line.
+    <div className={cn('grid content-start gap-1', className)}>
       <dt className="text-sm text-muted">{label}</dt>
       <dd className="font-display text-3xl font-extrabold tabular-nums">
         <AnimatedNumber value={value} format={format} step={step} />

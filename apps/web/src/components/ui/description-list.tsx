@@ -22,8 +22,10 @@ export function DescriptionList({ items, layout = 'columns', className }: Descri
         <div
           // The caller may pass a key; the order of the pairs is otherwise stable.
           key={item.key ?? index}
+          // The row gap only: a subgrid inherits the gap between term and value from the list
+          // (a `gap` here would glue a long term to its value).
           className={cn(
-            'grid gap-0.5',
+            'grid gap-y-0.5',
             layout === 'columns' && 'sm:col-span-2 sm:grid-cols-subgrid',
           )}
         >
