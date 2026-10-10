@@ -26,7 +26,8 @@
     "publish": "Publier",
     "createProject": "Créer un projet",
     "menu": "Menu",
-    "shortcuts": "Raccourcis clavier"
+    "shortcuts": "Raccourcis clavier",
+    "dashboard": "Tableau de bord"
   },
   "theme": {
     "label": "Thème",

@@ -2,6 +2,7 @@
 
 import {
   Bookmark,
+  ChartColumn,
   Building2,
   CircleUser,
   Keyboard,
@@ -100,6 +101,12 @@ export function UserMenuPanel({
             <Link href={routes.profile}>
               <CircleUser aria-hidden />
               {t('profile')}
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href={routes.dashboard}>
+              <ChartColumn aria-hidden />
+              {t('dashboard')}
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
