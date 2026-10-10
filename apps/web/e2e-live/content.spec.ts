@@ -562,8 +562,19 @@ test.describe('the feed of a demonstration member', () => {
         return entry.count();
       })
       .toBe(1);
-    await page.waitForTimeout(300);
-    const left = await page.evaluate(() => Math.round(window.scrollY));
+    // The position once the page is still: WebKit may apply the last turn of the wheel later.
+    let left = -1;
+    await expect
+      .poll(
+        async () => {
+          const now = await page.evaluate(() => Math.round(window.scrollY));
+          const still = now === left;
+          left = now;
+          return still;
+        },
+        { intervals: [300] },
+      )
+      .toBe(true);
     // Read and followed in one step: the virtualized entry may leave the page between two.
     const name = await page.evaluate(() => {
       const link = document.querySelector<HTMLAnchorElement>('[data-feed-index="6"] a');
