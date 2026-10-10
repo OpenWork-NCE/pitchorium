@@ -6,6 +6,7 @@ import { ThemeProvider } from 'next-themes';
 import type { ReactNode } from 'react';
 import { ActiveLocalesProvider } from '@/features/localization';
 import { TimeZoneSync } from './time-zone-sync';
+import { TransitionNamesWatch } from './transition-names-watch';
 
 /**
  * The theme script runs from the server HTML, before the first paint. Rendered again in the
@@ -52,6 +53,7 @@ export function Providers({
         <ActiveLocalesProvider locales={activeLocales}>
           {children}
           <TimeZoneSync />
+          <TransitionNamesWatch />
         </ActiveLocalesProvider>
       </ThemeProvider>
     </NextIntlClientProvider>

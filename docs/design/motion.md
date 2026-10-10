@@ -110,6 +110,8 @@ Moins de mouvement veut dire `prefers-reduced-motion: reduce`, `prefers-reduced-
 
 ## Contrôles (QA §14)
 
+- Aucun nom de transition au repos ; un nom porté deux fois dans le document est signalé en développement et fait échouer un parcours de bout en bout (ADR 0145).
+
 - Tests Vitest des primitives en mouvement complet et réduit, de la bascule de thème (cercle, puis fondu).
 - Captures de référence en mouvement réduit (1280x800 et 390x844, deux thèmes).
 - GSAP absent des bundles de l'espace membre : règle ESLint et `scripts/check-bundles.mjs`.

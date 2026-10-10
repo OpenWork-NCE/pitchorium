@@ -4,13 +4,18 @@ import {
   type ConsoleMessage,
   test as base,
 } from '@playwright/test';
+import {
+  duplicateTransitionNames,
+  watchTransitionNames,
+} from '../../src/lib/view-transitions/check';
 
 /**
  * A journey fails on any error of the browser (A2 of the PROMPT FRONT 4): an error written to the
  * console, a warning of React about the hydration, an uncaught exception, a rejected promise
  * nobody handled, a violation of the Content Security Policy. Every context a test opens is
  * watched (the default one and those of `browser.newContext()`), every page in it, from its first
- * script. A journey that provokes an error on purpose declares it (`allowConsole`).
+ * script. A name of a view transition carried twice by the document is reported as well (ADR 0145).
+ * A journey that provokes an error on purpose declares it (`allowConsole`).
  */
 
 /** Warnings of React and Next.js about a server render the browser does not match. */
@@ -80,6 +85,11 @@ async function watch(
     problems.push(text);
   });
   await context.addInitScript(reportFromPage);
+  // A name of a view transition carried twice aborts the transition (ADR 0145): every page checks
+  // it when a transition starts, and reports it like any error.
+  await context.addInitScript({
+    content: `(${watchTransitionNames.toString()})((text) => window.reportBrowserProblem(text), ${duplicateTransitionNames.toString()});`,
+  });
   context.on('console', (message) => {
     const text = message.text();
     const location = message.location();
