@@ -2601,7 +2601,6 @@
       "feeUnknown": "Non estimés pour ce prestataire",
       "holder": "Montant estimé pour le porteur",
       "holderUnknown": "Non estimé sans frais connus",
-      "currency": "Devise",
       "fixedParity": "Équivalent exact à la parité fixe de 1 € = {{rate}} {{currency}}.",
       "floatingRate": "Taux du moment : 1 € = {{rate}} {{currency}} ({{at}}). Il est verrouillé à la création du paiement, pour la durée de la session."
     },
@@ -2942,7 +2941,6 @@
       "kind": "Type",
       "method": "Moyen de paiement",
       "amount": "Montant payé",
-      "currency": "Devise",
       "eurEquivalent": "Équivalent en euros",
       "rate": "Taux appliqué",
       "rateIdentity": "Paiement en euros",

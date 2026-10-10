@@ -78,7 +78,6 @@ export default function ContributeDialog(props: {
         <DialogContent
           size="lg"
           title={t('title', { title: props.project.title })}
-          className="max-sm:h-dvh max-sm:max-h-dvh max-sm:rounded-none"
           data-testid="contribute-dialog"
         >
           <Loading label={t('loading')}>
@@ -255,12 +254,13 @@ function Journey({
           total: steps.length,
           step: t(`steps.${step}`),
         })}
-        className="max-sm:h-dvh max-sm:max-h-dvh max-sm:rounded-none"
+        // A sheet from the bottom of a phone at the height of its step (up to nearly the whole
+        // screen, then it scrolls): never a few fields lost in an empty screen.
         data-testid="contribute-dialog"
         data-step={step}
       >
         <div className="grid gap-6">
-          {body}
+          <div className="grid content-start gap-6">{body}</div>
           {step === 'review' ? (
             previous && !declared ? (
               <Button

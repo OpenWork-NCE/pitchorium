@@ -30,8 +30,10 @@ export async function ContributionDetail({ contribution }: { contribution: Contr
     { key: 'kind', term: t('kind'), description: kinds(contribution.kind) },
     { key: 'method', term: t('method'), description: methods(contribution.method) },
     { key: 'amount', term: t('amount'), description: money(contribution.amount) },
-    { key: 'currency', term: t('currency'), description: contribution.amount.currency },
-    { key: 'eur', term: t('eurEquivalent'), description: money(contribution.eurEquivalent) },
+    // Each amount carries its currency; the equivalent in euros only for another currency.
+    ...(contribution.amount.currency === 'EUR'
+      ? []
+      : [{ key: 'eur', term: t('eurEquivalent'), description: money(contribution.eurEquivalent) }]),
     {
       key: 'rate',
       term: t('rate'),

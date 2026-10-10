@@ -148,19 +148,37 @@ test.describe('contributing screenshots', () => {
   }
 });
 
-/** On a phone, the action bar opens the journey on the whole screen (ADR 0132, ADR 0136). */
+/**
+ * On a phone, the action bar opens the journey as a sheet from the bottom, the width of the
+ * screen and the height of its step (ADR 0132, ADR 0136): a step of one field leaves no empty
+ * screen.
+ */
 test.describe('contributing on a phone', { tag: '@phone' }, () => {
   test.use({ viewport: { width: 390, height: 844 } });
 
-  test('opens the journey on the whole screen of a phone', async ({ page }) => {
+  test('opens the journey as a sheet at the height of its step', async ({ page }) => {
     await signIn(page, MEMBER);
     await page.goto(PROJECT);
     await page.getByTestId('contribute-bar').click();
     const dialog = page.getByTestId('contribute-dialog');
     await expect(dialog).toHaveAttribute('data-step', 'kind');
-    const box = (await dialog.boundingBox())!;
     const viewport = page.viewportSize()!;
-    expect(Math.round(box.width)).toBe(viewport.width);
-    expect(Math.round(box.height)).toBe(viewport.height);
+    // Once the sheet has risen into place.
+    await expect(async () => {
+      const box = (await dialog.boundingBox())!;
+      expect(Math.round(box.width)).toBe(viewport.width);
+      expect(Math.round(box.y + box.height)).toBe(viewport.height);
+    }).toPass();
+    await dialog.getByRole('radio', { name: /^Don/ }).click();
+    await dialog.getByRole('button', { name: 'Continuer' }).click();
+    await expect(dialog).toHaveAttribute('data-step', 'country');
+    await dialog.getByRole('button', { name: 'Continuer' }).click();
+    await expect(dialog).toHaveAttribute('data-step', 'amount');
+    // The step of the amount: its field and its actions, half of the screen at most.
+    await expect(async () => {
+      const amount = (await dialog.boundingBox())!;
+      expect(amount.height).toBeLessThan(viewport.height / 2);
+      expect(Math.round(amount.y + amount.height)).toBe(viewport.height);
+    }).toPass();
   });
 });

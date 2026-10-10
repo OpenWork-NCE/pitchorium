@@ -22,3 +22,5 @@ Statut : acceptée (2026-10-10).
 - Le parcours suit l'api : un moyen, une devise ou une borne qui change côté prestataire change l'écran sans déploiement du web.
 - L'engagement de love money sans paiement est une déclaration hors plateforme (ADR 0049), confirmée par l'équipe, jamais comptée dans le collecté.
 - La durée de validité d'un devis n'est pas exposée par l'api : le taux d'une devise flottante n'est verrouillé qu'à la création du paiement, pour la durée de la session (question ouverte 125).
+
+Révision du PROMPT FRONT 6 : sur un téléphone, le dialogue n'occupe plus tout l'écran mais une feuille du bas de la hauteur de son étape (92 % de l'écran au plus, puis elle défile) ; une étape d'un seul champ laissait un écran presque vide entre le champ et les actions.

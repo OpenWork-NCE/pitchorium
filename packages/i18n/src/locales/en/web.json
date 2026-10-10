@@ -2601,7 +2601,6 @@
       "feeUnknown": "Not estimated for this provider",
       "holder": "Estimated amount for the holder",
       "holderUnknown": "Not estimated without known fees",
-      "currency": "Currency",
       "fixedParity": "Exact equivalent at the fixed parity of €1 = {{rate}} {{currency}}.",
       "floatingRate": "Current rate: €1 = {{rate}} {{currency}} ({{at}}). It is locked when the payment is created, for the length of the session."
     },
@@ -2942,7 +2941,6 @@
       "kind": "Kind",
       "method": "Payment method",
       "amount": "Amount paid",
-      "currency": "Currency",
       "eurEquivalent": "Equivalent in euros",
       "rate": "Rate applied",
       "rateIdentity": "Paid in euros",

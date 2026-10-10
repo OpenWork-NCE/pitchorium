@@ -9,22 +9,14 @@ import type { Contribution, ContributionKind, ContributionQuote } from '@pitchor
 import { ShieldCheck } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { type ReactNode, useMemo, useRef, useState } from 'react';
-import {
-  Alert,
-  Button,
-  DescriptionList,
-  DrawnCheck,
-  Field,
-  Loading,
-  Skeleton,
-  Textarea,
-} from '@/components/ui';
+import { Alert, Button, DrawnCheck, Field, Loading, Skeleton, Textarea } from '@/components/ui';
 import { useWithPrerequisites } from '@/features/access';
 import { formatDateTimeShort } from '../../lib/format';
 import { PAYMENT_LIMITS } from '../../lib/limits';
 import { safePaymentUrl } from '../../lib/payment-url';
 import { publicEnv } from '@/lib/public-env';
 import { formatMoney } from '@/lib/format/money';
+import { cn } from '@/lib/cn';
 import { useMethodLabel } from '../shared/method-label';
 import { problemCode, usePaymentProblem } from '../shared/use-payment-problem';
 import type { JourneyStep } from '../../lib/journey';
@@ -41,17 +33,19 @@ const STEP_OF_REFUSAL: Readonly<Record<string, RefusalStep>> = {
   PAYMENTS_AMOUNT_OUT_OF_RANGE: 'amount',
 };
 
-/** The summary of the quote (§9.3 step 7), every amount as the api gives it. */
+/**
+ * The summary of the quote (§9.3 step 7), every amount as the api gives it, as a ledger: what
+ * the contributor pays first, the commission and the fee under it, what the holder receives last,
+ * each amount aligned on the right in tabular figures with every decimal of its currency.
+ */
 export function QuoteSummary({ quote }: { quote: ContributionQuote }) {
   const t = useTranslations('web.payments.quote');
   const locale = useLocale();
-  const money = (amount: ContributionQuote['amount']) => (
-    <span className="font-numeric tabular-nums">{formatMoney(amount, locale, 'financial')}</span>
-  );
-  const items: { term: ReactNode; description: ReactNode; key: string }[] = [
-    { key: 'amount', term: t('amount'), description: money(quote.amount) },
+  const money = (amount: ContributionQuote['amount']) => formatMoney(amount, locale, 'financial');
+  const rows: { key: string; term: ReactNode; value: ReactNode; strong?: boolean }[] = [
+    { key: 'amount', term: t('amount'), value: money(quote.amount), strong: true },
     ...(quote.amount.currency !== 'EUR'
-      ? [{ key: 'eur', term: t('eurEquivalent'), description: money(quote.eurEquivalent) }]
+      ? [{ key: 'eur', term: t('eurEquivalent'), value: money(quote.eurEquivalent) }]
       : []),
     {
       key: 'commission',
@@ -60,27 +54,44 @@ export function QuoteSummary({ quote }: { quote: ContributionQuote }) {
           quote.commissionRateBps / 10_000,
         ),
       }),
-      description: money(quote.commission),
+      value: money(quote.commission),
     },
     {
       key: 'fee',
       term: t('fee'),
-      description: quote.estimatedProviderFee ? money(quote.estimatedProviderFee) : t('feeUnknown'),
+      value: quote.estimatedProviderFee ? money(quote.estimatedProviderFee) : t('feeUnknown'),
     },
     {
       key: 'holder',
       term: t('holder'),
-      description: quote.estimatedHolderAmount
-        ? money(quote.estimatedHolderAmount)
-        : t('holderUnknown'),
+      value: quote.estimatedHolderAmount ? money(quote.estimatedHolderAmount) : t('holderUnknown'),
+      strong: true,
     },
-    { key: 'currency', term: t('currency'), description: quote.amount.currency },
   ];
   // A floating rate is the one of the moment: its time is said, and the session locks it.
   const floating = quote.rate.source === 'provider' || quote.rate.source === 'simulated';
   return (
     <div className="grid gap-3" data-testid="quote-summary">
-      <DescriptionList items={items} />
+      <dl className="grid divide-y divide-border rounded-xl border border-border">
+        {rows.map((row) => (
+          <div
+            key={row.key}
+            className="flex items-baseline justify-between gap-4 px-4 py-2.5 text-sm"
+          >
+            <dt className={row.strong ? 'font-medium text-foreground' : 'text-muted'}>
+              {row.term}
+            </dt>
+            <dd
+              className={cn(
+                'text-right font-numeric whitespace-nowrap tabular-nums',
+                row.strong && 'text-base font-semibold',
+              )}
+            >
+              {row.value}
+            </dd>
+          </div>
+        ))}
+      </dl>
       {quote.rate.source === 'fixed_parity' ? (
         <p className="text-sm text-muted">
           {t('fixedParity', { rate: quote.rate.unitsPerEur, currency: quote.amount.currency })}
