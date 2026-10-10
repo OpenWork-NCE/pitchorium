@@ -28,7 +28,7 @@ export function SettingsNav() {
     ({ id }) => id !== 'payouts' || entrepreneur || pathname === routes.settingsPayouts,
   );
   return (
-    <nav aria-label={t('navLabel')}>
+    <nav aria-label={t('navLabel')} className="min-w-0">
       <ul className="flex gap-1 overflow-x-auto lg:grid">
         {sections.map(({ id, href }) => {
           const current = pathname === href;

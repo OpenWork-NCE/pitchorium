@@ -15,7 +15,7 @@ export default async function SettingsLayout({ children }: { children: ReactNode
         </Heading>
         <div className="grid gap-6 lg:grid-cols-[12rem_minmax(0,1fr)] lg:gap-10">
           <SettingsNav />
-          <div>{children}</div>
+          <div className="min-w-0">{children}</div>
         </div>
       </div>
     </SingleColumnLayout>
