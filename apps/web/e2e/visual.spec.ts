@@ -59,6 +59,17 @@ for (const viewport of VIEWPORTS) {
  */
 const RESOURCE_PAGES = [
   { name: 'member-profile', path: '/fr/members/aissatou-ba', member: null },
+  // The pages of the projects (PROMPT FRONT 5A): visitor and member views, funded and closed.
+  { name: 'project-visitor', path: '/fr/projects/ferme-solaire-thies', member: null },
+  {
+    name: 'project-member',
+    path: '/fr/projects/ferme-solaire-thies',
+    member: 'aissatou.ba@demo.pitchorium.test',
+  },
+  { name: 'project-funded', path: '/fr/projects/cooperative-karite-kaolack', member: null },
+  { name: 'project-closed', path: '/fr/projects/sechoirs-mbour', member: null },
+  { name: 'showcase', path: '/fr/projects', member: null },
+  { name: 'methodology', path: '/fr/impact/methodology', member: null },
   {
     name: 'organization',
     path: '/fr/organizations/fondation-teranga',

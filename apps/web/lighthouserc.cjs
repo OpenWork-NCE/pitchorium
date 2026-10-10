@@ -18,7 +18,7 @@ const VISITOR = process.env.LHCI_VISITOR === '1';
 /**
  * Pages measured (docs/architecture/testing.md, ADR 0123): every followed page at level 3 (`all`,
  * the default), one page of each kind at each push (`representative`: editorial, authentication,
- * feed, public profile, public publication). The thresholds are the same.
+ * feed, public profile, public publication, page of a project). The thresholds are the same.
  */
 const REPRESENTATIVE = process.env.LHCI_SCOPE === 'representative';
 const ORIGIN = 'http://localhost:3201';
@@ -30,11 +30,16 @@ const VISITOR_PAGES = REPRESENTATIVE
       '/fr/members/aissatou-ba',
       // A public publication with five images (e2e/support/stub-content.mjs).
       '/fr/posts/0192f4a0-2000-7000-8000-000000000004',
+      // The page of a project, the heart of the webapp (§11.2, e2e/support/stub-projects.mjs).
+      '/fr/projects/ferme-solaire-thies',
     ]
   : [
       '/fr/members/aissatou-ba',
       '/fr/organizations/fondation-teranga',
       '/fr/posts/0192f4a0-2000-7000-8000-000000000004',
+      '/fr/projects',
+      '/fr/projects/ferme-solaire-thies',
+      '/fr/impact/methodology',
     ];
 
 /** Thresholds of every page (ADR 0090). */
@@ -108,7 +113,8 @@ module.exports = {
         },
         {
           // Public pages of resources read by a visitor (ADR 0101): indexed, SEO included.
-          matchingUrlPattern: 'localhost:3201/fr/(members|organizations|posts)/[a-z0-9-]+$',
+          matchingUrlPattern:
+            'localhost:3201/fr/((members|organizations|posts|projects)/[a-z0-9-]+|projects|impact/methodology)$',
           assertions: { ...THRESHOLDS, 'categories:seo': ['error', { minScore: 1 }] },
         },
         {

@@ -163,6 +163,17 @@ const VIEW_PAGES = [
   '/fr/posts/0192f4a0-2000-7000-8000-000000000004',
 ];
 const MEMBER = 'kofi.mensah@demo.pitchorium.test';
+
+/**
+ * Pages of the team of a project, read by a member of it only: the heaviest step of the
+ * assistant (its step loaded with the page, ADR 0131), its preview and the management.
+ */
+const TEAM_PAGES = [
+  '/fr/projects/projet-en-preparation/edit/essentials',
+  '/fr/projects/projet-en-preparation/edit/preview',
+  '/fr/projects/ferme-solaire-thies/manage',
+];
+const TEAM_MEMBER = 'aissatou.ba@demo.pitchorium.test';
 const ORIGIN = 'http://localhost:3201';
 
 /**
@@ -197,26 +208,30 @@ async function measureViews() {
       if (attempt > 120) throw new Error('The server of the views did not start');
       await new Promise((resolve) => setTimeout(resolve, 500));
     }
-    for (const page of VIEW_PAGES) {
-      for (const view of ['visitor', 'member']) {
-        const headers =
-          view === 'member'
-            ? { cookie: `pitchorium.session_token=${encodeURIComponent(MEMBER)}` }
-            : {};
-        const response = await fetch(`${ORIGIN}${page}`, { headers });
-        if (!response.ok) {
-          failures.push(`${page} (${view}): HTTP ${response.status}`);
-          continue;
-        }
-        const files = scriptsOf(await response.text());
-        const kilobytes = files.reduce((sum, file) => sum + compressedSize(file), 0) / 1024;
-        const budget = VIEW_BUDGETS_KB[view];
-        process.stdout.write(
-          `${page} as a ${view}: ${kilobytes.toFixed(1)} kB (budget ${budget} kB, ${files.length} files)\n`,
-        );
-        if (kilobytes > budget) {
-          failures.push(`${page} as a ${view}: ${kilobytes.toFixed(1)} kB > ${budget} kB`);
-        }
+    const reads = [
+      ...VIEW_PAGES.flatMap((page) => [
+        { page, view: 'visitor', account: null },
+        { page, view: 'member', account: MEMBER },
+      ]),
+      ...TEAM_PAGES.map((page) => ({ page, view: 'member', account: TEAM_MEMBER })),
+    ];
+    for (const { page, view, account } of reads) {
+      const headers = account
+        ? { cookie: `pitchorium.session_token=${encodeURIComponent(account)}` }
+        : {};
+      const response = await fetch(`${ORIGIN}${page}`, { headers });
+      if (!response.ok) {
+        failures.push(`${page} (${view}): HTTP ${response.status}`);
+        continue;
+      }
+      const files = scriptsOf(await response.text());
+      const kilobytes = files.reduce((sum, file) => sum + compressedSize(file), 0) / 1024;
+      const budget = VIEW_BUDGETS_KB[view];
+      process.stdout.write(
+        `${page} as a ${view}: ${kilobytes.toFixed(1)} kB (budget ${budget} kB, ${files.length} files)\n`,
+      );
+      if (kilobytes > budget) {
+        failures.push(`${page} as a ${view}: ${kilobytes.toFixed(1)} kB > ${budget} kB`);
       }
     }
   } finally {

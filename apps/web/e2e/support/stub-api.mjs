@@ -7,6 +7,7 @@
 import { createServer } from 'node:http';
 import { Server } from 'socket.io';
 import { contentRoutes } from './stub-content.mjs';
+import { projectRoutes } from './stub-projects.mjs';
 
 const port = Number(process.env.STUB_API_PORT ?? 3299);
 const origin = process.env.STUB_WEB_ORIGIN ?? 'http://localhost:3201';
@@ -128,26 +129,6 @@ const SUGGESTIONS = [
   reasons: [],
   rulesVersion: 1,
 }));
-
-/**
- * Projects of the stub: a published one, public; a draft, shown to its team only (here, any
- * member): a visitor gets 404 at the same address (ADR 0101).
- */
-const PROJECTS = {
-  'ferme-solaire-thies': { title: 'Ferme solaire coopérative de Thiès', public: true },
-  'projet-en-preparation': { title: 'Séchoirs solaires de Podor', public: false },
-};
-
-function projectOf(slug) {
-  const project = PROJECTS[slug];
-  return {
-    id: `0192f4a0-3000-7000-8000-${Buffer.from(slug).toString('hex').slice(0, 12)}`,
-    slug,
-    title: project.title,
-    summary: null,
-    status: project.public ? 'funding' : 'draft',
-  };
-}
 
 /** The profile of an account as the api gives it to a reader (privacy applied). */
 function profileOf(account) {
@@ -278,21 +259,6 @@ function reaction(request, path) {
 
 /** Pages of resources, `GET /v1/public/...` for a visitor, `GET /v1/...` for a member. */
 function resource(request, path) {
-  const publicProject = /^\/v1\/public\/projects\/([\w-]+)$/.exec(path);
-  if (publicProject) {
-    const slug = publicProject[1];
-    return PROJECTS[slug]?.public
-      ? { status: 200, body: projectOf(slug) }
-      : problem(404, 'PROJECTS_NOT_FOUND');
-  }
-  const memberProject = /^\/v1\/projects\/by-slug\/([\w-]+)$/.exec(path);
-  if (memberProject) {
-    if (!sessionOf(request)) return problem(401, 'UNAUTHENTICATED');
-    const slug = memberProject[1];
-    return PROJECTS[slug]
-      ? { status: 200, body: projectOf(slug) }
-      : problem(404, 'PROJECTS_NOT_FOUND');
-  }
   const profile = /^\/v1\/(public\/)?profiles\/([\w-]+)$/.exec(path);
   if (profile) {
     const account = Object.values(ACCOUNTS).find((candidate) => candidate.handle === profile[2]);
@@ -345,12 +311,6 @@ function resource(request, path) {
         nextCursor: null,
       },
     };
-  }
-  if (path === '/v1/public/projects' || path === '/v1/projects') {
-    const items = Object.keys(PROJECTS)
-      .filter((slug) => PROJECTS[slug].public)
-      .map(projectOf);
-    return { status: 200, body: { items, nextCursor: null } };
   }
   if (path === '/v1/public/events') return { status: 200, body: { items: [], nextCursor: null } };
   return null;
@@ -669,7 +629,9 @@ const server = createServer(async (request, response) => {
     return;
   }
   const handler = routes[`${request.method} ${path}`];
-  const read = request.method === 'GET' ? resource(request, path) : reaction(request, path);
+  const project = projects(request, path, new URL(request.url ?? '/', 'http://stub'));
+  const read =
+    project ?? (request.method === 'GET' ? resource(request, path) : reaction(request, path));
   const result = prerequisite
     ? prerequisites(request, prerequisite[1])
     : handler
@@ -691,6 +653,14 @@ const content = contentRoutes({
   sessionOf,
   problem,
   readJson,
+  state: () => state,
+});
+
+const projects = projectRoutes({
+  origin: `http://localhost:${port}`,
+  accounts: ACCOUNTS,
+  sessionOf,
+  problem,
   state: () => state,
 });
 
