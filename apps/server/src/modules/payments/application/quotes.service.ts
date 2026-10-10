@@ -7,7 +7,8 @@ import {
   type PaymentMethod,
   type PaymentMethodOption,
   type PaymentOptions,
-  type PaymentsUnavailableReason,
+  type PaymentOptionsQuery,
+  type ProjectPaymentAvailability,
 } from '@pitchorium/contracts';
 import { COMMON_CONFIG, type CommonConfig } from '../../../platform/config';
 import { Clock, DomainError, Money } from '../../../platform/kernel';
@@ -15,48 +16,58 @@ import { ProfilesFacade } from '../../profiles';
 import { type FundableProject, ProjectsFacade } from '../../projects';
 import { type PaymentCapability, PROVIDER_CAPABILITIES } from '../domain/capability-matrix';
 import { assertCollectible } from '../domain/contribution';
+import { enabledCapabilities } from '../domain/coverage';
 import { EUR, eurEquivalent, fixedParityOf, type Rate, smallestAmountReaching } from '../domain/fx';
+import {
+  type Bounds,
+  closestReason,
+  evaluatePayments,
+  type MethodOption,
+  methodsByCurrency,
+  offeredMethods,
+  type PaymentEvaluation,
+  type PaymentRequest,
+  projectPaymentAvailability,
+} from '../domain/payment-options';
 import type { PayoutAccountRecord } from '../domain/payout';
 import { assertWithinBounds, buildQuote, type Quote, type RewardTerms } from '../domain/quote';
-import {
-  availablePayments,
-  estimateFee,
-  methodsByCurrency,
-  type PayoutRoute,
-  providerBounds,
-  requirePayment,
-} from '../domain/routing';
+import { estimateFee, type PayoutRoute } from '../domain/routing';
 import { PayoutService } from './payout.service';
-import { FxRateProvider, PaymentsRepository } from './ports';
+import { FxRateProvider, PaymentProviders } from './ports';
 
 /** Where a contribution to a project stands before paying. */
 export interface PaymentContext {
   project: FundableProject;
   account: PayoutAccountRecord | null;
+  /** The rail of the project, when the holder has a covered payout account. */
   route: PayoutRoute | null;
   contributorCountry: string | null;
-  unavailableReason: PaymentsUnavailableReason | null;
+  availability: ProjectPaymentAvailability;
 }
 
 export interface PreparedContribution {
   context: PaymentContext & { account: PayoutAccountRecord; route: PayoutRoute };
   quote: Quote;
   payment: PaymentCapability;
+  /** Every method offered, evaluated for this currency and amount. */
+  evaluation: PaymentEvaluation;
 }
 
 const projectNotFound = () => new DomainError('PROJECTS_NOT_FOUND', 'Project not found');
 
 /**
- * Payment options and quotes (section 9.3 steps 1 to 3 and 7): the methods really available to
- * this contributor for this project, the EUR equivalent, the commission and the estimated fees.
+ * Payment options and quotes (section 9.3 steps 1 to 3 and 7): the availability of the project,
+ * the methods available to this contributor and the reason of the others (ADR 0135), the EUR
+ * equivalent, the commission and the estimated fees. Options, quotes and contributions decide
+ * with the same evaluation, so a method listed as unavailable is refused with the same reason.
  */
 @Injectable()
 export class QuotesService {
   constructor(
     private readonly projects: ProjectsFacade,
     private readonly profiles: ProfilesFacade,
-    private readonly payments: PaymentsRepository,
     private readonly payout: PayoutService,
+    private readonly providers: PaymentProviders,
     private readonly fx: FxRateProvider,
     private readonly clock: Clock,
     @Inject(COMMON_CONFIG) private readonly config: CommonConfig,
@@ -69,19 +80,22 @@ export class QuotesService {
   ): Promise<PaymentContext> {
     const project = await this.projects.fundable(projectId);
     if (!project?.showable) throw projectNotFound();
-    const account = await this.payments.findPayoutAccount(project.ownerId);
-    const route = account
-      ? { provider: account.provider, country: account.country, currency: account.currency }
-      : null;
-    const contributorCountry = country ?? (await this.profiles.countryOf(contributorId));
-    let unavailableReason: PaymentsUnavailableReason | null = null;
-    if (!project.open) unavailableReason = 'project_not_open';
-    else if (!(await this.payout.collectionOpen(project.ownerId))) {
-      unavailableReason = 'holder_not_ready';
-    } else if (route && availablePayments(route, contributorCountry).length === 0) {
-      unavailableReason = 'no_payment_route';
-    }
-    return { project, account, route, contributorCountry, unavailableReason };
+    const holder = await this.payout.holderState(project.ownerId);
+    const route =
+      holder.covered && holder.account
+        ? {
+            provider: holder.account.provider,
+            country: holder.account.country,
+            currency: holder.account.currency,
+          }
+        : null;
+    return {
+      project,
+      account: holder.account,
+      route,
+      contributorCountry: country ?? (await this.profiles.countryOf(contributorId)),
+      availability: projectPaymentAvailability(project, holder),
+    };
   }
 
   /**
@@ -96,54 +110,50 @@ export class QuotesService {
   async options(
     projectId: string,
     contributorId: string,
-    country: string | undefined,
+    query: PaymentOptionsQuery,
   ): Promise<PaymentOptions> {
-    const context = await this.context(projectId, contributorId, country);
-    const kinds = collectedKinds(context.project);
+    const context = await this.context(projectId, contributorId, query.country);
+    const { route } = context;
     const base = {
       projectId,
-      acceptsPayments: context.unavailableReason === null,
-      unavailableReason: context.unavailableReason,
+      availability: context.availability,
+      rail: route
+        ? { provider: route.provider, payoutCountry: route.country, payoutCurrency: route.currency }
+        : null,
       contributorCountry: context.contributorCountry,
-      kinds,
+      kinds: collectedKinds(context.project),
       commissionRateBps: this.config.payments.commission.rateBps,
       anonymousDonations: this.config.payments.anonymousDonations,
     };
-    if (context.unavailableReason !== null || !context.route) return { ...base, currencies: [] };
-    const payments = availablePayments(context.route, context.contributorCountry);
-    const currencies = [];
-    for (const [currency, methods] of methodsByCurrency(payments)) {
-      const rate = await this.rateOrNull(currency);
-      if (!rate) continue;
-      const bounds = providerBounds(payments.filter((payment) => payment.currency === currency));
-      const min = smallestAmountReaching(
-        Money.of(this.config.payments.minEurMinor, EUR),
-        currency,
-        rate,
-      );
-      const max = largestAmountWithin(
-        Money.of(this.config.payments.maxEurMinor, EUR),
-        currency,
-        rate,
-      );
-      currencies.push({
-        currency,
-        min: Money.of(
-          bounds.minMinor !== null && bounds.minMinor > min.amountMinor
-            ? bounds.minMinor
-            : min.amountMinor,
-          currency,
-        ).toJSON(),
-        max: Money.of(
-          bounds.maxMinor !== null && bounds.maxMinor < max.amountMinor
-            ? bounds.maxMinor
-            : max.amountMinor,
-          currency,
-        ).toJSON(),
-        methods,
-      });
+    if (context.availability !== 'open' || !route) {
+      return { ...base, acceptsPayments: false, currencies: [], unavailableMethods: [] };
     }
-    return { ...base, currencies };
+    const { evaluation } = await this.evaluate(route, offeredMethods(this.providers.enabled()), {
+      contributorCountry: context.contributorCountry,
+      currency: query.currency,
+      amountMinor: query.amountMinor === undefined ? undefined : BigInt(query.amountMinor),
+    });
+    const currencies = [...methodsByCurrency(evaluation.available)].map(([currency, methods]) => ({
+      currency,
+      min: Money.of(
+        methods.reduce(
+          (min, { bounds }) => (bounds.minMinor < min ? bounds.minMinor : min),
+          methods[0]?.bounds.minMinor ?? 0n,
+        ),
+        currency,
+      ).toJSON(),
+      max: Money.of(
+        methods.reduce((max, { bounds }) => (bounds.maxMinor > max ? bounds.maxMinor : max), 0n),
+        currency,
+      ).toJSON(),
+      methods: methods.map((method) => methodOption(method, currency)),
+    }));
+    return {
+      ...base,
+      acceptsPayments: currencies.length > 0,
+      currencies,
+      unavailableMethods: evaluation.unavailable,
+    };
   }
 
   async quote(
@@ -158,13 +168,19 @@ export class QuotesService {
     },
   ): Promise<ContributionQuote> {
     const prepared = await this.prepare(projectId, contributorId, request);
-    return quoteView(prepared.quote, this.methodsOf(prepared));
+    const currency = prepared.quote.amount.currency;
+    return quoteView(
+      prepared.quote,
+      (methodsByCurrency(prepared.evaluation.available).get(currency) ?? []).map((method) =>
+        methodOption(method, currency),
+      ),
+    );
   }
 
   /**
-   * Every check before a payment: collected kind accepted by the project, holder ready, route
-   * and method for this contributor, rate, bounds and reward. The rate returned is the one the
-   * session locks.
+   * Every check before a payment: collected kind accepted by the project, its availability, then
+   * the method for this contributor, currency and amount (the reason of a refusal is the one the
+   * options give), rate, bounds and reward. The rate returned is the one the session locks.
    */
   async prepare(
     projectId: string,
@@ -182,27 +198,36 @@ export class QuotesService {
     if (!(context.project.instruments as readonly string[]).includes(kind)) {
       throw new DomainError('PAYMENTS_INSTRUMENT_NOT_ACCEPTED', `The project refuses ${kind}`);
     }
-    if (context.unavailableReason === 'project_not_open') {
-      throw new DomainError('PAYMENTS_PROJECT_NOT_OPEN', 'The project is not open');
+    const { account, route, availability } = context;
+    if (availability === 'campaign_closed' || availability === 'funding_frozen') {
+      throw new DomainError('PAYMENTS_PROJECT_NOT_OPEN', 'The project is not open', {
+        reason: availability,
+      });
     }
-    if (context.unavailableReason === 'holder_not_ready' || !context.account || !context.route) {
-      throw new DomainError('PAYMENTS_HOLDER_NOT_READY', 'The holder cannot receive payments yet');
+    if (availability === 'holder_without_covered_payout_account' || !account || !route) {
+      throw new DomainError('PAYMENTS_HOLDER_PAYOUT_NOT_COVERED', 'No covered payout account', {
+        reason: 'holder_without_covered_payout_account',
+      });
     }
-    if (context.unavailableReason === 'no_payment_route') {
-      throw new DomainError('PAYMENTS_NO_PAYMENT_ROUTE', 'No payment method for this contribution');
+    if (availability === 'holder_not_verified') {
+      throw new DomainError('PAYMENTS_HOLDER_NOT_READY', 'The holder is not verified yet', {
+        reason: availability,
+      });
     }
     const amount = Money.fromJSON(request.amount);
-    const payments = availablePayments(context.route, context.contributorCountry);
-    const payment = request.method
-      ? requirePayment(context.route, context.contributorCountry, amount.currency, request.method)
-      : payments.find((candidate) => candidate.currency === amount.currency);
-    if (!payment) {
-      throw new DomainError(
-        'PAYMENTS_CURRENCY_NOT_AVAILABLE',
-        `Payments in ${amount.currency} are not available`,
-      );
-    }
-    const rate = await this.fx.rate(amount.currency, this.clock.now());
+    const offered = offeredMethods(this.providers.enabled());
+    const methods =
+      request.method && !offered.includes(request.method) ? [...offered, request.method] : offered;
+    const { evaluation, rates } = await this.evaluate(route, methods, {
+      contributorCountry: context.contributorCountry,
+      currency: amount.currency,
+      amountMinor: amount.amountMinor,
+    });
+    const chosen = request.method
+      ? evaluation.available.find(({ capability }) => capability.method === request.method)
+      : evaluation.available[0];
+    const rate = rates.get(amount.currency);
+    if (!chosen || !rate) throw refusal(evaluation, request.method);
     const reward = request.rewardId ? await this.rewardTerms(projectId, request.rewardId) : null;
     const quote = buildQuote({
       kind,
@@ -210,39 +235,76 @@ export class QuotesService {
       rate,
       terms: this.config.payments.commission,
       estimatedFee: estimateFee(
-        PROVIDER_CAPABILITIES[context.route.provider],
-        context.route.country,
-        payment.method,
+        PROVIDER_CAPABILITIES[route.provider],
+        route.country,
+        chosen.capability.method,
         amount,
       ),
       reward,
     });
-    const bounds = providerBounds(
-      payments.filter(
-        (candidate) =>
-          candidate.currency === amount.currency &&
-          (!request.method || candidate.method === request.method),
-      ),
-    );
+    // The evaluation already bounds the amount; the EUR equivalent is checked again on the quote.
     assertWithinBounds(quote, {
       minEur: Money.of(this.config.payments.minEurMinor, EUR),
       maxEur: Money.of(this.config.payments.maxEurMinor, EUR),
-      providerMinMinor: bounds.minMinor,
-      providerMaxMinor: bounds.maxMinor,
+      providerMinMinor: chosen.capability.minMinor,
+      providerMaxMinor: chosen.capability.maxMinor,
     });
     return {
-      context: { ...context, account: context.account, route: context.route },
+      context: { ...context, account, route },
       quote,
-      payment,
+      payment: chosen.capability,
+      evaluation,
     };
   }
 
-  private methodsOf(prepared: PreparedContribution) {
-    const payments = availablePayments(
-      prepared.context.route,
-      prepared.context.contributorCountry,
-    ).filter((payment) => payment.currency === prepared.quote.amount.currency);
-    return methodsByCurrency(payments).get(prepared.quote.amount.currency) ?? [];
+  /**
+   * Evaluates the methods on the rail with the platform bounds converted at the current rate of
+   * each currency of the rail (asked currency only, when given); a currency without a rate is not
+   * supported. Returns the rates, which the session locks.
+   */
+  private async evaluate(
+    route: PayoutRoute,
+    methods: readonly PaymentMethod[],
+    request: PaymentRequest,
+  ): Promise<{ evaluation: PaymentEvaluation; rates: Map<string, Rate> }> {
+    const capabilities = PROVIDER_CAPABILITIES[route.provider];
+    const currencies = new Set(
+      enabledCapabilities(capabilities)
+        .payments.map((payment) => payment.currency)
+        .filter(
+          (currency) =>
+            (capabilities.paymentCurrencies === 'any' || currency === route.currency) &&
+            (!request.currency || currency === request.currency),
+        ),
+    );
+    const rates = new Map<string, Rate>();
+    const bounds = new Map<string, Bounds>();
+    for (const currency of currencies) {
+      const rate = await this.rateOrNull(currency);
+      if (!rate) continue;
+      rates.set(currency, rate);
+      bounds.set(currency, {
+        minMinor: smallestAmountReaching(
+          Money.of(this.config.payments.minEurMinor, EUR),
+          currency,
+          rate,
+        ).amountMinor,
+        maxMinor: largestAmountWithin(
+          Money.of(this.config.payments.maxEurMinor, EUR),
+          currency,
+          rate,
+        ).amountMinor,
+      });
+    }
+    return {
+      evaluation: evaluatePayments(
+        route,
+        methods,
+        request,
+        (currency) => bounds.get(currency) ?? null,
+      ),
+      rates,
+    };
   }
 
   private async rewardTerms(projectId: string, rewardId: string): Promise<RewardTerms> {
@@ -265,6 +327,35 @@ export class QuotesService {
       return null;
     }
   }
+}
+
+/**
+ * The refusal of a payment no method takes, with the reason the options give: a method asked is
+ * `PAYMENTS_METHOD_NOT_AVAILABLE`; otherwise an amount outside every bound is
+ * `PAYMENTS_AMOUNT_OUT_OF_RANGE`, anything else `PAYMENTS_CURRENCY_NOT_AVAILABLE`.
+ */
+function refusal(evaluation: PaymentEvaluation, method: PaymentMethod | undefined): DomainError {
+  if (method) {
+    const reason =
+      evaluation.unavailable.find((entry) => entry.method === method)?.reason ??
+      'currency_not_supported';
+    return new DomainError('PAYMENTS_METHOD_NOT_AVAILABLE', `${method} is not available`, {
+      reason,
+    });
+  }
+  const reason = closestReason(evaluation);
+  return reason === 'amount_out_of_range'
+    ? new DomainError('PAYMENTS_AMOUNT_OUT_OF_RANGE', 'Amount out of the allowed range', { reason })
+    : new DomainError('PAYMENTS_CURRENCY_NOT_AVAILABLE', 'No method in this currency', { reason });
+}
+
+function methodOption(option: MethodOption, currency: string): PaymentMethodOption {
+  return {
+    method: option.method,
+    operators: option.operators,
+    min: Money.of(option.bounds.minMinor, currency).toJSON(),
+    max: Money.of(option.bounds.maxMinor, currency).toJSON(),
+  };
 }
 
 function collectedKinds(project: FundableProject): ContributionKind[] {

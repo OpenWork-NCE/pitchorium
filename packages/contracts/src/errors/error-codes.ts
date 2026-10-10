@@ -251,11 +251,11 @@ export const errorCodes = {
   PAYMENTS_PROJECT_NOT_OPEN: { status: 409, title: 'The project is not open to contributions' },
   PAYMENTS_HOLDER_NOT_READY: {
     status: 409,
-    title: 'The project holder cannot receive payments yet',
+    title: 'The identity or the payout account of the project holder is not verified yet',
   },
-  PAYMENTS_NO_PAYMENT_ROUTE: {
+  PAYMENTS_HOLDER_PAYOUT_NOT_COVERED: {
     status: 409,
-    title: 'No verified payment route serves the payout country',
+    title: 'The project holder has no payout account the coverage serves',
   },
   PAYMENTS_METHOD_NOT_AVAILABLE: { status: 422, title: 'Payment method not available' },
   PAYMENTS_CURRENCY_NOT_AVAILABLE: { status: 422, title: 'Payment currency not available' },

@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import type { NestExpressApplication } from '@nestjs/platform-express';
 import type { TestingModule } from '@nestjs/testing';
-import type { PaymentCoverage, PayoutAccount } from '@pitchorium/contracts';
+import type { PaymentCoverage, PaymentOptions, PayoutAccount } from '@pitchorium/contracts';
 import request from 'supertest';
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import { AccessModule } from '../../src/modules/access';
@@ -180,7 +180,10 @@ describe('payment providers', () => {
       { kind: 'donation', amount: eur(100), method: 'paypal' },
       422,
     );
-    expect(paypal).toMatchObject({ code: 'PAYMENTS_METHOD_NOT_AVAILABLE' });
+    expect(paypal).toMatchObject({
+      code: 'PAYMENTS_METHOD_NOT_AVAILABLE',
+      reason: 'not_covered_by_holder_rail',
+    });
     const quote = await contributor.agent
       .post(`/v1/projects/${project.id}/contribution-quotes`)
       .send({ kind: 'donation', amount: eur(100), method: 'card' })
@@ -286,7 +289,30 @@ describe('payment providers', () => {
       { kind: 'donation', amount: eur(10), country: 'NG' },
       422,
     );
-    expect(euro).toMatchObject({ code: 'PAYMENTS_CURRENCY_NOT_AVAILABLE' });
+    expect(euro).toMatchObject({
+      code: 'PAYMENTS_METHOD_NOT_AVAILABLE',
+      reason: 'currency_not_supported',
+    });
+    // From France: the card in naira only; the methods of the Stripe rail are not this rail's.
+    const options = (
+      await contributor.agent
+        .get(`/v1/projects/${project.id}/payment-options?country=FR`)
+        .expect(200)
+    ).body as PaymentOptions;
+    expect(options).toMatchObject({
+      availability: 'open',
+      rail: { provider: 'flutterwave', payoutCountry: 'NG', payoutCurrency: 'NGN' },
+    });
+    expect(options.currencies.map((currency) => currency.currency)).toEqual(['NGN']);
+    expect(options.unavailableMethods).toEqual([
+      { method: 'sepa_debit', reason: 'not_covered_by_holder_rail' },
+      { method: 'apple_pay', reason: 'not_covered_by_holder_rail' },
+      { method: 'google_pay', reason: 'not_covered_by_holder_rail' },
+      { method: 'mobile_money', reason: 'not_covered_by_holder_rail' },
+      { method: 'bank_transfer', reason: 'contributor_country_not_covered' },
+      { method: 'bank_account', reason: 'contributor_country_not_covered' },
+      { method: 'ussd', reason: 'contributor_country_not_covered' },
+    ]);
     const naira = { amountMinor: '16505000', currency: 'NGN' };
     const contribution = await contribute(contributor, project.id, {
       kind: 'donation',

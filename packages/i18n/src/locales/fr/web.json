@@ -384,7 +384,8 @@
       "scale_without_positive_level": "L’échelle doit avoir au moins un niveau au-dessus de 0.",
       "unknown_language": "Choisissez une langue de la liste.",
       "unknown_currency": "Choisissez une devise de la liste.",
-      "project_or_entrepreneur": "Indiquez soit un projet, soit une personne accompagnée, pas les deux."
+      "project_or_entrepreneur": "Indiquez soit un projet, soit une personne accompagnée, pas les deux.",
+      "currency_required": "Choisissez la devise du montant."
     },
     "problemReasons": {
       "EVENTS_SCHEDULE_INVALID": {

@@ -554,6 +554,19 @@
     "bank_account": "Compte bancaire",
     "ussd": "USSD"
   },
+  "projectPaymentAvailabilities": {
+    "open": "Contributions ouvertes",
+    "holder_not_verified": "Le porteur n'a pas encore terminé la vérification de son identité ou de son compte de versement",
+    "holder_without_covered_payout_account": "Le porteur n'a pas encore de compte de versement dans un pays couvert",
+    "campaign_closed": "La campagne est clôturée",
+    "funding_frozen": "Les contributions sont suspendues par la modération"
+  },
+  "paymentUnavailableReasons": {
+    "not_covered_by_holder_rail": "Non proposé pour le compte de versement du porteur",
+    "contributor_country_not_covered": "Non proposé dans votre pays",
+    "currency_not_supported": "Non proposé dans cette devise",
+    "amount_out_of_range": "Montant hors des limites de ce moyen"
+  },
   "paymentProviders": {
     "stripe": "Stripe",
     "flutterwave": "Flutterwave",
@@ -601,11 +614,6 @@
   "payoutRequirementScopes": {
     "all": "Tous les porteurs",
     "company": "Compte ouvert au nom d'une société"
-  },
-  "paymentsUnavailableReasons": {
-    "project_not_open": "Le projet n'accepte pas de contribution",
-    "holder_not_ready": "Le porteur n'a pas encore ouvert les contributions",
-    "no_payment_route": "Aucun moyen de paiement disponible pour ce projet"
   },
   "rewardReservationStates": {
     "none": "Aucune contrepartie",

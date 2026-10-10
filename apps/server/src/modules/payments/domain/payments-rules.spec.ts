@@ -24,7 +24,7 @@ import {
 } from './ledger';
 import { assertWithinBounds, buildQuote } from './quote';
 import { payoutChangeRefusal } from './payout';
-import { availablePayments, estimateFee, isCovered, payoutRoute, requirePayment } from './routing';
+import { estimateFee, isCovered, payoutRoute } from './routing';
 
 const AT = new Date('2026-10-07T10:00:00.000Z');
 const eur = (minor: bigint) => Money.of(minor, 'EUR');
@@ -372,46 +372,6 @@ describe('routing and capabilities', () => {
     expect(isCovered({ ...account, country: 'SN' }, live)).toBe(false);
     expect(isCovered({ ...account, currency: 'XOF' }, live)).toBe(false);
     expect(isCovered(account, ['flutterwave'])).toBe(false);
-  });
-
-  it('offers simulated mobile money where a live rail verified it only', () => {
-    const route = payoutRoute('simulated', 'FR', ['simulated']);
-    if (!route) throw new Error('No route');
-    const methods = (country: string) =>
-      new Set(availablePayments(route, country).map((payment) => payment.method));
-    expect(methods('SN').has('mobile_money')).toBe(true);
-    expect(methods('FR').has('mobile_money')).toBe(false);
-    expect(methods('FR').has('card')).toBe(true);
-  });
-
-  it('offers only the verified methods for this contributor and this route', () => {
-    const stripe = payoutRoute('stripe', 'FR', live);
-    const flutterwave = payoutRoute('flutterwave', 'NG', live);
-    if (!stripe || !flutterwave) throw new Error('No route');
-    expect(availablePayments(stripe, 'SN').map((payment) => payment.method)).toEqual([
-      'card',
-      'sepa_debit',
-      'apple_pay',
-      'google_pay',
-    ]);
-    expect(availablePayments(flutterwave, 'FR').map((payment) => payment.method)).toEqual(['card']);
-    expect(availablePayments(flutterwave, 'NG').map((payment) => payment.method)).toEqual([
-      'card',
-      'bank_transfer',
-      'bank_account',
-      'ussd',
-    ]);
-    // Payments on the Flutterwave route are in the currency of the payout account only.
-    expect(
-      availablePayments(flutterwave, 'KE').every((payment) => payment.currency === 'NGN'),
-    ).toBe(true);
-    expect(requirePayment(stripe, null, 'EUR', 'card').method).toBe('card');
-    expect(codeOf(() => requirePayment(stripe, null, 'EUR', 'paypal'))).toBe(
-      'PAYMENTS_METHOD_NOT_AVAILABLE',
-    );
-    expect(codeOf(() => requirePayment(flutterwave, 'NG', 'EUR', 'card'))).toBe(
-      'PAYMENTS_CURRENCY_NOT_AVAILABLE',
-    );
   });
 
   it('estimates fees from verified schedules only', () => {

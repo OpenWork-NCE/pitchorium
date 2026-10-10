@@ -5,8 +5,8 @@ Contributions encaissées par des prestataires agréés, contributions hors plat
 ## Contribution
 
 - Types encaissés : `donation`, `reward_crowdfunding`, `love_money`, acceptés par le projet (`PAYMENTS_INSTRUMENT_NOT_ACCEPTED`). `equity` et `loan` : `PAYMENTS_LICENSED_PARTNER_REQUIRED`, même flags activés (ADR 0051) ; `grant`, `honor_loan`, `convertible_bonds` : `PAYMENTS_INSTRUMENT_NOT_COLLECTIBLE`.
-- Prérequis du projet : publié, ouvert, visible ; porteur avec compte de versement actif et KYC vérifié (`PAYMENTS_HOLDER_NOT_READY`, ADR 0050).
-- Rail du porteur (pays du compte de versement), devise et moyen vérifiés pour le pays du contributeur (`PAYMENTS_CURRENCY_NOT_AVAILABLE`, `PAYMENTS_METHOD_NOT_AVAILABLE`).
+- Disponibilité du projet (ADR 0135) : publié, ouvert, visible (`PAYMENTS_PROJECT_NOT_OPEN`, `campaign_closed` ou `funding_frozen`), porteur avec un compte de versement couvert (`PAYMENTS_HOLDER_PAYOUT_NOT_COVERED`), actif et KYC vérifié (`PAYMENTS_HOLDER_NOT_READY`, ADR 0050).
+- Rail du compte de versement du porteur, moyen disponible pour ce contributeur, cette devise et ce montant ; un moyen indisponible est refusé avec le motif que donnent les options (`PAYMENTS_METHOD_NOT_AVAILABLE`, `PAYMENTS_CURRENCY_NOT_AVAILABLE`, `reason` : `not_covered_by_holder_rail`, `contributor_country_not_covered`, `currency_not_supported`, `amount_out_of_range`).
 - Équivalent EUR figé à la session avec son taux et sa source (ADR 0046) ; commission de 5 % versionnée, arrondie au bénéfice du porteur ; frais estimés (ADR 0047).
 - Bornes et fréquences (`PAYMENTS_AMOUNT_OUT_OF_RANGE`, `PAYMENTS_RATE_LIMITED`), double authentification au-delà du seuil de vérification renforcée.
 - Contrepartie : éligible si l'instrument est listé et l'équivalent EUR atteint le minimum (`PAYMENTS_REWARD_NOT_ELIGIBLE`), réservée pour la durée de la session (`PROJECTS_REWARD_SOLD_OUT` sans unité), confirmée au succès, libérée à l'échec, à l'expiration, à l'annulation, au remboursement total et au litige perdu.
@@ -31,7 +31,7 @@ Espèces, virement institutionnel (montant en EUR, XOF ou XAF), engagement de lo
 
 ## Routes
 
-- `GET /v1/projects/{projectId}/payment-options?country=` et `POST /v1/projects/{projectId}/contribution-quotes` (`payment.quote`)
+- `GET /v1/projects/{projectId}/payment-options?country=&currency=&amountMinor=` (disponibilité, rail, moyens disponibles et indisponibles avec leur motif) et `POST /v1/projects/{projectId}/contribution-quotes` (`payment.quote`)
 - `GET /v1/me/indicative-currency` (`payment.quote`) : le franc CFA du pays déclaré du membre (UEMOA : XOF, CEMAC : XAF) et sa parité fixe, `null` pour une devise flottante ; les pages affichent les montants d'un projet en équivalent indicatif (ADR 0130)
 - `POST /v1/projects/{projectId}/contributions` (`payment.contribute`, `Idempotency-Key`), `POST /v1/organizations/{organizationId}/contributions` (`payment.contribute.organization`, `owner` ou `admin`, `Idempotency-Key`)
 - `GET /v1/me/contributions`, `GET /v1/me/contributions/{contributionId}`, `POST /v1/me/contributions/{contributionId}/return` (`payment.contribution.read`), `POST /v1/me/contributions/{contributionId}/cancel` (`payment.contribution.cancel`)

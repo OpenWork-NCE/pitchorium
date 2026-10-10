@@ -405,14 +405,23 @@ export class PayoutService {
     );
   }
 
-  /** Holder ready to collect: active and covered payout account, verified identity. */
-  async collectionOpen(userId: string): Promise<boolean> {
+  /**
+   * The payout account of a holder, whether the coverage still serves it, and whether it collects
+   * (covered, active, identity verified): the rail and the availability of their projects.
+   */
+  async holderState(userId: string): Promise<{
+    account: PayoutAccountRecord | null;
+    covered: boolean;
+    collecting: boolean;
+  }> {
     const account = await this.payments.findPayoutAccount(userId);
-    return (
-      account !== null &&
-      this.covers(account) &&
-      collectionOpen(account, await this.kyc.latest(userId))
-    );
+    if (!account) return { account, covered: false, collecting: false };
+    const covered = this.covers(account);
+    return {
+      account,
+      covered,
+      collecting: covered && collectionOpen(account, await this.kyc.latest(userId)),
+    };
   }
 
   /** An active payout account the verified coverage still serves (`payout_account`). */

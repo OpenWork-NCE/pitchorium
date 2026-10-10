@@ -187,13 +187,25 @@ describe('payments', () => {
     const options = (await ama.agent.get(`/v1/projects/${project.id}/payment-options`).expect(200))
       .body as PaymentOptions;
     expect(options).toMatchObject({
+      availability: 'holder_without_covered_payout_account',
+      rail: null,
       acceptsPayments: false,
-      unavailableReason: 'holder_not_ready',
       kinds: ['donation', 'reward_crowdfunding', 'love_money'],
       currencies: [],
+      unavailableMethods: [],
     });
+    // Without a covered payout account, the quote and the contribution are refused alike.
+    const notCovered = {
+      code: 'PAYMENTS_HOLDER_PAYOUT_NOT_COVERED',
+      reason: 'holder_without_covered_payout_account',
+    };
+    const quoteRefused = await ama.agent
+      .post(`/v1/projects/${project.id}/contribution-quotes`)
+      .send({ kind: 'donation', amount: eur(10), method: 'card' })
+      .expect(409);
+    expect(quoteRefused.body).toMatchObject(notCovered);
     const refused = await contribute(ama, project.id, { kind: 'donation', amount: eur(10) }, 409);
-    expect(refused).toMatchObject({ code: 'PAYMENTS_HOLDER_NOT_READY' });
+    expect(refused).toMatchObject(notCovered);
     const missing = await holder.agent
       .get('/v1/me/prerequisites/payment.collection.open')
       .expect(200);
@@ -235,6 +247,25 @@ describe('payments', () => {
       covered: true,
       changeRefusal: null,
     });
+    // A covered account, the identity not verified yet.
+    const unverified = (
+      await ama.agent.get(`/v1/projects/${project.id}/payment-options`).expect(200)
+    ).body as PaymentOptions;
+    expect(unverified).toMatchObject({
+      availability: 'holder_not_verified',
+      rail: { provider: 'simulated', payoutCountry: 'FR', payoutCurrency: 'EUR' },
+      acceptsPayments: false,
+    });
+    const notVerified = await contribute(
+      ama,
+      project.id,
+      { kind: 'donation', amount: eur(10) },
+      409,
+    );
+    expect(notVerified).toMatchObject({
+      code: 'PAYMENTS_HOLDER_NOT_READY',
+      reason: 'holder_not_verified',
+    });
     const document = await readyDocument(holder.userId);
     const submission = await holder.agent
       .post('/v1/me/kyc/submissions')
@@ -256,9 +287,25 @@ describe('payments', () => {
     const open = (
       await ama.agent.get(`/v1/projects/${project.id}/payment-options?country=SN`).expect(200)
     ).body as PaymentOptions;
-    expect(open.acceptsPayments).toBe(true);
+    // The rail is the account Fatou chose in France, though she lives in Senegal.
+    expect(open).toMatchObject({
+      availability: 'open',
+      rail: { provider: 'simulated', payoutCountry: 'FR', payoutCurrency: 'EUR' },
+      acceptsPayments: true,
+      contributorCountry: 'SN',
+      unavailableMethods: [],
+    });
     expect(open.currencies.map((currency) => currency.currency)).toEqual(
       expect.arrayContaining(['EUR', 'XOF', 'XAF']),
+    );
+    expect(open.currencies.find((currency) => currency.currency === 'XOF')?.methods).toContainEqual(
+      {
+        method: 'mobile_money',
+        operators: ['simulated_money'],
+        // 1 EUR and 10,000 EUR at the fixed parity, the equivalent rounded to the cent.
+        min: { amountMinor: '653', currency: 'XOF' },
+        max: { amountMinor: '6559573', currency: 'XOF' },
+      },
     );
     const ready = await holder.agent
       .get('/v1/me/prerequisites/payment.collection.open')
@@ -358,6 +405,95 @@ describe('payments', () => {
       .set('Idempotency-Key', randomUUID())
       .send({ ...FATOU_PAYOUT, country: 'CM' })
       .expect(422);
+  });
+
+  it('tells a contributor outside the mobile money countries why it is unavailable, and refuses it', async () => {
+    const fromFrance = (
+      await ama.agent.get(`/v1/projects/${project.id}/payment-options?country=FR`).expect(200)
+    ).body as PaymentOptions;
+    expect(fromFrance).toMatchObject({ availability: 'open', acceptsPayments: true });
+    expect(fromFrance.unavailableMethods).toEqual([
+      { method: 'mobile_money', reason: 'contributor_country_not_covered' },
+    ]);
+    expect(
+      fromFrance.currencies.flatMap((currency) => currency.methods.map((entry) => entry.method)),
+    ).not.toContain('mobile_money');
+    const inXof = (
+      await ama.agent
+        .get(`/v1/projects/${project.id}/payment-options?country=SN&currency=XOF`)
+        .expect(200)
+    ).body as PaymentOptions;
+    expect(inXof.currencies.map((currency) => currency.currency)).toEqual(['XOF']);
+    expect(inXof.unavailableMethods).toEqual([
+      { method: 'sepa_debit', reason: 'currency_not_supported' },
+    ]);
+    const tooLarge = (
+      await ama.agent
+        .get(
+          `/v1/projects/${project.id}/payment-options?country=SN&currency=EUR&amountMinor=1000001`,
+        )
+        .expect(200)
+    ).body as PaymentOptions;
+    expect(tooLarge.acceptsPayments).toBe(false);
+    expect(tooLarge.unavailableMethods).toEqual([
+      { method: 'card', reason: 'amount_out_of_range' },
+      { method: 'sepa_debit', reason: 'amount_out_of_range' },
+      { method: 'mobile_money', reason: 'currency_not_supported' },
+      { method: 'bank_transfer', reason: 'amount_out_of_range' },
+    ]);
+    const withoutCurrency = await ama.agent
+      .get(`/v1/projects/${project.id}/payment-options?amountMinor=100`)
+      .expect(400);
+    expect(withoutCurrency.body).toMatchObject({ code: 'VALIDATION_FAILED' });
+
+    // The quote and the contribution refuse the unavailable method with the same reason.
+    const mobileMoney = {
+      kind: 'donation',
+      amount: { amountMinor: '6560', currency: 'XOF' },
+      method: 'mobile_money',
+      country: 'FR',
+    };
+    const refusedQuote = await ama.agent
+      .post(`/v1/projects/${project.id}/contribution-quotes`)
+      .send(mobileMoney)
+      .expect(422);
+    expect(refusedQuote.body).toMatchObject({
+      code: 'PAYMENTS_METHOD_NOT_AVAILABLE',
+      reason: 'contributor_country_not_covered',
+    });
+    expect(await contribute(ama, project.id, mobileMoney, 422)).toMatchObject({
+      code: 'PAYMENTS_METHOD_NOT_AVAILABLE',
+      reason: 'contributor_country_not_covered',
+    });
+    expect(
+      await contribute(
+        ama,
+        project.id,
+        { ...mobileMoney, method: 'sepa_debit', country: 'SN' },
+        422,
+      ),
+    ).toMatchObject({ code: 'PAYMENTS_METHOD_NOT_AVAILABLE', reason: 'currency_not_supported' });
+    expect(
+      await contribute(
+        ama,
+        project.id,
+        { kind: 'donation', amount: { amountMinor: '1000001', currency: 'EUR' }, method: 'card' },
+        422,
+      ),
+    ).toMatchObject({ code: 'PAYMENTS_METHOD_NOT_AVAILABLE', reason: 'amount_out_of_range' });
+    const anyMethod = await ama.agent
+      .post(`/v1/projects/${project.id}/contribution-quotes`)
+      .send({ kind: 'donation', amount: { amountMinor: '1000001', currency: 'EUR' } })
+      .expect(422);
+    expect(anyMethod.body).toMatchObject({
+      code: 'PAYMENTS_AMOUNT_OUT_OF_RANGE',
+      reason: 'amount_out_of_range',
+    });
+    // From Senegal, the same mobile money payment is quoted.
+    await ama.agent
+      .post(`/v1/projects/${project.id}/contribution-quotes`)
+      .send({ ...mobileMoney, country: 'SN' })
+      .expect(200);
   });
 
   it('pays a contribution with a reward end to end: quote, session, webhook, ledger, tier, email', async () => {

@@ -96,7 +96,10 @@ export class ContributionsController {
     return this.quotes.indicativeCurrency(principal.userId);
   }
 
-  /** Methods really available to this contributor (declared country) for this project. */
+  /**
+   * Availability of the project, its rail, the methods available to this contributor (declared
+   * country, or `country`; optionally `currency` and `amountMinor`) and the reason of the others.
+   */
   @Get('projects/:projectId/payment-options')
   @RequireAction('payment.quote')
   @ZodSerializerDto(PaymentOptionsDto)
@@ -106,7 +109,7 @@ export class ContributionsController {
     @Param() params: ProjectIdParamsDto,
     @Query() query: PaymentOptionsQueryDto,
   ): Promise<PaymentOptions> {
-    return this.quotes.options(params.projectId, principal.userId, query.country);
+    return this.quotes.options(params.projectId, principal.userId, query);
   }
 
   /** Amount, EUR equivalent, commission and estimated fees before paying (section 9.3 step 7). */

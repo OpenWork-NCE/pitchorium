@@ -68,7 +68,21 @@ Le rail d'un projet découle du compte de versement actif de son porteur, jamais
 
 Avec `PAYMENTS_MODE=simulated` (développement, tests, refusé en production), le prestataire simulé remplace les deux rails et sert leurs pays de versement vérifiés, réglés en EUR ; son Mobile Money n'est proposé qu'aux contributeurs des pays où un rail réel l'a vérifié (ADR 0052).
 
-L'écran « Contribuer » reçoit `GET /v1/projects/{id}/payment-options` : les devises et moyens vérifiés du rail du porteur, filtrés par le pays du contributeur (pays déclaré du profil, ou `?country=`), avec les bornes dans chaque devise ; jamais le nom du prestataire (§9.2).
+## Options côté contributeur (ADR 0135)
+
+L'écran « Contribuer » reçoit `GET /v1/projects/{id}/payment-options` (`payment.quote`), avec le pays du contributeur (`country`, sinon le pays déclaré du profil) et, au besoin, la devise (`currency`) et le montant en unités mineures (`amountMinor`, qui exige `currency`).
+
+- `availability` : `open` ; `campaign_closed` (campagne clôturée) ; `funding_frozen` (contributions gelées par la modération) ; `holder_without_covered_payout_account` (aucun compte, ou un compte que la couverture ne sert plus) ; `holder_not_verified` (compte couvert, mais pas actif ou identité non vérifiée). Vérifiés dans cet ordre.
+- `rail` : prestataire, pays et devise du compte de versement du porteur, `null` sans compte couvert. Le front choisit de l'afficher ou non (§9.2).
+- `currencies` : moyens disponibles par devise, avec opérateurs et bornes de chaque moyen (bornes de la plateforme converties au taux du moment, resserrées par les bornes vérifiées du prestataire) ; vide si le projet n'est pas ouvert.
+- `unavailableMethods` : chaque autre moyen qu'un prestataire actif propose, avec son motif, examiné dans cet ordre : `not_covered_by_holder_rail` (le rail du porteur ne le propose pas, ou pas dans sa devise de versement pour un prestataire qui n'encaisse que celle-ci), `contributor_country_not_covered`, `currency_not_supported` (pas dans la devise demandée, ou devise sans taux), `amount_out_of_range`.
+- `acceptsPayments` : le projet est ouvert et au moins un moyen est disponible pour ce contributeur.
+
+Le devis et la création d'une contribution passent par la même évaluation (`domain/payment-options.ts`) :
+
+- projet : `PAYMENTS_PROJECT_NOT_OPEN` (`reason` : `campaign_closed`, `funding_frozen`), `PAYMENTS_HOLDER_PAYOUT_NOT_COVERED` (`holder_without_covered_payout_account`), `PAYMENTS_HOLDER_NOT_READY` (`holder_not_verified`) ;
+- moyen demandé indisponible : `PAYMENTS_METHOD_NOT_AVAILABLE` avec le motif des options (`reason`), montant compris ;
+- devis sans moyen : `PAYMENTS_AMOUNT_OUT_OF_RANGE` (`amount_out_of_range`) si le montant seul empêche le paiement, sinon `PAYMENTS_CURRENCY_NOT_AVAILABLE` avec le motif du moyen le plus proche.
 
 ## Matrice de capacités
 

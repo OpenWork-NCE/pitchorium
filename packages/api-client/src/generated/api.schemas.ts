@@ -791,7 +791,7 @@ export const ActionPrerequisitesDtoOutputCode = {
   PROJECTS_REVERSAL_INVALID: 'PROJECTS_REVERSAL_INVALID',
   PAYMENTS_PROJECT_NOT_OPEN: 'PAYMENTS_PROJECT_NOT_OPEN',
   PAYMENTS_HOLDER_NOT_READY: 'PAYMENTS_HOLDER_NOT_READY',
-  PAYMENTS_NO_PAYMENT_ROUTE: 'PAYMENTS_NO_PAYMENT_ROUTE',
+  PAYMENTS_HOLDER_PAYOUT_NOT_COVERED: 'PAYMENTS_HOLDER_PAYOUT_NOT_COVERED',
   PAYMENTS_METHOD_NOT_AVAILABLE: 'PAYMENTS_METHOD_NOT_AVAILABLE',
   PAYMENTS_CURRENCY_NOT_AVAILABLE: 'PAYMENTS_CURRENCY_NOT_AVAILABLE',
   PAYMENTS_INSTRUMENT_NOT_ACCEPTED: 'PAYMENTS_INSTRUMENT_NOT_ACCEPTED',
@@ -8131,15 +8131,32 @@ export interface IndicativeCurrencyDtoOutput {
   fixedParity: IndicativeCurrencyDtoOutputFixedParity;
 }
 
-export type PaymentOptionsDtoOutputUnavailableReason =
-  | (typeof PaymentOptionsDtoOutputUnavailableReason)[keyof typeof PaymentOptionsDtoOutputUnavailableReason]
-  | null;
+export type PaymentOptionsDtoOutputAvailability =
+  (typeof PaymentOptionsDtoOutputAvailability)[keyof typeof PaymentOptionsDtoOutputAvailability];
 
-export const PaymentOptionsDtoOutputUnavailableReason = {
-  project_not_open: 'project_not_open',
-  holder_not_ready: 'holder_not_ready',
-  no_payment_route: 'no_payment_route',
+export const PaymentOptionsDtoOutputAvailability = {
+  open: 'open',
+  holder_not_verified: 'holder_not_verified',
+  holder_without_covered_payout_account: 'holder_without_covered_payout_account',
+  campaign_closed: 'campaign_closed',
+  funding_frozen: 'funding_frozen',
 } as const;
+
+export type PaymentOptionsDtoOutputRailProvider =
+  (typeof PaymentOptionsDtoOutputRailProvider)[keyof typeof PaymentOptionsDtoOutputRailProvider];
+
+export const PaymentOptionsDtoOutputRailProvider = {
+  stripe: 'stripe',
+  flutterwave: 'flutterwave',
+  simulated: 'simulated',
+} as const;
+
+export type PaymentOptionsDtoOutputRail = {
+  provider: PaymentOptionsDtoOutputRailProvider;
+  /** @pattern ^[A-Z]{2}$ */
+  payoutCountry: string;
+  payoutCurrency: string;
+} | null;
 
 export type PaymentOptionsDtoOutputKindsItem =
   (typeof PaymentOptionsDtoOutputKindsItem)[keyof typeof PaymentOptionsDtoOutputKindsItem];
@@ -8195,9 +8212,25 @@ export const PaymentOptionsDtoOutputCurrenciesItemMethodsItemOperatorsItem = {
   simulated_money: 'simulated_money',
 } as const;
 
+export type PaymentOptionsDtoOutputCurrenciesItemMethodsItemMin = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+};
+
+export type PaymentOptionsDtoOutputCurrenciesItemMethodsItemMax = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+};
+
 export type PaymentOptionsDtoOutputCurrenciesItemMethodsItem = {
   method: PaymentOptionsDtoOutputCurrenciesItemMethodsItemMethod;
   operators: PaymentOptionsDtoOutputCurrenciesItemMethodsItemOperatorsItem[];
+  min: PaymentOptionsDtoOutputCurrenciesItemMethodsItemMin;
+  max: PaymentOptionsDtoOutputCurrenciesItemMethodsItemMax;
 };
 
 export type PaymentOptionsDtoOutputCurrenciesItem = {
@@ -8207,14 +8240,46 @@ export type PaymentOptionsDtoOutputCurrenciesItem = {
   methods: PaymentOptionsDtoOutputCurrenciesItemMethodsItem[];
 };
 
+export type PaymentOptionsDtoOutputUnavailableMethodsItemMethod =
+  (typeof PaymentOptionsDtoOutputUnavailableMethodsItemMethod)[keyof typeof PaymentOptionsDtoOutputUnavailableMethodsItemMethod];
+
+export const PaymentOptionsDtoOutputUnavailableMethodsItemMethod = {
+  card: 'card',
+  sepa_debit: 'sepa_debit',
+  apple_pay: 'apple_pay',
+  google_pay: 'google_pay',
+  paypal: 'paypal',
+  mobile_money: 'mobile_money',
+  bank_transfer: 'bank_transfer',
+  bank_account: 'bank_account',
+  ussd: 'ussd',
+} as const;
+
+export type PaymentOptionsDtoOutputUnavailableMethodsItemReason =
+  (typeof PaymentOptionsDtoOutputUnavailableMethodsItemReason)[keyof typeof PaymentOptionsDtoOutputUnavailableMethodsItemReason];
+
+export const PaymentOptionsDtoOutputUnavailableMethodsItemReason = {
+  not_covered_by_holder_rail: 'not_covered_by_holder_rail',
+  contributor_country_not_covered: 'contributor_country_not_covered',
+  currency_not_supported: 'currency_not_supported',
+  amount_out_of_range: 'amount_out_of_range',
+} as const;
+
+export type PaymentOptionsDtoOutputUnavailableMethodsItem = {
+  method: PaymentOptionsDtoOutputUnavailableMethodsItemMethod;
+  reason: PaymentOptionsDtoOutputUnavailableMethodsItemReason;
+};
+
 export interface PaymentOptionsDtoOutput {
   /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
   projectId: string;
+  availability: PaymentOptionsDtoOutputAvailability;
+  rail: PaymentOptionsDtoOutputRail;
   acceptsPayments: boolean;
-  unavailableReason: PaymentOptionsDtoOutputUnavailableReason;
   contributorCountry: string | null;
   kinds: PaymentOptionsDtoOutputKindsItem[];
   currencies: PaymentOptionsDtoOutputCurrenciesItem[];
+  unavailableMethods: PaymentOptionsDtoOutputUnavailableMethodsItem[];
   /**
    * @minimum -9007199254740991
    * @maximum 9007199254740991
@@ -8374,9 +8439,25 @@ export const QuoteDtoOutputMethodsItemOperatorsItem = {
   simulated_money: 'simulated_money',
 } as const;
 
+export type QuoteDtoOutputMethodsItemMin = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+};
+
+export type QuoteDtoOutputMethodsItemMax = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+};
+
 export type QuoteDtoOutputMethodsItem = {
   method: QuoteDtoOutputMethodsItemMethod;
   operators: QuoteDtoOutputMethodsItemOperatorsItem[];
+  min: QuoteDtoOutputMethodsItemMin;
+  max: QuoteDtoOutputMethodsItemMax;
 };
 
 export interface QuoteDtoOutput {
@@ -16451,7 +16532,7 @@ export const ProblemDetailsCode = {
   PROJECTS_REVERSAL_INVALID: 'PROJECTS_REVERSAL_INVALID',
   PAYMENTS_PROJECT_NOT_OPEN: 'PAYMENTS_PROJECT_NOT_OPEN',
   PAYMENTS_HOLDER_NOT_READY: 'PAYMENTS_HOLDER_NOT_READY',
-  PAYMENTS_NO_PAYMENT_ROUTE: 'PAYMENTS_NO_PAYMENT_ROUTE',
+  PAYMENTS_HOLDER_PAYOUT_NOT_COVERED: 'PAYMENTS_HOLDER_PAYOUT_NOT_COVERED',
   PAYMENTS_METHOD_NOT_AVAILABLE: 'PAYMENTS_METHOD_NOT_AVAILABLE',
   PAYMENTS_CURRENCY_NOT_AVAILABLE: 'PAYMENTS_CURRENCY_NOT_AVAILABLE',
   PAYMENTS_INSTRUMENT_NOT_ACCEPTED: 'PAYMENTS_INSTRUMENT_NOT_ACCEPTED',
@@ -17141,6 +17222,14 @@ export type ContributionsControllerOptionsParams = {
    * @pattern ^[A-Z]{2}$
    */
   country?: string;
+  /**
+   * @pattern ^[A-Z]{3}$
+   */
+  currency?: string;
+  /**
+   * @pattern ^[1-9]\d{0,17}$
+   */
+  amountMinor?: string;
 };
 
 export type ContributionsControllerOfProjectParams = {

@@ -384,7 +384,8 @@
       "scale_without_positive_level": "The scale needs at least one level above 0.",
       "unknown_language": "Choose a language from the list.",
       "unknown_currency": "Choose a currency from the list.",
-      "project_or_entrepreneur": "Give either a project or a person supported, not both."
+      "project_or_entrepreneur": "Give either a project or a person supported, not both.",
+      "currency_required": "Choose the currency of the amount."
     },
     "problemReasons": {
       "EVENTS_SCHEDULE_INVALID": {

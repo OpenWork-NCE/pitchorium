@@ -18653,7 +18653,7 @@
           "RATE_LIMITED",
           "PAYMENTS_PROJECT_NOT_OPEN",
           "PAYMENTS_HOLDER_NOT_READY",
-          "PAYMENTS_NO_PAYMENT_ROUTE",
+          "PAYMENTS_HOLDER_PAYOUT_NOT_COVERED",
           "PAYMENTS_METHOD_NOT_AVAILABLE",
           "PAYMENTS_CURRENCY_NOT_AVAILABLE",
           "PAYMENTS_INSTRUMENT_NOT_ACCEPTED",
@@ -18707,6 +18707,24 @@
             "in": "query",
             "schema": {
               "pattern": "^[A-Z]{2}$",
+              "type": "string"
+            }
+          },
+          {
+            "name": "currency",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "pattern": "^[A-Z]{3}$",
+              "type": "string"
+            }
+          },
+          {
+            "name": "amountMinor",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "pattern": "^[1-9]\\d{0,17}$",
               "type": "string"
             }
           }
@@ -18780,7 +18798,7 @@
           "RATE_LIMITED",
           "PAYMENTS_PROJECT_NOT_OPEN",
           "PAYMENTS_HOLDER_NOT_READY",
-          "PAYMENTS_NO_PAYMENT_ROUTE",
+          "PAYMENTS_HOLDER_PAYOUT_NOT_COVERED",
           "PAYMENTS_METHOD_NOT_AVAILABLE",
           "PAYMENTS_CURRENCY_NOT_AVAILABLE",
           "PAYMENTS_INSTRUMENT_NOT_ACCEPTED",
@@ -18912,7 +18930,7 @@
           "RATE_LIMITED",
           "PAYMENTS_PROJECT_NOT_OPEN",
           "PAYMENTS_HOLDER_NOT_READY",
-          "PAYMENTS_NO_PAYMENT_ROUTE",
+          "PAYMENTS_HOLDER_PAYOUT_NOT_COVERED",
           "PAYMENTS_METHOD_NOT_AVAILABLE",
           "PAYMENTS_CURRENCY_NOT_AVAILABLE",
           "PAYMENTS_INSTRUMENT_NOT_ACCEPTED",
@@ -19068,7 +19086,7 @@
           "RATE_LIMITED",
           "PAYMENTS_PROJECT_NOT_OPEN",
           "PAYMENTS_HOLDER_NOT_READY",
-          "PAYMENTS_NO_PAYMENT_ROUTE",
+          "PAYMENTS_HOLDER_PAYOUT_NOT_COVERED",
           "PAYMENTS_METHOD_NOT_AVAILABLE",
           "PAYMENTS_CURRENCY_NOT_AVAILABLE",
           "PAYMENTS_INSTRUMENT_NOT_ACCEPTED",
@@ -19225,7 +19243,7 @@
           "RATE_LIMITED",
           "PAYMENTS_PROJECT_NOT_OPEN",
           "PAYMENTS_HOLDER_NOT_READY",
-          "PAYMENTS_NO_PAYMENT_ROUTE",
+          "PAYMENTS_HOLDER_PAYOUT_NOT_COVERED",
           "PAYMENTS_METHOD_NOT_AVAILABLE",
           "PAYMENTS_CURRENCY_NOT_AVAILABLE",
           "PAYMENTS_INSTRUMENT_NOT_ACCEPTED",
@@ -19381,7 +19399,7 @@
           "RATE_LIMITED",
           "PAYMENTS_PROJECT_NOT_OPEN",
           "PAYMENTS_HOLDER_NOT_READY",
-          "PAYMENTS_NO_PAYMENT_ROUTE",
+          "PAYMENTS_HOLDER_PAYOUT_NOT_COVERED",
           "PAYMENTS_METHOD_NOT_AVAILABLE",
           "PAYMENTS_CURRENCY_NOT_AVAILABLE",
           "PAYMENTS_INSTRUMENT_NOT_ACCEPTED",
@@ -19526,7 +19544,7 @@
           "RATE_LIMITED",
           "PAYMENTS_PROJECT_NOT_OPEN",
           "PAYMENTS_HOLDER_NOT_READY",
-          "PAYMENTS_NO_PAYMENT_ROUTE",
+          "PAYMENTS_HOLDER_PAYOUT_NOT_COVERED",
           "PAYMENTS_METHOD_NOT_AVAILABLE",
           "PAYMENTS_CURRENCY_NOT_AVAILABLE",
           "PAYMENTS_INSTRUMENT_NOT_ACCEPTED",
@@ -19644,7 +19662,7 @@
           "RATE_LIMITED",
           "PAYMENTS_PROJECT_NOT_OPEN",
           "PAYMENTS_HOLDER_NOT_READY",
-          "PAYMENTS_NO_PAYMENT_ROUTE",
+          "PAYMENTS_HOLDER_PAYOUT_NOT_COVERED",
           "PAYMENTS_METHOD_NOT_AVAILABLE",
           "PAYMENTS_CURRENCY_NOT_AVAILABLE",
           "PAYMENTS_INSTRUMENT_NOT_ACCEPTED",
@@ -19762,7 +19780,7 @@
           "RATE_LIMITED",
           "PAYMENTS_PROJECT_NOT_OPEN",
           "PAYMENTS_HOLDER_NOT_READY",
-          "PAYMENTS_NO_PAYMENT_ROUTE",
+          "PAYMENTS_HOLDER_PAYOUT_NOT_COVERED",
           "PAYMENTS_METHOD_NOT_AVAILABLE",
           "PAYMENTS_CURRENCY_NOT_AVAILABLE",
           "PAYMENTS_INSTRUMENT_NOT_ACCEPTED",
@@ -19880,7 +19898,7 @@
           "RATE_LIMITED",
           "PAYMENTS_PROJECT_NOT_OPEN",
           "PAYMENTS_HOLDER_NOT_READY",
-          "PAYMENTS_NO_PAYMENT_ROUTE",
+          "PAYMENTS_HOLDER_PAYOUT_NOT_COVERED",
           "PAYMENTS_METHOD_NOT_AVAILABLE",
           "PAYMENTS_CURRENCY_NOT_AVAILABLE",
           "PAYMENTS_INSTRUMENT_NOT_ACCEPTED",
@@ -19998,7 +20016,7 @@
           "RATE_LIMITED",
           "PAYMENTS_PROJECT_NOT_OPEN",
           "PAYMENTS_HOLDER_NOT_READY",
-          "PAYMENTS_NO_PAYMENT_ROUTE",
+          "PAYMENTS_HOLDER_PAYOUT_NOT_COVERED",
           "PAYMENTS_METHOD_NOT_AVAILABLE",
           "PAYMENTS_CURRENCY_NOT_AVAILABLE",
           "PAYMENTS_INSTRUMENT_NOT_ACCEPTED",
@@ -20112,7 +20130,7 @@
           "RATE_LIMITED",
           "PAYMENTS_PROJECT_NOT_OPEN",
           "PAYMENTS_HOLDER_NOT_READY",
-          "PAYMENTS_NO_PAYMENT_ROUTE",
+          "PAYMENTS_HOLDER_PAYOUT_NOT_COVERED",
           "PAYMENTS_METHOD_NOT_AVAILABLE",
           "PAYMENTS_CURRENCY_NOT_AVAILABLE",
           "PAYMENTS_INSTRUMENT_NOT_ACCEPTED",
@@ -20186,7 +20204,7 @@
           "RATE_LIMITED",
           "PAYMENTS_PROJECT_NOT_OPEN",
           "PAYMENTS_HOLDER_NOT_READY",
-          "PAYMENTS_NO_PAYMENT_ROUTE",
+          "PAYMENTS_HOLDER_PAYOUT_NOT_COVERED",
           "PAYMENTS_METHOD_NOT_AVAILABLE",
           "PAYMENTS_CURRENCY_NOT_AVAILABLE",
           "PAYMENTS_INSTRUMENT_NOT_ACCEPTED",
@@ -20342,7 +20360,7 @@
           "RATE_LIMITED",
           "PAYMENTS_PROJECT_NOT_OPEN",
           "PAYMENTS_HOLDER_NOT_READY",
-          "PAYMENTS_NO_PAYMENT_ROUTE",
+          "PAYMENTS_HOLDER_PAYOUT_NOT_COVERED",
           "PAYMENTS_METHOD_NOT_AVAILABLE",
           "PAYMENTS_CURRENCY_NOT_AVAILABLE",
           "PAYMENTS_INSTRUMENT_NOT_ACCEPTED",
@@ -20493,7 +20511,7 @@
           "RATE_LIMITED",
           "PAYMENTS_PROJECT_NOT_OPEN",
           "PAYMENTS_HOLDER_NOT_READY",
-          "PAYMENTS_NO_PAYMENT_ROUTE",
+          "PAYMENTS_HOLDER_PAYOUT_NOT_COVERED",
           "PAYMENTS_METHOD_NOT_AVAILABLE",
           "PAYMENTS_CURRENCY_NOT_AVAILABLE",
           "PAYMENTS_INSTRUMENT_NOT_ACCEPTED",
@@ -20649,7 +20667,7 @@
           "RATE_LIMITED",
           "PAYMENTS_PROJECT_NOT_OPEN",
           "PAYMENTS_HOLDER_NOT_READY",
-          "PAYMENTS_NO_PAYMENT_ROUTE",
+          "PAYMENTS_HOLDER_PAYOUT_NOT_COVERED",
           "PAYMENTS_METHOD_NOT_AVAILABLE",
           "PAYMENTS_CURRENCY_NOT_AVAILABLE",
           "PAYMENTS_INSTRUMENT_NOT_ACCEPTED",
@@ -20788,7 +20806,7 @@
           "RATE_LIMITED",
           "PAYMENTS_PROJECT_NOT_OPEN",
           "PAYMENTS_HOLDER_NOT_READY",
-          "PAYMENTS_NO_PAYMENT_ROUTE",
+          "PAYMENTS_HOLDER_PAYOUT_NOT_COVERED",
           "PAYMENTS_METHOD_NOT_AVAILABLE",
           "PAYMENTS_CURRENCY_NOT_AVAILABLE",
           "PAYMENTS_INSTRUMENT_NOT_ACCEPTED",
@@ -20906,7 +20924,7 @@
           "RATE_LIMITED",
           "PAYMENTS_PROJECT_NOT_OPEN",
           "PAYMENTS_HOLDER_NOT_READY",
-          "PAYMENTS_NO_PAYMENT_ROUTE",
+          "PAYMENTS_HOLDER_PAYOUT_NOT_COVERED",
           "PAYMENTS_METHOD_NOT_AVAILABLE",
           "PAYMENTS_CURRENCY_NOT_AVAILABLE",
           "PAYMENTS_INSTRUMENT_NOT_ACCEPTED",
@@ -21038,7 +21056,7 @@
           "RATE_LIMITED",
           "PAYMENTS_PROJECT_NOT_OPEN",
           "PAYMENTS_HOLDER_NOT_READY",
-          "PAYMENTS_NO_PAYMENT_ROUTE",
+          "PAYMENTS_HOLDER_PAYOUT_NOT_COVERED",
           "PAYMENTS_METHOD_NOT_AVAILABLE",
           "PAYMENTS_CURRENCY_NOT_AVAILABLE",
           "PAYMENTS_INSTRUMENT_NOT_ACCEPTED",
@@ -21170,7 +21188,7 @@
           "RATE_LIMITED",
           "PAYMENTS_PROJECT_NOT_OPEN",
           "PAYMENTS_HOLDER_NOT_READY",
-          "PAYMENTS_NO_PAYMENT_ROUTE",
+          "PAYMENTS_HOLDER_PAYOUT_NOT_COVERED",
           "PAYMENTS_METHOD_NOT_AVAILABLE",
           "PAYMENTS_CURRENCY_NOT_AVAILABLE",
           "PAYMENTS_INSTRUMENT_NOT_ACCEPTED",
@@ -21269,7 +21287,7 @@
           "RATE_LIMITED",
           "PAYMENTS_PROJECT_NOT_OPEN",
           "PAYMENTS_HOLDER_NOT_READY",
-          "PAYMENTS_NO_PAYMENT_ROUTE",
+          "PAYMENTS_HOLDER_PAYOUT_NOT_COVERED",
           "PAYMENTS_METHOD_NOT_AVAILABLE",
           "PAYMENTS_CURRENCY_NOT_AVAILABLE",
           "PAYMENTS_INSTRUMENT_NOT_ACCEPTED",
@@ -21419,7 +21437,7 @@
           "RATE_LIMITED",
           "PAYMENTS_PROJECT_NOT_OPEN",
           "PAYMENTS_HOLDER_NOT_READY",
-          "PAYMENTS_NO_PAYMENT_ROUTE",
+          "PAYMENTS_HOLDER_PAYOUT_NOT_COVERED",
           "PAYMENTS_METHOD_NOT_AVAILABLE",
           "PAYMENTS_CURRENCY_NOT_AVAILABLE",
           "PAYMENTS_INSTRUMENT_NOT_ACCEPTED",
@@ -21563,7 +21581,7 @@
           "RATE_LIMITED",
           "PAYMENTS_PROJECT_NOT_OPEN",
           "PAYMENTS_HOLDER_NOT_READY",
-          "PAYMENTS_NO_PAYMENT_ROUTE",
+          "PAYMENTS_HOLDER_PAYOUT_NOT_COVERED",
           "PAYMENTS_METHOD_NOT_AVAILABLE",
           "PAYMENTS_CURRENCY_NOT_AVAILABLE",
           "PAYMENTS_INSTRUMENT_NOT_ACCEPTED",
@@ -21662,7 +21680,7 @@
           "RATE_LIMITED",
           "PAYMENTS_PROJECT_NOT_OPEN",
           "PAYMENTS_HOLDER_NOT_READY",
-          "PAYMENTS_NO_PAYMENT_ROUTE",
+          "PAYMENTS_HOLDER_PAYOUT_NOT_COVERED",
           "PAYMENTS_METHOD_NOT_AVAILABLE",
           "PAYMENTS_CURRENCY_NOT_AVAILABLE",
           "PAYMENTS_INSTRUMENT_NOT_ACCEPTED",
@@ -21761,7 +21779,7 @@
           "RATE_LIMITED",
           "PAYMENTS_PROJECT_NOT_OPEN",
           "PAYMENTS_HOLDER_NOT_READY",
-          "PAYMENTS_NO_PAYMENT_ROUTE",
+          "PAYMENTS_HOLDER_PAYOUT_NOT_COVERED",
           "PAYMENTS_METHOD_NOT_AVAILABLE",
           "PAYMENTS_CURRENCY_NOT_AVAILABLE",
           "PAYMENTS_INSTRUMENT_NOT_ACCEPTED",
@@ -21903,7 +21921,7 @@
           "RATE_LIMITED",
           "PAYMENTS_PROJECT_NOT_OPEN",
           "PAYMENTS_HOLDER_NOT_READY",
-          "PAYMENTS_NO_PAYMENT_ROUTE",
+          "PAYMENTS_HOLDER_PAYOUT_NOT_COVERED",
           "PAYMENTS_METHOD_NOT_AVAILABLE",
           "PAYMENTS_CURRENCY_NOT_AVAILABLE",
           "PAYMENTS_INSTRUMENT_NOT_ACCEPTED",
@@ -22025,7 +22043,7 @@
           "RATE_LIMITED",
           "PAYMENTS_PROJECT_NOT_OPEN",
           "PAYMENTS_HOLDER_NOT_READY",
-          "PAYMENTS_NO_PAYMENT_ROUTE",
+          "PAYMENTS_HOLDER_PAYOUT_NOT_COVERED",
           "PAYMENTS_METHOD_NOT_AVAILABLE",
           "PAYMENTS_CURRENCY_NOT_AVAILABLE",
           "PAYMENTS_INSTRUMENT_NOT_ACCEPTED",
@@ -22185,7 +22203,7 @@
           "RATE_LIMITED",
           "PAYMENTS_PROJECT_NOT_OPEN",
           "PAYMENTS_HOLDER_NOT_READY",
-          "PAYMENTS_NO_PAYMENT_ROUTE",
+          "PAYMENTS_HOLDER_PAYOUT_NOT_COVERED",
           "PAYMENTS_METHOD_NOT_AVAILABLE",
           "PAYMENTS_CURRENCY_NOT_AVAILABLE",
           "PAYMENTS_INSTRUMENT_NOT_ACCEPTED",
@@ -22323,7 +22341,7 @@
           "RATE_LIMITED",
           "PAYMENTS_PROJECT_NOT_OPEN",
           "PAYMENTS_HOLDER_NOT_READY",
-          "PAYMENTS_NO_PAYMENT_ROUTE",
+          "PAYMENTS_HOLDER_PAYOUT_NOT_COVERED",
           "PAYMENTS_METHOD_NOT_AVAILABLE",
           "PAYMENTS_CURRENCY_NOT_AVAILABLE",
           "PAYMENTS_INSTRUMENT_NOT_ACCEPTED",
@@ -22441,7 +22459,7 @@
           "RATE_LIMITED",
           "PAYMENTS_PROJECT_NOT_OPEN",
           "PAYMENTS_HOLDER_NOT_READY",
-          "PAYMENTS_NO_PAYMENT_ROUTE",
+          "PAYMENTS_HOLDER_PAYOUT_NOT_COVERED",
           "PAYMENTS_METHOD_NOT_AVAILABLE",
           "PAYMENTS_CURRENCY_NOT_AVAILABLE",
           "PAYMENTS_INSTRUMENT_NOT_ACCEPTED",
@@ -22573,7 +22591,7 @@
           "RATE_LIMITED",
           "PAYMENTS_PROJECT_NOT_OPEN",
           "PAYMENTS_HOLDER_NOT_READY",
-          "PAYMENTS_NO_PAYMENT_ROUTE",
+          "PAYMENTS_HOLDER_PAYOUT_NOT_COVERED",
           "PAYMENTS_METHOD_NOT_AVAILABLE",
           "PAYMENTS_CURRENCY_NOT_AVAILABLE",
           "PAYMENTS_INSTRUMENT_NOT_ACCEPTED",
@@ -22712,7 +22730,7 @@
           "RATE_LIMITED",
           "PAYMENTS_PROJECT_NOT_OPEN",
           "PAYMENTS_HOLDER_NOT_READY",
-          "PAYMENTS_NO_PAYMENT_ROUTE",
+          "PAYMENTS_HOLDER_PAYOUT_NOT_COVERED",
           "PAYMENTS_METHOD_NOT_AVAILABLE",
           "PAYMENTS_CURRENCY_NOT_AVAILABLE",
           "PAYMENTS_INSTRUMENT_NOT_ACCEPTED",
@@ -22844,7 +22862,7 @@
           "RATE_LIMITED",
           "PAYMENTS_PROJECT_NOT_OPEN",
           "PAYMENTS_HOLDER_NOT_READY",
-          "PAYMENTS_NO_PAYMENT_ROUTE",
+          "PAYMENTS_HOLDER_PAYOUT_NOT_COVERED",
           "PAYMENTS_METHOD_NOT_AVAILABLE",
           "PAYMENTS_CURRENCY_NOT_AVAILABLE",
           "PAYMENTS_INSTRUMENT_NOT_ACCEPTED",
@@ -22981,7 +22999,7 @@
           "RATE_LIMITED",
           "PAYMENTS_PROJECT_NOT_OPEN",
           "PAYMENTS_HOLDER_NOT_READY",
-          "PAYMENTS_NO_PAYMENT_ROUTE",
+          "PAYMENTS_HOLDER_PAYOUT_NOT_COVERED",
           "PAYMENTS_METHOD_NOT_AVAILABLE",
           "PAYMENTS_CURRENCY_NOT_AVAILABLE",
           "PAYMENTS_INSTRUMENT_NOT_ACCEPTED",
@@ -23113,7 +23131,7 @@
           "RATE_LIMITED",
           "PAYMENTS_PROJECT_NOT_OPEN",
           "PAYMENTS_HOLDER_NOT_READY",
-          "PAYMENTS_NO_PAYMENT_ROUTE",
+          "PAYMENTS_HOLDER_PAYOUT_NOT_COVERED",
           "PAYMENTS_METHOD_NOT_AVAILABLE",
           "PAYMENTS_CURRENCY_NOT_AVAILABLE",
           "PAYMENTS_INSTRUMENT_NOT_ACCEPTED",
@@ -23212,7 +23230,7 @@
           "RATE_LIMITED",
           "PAYMENTS_PROJECT_NOT_OPEN",
           "PAYMENTS_HOLDER_NOT_READY",
-          "PAYMENTS_NO_PAYMENT_ROUTE",
+          "PAYMENTS_HOLDER_PAYOUT_NOT_COVERED",
           "PAYMENTS_METHOD_NOT_AVAILABLE",
           "PAYMENTS_CURRENCY_NOT_AVAILABLE",
           "PAYMENTS_INSTRUMENT_NOT_ACCEPTED",
@@ -36847,7 +36865,7 @@
                   "PROJECTS_REVERSAL_INVALID",
                   "PAYMENTS_PROJECT_NOT_OPEN",
                   "PAYMENTS_HOLDER_NOT_READY",
-                  "PAYMENTS_NO_PAYMENT_ROUTE",
+                  "PAYMENTS_HOLDER_PAYOUT_NOT_COVERED",
                   "PAYMENTS_METHOD_NOT_AVAILABLE",
                   "PAYMENTS_CURRENCY_NOT_AVAILABLE",
                   "PAYMENTS_INSTRUMENT_NOT_ACCEPTED",
@@ -54672,23 +54690,51 @@
             "format": "uuid",
             "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$"
           },
-          "acceptsPayments": {
-            "type": "boolean"
+          "availability": {
+            "type": "string",
+            "enum": [
+              "open",
+              "holder_not_verified",
+              "holder_without_covered_payout_account",
+              "campaign_closed",
+              "funding_frozen"
+            ]
           },
-          "unavailableReason": {
+          "rail": {
             "anyOf": [
               {
-                "type": "string",
-                "enum": [
-                  "project_not_open",
-                  "holder_not_ready",
-                  "no_payment_route"
-                ]
+                "type": "object",
+                "properties": {
+                  "provider": {
+                    "type": "string",
+                    "enum": [
+                      "stripe",
+                      "flutterwave",
+                      "simulated"
+                    ]
+                  },
+                  "payoutCountry": {
+                    "type": "string",
+                    "pattern": "^[A-Z]{2}$"
+                  },
+                  "payoutCurrency": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "provider",
+                  "payoutCountry",
+                  "payoutCurrency"
+                ],
+                "additionalProperties": false
               },
               {
                 "type": "null"
               }
             ]
+          },
+          "acceptsPayments": {
+            "type": "boolean"
           },
           "contributorCountry": {
             "anyOf": [
@@ -54792,11 +54838,49 @@
                             "simulated_money"
                           ]
                         }
+                      },
+                      "min": {
+                        "type": "object",
+                        "properties": {
+                          "amountMinor": {
+                            "type": "string",
+                            "pattern": "^-?(0|[1-9]\\d*)$"
+                          },
+                          "currency": {
+                            "type": "string",
+                            "pattern": "^[A-Z]{3}$"
+                          }
+                        },
+                        "required": [
+                          "amountMinor",
+                          "currency"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "max": {
+                        "type": "object",
+                        "properties": {
+                          "amountMinor": {
+                            "type": "string",
+                            "pattern": "^-?(0|[1-9]\\d*)$"
+                          },
+                          "currency": {
+                            "type": "string",
+                            "pattern": "^[A-Z]{3}$"
+                          }
+                        },
+                        "required": [
+                          "amountMinor",
+                          "currency"
+                        ],
+                        "additionalProperties": false
                       }
                     },
                     "required": [
                       "method",
-                      "operators"
+                      "operators",
+                      "min",
+                      "max"
                     ],
                     "additionalProperties": false
                   }
@@ -54807,6 +54891,42 @@
                 "min",
                 "max",
                 "methods"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "unavailableMethods": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "method": {
+                  "type": "string",
+                  "enum": [
+                    "card",
+                    "sepa_debit",
+                    "apple_pay",
+                    "google_pay",
+                    "paypal",
+                    "mobile_money",
+                    "bank_transfer",
+                    "bank_account",
+                    "ussd"
+                  ]
+                },
+                "reason": {
+                  "type": "string",
+                  "enum": [
+                    "not_covered_by_holder_rail",
+                    "contributor_country_not_covered",
+                    "currency_not_supported",
+                    "amount_out_of_range"
+                  ]
+                }
+              },
+              "required": [
+                "method",
+                "reason"
               ],
               "additionalProperties": false
             }
@@ -54822,11 +54942,13 @@
         },
         "required": [
           "projectId",
+          "availability",
+          "rail",
           "acceptsPayments",
-          "unavailableReason",
           "contributorCountry",
           "kinds",
           "currencies",
+          "unavailableMethods",
           "commissionRateBps",
           "anonymousDonations"
         ],
@@ -55126,11 +55248,49 @@
                       "simulated_money"
                     ]
                   }
+                },
+                "min": {
+                  "type": "object",
+                  "properties": {
+                    "amountMinor": {
+                      "type": "string",
+                      "pattern": "^-?(0|[1-9]\\d*)$"
+                    },
+                    "currency": {
+                      "type": "string",
+                      "pattern": "^[A-Z]{3}$"
+                    }
+                  },
+                  "required": [
+                    "amountMinor",
+                    "currency"
+                  ],
+                  "additionalProperties": false
+                },
+                "max": {
+                  "type": "object",
+                  "properties": {
+                    "amountMinor": {
+                      "type": "string",
+                      "pattern": "^-?(0|[1-9]\\d*)$"
+                    },
+                    "currency": {
+                      "type": "string",
+                      "pattern": "^[A-Z]{3}$"
+                    }
+                  },
+                  "required": [
+                    "amountMinor",
+                    "currency"
+                  ],
+                  "additionalProperties": false
                 }
               },
               "required": [
                 "method",
-                "operators"
+                "operators",
+                "min",
+                "max"
               ],
               "additionalProperties": false
             }
@@ -73382,7 +73542,7 @@
               "PROJECTS_REVERSAL_INVALID",
               "PAYMENTS_PROJECT_NOT_OPEN",
               "PAYMENTS_HOLDER_NOT_READY",
-              "PAYMENTS_NO_PAYMENT_ROUTE",
+              "PAYMENTS_HOLDER_PAYOUT_NOT_COVERED",
               "PAYMENTS_METHOD_NOT_AVAILABLE",
               "PAYMENTS_CURRENCY_NOT_AVAILABLE",
               "PAYMENTS_INSTRUMENT_NOT_ACCEPTED",
@@ -74622,18 +74782,18 @@
       "PAYMENTS_HOLDER_NOT_READY": {
         "value": {
           "type": "urn:pitchorium:problem:payments-holder-not-ready",
-          "title": "The project holder cannot receive payments yet",
+          "title": "The identity or the payout account of the project holder is not verified yet",
           "status": 409,
           "code": "PAYMENTS_HOLDER_NOT_READY",
           "requestId": "0199c1f4-7d4e-7c2a-9b1e-3f5a6c7d8e9f"
         }
       },
-      "PAYMENTS_NO_PAYMENT_ROUTE": {
+      "PAYMENTS_HOLDER_PAYOUT_NOT_COVERED": {
         "value": {
-          "type": "urn:pitchorium:problem:payments-no-payment-route",
-          "title": "No verified payment route serves the payout country",
+          "type": "urn:pitchorium:problem:payments-holder-payout-not-covered",
+          "title": "The project holder has no payout account the coverage serves",
           "status": 409,
-          "code": "PAYMENTS_NO_PAYMENT_ROUTE",
+          "code": "PAYMENTS_HOLDER_PAYOUT_NOT_COVERED",
           "requestId": "0199c1f4-7d4e-7c2a-9b1e-3f5a6c7d8e9f"
         }
       },

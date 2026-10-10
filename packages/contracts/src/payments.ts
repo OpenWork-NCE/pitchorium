@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { uuidV7Schema } from './ids.js';
-import { moneySchema } from './money.js';
+import { currencyCodeSchema, moneySchema } from './money.js';
 import { organizationProjectRefSchema } from './organizations.js';
 import { cursorPageQuerySchema, cursorPageSchema } from './pagination.js';
 import {
@@ -190,40 +190,96 @@ export const indicativeCurrencySchema = z.object({
     .nullable(),
 });
 
-export const paymentOptionsQuerySchema = z.object({
-  /** Country of the contributor; the declared country of the profile by default. */
-  country: countryCodeSchema.optional(),
-});
+/**
+ * Country of the contributor (the declared country of the profile by default), and optionally
+ * the currency and the amount they want to pay: the methods that cannot take them are listed as
+ * unavailable with their reason.
+ */
+export const paymentOptionsQuerySchema = z
+  .object({
+    country: countryCodeSchema.optional(),
+    currency: currencyCodeSchema.optional(),
+    /** In minor units of `currency`, which it requires. */
+    amountMinor: z
+      .string()
+      .regex(/^[1-9]\d{0,17}$/)
+      .optional(),
+  })
+  .refine((query) => query.amountMinor === undefined || query.currency !== undefined, {
+    params: { reason: 'currency_required' },
+    path: ['currency'],
+  });
 
-/** Why collected contributions are not open, without exposing the payment plumbing. */
-export const PAYMENTS_UNAVAILABLE_REASONS = [
-  'project_not_open',
-  'holder_not_ready',
-  'no_payment_route',
+/**
+ * Whether a project takes collected contributions now (ADR 0135): open; holder identity or
+ * account not verified yet; holder without a payout account the coverage serves; campaign
+ * closed; funding frozen by the moderation.
+ */
+export const PROJECT_PAYMENT_AVAILABILITIES = [
+  'open',
+  'holder_not_verified',
+  'holder_without_covered_payout_account',
+  'campaign_closed',
+  'funding_frozen',
 ] as const;
-export const paymentsUnavailableReasonSchema = z.enum(PAYMENTS_UNAVAILABLE_REASONS);
+export const projectPaymentAvailabilitySchema = z.enum(PROJECT_PAYMENT_AVAILABILITIES);
+
+/**
+ * Why a payment method is not offered to this contributor for this project (ADR 0135), in the
+ * order they are checked: the rail of the holder does not offer it, it does not serve the country
+ * of the contributor, not in the currency asked, or the amount is outside its bounds.
+ */
+export const PAYMENT_UNAVAILABLE_REASONS = [
+  'not_covered_by_holder_rail',
+  'contributor_country_not_covered',
+  'currency_not_supported',
+  'amount_out_of_range',
+] as const;
+export const paymentUnavailableReasonSchema = z.enum(PAYMENT_UNAVAILABLE_REASONS);
 
 export const paymentMethodOptionSchema = z.object({
   method: paymentMethodSchema,
   /** Mobile money operators, empty for the other methods. */
   operators: z.array(mobileMoneyOperatorSchema),
+  /** Bounds of this method in this currency: the platform bounds narrowed by the provider. */
+  min: moneySchema,
+  max: moneySchema,
 });
 
 export const paymentCurrencyOptionSchema = z.object({
   currency: z.string(),
+  /** Smallest minimum and largest maximum of its methods. */
   min: moneySchema,
   max: moneySchema,
   methods: z.array(paymentMethodOptionSchema),
 });
 
+export const unavailablePaymentMethodSchema = z.object({
+  method: paymentMethodSchema,
+  reason: paymentUnavailableReasonSchema,
+});
+
+/** The rail of a project: the payout account of its holder (ADR 0043, 0134). */
+export const projectPaymentRailSchema = z.object({
+  provider: paymentProviderSchema,
+  payoutCountry: countryCodeSchema,
+  payoutCurrency: z.string(),
+});
+
 export const paymentOptionsSchema = z.object({
   projectId: uuidV7Schema,
+  availability: projectPaymentAvailabilitySchema,
+  /** Null when the holder has no payout account the coverage serves. */
+  rail: projectPaymentRailSchema.nullable(),
+  /** This contributor can pay now: the project is open and a method is available. */
   acceptsPayments: z.boolean(),
-  unavailableReason: paymentsUnavailableReasonSchema.nullable(),
   contributorCountry: countryCodeSchema.nullable(),
   /** Collected kinds the project accepts. */
   kinds: z.array(contributionKindSchema),
+  /** Available currencies and methods, empty unless the project is open. */
   currencies: z.array(paymentCurrencyOptionSchema),
+  /** Methods the active providers offer that this contributor cannot use here, with why. */
+  unavailableMethods: z.array(unavailablePaymentMethodSchema),
   commissionRateBps: z.number().int(),
   anonymousDonations: z.boolean(),
 });
@@ -594,7 +650,11 @@ export type FxRate = z.infer<typeof fxRateSchema>;
 export type PaymentOptions = z.infer<typeof paymentOptionsSchema>;
 export type PaymentMethodOption = z.infer<typeof paymentMethodOptionSchema>;
 export type PaymentCurrencyOption = z.infer<typeof paymentCurrencyOptionSchema>;
-export type PaymentsUnavailableReason = (typeof PAYMENTS_UNAVAILABLE_REASONS)[number];
+export type ProjectPaymentAvailability = z.infer<typeof projectPaymentAvailabilitySchema>;
+export type PaymentUnavailableReason = z.infer<typeof paymentUnavailableReasonSchema>;
+export type UnavailablePaymentMethod = z.infer<typeof unavailablePaymentMethodSchema>;
+export type ProjectPaymentRail = z.infer<typeof projectPaymentRailSchema>;
+export type PaymentOptionsQuery = z.infer<typeof paymentOptionsQuerySchema>;
 export type ContributionQuoteRequest = z.infer<typeof contributionQuoteRequestSchema>;
 export type ContributionQuote = z.infer<typeof contributionQuoteSchema>;
 export type CreateContributionRequest = z.infer<typeof createContributionRequestSchema>;

@@ -138,3 +138,4 @@ Un fichier par décision, numéroté, au format Contexte / Décision / Conséque
 | [0132](0132-project-mobile-action-bar.md)                   | Barre d'action mobile de la page projet                      |
 | [0133](0133-public-payment-coverage.md)                     | Couverture publique des paiements                            |
 | [0134](0134-payout-choice-by-account-country.md)            | Choix du versement par le pays du compte                     |
+| [0135](0135-unavailable-payment-methods-and-reasons.md)     | Moyens indisponibles et motifs                               |
