@@ -229,8 +229,10 @@ function parameters(text: string): string {
 }
 
 function quote(literal: string): string {
-  // A run of syntax characters is quoted at once: `'#''#'` would read as `#'#` (`''` is a quote).
-  return literal.replace(/'/g, "''").replace(/[{}<>#|]+/g, (run) => `'${run}'`);
+  // Braces and tags only: `#` is syntax inside a plural branch alone, and an apostrophe before a
+  // character that is not syntax stays in the text (`'#'` would show its quotes). A run is quoted
+  // at once: `'{''}'` would read as `{'}` (`''` is a quote).
+  return literal.replace(/'/g, "''").replace(/[{}<>]+/g, (run) => `'${run}'`);
 }
 
 /**
