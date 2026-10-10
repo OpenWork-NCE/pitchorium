@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import type * as ApiClient from '@pitchorium/api-client';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { act, fireEvent, screen } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { renderWithProviders } from '../../../../test/support/render';
 import { CreateOrganizationForm as CreateOrganization } from './create-organization-form';
@@ -22,12 +22,12 @@ describe('creation of an organisation', () => {
         <CreateOrganization />
       </QueryClientProvider>,
     );
-    await act(async () => {
-      fireEvent.click(screen.getByRole('button', { name: 'Continuer' }));
-      await new Promise((resolve) => setTimeout(resolve, 20));
-    });
-    expect(screen.getByLabelText('Nom de l’organisation').getAttribute('aria-invalid')).toBe(
-      'true',
+    fireEvent.click(screen.getByRole('button', { name: 'Continuer' }));
+    // The schema of the form arrives on demand: the refusal is awaited, never a fixed delay.
+    await waitFor(() =>
+      expect(screen.getByLabelText('Nom de l’organisation').getAttribute('aria-invalid')).toBe(
+        'true',
+      ),
     );
     expect(screen.queryByLabelText('Présentation')).toBeNull();
     expect(create).not.toHaveBeenCalled();
