@@ -45165,12 +45165,19 @@
                                   ],
                                   "additionalProperties": false
                                 }
+                              },
+                              "alt": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
                               }
                             },
                             "required": [
                               "mediaId",
                               "url",
-                              "variants"
+                              "variants",
+                              "alt"
                             ],
                             "additionalProperties": false
                           }
@@ -51113,12 +51120,19 @@
                     ],
                     "additionalProperties": false
                   }
+                },
+                "alt": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
                 }
               },
               "required": [
                 "mediaId",
                 "url",
-                "variants"
+                "variants",
+                "alt"
               ],
               "additionalProperties": false
             }
@@ -51422,12 +51436,19 @@
                           ],
                           "additionalProperties": false
                         }
+                      },
+                      "alt": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
                       }
                     },
                     "required": [
                       "mediaId",
                       "url",
-                      "variants"
+                      "variants",
+                      "alt"
                     ],
                     "additionalProperties": false
                   }
@@ -52793,6 +52814,18 @@
               "format": "uuid",
               "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$"
             }
+          },
+          "alts": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$"
+            },
+            "additionalProperties": {
+              "type": "string",
+              "maxLength": 1000
+            }
           }
         },
         "required": [
@@ -53535,6 +53568,18 @@
               "format": "uuid",
               "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$"
             }
+          },
+          "imageAlts": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$"
+            },
+            "additionalProperties": {
+              "type": "string",
+              "maxLength": 1000
+            }
           }
         },
         "required": [
@@ -53640,12 +53685,19 @@
                     ],
                     "additionalProperties": false
                   }
+                },
+                "alt": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
                 }
               },
               "required": [
                 "mediaId",
                 "url",
-                "variants"
+                "variants",
+                "alt"
               ],
               "additionalProperties": false
             }
@@ -53783,12 +53835,19 @@
                           ],
                           "additionalProperties": false
                         }
+                      },
+                      "alt": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
                       }
                     },
                     "required": [
                       "mediaId",
                       "url",
-                      "variants"
+                      "variants",
+                      "alt"
                     ],
                     "additionalProperties": false
                   }
@@ -53843,6 +53902,18 @@
             "type": "string",
             "minLength": 1,
             "maxLength": 5000
+          },
+          "imageAlts": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$"
+            },
+            "additionalProperties": {
+              "type": "string",
+              "maxLength": 1000
+            }
           }
         },
         "required": [

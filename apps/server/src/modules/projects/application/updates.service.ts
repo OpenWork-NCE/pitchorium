@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import type { CreateProjectUpdateRequest } from '@pitchorium/contracts';
+import type { CreateProjectUpdateRequest, EditProjectUpdateRequest } from '@pitchorium/contracts';
 import { TransactionManager } from '../../../platform/database';
 import { Clock, DomainError, IdGenerator } from '../../../platform/kernel';
 import { MediaFacade } from '../../media';
 import type { UpdateRecord } from '../domain/activity';
-import { isPublished, type ProjectRecord } from '../domain/project';
+import { imageAlts, isPublished, type ProjectRecord } from '../domain/project';
 import { UpdatePublished } from '../domain/project-events';
 import { ProjectEventsRecorder } from './project-events.recorder';
 import { ProjectRepository } from './ports';
@@ -49,6 +49,7 @@ export class UpdatesService {
       authorId,
       text: request.text,
       imageMediaIds: request.imageMediaIds ?? [],
+      imageAlts: imageAlts(request.imageMediaIds ?? [], request.imageAlts ?? {}),
       moderationStatus: 'visible',
       publishedAt: this.clock.now(),
       editedAt: null,
@@ -70,11 +71,21 @@ export class UpdatesService {
     return update;
   }
 
-  async edit(projectId: string, updateId: string, text: string): Promise<UpdateRecord> {
+  async edit(
+    projectId: string,
+    updateId: string,
+    request: EditProjectUpdateRequest,
+  ): Promise<UpdateRecord> {
     const update = await this.require(projectId, updateId);
-    const editedAt = this.clock.now();
-    await this.projects.updateUpdate(updateId, { text, editedAt });
-    return { ...update, text, editedAt };
+    const patch = {
+      text: request.text,
+      editedAt: this.clock.now(),
+      imageAlts: request.imageAlts
+        ? imageAlts(update.imageMediaIds, request.imageAlts)
+        : update.imageAlts,
+    };
+    await this.projects.updateUpdate(updateId, patch);
+    return { ...update, ...patch };
   }
 
   /** Logical deletion; the images are detached, then removed by the orphan cleanup. */

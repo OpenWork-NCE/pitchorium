@@ -183,6 +183,13 @@
       "when": 1791545877210,
       "tag": "0025_content_comment_mentions",
       "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "7",
+      "when": 1791623811085,
+      "tag": "0026_projects_image_alts",
+      "breakpoints": true
     }
   ]
 }

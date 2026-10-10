@@ -63,8 +63,12 @@ const memberCardView = (card: MemberCard | undefined) =>
       }
     : null;
 
-const imageView = (mediaId: string, image: MediaImage | undefined): ProjectImage[] =>
-  image ? [{ mediaId, url: image.url, variants: image.variants }] : [];
+const imageView = (
+  mediaId: string,
+  image: MediaImage | undefined,
+  alts: Readonly<Record<string, string>>,
+): ProjectImage[] =>
+  image ? [{ mediaId, url: image.url, variants: image.variants, alt: alts[mediaId] ?? null }] : [];
 
 /** Published, live and visible: readable by anyone. */
 export function isShowable(project: ProjectRecord): boolean {
@@ -381,7 +385,7 @@ export class ProjectReadsService {
       impactArea: project.impactArea,
       video: project.video ? videoView(project.video) : null,
       gallery: project.galleryMediaIds.flatMap((mediaId) =>
-        imageView(mediaId, gallery.get(mediaId)),
+        imageView(mediaId, gallery.get(mediaId), project.galleryAlts),
       ),
       documents,
       tiers: tiers.map((tier) => ({
@@ -487,7 +491,7 @@ export class ProjectReadsService {
               author,
               text: update.text,
               images: update.imageMediaIds.flatMap((mediaId) =>
-                imageView(mediaId, images.get(mediaId)),
+                imageView(mediaId, images.get(mediaId), update.imageAlts),
               ),
               publishedAt: update.publishedAt.toISOString(),
               editedAt: update.editedAt?.toISOString() ?? null,

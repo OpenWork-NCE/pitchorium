@@ -23,7 +23,10 @@ export type TeamMemberPatch = Partial<
   Pick<TeamMemberRecord, 'role' | 'function' | 'status' | 'joinedAt' | 'publicDisplayConsentAt'>
 >;
 export type UpdatePatch = Partial<
-  Pick<UpdateRecord, 'text' | 'moderationStatus' | 'editedAt' | 'deletedAt' | 'imageMediaIds'>
+  Pick<
+    UpdateRecord,
+    'text' | 'moderationStatus' | 'editedAt' | 'deletedAt' | 'imageMediaIds' | 'imageAlts'
+  >
 >;
 
 /** Filters of the showcase (published, live and visible projects only). */

@@ -4279,6 +4279,8 @@ export type FeedPageDtoOutputItemsItem =
               avif: string | null;
             };
           };
+          /** @nullable */
+          alt: string | null;
         }[];
         /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
         publishedAt: string;
@@ -6836,6 +6838,8 @@ export type ProjectDtoOutputGalleryItem = {
   mediaId: string;
   url: string;
   variants: ProjectDtoOutputGalleryItemVariants;
+  /** @nullable */
+  alt: string | null;
 };
 
 export type ProjectDtoOutputDocumentsItem = {
@@ -6929,6 +6933,8 @@ export type ProjectDtoOutputUpdatesItemImagesItem = {
   mediaId: string;
   url: string;
   variants: ProjectDtoOutputUpdatesItemImagesItemVariants;
+  /** @nullable */
+  alt: string | null;
 };
 
 export type ProjectDtoOutputUpdatesItem = {
@@ -7522,12 +7528,15 @@ export interface ReplaceTiersDto {
   tiers: ReplaceTiersDtoTiersItem[];
 }
 
+export type SetGalleryDtoAlts = { [key: string]: string };
+
 export interface SetGalleryDto {
   /**
    * @maxItems 20
    * @items.pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$
    */
   mediaIds: string[];
+  alts?: SetGalleryDtoAlts;
 }
 
 export interface SetDocumentsDto {
@@ -7832,6 +7841,8 @@ export interface UpdateRewardDto {
   estimatedDelivery?: string | null;
 }
 
+export type CreateUpdateDtoImageAlts = { [key: string]: string };
+
 export interface CreateUpdateDto {
   /**
    * @minLength 1
@@ -7843,6 +7854,7 @@ export interface CreateUpdateDto {
    * @items.pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$
    */
   imageMediaIds?: string[];
+  imageAlts?: CreateUpdateDtoImageAlts;
 }
 
 export type UpdateDtoOutputAuthor = {
@@ -7879,6 +7891,8 @@ export type UpdateDtoOutputImagesItem = {
   mediaId: string;
   url: string;
   variants: UpdateDtoOutputImagesItemVariants;
+  /** @nullable */
+  alt: string | null;
 };
 
 export interface UpdateDtoOutput {
@@ -7928,6 +7942,8 @@ export type UpdatePageDtoOutputItemsItemImagesItem = {
   mediaId: string;
   url: string;
   variants: UpdatePageDtoOutputItemsItemImagesItemVariants;
+  /** @nullable */
+  alt: string | null;
 };
 
 export type UpdatePageDtoOutputItemsItem = {
@@ -7949,12 +7965,15 @@ export interface UpdatePageDtoOutput {
   nextCursor: string | null;
 }
 
+export type EditUpdateDtoImageAlts = { [key: string]: string };
+
 export interface EditUpdateDto {
   /**
    * @minLength 1
    * @maxLength 5000
    */
   text: string;
+  imageAlts?: EditUpdateDtoImageAlts;
 }
 
 export type ExpressInterestDtoKind =

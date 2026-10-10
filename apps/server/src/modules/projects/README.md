@@ -5,7 +5,7 @@ Projets et campagnes (cahier des charges §11, avec §9.1, §9.3, §10.2, §10.3
 ## Projet
 
 - Propriétaire : un membre avec un volet entrepreneur (`project.create`). Organisation porteuse facultative, si le membre y est `owner` ou `admin` (`PROJECTS_ORGANIZATION_ROLE_REQUIRED`).
-- Contenu : titre (120), slug (historique et redirections 301, jamais réattribué), résumé (300), description en Markdown restreint (20 000), secteur (données de référence), zone d'impact (200), pays en Afrique (M49 002) ou dans les Caraïbes (029), 10 au plus (`PROJECTS_COUNTRY_NOT_ELIGIBLE`), galerie (usage media `project_gallery`, 20 images, la première sert de couverture), documents privés (`project_document`, 10 PDF), vidéo, instruments acceptés (§9.1), indicateur « nous ouvrons le capital » affiché comme intention seulement (§15, décision 5). Limites provisoires (`docs/open-questions.md`).
+- Contenu : titre (120), slug (historique et redirections 301, jamais réattribué), résumé (300), description en Markdown restreint (20 000), secteur (données de référence), zone d'impact (200), pays en Afrique (M49 002) ou dans les Caraïbes (029), 10 au plus (`PROJECTS_COUNTRY_NOT_ELIGIBLE`), galerie (usage media `project_gallery`, 20 images, la première sert de couverture, chacune avec son texte alternatif de 1 000 caractères au plus, `alts` par identifiant de média, gardé pour les images restantes quand il est absent), documents privés (`project_document`, 10 PDF), vidéo, instruments acceptés (§9.1), indicateur « nous ouvrons le capital » affiché comme intention seulement (§15, décision 5). Limites provisoires (`docs/open-questions.md`).
 - Markdown restreint (sous-ensemble de CommonMark) : paragraphes et sauts de ligne, emphase et emphase forte, titres de niveau 2 et 3, listes à puces et numérotées, citations, code en ligne, séparateurs, liens vers des URL https (en ligne ou automatiques). Refusés (`PROJECTS_DESCRIPTION_INVALID`) : HTML brut, images, blocs de code, définitions de liens, tableaux, titres de niveau 1 ou au-delà de 3, liens non https.
 - Vidéo (ADR 0042) : lien YouTube (`youtube.com/watch`, `youtu.be`, `shorts`, `embed`, `youtube-nocookie.com`) ou Vimeo (`vimeo.com/<id>[/<hash>]`, `player.vimeo.com/video/<id>`), en https ; seul l'identifiant validé est stocké et la page reçoit `https://www.youtube-nocookie.com/embed/<id>` ou `https://player.vimeo.com/video/<id>?dnt=1`. Autre lien : `PROJECTS_VIDEO_URL_INVALID`.
 
@@ -39,7 +39,7 @@ Rôles `owner` et `editor`, fonction affichée. Invitation par identifiant publi
 
 ## Actualités et manifestations d'intérêt
 
-- Actualités (§11.3) : texte (5 000) et images (usage `project_update_image`, 6), publiées par l'équipe d'un projet publié ; visibilité alignée sur celle du projet. Elles apparaissent dans le fil des abonnés du projet (élément `project_update`, source enregistrée auprès de content).
+- Actualités (§11.3) : texte (5 000) et images (usage `project_update_image`, 6) avec leur texte alternatif (`imageAlts`, modifiable avec le texte), publiées par l'équipe d'un projet publié ; visibilité alignée sur celle du projet. Elles apparaissent dans le fil des abonnés du projet (élément `project_update`, source enregistrée auprès de content).
 - Manifestation d'intérêt (§9.1, §11.2) pour une subvention, un prêt d'honneur, une prise de participation ou un contact général : message (2 000), montant indicatif non engageant, PDF privés (`project_interest_document`, 3), lisibles par l'auteur et l'équipe. Aucun paiement.
 
 ## Vitrine et lecture publique

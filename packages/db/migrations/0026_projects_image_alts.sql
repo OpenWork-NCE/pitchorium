@@ -1,0 +1,2 @@
+ALTER TABLE "projects"."projects" ADD COLUMN "gallery_alts" jsonb DEFAULT '{}'::jsonb NOT NULL;--> statement-breakpoint
+ALTER TABLE "projects"."updates" ADD COLUMN "image_alts" jsonb DEFAULT '{}'::jsonb NOT NULL;

@@ -37,6 +37,8 @@ export const PROJECT_UPDATE_TEXT_MAX_LENGTH = 5000;
 export const PROJECT_UPDATE_MAX_IMAGES = 6;
 export const PROJECT_INTEREST_MESSAGE_MAX_LENGTH = 2000;
 export const PROJECT_INTEREST_MAX_DOCUMENTS = 3;
+/** Text alternative of an image, as for a publication (accessibility, WCAG 1.1.1). */
+export const PROJECT_IMAGE_ALT_MAX_LENGTH = 1000;
 
 /** Lifecycle (section 11.2): brouillon, en financement, financé, clôturé. */
 export const PROJECT_STATUSES = ['draft', 'funding', 'funded', 'closed'] as const;
@@ -138,8 +140,16 @@ export const replaceTiersRequestSchema = z.object({
   tiers: z.array(tierRequestSchema).min(PROJECT_TIERS_MIN).max(PROJECT_TIERS_MAX),
 });
 
+/** Text alternatives of images, by media id; an empty or absent one: no text alternative. */
+export const projectImageAltsSchema = z.record(
+  uuidV7Schema,
+  z.string().trim().max(PROJECT_IMAGE_ALT_MAX_LENGTH),
+);
+
 export const setProjectGalleryRequestSchema = z.object({
   mediaIds: uniqueArray(uuidV7Schema, PROJECT_GALLERY_MAX),
+  /** Replaces the text alternatives; absent: those of the images kept stay. */
+  alts: projectImageAltsSchema.optional(),
 });
 
 export const setProjectDocumentsRequestSchema = z.object({
@@ -194,10 +204,13 @@ export const createProjectUpdateRequestSchema = z.object({
   text: z.string().trim().min(1).max(PROJECT_UPDATE_TEXT_MAX_LENGTH),
   /** Ready images of usage `project_update_image`. */
   imageMediaIds: uniqueArray(uuidV7Schema, PROJECT_UPDATE_MAX_IMAGES).optional(),
+  imageAlts: projectImageAltsSchema.optional(),
 });
 
 export const editProjectUpdateRequestSchema = z.object({
   text: z.string().trim().min(1).max(PROJECT_UPDATE_TEXT_MAX_LENGTH),
+  /** Replaces the text alternatives of its images; absent: they stay. */
+  imageAlts: projectImageAltsSchema.optional(),
 });
 
 export const expressInterestRequestSchema = z.object({
@@ -242,6 +255,8 @@ export const projectImageSchema = z.object({
   /** Largest variant; a presigned URL for a file that is not public. */
   url: z.string(),
   variants: z.record(z.string(), mediaVariantSchema),
+  /** Text alternative written by the team; null when they wrote none. */
+  alt: z.string().nullable(),
 });
 
 export const projectVideoSchema = z.object({
@@ -447,6 +462,7 @@ export type UpdateRewardRequest = z.infer<typeof updateRewardRequestSchema>;
 export type InviteTeamMemberRequest = z.infer<typeof inviteTeamMemberRequestSchema>;
 export type UpdateTeamMemberRequest = z.infer<typeof updateTeamMemberRequestSchema>;
 export type CreateProjectUpdateRequest = z.infer<typeof createProjectUpdateRequestSchema>;
+export type EditProjectUpdateRequest = z.infer<typeof editProjectUpdateRequestSchema>;
 export type ExpressInterestRequest = z.infer<typeof expressInterestRequestSchema>;
 export type ProjectShowcaseQuery = z.infer<typeof projectShowcaseQuerySchema>;
 export type ProjectImage = z.infer<typeof projectImageSchema>;

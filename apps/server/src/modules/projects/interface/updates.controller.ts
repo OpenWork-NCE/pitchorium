@@ -104,7 +104,7 @@ export class UpdatesController {
     @Body() body: EditUpdateDto,
   ): Promise<ProjectUpdate> {
     return this.reads.presentUpdate(
-      await this.updates.edit(params.projectId, params.updateId, body.text),
+      await this.updates.edit(params.projectId, params.updateId, body),
     );
   }
 

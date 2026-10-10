@@ -258,7 +258,7 @@ export class ProjectsController {
     @Param() params: ProjectIdParamsDto,
     @Body() body: SetGalleryDto,
   ): Promise<Project> {
-    await this.projects.setGallery(params.projectId, principal.userId, body.mediaIds);
+    await this.projects.setGallery(params.projectId, principal.userId, body.mediaIds, body.alts);
     return this.reads.byId(params.projectId, principal.userId);
   }
 

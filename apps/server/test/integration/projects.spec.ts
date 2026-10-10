@@ -9,6 +9,7 @@ import type {
   ProjectInterest,
 } from '@pitchorium/contracts';
 import request from 'supertest';
+import { v7 } from 'uuid';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { AccessModule } from '../../src/modules/access';
 import { ContentModule } from '../../src/modules/content';
@@ -104,6 +105,36 @@ describe('projects', () => {
       .expect(201);
     await admin.agent.post(`/v1/admin/impact/methodologies/${draft.body.id}/publish`).expect(200);
     return draft.body.id as string;
+  }
+
+  /** An image of the member already processed, with one variant (the media pipeline has its own tests). */
+  async function readyImage(owner: Member, usage: string): Promise<string> {
+    const mediaId = v7();
+    await query(
+      `INSERT INTO media.assets (id, owner_id, usage, source, status, visibility,
+         declared_content_type, declared_size, content_type, size, quarantine_key,
+         moderation_status, files, unattached_since, created_at, updated_at, processed_at)
+       VALUES ($1, $2, $3, 'upload', 'ready', 'private', 'image/webp', 100, 'image/webp', 100, $4,
+         'none', $5::jsonb, now(), now(), now(), now())`,
+      [
+        mediaId,
+        owner.userId,
+        usage,
+        `quarantine/${mediaId}`,
+        JSON.stringify({
+          fileKey: `media/${mediaId}/original.webp`,
+          variants: {
+            large: {
+              width: 1200,
+              height: 900,
+              webpKey: `media/${mediaId}/large.webp`,
+              avifKey: null,
+            },
+          },
+        }),
+      ],
+    );
+    return mediaId;
   }
 
   const eventTypes = async (prefix: string) =>
@@ -448,6 +479,48 @@ describe('projects', () => {
       .get(`/v1/public/projects/${project.id}/posts`)
       .expect(200);
     expect(publicPosts.body.items).toEqual([]);
+  });
+
+  it('keeps the text alternatives of the gallery and of the images of an update', async () => {
+    const project = await create(ama);
+    const [first, second] = [
+      await readyImage(ama, 'project_gallery'),
+      await readyImage(ama, 'project_gallery'),
+    ];
+    await ama.agent
+      .put(`/v1/projects/${project.id}/gallery`)
+      .send({
+        mediaIds: [first, second],
+        alts: { [first]: ' Les panneaux du toit ', [second]: '' },
+      })
+      .expect(200);
+    const read = async () =>
+      ((await ama.agent.get(`/v1/projects/${project.id}`).expect(200)).body as Project).gallery;
+    expect((await read()).map((image) => image.alt)).toEqual(['Les panneaux du toit', null]);
+    // Without alternatives, those of the images kept stay.
+    await ama.agent
+      .put(`/v1/projects/${project.id}/gallery`)
+      .send({ mediaIds: [first] })
+      .expect(200);
+    expect((await read()).map((image) => image.alt)).toEqual(['Les panneaux du toit']);
+
+    const published = await publish(ama, project);
+    const image = await readyImage(ama, 'project_update_image');
+    const update = await ama.agent
+      .post(`/v1/projects/${published.id}/updates`)
+      .set('Idempotency-Key', 'update-alt')
+      .send({
+        text: 'La pompe tourne.',
+        imageMediaIds: [image],
+        imageAlts: { [image]: 'La pompe' },
+      })
+      .expect(201);
+    expect(update.body.images[0].alt).toBe('La pompe');
+    const edited = await ama.agent
+      .patch(`/v1/projects/${published.id}/updates/${update.body.id}`)
+      .send({ text: 'La pompe tourne enfin.', imageAlts: { [image]: 'La pompe solaire' } })
+      .expect(200);
+    expect(edited.body.images[0].alt).toBe('La pompe solaire');
   });
 
   it('records expressions of interest for the team only', async () => {

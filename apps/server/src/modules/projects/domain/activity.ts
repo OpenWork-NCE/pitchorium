@@ -7,6 +7,8 @@ export interface UpdateRecord {
   authorId: string;
   text: string;
   imageMediaIds: string[];
+  /** Text alternatives of the images, by media id. */
+  imageAlts: Record<string, string>;
   moderationStatus: ProjectModerationStatus;
   publishedAt: Date;
   editedAt: Date | null;

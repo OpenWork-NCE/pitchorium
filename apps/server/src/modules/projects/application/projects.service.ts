@@ -22,6 +22,7 @@ import {
   assertSlugAllowed,
   assertTransition,
   endsAtFor,
+  imageAlts,
   isPublished,
   PROJECT_CURRENCY,
   type ProjectRecord,
@@ -100,6 +101,7 @@ export class ProjectsService {
           goalMinor: null,
           durationDays: null,
           galleryMediaIds: [],
+          galleryAlts: {},
           documentMediaIds: [],
           status: 'draft',
           collectedMinor: 0n,
@@ -191,10 +193,16 @@ export class ProjectsService {
 
   /**
    * Replaces the gallery (usage `project_gallery`) with ready images: files already in the
-   * gallery stay, new ones are attached for the acting member, removed ones are detached.
+   * gallery stay, new ones are attached for the acting member, removed ones are detached. The
+   * text alternatives given replace the others; without them, those of the images kept stay.
    */
-  async setGallery(projectId: string, actorId: string, mediaIds: readonly string[]): Promise<void> {
-    await this.replaceMedia(projectId, actorId, mediaIds, 'gallery');
+  async setGallery(
+    projectId: string,
+    actorId: string,
+    mediaIds: readonly string[],
+    alts?: Readonly<Record<string, string>>,
+  ): Promise<void> {
+    await this.replaceMedia(projectId, actorId, mediaIds, 'gallery', alts);
   }
 
   /** Replaces the private documents (usage `project_document`, PDF). */
@@ -431,6 +439,7 @@ export class ProjectsService {
     actorId: string,
     mediaIds: readonly string[],
     slot: 'gallery' | 'documents',
+    alts?: Readonly<Record<string, string>>,
   ): Promise<void> {
     await this.transactions.run(async () => {
       const project = await this.lockLive(projectId);
@@ -453,7 +462,10 @@ export class ProjectsService {
       await this.projects.updateProject(
         projectId,
         slot === 'gallery'
-          ? { galleryMediaIds: [...mediaIds] }
+          ? {
+              galleryMediaIds: [...mediaIds],
+              galleryAlts: imageAlts(mediaIds, alts ?? project.galleryAlts),
+            }
           : { documentMediaIds: [...mediaIds] },
         this.clock.now(),
       );

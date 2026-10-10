@@ -37,6 +37,8 @@ export interface ProjectRecord {
   goalMinor: bigint | null;
   durationDays: number | null;
   galleryMediaIds: string[];
+  /** Text alternatives of the gallery, by media id. */
+  galleryAlts: Record<string, string>;
   documentMediaIds: string[];
   status: ProjectStatus;
   collectedMinor: bigint;
@@ -205,4 +207,17 @@ export function assertSlugAllowed(slug: string): void {
   if (RESERVED_SLUGS.has(slug)) {
     throw new DomainError('PROJECTS_SLUG_RESERVED', 'Project slug is reserved');
   }
+}
+
+/** Text alternatives of the images given, without empty ones or those of other images. */
+export function imageAlts(
+  mediaIds: readonly string[],
+  alts: Readonly<Record<string, string>>,
+): Record<string, string> {
+  return Object.fromEntries(
+    mediaIds.flatMap((mediaId) => {
+      const alt = alts[mediaId]?.trim();
+      return alt ? [[mediaId, alt]] : [];
+    }),
+  );
 }

@@ -5,6 +5,7 @@ import {
   date,
   index,
   integer,
+  jsonb,
   pgSchema,
   primaryKey,
   text,
@@ -45,6 +46,8 @@ export const projectsProjects = projectsSchema.table(
     goalMinor: minorUnits('goal_minor'),
     durationDays: integer('duration_days'),
     galleryMediaIds: uuid('gallery_media_ids').array().notNull(),
+    /** Text alternatives of the gallery, by media id (written by the team). */
+    galleryAlts: jsonb('gallery_alts').$type<Record<string, string>>().notNull().default({}),
     documentMediaIds: uuid('document_media_ids').array().notNull(),
     status: text('status').notNull(),
     collectedMinor: minorUnits('collected_minor').notNull(),
@@ -224,6 +227,8 @@ export const projectsUpdates = projectsSchema.table(
     authorId: uuid('author_id').notNull(),
     text: text('text').notNull(),
     imageMediaIds: uuid('image_media_ids').array().notNull(),
+    /** Text alternatives of the images, by media id (written by the author). */
+    imageAlts: jsonb('image_alts').$type<Record<string, string>>().notNull().default({}),
     moderationStatus: text('moderation_status').notNull(),
     publishedAt: timestamptz('published_at').notNull(),
     editedAt: timestamptz('edited_at'),
