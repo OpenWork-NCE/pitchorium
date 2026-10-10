@@ -1,4 +1,8 @@
-import { CONTRIBUTION_STATUSES, type ContributionStatus } from '@pitchorium/contracts';
+import {
+  CONTRIBUTION_STATUSES,
+  type ContributionStatus,
+  OFFLINE_CONTRIBUTION_CURRENCIES,
+} from '@pitchorium/contracts';
 import { describe, expect, it } from 'vitest';
 import { DomainError, Money } from '../../../platform/kernel';
 import {
@@ -8,7 +12,14 @@ import {
 } from './capability-matrix';
 import { commissionOn, commissionRefundFor, eurPartFor } from './commission';
 import { assertCollectible, assertTransition, canTransition } from './contribution';
-import { eurEquivalent, fixedParityOf, fixedRate, smallestAmountReaching } from './fx';
+import {
+  eurEquivalent,
+  FIXED_PARITIES,
+  fixedParityOf,
+  fixedRate,
+  smallestAmountReaching,
+} from './fx';
+import { assertOfflineAmount } from './offline';
 import {
   assertBalanced,
   balances,
@@ -455,5 +466,15 @@ describe('change of the payout option', () => {
         { provider: 'stripe', country: 'BE' },
       ),
     ).toBe('payments_pending');
+  });
+});
+
+describe('off-platform amounts', () => {
+  it('accepts the currencies the contracts list, and only them', () => {
+    expect(OFFLINE_CONTRIBUTION_CURRENCIES).toEqual(['EUR', ...Object.keys(FIXED_PARITIES)]);
+    for (const currency of OFFLINE_CONTRIBUTION_CURRENCIES) {
+      expect(() => assertOfflineAmount('cash', Money.of(1000n, currency))).not.toThrow();
+    }
+    expect(() => assertOfflineAmount('cash', Money.of(1000n, 'GHS'))).toThrow(DomainError);
   });
 });

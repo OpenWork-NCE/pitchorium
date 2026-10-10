@@ -408,6 +408,9 @@ export const offlineContributionKindSchema = z.enum(OFFLINE_CONTRIBUTION_KINDS);
 /** Kinds that carry money: they count in the collected amount after validation. */
 export const MONETARY_OFFLINE_KINDS = ['cash', 'institutional_transfer'] as const;
 
+/** Currencies of an off-platform amount: the euro and the CFA francs at their fixed parity. */
+export const OFFLINE_CONTRIBUTION_CURRENCIES = ['EUR', 'XOF', 'XAF'] as const;
+
 export const OFFLINE_CONTRIBUTION_STATUSES = [
   'declared',
   'confirmed',
