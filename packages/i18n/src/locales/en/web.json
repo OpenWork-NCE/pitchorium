@@ -221,7 +221,8 @@
       "criterion": "{{score}} out of {{max}}",
       "selfDeclared": "self-declared",
       "name": "Impact",
-      "outOf": "out of 100, see the detail"
+      "outOf": "out of 100, see the detail",
+      "detailOnPage": "The detail by criterion is on the page of the project."
     },
     "verified": {
       "label": "Verified",

@@ -22,6 +22,11 @@ interface FundingProgressProps {
   milestones?: readonly FundingMilestone[];
   /** Days left; null once the campaign has ended. */
   daysLeft: number | null;
+  /**
+   * What is written instead of the days left (the duration of a draft, the last day, the outcome
+   * of an ended campaign), already translated.
+   */
+  remainingLabel?: string;
   /** Accessible name of the bar ("Financement de Ferme solaire de Thiès"). */
   label: string;
   /** `compact` (side columns): a smaller amount and no list of milestones. */
@@ -105,6 +110,7 @@ export function FundingProgress({
   goal,
   milestones = [],
   daysLeft,
+  remainingLabel,
   label,
   size = 'full',
   className,
@@ -153,7 +159,8 @@ export function FundingProgress({
     (milestone) => BigInt(raised.amountMinor) >= BigInt(milestone.amountMinor),
   );
   const remaining =
-    daysLeft === null ? t('ended') : t(`daysLeft.${plural(daysLeft)}`, { count: daysLeft });
+    remainingLabel ??
+    (daysLeft === null ? t('ended') : t(`daysLeft.${plural(daysLeft)}`, { count: daysLeft }));
   const summary = [
     t('raised', { amount: formatMoney(raised, locale), goal: formatMoney(goal, locale) }),
     t('percent', { percent }),

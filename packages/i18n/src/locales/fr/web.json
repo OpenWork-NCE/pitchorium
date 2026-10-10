@@ -221,7 +221,8 @@
       "criterion": "{{score}} sur {{max}}",
       "selfDeclared": "auto-déclaré",
       "name": "Impact",
-      "outOf": "sur 100, voir le détail"
+      "outOf": "sur 100, voir le détail",
+      "detailOnPage": "Le détail par critère est sur la page du projet."
     },
     "verified": {
       "label": "Vérifié",

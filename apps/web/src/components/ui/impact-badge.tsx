@@ -24,6 +24,8 @@ interface ImpactBadgeProps {
   /** The self-declared mention with its methodology (`reference.impactMentions.selfDeclared`). */
   mention: string;
   criteria: readonly ImpactCriterion[];
+  /** The page of the methodology in force, linked from the detail (§12): its path and its text. */
+  methodology?: { href: string; label: string };
   /**
    * `tinted` (default): a pale fill that never competes with the main action of the view;
    * `solid`: the level in the accent, for a heading.
@@ -61,6 +63,7 @@ export function ImpactBadge({
   score,
   mention,
   criteria,
+  methodology,
   variant = 'tinted',
   showMention = true,
   className,
@@ -109,6 +112,7 @@ export function ImpactBadge({
               score={score}
               mention={mention}
               criteria={criteria}
+              methodology={methodology}
             />
           </Suspense>
         ) : null}

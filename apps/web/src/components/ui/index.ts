@@ -42,7 +42,7 @@ export { FileDrop, type FileDropItem, type FileDropState } from './file-drop';
 export { Form, FormField, useApplyProblem, useZodForm } from './form';
 export { FormActions } from './form-actions';
 export { FundingProgress, type FundingMilestone } from './funding-progress';
-export { Heading } from './heading';
+export { Heading, headingVariants } from './heading';
 export { HoverCard } from './hover-card';
 export { Icon } from './icon';
 export { IconButton } from './icon-button';
