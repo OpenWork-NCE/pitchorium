@@ -53,6 +53,7 @@ jobs:
           echo "Memory: $(free -m | awk '/Mem:/ {print $2}') MB"
           echo "Time zone: $(cat /etc/timezone 2>/dev/null || date +%Z) (TZ=${TZ:-unset})"
           echo "Locale: ${LANG:-unset}"
+          echo "Ephemeral ports: $(cat /proc/sys/net/ipv4/ip_local_port_range)"
           echo "Fonts: $(fc-list 2>/dev/null | wc -l)"
           docker run --rm mcr.microsoft.com/playwright:v1.64.0-noble sh -c 'echo "Fonts in the Playwright image: $(fc-list | wc -l)"; nproc'
       # The inputs reach the shell as variables, never interpolated into the script.

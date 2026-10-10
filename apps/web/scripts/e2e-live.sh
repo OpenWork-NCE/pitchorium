@@ -10,7 +10,8 @@
 #
 # Environment:
 #   LIVE_PROJECT        Compose project name (default: pitchorium-live)
-#   LIVE_PORT_OFFSET    added to the default port of every service and process (default: 30000)
+#   LIVE_PORT_OFFSET    added to the default port of every service and process (default: 10000,
+#                       every port below the ephemeral range of Linux, refused inside it)
 #   LIVE_KEEP           1 keeps the Compose project and prints the logs directory
 #   LIVE_SKIP_BUILD     1 reuses the builds already there (a previous run, or the build job of the
 #                       CI with the same LIVE_PORT_OFFSET: the addresses are part of the web build)
@@ -28,7 +29,7 @@ set -euo pipefail
 
 root="$(git -C "$(dirname "$0")" rev-parse --show-toplevel)"
 project="${LIVE_PROJECT:-pitchorium-live}"
-offset="${LIVE_PORT_OFFSET:-30000}"
+offset="${LIVE_PORT_OFFSET:-10000}"
 image="mcr.microsoft.com/playwright:v1.64.0-noble"
 logs="${LIVE_LOGS:-$(mktemp -d "${TMPDIR:-/tmp}/pitchorium-live.XXXXXX")}"
 mkdir -p "$logs"
@@ -50,6 +51,20 @@ worker_port=$((3001 + offset))
 web_port=$((3200 + offset))
 oauth_port=$((3400 + offset))
 export TURBO_TELEMETRY_DISABLED=1
+
+# A port of the ephemeral range (32768-60999 on Linux, the CI runner included) can be the source
+# port of any outgoing connection: the check below cannot see it, and the server then fails to
+# listen (EADDRINUSE). Refused, whatever the offset (ADR 0142).
+read -r ephemeral_low ephemeral_high </proc/sys/net/ipv4/ip_local_port_range 2>/dev/null ||
+  { ephemeral_low=32768; ephemeral_high=60999; }
+for port in "$PITCHORIUM_POSTGRES_PORT" "$PITCHORIUM_VALKEY_PORT" "$PITCHORIUM_MINIO_PORT" \
+  "$PITCHORIUM_MINIO_CONSOLE_PORT" "$PITCHORIUM_MAILPIT_SMTP_PORT" "$PITCHORIUM_MAILPIT_UI_PORT" \
+  "$api_port" "$worker_port" "$web_port" "$oauth_port"; do
+  if [ "$port" -ge "$ephemeral_low" ] && [ "$port" -le "$ephemeral_high" ]; then
+    echo "Port $port is in the ephemeral range ($ephemeral_low-$ephemeral_high): choose another LIVE_PORT_OFFSET." >&2
+    exit 2
+  fi
+done
 
 # A port already in use belongs to someone else: stop rather than share or kill it.
 [ "${LIVE_BUILD_ONLY:-0}" = "1" ] || for port in "$PITCHORIUM_POSTGRES_PORT" "$PITCHORIUM_VALKEY_PORT" "$PITCHORIUM_MINIO_PORT" \

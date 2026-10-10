@@ -109,9 +109,10 @@ step 'pnpm test:integration' pnpm test:integration
 step 'pnpm build' pnpm build
 step 'web: initial JavaScript budgets' pnpm --filter @pitchorium/web check:bundles
 step 'pnpm test:e2e' pnpm test:e2e
-# Its own Compose project and ports, next to the one of this verification.
+# Its own Compose project and ports, next to the one of this verification, below the ephemeral
+# range of Linux (scripts/e2e-live.sh refuses a port inside it).
 step 'web: journeys against the real api' env LIVE_PROJECT="$project-live" \
-  LIVE_PORT_OFFSET=$((offset + 5000)) LIVE_LOGS="$logs/live" pnpm --filter @pitchorium/web test:e2e:live
+  LIVE_PORT_OFFSET=$((offset - 5000)) LIVE_LOGS="$logs/live" pnpm --filter @pitchorium/web test:e2e:live
 step 'web: Storybook build' pnpm --filter @pitchorium/web build-storybook
 step 'web: Lighthouse CI' pnpm --filter @pitchorium/web lighthouse
 # On the build Lighthouse made (.next-e2e): the visitor and member views of the public pages.
