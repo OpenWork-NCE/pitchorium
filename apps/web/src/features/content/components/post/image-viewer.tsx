@@ -5,7 +5,7 @@ import useEmblaCarousel from 'embla-carousel-react';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { Dialog as Primitive } from 'radix-ui';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { IconButton } from '@/components/ui';
 import { imageSource } from './post-images';
 
@@ -32,8 +32,14 @@ export default function ImageViewer({
   const [viewport, embla] = useEmblaCarousel({ startIndex, loop: false, duration: 20 });
   const [index, setIndex] = useState(startIndex);
 
+  // An arrow pressed before the carousel is ready (its code loads with the viewer) is kept, and
+  // the carousel starts on the image asked for instead of losing the key.
+  const pending = useRef<number | null>(null);
+
   useEffect(() => {
     if (!embla) return;
+    if (pending.current !== null) embla.scrollTo(pending.current, true);
+    pending.current = null;
     const select = () => setIndex(embla.selectedScrollSnap());
     embla.on('select', select);
     return () => {
@@ -41,8 +47,21 @@ export default function ImageViewer({
     };
   }, [embla]);
 
-  const previous = useCallback(() => embla?.scrollPrev(), [embla]);
-  const next = useCallback(() => embla?.scrollNext(), [embla]);
+  const go = useCallback(
+    (step: 1 | -1) => {
+      if (embla) {
+        if (step === 1) embla.scrollNext();
+        else embla.scrollPrev();
+        return;
+      }
+      const target = Math.min(Math.max(index + step, 0), images.length - 1);
+      pending.current = target;
+      setIndex(target);
+    },
+    [embla, index, images.length],
+  );
+  const previous = useCallback(() => go(-1), [go]);
+  const next = useCallback(() => go(1), [go]);
   const current = images[index];
 
   return (
