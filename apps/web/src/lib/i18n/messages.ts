@@ -170,6 +170,10 @@ export const CLIENT_MESSAGES = {
     'reference.payoutDocuments',
     'reference.payoutAccountStatuses',
     'reference.kycStatuses',
+    // The engagement dashboard and the shared time log.
+    'web.engagement',
+    'reference.timeEntryKinds',
+    'reference.timeEntryStatuses',
   ],
   admin: [
     ...DOCUMENT_MESSAGES,

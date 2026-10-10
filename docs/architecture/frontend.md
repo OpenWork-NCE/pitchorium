@@ -100,6 +100,11 @@ sequenceDiagram
 - Gestion d'un projet : onglets « Contributions » (tableau paginé, filtres par statut et par type dans l'api, export CSV), « Hors plateforme » (à confirmer ou refuser, déclaration par l'équipe) et « Soutiens », et bannière de l'état du versement, composés par la route depuis la feature `payments` (`ManagePayments`), chargés à l'ouverture de leur onglet.
 - Données : options relues 500 ms après un changement de pays, de devise ou de montant (`usePaymentOptions`) ; devis relu de même (`useQuote`) ; contribution créée avec une `Idempotency-Key` par intention ; état du retour relu par `createPoller` ; aucun état de paiement dans le stockage du navigateur.
 
+## Engagement (PROMPT FRONT 5B)
+
+- Pages : `/dashboard` (tableau de bord du membre, ou d'une organisation qu'il dirige par `?organization=<slug>`, ADR 0141) et `/dashboard/time` (journal du temps partagé), dans `(app)`.
+- Feature `engagement` : chiffres clés comptés en unités mineures, graphique SVG rendu par le serveur depuis la série mensuelle de l'api (`lib/chart.ts`, testé), historique CSV, journal du temps (déclaration, confirmation, contestation) ; « Mes contributions » et les contributions hors plateforme du membre viennent de la feature `payments`, composées par la page.
+
 ## Fournisseurs
 
 Chaque groupe ne charge que ce qu'il utilise (ADR 0094) :

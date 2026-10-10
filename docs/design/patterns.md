@@ -126,6 +126,12 @@ Comment assembler les composants (`components.md`) pour les situations récurren
 - Un changement d'option explique ses conséquences avant la confirmation ; un refus de l'api désactive l'action avec sa raison ; une session trop ancienne propose de se reconnecter.
 - KYC : état en badge, motif d'un refus en `Alert`, dépôt de pièces privées et certification.
 
+## Tableau de bord d'engagement (§9.4, ADR 0141)
+
+- Un encadré dit « pas un compte en banque » ; aucun solde. Quatre chiffres clés en cartes, comptés une fois ; le graphique des douze mois sous eux, avec le téléchargement de l'historique.
+- Les projets soutenus avec leur statut, puis « Mes contributions » et les contributions hors plateforme ; un sélecteur passe au tableau de bord d'une organisation dirigée.
+- Journal du temps : « Déclarer des heures » en tête, puis les déclarations reçues (Confirmer, Contester avec un motif) et les siennes, chacune avec son état.
+
 ## Impact (§12, ADR 0036)
 
 - `/impact/methodology` : critères, échelle, pondérations et version en vigueur, mention « auto-déclaré, non certifié » ; sans méthodologie publiée, un état qui le dit.

@@ -2962,5 +2962,88 @@
       "lockExpired": "The payment session expired, and the locked rate with it. Start again with a new quote: your choices are kept.",
       "newQuote": "Ask for a new quote"
     }
+  },
+  "engagement": {
+    "dashboard": {
+      "title": "Engagement dashboard",
+      "organizationTitle": "Engagement of {{name}}",
+      "description": "What you really gave and shared: euros paid, projects supported, hours of knowledge.",
+      "views": "Dashboards",
+      "mine": "Mine",
+      "notABank": "This is an engagement dashboard, not a bank account: no balance, only what was really paid and shared.",
+      "timeLog": "Open the shared time log",
+      "projects": "Projects supported",
+      "noProject": "No project supported yet."
+    },
+    "stats": {
+      "thisMonth": "Given this month",
+      "total": "Given since the start",
+      "projects": "Projects supported",
+      "hoursDeclared": "Hours declared",
+      "hoursConfirmed": "of which {{duration}} confirmed",
+      "duration": "{{hours}} h {{minutes}}"
+    },
+    "chart": {
+      "title": "Euros given over twelve months",
+      "tableCaption": "Euros given per month",
+      "month": "Month",
+      "given": "Given",
+      "bar": "{{month}}: {{amount}}"
+    },
+    "history": {
+      "download": "Download the history (CSV)",
+      "downloading": "Downloading",
+      "failed": "The history could not be downloaded. Try again."
+    },
+    "time": {
+      "title": "Shared time log",
+      "description": "The hours of mentoring and expertise you share, and those declared for your projects. The beneficiary confirms or disputes each declaration.",
+      "back": "Back to the dashboard",
+      "declareAction": "Declare hours",
+      "received": "Declarations received",
+      "receivedHint": "Hours declared for you or for your projects: confirm them, or dispute them with a reason.",
+      "declared": "My declarations",
+      "network": "The connection was interrupted. Try again.",
+      "loading": "Loading the declarations",
+      "unreadable": "The declarations could not be loaded.",
+      "emptyReceived": "No declaration received",
+      "emptyReceivedBody": "The hours a mentor declares for you or your projects will show here.",
+      "emptyDeclared": "No declaration",
+      "emptyDeclaredBody": "Declare the time of mentoring or expertise you shared.",
+      "deleted": "Deleted member",
+      "summary": "{{kind}} · {{duration}} · {{date}}",
+      "durationValue": "{{hours}} h {{minutes}}",
+      "disputeReason": "Disputed: {{reason}}",
+      "disputeLabel": "Reason for the dispute",
+      "dispute": "Dispute",
+      "disputing": "Disputing",
+      "confirm": "Confirm",
+      "confirming": "Confirming",
+      "reasonRequired": "Give a reason first.",
+      "cancel": "Cancel",
+      "declare": {
+        "title": "Declare hours",
+        "description": "The beneficiary confirms or disputes; only confirmed hours count as confirmed.",
+        "target": "For",
+        "project": "A project",
+        "entrepreneur": "An entrepreneur",
+        "projectLabel": "Project",
+        "projectHint": "Among the projects you supported.",
+        "handle": "Handle of the entrepreneur",
+        "handleHint": "The public handle of their profile, for instance aissatou-ba.",
+        "kind": "Nature",
+        "duration": "Duration",
+        "hours": "Hours",
+        "minutes": "Minutes",
+        "durationHint": "From 1 minute to 24 hours for one day.",
+        "date": "Date",
+        "dateHint": "Today or a past day.",
+        "descriptionLabel": "What you did",
+        "submit": "Declare",
+        "declaring": "Declaring",
+        "incomplete": "Fill in the beneficiary, a duration and a description.",
+        "cancel": "Cancel"
+      }
+    }
   }
 }

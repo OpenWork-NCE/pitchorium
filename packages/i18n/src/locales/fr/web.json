@@ -2962,5 +2962,88 @@
       "lockExpired": "La session de paiement a expiré, et le taux verrouillé avec elle. Recommencez avec un nouveau devis : vos choix sont repris.",
       "newQuote": "Demander un nouveau devis"
     }
+  },
+  "engagement": {
+    "dashboard": {
+      "title": "Tableau de bord d’engagement",
+      "organizationTitle": "Engagement de {{name}}",
+      "description": "Ce que vous avez réellement donné et partagé : euros versés, projets soutenus, heures de savoir.",
+      "views": "Tableaux de bord",
+      "mine": "Le mien",
+      "notABank": "C’est un tableau de bord d’engagement, pas un compte en banque : aucun solde, seulement ce qui a réellement été versé et partagé.",
+      "timeLog": "Ouvrir le journal du temps partagé",
+      "projects": "Projets soutenus",
+      "noProject": "Aucun projet soutenu pour l’instant."
+    },
+    "stats": {
+      "thisMonth": "Versé ce mois-ci",
+      "total": "Versé depuis le début",
+      "projects": "Projets soutenus",
+      "hoursDeclared": "Heures déclarées",
+      "hoursConfirmed": "dont {{duration}} confirmées",
+      "duration": "{{hours}} h {{minutes}}"
+    },
+    "chart": {
+      "title": "Euros versés sur douze mois",
+      "tableCaption": "Euros versés par mois",
+      "month": "Mois",
+      "given": "Versé",
+      "bar": "{{month}} : {{amount}}"
+    },
+    "history": {
+      "download": "Télécharger l’historique (CSV)",
+      "downloading": "Téléchargement en cours",
+      "failed": "L’historique n’a pas pu être téléchargé. Réessayez."
+    },
+    "time": {
+      "title": "Journal du temps partagé",
+      "description": "Les heures de mentorat et d’expertise que vous partagez, et celles déclarées pour vos projets. Le bénéficiaire confirme ou conteste chaque déclaration.",
+      "back": "Revenir au tableau de bord",
+      "declareAction": "Déclarer des heures",
+      "received": "Déclarations reçues",
+      "receivedHint": "Des heures déclarées pour vous ou pour vos projets : confirmez-les, ou contestez-les avec un motif.",
+      "declared": "Mes déclarations",
+      "network": "La connexion a été interrompue. Réessayez.",
+      "loading": "Chargement des déclarations",
+      "unreadable": "Les déclarations n’ont pas pu être chargées.",
+      "emptyReceived": "Aucune déclaration reçue",
+      "emptyReceivedBody": "Les heures qu’un mentor déclare pour vous ou vos projets apparaîtront ici.",
+      "emptyDeclared": "Aucune déclaration",
+      "emptyDeclaredBody": "Déclarez le temps de mentorat ou d’expertise que vous avez partagé.",
+      "deleted": "Membre supprimé",
+      "summary": "{{kind}} · {{duration}} · {{date}}",
+      "durationValue": "{{hours}} h {{minutes}}",
+      "disputeReason": "Contestée : {{reason}}",
+      "disputeLabel": "Motif de la contestation",
+      "dispute": "Contester",
+      "disputing": "Contestation en cours",
+      "confirm": "Confirmer",
+      "confirming": "Confirmation en cours",
+      "reasonRequired": "Indiquez d’abord un motif.",
+      "cancel": "Annuler",
+      "declare": {
+        "title": "Déclarer des heures",
+        "description": "Le bénéficiaire confirme ou conteste ; seules les heures confirmées comptent comme confirmées.",
+        "target": "Pour",
+        "project": "Un projet",
+        "entrepreneur": "Un entrepreneur",
+        "projectLabel": "Projet",
+        "projectHint": "Parmi les projets que vous avez soutenus.",
+        "handle": "Identifiant de l’entrepreneur",
+        "handleHint": "L’identifiant public de son profil, par exemple aissatou-ba.",
+        "kind": "Nature",
+        "duration": "Durée",
+        "hours": "Heures",
+        "minutes": "Minutes",
+        "durationHint": "De 1 minute à 24 heures pour une journée.",
+        "date": "Date",
+        "dateHint": "Aujourd’hui ou un jour passé.",
+        "descriptionLabel": "Ce que vous avez fait",
+        "submit": "Déclarer",
+        "declaring": "Déclaration en cours",
+        "incomplete": "Renseignez le bénéficiaire, une durée et une description.",
+        "cancel": "Annuler"
+      }
+    }
   }
 }
