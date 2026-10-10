@@ -96,7 +96,15 @@ Après (poste de développement, commandes du niveau 2) :
 - `pnpm check:changed` : 11 s (cache de Turborepo) à 28 s.
 - `review:check` : 29 s avec la construction de Storybook, 19 s sans.
 
-Les durées de la CI après les changements sont dans le rapport de l'outillage et à mettre à jour ici après chaque évolution notable.
+Après (CI de `main`, niveau 2, 3 runs verts au 2026-10-10) :
+
+- Run complet : 6,0 à 8,0 min de bout en bout (8,0 min quand il partageait les runners avec deux runs du niveau 3).
+- Parcours critiques (job `live-critical`) : 4,3 à 4,9 min ; build unique : 1,1 à 1,4 min ; budgets (`bundles`) : 41 à 49 s.
+- Lighthouse : 3,3 à 3,6 min ; suite simulée dans Chromium : 2,1 à 2,4 min ; Storybook et captures de revue : 3,1 à 3,6 min.
+- Intégration : deux shards de 3,6 à 4,8 min ; scénarios de l'api : 1,5 à 1,9 min.
+- Lint 37 à 79 s, typecheck 36 à 53 s, tests unitaires 35 à 66 s.
+
+Niveau 3 (`nightly.yaml`, CI) : `verify:clean` sans parcours ni Lighthouse 22 min environ (intégration 483 s, bout en bout de l'api et du web dans tous les navigateurs 453 s) ; parcours contre la vraie api 11 à 13 min par moteur, en parallèle ; Lighthouse complet 12 min.
 
 ## Récupérer et relancer un run
 
