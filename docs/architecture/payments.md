@@ -64,7 +64,7 @@ Le rail dépend du pays du compte de versement du porteur, jamais du contributeu
 2. sinon Flutterwave, avec un sous-compte et un partage du paiement (ADR 0045) ;
 3. sinon aucun : `PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED` à la création du compte de versement.
 
-Avec `PAYMENTS_MODE=simulated` (développement, tests, refusé en production), le prestataire simulé sert tous les pays (ADR 0052).
+Avec `PAYMENTS_MODE=simulated` (développement, tests, refusé en production), le prestataire simulé remplace les deux rails et sert leurs pays de versement vérifiés, réglés en EUR ; son Mobile Money n'est proposé qu'aux contributeurs des pays où un rail réel l'a vérifié (ADR 0052).
 
 L'écran « Contribuer » reçoit `GET /v1/projects/{id}/payment-options` : les devises et moyens vérifiés du rail du porteur, filtrés par le pays du contributeur (pays déclaré du profil, ou `?country=`), avec les bornes dans chaque devise ; jamais le nom du prestataire (§9.2).
 

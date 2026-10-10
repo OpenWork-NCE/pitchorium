@@ -27,6 +27,7 @@ import { DEMO_MEMBERS } from './dataset';
 import {
   DEMO_FACET_ASSESSMENTS,
   DEMO_METHODOLOGY,
+  DEMO_PAYOUT_COUNTRIES,
   DEMO_PROJECTS,
   type DemoProject,
 } from './projects-dataset';
@@ -147,10 +148,14 @@ export async function seedDevProjects(
   return result;
 
   /**
-   * Payout account at the simulated provider and identity verified, as a holder does before
-   * collecting (section 9.5). The KYC decision is a demonstration decision without reviewer.
+   * Payout account at the simulated provider in the country the holder chose, and identity
+   * verified, as a holder does before collecting (section 9.5). The KYC decision is a
+   * demonstration decision without reviewer.
    */
-  async function readyToCollect(ownerId: string, country: string): Promise<void> {
+  async function readyToCollect(owner: string): Promise<void> {
+    const ownerId = userId(owner);
+    const country = DEMO_PAYOUT_COUNTRIES[owner];
+    if (!country) throw new Error(`No demonstration payout country for ${owner}`);
     const payout = get(PayoutService);
     if (!(await get(PaymentsRepository).findPayoutAccount(ownerId))) {
       await payout.create(ownerId, {
@@ -264,7 +269,7 @@ export async function seedDevProjects(
 
     at(0);
     await projects.publish(projectId, ownerId, true);
-    if (demo.contributions?.length) await readyToCollect(ownerId, demo.countryCodes?.[0] ?? 'SN');
+    if (demo.contributions?.length) await readyToCollect(demo.owner);
     for (const [index, contribution] of (demo.contributions ?? []).entries()) {
       at(contribution.daysAfterPublication);
       await pay(projectId, contribution, rewardIds, index);

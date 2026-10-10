@@ -178,8 +178,8 @@ describe('payments', () => {
       .post('/v1/me/payout-account')
       .set('Idempotency-Key', randomUUID())
       .send({
-        country: 'SN',
-        bankAccount: { bankCode: 'SN001', accountNumber: '00012345678', accountName: 'Fatou Sall' },
+        country: 'FR',
+        bankAccount: { bankCode: 'FR001', accountNumber: '00012345678', accountName: 'Fatou Sall' },
       });
     expect(account.status, JSON.stringify(account.body)).toBe(201);
     expect(account.body as PayoutAccount).toMatchObject({
@@ -464,7 +464,7 @@ describe('payments', () => {
     await request(app.getHttpServer()).get('/v1/me/indicative-currency').expect(401);
   });
 
-  it('pays in XAF with the exact EUR equivalent of the fixed parity', async () => {
+  it('pays in XAF from Cameroon with the exact EUR equivalent of the fixed parity', async () => {
     const before = await collected(project.id);
     const quote = await ama.agent
       .post(`/v1/projects/${project.id}/contribution-quotes`)
@@ -472,6 +472,7 @@ describe('payments', () => {
         kind: 'donation',
         amount: { amountMinor: '65596', currency: 'XAF' },
         method: 'mobile_money',
+        country: 'CM',
       })
       .expect(200);
     expect(quote.body).toMatchObject({
@@ -483,6 +484,7 @@ describe('payments', () => {
       kind: 'donation',
       amount: { amountMinor: '65596', currency: 'XAF' },
       method: 'mobile_money',
+      country: 'CM',
     });
     await pay(contribution);
     expect(await collected(project.id)).toBe(before + 10_000n);

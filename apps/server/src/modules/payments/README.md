@@ -25,7 +25,7 @@ Espèces, virement institutionnel (montant en EUR, XOF ou XAF), engagement de lo
 
 ## Prestataires
 
-`PAYMENTS_MODE=simulated` (prestataire simulé seul, ADR 0052, refusé en production) ou `live` (Stripe et Flutterwave selon leurs identifiants). Adaptateurs : `infrastructure/stripe`, `infrastructure/flutterwave`, `infrastructure/simulated`. Montants sans flottant : Stripe en unités mineures, Flutterwave en littéraux décimaux lus et écrits exactement (`infrastructure/provider-http.ts`).
+`PAYMENTS_MODE=simulated` (prestataire simulé seul, sur les pays de versement des rails vérifiés, ADR 0052, refusé en production) ou `live` (Stripe et Flutterwave selon leurs identifiants). Adaptateurs : `infrastructure/stripe`, `infrastructure/flutterwave`, `infrastructure/simulated`. Montants sans flottant : Stripe en unités mineures, Flutterwave en littéraux décimaux lus et écrits exactement (`infrastructure/provider-http.ts`).
 
 ## Routes
 

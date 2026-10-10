@@ -7,14 +7,12 @@ import {
   type ProviderId,
 } from './capability-matrix';
 
-/** Currency of the simulated payout accounts: the demonstration projects are in EUR. */
-export const SIMULATED_PAYOUT_CURRENCY = 'EUR';
-
 /**
- * Order of preference of the live rails (section 9.2): Stripe Connect when its verified
- * configuration serves the payout country of the holder, Flutterwave otherwise.
+ * Order of preference of the rails (section 9.2): Stripe Connect when its verified
+ * configuration serves the payout country of the holder, Flutterwave otherwise; the simulated
+ * provider replaces both (ADR 0052).
  */
-const LIVE_ORDER: readonly ProviderId[] = ['stripe', 'flutterwave'];
+const ORDER: readonly ProviderId[] = ['stripe', 'flutterwave', 'simulated'];
 
 export interface PayoutRoute {
   provider: ProviderId;
@@ -27,14 +25,11 @@ export interface PayoutRoute {
  * contributor (ADR 0043). Null when no enabled provider has a verified capability there.
  */
 export function routeFor(country: string, enabled: readonly ProviderId[]): PayoutRoute | null {
-  if (enabled.includes('simulated')) {
-    return { provider: 'simulated', country, currency: SIMULATED_PAYOUT_CURRENCY };
-  }
-  for (const provider of LIVE_ORDER) {
+  for (const provider of ORDER) {
     if (!enabled.includes(provider)) continue;
-    const payout = PROVIDER_CAPABILITIES[provider].payoutCountries;
-    if (payout === '*') continue;
-    const found = payout.find((entry) => entry.country === country && entry.verified);
+    const found = PROVIDER_CAPABILITIES[provider].payoutCountries.find(
+      (entry) => entry.country === country && entry.verified,
+    );
     if (found) return { provider, country, currency: found.currency };
   }
   return null;

@@ -339,11 +339,28 @@ describe('routing and capabilities', () => {
     // Not verified anywhere: no route rather than a guess.
     expect(routeFor('SN', live)).toBeNull();
     expect(routeFor('GB', live)).toBeNull();
-    expect(routeFor('SN', ['simulated'])).toEqual({
+    // The simulated provider serves the payout countries of the live rails, in EUR.
+    expect(routeFor('SN', ['simulated'])).toBeNull();
+    expect(routeFor('FR', ['simulated'])).toEqual({
       provider: 'simulated',
-      country: 'SN',
+      country: 'FR',
       currency: 'EUR',
     });
+    expect(routeFor('NG', ['simulated'])).toEqual({
+      provider: 'simulated',
+      country: 'NG',
+      currency: 'EUR',
+    });
+  });
+
+  it('offers simulated mobile money where a live rail verified it only', () => {
+    const route = routeFor('FR', ['simulated']);
+    if (!route) throw new Error('No route');
+    const methods = (country: string) =>
+      new Set(availablePayments(route, country).map((payment) => payment.method));
+    expect(methods('SN').has('mobile_money')).toBe(true);
+    expect(methods('FR').has('mobile_money')).toBe(false);
+    expect(methods('FR').has('card')).toBe(true);
   });
 
   it('offers only the verified methods for this contributor and this route', () => {
@@ -387,11 +404,20 @@ describe('routing and capabilities', () => {
 
   it('gives a source to every verified capability', () => {
     for (const capabilities of [STRIPE_CAPABILITIES, FLUTTERWAVE_CAPABILITIES]) {
-      const payout = capabilities.payoutCountries === '*' ? [] : capabilities.payoutCountries;
-      for (const entry of [...payout, ...capabilities.payments, ...capabilities.fees]) {
+      for (const entry of [
+        ...capabilities.payoutCountries,
+        ...capabilities.payments,
+        ...capabilities.fees,
+      ]) {
         if (entry.verified) expect(entry.sources.length).toBeGreaterThan(0);
       }
     }
-    expect(PROVIDER_CAPABILITIES.simulated.payoutCountries).toBe('*');
+    expect(PROVIDER_CAPABILITIES.simulated.payoutCountries.map((entry) => entry.country)).toEqual(
+      [STRIPE_CAPABILITIES, FLUTTERWAVE_CAPABILITIES].flatMap((capabilities) =>
+        capabilities.payoutCountries
+          .filter((entry) => entry.verified)
+          .map((entry) => entry.country),
+      ),
+    );
   });
 });

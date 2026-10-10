@@ -96,6 +96,19 @@ export interface DemoProject {
   posts?: { author: string; text: string }[];
 }
 
+/**
+ * Country of the payout account each collecting holder chose: never the country of their profile
+ * nor of their project (ADR 0043). Aïssatou lives in Senegal and Jean-Baptiste in Côte d'Ivoire,
+ * where no rail is verified: their accounts are in France.
+ */
+export const DEMO_PAYOUT_COUNTRIES: Readonly<Record<string, string>> = {
+  aissatou: 'FR',
+  ama: 'GH',
+  jeanbaptiste: 'FR',
+  marieclaire: 'FR',
+  samuel: 'NG',
+};
+
 export const DEMO_PROJECTS: readonly DemoProject[] = [
   {
     key: 'pompes-thies',

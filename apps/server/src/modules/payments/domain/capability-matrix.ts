@@ -61,7 +61,7 @@ export interface ProviderCapabilities {
    * currency of the payment capabilities.
    */
   paymentCurrencies: 'local' | 'any';
-  payoutCountries: readonly PayoutCountryCapability[] | '*';
+  payoutCountries: readonly PayoutCountryCapability[];
   payments: readonly PaymentCapability[];
   fees: readonly FeeSchedule[];
 }
@@ -407,16 +407,45 @@ export const FLUTTERWAVE_CAPABILITIES: ProviderCapabilities = {
   ],
 };
 
+/** Verified payout countries of the live rails, in matrix order. */
+const LIVE_PAYOUT_COUNTRIES = [STRIPE_CAPABILITIES, FLUTTERWAVE_CAPABILITIES].flatMap(
+  (capabilities) =>
+    capabilities.payoutCountries.filter((entry) => entry.verified).map((entry) => entry.country),
+);
+
+/** Contributor countries where a live rail verified a mobile money collection. */
+const LIVE_MOBILE_MONEY_COUNTRIES = [
+  ...new Set(
+    [STRIPE_CAPABILITIES, FLUTTERWAVE_CAPABILITIES].flatMap((capabilities) =>
+      capabilities.payments.flatMap((payment) =>
+        payment.verified &&
+        payment.method === 'mobile_money' &&
+        payment.contributorCountries !== '*'
+          ? payment.contributorCountries
+          : [],
+      ),
+    ),
+  ),
+];
+
 /**
- * Simulated provider (ADR 0052): every country, the currencies of the demonstration and every
- * method, so that development and tests exercise all the paths. Refused in production.
+ * Simulated provider (ADR 0052): the payout countries the live rails verified, so that
+ * development and tests show the coverage production has, each settled in EUR (the
+ * demonstration projects are in EUR); the currencies of the demonstration and every method,
+ * mobile money for the contributor countries where a live rail verified it. Refused in
+ * production.
  */
 export const SIMULATED_CAPABILITIES: ProviderCapabilities = {
   provider: 'simulated',
   onboarding: 'bank_details',
   kycMode: 'manual_review',
   paymentCurrencies: 'any',
-  payoutCountries: '*',
+  payoutCountries: LIVE_PAYOUT_COUNTRIES.map((country) => ({
+    country,
+    currency: 'EUR',
+    verified: true,
+    sources: [],
+  })),
   payments: [
     ...(['EUR', 'XOF', 'XAF', 'NGN', 'GHS', 'KES'] as const).flatMap((currency) =>
       (['card', 'mobile_money', 'sepa_debit', 'bank_transfer'] as const)
@@ -426,7 +455,8 @@ export const SIMULATED_CAPABILITIES: ProviderCapabilities = {
           currency,
           method,
           operators: method === 'mobile_money' ? ['Simulated Money'] : [],
-          contributorCountries: '*' as const,
+          contributorCountries:
+            method === 'mobile_money' ? LIVE_MOBILE_MONEY_COUNTRIES : ('*' as const),
           minMinor: null,
           maxMinor: null,
           verified: true,
