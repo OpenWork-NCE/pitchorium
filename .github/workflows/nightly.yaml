@@ -181,8 +181,8 @@ jobs:
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           failed="$(echo "$NEEDS" | jq -r 'to_entries[] | select(.value.result != "success" and .value.result != "skipped") | "- \(.key): \(.value.result)"')"
-          body="$(printf 'Run %s on %s failed.\n\n%s\n\nLogs: `gh run view %s --log-failed`. Traces and reports: artifacts of the run.' \
-            "$RUN_URL" "$GITHUB_SHA" "$failed" "$GITHUB_RUN_ID")"
+          body="$(printf 'Run %s on %s (%s) failed.\n\n%s\n\nLogs: `gh run view %s --log-failed`. Traces and reports: artifacts of the run.' \
+            "$RUN_URL" "$GITHUB_REF_NAME" "$GITHUB_SHA" "$failed" "$GITHUB_RUN_ID")"
           gh label create nightly --color B60205 --description 'Failure of the nightly verification' --force
           issue="$(gh issue list --label nightly --state open --json number --jq '.[0].number // empty')"
           if [ -n "$issue" ]; then
