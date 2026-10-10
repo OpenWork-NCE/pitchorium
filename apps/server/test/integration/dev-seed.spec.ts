@@ -16,6 +16,7 @@ import { seedDevContent } from '../../scripts/dev-seed/seed-dev-content';
 import { sampleSuggestions, seedDevDiscovery } from '../../scripts/dev-seed/seed-dev-discovery';
 import { seedDevMessaging } from '../../scripts/dev-seed/seed-dev-messaging';
 import { seedDevProjectFiles } from '../../scripts/dev-seed/seed-dev-project-files';
+import { seedDevPayments } from '../../scripts/dev-seed/seed-dev-payments';
 import { createSeedContext, seedDevProjects } from '../../scripts/dev-seed/seed-dev-projects';
 import { seedDevTrust } from '../../scripts/dev-seed/seed-dev-trust';
 import { MethodologiesService } from '../../src/modules/impact/application/methodologies.service';
@@ -117,7 +118,7 @@ describe('development data', () => {
         methodologies: 1,
         assessments: 7,
         projects: 8,
-        contributions: 13,
+        contributions: 17,
         projectFollows: 8,
         projectPosts: 2,
       });
@@ -159,7 +160,20 @@ describe('development data', () => {
       const paid = await query<{ count: string }>(
         `SELECT count(*) FROM payments.contributions WHERE status = 'succeeded'`,
       );
-      expect(Number(paid[0]?.count)).toBe(13);
+      expect(Number(paid[0]?.count)).toBe(11);
+      // Every state the screens show (PROMPT FRONT 5B).
+      const states = await query<{ status: string; count: string }>(
+        'SELECT status, count(*) FROM payments.contributions GROUP BY status ORDER BY status',
+      );
+      expect(states.map((row) => [row.status, Number(row.count)])).toEqual([
+        ['canceled', 1],
+        ['expired', 1],
+        ['failed', 1],
+        ['partially_refunded', 1],
+        ['pending_payment', 1],
+        ['refunded', 1],
+        ['succeeded', 11],
+      ]);
       const report = await context
         .get(ReconciliationService, { strict: false })
         .run(365 * 86_400_000);
@@ -204,6 +218,35 @@ describe('development data', () => {
          WHERE method = 'mobile_money' AND status = 'succeeded' AND currency = 'XOF'`,
       );
       expect(Number(mobileMoney[0]?.count)).toBe(2);
+      // Off-platform contributions, identity checks and shared time, once, then nothing.
+      const payments = await seedDevPayments(context, clock, new Date());
+      expect({ ...payments, proofs: payments.proofs.length }).toEqual({
+        offlineContributions: 5,
+        kycStates: 2,
+        timeEntries: 3,
+        proofs: 1,
+      });
+      const offline = await query<{ status: string }>(
+        'SELECT status FROM payments.offline_contributions ORDER BY status',
+      );
+      expect(offline.map((row) => row.status)).toEqual([
+        'confirmed',
+        'declared',
+        'declared',
+        'rejected',
+        'validated',
+      ]);
+      const again = await seedDevPayments(context, clock, new Date());
+      expect({ ...again, proofs: again.proofs.length }).toEqual({
+        offlineContributions: 0,
+        kycStates: 0,
+        timeEntries: 0,
+        proofs: 0,
+      });
+      const afterPayments = await context
+        .get(ReconciliationService, { strict: false })
+        .run(365 * 86_400_000);
+      expect(afterPayments.discrepancies).toEqual([]);
       const withProjects = await counts();
       expect(await seedDevProjects(context, clock)).toEqual({
         methodologies: 0,

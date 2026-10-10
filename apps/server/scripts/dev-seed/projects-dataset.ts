@@ -85,6 +85,13 @@ export interface DemoProject {
     mobileMoney?: boolean;
     daysAfterPublication: number;
     rewardIndex?: number;
+    /**
+     * How the payment ends at the simulated provider (succeeded by default); `pending` is created
+     * at the time of the seeding and left waiting, `cancel` abandoned by the contributor.
+     */
+    outcome?: 'fail' | 'expire' | 'pending' | 'cancel';
+    /** Refunded at the provider after the success, in euros of the amount (in part or in full). */
+    refund?: number;
   }[];
   /** Images of the gallery (abstract demonstration images), each with its text alternative. */
   gallery?: { hue: number; alt: string }[];
@@ -160,7 +167,8 @@ export const DEMO_PROJECTS: readonly DemoProject[] = [
     documents: [3, 1],
     publishedDaysAgo: 20,
     contributions: [
-      { contributor: 'kofi', amount: 5_000, daysAfterPublication: 1 },
+      // Refunded in part at the provider: partially_refunded, the collected amount reduced.
+      { contributor: 'kofi', amount: 5_000, daysAfterPublication: 1, refund: 1_000 },
       { contributor: 'fatou', amount: 2_400, daysAfterPublication: 4, rewardIndex: 0 },
       { contributor: 'thierry', amount: 5_000, daysAfterPublication: 9, rewardIndex: 1 },
       // From Côte d'Ivoire, by mobile money: offered there, never to Fatou in Belgium.
@@ -170,6 +178,15 @@ export const DEMO_PROJECTS: readonly DemoProject[] = [
         inXof: true,
         mobileMoney: true,
         daysAfterPublication: 12,
+      },
+      // A payment refused, then one whose session expired: nothing collected, the reward freed.
+      { contributor: 'nadia', amount: 100, daysAfterPublication: 14, outcome: 'fail' },
+      {
+        contributor: 'fatou',
+        amount: 250,
+        daysAfterPublication: 15,
+        rewardIndex: 0,
+        outcome: 'expire',
       },
     ],
     updates: [
@@ -244,6 +261,10 @@ export const DEMO_PROJECTS: readonly DemoProject[] = [
       },
       { contributor: 'nadia', amount: 22_000, daysAfterPublication: 10 },
       { contributor: 'claudine', amount: 10_000, daysAfterPublication: 21, rewardIndex: 0 },
+      // Abandoned by the contributor before paying.
+      { contributor: 'thierry', amount: 50, daysAfterPublication: 22, outcome: 'cancel' },
+      // Waiting for its payment when the seeding ends: proposed again on the page of the project.
+      { contributor: 'aissatou', amount: 75, daysAfterPublication: 0, outcome: 'pending' },
     ],
     updates: [
       {
@@ -337,7 +358,14 @@ export const DEMO_PROJECTS: readonly DemoProject[] = [
     publishedDaysAgo: 100,
     contributions: [
       { contributor: 'thierry', amount: 6_000, daysAfterPublication: 5 },
-      { contributor: 'claudine', amount: 2_200, daysAfterPublication: 50, rewardIndex: 0 },
+      // Refunded in full: refunded, the reward freed.
+      {
+        contributor: 'claudine',
+        amount: 2_200,
+        daysAfterPublication: 50,
+        rewardIndex: 0,
+        refund: 2_200,
+      },
     ],
     interests: [
       {

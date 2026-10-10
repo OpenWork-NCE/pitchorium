@@ -201,12 +201,34 @@ export async function seedDevProjects(
       request,
       contribution.organization ? demoId(`organization:${contribution.organization}`) : null,
     );
+    const outcome = contribution.outcome;
+    if (outcome === 'pending') return;
+    if (outcome === 'cancel') {
+      await contributions.cancel(userId(contribution.contributor), created.id);
+      return;
+    }
     const simulated = get(ConfiguredPaymentProviders).simulated;
     if (!simulated) throw new Error('db:seed:dev needs the simulated payment provider');
-    const webhook = await simulated.play(`sim_cs_${created.id}`, 'succeed');
-    await get(WebhooksService).ingest('simulated', webhook.headers, Buffer.from(webhook.body));
-    const paid = await get(ContributionEffectsService).sync(created.id);
-    if (paid?.status !== 'succeeded') throw new Error(`Demo contribution ${created.id} not paid`);
+    const session = `sim_cs_${created.id}`;
+    const play = async (scenario: 'succeed' | 'fail' | 'expire' | 'refund', amount?: bigint) => {
+      const webhook = await simulated.play(session, scenario, amount);
+      await get(WebhooksService).ingest('simulated', webhook.headers, Buffer.from(webhook.body));
+      return get(ContributionEffectsService).sync(created.id);
+    };
+    const settled = await play(outcome ?? 'succeed');
+    const expected = outcome === 'fail' ? 'failed' : outcome === 'expire' ? 'expired' : 'succeeded';
+    if (settled?.status !== expected) {
+      throw new Error(`Demo contribution ${created.id}: ${settled?.status}, not ${expected}`);
+    }
+    if (contribution.refund !== undefined) {
+      const refund = contribution.inXof ? francs(contribution.refund) : euros(contribution.refund);
+      const refunded = await play('refund', BigInt(refund.amountMinor));
+      const status =
+        contribution.refund === contribution.amount ? 'refunded' : 'partially_refunded';
+      if (refunded?.status !== status) {
+        throw new Error(`Demo contribution ${created.id}: ${refunded?.status}, not ${status}`);
+      }
+    }
   }
 
   async function seedProject(demo: DemoProject): Promise<void> {
@@ -273,7 +295,9 @@ export async function seedDevProjects(
     await projects.publish(projectId, ownerId, true);
     if (demo.contributions?.length) await readyToCollect(demo.owner);
     for (const [index, contribution] of (demo.contributions ?? []).entries()) {
-      at(contribution.daysAfterPublication);
+      // A pending payment is created now: its session is still open after the seeding.
+      if (contribution.outcome === 'pending') clock.set(now);
+      else at(contribution.daysAfterPublication);
       await pay(projectId, contribution, rewardIds, index);
       result.contributions += 1;
     }

@@ -3,9 +3,15 @@ import { loadConfigOrExit, parseWorkerConfig } from '../src/platform/config/conf
 import { FixedClock, SystemClock } from '../src/platform/kernel/clock';
 import { S3ObjectStorage } from '../src/platform/storage/s3-object-storage';
 import { seedDevContent } from './dev-seed/seed-dev-content';
-import { DEMO_EMAIL_DOMAIN, DEMO_PASSWORD, seedDevData } from './dev-seed/seed-dev-data';
+import {
+  DEMO_EMAIL_DOMAIN,
+  DEMO_PASSWORD,
+  seedDevData,
+  uploadDemoFiles,
+} from './dev-seed/seed-dev-data';
 import { sampleSuggestions, seedDevDiscovery } from './dev-seed/seed-dev-discovery';
 import { seedDevMessaging } from './dev-seed/seed-dev-messaging';
+import { seedDevPayments } from './dev-seed/seed-dev-payments';
 import { seedDevProjectFiles } from './dev-seed/seed-dev-project-files';
 import { DEMO_EXTERNAL_INVITEE, seedDevNetwork } from './dev-seed/seed-dev-network';
 import { createSeedContext, seedDevProjects } from './dev-seed/seed-dev-projects';
@@ -30,21 +36,34 @@ async function main(): Promise<void> {
     const clock = new FixedClock(now);
     const context = await createSeedContext(clock);
     let samples: string[] = [];
+    const pendingProofs: Parameters<typeof uploadDemoFiles>[2][number][] = [];
     const services = await (async () => {
       try {
         const projects = await seedDevProjects(context, clock, now);
+        const { proofs, ...payments } = await seedDevPayments(context, clock, now);
+        pendingProofs.push(...proofs);
         const messaging = await seedDevMessaging(context, clock, now);
         const discovery = await seedDevDiscovery(context, clock, now);
         samples = await sampleSuggestions(context);
         const trust = await seedDevTrust(context, clock, now);
         const network = await seedDevNetwork(context, clock, now);
         const content = await seedDevContent(context, clock, now);
-        return { ...projects, ...messaging, ...discovery, ...trust, ...network, ...content };
+        return {
+          ...projects,
+          ...payments,
+          ...messaging,
+          ...discovery,
+          ...trust,
+          ...network,
+          ...content,
+        };
       } finally {
         await context.close();
       }
     })();
-    const projectFiles = await seedDevProjectFiles(db, storage, now);
+    const projectFiles =
+      (await seedDevProjectFiles(db, storage, now)) +
+      (await uploadDemoFiles(db, storage, pendingProofs, now));
     const inserted = Object.entries({ ...result, ...services, projectFiles })
       .map(([name, count]) => `${count} ${name}`)
       .join(', ');
