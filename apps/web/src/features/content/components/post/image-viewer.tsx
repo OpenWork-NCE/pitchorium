@@ -22,8 +22,8 @@ export default function ImageViewer({
 }: {
   images: readonly PostImage[];
   startIndex: number;
-  /** Name of the shared transition with the thumbnail opened. */
-  transitionName: string;
+  /** Name of the shared transition with the thumbnail opened, while it runs only (ADR 0145). */
+  transitionName: string | null;
   onClose: () => void;
 }) {
   const t = useTranslations('web.content.viewer');
@@ -110,7 +110,8 @@ export default function ImageViewer({
                       src={imageSource(image, 'full')}
                       alt={image.alt ?? noAlt('noAlt')}
                       style={{
-                        viewTransitionName: position === index ? transitionName : undefined,
+                        viewTransitionName:
+                          position === index && transitionName ? transitionName : undefined,
                       }}
                       className="max-h-full max-w-full rounded-md object-contain"
                     />

@@ -2,15 +2,21 @@
 
 import type { PostImage } from '@pitchorium/contracts';
 import { useTranslations } from 'next-intl';
-import { lazy, Suspense, useRef, useState } from 'react';
-import { flushSync } from 'react-dom';
+import { lazy, Suspense, useId, useRef, useState } from 'react';
 import { cn } from '@/lib/cn';
 import { useMotionPreference } from '@/components/motion';
+import { startSharedTransition, transitionName } from '@/lib/view-transitions/shared';
 import { imageGrid } from '../../lib/image-grid';
+import type ImageViewerComponent from './image-viewer';
 
 /** The viewer and Embla load with the first opening (never in the first load of the feed). */
-const loadViewer = () => import('./image-viewer');
-const ImageViewer = lazy(loadViewer);
+let loadedViewer: typeof ImageViewerComponent | null = null;
+const loadViewer = () =>
+  import('./image-viewer').then((module) => {
+    loadedViewer = module.default;
+    return module;
+  });
+const LazyViewer = lazy(loadViewer);
 
 const GRIDS = {
   single: 'grid-cols-1',
@@ -52,18 +58,33 @@ export function PostImages({
 }) {
   const t = useTranslations('web.content.images');
   const [open, setOpen] = useState<number | null>(null);
+  // The name the viewer carries while its opening transition runs, then none (ADR 0145).
+  const [sharing, setSharing] = useState<string | null>(null);
+  const place = useId();
   const tiles = useRef<(HTMLButtonElement | null)[]>([]);
   const reduced = useMotionPreference() === 'reduced';
   const layout = imageGrid(images.length);
   const show = (index: number) => {
-    // A shared transition from the thumbnail where the browser can, without when motion is reduced.
-    if ('startViewTransition' in document && !reduced) {
-      document.startViewTransition(() => flushSync(() => setOpen(index)));
-    } else {
-      setOpen(index);
-    }
-    void loadViewer();
+    // A shared transition from the thumbnail where the browser can, without when motion is
+    // reduced. The name is unique to this publication at this place of the page, and only the
+    // thumbnail that opens, then the viewer, carry it, for the time of the transition.
+    const name = transitionName('post', postId, index, place);
+    // The viewer is in the new state of the transition only once its code is there: loaded on
+    // hover already, awaited otherwise (a keyboard).
+    void loadViewer().then(() =>
+      startSharedTransition({
+        source: tiles.current[index]?.querySelector('img') ?? null,
+        name,
+        reduced,
+        update: () => {
+          setOpen(index);
+          setSharing(name);
+        },
+        onSettled: () => setSharing(null),
+      }),
+    );
   };
+  const ImageViewer = loadedViewer ?? LazyViewer;
   return (
     <>
       <ul
@@ -105,9 +126,6 @@ export function PostImages({
                   loading={priority && index === 0 ? 'eager' : 'lazy'}
                   fetchPriority={priority && index === 0 ? 'high' : 'auto'}
                   decoding="async"
-                  style={{
-                    viewTransitionName: open === null ? `post-${postId}-${index}` : undefined,
-                  }}
                   className="size-full object-cover transition-transform duration-(--duration-page) ease-(--ease-enter) group-hover:scale-[1.04] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
                 />
                 {last ? (
@@ -125,7 +143,7 @@ export function PostImages({
           <ImageViewer
             images={images}
             startIndex={open}
-            transitionName={`post-${postId}-${open}`}
+            transitionName={sharing}
             onClose={() => {
               // The focus goes back to the thumbnail that opened the viewer (WebKit never
               // focuses a button on a click, and the viewer leaves with its focus scope).
