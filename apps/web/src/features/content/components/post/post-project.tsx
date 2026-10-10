@@ -5,9 +5,8 @@ import { ProjectCard } from '@/features/projects';
 import { Skeleton } from '@/components/ui';
 
 /**
- * The project a publication is attached to (§10.3), as a compact card read for a member; not a
- * link until the page of a project is delivered (PROMPT FRONT 5A). Absent when the project is
- * not visible to the reader.
+ * The project a publication is attached to (§10.3), as a compact card read for a member, linked
+ * to the page of the project. Absent when the project is not visible to the reader.
  */
 export function PostProject({ projectId }: { projectId: string }) {
   const project = useProjectsControllerGet(projectId, {
@@ -15,5 +14,5 @@ export function PostProject({ projectId }: { projectId: string }) {
   });
   if (project.isPending) return <Skeleton className="h-28 w-full rounded-xl" />;
   if (!project.data) return null;
-  return <ProjectCard project={project.data} variant="compact" linked={false} headingLevel={3} />;
+  return <ProjectCard project={project.data} variant="compact" headingLevel={3} />;
 }

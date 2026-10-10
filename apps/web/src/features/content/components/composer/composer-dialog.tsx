@@ -128,6 +128,7 @@ export default function ComposerDialog({
     query: { enabled: open && !editing, staleTime: 300_000 },
   });
   const attachable = (projects.data?.items ?? []).filter((item) => item.project.status !== 'draft');
+  const selectedProject = attachable.find((item) => item.project.id === projectId)?.project ?? null;
 
   const text = document ? serializeMentions(document) : '';
   const hasContent =
@@ -501,6 +502,15 @@ export default function ComposerDialog({
                     })),
                   ]}
                 />
+                {selectedProject ? (
+                  <UiLink
+                    href={routes.project(selectedProject.slug)}
+                    variant="standalone"
+                    className="mt-1 text-sm"
+                  >
+                    {t('projectLink', { title: selectedProject.title })}
+                  </UiLink>
+                ) : null}
               </Field>
             )}
             <div className="flex items-center gap-3 self-end">

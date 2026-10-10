@@ -3,6 +3,7 @@
 import {
   postsControllerMemberPosts,
   postsControllerOrganizationPosts,
+  projectsControllerPosts,
 } from '@pitchorium/api-client';
 import type { Post } from '@pitchorium/contracts';
 import { useInfiniteQuery } from '@tanstack/react-query';
@@ -10,6 +11,7 @@ import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Pagination } from '@/components/ui';
 import { MemberPost } from './member-post';
+import { type ActivityAuthor, activityKeyOf } from './visitor-activity-pages';
 
 type Page = { items: Post[]; nextCursor: string | null };
 
@@ -22,23 +24,20 @@ export default function MemberActivity({
   author,
   initial,
 }: {
-  author: { kind: 'member'; handle: string } | { kind: 'organization'; slug: string };
+  author: ActivityAuthor;
   initial: Page;
 }) {
   const t = useTranslations('web.activity');
   const [removed, setRemoved] = useState<ReadonlySet<string>>(new Set());
   const activity = useInfiniteQuery({
-    queryKey: [
-      'content',
-      'activity',
-      author.kind,
-      author.kind === 'member' ? author.handle : author.slug,
-    ],
+    queryKey: ['content', 'activity', author.kind, activityKeyOf(author)],
     queryFn: ({ pageParam, signal }) => {
       const params = { limit: 10, ...(pageParam ? { cursor: pageParam } : {}) };
       return author.kind === 'member'
         ? postsControllerMemberPosts(author.handle, params, { signal })
-        : postsControllerOrganizationPosts(author.slug, params, { signal });
+        : author.kind === 'organization'
+          ? postsControllerOrganizationPosts(author.slug, params, { signal })
+          : projectsControllerPosts(author.projectId, params, { signal });
     },
     initialPageParam: undefined as string | undefined,
     getNextPageParam: (page) => page.nextCursor ?? undefined,

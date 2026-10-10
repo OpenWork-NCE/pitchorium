@@ -1761,7 +1761,8 @@
     "mentions": "Membres et organisations à mentionner",
     "mentionsEmpty": "Aucun résultat",
     "draftRestored": "Votre brouillon a été retrouvé.",
-    "discardDraft": "Effacer le brouillon"
+    "discardDraft": "Effacer le brouillon",
+    "projectLink": "Voir la page de {{title}}"
   },
   "saved": {
     "title": "Publications enregistrées",

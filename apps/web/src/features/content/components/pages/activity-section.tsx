@@ -3,13 +3,17 @@ import {
   postsControllerOrganizationPosts,
   postsControllerPublicMemberPosts,
   postsControllerPublicOrganizationPosts,
+  projectsControllerPosts,
+  projectsControllerPublicPosts,
 } from '@pitchorium/api-client';
+import type { ReactNode } from 'react';
 import { getTranslations } from 'next-intl/server';
 import { Heading } from '@/components/ui';
 import { configureServerApi } from '@/lib/api/server';
 import { PostCard } from '../post-card';
 import { LazyMemberActivity } from './lazy-member-activity';
 import { VisitorActivityMore } from './visitor-activity-more';
+import type { ActivityAuthor } from './visitor-activity-pages';
 
 /**
  * « Activité » of the page of a member or an organization (§10.1, §10.7): their publications,
@@ -20,27 +24,38 @@ import { VisitorActivityMore } from './visitor-activity-more';
 export async function ActivitySection({
   author,
   signedIn,
+  title,
+  hideWhenEmpty = false,
 }: {
-  author: { kind: 'member'; handle: string } | { kind: 'organization'; slug: string };
+  author: ActivityAuthor;
   signedIn: boolean;
+  /** Title of the section, « Activité » by default (« Publications rattachées » of a project). */
+  title?: ReactNode;
+  /** Nothing at all without any publication (a project without attached publications). */
+  hideWhenEmpty?: boolean;
 }) {
   const t = await getTranslations('web.activity');
   configureServerApi();
   const params = { limit: 10 };
+  const options = { cache: 'no-store' } as const;
   const page = await (
     author.kind === 'member'
       ? signedIn
-        ? postsControllerMemberPosts(author.handle, params, { cache: 'no-store' })
-        : postsControllerPublicMemberPosts(author.handle, params, { cache: 'no-store' })
-      : signedIn
-        ? postsControllerOrganizationPosts(author.slug, params, { cache: 'no-store' })
-        : postsControllerPublicOrganizationPosts(author.slug, params, { cache: 'no-store' })
+        ? postsControllerMemberPosts(author.handle, params, options)
+        : postsControllerPublicMemberPosts(author.handle, params, options)
+      : author.kind === 'organization'
+        ? signedIn
+          ? postsControllerOrganizationPosts(author.slug, params, options)
+          : postsControllerPublicOrganizationPosts(author.slug, params, options)
+        : signedIn
+          ? projectsControllerPosts(author.projectId, params, options)
+          : projectsControllerPublicPosts(author.projectId, params, options)
   ).catch(() => null);
-  if (!page) return null;
+  if (!page || (hideWhenEmpty && page.items.length === 0)) return null;
   return (
     <section aria-labelledby="activity-title" className="grid gap-4">
       <Heading level={2} size="section" id="activity-title">
-        {t('title')}
+        {title ?? t('title')}
       </Heading>
       {signedIn ? (
         <LazyMemberActivity author={author} initial={page} />

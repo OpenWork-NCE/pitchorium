@@ -1761,7 +1761,8 @@
     "mentions": "Members and organizations to mention",
     "mentionsEmpty": "No result",
     "draftRestored": "Your draft was found again.",
-    "discardDraft": "Discard the draft"
+    "discardDraft": "Discard the draft",
+    "projectLink": "See the page of {{title}}"
   },
   "saved": {
     "title": "Saved posts",
