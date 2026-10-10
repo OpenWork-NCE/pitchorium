@@ -49,12 +49,14 @@ pnpm turbo run build --filter=@pitchorium/server... --filter=@pitchorium/web^...
 sh apps/web/scripts/build-e2e.sh && LIVE_BUILD_ONLY=1 bash apps/web/scripts/e2e-live.sh
 pnpm --filter @pitchorium/web check:bundles .next-e2e --views
 E2E_SKIP_BUILD=1 pnpm --filter @pitchorium/web test:e2e --project=chromium --max-failures=5
-LIVE_SKIP_BUILD=1 pnpm --filter @pitchorium/web test:e2e:live --project=chromium --grep @critical --max-failures=5
+LIVE_SKIP_BUILD=1 LIVE_TURNSTILE=local pnpm --filter @pitchorium/web test:e2e:live --project=chromium --grep @critical --grep-invert @external --max-failures=5
 LHCI_SKIP_BUILD=1 LHCI_RUNS=1 LHCI_SCOPE=representative pnpm --filter @pitchorium/web lighthouse
 pnpm db:check && pnpm i18n:check && pnpm check:dead-code && pnpm api-client:generate
 # si un composant, une story, un style ou les tokens changent :
 pnpm --filter @pitchorium/web test:stories && pnpm --filter @pitchorium/web review:check
 ```
+
+Turnstile au niveau 2 (ADR 0143) : les parcours critiques tournent sur la doublure locale (`LIVE_TURNSTILE=local`) servie par les faux fournisseurs (`apps/server/test/turnstile/local-turnstile.ts`) : script du widget nommé par l'api (`TURNSTILE_SCRIPT_URL`) et siteverify (`TURNSTILE_VERIFY_URL`), même contrat que Cloudflare et mêmes clés de test. Aucun appel à Cloudflare : la fixture `noCloudflare` (`e2e-live/support.ts`) fait échouer un parcours sur toute requête d'une page vers `challenges.cloudflare.com`, et le parcours `local stand-in of Turnstile` vérifie que l'inscription passe par le siteverify local (compteur des vérifications). Le test d'intégration de Turnstile utilise le même siteverify local. Le vrai widget reste au niveau 3 (`@external`, job `live-external`).
 
 ## Niveau 3 : chaque nuit et à la demande
 

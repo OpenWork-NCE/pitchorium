@@ -10,8 +10,44 @@ import { guardedTest } from '../e2e/support/console-guard';
 export { allowConsole } from '../e2e/support/console-guard';
 export { expect };
 
-/** Every journey against the real api fails on any error of the browser (console-guard.ts). */
-export const test = guardedTest;
+/** Origin of Cloudflare Turnstile, never reached when the run uses the local stand-in. */
+const CLOUDFLARE_CHALLENGES = 'https://challenges.cloudflare.com';
+
+/** The run uses the local stand-in of Turnstile (LIVE_TURNSTILE=local, level 2, ADR 0143). */
+export const LOCAL_TURNSTILE = process.env.LIVE_TURNSTILE === 'local';
+
+/**
+ * Every journey against the real api fails on any error of the browser (console-guard.ts) and,
+ * with the local stand-in of Turnstile, on any request of a page to Cloudflare: level 2 never
+ * depends on it (ADR 0143).
+ */
+export const test = guardedTest.extend<{ noCloudflare: void }>({
+  noCloudflare: [
+    async ({ context, browser }, provide) => {
+      if (!LOCAL_TURNSTILE) return provide();
+      const reached: string[] = [];
+      const block = (opened: BrowserContext) =>
+        opened.route(`${CLOUDFLARE_CHALLENGES}/**`, (route) => {
+          reached.push(route.request().url());
+          return route.abort('blockedbyclient');
+        });
+      await block(context);
+      const original = browser.newContext.bind(browser);
+      browser.newContext = async (options) => {
+        const opened = await original(options);
+        await block(opened);
+        return opened;
+      };
+      try {
+        await provide();
+      } finally {
+        browser.newContext = original;
+      }
+      expect(reached, 'requests to Cloudflare with the local stand-in').toEqual([]);
+    },
+    { auto: true },
+  ],
+});
 
 export const MAILPIT_URL = process.env.MAILPIT_URL ?? 'http://localhost:8025';
 export const PASSWORD = 'correct horse battery staple 2026';

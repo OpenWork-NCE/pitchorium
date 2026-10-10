@@ -5,7 +5,7 @@
 # dedicated ports, the migrations and the demonstration data,
 # the built api, worker and web app, the fake OAuth providers (a service a browser reaches), then
 # Playwright in its official image (Chromium, Firefox, WebKit). Cloudflare Turnstile runs with its
-# official test keys, unless LIVE_TURNSTILE=0. Everything this script starts is stopped by its own process group id or
+# official test keys, unless LIVE_TURNSTILE=0 or local. Everything this script starts is stopped by its own process group id or
 # Compose project; nothing else is touched.
 #
 # Environment:
@@ -19,7 +19,10 @@
 #   LIVE_LOGS           directory of the logs of the services and processes (default: a new one)
 #   LIVE_TURNSTILE      0 runs without Cloudflare Turnstile (no widget, no call of the api to
 #                       Cloudflare): the journeys of level 3 that do not depend on an external
-#                       service, the ones tagged @external running in their own job (ADR 0127)
+#                       service, the ones tagged @external running in their own job (ADR 0127);
+#                       local runs the local stand-in of the fake providers (widget script and
+#                       siteverify, same contract, test keys): level 2, which never reaches
+#                       Cloudflare, a journey failing on any request to it (ADR 0143)
 # Arguments go to `playwright test` (for instance a file or --project=chromium).
 set -euo pipefail
 
@@ -89,9 +92,16 @@ trap 'exit 143' TERM
 env_file="$logs/server.env"
 # Test keys of Cloudflare Turnstile (always pass), or none: the api neither asks for a challenge
 # nor calls Cloudflare.
+turnstile_verify_url=""
+turnstile_script_url=""
 if [ "${LIVE_TURNSTILE:-1}" = "0" ]; then
   turnstile_site_key=""
   turnstile_secret_key=""
+elif [ "${LIVE_TURNSTILE:-1}" = "local" ]; then
+  turnstile_site_key="1x00000000000000000000AA"
+  turnstile_secret_key="1x0000000000000000000000000000000AA"
+  turnstile_verify_url="http://127.0.0.1:$oauth_port/turnstile/siteverify"
+  turnstile_script_url="http://127.0.0.1:$oauth_port/turnstile/api.js"
 else
   turnstile_site_key="1x00000000000000000000AA"
   turnstile_secret_key="1x0000000000000000000000000000000AA"
@@ -120,6 +130,10 @@ sed \
 {
   echo "FAKE_OAUTH_URL=http://127.0.0.1:$oauth_port"
   echo "FAKE_OAUTH_PORT=$oauth_port"
+  if [ -n "$turnstile_verify_url" ]; then
+    echo "TURNSTILE_VERIFY_URL=$turnstile_verify_url"
+    echo "TURNSTILE_SCRIPT_URL=$turnstile_script_url"
+  fi
   # The web app, built and started for this run.
   echo "WEB_PORT=$web_port"
   echo "NEXT_DIST_DIR=.next-live"
@@ -189,6 +203,8 @@ step 'administrator' pnpm --filter @pitchorium/server admin:create --email claud
 start oauth bash -c "cd apps/server && exec node -r @swc-node/register test/oauth/server.ts"
 start api bash -c "cd apps/server && exec node -r @swc-node/register -r ./test/oauth/reroute.ts dist/main.api.js"
 start worker bash -c "cd apps/server && exec node -r @swc-node/register -r ./test/oauth/reroute.ts dist/main.worker.js"
+# The data cache of a previous run holds the answers of another stack (its Turnstile, its data).
+rm -rf apps/web/.next-live/cache/fetch-cache
 start web bash -c "cd apps/web && exec node_modules/.bin/next start --port $web_port"
 wait_ready oauth "http://127.0.0.1:$oauth_port/__health"
 wait_ready api "http://localhost:$api_port/v1/health/ready"
@@ -199,6 +215,7 @@ echo "Journeys (Playwright $image)"
 docker run --rm --init --ipc=host --network host \
   --user "$(id -u):$(id -g)" -e HOME=/tmp -e CI="${CI:-}" \
   -e PLAYWRIGHT_FAIL_ON_FLAKY="${PLAYWRIGHT_FAIL_ON_FLAKY:-}" \
+  -e LIVE_TURNSTILE="${LIVE_TURNSTILE:-1}" \
   -e LIVE_WEB_URL="http://localhost:$web_port" \
   -e LIVE_API_URL="http://localhost:$api_port" \
   -e MAILPIT_URL="http://localhost:$PITCHORIUM_MAILPIT_UI_PORT" \

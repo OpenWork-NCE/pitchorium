@@ -177,12 +177,14 @@ jobs:
       - uses: actions/download-artifact@v8.0.2
         with:
           name: build
-      # Critical journeys (@critical, ADR 0127) against the real api, in Chromium.
+      # Critical journeys (@critical, ADR 0127) against the real api, in Chromium, on the local
+      # stand-in of Turnstile: none reaches Cloudflare, the real widget runs in level 3 (ADR 0143).
       - run: >-
           pnpm --filter @pitchorium/web test:e2e:live
-          --project=chromium --grep @critical --max-failures=5
+          --project=chromium --grep @critical --grep-invert @external --max-failures=5
         env:
           LIVE_SKIP_BUILD: '1'
+          LIVE_TURNSTILE: local
           LIVE_LOGS: ${{ runner.temp }}/live-logs
       - if: always()
         run: node scripts/ci/playwright-summary.mjs apps/web/test-results/results.json 'Critical journeys (Chromium)'

@@ -1,5 +1,14 @@
 import { type Page } from '@playwright/test';
-import { allowConsole, expect, freshEmail, hydrated, PASSWORD, test } from './support';
+import {
+  allowConsole,
+  expect,
+  FAKE_OAUTH_URL,
+  freshEmail,
+  hydrated,
+  LOCAL_TURNSTILE,
+  PASSWORD,
+  test,
+} from './support';
 
 /** Test keys of Cloudflare Turnstile: the live environment uses the one that always passes. */
 const PASSING_SITE_KEY = '1x00000000000000000000AA';
@@ -36,6 +45,8 @@ async function fillSignUp(page: Page, email: string) {
  * flaky test of Pitchorium (ADR 0127).
  */
 test.describe('Cloudflare Turnstile', { tag: '@external' }, () => {
+  test.skip(LOCAL_TURNSTILE, 'The run uses the local stand-in of Turnstile (ADR 0143).');
+
   test(
     'a passed challenge lets the sign-up through, without any CSP violation',
     { tag: '@critical' },
@@ -78,4 +89,36 @@ test.describe('Cloudflare Turnstile', { tag: '@external' }, () => {
     await expect(page).toHaveURL(/\/fr\/sign-up$/);
     expect(await violations()).toEqual([]);
   });
+});
+
+/** Verifications the local siteverify answered so far (test/turnstile/local-turnstile.ts). */
+async function localVerifications(): Promise<number> {
+  const response = await fetch(`${FAKE_OAUTH_URL}/turnstile/siteverify`);
+  return ((await response.json()) as { verifications: number }).verifications;
+}
+
+/**
+ * The local stand-in of Turnstile (ADR 0143), the one of level 2: the same contract as
+ * Cloudflare for the page (widget script named by the api, token in the header) and for the api
+ * (siteverify), without any request to Cloudflare (the `noCloudflare` fixture fails on one).
+ */
+test.describe('local stand-in of Turnstile', () => {
+  test.skip(!LOCAL_TURNSTILE, 'Runs with LIVE_TURNSTILE=local only.');
+
+  test(
+    'a passed local challenge lets the sign-up through, verified by the local siteverify',
+    { tag: '@critical' },
+    async ({ page }) => {
+      const violations = await watchCsp(page);
+      await page.goto('/fr/sign-up');
+      await hydrated(page);
+      await expect(page.locator('[data-local-turnstile]')).toBeAttached();
+      const before = await localVerifications();
+      await fillSignUp(page, freshEmail('turnstile-local'));
+      await expect(page.getByRole('heading', { name: 'Vérifiez votre adresse' })).toBeVisible();
+      expect(await localVerifications()).toBeGreaterThan(before);
+      expect(page.frames().some((frame) => frame.url().startsWith(CHALLENGES))).toBe(false);
+      expect(await violations()).toEqual([]);
+    },
+  );
 });
