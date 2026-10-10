@@ -23,6 +23,12 @@ L'étiquette `@critical` des parcours contre la vraie api (`apps/web/e2e-live`) 
 - Le paiement simulé et la messagerie n'ont pas encore de parcours web (FRONT 5) : ils sont bloquants à chaque push par la suite de bout en bout de l'api (`apps/server/test/e2e`, contribution simulée notifiée en temps réel, échange de messages). Leurs parcours web seront étiquetés `@critical` à leur livraison.
 - Le niveau 3 exécute tous les parcours, étiquetés ou non, dans Chromium, Firefox et WebKit.
 
+## Complément : services externes (2026-10-10, PROMPT FRONT 5A)
+
+- Une panne réseau vers Cloudflare faisait échouer le niveau 3 comme un test instable de Pitchorium : les parcours Turnstile chargent le script et le cadre de Cloudflare, et l'api de l'environnement réel vérifie chaque jeton auprès de Cloudflare (création des membres d'un parcours comprise).
+- Étiquette `@external` : un parcours qui dépend d'un service externe (aujourd'hui les deux parcours de Turnstile, `e2e-live/turnstile.spec.ts`). Au niveau 3, les parcours sans cette étiquette tournent dans chaque moteur sans Turnstile (`LIVE_TURNSTILE=0` : ni widget, ni appel de l'api à Cloudflare) ; ceux qui la portent ont leur job (`live-external`), Turnstile actif avec ses clés de test, dans les trois moteurs, une relance permise (un test qui ne passe qu'à la relance n'y fait pas échouer le run) et son propre rapport dans le résumé du run.
+- Le niveau 2 garde le parcours `@critical` de Turnstile, avec ses clés de test.
+
 ## Conséquences
 
 - Le push exécute environ 3 min de parcours (durées mesurées dans la CI), contre 21,6 min.

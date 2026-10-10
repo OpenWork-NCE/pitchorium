@@ -61,7 +61,7 @@ pnpm --filter @pitchorium/web test:stories && pnpm --filter @pitchorium/web revi
 Workflow `.github/workflows/nightly.yaml`, planifié chaque nuit (02:17 UTC) et déclenchable à la main avant une version ou en fin de prompt (`gh workflow run nightly.yaml --ref main`). Les tests instables y échouent (`PLAYWRIGHT_FAIL_ON_FLAKY=1`).
 
 - `verify:clean` complet depuis un clone propre (ADR 0063) : `infra:up` avec le vrai ClamAV, migrations, `db:seed`, `db:seed:dev`, lint, typecheck, tests unitaires et d'intégration, build, budgets, suites de bout en bout de l'api et du web dans tous les navigateurs (Chromium, Firefox, WebKit, iPhone), build de Storybook, génération OpenAPI et client, cohérence, `git status` vide. Les parcours contre la vraie api et Lighthouse en sont retirés (`VERIFY_SKIP`) parce qu'ils tournent en parallèle dans les jobs suivants, sur le même commit ; en local, `pnpm verify:clean` reste complet.
-- Tous les parcours contre la vraie api, un job par moteur (Chromium, Firefox, WebKit), chacun sur sa pile.
+- Tous les parcours contre la vraie api, un job par moteur (Chromium, Firefox, WebKit), chacun sur sa pile, sans Cloudflare Turnstile (`LIVE_TURNSTILE=0`) ; les parcours qui dépendent d'un service externe (`@external`, Turnstile) dans leur propre job (`live-external`, trois moteurs, une relance permise, rapport distinct, ADR 0127).
 - Lighthouse : trois passages sur toutes les pages suivies (médiane), mêmes seuils.
 - Storybook : stories comme tests et comparaison des captures de revue.
 - `test:providers` (bacs à sable Stripe, Flutterwave, Resend, si leurs clés de test existent).

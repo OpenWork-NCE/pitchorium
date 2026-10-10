@@ -5,7 +5,7 @@
 # dedicated ports, the migrations and the demonstration data,
 # the built api, worker and web app, the fake OAuth providers (a service a browser reaches), then
 # Playwright in its official image (Chromium, Firefox, WebKit). Cloudflare Turnstile runs with its
-# official test keys. Everything this script starts is stopped by its own process group id or
+# official test keys, unless LIVE_TURNSTILE=0. Everything this script starts is stopped by its own process group id or
 # Compose project; nothing else is touched.
 #
 # Environment:
@@ -17,6 +17,9 @@
 #   LIVE_BUILD_ONLY     1 builds the packages, the api, the worker and the web app, then stops
 #   PLAYWRIGHT_FAIL_ON_FLAKY  1 fails on a journey that only passes on its retry (level 3)
 #   LIVE_LOGS           directory of the logs of the services and processes (default: a new one)
+#   LIVE_TURNSTILE      0 runs without Cloudflare Turnstile (no widget, no call of the api to
+#                       Cloudflare): the journeys of level 3 that do not depend on an external
+#                       service, the ones tagged @external running in their own job (ADR 0127)
 # Arguments go to `playwright test` (for instance a file or --project=chromium).
 set -euo pipefail
 
@@ -84,6 +87,15 @@ trap 'exit 143' TERM
 
 # Configuration of the processes: the example of the api, pointed at the isolated services.
 env_file="$logs/server.env"
+# Test keys of Cloudflare Turnstile (always pass), or none: the api neither asks for a challenge
+# nor calls Cloudflare.
+if [ "${LIVE_TURNSTILE:-1}" = "0" ]; then
+  turnstile_site_key=""
+  turnstile_secret_key=""
+else
+  turnstile_site_key="1x00000000000000000000AA"
+  turnstile_secret_key="1x0000000000000000000000000000000AA"
+fi
 sed \
   -e "s#localhost:5432/#localhost:$PITCHORIUM_POSTGRES_PORT/#" \
   -e "s#localhost:6379#localhost:$PITCHORIUM_VALKEY_PORT#" \
@@ -101,8 +113,8 @@ sed \
   -e "s#^AUTH_RATE_LIMIT_MAX=.*#AUTH_RATE_LIMIT_MAX=30#" \
   -e "s#^GOOGLE_CLIENT_ID=.*#GOOGLE_CLIENT_ID=google-client#" \
   -e "s#^GOOGLE_CLIENT_SECRET=.*#GOOGLE_CLIENT_SECRET=google-secret#" \
-  -e "s#^TURNSTILE_SITE_KEY=.*#TURNSTILE_SITE_KEY=1x00000000000000000000AA#" \
-  -e "s#^TURNSTILE_SECRET_KEY=.*#TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA#" \
+  -e "s#^TURNSTILE_SITE_KEY=.*#TURNSTILE_SITE_KEY=$turnstile_site_key#" \
+  -e "s#^TURNSTILE_SECRET_KEY=.*#TURNSTILE_SECRET_KEY=$turnstile_secret_key#" \
   -e "s#^SCHEDULED_TASKS_EVERY_MS=.*#SCHEDULED_TASKS_EVERY_MS=3000#" \
   "$root/apps/server/.env.example" | grep -v '^#' | grep -v '^$' >"$env_file"
 {

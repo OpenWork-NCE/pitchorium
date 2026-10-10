@@ -31,8 +31,11 @@ async function fillSignUp(page: Page, email: string) {
 /**
  * Cloudflare Turnstile in the browser (A3, ADR 0103): the widget of the test keys, the script
  * and the frame the policy allows, and nothing else; a challenge that fails stops the sign-up.
+ * They depend on Cloudflare (`@external`): level 3 runs them in their own job, with one retry
+ * allowed and a report of their own, so that an outage of Cloudflare is never counted as a
+ * flaky test of Pitchorium (ADR 0127).
  */
-test.describe('Cloudflare Turnstile', () => {
+test.describe('Cloudflare Turnstile', { tag: '@external' }, () => {
   test(
     'a passed challenge lets the sign-up through, without any CSP violation',
     { tag: '@critical' },
