@@ -59,10 +59,18 @@ test.describe('network', () => {
     ).toBeVisible();
 
     const follow = a.page.getByRole('button', { name: 'Suivre Chidi Okeke' });
+    // The button changes at once (optimistic): the reload waits for the api to keep the follow.
+    const kept = a.page.waitForResponse(
+      (response) =>
+        response.url().includes('/v1/network/follows/') &&
+        response.request().method() === 'PUT' &&
+        response.ok(),
+    );
     await follow.click();
     await expect(
       a.page.getByRole('button', { name: 'Ne plus suivre Chidi Okeke' }),
     ).toHaveAttribute('aria-pressed', 'true');
+    await kept;
     await a.page.reload();
     await expect(a.page.getByRole('button', { name: 'Ne plus suivre Chidi Okeke' })).toBeVisible();
     await a.context.close();

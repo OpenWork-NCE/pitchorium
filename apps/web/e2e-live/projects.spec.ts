@@ -354,10 +354,18 @@ test.describe('projects', () => {
   test('the filters and the sort of the showcase live in the address', async ({ page }) => {
     await page.goto('/fr/projects');
     await hydrated(page);
+    // The address changes at once, then the server renders the grid again in a transition: each
+    // step waits for that render, which a navigation would otherwise interrupt.
+    const rendered = async () => {
+      await expect(page.locator('main [aria-busy="true"]')).toHaveCount(0);
+      await page.waitForLoadState('networkidle');
+    };
     await choose(page, 'Statut', 'En financement');
     await page.waitForURL(/status=funding/);
+    await rendered();
     await choose(page, 'Trier par', 'Fin de campagne proche');
     await page.waitForURL(/sort=ending_soon/);
+    await rendered();
     await expect(page).toHaveURL(
       /status=funding.*sort=ending_soon|sort=ending_soon.*status=funding/,
     );
