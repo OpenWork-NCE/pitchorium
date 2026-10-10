@@ -28,7 +28,7 @@ import {
 } from '@/components/ui';
 import { formatMoney } from '@/lib/format/money';
 import { statusTone } from '../../lib/status';
-import { downloadCsv } from '../shared/download-csv';
+import { downloadCsv } from '@/lib/files/download-csv';
 import { usePaymentProblem } from '../shared/use-payment-problem';
 
 const STATUSES: readonly ContributionStatus[] = [
