@@ -580,23 +580,28 @@ test.describe('the feed of a demonstration member', () => {
         { intervals: [300] },
       )
       .toBe(true);
-    // Read and followed in one step: the virtualized entry may leave the page between two.
-    const name = await page.evaluate(() => {
+    // Read and followed in one step: the virtualized entry may leave the page between two. The
+    // position is the one of the click: an entry above measured late (an image) still moves the
+    // page after it was still, the virtualizer keeping what is shown in place (ADR 0142).
+    const { name, offset } = await page.evaluate(() => {
       const link = document.querySelector<HTMLAnchorElement>('[data-feed-index="6"] a');
       const text = link?.textContent ?? null;
+      const at = Math.round(window.scrollY);
       link?.click();
-      return text;
+      return { name: text, offset: at };
     });
     expect(name).toBeTruthy();
     await expect(page.getByRole('heading', { level: 1, name: name ?? '' })).toBeVisible();
     await page.goBack();
     // Back at the same place, the same entries around.
+    const moved = `left at ${left}, clicked at ${offset}`;
     await expect
-      .poll(() => page.evaluate(() => Math.round(window.scrollY)))
-      .toBeGreaterThanOrEqual(left - 2);
-    expect(Math.abs((await page.evaluate(() => Math.round(window.scrollY))) - left)).toBeLessThan(
-      3,
-    );
+      .poll(() => page.evaluate(() => Math.round(window.scrollY)), { message: moved })
+      .toBeGreaterThanOrEqual(offset - 2);
+    expect(
+      Math.abs((await page.evaluate(() => Math.round(window.scrollY))) - offset),
+      moved,
+    ).toBeLessThan(3);
     await expect(feed.locator('[data-feed-index="6"]')).toHaveCount(1);
   });
 
