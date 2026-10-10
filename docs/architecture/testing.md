@@ -104,7 +104,7 @@ Après (CI de `main`, niveau 2, 3 runs verts au 2026-10-10) :
 - Intégration : deux shards de 3,6 à 4,8 min ; scénarios de l'api : 1,5 à 1,9 min.
 - Lint 37 à 79 s, typecheck 36 à 53 s, tests unitaires 35 à 66 s.
 
-Niveau 3 (`nightly.yaml`, CI) : `verify:clean` sans parcours ni Lighthouse 22 min environ (intégration 483 s, bout en bout de l'api et du web dans tous les navigateurs 453 s) ; parcours contre la vraie api 11 à 13 min par moteur, en parallèle ; Lighthouse complet 12 min.
+Niveau 3 (`nightly.yaml`, CI, run vert du 2026-10-10) : 20,5 min de bout en bout ; `verify:clean` sans parcours ni Lighthouse 20,5 à 21,5 min (intégration 483 s, bout en bout de l'api et du web dans tous les navigateurs 453 s), en parallèle des parcours contre la vraie api (8,5 à 10 min par moteur) et de Lighthouse complet (11 à 12 min).
 
 ## Récupérer et relancer un run
 
