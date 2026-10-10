@@ -1,6 +1,3 @@
-'use client';
-
-import { Progress as Primitive } from 'radix-ui';
 import { cn } from '@/lib/cn';
 
 interface ProgressProps {
@@ -15,7 +12,11 @@ interface ProgressProps {
   className?: string;
 }
 
-/** Progress of a known task (Radix Progress, `role=progressbar`), or a wait without a measure. */
+/**
+ * Progress of a known task (`role=progressbar`, the attributes Radix Progress gave it), or a wait
+ * without a measure. Without state of its own, a server component renders it: the strength of a
+ * profile ships no code to the browser.
+ */
 export function Progress({
   value,
   max = 100,
@@ -25,25 +26,30 @@ export function Progress({
   className,
 }: ProgressProps) {
   const percent = value === null ? null : Math.min(100, Math.max(0, (value / max) * 100));
+  const state = percent === null ? 'indeterminate' : percent >= 100 ? 'complete' : 'loading';
   return (
-    <Primitive.Root
-      value={value}
-      max={max}
+    <div
+      role="progressbar"
       aria-label={label}
-      getValueLabel={valueText ? () => valueText : undefined}
+      aria-valuemin={0}
+      aria-valuemax={max}
+      aria-valuenow={value ?? undefined}
+      aria-valuetext={percent === null ? undefined : (valueText ?? `${Math.round(percent)}%`)}
+      data-state={state}
       className={cn(
         'relative w-full overflow-hidden rounded-full bg-track',
         size === 'sm' ? 'h-1' : 'h-2',
         className,
       )}
     >
-      <Primitive.Indicator
+      <div
+        data-state={state}
         className={cn(
           'h-full rounded-full bg-accent transition-transform duration-(--duration-page) ease-(--ease-enter)',
           percent === null && 'w-1/3 animate-[loading-bar_1.2s_var(--ease-curtain)_infinite]',
         )}
         style={percent === null ? undefined : { transform: `translateX(-${100 - percent}%)` }}
       />
-    </Primitive.Root>
+    </div>
   );
 }
