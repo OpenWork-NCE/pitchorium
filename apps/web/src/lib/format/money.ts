@@ -72,3 +72,16 @@ export function formatMoney(
     toDecimalString(money),
   );
 }
+
+/**
+ * A graduation of a chart axis in minor units, short (« 3 k€ », « 1,5 M F CFA »): a reading mark,
+ * formatted from its exact decimal text, never an amount of the api.
+ */
+export function formatCompactMoney(amountMinor: number, currency: string, locale: string): string {
+  return new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency,
+    notation: 'compact',
+    maximumFractionDigits: 1,
+  }).format(toDecimalString({ amountMinor: String(amountMinor), currency }));
+}

@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { formatMoney, minorStep, moneyFormatOptions, toDecimalString, toMajor } from './money';
+import {
+  formatCompactMoney,
+  formatMoney,
+  minorStep,
+  moneyFormatOptions,
+  toDecimalString,
+  toMajor,
+} from './money';
 
 const format = (locale: string, amountMinor: string, currency: string) =>
   new Intl.NumberFormat(locale, moneyFormatOptions(currency)).format(
@@ -44,5 +51,15 @@ describe('money', () => {
   it('steps counters by the minor unit', () => {
     expect(minorStep('XOF')).toBe(1);
     expect(minorStep('EUR')).toBe(0.01);
+  });
+});
+
+describe('formatCompactMoney', () => {
+  const plain = (text: string) => text.replace(/\s/g, ' ');
+  it('writes a graduation in minor units shortly, in the currency of the chart', () => {
+    expect(plain(formatCompactMoney(300_000, 'EUR', 'fr-FR'))).toBe('3 k €');
+    expect(plain(formatCompactMoney(150_000, 'EUR', 'en-GB'))).toBe('€1.5k');
+    expect(plain(formatCompactMoney(0, 'EUR', 'fr-FR'))).toBe('0 €');
+    expect(plain(formatCompactMoney(2_000_000, 'XAF', 'fr-FR'))).toBe('2 M FCFA');
   });
 });

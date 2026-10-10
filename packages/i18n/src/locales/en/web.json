@@ -2987,10 +2987,12 @@
     },
     "chart": {
       "title": "Euros given over twelve months",
-      "tableCaption": "Euros given per month",
       "month": "Month",
       "given": "Given",
-      "bar": "{{month}}: {{amount}}"
+      "summary": "{{total}} given over {{count}} months · peak in {{month}}: {{amount}}",
+      "emptyTitle": "No contribution over the last {{count}} months",
+      "emptyDescription": "The euros given to projects will appear here, month by month, from the first paid contribution.",
+      "discover": "Discover projects"
     },
     "history": {
       "download": "Download the history (CSV)",

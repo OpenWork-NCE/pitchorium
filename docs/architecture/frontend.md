@@ -103,7 +103,7 @@ sequenceDiagram
 ## Engagement (PROMPT FRONT 5B)
 
 - Pages : `/dashboard` (menu du compte et panneau du téléphone ; tableau de bord du membre, ou d'une organisation qu'il dirige par `?organization=<slug>`, ADR 0141) et `/dashboard/time` (journal du temps partagé), dans `(app)`.
-- Feature `engagement` : chiffres clés comptés en unités mineures, graphique SVG rendu par le serveur depuis la série mensuelle de l'api (`lib/chart.ts`, testé), historique CSV, journal du temps (déclaration, confirmation, contestation) ; « Mes contributions » et les contributions hors plateforme du membre viennent de la feature `payments`, composées par la page.
+- Feature `engagement` : chiffres clés comptés en unités mineures, graphique en barres du design system (`BarChart`, ADR 0144) sur la série mensuelle de l'api, résumé par le total des douze mois de l'api (`givenLastTwelveMonths`) et le mois du pic, état vide qui mène aux projets, historique CSV, journal du temps (déclaration, confirmation, contestation) ; « Mes contributions » et les contributions hors plateforme du membre viennent de la feature `payments`, composées par la page.
 
 ## Fournisseurs
 

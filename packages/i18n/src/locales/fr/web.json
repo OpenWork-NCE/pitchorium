@@ -2987,10 +2987,12 @@
     },
     "chart": {
       "title": "Euros versés sur douze mois",
-      "tableCaption": "Euros versés par mois",
       "month": "Mois",
       "given": "Versé",
-      "bar": "{{month}} : {{amount}}"
+      "summary": "{{total}} versés sur {{count}} mois · pic en {{month}} : {{amount}}",
+      "emptyTitle": "Aucune contribution sur les {{count}} derniers mois",
+      "emptyDescription": "Les euros versés à des projets apparaîtront ici, mois par mois, dès la première contribution payée.",
+      "discover": "Découvrir des projets"
     },
     "history": {
       "download": "Télécharger l’historique (CSV)",

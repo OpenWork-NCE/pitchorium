@@ -34,6 +34,7 @@ export async function EngagementDashboard({
   children?: ReactNode;
 }) {
   const t = await getTranslations('web.engagement.dashboard');
+  const chart = await getTranslations('web.engagement.chart');
   const statuses = await getTranslations('reference.projectStatuses');
   const member = organizationId === null;
   return (
@@ -47,8 +48,11 @@ export async function EngagementDashboard({
           </Link>
         </p>
       ) : null}
-      <Card className="grid gap-5">
-        <EngagementChart monthly={dashboard.monthly} />
+      <Card role="region" aria-labelledby="engagement-chart" className="grid gap-5">
+        <Heading level={2} size="card" id="engagement-chart">
+          {chart('title')}
+        </Heading>
+        <EngagementChart monthly={dashboard.monthly} total={dashboard.givenLastTwelveMonths} />
         <HistoryDownload organizationId={organizationId} />
       </Card>
       <section aria-labelledby="supported-projects" className="grid gap-4">

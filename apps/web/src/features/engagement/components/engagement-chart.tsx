@@ -1,86 +1,68 @@
+'use client';
+
 import type { ImpactDashboard } from '@pitchorium/contracts';
-import { getLocale, getTranslations } from 'next-intl/server';
-import { formatMoney } from '@/lib/format/money';
-import { chartBars } from '../lib/chart';
+import { useLocale, useTranslations } from 'next-intl';
+import { BarChart, Button, Link } from '@/components/ui';
+import { peakIndex } from '@/components/ui/chart-scale';
+import { routes } from '@/config/routes';
+import { formatCompactMoney, formatMoney } from '@/lib/format/money';
+import { monthlyValues } from '../lib/chart';
 
 /**
- * The money given over the last twelve months (section 9.4), an SVG drawn by the server from the
- * series of the api, without any charting library: one bar per month in the accent colour, its
- * value in a table read by screen readers and in the title of each bar.
+ * The money given over the last twelve months (section 9.4, ADR 0144): the total of the api and
+ * the month of the peak above the chart, the months on the horizontal axis, round amounts on the
+ * vertical one, the amount of each month on hover and focus; an empty state with the way to the
+ * projects when nothing was given. The card around it carries the title.
  */
-export async function EngagementChart({ monthly }: { monthly: ImpactDashboard['monthly'] }) {
-  const t = await getTranslations('web.engagement.chart');
-  const locale = await getLocale();
-  const bars = chartBars(monthly);
-  const label = (month: string) =>
-    new Intl.DateTimeFormat(locale, { month: 'short', timeZone: 'UTC' }).format(
+export function EngagementChart({
+  monthly,
+  total,
+}: {
+  monthly: ImpactDashboard['monthly'];
+  /** Net euros of the twelve months, from the api. */
+  total: ImpactDashboard['givenLastTwelveMonths'];
+}) {
+  const t = useTranslations('web.engagement.chart');
+  const locale = useLocale();
+  const date = (month: string, options: Intl.DateTimeFormatOptions) =>
+    new Intl.DateTimeFormat(locale, { ...options, timeZone: 'UTC' }).format(
       new Date(`${month}-01T00:00:00Z`),
     );
-  const long = (month: string) =>
-    new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric', timeZone: 'UTC' }).format(
-      new Date(`${month}-01T00:00:00Z`),
-    );
-  const width = 100 / Math.max(bars.length, 1);
+  const values = monthlyValues(monthly);
+  const data = monthly.map((entry, index) => ({
+    key: entry.month,
+    value: values[index]!,
+    label: date(entry.month, { month: 'short' }),
+    description: date(entry.month, { month: 'long', year: 'numeric' }),
+    formatted: formatMoney(entry.given, locale),
+  }));
+  const peak = peakIndex(values);
+  const currency = monthly[0]?.given.currency ?? total.currency;
   return (
-    <figure className="grid gap-3" aria-labelledby="engagement-chart-title">
-      <figcaption id="engagement-chart-title" className="text-sm font-medium">
-        {t('title')}
-      </figcaption>
-      <svg
-        viewBox="0 0 100 40"
-        preserveAspectRatio="none"
-        className="h-40 w-full text-accent"
-        aria-hidden
-        data-testid="engagement-chart"
-      >
-        <line x1="0" y1="39.75" x2="100" y2="39.75" className="stroke-border" strokeWidth="0.5" />
-        {bars.map((bar, index) => {
-          const height = (bar.height / 100) * 38;
-          return (
-            <rect
-              key={bar.month}
-              x={index * width + width * 0.2}
-              y={39.5 - height}
-              width={width * 0.6}
-              height={height}
-              rx="0.6"
-              className="fill-current"
-            >
-              <title>
-                {t('bar', { month: long(bar.month), amount: formatMoney(bar.given, locale) })}
-              </title>
-            </rect>
-          );
-        })}
-      </svg>
-      <div
-        className="grid text-xs text-muted"
-        style={{ gridTemplateColumns: `repeat(${bars.length}, minmax(0, 1fr))` }}
-        aria-hidden
-      >
-        {bars.map((bar) => (
-          <span key={bar.month} className="text-center">
-            {label(bar.month)}
-          </span>
-        ))}
-      </div>
-      <table className="sr-only">
-        <caption>{t('tableCaption')}</caption>
-        <thead>
-          <tr>
-            <th scope="col">{t('month')}</th>
-            <th scope="col">{t('given')}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {bars.map((bar) => (
-            <tr key={bar.month}>
-              <th scope="row">{long(bar.month)}</th>
-              <td>{formatMoney(bar.given, locale, 'financial')}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </figure>
+    <BarChart
+      data={data}
+      title={t('title')}
+      summary={
+        peak === -1
+          ? null
+          : t('summary', {
+              total: formatMoney(total, locale),
+              count: monthly.length,
+              month: data[peak]!.description,
+              amount: data[peak]!.formatted,
+            })
+      }
+      formatTick={(value) => formatCompactMoney(value, currency, locale)}
+      columns={{ category: t('month'), value: t('given') }}
+      empty={{
+        title: t('emptyTitle', { count: monthly.length }),
+        description: t('emptyDescription'),
+        action: (
+          <Button asChild variant="primary" size="sm">
+            <Link href={routes.projects}>{t('discover')}</Link>
+          </Button>
+        ),
+      }}
+    />
   );
 }
