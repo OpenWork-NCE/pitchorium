@@ -2607,7 +2607,8 @@
         "slow": "La confirmation prend plus de temps que prévu. Rien n’est perdu : vous pouvez vérifier à nouveau ou revenir plus tard.",
         "amount": "Montant : {{amount}}",
         "later": "Vous pouvez quitter cette page : le paiement suit son cours et son état apparaîtra dans vos contributions.",
-        "checkAgain": "Vérifier à nouveau"
+        "checkAgain": "Vérifier à nouveau",
+        "seeLater": "Voir cette contribution"
       },
       "paid": {
         "title": "Merci, votre contribution est confirmée",
@@ -2895,6 +2896,71 @@
           "team": "Le porteur n’a pas encore de compte de versement couvert : les contributions en ligne ne sont pas ouvertes."
         }
       }
+    },
+    "mine": {
+      "title": "Mes contributions",
+      "filter": "Statut",
+      "allStatuses": "Tous les statuts",
+      "equivalent": "soit {{amount}}",
+      "loading": "Chargement de vos contributions",
+      "unreadable": "Vos contributions n’ont pas pu être chargées.",
+      "emptyTitle": "Aucune contribution pour l’instant",
+      "emptyBody": "Vos contributions aux projets apparaîtront ici, avec leur statut.",
+      "emptyFiltered": "Aucune contribution ne correspond",
+      "emptyFilteredBody": "Choisissez un autre statut.",
+      "browse": "Découvrir les projets",
+      "offline": {
+        "title": "Contributions hors plateforme",
+        "description": "Celles que vous avez déclarées, et celles qu’une équipe a déclarées pour vous : confirmez-les ou refusez-les.",
+        "loading": "Chargement des contributions hors plateforme",
+        "unreadable": "Les contributions hors plateforme n’ont pas pu être chargées.",
+        "emptyTitle": "Aucune contribution hors plateforme",
+        "emptyBody": "Une contribution en espèces, un virement institutionnel, un engagement ou un mécénat de compétences déclaré apparaît ici."
+      }
+    },
+    "detail": {
+      "metaTitle": "Contribution",
+      "back": "Revenir au tableau de bord",
+      "title": "Contribution à {{title}}",
+      "project": "Voir le projet",
+      "kind": "Type",
+      "method": "Moyen de paiement",
+      "amount": "Montant payé",
+      "currency": "Devise",
+      "eurEquivalent": "Équivalent en euros",
+      "rate": "Taux appliqué",
+      "rateIdentity": "Paiement en euros",
+      "rate_fixed_parity": "Parité fixe : 1 € = {{rate}} {{currency}}",
+      "rate_provider": "1 € = {{rate}} {{currency}}, taux du prestataire verrouillé le {{at}}",
+      "rate_simulated": "1 € = {{rate}} {{currency}}, taux simulé verrouillé le {{at}}",
+      "commission": "Commission de Pitchorium",
+      "fee": "Frais du prestataire",
+      "feeUnknown": "Pas encore communiqués",
+      "refunded": "Remboursé",
+      "reward": "Contrepartie",
+      "display": "Affichage",
+      "public": "Dans la liste publique des soutiens",
+      "private": "Hors de la liste publique",
+      "anonymous": "Don anonyme",
+      "date": "Date",
+      "status": {
+        "pending_payment": "Le paiement attend la confirmation du prestataire.",
+        "succeeded": "Le paiement est confirmé et compte dans le montant collecté.",
+        "failed": "Le paiement n’a pas abouti ; rien n’a été prélevé.",
+        "expired": "La session de paiement a expiré ; rien n’a été prélevé.",
+        "canceled": "Le paiement a été abandonné ; rien n’a été prélevé.",
+        "partially_refunded": "Une partie du paiement vous a été remboursée.",
+        "refunded": "Le paiement vous a été remboursé en totalité.",
+        "disputed": "Un litige est ouvert sur ce paiement.",
+        "dispute_won": "Le litige a été tranché en faveur du porteur.",
+        "dispute_lost": "Le litige a été tranché en votre faveur."
+      },
+      "pendingUntil": "La session de paiement et son taux restent verrouillés jusqu’au {{at}}.",
+      "resume": "Reprendre le paiement",
+      "cancel": "Abandonner ce paiement",
+      "canceling": "Abandon en cours",
+      "lockExpired": "La session de paiement a expiré, et le taux verrouillé avec elle. Recommencez avec un nouveau devis : vos choix sont repris.",
+      "newQuote": "Demander un nouveau devis"
     }
   }
 }

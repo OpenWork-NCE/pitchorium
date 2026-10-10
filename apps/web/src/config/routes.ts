@@ -83,6 +83,12 @@ export const routes = {
    * the provider: `/contributions/<id>/return`.
    */
   contributionReturn: (id: string) => `/contributions/${encodeURIComponent(id)}/return`,
+  /** A contribution of the member: the quote applied, its status, « pas un reçu fiscal ». */
+  contribution: (id: string) => `/contributions/${encodeURIComponent(id)}`,
+  /** The engagement dashboard of the member, or of an organisation (`?organization=<slug>`). */
+  dashboard: '/dashboard',
+  /** The shared time log: hours of mentoring and expertise, declared and received (§6.3). */
+  timeLog: '/dashboard/time',
   // Contextual actions of the header, opened by their section (PROMPT FRONT 3 and 4).
   compose: '/feed?compose=1',
   // Administration (ADR 0078): `/admin/<domain>`.
@@ -94,6 +100,7 @@ export const routes = {
 
 export const MEMBER_SEGMENTS = [
   'contributions',
+  'dashboard',
   'feed',
   'network',
   'messages',

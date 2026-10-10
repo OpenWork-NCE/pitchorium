@@ -2607,7 +2607,8 @@
         "slow": "The confirmation takes longer than expected. Nothing is lost: you can check again or come back later.",
         "amount": "Amount: {{amount}}",
         "later": "You can leave this page: the payment goes on and its state will appear among your contributions.",
-        "checkAgain": "Check again"
+        "checkAgain": "Check again",
+        "seeLater": "See this contribution"
       },
       "paid": {
         "title": "Thank you, your contribution is confirmed",
@@ -2895,6 +2896,71 @@
           "team": "The holder has no covered payout account yet: online contributions are not open."
         }
       }
+    },
+    "mine": {
+      "title": "My contributions",
+      "filter": "Status",
+      "allStatuses": "All statuses",
+      "equivalent": "that is {{amount}}",
+      "loading": "Loading your contributions",
+      "unreadable": "Your contributions could not be loaded.",
+      "emptyTitle": "No contribution yet",
+      "emptyBody": "Your contributions to projects will show here, with their status.",
+      "emptyFiltered": "No contribution matches",
+      "emptyFilteredBody": "Choose another status.",
+      "browse": "Discover the projects",
+      "offline": {
+        "title": "Off-platform contributions",
+        "description": "Those you declared, and those a team declared for you: confirm or refuse them.",
+        "loading": "Loading the off-platform contributions",
+        "unreadable": "The off-platform contributions could not be loaded.",
+        "emptyTitle": "No off-platform contribution",
+        "emptyBody": "A declared cash contribution, institutional transfer, commitment or skills sponsorship shows here."
+      }
+    },
+    "detail": {
+      "metaTitle": "Contribution",
+      "back": "Back to the dashboard",
+      "title": "Contribution to {{title}}",
+      "project": "See the project",
+      "kind": "Kind",
+      "method": "Payment method",
+      "amount": "Amount paid",
+      "currency": "Currency",
+      "eurEquivalent": "Equivalent in euros",
+      "rate": "Rate applied",
+      "rateIdentity": "Paid in euros",
+      "rate_fixed_parity": "Fixed parity: €1 = {{rate}} {{currency}}",
+      "rate_provider": "€1 = {{rate}} {{currency}}, rate of the provider locked on {{at}}",
+      "rate_simulated": "€1 = {{rate}} {{currency}}, simulated rate locked on {{at}}",
+      "commission": "Pitchorium commission",
+      "fee": "Provider fees",
+      "feeUnknown": "Not given yet",
+      "refunded": "Refunded",
+      "reward": "Reward",
+      "display": "Display",
+      "public": "In the public list of supporters",
+      "private": "Out of the public list",
+      "anonymous": "Anonymous donation",
+      "date": "Date",
+      "status": {
+        "pending_payment": "The payment is waiting for the confirmation of the provider.",
+        "succeeded": "The payment is confirmed and counts in the amount collected.",
+        "failed": "The payment did not go through; nothing was charged.",
+        "expired": "The payment session expired; nothing was charged.",
+        "canceled": "The payment was abandoned; nothing was charged.",
+        "partially_refunded": "Part of the payment was refunded to you.",
+        "refunded": "The payment was refunded to you in full.",
+        "disputed": "A dispute is open on this payment.",
+        "dispute_won": "The dispute was settled in favour of the holder.",
+        "dispute_lost": "The dispute was settled in your favour."
+      },
+      "pendingUntil": "The payment session and its rate stay locked until {{at}}.",
+      "resume": "Resume the payment",
+      "cancel": "Abandon this payment",
+      "canceling": "Abandoning",
+      "lockExpired": "The payment session expired, and the locked rate with it. Start again with a new quote: your choices are kept.",
+      "newQuote": "Ask for a new quote"
     }
   }
 }

@@ -229,6 +229,9 @@ export function ContributionReturn({
             {t('pending.checkAgain')}
           </Button>
         ) : null}
+        <Button asChild variant="outline">
+          <Link href={routes.contribution(contribution.id)}>{t('pending.seeLater')}</Link>
+        </Button>
         <Button asChild variant="ghost">
           <Link href={routes.project(project.slug)}>{t('backToProject')}</Link>
         </Button>
