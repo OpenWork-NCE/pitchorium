@@ -16748,6 +16748,10 @@ export type ProjectsControllerShowcaseParams = {
   minImpact?: number;
   featured?: ProjectsControllerShowcaseFeatured;
   sort?: ProjectsControllerShowcaseSort;
+  /**
+   * @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$
+   */
+  memberHandle?: string;
 };
 
 export type ProjectsControllerShowcaseStatus =
@@ -16802,6 +16806,10 @@ export type ProjectsControllerPublicShowcaseParams = {
   minImpact?: number;
   featured?: ProjectsControllerPublicShowcaseFeatured;
   sort?: ProjectsControllerPublicShowcaseSort;
+  /**
+   * @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$
+   */
+  memberHandle?: string;
 };
 
 export type ProjectsControllerPublicShowcaseStatus =

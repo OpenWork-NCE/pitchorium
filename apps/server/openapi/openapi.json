@@ -14093,6 +14093,15 @@
                 "ending_soon"
               ]
             }
+          },
+          {
+            "name": "memberHandle",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "pattern": "^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$",
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -14376,6 +14385,15 @@
                 "recent",
                 "ending_soon"
               ]
+            }
+          },
+          {
+            "name": "memberHandle",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "pattern": "^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$",
+              "type": "string"
             }
           }
         ],

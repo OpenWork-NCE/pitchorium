@@ -233,6 +233,8 @@ export const projectShowcaseQuerySchema = cursorPageQuerySchema.extend({
     .transform((value) => value === 'true')
     .optional(),
   sort: projectSortSchema.default('recent'),
+  /** Projects whose public team counts this member (active, display consented): their profile. */
+  memberHandle: handleSchema.optional(),
 });
 
 export const projectIdParamsSchema = z.object({ projectId: uuidV7Schema });

@@ -37,6 +37,8 @@ export interface ShowcaseFilter {
   /** Ignored by the caller when no methodology is published. */
   minImpact?: number;
   featured?: boolean;
+  /** An active member of the team who consented to the public display (ADR 0040). */
+  teamMemberId?: string;
   sort: ProjectSort;
 }
 

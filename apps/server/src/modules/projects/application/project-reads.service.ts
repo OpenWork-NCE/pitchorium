@@ -139,6 +139,11 @@ export class ProjectReadsService {
     if (query.minImpact !== undefined && (await this.impact.publishedMethodology())) {
       filter.minImpact = query.minImpact;
     }
+    if (query.memberHandle) {
+      const memberId = await this.profiles.userIdOf(query.memberHandle);
+      if (!memberId) return { items: [], nextCursor: null };
+      filter.teamMemberId = memberId;
+    }
     const cursor = query.cursor ? decodeCursor(query.cursor) : null;
     const after = cursor ? keysetFrom(cursor) : null;
     const rows = await this.projects.showcase(filter, after, query.limit + 1);

@@ -44,7 +44,7 @@ Rôles `owner` et `editor`, fonction affichée. Invitation par identifiant publi
 
 ## Vitrine et lecture publique
 
-- Vitrine paginée par curseur : projets publiés, visibles et non supprimés ; filtres `countryCode`, `sectorCode`, `status`, `minImpact`, `featured` ; tris `recent` (publication) et `ending_soon` (fin la plus proche, projets ouverts). La recherche plein texte relève du module discovery.
+- Vitrine paginée par curseur : projets publiés, visibles et non supprimés ; filtres `countryCode`, `sectorCode`, `status`, `minImpact`, `featured`, `memberHandle` (projets dont l'équipe publique compte ce membre, actif et consentant : la section « Projets » de son profil) ; tris `recent` (publication) et `ending_soon` (fin la plus proche, projets ouverts). La recherche plein texte relève du module discovery.
 - Page (§11.2) : bloc principal, financement (collecté, objectif, progression, jours restants, instruments), résumé, histoire, vidéo, galerie, paliers avec leur état, contreparties avec leur disponibilité, dernières actualités, équipe, impact avec la mention auto-déclarée, champs de partage (`share`), état du lecteur (`viewer`) et données de gestion pour l'équipe (`management`). Documents listés aux membres connectés.
 - Mise en avant éditoriale par un `moderator` ou un `admin`, par l'interface unique de l'administration (`/v1/admin/highlights/project/{projectId}`, `ProjectsFacade.setProjectFeatured`, auditée). `moderation_status` (`visible`, `hidden`, `removed`) sur les projets et les actualités, modifiable par la façade (module trust).
 

@@ -248,6 +248,14 @@ export class DrizzleProjectsRepository extends ProjectRepository {
     }
     if (filter.featured === true) conditions.push(sql`${projectsProjects.featuredAt} is not null`);
     if (filter.featured === false) conditions.push(isNull(projectsProjects.featuredAt));
+    if (filter.teamMemberId) {
+      conditions.push(
+        sql`exists (select 1 from ${projectsTeamMembers} where ${projectsTeamMembers.projectId} = ${projectsProjects.id}
+          and ${projectsTeamMembers.userId} = ${filter.teamMemberId}
+          and ${projectsTeamMembers.status} = 'active'
+          and ${projectsTeamMembers.publicDisplayConsentAt} is not null)`,
+      );
+    }
     if (filter.sort === 'ending_soon') {
       // Open projects only, the nearest end first.
       conditions.push(inArray(projectsProjects.status, ['funding', 'funded']));

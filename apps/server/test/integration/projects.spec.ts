@@ -570,6 +570,10 @@ describe('projects', () => {
     expect(await ids('/v1/projects?sort=ending_soon')).toEqual([ghana.id, senegal.id]);
     // Without a published methodology, the impact filter is ignored.
     expect(await ids('/v1/projects?minImpact=70')).toEqual([ghana.id, senegal.id]);
+    // The projects of a member: those whose public team counts them (the publisher consented).
+    expect(await ids('/v1/projects?memberHandle=awa-ndiaye')).toEqual([ghana.id]);
+    expect(await ids('/v1/projects?memberHandle=kofi-mensah')).toEqual([]);
+    expect(await ids('/v1/projects?memberHandle=nobody-here')).toEqual([]);
     const firstPage = await kofi.agent.get('/v1/projects?limit=1').expect(200);
     expect(firstPage.body.nextCursor).not.toBeNull();
     expect(await ids(`/v1/projects?limit=1&cursor=${firstPage.body.nextCursor as string}`)).toEqual(
