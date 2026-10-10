@@ -6,6 +6,11 @@ test.beforeEach(async ({ request }) => {
   await stub(request).reset();
 });
 
+// A journey that withdraws the methodology or writes leaves nothing to the files after it.
+test.afterEach(async ({ request }) => {
+  await stub(request).reset();
+});
+
 /** The page of a project (§11.2, PROMPT FRONT 5A) on the stub api, in every state. */
 test.describe('the page of a project', () => {
   test('gives a visitor its funding, tiers, rewards, structured data and share links', async ({

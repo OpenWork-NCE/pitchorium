@@ -1,4 +1,4 @@
-import { expect, signIn, test } from './support/fixtures';
+import { expect, signIn, stub, test } from './support/fixtures';
 
 /**
  * Reference screenshots of the provisional home page, compared in the official Playwright image
@@ -8,6 +8,11 @@ test.skip(
   !process.env.PLAYWRIGHT_IMAGE,
   'Screenshots compare in the Playwright image only (pnpm --filter @pitchorium/web test:e2e).',
 );
+
+// Every screenshot from the initial state of the stub api, whatever the journeys before it did.
+test.beforeEach(async ({ request }) => {
+  await stub(request).reset();
+});
 
 const VIEWPORTS = [
   { name: 'desktop', width: 1280, height: 800 },
@@ -91,6 +96,19 @@ for (const resource of RESOURCE_PAGES) {
         await page.goto(resource.path);
         await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
         await page.evaluate(() => document.fonts.ready);
+        await page.waitForLoadState('networkidle');
+        await expect(page.locator('main [aria-busy="true"]')).toHaveCount(0);
+        // Images loaded on approach (gallery, updates): all of them, so that the page is complete.
+        await page.evaluate(async () => {
+          for (const image of document.querySelectorAll('img')) image.loading = 'eager';
+          await Promise.all(
+            [...document.images].map((image) =>
+              image.complete
+                ? Promise.resolve()
+                : new Promise((resolve) => (image.onload = image.onerror = resolve)),
+            ),
+          );
+        });
         await expect(page).toHaveScreenshot(
           `${resource.name}-${viewport.name}-${colorScheme}.png`,
           { fullPage: true },
