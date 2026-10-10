@@ -602,7 +602,9 @@ test.describe('the feed of a demonstration member', () => {
 
   test('a mention of a member opens their page from the publication', async ({ page }) => {
     await signInWithPassword(page, 'kofi.mensah@demo.pitchorium.test', 'pitchorium-demo-2026');
-    await page.waitForURL(/\/fr\//);
+    // The feed, not any page of /fr/: the sign-in page matches that too, and a profile opened
+    // before the session would render for a visitor (ADR 0142).
+    await page.waitForURL(/\/fr\/feed/);
     await page.goto('/fr/members/aissatou-ba');
     await hydrated(page);
     const activity = page.getByRole('region', { name: 'Activité' });

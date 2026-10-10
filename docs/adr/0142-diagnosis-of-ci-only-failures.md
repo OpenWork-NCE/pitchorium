@@ -17,3 +17,4 @@ Des parcours du niveau 3 échouaient en CI et passaient sur le poste (Firefox : 
 
 - Un échec propre à la CI se lit dans une trace du runner, pas dans une hypothèse.
 - Le workflow coûte des minutes de CI : il ne tourne qu'à la main.
+- Premier cas (2026-10-10) : le détail des erreurs a montré `MISSING_MESSAGE: web.profile.edit (fr)` et la trace du runner l'ordre des requêtes (1 échec sur 30 sous Firefox). Le parcours de la mention attendait une adresse `/fr/…` que la page de connexion satisfait déjà : le profil s'ouvrait avant la réponse de la connexion, rendu pour un visiteur, puis les requêtes suivantes, avec la session, rendaient l'éditeur du propriétaire dans les messages du visiteur. Correction : attendre le fil, comme les autres parcours.
