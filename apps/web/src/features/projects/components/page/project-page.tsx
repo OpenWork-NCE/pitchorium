@@ -1,5 +1,6 @@
 import type { FollowState, Locale, Project } from '@pitchorium/contracts';
 import { getTranslations } from 'next-intl/server';
+import type { ReactNode } from 'react';
 import { Alert, Button, ImpactBadge } from '@/components/ui';
 import { routes } from '@/config/routes';
 import { ActivitySection, ImageGallery } from '@/features/content';
@@ -42,6 +43,11 @@ export interface ProjectPageProps {
   follow: FollowState | null;
   /** The franc of the reader at its fixed parity (ADR 0130), null otherwise. */
   parity: FixedParity | null;
+  /**
+   * « Contribuer » (payments feature, ADR 0136), composed by the route: in the funding block,
+   * shown first on a phone, and its short form in the action bar of a phone.
+   */
+  contribute?: { block: ReactNode; bar: ReactNode } | null;
 }
 
 /**
@@ -58,6 +64,7 @@ export async function ProjectPage({
   path,
   follow,
   parity,
+  contribute = null,
 }: ProjectPageProps) {
   const t = await getTranslations('web.projects.page');
   const funding = await getTranslations('web.projects.funding');
@@ -94,7 +101,8 @@ export async function ProjectPage({
     ) : null;
   const visitorAction =
     view === 'visitor' ? (
-      <Button asChild>
+      // One main action per view: « Contribuer » when the route gives it.
+      <Button asChild variant={contribute ? 'secondary' : 'primary'}>
         <Link href={withRedirect(routes.signIn, path)}>{t('joinToFollow')}</Link>
       </Button>
     ) : null;
@@ -159,6 +167,7 @@ export async function ProjectPage({
             actions={
               draft ? null : (
                 <div className="grid gap-4">
+                  {contribute?.block}
                   {/* On a phone, the action bar holds them. */}
                   <div className="hidden lg:grid">{memberActions ?? visitorAction}</div>
                   <ShareActions url={url} title={project.title} />
@@ -203,6 +212,7 @@ export async function ProjectPage({
       </div>
       {draft || view === 'preview' ? null : (
         <MobileActionBar summary={summary} label={t('actionBar')}>
+          {contribute?.bar}
           {memberActions ? (
             <LazyMemberActions
               project={{ id: project.id, title: project.title }}

@@ -3,6 +3,7 @@
 import type { FollowState } from '@pitchorium/contracts';
 import { HandCoins } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { lazy, Suspense, useState } from 'react';
 import { Button } from '@/components/ui';
 import { FollowButton } from '@/features/network';
@@ -11,8 +12,9 @@ const InterestDialog = lazy(() => import('./interest-dialog'));
 
 /**
  * What a member does on the page of a project (§11.2): follow it, its updates then reaching their
- * feed, and express an interest (grant, honour loan, stake, contact). « Contribuer » and
- * « Contacter » come with their prompts (FRONT 5B and 6).
+ * feed, and express an interest (grant, honour loan, stake, contact). The interest also opens from
+ * the address (`?interest=1`), where the journey of a contribution sends an instrument that is
+ * never paid online (§9.1). « Contacter » comes with its prompt (FRONT 6).
  */
 export function MemberActions({
   project,
@@ -27,6 +29,19 @@ export function MemberActions({
   const t = useTranslations('web.projects.actions');
   const [open, setOpen] = useState(false);
   const [opened, setOpened] = useState(false);
+  const params = useSearchParams();
+  const router = useRouter();
+  // Asked from the address (one instance only: the block of the page); closing it leaves the
+  // address without the parameter.
+  const asked = layout === 'stack' && params.get('interest') !== null;
+  function change(next: boolean) {
+    setOpen(next);
+    if (next || !asked) return;
+    const query = new URLSearchParams(params.toString());
+    query.delete('interest');
+    const rest = query.toString();
+    router.replace(`${window.location.pathname}${rest ? `?${rest}` : ''}`, { scroll: false });
+  }
   return (
     <div
       className={
@@ -47,13 +62,13 @@ export function MemberActions({
         <HandCoins aria-hidden />
         {t('interest')}
       </Button>
-      {opened ? (
+      {opened || asked ? (
         <Suspense fallback={null}>
           <InterestDialog
             projectId={project.id}
             projectTitle={project.title}
-            open={open}
-            onOpenChange={setOpen}
+            open={open || asked}
+            onOpenChange={change}
           />
         </Suspense>
       ) : null}
