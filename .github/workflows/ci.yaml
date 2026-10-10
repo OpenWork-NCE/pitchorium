@@ -108,6 +108,15 @@ jobs:
       - uses: actions/checkout@v7.0.1
       - uses: ./.github/actions/setup
       - run: pnpm turbo run test:e2e --filter=@pitchorium/server
+        env:
+          TMPDIR: ${{ runner.temp }}
+      # Logs of the seed, the api and the worker of the scenarios.
+      - if: failure()
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: api-e2e-logs
+          path: ${{ runner.temp }}/pitchorium-e2e-*
+          if-no-files-found: ignore
 
   build:
     needs: changes

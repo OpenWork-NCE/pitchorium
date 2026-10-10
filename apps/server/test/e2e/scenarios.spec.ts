@@ -64,28 +64,30 @@ async function newMember(name: string): Promise<Browser & { email: string; handl
  */
 async function workerIdle(): Promise<void> {
   const redis = new Redis(inject('redisUrl'));
-  const business = (ids: string[]) => ids.filter((id) => !id.startsWith('repeat:')).length;
+  const business = (key: string, ids: string[]) =>
+    ids.filter((id) => !id.startsWith('repeat:')).map((id) => `${key.split(':')[1]}:${id}`);
   try {
     let quiet = 0;
+    // What is still busy is returned, so that a timeout says what kept the worker busy.
     await eventually(
       async () => {
-        const [outbox] = await query<{ pending: string }>(
-          'SELECT count(*) AS pending FROM platform.outbox_events WHERE published_at IS NULL',
+        const pending = await query<{ type: string }>(
+          'SELECT event_type AS type FROM platform.outbox_events WHERE published_at IS NULL',
         );
-        let jobs = 0;
+        const jobs: string[] = [];
         for (const key of await redis.keys('e2e:*:wait')) {
-          jobs += business(await redis.lrange(key, 0, -1));
+          jobs.push(...business(key, await redis.lrange(key, 0, -1)));
         }
         for (const key of await redis.keys('e2e:*:active')) {
-          jobs += business(await redis.lrange(key, 0, -1));
+          jobs.push(...business(key, await redis.lrange(key, 0, -1)));
         }
         for (const key of await redis.keys('e2e:*:prioritized')) {
-          jobs += business(await redis.zrange(key, '0', '-1'));
+          jobs.push(...business(key, await redis.zrange(key, '0', '-1')));
         }
-        quiet = Number(outbox?.pending) === 0 && jobs === 0 ? quiet + 1 : 0;
-        return quiet;
+        quiet = pending.length === 0 && jobs.length === 0 ? quiet + 1 : 0;
+        return { quiet, pending: pending.map(({ type }) => type), jobs };
       },
-      (count) => count >= 2,
+      ({ quiet: count }) => count >= 2,
     );
   } finally {
     redis.disconnect();
