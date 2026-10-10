@@ -37,10 +37,10 @@ const pathOf = (href: string) => href.split(/[?#]/)[0]!.replace(/(.)\/$/, '$1');
 
 const leadsToAPage = (href: string) => PATTERNS.some((pattern) => pattern.test(pathOf(href)));
 
-/** Every address of `routes`, a resource address with a sample key. */
+/** Every address of `routes`, a resource address with a sample key for each of its parts. */
 const ROUTES = Object.entries(routes).map(([name, value]) => ({
   name,
-  href: typeof value === 'function' ? value('sample-key') : value,
+  href: typeof value === 'function' ? value('sample-key', 'sample-key') : value,
 }));
 
 /** Source files of the app, stories and tests left out. */

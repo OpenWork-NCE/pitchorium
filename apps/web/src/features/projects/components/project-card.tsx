@@ -1,6 +1,6 @@
 import type { ProjectCard as ProjectCardData, ProjectTier } from '@pitchorium/contracts';
 import { ArrowRight } from 'lucide-react';
-import Image from 'next/image';
+import { getImageProps } from 'next/image';
 import { useLocale, useTranslations } from 'next-intl';
 import { Badge, Button, Card, FundingProgress, Heading, ImpactBadge, Text } from '@/components/ui';
 import { routes } from '@/config/routes';
@@ -68,12 +68,17 @@ export function ProjectCard({
           className="absolute inset-0 bg-[url(/brand/overlay-desktop.svg)] bg-cover bg-center dark:brightness-[2.6]"
         />
         {project.coverImageUrl ? (
-          <Image
-            src={project.coverImageUrl}
-            alt=""
-            fill
-            sizes={compact ? '320px' : '(min-width: 1024px) 640px, 100vw'}
-            className="object-cover"
+          // The props of next/image without its client component: a grid rendered by the server
+          // ships no code for its images (ADR 0094).
+          // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
+          <img
+            {...getImageProps({
+              src: project.coverImageUrl,
+              alt: '',
+              fill: true,
+              sizes: compact ? '320px' : '(min-width: 1024px) 640px, 100vw',
+              className: 'object-cover',
+            }).props}
           />
         ) : null}
       </div>

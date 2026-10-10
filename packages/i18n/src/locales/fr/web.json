@@ -484,6 +484,553 @@
     "card": {
       "funding": "Financement de {{title}}",
       "view": "Voir le projet"
+    },
+    "page": {
+      "carriedBy": "Porté par",
+      "organization": "Organisation porteuse",
+      "methodology": "Voir la méthodologie de l’impact",
+      "joinToFollow": "Se connecter pour suivre le projet",
+      "previewTitle": "Aperçu",
+      "previewBody": "La page exactement telle qu’un visiteur la verra une fois le projet publié. Seule l’équipe la voit.",
+      "draftTitle": "Brouillon",
+      "draftBody": "Ce projet n’est pas publié : seule son équipe voit cette page.",
+      "teamNav": "Outils de l’équipe",
+      "manage": "Gérer le projet",
+      "edit": "Modifier le projet",
+      "fundingColumn": "Financement et actions",
+      "story": "Histoire",
+      "impactArea": "Zone d’impact : {{area}}",
+      "video": "Vidéo",
+      "gallery": "Galerie",
+      "posts": "Publications rattachées",
+      "actionBar": "Actions du projet"
+    },
+    "funding": {
+      "title": "Financement",
+      "progress": "Financement de {{title}}",
+      "goalUnset": "L’objectif de la campagne n’est pas encore défini.",
+      "duration": {
+        "one": "Campagne de {{count}} jour à la publication",
+        "other": "Campagne de {{count}} jours à la publication"
+      },
+      "durationUnset": "Durée à définir",
+      "daysLeft": {
+        "one": "{{count}} jour restant",
+        "other": "{{count}} jours restants"
+      },
+      "lastDay": "Dernier jour de la campagne",
+      "endedFunded": "Campagne clôturée, objectif atteint",
+      "endedClosed": "Campagne clôturée",
+      "equivalent": "Soit {{collected}} collectés sur {{goal}}, équivalent indicatif à la parité fixe du franc CFA.",
+      "contributions": {
+        "one": "{{count}} contribution",
+        "other": "{{count}} contributions"
+      },
+      "goalReached": "Objectif atteint, la campagne reste ouverte",
+      "frozen": "Les contributions à ce projet sont suspendues par une décision de modération.",
+      "instruments": "Moyens acceptés",
+      "opensCapital": {
+        "title": "Nous ouvrons le capital",
+        "body": "Une intention seulement : aucun investissement ne se fait sur Pitchorium. Pour en parler, manifestez un intérêt pour une prise de participation : l’équipe vous répond directement."
+      },
+      "barDays": "{{percent}} % · {{days}}",
+      "barEnded": "{{percent}} % · {{outcome}}",
+      "barPercent": "{{percent}} % de l’objectif"
+    },
+    "tiers": {
+      "title": "Paliers",
+      "tier": "Palier {{position}}",
+      "reached": "Atteint",
+      "reachedOn": "Atteint le {{date}}",
+      "upcoming": "À venir",
+      "notAPromise": "Un palier atteint n’est pas une garantie de succès du projet. Les paliers atteints restent acquis à la fin de la campagne."
+    },
+    "rewards": {
+      "title": "Contreparties",
+      "from": "À partir de {{amount}}",
+      "soldOut": "Épuisée",
+      "left": {
+        "one": "{{count}} restante sur {{total}}",
+        "other": "{{count}} restantes sur {{total}}"
+      },
+      "unlimited": "Quantité illimitée",
+      "delivery": "Livraison estimée : {{date}}",
+      "loveMoney": "Le love money n’a pas de contrepartie matérielle : c’est un engagement de proches, suivi par les actualités du projet."
+    },
+    "team": {
+      "title": "Équipe"
+    },
+    "impact": {
+      "title": "Impact auto-déclaré",
+      "score": "Score de {{score}} sur 100, niveau {{level}}.",
+      "value": "{{value}} sur {{max}}",
+      "methodology": "Méthodologie en vigueur (version {{version}})"
+    },
+    "updates": {
+      "title": "Actualités",
+      "edited": "modifiée"
+    },
+    "documents": {
+      "title": "Documents",
+      "document": "Document {{index}}"
+    },
+    "video": {
+      "play": "Lire la vidéo de {{title}}",
+      "player": "Vidéo de {{title}} sur {{provider}}",
+      "notice": "Vidéo hébergée par {{provider}}, chargée seulement à la lecture, dans son mode respectueux de la vie privée."
+    },
+    "share": {
+      "title": "Partager",
+      "copy": "Copier le lien",
+      "copied": "Lien copié",
+      "native": "Partager…",
+      "whatsapp": "WhatsApp",
+      "linkedin": "LinkedIn",
+      "x": "X",
+      "newTab": "s’ouvre dans un nouvel onglet"
+    },
+    "actions": {
+      "interest": "Manifester un intérêt"
+    },
+    "interest": {
+      "title": "Manifester un intérêt",
+      "description": "Un message à l’équipe de {{title}}, sans engagement.",
+      "kind": "Votre intérêt",
+      "kinds": {
+        "grant": "Vous représentez un financeur qui accorde des subventions.",
+        "honor_loan": "Vous proposez un prêt d’honneur, convenu hors de Pitchorium.",
+        "equity": "Une prise de participation : une intention, aucun investissement en ligne.",
+        "general": "Une question, un partenariat, une mise en relation."
+      },
+      "message": "Message",
+      "amount": "Montant indicatif",
+      "amountHint": "Non engageant, en euros.",
+      "documents": "Documents (facultatif)",
+      "documentsLimits": "PDF, {{max}} au plus, lus par l’équipe seulement.",
+      "noPayment": "Aucun paiement : l’équipe reçoit votre message et vous répond directement.",
+      "submit": "Envoyer",
+      "sending": "Envoi en cours",
+      "waitUploads": "Patientez jusqu’à la fin de l’envoi des documents.",
+      "cancel": "Annuler",
+      "sent": "Votre intérêt a été envoyé à l’équipe."
+    },
+    "files": {
+      "uploadFailed": "L’envoi a échoué. Réessayez."
+    },
+    "showcase": {
+      "title": "Projets",
+      "description": "Les projets à impact d’Afrique et des Caraïbes : leur histoire, leur financement, leurs paliers et leur impact auto-déclaré.",
+      "lede": "Des entrepreneurs d’Afrique et des Caraïbes, des campagnes lisibles, un impact auto-déclaré.",
+      "featured": "Sélection de l’équipe",
+      "all_projects": "Tous les projets",
+      "filters": "Filtrer les projets",
+      "all": "Tous",
+      "country": "Pays",
+      "sector": "Secteur",
+      "status": "Statut",
+      "impact": "Impact minimum",
+      "impactAtLeast": "{{score}} et plus",
+      "sort": "Trier par",
+      "sorts": {
+        "recent": "Les plus récents",
+        "ending_soon": "Fin de campagne proche"
+      },
+      "reset": "Réinitialiser les filtres",
+      "empty": "Aucun projet publié pour l’instant",
+      "emptyBody": "Les projets apparaissent ici dès leur publication.",
+      "emptyFiltered": "Aucun projet ne correspond à ces filtres",
+      "emptyFilteredBody": "Élargissez la recherche : retirez un filtre ou réinitialisez-les.",
+      "error": "La vitrine n’a pas pu être chargée",
+      "errorBody": "Réessayez dans un instant.",
+      "moreError": "Les projets suivants n’ont pas pu être chargés. Réessayez."
+    },
+    "shareImage": {
+      "funding": "{{collected}} collectés sur {{goal}} · {{percent}} %"
+    },
+    "member": {
+      "title": "Projets"
+    },
+    "invitations": {
+      "title": "Invitations à rejoindre une équipe",
+      "invited": "{{name}} vous invite à rejoindre l’équipe comme {{role}}.",
+      "someone": "Un membre",
+      "consent": "J’accepte que mon nom, ma photo et mon titre soient affichés publiquement sur la page du projet",
+      "consentHint": "Cet affichage vaut même si votre profil personnel reste privé. Vous le retirez en quittant l’équipe.",
+      "consentRequired": "Cochez le consentement pour rejoindre l’équipe.",
+      "accept": "Rejoindre l’équipe",
+      "accepting": "Validation en cours",
+      "decline": "Refuser",
+      "declining": "Refus en cours",
+      "accepted": "Vous avez rejoint l’équipe de {{title}}.",
+      "declined": "Invitation à {{title}} refusée."
+    },
+    "images": {
+      "position": "Image {{index}}",
+      "moveUp": "Monter l’image {{index}}",
+      "moveDown": "Descendre l’image {{index}}",
+      "retry": "Renvoyer l’image {{index}}",
+      "remove": "Retirer l’image {{index}}",
+      "failed": "L’envoi a échoué. Réessayez.",
+      "alt": "Texte alternatif de l’image {{index}}",
+      "altHint": "Ce que montre l’image, pour qui ne la voit pas.",
+      "altMissing": "Sans texte alternatif : décrivez ce que montre l’image.",
+      "states": {
+        "compressing": "Allègement de {{name}}",
+        "sending": "Envoi de {{name}}",
+        "checking": "Vérification de {{name}}",
+        "ready": "{{name}} prête",
+        "rejected": "{{name}} refusée",
+        "failed": "Échec de l’envoi de {{name}}"
+      }
+    },
+    "editor": {
+      "creating": "Nouveau projet",
+      "editing": "Modifier {{title}}",
+      "stepsLabel": "Étapes du projet",
+      "position": "Étape {{current}} sur {{total}}",
+      "done": "terminée",
+      "previous": "Étape précédente",
+      "next": "Suivant : {{step}}",
+      "backToPage": "Revenir à la page du projet",
+      "networkFailure": "La connexion a échoué. Vérifiez le réseau, puis réessayez.",
+      "save": {
+        "saving": "Enregistrement…",
+        "saved": "Enregistré",
+        "error": "Enregistrement impossible, vos changements sont gardés ici"
+      },
+      "steps": {
+        "essentials": {
+          "short": "Essentiel",
+          "title": "L’essentiel du projet",
+          "description": "Son titre, son résumé, son secteur, ses pays et la zone qu’il touche. Le brouillon s’enregistre à mesure."
+        },
+        "story": {
+          "short": "Histoire",
+          "title": "L’histoire du projet",
+          "description": "Pourquoi ce projet, comment il avance, ce qu’il change. L’aperçu montre le texte tel que la page l’affichera."
+        },
+        "media": {
+          "short": "Médias",
+          "title": "Images, documents et vidéo",
+          "description": "La galerie, la première image servant de couverture, les documents réservés aux membres et une vidéo YouTube ou Vimeo."
+        },
+        "funding": {
+          "short": "Financement",
+          "title": "L’objectif et les paliers",
+          "description": "L’objectif en euros, la durée de la campagne et de 1 à 5 paliers cumulatifs avec l’usage de leurs fonds."
+        },
+        "rewards": {
+          "short": "Contreparties",
+          "title": "Les contreparties",
+          "description": "Ce que reçoivent les contributeurs à partir d’un montant. Une étape facultative."
+        },
+        "instruments": {
+          "short": "Instruments",
+          "title": "Les instruments acceptés",
+          "description": "Comment le projet peut être soutenu, et l’intention d’ouvrir son capital."
+        },
+        "impact": {
+          "short": "Impact",
+          "title": "L’impact auto-déclaré",
+          "description": "L’évaluation du projet selon la méthodologie en vigueur, préremplie depuis votre volet entrepreneur."
+        },
+        "team": {
+          "short": "Équipe",
+          "title": "L’équipe du projet",
+          "description": "Les membres qui portent le projet avec vous, leur rôle et leur fonction."
+        },
+        "preview": {
+          "short": "Aperçu",
+          "title": "L’aperçu de la page",
+          "description": "La page exactement telle qu’un visiteur la verra une fois le projet publié."
+        },
+        "publish": {
+          "short": "Publication",
+          "title": "Publier le projet",
+          "description": "Ce qui manque encore, le consentement à l’affichage public, puis la mise en ligne."
+        }
+      },
+      "fields": {
+        "title": "Titre du projet",
+        "summary": "Résumé",
+        "summaryHint": "Deux ou trois phrases : ce que fait le projet, pour qui.",
+        "sector": "Secteur",
+        "choose": "Choisir",
+        "countries": "Pays",
+        "countriesHint": "En Afrique ou dans les Caraïbes, dix au plus.",
+        "countriesPlaceholder": "Choisir des pays",
+        "impactArea": "Zone d’impact",
+        "impactAreaHint": "La région, la ville ou les communautés que le projet touche.",
+        "organization": "Organisation porteuse",
+        "organizationHint": "Parmi les organisations où vous êtes propriétaire ou administrateur.",
+        "noOrganization": "Aucune organisation",
+        "description": "Histoire",
+        "descriptionHint": "Titres, listes, emphase, citations et liens en https. Pas d’image ni de HTML."
+      },
+      "markdown": {
+        "tabs": "Écriture et aperçu",
+        "write": "Écrire",
+        "preview": "Aperçu",
+        "toolbar": "Mise en forme",
+        "help": "## pour un titre, **gras**, *italique*, - pour une liste, > pour une citation, [texte](https://…) pour un lien.",
+        "empty": "Rien à afficher pour l’instant.",
+        "actions": {
+          "h2": "Titre",
+          "h3": "Sous-titre",
+          "bold": "Gras",
+          "italic": "Italique",
+          "list": "Liste à puces",
+          "ordered": "Liste numérotée",
+          "quote": "Citation",
+          "link": "Lien"
+        }
+      },
+      "media": {
+        "gallery": "Galerie",
+        "galleryHint": "{{max}} images au plus, allégées avant l’envoi. La première sert de couverture.",
+        "addImages": "Ajouter des images",
+        "imageLimits": "JPEG, PNG ou WebP.",
+        "documents": "Documents",
+        "documentsHint": "Des PDF privés : seuls les membres connectés les consultent.",
+        "addDocuments": "Ajouter des documents",
+        "documentLimits": "PDF, {{max}} au plus.",
+        "document": "Document {{index}}",
+        "video": "Vidéo",
+        "videoHint": "Un lien YouTube ou Vimeo. La page ne charge la vidéo qu’à la lecture, dans son mode respectueux de la vie privée.",
+        "videoUrl": "Lien de la vidéo",
+        "videoAdd": "Ajouter la vidéo",
+        "videoReplace": "Remplacer la vidéo",
+        "videoSaving": "Vérification du lien",
+        "videoInvalid": "Ce lien n’est pas une vidéo YouTube ou Vimeo. Collez le lien de la page de la vidéo.",
+        "videoFailed": "La vidéo n’a pas pu être enregistrée. Réessayez.",
+        "videoPreview": "Aperçu sur la page",
+        "videoRemove": "Retirer la vidéo",
+        "videoPlaceholder": "https://www.youtube.com/watch?v=…"
+      },
+      "funding": {
+        "goal": "Objectif",
+        "goalHint": "En euros. Le dernier palier est l’objectif.",
+        "duration": "Durée de la campagne",
+        "durationHint": "En jours, de {{min}} à {{max}}, comptés à partir de la publication.",
+        "durationInvalid": "Indiquez une durée de 30 à 90 jours.",
+        "tiers": "Paliers",
+        "tiersHint": "De 1 à {{max}} paliers cumulatifs, chacun avec l’usage de ses fonds.",
+        "tier": "Palier {{position}}",
+        "removeTier": "Retirer le palier {{position}}",
+        "addTier": "Ajouter un palier",
+        "threshold": "Montant cumulé",
+        "thresholdHint": "Le total collecté qui débloque ce palier.",
+        "lastIsGoal": "Le dernier palier est l’objectif de la campagne.",
+        "use": "Usage des fonds",
+        "preview": "Aperçu de la progression",
+        "previewLabel": "Aperçu du financement",
+        "previewDuration": "Campagne de {{days}} jours à la publication",
+        "previewNoDuration": "Durée à définir",
+        "failed": "Le financement n’a pas pu être enregistré. Réessayez.",
+        "issues": {
+          "goal_required": "Indiquez l’objectif en euros.",
+          "threshold_required": "Indiquez le montant de ce palier.",
+          "threshold_positive": "Le montant doit être supérieur à zéro.",
+          "not_increasing": "Le montant doit dépasser celui du palier précédent.",
+          "last_not_goal": "Le dernier palier doit être égal à l’objectif.",
+          "above_goal": "Ce palier doit rester sous l’objectif.",
+          "description_required": "Décrivez l’usage des fonds de ce palier.",
+          "description_too_long": "Raccourcissez l’usage des fonds à 500 caractères au plus."
+        }
+      },
+      "locked": {
+        "contribution": "Verrouillé depuis la première contribution payée : les contributeurs ont soutenu le projet à ces conditions.",
+        "published": "Fixée à la publication : une campagne ne se prolonge pas."
+      },
+      "rewards": {
+        "loveMoneyTitle": "Le love money n’a pas de contrepartie",
+        "loveMoneyBody": "C’est un engagement de vos proches, sans contrepartie matérielle : les actualités du projet leur disent ce que devient leur soutien.",
+        "noInstrumentTitle": "Aucun instrument ne donne de contrepartie",
+        "noInstrumentBody": "Une contrepartie s’obtient par un don ou un crowdfunding avec contrepartie : acceptez l’un d’eux à l’étape des instruments.",
+        "empty": "Aucune contrepartie pour l’instant.",
+        "from": "À partir de {{amount}}",
+        "soldOut": "Épuisée",
+        "unlimited": "Quantité illimitée",
+        "stock": {
+          "one": "{{count}} restante sur {{total}}",
+          "other": "{{count}} restantes sur {{total}}"
+        },
+        "edit": "Modifier {{title}}",
+        "add": "Ajouter une contrepartie",
+        "delete": "Supprimer",
+        "deleteTitle": "Supprimer la contrepartie {{title}} ?",
+        "deleteBody": "Elle disparaît de la page. Une contrepartie déjà réservée par un contributeur ne peut pas être supprimée.",
+        "deleteConfirm": "Supprimer la contrepartie",
+        "deleted": "Contrepartie supprimée.",
+        "cancel": "Annuler",
+        "newTitle": "Nouvelle contrepartie",
+        "editTitle": "Modifier {{title}}",
+        "title": "Titre",
+        "description": "Description",
+        "minAmount": "Montant minimum",
+        "instruments": "Instruments qui la donnent",
+        "limited": "Quantité limitée",
+        "quantity": "Quantité",
+        "quantityHint": "Le nombre d’exemplaires proposés.",
+        "delivery": "Livraison estimée",
+        "deliveryHint": "La date à laquelle vous pensez l’envoyer.",
+        "save": "Enregistrer",
+        "create": "Ajouter",
+        "saving": "Enregistrement en cours",
+        "errors": {
+          "title": "Indiquez un titre.",
+          "description": "Décrivez la contrepartie.",
+          "minAmount": "Indiquez un montant supérieur à zéro.",
+          "instruments": "Choisissez au moins un instrument.",
+          "quantity": "Indiquez une quantité d’au moins 1."
+        }
+      },
+      "instruments": {
+        "collected": "Encaissés sur Pitchorium",
+        "collectedHint": "Les contributions arrivent avec le paiement en ligne.",
+        "interest": "Par manifestation d’intérêt",
+        "interestHint": "Aucun paiement en ligne : un message à l’équipe, la suite se convient hors de la plateforme.",
+        "descriptions": {
+          "donation": "Un don, sans contrepartie.",
+          "reward_crowdfunding": "Une contribution qui donne une contrepartie à partir d’un montant.",
+          "love_money": "L’engagement de proches, avec ou sans paiement, sans contrepartie matérielle.",
+          "grant": "Une subvention, demandée avec un message et des documents.",
+          "honor_loan": "Un prêt d’honneur, convenu hors de Pitchorium.",
+          "equity": "Une prise de participation : une intention seulement.",
+          "convertible_bonds": "Des obligations convertibles : une intention seulement."
+        },
+        "required": "Choisissez au moins un instrument.",
+        "opensCapital": "Nous ouvrons le capital",
+        "opensCapitalHint": "La page affiche cette intention à côté du financement.",
+        "reachTitle": "Une intention, jamais un investissement en ligne",
+        "reachBody": "Pitchorium n’a pas l’agrément d’une plateforme d’investissement : aucune prise de participation ne se fait sur la page. Les personnes intéressées vous écrivent par une manifestation d’intérêt."
+      },
+      "impact": {
+        "failed": "La méthodologie n’a pas pu être lue.",
+        "submit": "Enregistrer l’évaluation",
+        "update": "Mettre à jour l’évaluation"
+      },
+      "team": {
+        "consentTitle": "Affichage public de l’équipe",
+        "consentBody": "Chaque membre accepte, en rejoignant l’équipe, que son nom, sa photo et son titre soient affichés sur la page publique du projet, même si son profil reste privé.",
+        "members": "Membres",
+        "invitations": "Invitations en attente",
+        "pending": "En attente",
+        "you": "vous",
+        "roleOf": "Rôle de {{name}}",
+        "roleChanged": "Le rôle de {{name}} a changé.",
+        "lastOwnerRule": "Un projet garde toujours au moins un propriétaire : nommez-en un autre avant de partir ou de changer de rôle.",
+        "leave": "Quitter l’équipe",
+        "leaveTitle": "Quitter l’équipe de {{title}} ?",
+        "leaveBody": "Vous n’apparaîtrez plus sur la page du projet et ne pourrez plus le modifier.",
+        "leaveConfirm": "Quitter l’équipe",
+        "left": "Vous avez quitté l’équipe.",
+        "remove": "Retirer de l’équipe",
+        "removeTitle": "Retirer {{name}} de l’équipe ?",
+        "removeBody": "Ce membre n’apparaîtra plus sur la page et ne pourra plus modifier le projet.",
+        "removeConfirm": "Retirer de l’équipe",
+        "removed": "{{name}} ne fait plus partie de l’équipe.",
+        "withdraw": "Retirer l’invitation",
+        "withdrawTitle": "Retirer l’invitation de {{name}} ?",
+        "withdrawBody": "L’invitation ne pourra plus être acceptée.",
+        "withdrawConfirm": "Retirer l’invitation",
+        "cancel": "Annuler",
+        "invite": "Inviter un membre",
+        "inviteHint": "Par son identifiant de profil. L’invitation l’attend dans la vitrine des projets.",
+        "handle": "Identifiant du membre",
+        "handleHint": "Celui de l’adresse de son profil, par exemple aissatou-ba.",
+        "handleInvalid": "Indiquez un identifiant de 3 à 30 lettres minuscules, chiffres et tirets.",
+        "role": "Rôle",
+        "function": "Fonction affichée",
+        "functionHint": "Par exemple « Responsable technique ».",
+        "send": "Envoyer l’invitation",
+        "inviting": "Envoi en cours",
+        "invited": "Invitation envoyée à {{handle}}."
+      },
+      "publish": {
+        "missingTitle": "Il reste à compléter",
+        "readyTitle": "Tout ce que la publication demande est là",
+        "readyBody": "Relisez l’aperçu, puis publiez : la campagne commence aujourd’hui.",
+        "prerequisitesTitle": "À compléter sur votre compte",
+        "consentTitle": "Affichage public",
+        "consentBody": "La page du projet affichera publiquement votre nom, votre photo et votre titre, et ceux des membres de l’équipe, même si vos profils personnels restent privés.",
+        "consent": "J’accepte l’affichage public de mon nom, de ma photo et de mon titre sur la page du projet",
+        "consentRequired": "Cochez le consentement pour publier.",
+        "publish": "Publier le projet",
+        "publishing": "Publication en cours",
+        "backToPreview": "Revoir l’aperçu"
+      },
+      "delete": {
+        "title": "Supprimer le brouillon",
+        "body": "Possible tant que le projet n’est pas publié. Son adresse reste réservée.",
+        "action": "Supprimer le brouillon",
+        "confirmTitle": "Supprimer le brouillon {{title}} ?",
+        "confirmBody": "Le brouillon, ses images et ses documents disparaissent. Cette action est définitive.",
+        "confirm": "Supprimer le brouillon",
+        "cancel": "Annuler"
+      },
+      "create": {
+        "title": "Créer un projet",
+        "description": "Commencez par l’essentiel : le brouillon s’enregistre ensuite à mesure, et vous le reprenez quand vous voulez.",
+        "submit": "Créer le brouillon et continuer",
+        "creating": "Création en cours"
+      }
+    },
+    "manage": {
+      "title": "Gestion du projet",
+      "heading": "Gérer {{title}}",
+      "back": "Revenir à {{title}}",
+      "tabsLabel": "Sections de la gestion",
+      "tabs": {
+        "overview": "Vue d’ensemble",
+        "updates": "Actualités",
+        "interests": "Intérêts reçus",
+        "team": "Équipe",
+        "rewards": "Contreparties"
+      },
+      "overview": {
+        "contributions": "Contributions",
+        "followers": "Abonnés",
+        "interests": "Intérêts reçus",
+        "campaign": "Campagne",
+        "contributionsLater": "La liste des contributions et son export arrivent avec les contributions en ligne.",
+        "viewPage": "Voir la page",
+        "edit": "Modifier le projet"
+      },
+      "updates": {
+        "draftTitle": "Les actualités suivent la publication",
+        "draftBody": "Publiez le projet pour écrire ses actualités : elles arrivent dans le fil de ses abonnés.",
+        "published": "Actualités publiées",
+        "empty": "Aucune actualité pour l’instant.",
+        "edited": "modifiée",
+        "edit": "Modifier",
+        "delete": "Supprimer",
+        "deleteTitle": "Supprimer cette actualité ?",
+        "deleteBody": "Elle disparaît de la page et du fil des abonnés.",
+        "deleteConfirm": "Supprimer l’actualité",
+        "deleted": "Actualité supprimée.",
+        "cancel": "Annuler",
+        "newTitle": "Nouvelle actualité",
+        "editTitle": "Modifier l’actualité",
+        "text": "Texte",
+        "textRequired": "Écrivez le texte de l’actualité.",
+        "images": "Images",
+        "imageLimits": "JPEG, PNG ou WebP, {{max}} au plus.",
+        "publish": "Publier l’actualité",
+        "save": "Enregistrer",
+        "sending": "Envoi en cours",
+        "waitImages": "Patientez jusqu’à la fin de l’envoi des images.",
+        "saved": "Actualité modifiée.",
+        "publishedNotice": "Actualité publiée : elle arrive dans le fil des abonnés."
+      },
+      "interests": {
+        "filter": "Type d’intérêt",
+        "all": "Tous",
+        "empty": "Aucune manifestation d’intérêt",
+        "emptyBody": "Les messages des membres intéressés arrivent ici.",
+        "amount": "Montant indicatif : {{amount}}",
+        "document": "Document {{index}}"
+      }
     }
   },
   "content": {

@@ -102,6 +102,15 @@ Comment assembler les composants (`components.md`) pour les situations récurren
 - `/saved` (menu du compte) : les publications enregistrées, la dernière enregistrée d'abord.
 - Page d'un membre et d'une organisation : section « Activité » avec leurs publications selon ce que l'api montre au lecteur ; un visiteur lit les premières rendues par le serveur et la suite à la demande.
 
+## Projets (§10.6, §11, ADR 0101, 0128 à 0132)
+
+- `/projects` : vitrine publique et indexable, sélection de l'équipe en tête quand l'api en donne une ; filtres pays, secteur (libellé court, nom complet pour le lecteur d'écran), statut et impact minimum (absent sans méthodologie publiée) et tri dans l'adresse (`nuqs`, rendu serveur à chaque changement, squelettes pendant ce temps) ; suite par curseur à la demande ; vide avec « Réinitialiser les filtres ».
+- `/projects/{slug}` : une adresse, trois rendus. Visiteur : page indexable, données structurées `Article`, image de partage ; membre : suivre, manifester un intérêt, équivalent indicatif en FCFA (ADR 0130) ; équipe : liens vers la gestion et la modification ; brouillon : aperçu réservé à l'équipe, `noindex`. Sur ordinateur, contenu éditorial à gauche et bloc financement collant à droite (`position: sticky`) ; sur téléphone, financement en tête et barre d'action en bas (ADR 0132). « Contribuer » et « Contacter » n'existent pas encore.
+- Bloc financement : collecté sur objectif, `FundingProgress` et ses paliers, jours restants ou état final, moyens acceptés ; « Nous ouvrons le capital » est une intention expliquée, jamais un investissement en ligne (§15, décision 5).
+- Vidéo derrière une façade (ADR 0129) ; documents privés ouverts par une adresse signée au clic ; partage par copie du lien, partage natif sur téléphone et liens WhatsApp, LinkedIn et X sans script tiers.
+- Assistant (`/projects/new`, puis `/projects/{slug}/edit/{étape}`, ADR 0131) : dix étapes à leur adresse, enregistrement différé dans l'api avec « Enregistré », reprise à la première étape incomplète ; histoire en Markdown restreint avec aperçu fidèle et longueur restante ; paliers validés en direct avec l'aperçu de `FundingProgress` ; champs verrouillés après la première contribution payée, avec leur raison ; publication après les prérequis et le consentement à l'affichage public ; suppression d'un brouillon confirmée par son titre.
+- Gestion (`/projects/{slug}/manage`, équipe seule) : onglets dans l'adresse (vue d'ensemble, actualités, intérêts, équipe, contreparties) ; un intérêt montre son auteur, son type, son message, son montant indicatif et ses pièces privées ; la règle du dernier `owner` est dite avant le départ.
+
 ## Impact (§12, ADR 0036)
 
 - `/impact/methodology` : critères, échelle, pondérations et version en vigueur, mention « auto-déclaré, non certifié » ; sans méthodologie publiée, un état qui le dit.

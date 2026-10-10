@@ -5,16 +5,19 @@ import { useTranslations } from 'next-intl';
 import { Button, IconButton } from '@/components/ui';
 import { routes } from '@/config/routes';
 import { Can } from '@/features/access';
+import { useCurrentMember } from '@/features/identity';
 import { Link, usePathname } from '@/i18n/navigation';
 
 /**
- * The action of the context (§6.1): create a project in the projects section, publish elsewhere.
- * Its prerequisites are asked to the api (Can): unavailable, it says why (an email to verify).
+ * The action of the context (§6.1): « Créer un projet » in the projects section for a member with
+ * an entrepreneur facet (the creation of a project needs one), « Publier » elsewhere and for the
+ * others. Its prerequisites are asked to the api (Can): unavailable, it says why.
  */
 export function ContextualAction({ display }: { display: 'button' | 'icon' }) {
   const t = useTranslations('web.nav');
   const pathname = usePathname();
-  const project = pathname.startsWith(routes.projects);
+  const entrepreneur = useCurrentMember().profile.facets.entrepreneur;
+  const project = entrepreneur && pathname.startsWith(routes.projects);
   const label = project ? t('createProject') : t('publish');
   const href = project ? routes.createProject : routes.compose;
   const icon = project ? <FolderPlus /> : <PenSquare />;

@@ -9,6 +9,7 @@ import { siteConfig } from '@/config/site';
 import { LazyRelationshipActions, ProfileViewsSummary } from '@/features/network';
 import { ActivitySection } from '@/features/content';
 import { MemberProfile, personJsonLd } from '@/features/profiles';
+import { MemberProjects } from '@/features/projects';
 import { Link } from '@/i18n/navigation';
 import { asLocale } from '@/i18n/routing';
 import { configureServerApi } from '@/lib/api/server';
@@ -85,7 +86,8 @@ export default async function Page({ params }: PageProps<'/[locale]/members/[han
         actions={actions}
         aside={owner ? <ProfileViewsSummary /> : undefined}
       />
-      <div className="mx-auto mt-8 w-full max-w-[42.5rem]">
+      <div className="mx-auto mt-8 grid w-full max-w-[42.5rem] gap-8">
+        <MemberProjects handle={profile.handle} signedIn={member !== null} />
         <ActivitySection
           author={{ kind: 'member', handle: profile.handle }}
           signedIn={member !== null}

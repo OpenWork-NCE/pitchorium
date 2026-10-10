@@ -43,6 +43,20 @@ const MENTIONS = [
   'reference.impactLevels',
 ] as const;
 
+/**
+ * The pages of a project and the showcase (PROMPT FRONT 5A): what their client parts read for a
+ * visitor (share, video, filters, the cards of the next pages).
+ */
+const PROJECT_PAGE_MESSAGES = [
+  'web.projects.card',
+  'web.projects.share',
+  'web.projects.video',
+  'web.projects.showcase',
+  'reference.projectStatuses',
+  'reference.sectors',
+  'reference.sectorsShort',
+] as const;
+
 /** The feed (publications, suggestions with their reasons, completion of the profile). */
 const FEED_MESSAGES = [
   'web.feed',
@@ -53,7 +67,7 @@ const FEED_MESSAGES = [
   'web.post',
   'web.saved',
   'reference.postVisibilities',
-  'web.projects',
+  'web.projects.card',
   'web.profile',
   'discovery',
   'reference.reactionTypes',
@@ -84,6 +98,7 @@ export const CLIENT_MESSAGES = {
     'errors.INTERNAL_ERROR',
     'errors.RATE_LIMITED',
     'errors.NETWORK_LIST_HIDDEN',
+    ...PROJECT_PAGE_MESSAGES,
   ],
   auth: [
     ...DOCUMENT_MESSAGES,
@@ -129,6 +144,18 @@ export const CLIENT_MESSAGES = {
     'reference.verificationStatuses',
     // The feed and the suggestions of every page: their texts, the reasons and their labels.
     ...FEED_MESSAGES,
+    // A project read by a member: its actions (follow, interest and its files).
+    'web.projects.share',
+    'web.projects.video',
+    'web.projects.showcase',
+    'web.projects.actions',
+    'web.projects.interest',
+    'web.projects.files',
+    'web.projects.invitations',
+    'web.projects.editor.networkFailure',
+    'reference.projectStatuses',
+    'reference.projectInterestKinds',
+    'reference.projectTeamRoles',
   ],
   admin: [
     ...DOCUMENT_MESSAGES,

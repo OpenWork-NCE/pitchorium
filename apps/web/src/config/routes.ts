@@ -47,6 +47,13 @@ export const routes = {
   settingsOrganizations: '/settings/organizations',
   // Pages of a resource, one address for visitors and members (ADR 0101), the showcase included.
   project: (slug: string) => `/projects/${encodeURIComponent(slug)}`,
+  /** Creation of a project, step by step (`new` is a reserved slug, ADR 0131). */
+  createProject: '/projects/new',
+  /** A step of the creation or of the edition of a project (ADR 0131). */
+  projectEdit: (slug: string, step: string) =>
+    `/projects/${encodeURIComponent(slug)}/edit/${encodeURIComponent(step)}`,
+  /** Management of a project by its team (§11.3). */
+  projectManage: (slug: string) => `/projects/${encodeURIComponent(slug)}/manage`,
   /** The methodology of the self-declared impact in force (§12). */
   impactMethodology: '/impact/methodology',
   /** The self-declared impact of the entrepreneur facet of the member, and its history. */
@@ -68,7 +75,6 @@ export const routes = {
   saved: '/saved',
   // Contextual actions of the header, opened by their section (PROMPT FRONT 3 and 4).
   compose: '/feed?compose=1',
-  createProject: '/projects?create=1',
   // Administration (ADR 0078): `/admin/<domain>`.
   admin: '/admin',
   adminModeration: '/admin/moderation',

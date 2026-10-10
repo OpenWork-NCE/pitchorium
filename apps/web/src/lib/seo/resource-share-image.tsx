@@ -3,13 +3,21 @@ import {
   organizationsControllerForPublic,
   postsControllerGetPublic,
   profilesControllerForPublic,
+  projectsControllerForPublic,
 } from '@pitchorium/api-client';
 import { createTranslator } from 'next-intl';
 import { cache } from 'react';
 import { asLocale } from '@/i18n/routing';
 import { configureServerApi } from '@/lib/api/server';
+import { formatMoney } from '@/lib/format/money';
 import { messagesFor } from '@/lib/i18n/messages';
-import { renderShareImage, type ShareFormat, shareImageSize } from './share-image';
+import {
+  type ProjectShare,
+  renderProjectShareImage,
+  renderShareImage,
+  type ShareFormat,
+  shareImageSize,
+} from './share-image';
 
 /**
  * Share images of the public pages of members, organisations and publications (ADR 0101): read
@@ -101,4 +109,46 @@ export async function renderResourceImage(
 ) {
   const { title, subtitle } = await shared(kind, locale, key);
   return renderShareImage(format, title, subtitle);
+}
+
+/** A project in its public view only: a draft or a hidden project shares the default image. */
+const readProject = cache(async (locale: string, slug: string): Promise<ProjectShare | null> => {
+  if (!/^[a-z0-9-]{3,80}$/.test(slug)) return null;
+  configureServerApi();
+  const project = await projectsControllerForPublic(slug).catch(() => null);
+  if (!project) return null;
+  const lang = asLocale(locale);
+  const t = createTranslator({
+    locale: lang,
+    messages: messagesFor(lang),
+    namespace: 'web.projects.shareImage',
+  }) as unknown as (key: 'funding', values: Record<string, string | number>) => string;
+  const { goal, collected, progressPercent } = project.funding;
+  return {
+    title: project.title,
+    imageUrl: project.gallery[0]?.url ?? null,
+    progress: goal ? progressPercent / 100 : null,
+    fundingText: goal
+      ? t('funding', {
+          collected: formatMoney(collected, lang),
+          goal: formatMoney(goal, lang),
+          percent: progressPercent,
+        })
+      : null,
+  };
+});
+
+export async function projectImageMetadata(format: ShareFormat, locale: string, slug: string) {
+  const project = await readProject(locale, slug);
+  const { title } = project ?? defaultText(locale);
+  return [{ id: 'share', alt: title, size: shareImageSize(format), contentType: 'image/png' }];
+}
+
+export async function renderProjectImage(format: ShareFormat, locale: string, slug: string) {
+  const project = await readProject(locale, slug);
+  if (!project) {
+    const { title, subtitle } = defaultText(locale);
+    return renderShareImage(format, title, subtitle);
+  }
+  return renderProjectShareImage(format, project);
 }

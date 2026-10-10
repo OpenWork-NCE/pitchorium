@@ -97,6 +97,9 @@ export function createWebConfig({ tsconfigRootDir, ignores = [] }) {
       files: [
         'src/components/motion/split-heading.tsx',
         'src/components/motion/split-animator.tsx',
+        // The public view of a project is an editorial page (D4): its section titles are revealed
+        // by SplitHeading, GSAP loaded on demand and never in its member view (check:bundles).
+        'src/features/projects/components/page/section-heading.tsx',
         'src/app/*/(marketing)/**',
         'src/features/marketing/**',
         '**/*.stories.tsx',

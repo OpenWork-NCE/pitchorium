@@ -586,8 +586,9 @@ html[data-theme-transition='fade']::view-transition-new(root) {
 }
 
 /*
- * Editorial reveal (D4, sober) of the brand panel of the authentication: its lines fade, rise and
- * sharpen one after the other, once. With less motion they are simply there.
+ * Editorial reveal (D4, sober) of the brand panel of the authentication and of the head of the page
+ * of a project: its lines fade, rise and sharpen one after the other, once. With less motion they
+ * are simply there.
  */
 @media (prefers-reduced-motion: no-preference) {
   .editorial-reveal > * {
@@ -600,6 +601,61 @@ html[data-theme-transition='fade']::view-transition-new(root) {
 
   .editorial-reveal > :nth-child(3) {
     animation-delay: 160ms;
+  }
+
+  .editorial-reveal > :nth-child(n + 4) {
+    animation-delay: 240ms;
+  }
+
+  /*
+   * Title of the public page of a project (H13, word stagger): each word rises from its mask,
+   * 40 ms after the previous one, so that the lines arrive one after the other; the title is not
+   * faded with the rest of the editorial reveal.
+   */
+  .editorial-reveal > .title-reveal {
+    animation: none;
+  }
+
+  .title-reveal .title-word {
+    display: inline-block;
+    overflow: clip;
+    padding-block-end: 0.12em;
+    margin-block-end: -0.12em;
+    vertical-align: bottom;
+  }
+
+  .title-reveal .title-word > span {
+    display: inline-block;
+    animation: rise-from-mask calc(var(--duration-reveal) * 1.5) var(--ease-enter) both;
+    animation-delay: calc(var(--word, 0) * 40ms);
+  }
+
+  /*
+   * Entry into the main visual of a project (H24, scale-crop): the image settles from a slight
+   * zoom inside its frame, transform only (its paint, the largest of the page, is not delayed).
+   */
+  .hero-scale-crop {
+    animation: scale-crop calc(var(--duration-reveal) * 2) var(--ease-enter) both;
+  }
+}
+
+@keyframes rise-from-mask {
+  from {
+    transform: translateY(110%);
+  }
+
+  to {
+    transform: none;
+  }
+}
+
+@keyframes scale-crop {
+  from {
+    transform: scale(1.08);
+  }
+
+  to {
+    transform: none;
   }
 }
 
