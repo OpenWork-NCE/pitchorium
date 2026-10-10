@@ -398,6 +398,8 @@ export const AuthConfigurationDtoOutputTurnstileAppearance = {
 export type AuthConfigurationDtoOutputTurnstile = {
   siteKey: string;
   appearance: AuthConfigurationDtoOutputTurnstileAppearance;
+  /** @nullable */
+  scriptUrl: string | null;
 } | null;
 
 export type AuthConfigurationDtoOutputLegal = {

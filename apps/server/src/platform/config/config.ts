@@ -94,6 +94,10 @@ export interface TurnstileConfig {
   siteKey: string;
   secretKey: string;
   appearance: 'interaction-only' | 'always';
+  /** Verification of a local stand-in (tests), the siteverify of Cloudflare otherwise. */
+  verifyUrl: string | undefined;
+  /** Widget script of a local stand-in (tests), the script of Cloudflare otherwise. */
+  scriptUrl: string | undefined;
 }
 
 export interface ApiConfig extends CommonConfig {
@@ -335,6 +339,8 @@ function turnstile(env: ApiEnv): TurnstileConfig | undefined {
         siteKey: env.TURNSTILE_SITE_KEY,
         secretKey: env.TURNSTILE_SECRET_KEY,
         appearance: env.TURNSTILE_APPEARANCE,
+        verifyUrl: env.TURNSTILE_VERIFY_URL,
+        scriptUrl: env.TURNSTILE_SCRIPT_URL,
       }
     : undefined;
 }

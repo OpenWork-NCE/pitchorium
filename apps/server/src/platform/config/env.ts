@@ -143,6 +143,12 @@ const apiEnvSchema = commonEnvSchema.extend({
   TURNSTILE_SECRET_KEY: z.string().min(1).optional(),
   /** `interaction-only`: shown only when Cloudflare asks for an interaction; `always`: managed. */
   TURNSTILE_APPEARANCE: z.enum(['interaction-only', 'always']).default('interaction-only'),
+  /**
+   * A local stand-in of Turnstile with the same contract (verification and widget script): the
+   * blocking journeys of level 2 never depend on Cloudflare (ADR 0143). Refused in production.
+   */
+  TURNSTILE_VERIFY_URL: z.url().optional(),
+  TURNSTILE_SCRIPT_URL: z.url().optional(),
   MEDIA_UPLOAD_URL_TTL_SECONDS: z.coerce.number().int().min(60).max(3600).default(900),
   MEDIA_DOWNLOAD_URL_TTL_SECONDS: z.coerce.number().int().min(30).max(3600).default(300),
   MEDIA_QUOTA_MAX_FILES: z.coerce.number().int().positive().default(500),
@@ -351,6 +357,15 @@ function requireTurnstileInProduction(
       path: ['TURNSTILE_SECRET_KEY'],
       message: 'Cloudflare Turnstile is required in production',
     });
+  }
+  for (const key of ['TURNSTILE_VERIFY_URL', 'TURNSTILE_SCRIPT_URL'] as const) {
+    if (env.NODE_ENV === 'production' && env[key] !== undefined) {
+      ctx.addIssue({
+        code: 'custom',
+        path: [key],
+        message: 'A local stand-in of Turnstile is refused in production',
+      });
+    }
   }
 }
 

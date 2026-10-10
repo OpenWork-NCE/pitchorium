@@ -203,6 +203,30 @@ describe('configuration', () => {
     ).toEqual(['TURNSTILE_SECRET_KEY: Cloudflare Turnstile is required in production']);
   });
 
+  it('accepts the local stand-in of Turnstile outside production only (ADR 0143)', () => {
+    const local = {
+      TURNSTILE_SITE_KEY: 'site',
+      TURNSTILE_SECRET_KEY: 'secret',
+      TURNSTILE_VERIFY_URL: 'http://127.0.0.1:3400/turnstile/siteverify',
+      TURNSTILE_SCRIPT_URL: 'http://127.0.0.1:3400/turnstile/api.js',
+    };
+    expect(parseApiConfig({ ...baseEnv, ...local }).auth.turnstile).toEqual({
+      siteKey: 'site',
+      secretKey: 'secret',
+      appearance: 'interaction-only',
+      verifyUrl: local.TURNSTILE_VERIFY_URL,
+      scriptUrl: local.TURNSTILE_SCRIPT_URL,
+    });
+    expect(
+      issuesOf(() =>
+        parseApiConfig({ ...baseEnv, ...livePayments, ...local, NODE_ENV: 'production' }),
+      ),
+    ).toEqual([
+      'TURNSTILE_VERIFY_URL: A local stand-in of Turnstile is refused in production',
+      'TURNSTILE_SCRIPT_URL: A local stand-in of Turnstile is refused in production',
+    ]);
+  });
+
   it('enables an OAuth provider only with both credentials, and derives auth settings', () => {
     const config = parseApiConfig({
       ...baseEnv,

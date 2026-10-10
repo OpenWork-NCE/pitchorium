@@ -42,7 +42,7 @@ export class TurnstileVerifier {
     }
     let answer: SiteverifyResponse;
     try {
-      const response = await fetch(TURNSTILE_SITEVERIFY_URL, {
+      const response = await fetch(settings.verifyUrl ?? TURNSTILE_SITEVERIFY_URL, {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({

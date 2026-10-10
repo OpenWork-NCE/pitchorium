@@ -2,17 +2,24 @@ import type { NestExpressApplication } from '@nestjs/platform-express';
 import { Redis } from 'ioredis';
 import request from 'supertest';
 import { afterAll, beforeAll, describe, expect, inject, it } from 'vitest';
+import { FakeOAuthProviders } from '../oauth/fake-providers';
+import { LOCAL_TURNSTILE_TOKEN, LOCAL_TURNSTILE_VERIFY_PATH } from '../turnstile/local-turnstile';
 import { createApiTestApp } from './support/api-app';
 import { truncateAllTables } from './support/database';
 import { TEST_WEB_APP_URL } from './support/environment';
 import { browser, PASSWORD } from './support/members';
 
-/** Official test keys of Cloudflare: the real siteverify answers, without a challenge. */
+/**
+ * Official test keys of Cloudflare, answered by the local stand-in of siteverify (ADR 0143):
+ * level 2 never calls Cloudflare, the real widget and siteverify run in level 3 (`@external`).
+ */
 const SITE_KEY_PASSES = '1x00000000000000000000AA';
 const SECRET_PASSES = '1x0000000000000000000000000000000AA';
 const SECRET_FAILS = '2x0000000000000000000000000000000AA';
 /** Token that the test site keys produce in a browser. */
-const DUMMY_TOKEN = 'XXXX.DUMMY.TOKEN.XXXX';
+const DUMMY_TOKEN = LOCAL_TURNSTILE_TOKEN;
+
+const local = new FakeOAuthProviders();
 
 const NOTICE = {
   targetType: 'post',
@@ -34,11 +41,20 @@ async function withTurnstile(secret: string): Promise<NestExpressApplication> {
     TURNSTILE_SITE_KEY: SITE_KEY_PASSES,
     TURNSTILE_SECRET_KEY: secret,
     TURNSTILE_APPEARANCE: 'always',
+    TURNSTILE_VERIFY_URL: `${local.url}${LOCAL_TURNSTILE_VERIFY_PATH}`,
   });
   return app;
 }
 
 describe('Cloudflare Turnstile (ADR 0103)', () => {
+  beforeAll(async () => {
+    await local.start({ inProcess: false });
+  });
+
+  afterAll(async () => {
+    await local.stop();
+  });
+
   describe('with a secret that accepts every token', () => {
     let app: NestExpressApplication;
 
@@ -55,7 +71,7 @@ describe('Cloudflare Turnstile (ADR 0103)', () => {
       const response = await request(app.getHttpServer()).get('/v1/auth-configuration').expect(200);
       expect(response.body).toEqual({
         oauthProviders: ['google', 'linkedin', 'microsoft'],
-        turnstile: { siteKey: SITE_KEY_PASSES, appearance: 'always' },
+        turnstile: { siteKey: SITE_KEY_PASSES, appearance: 'always', scriptUrl: null },
         legal: {
           termsVersion: expect.any(String),
           privacyVersion: expect.any(String),

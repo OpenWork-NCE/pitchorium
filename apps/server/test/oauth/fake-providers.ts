@@ -1,6 +1,13 @@
 import { generateKeyPairSync, randomUUID, sign } from 'node:crypto';
 import { createServer, type IncomingMessage, type Server } from 'node:http';
 import type { AddressInfo } from 'node:net';
+import {
+  LOCAL_TURNSTILE_SCRIPT,
+  LOCAL_TURNSTILE_SCRIPT_PATH,
+  LOCAL_TURNSTILE_VERIFY_PATH,
+  parseVerifyBody,
+  verifyLocally,
+} from '../turnstile/local-turnstile';
 
 export type FakeProvider = 'google' | 'linkedin' | 'microsoft';
 
@@ -29,8 +36,8 @@ async function readRaw(request: IncomingMessage): Promise<string> {
   return raw;
 }
 
-/** Answer of the server: JSON, or a redirect of the browser. */
-type Reply = { status: number; body?: object; location?: string };
+/** Answer of the server: JSON, a script, or a redirect of the browser. */
+type Reply = { status: number; body?: object; location?: string; script?: string };
 
 /**
  * Local OIDC/OAuth 2 server standing in for Google, LinkedIn and Microsoft.
@@ -42,6 +49,8 @@ type Reply = { status: number; body?: object; location?: string };
  *   is `GET /<provider>/authorize`: it consents at once for the next identity a test announced
  *   (`POST /__identity`) and sends the browser back to the callback of the api with a code. The
  *   api reroutes its own calls with `test/oauth/reroute.cjs`.
+ * - It also serves the local stand-in of Cloudflare Turnstile (`test/turnstile/local-turnstile.ts`,
+ *   ADR 0143): the script of the widget and siteverify.
  */
 export class FakeOAuthProviders {
   private server: Server | undefined;
@@ -51,13 +60,20 @@ export class FakeOAuthProviders {
   private readonly accessTokens = new Map<string, FakeIdentity>();
   private readonly keys = generateKeyPairSync('rsa', { modulusLength: 2048 });
   private originalFetch: typeof fetch | undefined;
+  /** Verifications answered by the local siteverify, read by the journeys (`GET` of its path). */
+  private turnstileVerifications = 0;
   private pausedTokenRequest: { reached: () => void; released: Promise<void> } | undefined;
 
   /** Starts the server; in process (default), the provider URLs are rerouted to it. */
   async start({ port = 0, host = '127.0.0.1', inProcess = true } = {}): Promise<void> {
     this.server = createServer((request, response) => {
       void this.reply(request).then(
-        ({ status, body, location }) => {
+        ({ status, body, location, script }) => {
+          if (script !== undefined) {
+            response.writeHead(status, { 'content-type': 'text/javascript; charset=utf-8' });
+            response.end(script);
+            return;
+          }
           if (location) {
             response.writeHead(status, { location });
             response.end();
@@ -149,6 +165,20 @@ export class FakeOAuthProviders {
   private async reply(request: IncomingMessage): Promise<Reply> {
     const url = new URL(request.url ?? '/', 'http://fake');
     if (url.pathname === '/__health') return { status: 200, body: { ok: true } };
+    if (url.pathname === LOCAL_TURNSTILE_SCRIPT_PATH) {
+      return { status: 200, script: LOCAL_TURNSTILE_SCRIPT };
+    }
+    if (request.method === 'GET' && url.pathname === LOCAL_TURNSTILE_VERIFY_PATH) {
+      return { status: 200, body: { verifications: this.turnstileVerifications } };
+    }
+    if (request.method === 'POST' && url.pathname === LOCAL_TURNSTILE_VERIFY_PATH) {
+      this.turnstileVerifications += 1;
+      const { secret, response } = parseVerifyBody(
+        await readRaw(request),
+        request.headers['content-type'],
+      );
+      return { status: 200, body: verifyLocally(secret, response) };
+    }
     if (request.method === 'POST' && url.pathname === '/__identity') {
       const { provider, identity } = JSON.parse(await readRaw(request)) as {
         provider: FakeProvider;

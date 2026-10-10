@@ -136,7 +136,15 @@ export const TURNSTILE_APPEARANCES = ['interaction-only', 'always'] as const;
 export const authConfigurationSchema = z.object({
   oauthProviders: z.array(oauthProviderSchema),
   turnstile: z
-    .object({ siteKey: z.string(), appearance: z.enum(TURNSTILE_APPEARANCES) })
+    .object({
+      siteKey: z.string(),
+      appearance: z.enum(TURNSTILE_APPEARANCES),
+      /**
+       * Script of a local stand-in of the widget, with the same contract (tests, ADR 0143); null
+       * for the script of Cloudflare, the only one in production.
+       */
+      scriptUrl: z.string().nullable(),
+    })
     .nullable(),
   legal: legalVersionsSchema,
   minPasswordLength: z.number().int(),

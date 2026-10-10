@@ -100,6 +100,8 @@ Toutes les variables lues par l'api et le worker, validées au démarrage par `a
 | `TURNSTILE_SITE_KEY`                   | texte       | —                  | —                         | clé de test      | obligatoire                      |
 | `TURNSTILE_SECRET_KEY`                 | texte       | —                  | —                         | clé de test      | secret (gestionnaire de secrets) |
 | `TURNSTILE_APPEARANCE`                 | énumération | `interaction-only` | `interaction-only`        | comme production | défaut                           |
+| `TURNSTILE_VERIFY_URL`                 | URL         | —                  | —                         | —                | interdite (tests, ADR 0143)      |
+| `TURNSTILE_SCRIPT_URL`                 | URL         | —                  | —                         | —                | interdite (tests, ADR 0143)      |
 | `MEDIA_UPLOAD_URL_TTL_SECONDS`         | entier      | `900`              | `900`                     | comme production | défaut                           |
 | `MEDIA_DOWNLOAD_URL_TTL_SECONDS`       | entier      | `300`              | `300`                     | comme production | défaut                           |
 | `MEDIA_QUOTA_MAX_FILES`                | entier      | `500`              | `500`                     | comme production | défaut                           |

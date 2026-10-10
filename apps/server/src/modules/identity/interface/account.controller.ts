@@ -62,7 +62,11 @@ export class AccountController {
     return {
       oauthProviders: OAUTH_PROVIDERS.filter((provider) => providers[provider] !== undefined),
       turnstile: turnstile
-        ? { siteKey: turnstile.siteKey, appearance: turnstile.appearance }
+        ? {
+            siteKey: turnstile.siteKey,
+            appearance: turnstile.appearance,
+            scriptUrl: turnstile.scriptUrl ?? null,
+          }
         : null,
       legal: this.legal.current(),
       minPasswordLength: MIN_PASSWORD_LENGTH,

@@ -36380,11 +36380,18 @@
                       "interaction-only",
                       "always"
                     ]
+                  },
+                  "scriptUrl": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
                   }
                 },
                 "required": [
                   "siteKey",
-                  "appearance"
+                  "appearance",
+                  "scriptUrl"
                 ],
                 "additionalProperties": false
               },

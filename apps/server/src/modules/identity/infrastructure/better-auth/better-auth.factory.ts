@@ -286,6 +286,9 @@ export function createBetterAuth(deps: BetterAuthDependencies) {
               provider: 'cloudflare-turnstile',
               secretKey: config.auth.turnstile.secretKey,
               endpoints: CAPTCHA_PATHS,
+              ...(config.auth.turnstile.verifyUrl
+                ? { siteVerifyURLOverride: config.auth.turnstile.verifyUrl }
+                : {}),
             }),
           ]
         : []),
