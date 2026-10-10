@@ -203,7 +203,23 @@ for (const screen of SCREENS) {
         await expect(tab.locator('main [data-loading]')).toHaveCount(0);
         const name = `${screen.id}-${viewport.name}-${theme}.png`;
         const options = { animations: 'disabled' as const };
-        if (region) await expect(region).toHaveScreenshot(name, options);
+        const box = region ? await region.boundingBox() : null;
+        if (region && box && box.height > viewport.height) {
+          // A region taller than the screen would be captured while scrolling: the sticky header
+          // and a focused skip link would land on it at a different place each time. The whole
+          // page fits the screen instead, from its top, without focus. A region that fits (a
+          // dialog, a sheet of the whole screen) keeps the screen as it is.
+          const height = await tab.evaluate(() => {
+            (document.activeElement as HTMLElement | null)?.blur();
+            window.scrollTo(0, 0);
+            return Math.ceil(document.documentElement.scrollHeight);
+          });
+          await tab.setViewportSize({
+            width: viewport.width,
+            height: Math.max(viewport.height, height),
+          });
+          await expect(region).toHaveScreenshot(name, options);
+        } else if (region) await expect(region).toHaveScreenshot(name, options);
         else await expect(tab).toHaveScreenshot(name, { ...options, fullPage: true });
         await context.close();
       });
