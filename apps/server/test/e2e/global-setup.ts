@@ -3,6 +3,7 @@ import { createWriteStream, mkdtempSync } from 'node:fs';
 import { createServer } from 'node:net';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { createDatabase } from '@pitchorium/db';
 import type { TestProject } from 'vitest/node';
 import startContainers from '../integration/global-setup';
 
@@ -103,6 +104,27 @@ async function waitHealthy(url: string, child: ChildProcess, name: string): Prom
 }
 
 /**
+ * The demonstration images and documents, processed by the worker like real uploads (with the
+ * test adapter of the antivirus, ADR 0126): the scenarios start on a settled system, a backlog of
+ * the seed never counts as work of theirs (a slow runner took more than a minute).
+ */
+async function seedMediaProcessed(databaseUrl: string): Promise<void> {
+  const { pool } = createDatabase({ url: databaseUrl, maxConnections: 1 });
+  try {
+    for (const started = Date.now(); Date.now() - started < 240_000;) {
+      const { rows } = await pool.query<{ busy: string }>(
+        "SELECT count(*) AS busy FROM media.assets WHERE status = 'processing'",
+      );
+      if (Number(rows[0]?.busy) === 0) return;
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+    throw new Error('The demonstration media are still processing after 4 minutes');
+  } finally {
+    await pool.end();
+  }
+}
+
+/**
  * Containers of the integration suite, demonstration data (pnpm db:seed:dev), then the built
  * api and worker (pnpm build first); their logs are kept in a temporary directory.
  */
@@ -126,6 +148,7 @@ export default async function setup(project: TestProject): Promise<() => Promise
   const worker = run('worker', ['dist/main.worker.js'], env, logs);
   await waitHealthy(`${apiUrl}/v1/health/ready`, api, 'api');
   await waitHealthy(`http://127.0.0.1:${healthPort}/health/ready`, worker, 'worker');
+  await seedMediaProcessed(values['databaseUrl']!);
   project.provide('apiUrl', apiUrl);
   project.provide('webOrigin', E2E_WEB_ORIGIN);
 
