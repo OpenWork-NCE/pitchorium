@@ -474,7 +474,15 @@ export function FeedList({
           start && virtualizer
             ? {
                 paddingTop: virtualItems[0] ? virtualItems[0].start - start.margin : 0,
-                paddingBottom: virtualizer.getTotalSize() - (virtualItems.at(-1)?.end ?? 0),
+                // The total size is counted from the top of the list, the positions of the
+                // entries from the top of the page. Never negative: the browser drops a negative
+                // padding and keeps the previous one (a space left below a short feed, depending
+                // on when the entries were measured).
+                paddingBottom: Math.max(
+                  0,
+                  virtualizer.getTotalSize() -
+                    ((virtualItems.at(-1)?.end ?? start.margin) - start.margin),
+                ),
                 overflowAnchor: 'none',
               }
             : undefined
