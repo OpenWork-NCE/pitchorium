@@ -1164,9 +1164,23 @@
       "title": "Statistiques de la publication",
       "description": "Membres uniques qui l’ont vue, par jour. Les nombres sont approchés et mis à jour toutes les dix minutes.",
       "chart": "Membres uniques par jour",
-      "day": "{{date}} : {{count}}",
+      "day": "Jour",
       "empty": "Personne ne l’a encore vue.",
-      "error": "Les statistiques n’ont pas pu se charger."
+      "viewers": {
+        "one": "{{count}} membre",
+        "other": "{{count}} membres"
+      },
+      "days": {
+        "one": "{{count}} jour suivi",
+        "other": "{{count}} jours suivis"
+      },
+      "peak": {
+        "one": "pic le {{date}} : {{count}} membre unique",
+        "other": "pic le {{date}} : {{count}} membres uniques"
+      },
+      "summary": "{{days}} · {{peak}}",
+      "emptyHint": "Les membres qui la voient seront comptés ici, jour par jour. Partagez-la pour lui donner des lecteurs.",
+      "copyLink": "Copier le lien de la publication"
     }
   },
   "messaging": {

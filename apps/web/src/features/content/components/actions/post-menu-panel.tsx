@@ -209,7 +209,7 @@ export function PostMenuPanel({
       ) : null}
       {dialog === 'stats' ? (
         <Suspense fallback={null}>
-          <PostStats postId={post.id} onClose={() => setDialog(null)} />
+          <PostStats postId={post.id} address={address()} onClose={() => setDialog(null)} />
         </Suspense>
       ) : null}
       {dialog === 'edit' ? (

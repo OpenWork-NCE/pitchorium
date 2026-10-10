@@ -1131,8 +1131,13 @@ export const PostStatistics: Story = {
     const dialog = await within(document.body).findByRole('dialog', {
       name: 'Statistiques de la publication',
     });
-    const chart = within(dialog).getByRole('img', { name: 'Membres uniques par jour' });
+    const chart = within(dialog).getByRole('figure', { name: 'Membres uniques par jour' });
     // Once the opening of the dialog has played.
     await waitFor(() => expect(chart).toBeVisible());
+    // The numbers are said: the days followed and the peak, the dates on the axis.
+    await expect(chart).toHaveTextContent(
+      /7 jours suivis · pic le mercredi 7 octobre : 12 membres uniques/,
+    );
+    await expect(chart).toHaveTextContent('2 oct.');
   },
 };

@@ -2,78 +2,82 @@
 
 import { usePostsControllerStats } from '@pitchorium/api-client';
 import { useFormatter, useTranslations } from 'next-intl';
-import { Dialog, DialogContent, ErrorState, Loading, Skeleton } from '@/components/ui';
-
-const WIDTH = 320;
-const HEIGHT = 120;
+import { BarChart, CopyButton, Dialog, DialogContent } from '@/components/ui';
+import { peakIndex } from '@/components/ui/chart-scale';
+import { usePlural } from '@/lib/i18n/plural';
 
 /**
- * Who saw a publication, for its author (§6.3, ADR 0034, ADR 0116): unique members per day as
- * bars in a small SVG drawn here (no chart library), the values in a table for screen readers
- * and as a title of each bar.
+ * Who saw a publication, for its author (§6.3, ADR 0034, ADR 0116, ADR 0144): unique members per
+ * day on the bar chart of the design system, the days followed and the peak above it, the dates on
+ * the horizontal axis and the count of each day on hover and focus. The dialog carries the title;
+ * a publication nobody saw yet offers to copy its link.
  */
-export default function PostStats({ postId, onClose }: { postId: string; onClose: () => void }) {
+export default function PostStats({
+  postId,
+  address,
+  onClose,
+}: {
+  postId: string;
+  /** Address of the publication, to share it when nobody saw it yet. */
+  address: string;
+  onClose: () => void;
+}) {
   const t = useTranslations('web.content.stats');
   const format = useFormatter();
+  const plural = usePlural();
   const stats = usePostsControllerStats(postId, { query: { staleTime: 60_000 } });
-  const days = stats.data?.days ?? [];
-  const max = Math.max(1, ...days.map((day) => day.uniqueViewers));
-  const bar = days.length ? WIDTH / days.length : WIDTH;
-  const label = (day: { day: string; uniqueViewers: number }) =>
-    t('day', {
-      date: format.dateTime(new Date(`${day.day}T12:00:00Z`), { day: 'numeric', month: 'short' }),
-      count: format.number(day.uniqueViewers),
-    });
+  const day = (date: string, style: 'short' | 'long') =>
+    format.dateTime(
+      new Date(`${date}T12:00:00Z`),
+      style === 'short'
+        ? { day: 'numeric', month: 'short', timeZone: 'UTC' }
+        : { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' },
+    );
+  const data = stats.data?.days.map((entry) => ({
+    key: entry.day,
+    value: entry.uniqueViewers,
+    label: day(entry.day, 'short'),
+    description: day(entry.day, 'long'),
+    formatted: t(`viewers.${plural(entry.uniqueViewers)}`, {
+      count: format.number(entry.uniqueViewers),
+    }),
+  }));
+  const peak = data ? peakIndex(data.map((entry) => entry.value)) : -1;
   return (
     <Dialog open onOpenChange={(open) => !open && onClose()}>
-      <DialogContent title={t('title')} description={t('description')}>
-        {stats.isPending ? (
-          <Loading>
-            <Skeleton className="h-32 w-full" />
-          </Loading>
-        ) : stats.isError ? (
-          <ErrorState size="inline" title={t('error')} onRetry={() => void stats.refetch()} />
-        ) : days.length === 0 ? (
-          <p className="text-sm text-muted">{t('empty')}</p>
-        ) : (
-          <figure className="grid gap-2">
-            <svg
-              viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
-              role="img"
-              aria-label={t('chart')}
-              className="h-32 w-full"
-              preserveAspectRatio="none"
-            >
-              {days.map((day, index) => {
-                const height = Math.max(2, (day.uniqueViewers / max) * (HEIGHT - 4));
-                return (
-                  <rect
-                    key={day.day}
-                    x={index * bar + bar * 0.15}
-                    y={HEIGHT - height}
-                    width={bar * 0.7}
-                    height={height}
-                    rx={2}
-                    className="fill-accent"
-                  >
-                    <title>{label(day)}</title>
-                  </rect>
-                );
-              })}
-            </svg>
-            <figcaption className="text-xs text-muted">{t('chart')}</figcaption>
-            <table className="sr-only">
-              <caption>{t('chart')}</caption>
-              <tbody>
-                {days.map((day) => (
-                  <tr key={day.day}>
-                    <td>{label(day)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </figure>
-        )}
+      <DialogContent
+        title={t('title')}
+        description={t('description')}
+        // The dialog itself takes the focus: the first bar would open its tooltip at once.
+        onOpenAutoFocus={(event) => {
+          event.preventDefault();
+          (event.currentTarget as HTMLElement).focus();
+        }}
+      >
+        <BarChart
+          data={data}
+          state={stats.isError ? 'error' : stats.isPending ? 'loading' : 'ready'}
+          onRetry={() => void stats.refetch()}
+          title={t('chart')}
+          summary={
+            data && peak !== -1
+              ? t('summary', {
+                  days: t(`days.${plural(data.length)}`, { count: format.number(data.length) }),
+                  peak: t(`peak.${plural(data[peak]!.value)}`, {
+                    date: data[peak]!.description,
+                    count: format.number(data[peak]!.value),
+                  }),
+                })
+              : null
+          }
+          formatTick={(value) => format.number(value, { notation: 'compact' })}
+          columns={{ category: t('day'), value: t('chart') }}
+          empty={{
+            title: t('empty'),
+            description: t('emptyHint'),
+            action: <CopyButton value={address} label={t('copyLink')} />,
+          }}
+        />
       </DialogContent>
     </Dialog>
   );
