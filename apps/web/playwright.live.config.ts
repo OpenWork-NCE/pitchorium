@@ -1,5 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
-import { ciOptions, trace } from './e2e/support/ci-options';
+import { ciOptions, trace, video } from './e2e/support/ci-options';
 
 /**
  * Journeys against the real api (`pnpm --filter @pitchorium/web test:e2e:live`,
@@ -24,6 +24,7 @@ export default defineConfig({
   use: {
     baseURL: process.env.LIVE_WEB_URL ?? 'http://localhost:3200',
     trace,
+    video,
     reducedMotion: 'reduce',
   },
   projects: [

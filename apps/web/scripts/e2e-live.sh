@@ -216,6 +216,7 @@ docker run --rm --init --ipc=host --network host \
   --user "$(id -u):$(id -g)" -e HOME=/tmp -e CI="${CI:-}" \
   -e PLAYWRIGHT_FAIL_ON_FLAKY="${PLAYWRIGHT_FAIL_ON_FLAKY:-}" \
   -e LIVE_TURNSTILE="${LIVE_TURNSTILE:-1}" \
+  -e PLAYWRIGHT_TRACE="${PLAYWRIGHT_TRACE:-}" -e PLAYWRIGHT_VIDEO="${PLAYWRIGHT_VIDEO:-}" \
   -e LIVE_WEB_URL="http://localhost:$web_port" \
   -e LIVE_API_URL="http://localhost:$api_port" \
   -e MAILPIT_URL="http://localhost:$PITCHORIUM_MAILPIT_UI_PORT" \

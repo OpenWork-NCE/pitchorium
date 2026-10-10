@@ -21,5 +21,25 @@ export const ciOptions = {
     : 'list',
 } satisfies PlaywrightTestConfig;
 
-/** Trace of the first retry in CI, of any failure locally (no retry there). */
-export const trace = CI ? 'on-first-retry' : 'retain-on-failure';
+type Recording = 'on' | 'off' | 'retain-on-failure' | 'on-first-retry';
+
+/** A recording mode asked by the environment (the diagnosis workflow, ADR 0142), if valid. */
+function recording(name: string): Recording | undefined {
+  const value = process.env[name];
+  return value === 'on' ||
+    value === 'off' ||
+    value === 'retain-on-failure' ||
+    value === 'on-first-retry'
+    ? value
+    : undefined;
+}
+
+/**
+ * Trace of the first retry in CI, of any failure locally (no retry there); PLAYWRIGHT_TRACE
+ * overrides it (`retain-on-failure` when a journey repeats without retry).
+ */
+export const trace: Recording =
+  recording('PLAYWRIGHT_TRACE') ?? (CI ? 'on-first-retry' : 'retain-on-failure');
+
+/** No video, unless PLAYWRIGHT_VIDEO asks for one (the diagnosis workflow). */
+export const video: Recording = recording('PLAYWRIGHT_VIDEO') ?? 'off';

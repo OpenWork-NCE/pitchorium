@@ -66,6 +66,7 @@ Lire les documents concernés dans `docs/`, le `README.md` des modules touchés 
 
 - `gh run view <id> --log-failed` : seuls les journaux en échec ; `gh run download <id> -n <artefact>` : traces et rapports.
 - Reproduire le job en échec sur le poste, avec la même image et la même commande (commandes de `docs/architecture/testing.md` ; les suites Playwright tournent déjà dans l'image `mcr.microsoft.com/playwright:v1.64.0-noble`, les parcours par `scripts/e2e-live.sh`, l'intégration par Testcontainers), avant de pousser une correction. Interdiction de pousser une correction de CI sans l'avoir reproduite et validée en local.
+- Échec propre à la CI : le reproduire sur le runner par `gh workflow run diagnose.yaml` (parcours répété 30 fois sans relance, traces et environnement du runner, ADR 0142, `docs/architecture/testing.md`) ; une correction se prouve par 30 passages consécutifs sur le runner.
 - `gh run rerun <id> --failed` : relancer seulement les jobs en échec, une fois la correction poussée.
 
 ## Définition de terminé

@@ -1,4 +1,9 @@
-import { type Browser, type BrowserContext, test as base } from '@playwright/test';
+import {
+  type Browser,
+  type BrowserContext,
+  type ConsoleMessage,
+  test as base,
+} from '@playwright/test';
 
 /**
  * A journey fails on any error of the browser (A2 of the PROMPT FRONT 4): an error written to the
@@ -36,7 +41,31 @@ function reportFromPage() {
   });
 }
 
-async function watch(context: BrowserContext, problems: string[]): Promise<void> {
+/**
+ * Name, message, code and stack of the errors a console call received: Firefox prints only
+ * « Error » for `console.error(error)`, which hides the cause (an error of next-intl, a failed
+ * load). Empty when no argument is an error, or once the page is gone.
+ */
+async function errorDetails(message: ConsoleMessage): Promise<string> {
+  const details = await Promise.all(
+    message.args().map((argument) =>
+      argument
+        .evaluate((value) => {
+          if (!(value instanceof Error)) return '';
+          const code = 'code' in value ? ` [${String(value.code)}]` : '';
+          return `${value.name}: ${value.message}${code}\n${value.stack ?? ''}`;
+        })
+        .catch(() => ''),
+    ),
+  );
+  return details.filter(Boolean).join('\n');
+}
+
+async function watch(
+  context: BrowserContext,
+  problems: string[],
+  pending: Promise<void>[],
+): Promise<void> {
   await context.exposeBinding('reportBrowserProblem', (_source, text: string) => {
     problems.push(text);
   });
@@ -57,7 +86,12 @@ async function watch(context: BrowserContext, problems: string[]): Promise<void>
       return;
     }
     if (message.type() === 'error' || HYDRATION.test(text)) {
-      problems.push(`console.${message.type()}: ${text}${at}`);
+      const index = problems.push(`console.${message.type()}: ${text}${at}`) - 1;
+      pending.push(
+        errorDetails(message).then((details) => {
+          if (details) problems[index] = `${problems[index]}\n  ${details}`;
+        }),
+      );
     }
   });
   context.on('weberror', (error) => {
@@ -75,13 +109,14 @@ export const guardedTest = base.extend<{ consoleGuard: void }>({
   consoleGuard: [
     async ({ context, browser }, provide, testInfo) => {
       const problems: string[] = [];
+      const pending: Promise<void>[] = [];
       allowed = [];
-      await watch(context, problems);
+      await watch(context, problems, pending);
       // Contexts the journey opens itself (two members side by side) are watched too.
       const original = browser.newContext.bind(browser);
       const patched: Browser['newContext'] = async (options) => {
         const opened = await original(options);
-        await watch(opened, problems);
+        await watch(opened, problems, pending);
         return opened;
       };
       browser.newContext = patched;
@@ -90,6 +125,7 @@ export const guardedTest = base.extend<{ consoleGuard: void }>({
       } finally {
         browser.newContext = original;
       }
+      await Promise.all(pending);
       const unexpected = problems.filter(
         (problem) => !allowed.some((pattern) => pattern.test(problem)),
       );

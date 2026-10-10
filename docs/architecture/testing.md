@@ -113,3 +113,18 @@ Niveau 3 (`nightly.yaml`, CI, run vert du 2026-10-10) : 20,5 min de bout en bout
 - `gh run view <id> --log-failed` : seuls les journaux des étapes en échec.
 - `gh run download <id> -n <artefact>` : rapport Playwright (traces), journaux des parcours, résultats de Lighthouse.
 - `gh run rerun <id> --failed` : relance seulement les jobs en échec, une fois la correction poussée.
+
+## Diagnostiquer un échec propre à la CI (ADR 0142)
+
+Un parcours qui échoue en CI et passe sur le poste se reproduit sur le runner, jamais par une relance ni un délai ajouté sans mesure :
+
+```sh
+gh workflow run diagnose.yaml --ref main -f grep='mention' -f browser=firefox -f repeat=30
+gh run watch
+gh run download <id> -n diagnose-firefox-1
+```
+
+- Le workflow `.github/workflows/diagnose.yaml` construit comme la CI, affiche l'environnement du runner (processeurs, mémoire, fuseau, langue, polices de l'hôte et de l'image Playwright), puis répète le parcours (`--repeat-each`, 30 par défaut, `--retries=0`) sur sa pile isolée, avec trace et vidéo de chaque échec (`PLAYWRIGHT_TRACE`, `PLAYWRIGHT_VIDEO`, `e2e/support/ci-options.ts`) et les journaux de l'api, du worker et du web en artefact.
+- Comparer avec le poste : nombre de processeurs, fuseau (UTC sur le runner), polices, latence, ordre des tests (`--repeat-each` garde l'ordre du fichier), parallélisme (un worker), base partagée entre parcours.
+- Le garde de la console (`e2e/support/console-guard.ts`) ajoute à une erreur le nom, le message, le code et la pile des objets `Error` reçus : Firefox n'écrit que « Error » pour `console.error(error)`.
+- Une correction est prouvée par 30 passages consécutifs sur le runner, dans le moteur en cause.

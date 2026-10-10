@@ -145,4 +145,5 @@ Un fichier par décision, numéroté, au format Contexte / Décision / Conséque
 | [0139](0139-coverage-presentation-and-payout-choice.md)               | Présentation de la couverture et choix du versement             |
 | [0140](0140-display-of-bank-details.md)                               | Affichage des données bancaires                                 |
 | [0141](0141-engagement-dashboard.md)                                  | Tableau de bord d'engagement                                    |
+| [0142](0142-diagnosis-of-ci-only-failures.md)                         | Diagnostic des échecs propres à la CI                           |
 | [0143](0143-local-turnstile-stand-in.md)                              | Doublure locale de Turnstile au niveau 2                        |
