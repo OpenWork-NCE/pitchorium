@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { preload } from 'react-dom';
 import { BrandLogo } from '@/components/brand';
 import { ThemeToggle } from '@/components/ui';
 import { routes } from '@/config/routes';
@@ -23,6 +24,19 @@ export interface AuthFrameTexts {
  * the plain background. Without server code, for Storybook too.
  */
 export function AuthFrame({ texts, children }: { texts: AuthFrameTexts; children: ReactNode }) {
+  // The pattern of the panel is the largest paint of the page: a background of the stylesheet,
+  // asked only once the stylesheet is applied (LCP 2.4 s on a slow 4G phone). Preloaded from the
+  // head, each variant for the screens that paint it, it arrives with the stylesheet.
+  preload('/brand/overlay-mobile.svg', {
+    as: 'image',
+    fetchPriority: 'high',
+    media: '(max-width: 1023.98px)',
+  });
+  preload('/brand/overlay-desktop.svg', {
+    as: 'image',
+    fetchPriority: 'high',
+    media: '(min-width: 1024px)',
+  });
   return (
     <div className="group/auth flex min-h-dvh flex-col bg-background lg:grid lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
       <div className="relative order-1 flex flex-col lg:order-2 lg:min-h-dvh">
