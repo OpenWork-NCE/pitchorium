@@ -3,6 +3,7 @@ export { Alert } from './alert';
 export { AlertDialog } from './alert-dialog';
 export { AnnouncerProvider, useAnnounce } from './announcer';
 export { Avatar, AvatarGroup } from './avatar';
+export { BarChart, BarChartSkeleton, type BarChartDatum } from './bar-chart';
 export { Badge } from './badge';
 export { Banner } from './banner';
 export { Breadcrumbs } from './breadcrumbs';

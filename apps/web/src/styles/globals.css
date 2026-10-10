@@ -434,6 +434,28 @@
   }
 }
 
+/* Bar chart (BarChart): the bars rise from the axis, one after the other, by a transform; a chart
+   rendered by the server out of the screen waits for it. Final state at once with less motion. */
+@media (prefers-reduced-motion: no-preference) {
+  [data-entry='rise'] .chart-bar,
+  [data-entry='wait'] .chart-bar {
+    transform-box: fill-box;
+    transform-origin: bottom;
+  }
+  [data-entry='rise'] .chart-bar {
+    animation: bar-rise var(--duration-reveal) var(--ease-enter) both;
+  }
+  [data-entry='wait'] .chart-bar {
+    transform: scaleY(0);
+  }
+}
+
+@keyframes bar-rise {
+  from {
+    transform: scaleY(0);
+  }
+}
+
 /* Feed (PROMPT FRONT 4, motion.md): the reactions of the picker appear one after the other,
    the pill of the new publications slides from the top, a hidden publication leaves by a
    transform, never by animating its height. Final state at once with less motion. */

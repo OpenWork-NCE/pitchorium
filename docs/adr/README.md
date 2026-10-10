@@ -147,3 +147,4 @@ Un fichier par décision, numéroté, au format Contexte / Décision / Conséque
 | [0141](0141-engagement-dashboard.md)                                  | Tableau de bord d'engagement                                    |
 | [0142](0142-diagnosis-of-ci-only-failures.md)                         | Diagnostic des échecs propres à la CI                           |
 | [0143](0143-local-turnstile-stand-in.md)                              | Doublure locale de Turnstile au niveau 2                        |
+| [0144](0144-chart-primitives.md)                                      | Primitives de graphique                                         |
