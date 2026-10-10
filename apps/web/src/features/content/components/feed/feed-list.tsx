@@ -3,7 +3,6 @@
 import { getPostsControllerReadQueryKey, postsControllerRead } from '@pitchorium/api-client';
 import type { FeedPage, Post, Suggestion } from '@pitchorium/contracts';
 import { type InfiniteData, useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
-import { defaultRangeExtractor, useWindowVirtualizer } from '@tanstack/react-virtual';
 import { Newspaper } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import {
@@ -40,6 +39,7 @@ import { PostSkeleton } from '../post-skeleton';
 import { FeedSuggestion, SuggestionModule } from './feed-suggestion';
 import { NewerPill } from './newer-pill';
 import { ProjectUpdateCard } from './project-update-card';
+import { useDeferredWindowVirtualizer } from './use-deferred-window-virtualizer';
 import { useViewObserver } from './use-view-observer';
 
 /** First height of an item before it is measured (a publication with a short text). */
@@ -164,13 +164,13 @@ export function FeedList({
     [items, modules],
   );
 
-  // One virtualizer for the life of the list, off until the first entries are hydrated: the
-  // entries keep their keys when it starts, so React keeps their elements (and the focus) instead
-  // of rendering the whole list again.
+  // One virtualizer for the life of the list, loaded after the hydration and off until the first
+  // entries are measured: the entries keep their keys when it starts, so React keeps their
+  // elements (and the focus) instead of rendering the whole list again.
   // The entry that has the focus stays rendered, even out of the screen: unmounted, it would drop
   // the focus to the page (Page Down scrolls before the next entry is there).
   const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
-  const virtualizer = useWindowVirtualizer({
+  const virtualizer = useDeferredWindowVirtualizer<Element>({
     count: entries.length,
     estimateSize: () => ESTIMATED_HEIGHT,
     overscan: OVERSCAN,
@@ -181,8 +181,7 @@ export function FeedList({
     // Contiguous (the entries are in the flow of the page, between two spaces): the range is
     // stretched to the focused entry, up to ten entries away (further, the reader has scrolled
     // away with the pointer).
-    rangeExtractor: (range) => {
-      const indexes = defaultRangeExtractor(range);
+    extendRange: (indexes) => {
       const first = indexes[0] ?? 0;
       const last = indexes.at(-1) ?? 0;
       if (focusedIndex === null || (focusedIndex >= first && focusedIndex <= last)) return indexes;
@@ -197,7 +196,7 @@ export function FeedList({
   const position = useRef<ReturnType<typeof takeFeedPosition> | undefined>(undefined);
   useEffect(() => {
     const list = listRef.current;
-    if (!list || start) return;
+    if (!list || start || !virtualizer) return;
     // Taken once: the effect runs again when the entries change before the switch.
     if (position.current === undefined) position.current = takeFeedPosition();
     const restored = position.current;
@@ -214,7 +213,7 @@ export function FeedList({
       );
     });
     return () => cancelAnimationFrame(frame);
-  }, [start, entries.length]);
+  }, [start, entries.length, virtualizer]);
 
   // No scroll anchoring on the page while the feed is virtualized (as TanStack Virtual asks):
   // anchored on what follows the feed, the browser moved the page each time the spaces around
@@ -242,7 +241,7 @@ export function FeedList({
   // effects run again, and the position goes back where it was, after the scroll the router and
   // the browser apply to the page (next frame).
   useLayoutEffect(() => {
-    if (!start) return undefined;
+    if (!start || !virtualizer) return undefined;
     const back = takeFeedPosition();
     const cancel = back ? restoreScroll(back.offset) : undefined;
     return () => {
@@ -254,7 +253,7 @@ export function FeedList({
     };
   }, [start, virtualizer]);
 
-  const virtualItems = start ? virtualizer.getVirtualItems() : [];
+  const virtualItems = start && virtualizer ? virtualizer.getVirtualItems() : [];
   const lastIndex = virtualItems.at(-1)?.index ?? 0;
   useEffect(() => {
     if (start && lastIndex >= entries.length - 3 && feed.hasNextPage && !feed.isFetchingNextPage) {
@@ -377,8 +376,8 @@ export function FeedList({
   // Measured once the list is virtualized; the entries already there are measured at the switch.
   const measuring = useRef<((element: Element | null) => void) | null>(null);
   useLayoutEffect(() => {
-    measuring.current = start ? virtualizer.measureElement : null;
-    if (start)
+    measuring.current = start && virtualizer ? virtualizer.measureElement : null;
+    if (start && virtualizer)
       listRef.current
         ?.querySelectorAll(':scope > [data-index]')
         .forEach(virtualizer.measureElement);
@@ -464,13 +463,15 @@ export function FeedList({
         busy={feed.isFetchingNextPage}
         count={entries.length}
         scrollTo={
-          start ? (index) => virtualizer.scrollToIndex(index, { align: 'start' }) : undefined
+          start && virtualizer
+            ? (index) => virtualizer.scrollToIndex(index, { align: 'start' })
+            : undefined
         }
         onFocusEntry={setFocusedIndex}
         // No scroll anchoring: the browser would move the page each time the paddings change, the
         // list would render other entries, and so on, without end (seen on the live feed).
         style={
-          start
+          start && virtualizer
             ? {
                 paddingTop: virtualItems[0] ? virtualItems[0].start - start.margin : 0,
                 paddingBottom: virtualizer.getTotalSize() - (virtualItems.at(-1)?.end ?? 0),
@@ -479,7 +480,7 @@ export function FeedList({
             : undefined
         }
       >
-        {start
+        {start && virtualizer
           ? virtualItems.map((item) => renderEntry(item.index))
           : entries.slice(0, FIRST_ENTRIES).map((_, index) => renderEntry(index))}
       </FeedElement>
