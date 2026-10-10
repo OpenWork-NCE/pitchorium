@@ -984,6 +984,9 @@
       "tabsLabel": "Sections of the management",
       "tabs": {
         "overview": "Overview",
+        "contributions": "Contributions",
+        "offline": "Off platform",
+        "supporters": "Supporters",
         "updates": "Updates",
         "interests": "Interests received",
         "team": "Team",

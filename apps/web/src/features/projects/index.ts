@@ -4,7 +4,7 @@ export { MemberProjects } from './components/member-projects';
 export { ProjectCard } from './components/project-card';
 export { CreateProject } from './components/editor/create-project';
 export { ProjectEditor } from './components/editor/project-editor';
-export { ProjectManage } from './components/manage/project-manage';
+export { type ManagePayments, ProjectManage } from './components/manage/project-manage';
 export { ProjectPage } from './components/page/project-page';
 export { ShareActions } from './components/page/share-actions';
 export { ProjectShowcase } from './components/showcase/project-showcase';

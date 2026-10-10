@@ -984,6 +984,9 @@
       "tabsLabel": "Sections de la gestion",
       "tabs": {
         "overview": "Vue d’ensemble",
+        "contributions": "Contributions",
+        "offline": "Hors plateforme",
+        "supporters": "Soutiens",
         "updates": "Actualités",
         "interests": "Intérêts reçus",
         "team": "Équipe",
