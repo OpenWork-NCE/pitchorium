@@ -2666,6 +2666,33 @@
         "declared": "Contribution declared.",
         "waitUploads": "Wait until the documents are sent.",
         "cancel": "Cancel"
+      },
+      "item": {
+        "deletedMember": "Deleted member",
+        "declaredBy": {
+          "contributor": "declared by the contributor",
+          "holder": "declared by the team"
+        },
+        "equivalent": "that is {{amount}}",
+        "states": {
+          "declared": "Waiting for the confirmation of the other party.",
+          "confirmed": "Confirmed; an amount waits for the validation by Pitchorium on proof.",
+          "validated": "Validated: counted in the amount collected.",
+          "rejected": "Refused."
+        },
+        "reason": "Reason: {{reason}}",
+        "proofs": "Supporting documents",
+        "proof": "Document {{number}}",
+        "confirm": "Confirm",
+        "confirming": "Confirming",
+        "reject": "Refuse",
+        "rejectTitle": "Refuse this contribution",
+        "rejectDescription": "The reason is sent to the person who declared it.",
+        "rejectReason": "Reason for the refusal",
+        "rejectAction": "Refuse",
+        "rejecting": "Refusing",
+        "reasonRequired": "Give a reason first.",
+        "cancel": "Cancel"
       }
     },
     "payouts": {
@@ -2783,6 +2810,92 @@
       "payout_account": "A covered payout account is needed to receive online contributions. It is chosen in “Payout and verification”.",
       "kyc_verified": "Your identity must be verified before online contributions open. It is done in “Payout and verification”.",
       "action": "Open “Payout and verification”"
+    },
+    "rewardStates": {
+      "none": "No reward",
+      "reserved": "Reserved",
+      "confirmed": "Confirmed",
+      "released": "Released"
+    },
+    "holder": {
+      "contributions": {
+        "title": "Contributions",
+        "description": "The online contributions to this project, newest first. The amount collected counts the confirmed payments only.",
+        "caption": "Contributions of the project",
+        "export": "Export as CSV",
+        "exporting": "Exporting",
+        "filters": {
+          "status": "Status",
+          "kind": "Kind",
+          "allStatuses": "All statuses",
+          "allKinds": "All kinds"
+        },
+        "columns": {
+          "contributor": "Contributor",
+          "date": "Date",
+          "kind": "Kind",
+          "status": "Status",
+          "amount": "Amount",
+          "commission": "Commission",
+          "fee": "Provider fees",
+          "refunded": "Refunded",
+          "reward": "Reward"
+        },
+        "byOrganization": "On behalf of the organisation",
+        "anonymous": "Anonymous donation",
+        "deleted": "Deleted member",
+        "none": "—",
+        "unreadable": "The contributions could not be loaded.",
+        "emptyTitle": "No contribution yet",
+        "emptyBody": "Online contributions will show here as soon as they are created.",
+        "emptyFiltered": "No contribution matches",
+        "emptyFilteredBody": "Choose another status or another kind."
+      },
+      "offline": {
+        "title": "Off-platform contributions",
+        "description": "Contributions made outside Pitchorium: confirm or refuse those a contributor declared. An amount counts in the amount collected only once Pitchorium validated it on proof.",
+        "declare": "Declare a contribution received",
+        "filter": "Contributions shown",
+        "filters": {
+          "declared": "To confirm",
+          "all": "All"
+        },
+        "loading": "Loading the off-platform contributions",
+        "unreadable": "The off-platform contributions could not be loaded.",
+        "emptyDeclared": "Nothing to confirm",
+        "empty": "No off-platform contribution",
+        "emptyBody": "The declarations of the contributors and of the team will show here."
+      },
+      "supporters": {
+        "title": "Public supporters",
+        "description": "The members and organisations who chose to appear, as the page of the project shows them, without any amount.",
+        "contributions": {
+          "one": "{{count}} paid contribution",
+          "other": "{{count}} paid contributions"
+        },
+        "commitments": {
+          "one": "{{count}} love money commitment",
+          "other": "{{count}} love money commitments"
+        },
+        "loading": "Loading the supporters",
+        "unreadable": "The supporters could not be loaded.",
+        "emptyTitle": "No public supporter yet",
+        "emptyBody": "A contributor chooses to appear when paying; the display is off by default."
+      },
+      "banner": {
+        "action": "Set up the payout",
+        "missing": "Still to do: {{elements}}.",
+        "holder_not_verified": {
+          "title": "Online contributions opening soon",
+          "holder": "Your payout account is waiting for its activation or for the verification of your identity.",
+          "team": "The payout account of the holder is waiting for its activation or for the verification of their identity."
+        },
+        "holder_without_covered_payout_account": {
+          "title": "Online contributions not open yet",
+          "holder": "Choose a payout account in a covered country to open online contributions.",
+          "team": "The holder has no covered payout account yet: online contributions are not open."
+        }
+      }
     }
   }
 }

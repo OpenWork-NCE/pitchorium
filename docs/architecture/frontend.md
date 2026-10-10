@@ -97,6 +97,7 @@ sequenceDiagram
 
 - Pages : `/contributions/{id}/return` (`(app)`, retour du prestataire, adresse donnée par l'api, ADR 0137) ; `/settings/payouts` (« Versement et vérification » : couverture, choix et changement du versement, KYC, ADR 0139 et 0140, aussi l'adresse de retour d'un onboarding hébergé) ; le parcours « Contribuer » s'ouvre sur la page projet (`?contribute=<étape>`, ADR 0136).
 - Feature `payments` : règles d'affichage pures et testées dans `lib/` (présentation de chaque code de disponibilité, moyens disponibles et indisponibles, étapes du parcours, interrogation du retour, adresse de paiement, masquage, couverture, limites recopiées des contrats) ; entrée « Contribuer » chargée à la demande (`LazyContributeEntry`, composée par la page projet avec la vue de l'api), parcours et déclaration hors plateforme chargés à l'ouverture.
+- Gestion d'un projet : onglets « Contributions » (tableau paginé, filtres par statut et par type dans l'api, export CSV), « Hors plateforme » (à confirmer ou refuser, déclaration par l'équipe) et « Soutiens », et bannière de l'état du versement, composés par la route depuis la feature `payments` (`ManagePayments`), chargés à l'ouverture de leur onglet.
 - Données : options relues 500 ms après un changement de pays, de devise ou de montant (`usePaymentOptions`) ; devis relu de même (`useQuote`) ; contribution créée avec une `Idempotency-Key` par intention ; état du retour relu par `createPoller` ; aucun état de paiement dans le stockage du navigateur.
 
 ## Fournisseurs

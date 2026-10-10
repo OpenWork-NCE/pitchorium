@@ -2666,6 +2666,33 @@
         "declared": "Contribution déclarée.",
         "waitUploads": "Attendez la fin de l’envoi des pièces.",
         "cancel": "Annuler"
+      },
+      "item": {
+        "deletedMember": "Membre supprimé",
+        "declaredBy": {
+          "contributor": "déclarée par le contributeur",
+          "holder": "déclarée par l’équipe"
+        },
+        "equivalent": "soit {{amount}}",
+        "states": {
+          "declared": "En attente de la confirmation de l’autre partie.",
+          "confirmed": "Confirmée ; un montant attend la validation par Pitchorium sur pièce justificative.",
+          "validated": "Validée : comptée dans le montant collecté.",
+          "rejected": "Refusée."
+        },
+        "reason": "Motif : {{reason}}",
+        "proofs": "Pièces justificatives",
+        "proof": "Pièce {{number}}",
+        "confirm": "Confirmer",
+        "confirming": "Confirmation en cours",
+        "reject": "Refuser",
+        "rejectTitle": "Refuser cette contribution",
+        "rejectDescription": "Le motif est transmis à la personne qui l’a déclarée.",
+        "rejectReason": "Motif du refus",
+        "rejectAction": "Refuser",
+        "rejecting": "Refus en cours",
+        "reasonRequired": "Indiquez d’abord un motif.",
+        "cancel": "Annuler"
       }
     },
     "payouts": {
@@ -2783,6 +2810,92 @@
       "payout_account": "Un compte de versement couvert est nécessaire pour recevoir des contributions en ligne. Il se choisit dans « Versement et vérification ».",
       "kyc_verified": "Votre identité doit être vérifiée avant l’ouverture des contributions en ligne. Elle se fait dans « Versement et vérification ».",
       "action": "Ouvrir « Versement et vérification »"
+    },
+    "rewardStates": {
+      "none": "Sans contrepartie",
+      "reserved": "Réservée",
+      "confirmed": "Confirmée",
+      "released": "Libérée"
+    },
+    "holder": {
+      "contributions": {
+        "title": "Contributions",
+        "description": "Les contributions en ligne à ce projet, du plus récent au plus ancien. Le montant collecté ne compte que les paiements confirmés.",
+        "caption": "Contributions du projet",
+        "export": "Exporter en CSV",
+        "exporting": "Export en cours",
+        "filters": {
+          "status": "Statut",
+          "kind": "Type",
+          "allStatuses": "Tous les statuts",
+          "allKinds": "Tous les types"
+        },
+        "columns": {
+          "contributor": "Contributeur",
+          "date": "Date",
+          "kind": "Type",
+          "status": "Statut",
+          "amount": "Montant",
+          "commission": "Commission",
+          "fee": "Frais du prestataire",
+          "refunded": "Remboursé",
+          "reward": "Contrepartie"
+        },
+        "byOrganization": "Au nom de l’organisation",
+        "anonymous": "Don anonyme",
+        "deleted": "Membre supprimé",
+        "none": "—",
+        "unreadable": "Les contributions n’ont pas pu être chargées.",
+        "emptyTitle": "Aucune contribution pour l’instant",
+        "emptyBody": "Les contributions en ligne apparaîtront ici dès leur création.",
+        "emptyFiltered": "Aucune contribution ne correspond",
+        "emptyFilteredBody": "Choisissez un autre statut ou un autre type."
+      },
+      "offline": {
+        "title": "Contributions hors plateforme",
+        "description": "Les contributions faites en dehors de Pitchorium : confirmez ou refusez celles qu’un contributeur a déclarées. Un montant ne compte dans le collecté qu’après validation par Pitchorium sur pièce justificative.",
+        "declare": "Déclarer une contribution reçue",
+        "filter": "Contributions affichées",
+        "filters": {
+          "declared": "À confirmer",
+          "all": "Toutes"
+        },
+        "loading": "Chargement des contributions hors plateforme",
+        "unreadable": "Les contributions hors plateforme n’ont pas pu être chargées.",
+        "emptyDeclared": "Rien à confirmer",
+        "empty": "Aucune contribution hors plateforme",
+        "emptyBody": "Les déclarations des contributeurs et celles de l’équipe apparaîtront ici."
+      },
+      "supporters": {
+        "title": "Soutiens publics",
+        "description": "Les membres et organisations qui ont choisi d’apparaître, tels que la page du projet les montre, sans montant.",
+        "contributions": {
+          "one": "{{count}} contribution payée",
+          "other": "{{count}} contributions payées"
+        },
+        "commitments": {
+          "one": "{{count}} engagement de love money",
+          "other": "{{count}} engagements de love money"
+        },
+        "loading": "Chargement des soutiens",
+        "unreadable": "Les soutiens n’ont pas pu être chargés.",
+        "emptyTitle": "Aucun soutien public pour l’instant",
+        "emptyBody": "Un contributeur choisit d’apparaître au moment de payer ; l’affichage est désactivé par défaut."
+      },
+      "banner": {
+        "action": "Configurer le versement",
+        "missing": "Il reste : {{elements}}.",
+        "holder_not_verified": {
+          "title": "Contributions en ligne bientôt ouvertes",
+          "holder": "Votre compte de versement attend son activation ou la vérification de votre identité.",
+          "team": "Le compte de versement du porteur attend son activation ou la vérification de son identité."
+        },
+        "holder_without_covered_payout_account": {
+          "title": "Contributions en ligne pas encore ouvertes",
+          "holder": "Choisissez un compte de versement dans un pays couvert pour ouvrir les contributions en ligne.",
+          "team": "Le porteur n’a pas encore de compte de versement couvert : les contributions en ligne ne sont pas ouvertes."
+        }
+      }
     }
   }
 }

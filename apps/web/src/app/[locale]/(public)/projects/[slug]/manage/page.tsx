@@ -6,6 +6,12 @@ import { ScopedMessages } from '@/components/layout/scoped-messages';
 import { SingleColumnLayout } from '@/components/layout/page-layouts';
 import { Heading, Link } from '@/components/ui';
 import { routes } from '@/config/routes';
+import {
+  LazyCollectionBanner,
+  LazyProjectContributions,
+  LazyProjectOffline,
+  LazyProjectSupporters,
+} from '@/features/payments';
 import { ProjectManage } from '@/features/projects';
 import { asLocale } from '@/i18n/routing';
 import { configureServerApi } from '@/lib/api/server';
@@ -41,6 +47,22 @@ export default async function Page({ params }: PageProps<'/[locale]/projects/[sl
           () => null,
         );
   const t = await getTranslations('web.projects.manage');
+  const member = await getCurrentMember();
+  // The parts of the payments (ADR 0136): a published project only.
+  const payments =
+    project.status === 'draft'
+      ? null
+      : {
+          banner: (
+            <LazyCollectionBanner
+              projectId={project.id}
+              holder={project.owner?.handle === member?.profile.handle}
+            />
+          ),
+          contributions: <LazyProjectContributions projectId={project.id} slug={project.slug} />,
+          offline: <LazyProjectOffline projectId={project.id} title={project.title} />,
+          supporters: <LazyProjectSupporters projectId={project.id} />,
+        };
   return (
     <SingleColumnLayout>
       <div className="grid gap-6">
@@ -53,7 +75,7 @@ export default async function Page({ params }: PageProps<'/[locale]/projects/[sl
           </Heading>
         </div>
         <ScopedMessages scope="projectEditor">
-          <ProjectManage project={project} follow={follow} />
+          <ProjectManage project={project} follow={follow} payments={payments} />
         </ScopedMessages>
       </div>
     </SingleColumnLayout>

@@ -206,6 +206,12 @@ export const CLIENT_MESSAGES = {
     'reference.mediaRejectionReasons',
     'reference.prerequisiteElements',
     'reference.impactDemo',
+    // The contributions of the project, its off-platform contributions and its supporters.
+    'web.payments',
+    'reference.contributionKinds',
+    'reference.contributionStatuses',
+    'reference.offlineContributionKinds',
+    'reference.offlineContributionStatuses',
   ],
 } as const satisfies Record<string, readonly string[]>;
 
