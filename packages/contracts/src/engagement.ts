@@ -21,6 +21,13 @@ export const impactDashboardSchema = z.object({
   }),
   /** Start of the current month, UTC. */
   monthStart: z.iso.datetime(),
+  /** Net EUR given in each of the last twelve months (`YYYY-MM`, UTC), oldest first. */
+  monthly: z.array(
+    z.object({
+      month: z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/),
+      given: moneySchema,
+    }),
+  ),
 });
 
 /** Shared time log (sections 6.3 and 9.4): mentoring and expertise. */

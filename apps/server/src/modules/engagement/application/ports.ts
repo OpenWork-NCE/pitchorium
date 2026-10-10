@@ -15,6 +15,11 @@ export abstract class EngagementRepository {
   abstract upsertFacts(facts: ContributionFacts, now: Date): Promise<void>;
   abstract deleteAllFacts(): Promise<void>;
   abstract totals(giver: GiverRef, monthStart: Date): Promise<ContributionTotals>;
+  /** Net EUR given per month (`YYYY-MM`, UTC) since `from`; months without any are absent. */
+  abstract monthlyGiven(
+    giver: GiverRef,
+    from: Date,
+  ): Promise<{ month: string; eurMinor: bigint }[]>;
   /** Contributions that count for the giver, newest first. */
   abstract factsOf(giver: GiverRef): Promise<
     {

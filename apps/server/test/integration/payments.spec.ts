@@ -590,6 +590,15 @@ describe('payments', () => {
         givenThisMonth: eur(2_400),
         projectsSupported: 1,
       });
+      // Twelve months for the chart, the current one last with what was given in it.
+      expect(current.monthly).toHaveLength(12);
+      expect(current.monthly.at(-1)).toEqual({
+        month: current.monthStart.slice(0, 7),
+        given: eur(2_400),
+      });
+      expect(current.monthly.slice(0, -1).every((entry) => entry.given.amountMinor === '0')).toBe(
+        true,
+      );
     });
     expect(dashboard.owner).toEqual({ type: 'member', id: ama.userId });
   });

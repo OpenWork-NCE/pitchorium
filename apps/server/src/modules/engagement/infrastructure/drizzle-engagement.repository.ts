@@ -82,6 +82,16 @@ export class DrizzleEngagementRepository extends EngagementRepository {
     };
   }
 
+  async monthlyGiven(giver: GiverRef, from: Date) {
+    const month = sql<string>`to_char(date_trunc('month', ${facts.succeededAt} at time zone 'UTC'), 'YYYY-MM')`;
+    const rows = await this.db
+      .select({ month, total: sql<string>`sum(${facts.netEurMinor})::text` })
+      .from(facts)
+      .where(and(giverFilter(giver), sql`${facts.succeededAt} >= ${from}`))
+      .groupBy(month);
+    return rows.map((row) => ({ month: row.month, eurMinor: BigInt(row.total) }));
+  }
+
   async factsOf(giver: GiverRef) {
     const rows = await this.db
       .select()

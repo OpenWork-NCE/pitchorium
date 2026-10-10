@@ -27,6 +27,8 @@ import {
 import {
   assertAnswerable,
   assertPastDate,
+  DASHBOARD_MONTHS,
+  lastMonths,
   monthStart,
   type TimeEntryRecord,
 } from '../domain/time-entry';
@@ -98,7 +100,12 @@ export class EngagementService {
   async dashboard(giver: GiverRef): Promise<ImpactDashboard> {
     const now = this.clock.now();
     const start = monthStart(now);
-    const totals = await this.engagement.totals(giver, start);
+    const months = lastMonths(now, DASHBOARD_MONTHS);
+    const [totals, monthly] = await Promise.all([
+      this.engagement.totals(giver, start),
+      this.engagement.monthlyGiven(giver, new Date(`${months[0]}-01T00:00:00Z`)),
+    ]);
+    const given = new Map(monthly.map((row) => [row.month, row.eurMinor]));
     const minutes =
       giver.type === 'member'
         ? await this.engagement.minutesByStatus(giver.id)
@@ -115,6 +122,10 @@ export class EngagementService {
         disputed: minutes.disputed,
       },
       monthStart: start.toISOString(),
+      monthly: months.map((month) => ({
+        month,
+        given: Money.of(given.get(month) ?? 0n, 'EUR').toJSON(),
+      })),
     };
   }
 

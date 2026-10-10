@@ -4,7 +4,7 @@ Tableau de bord d'impact et journal du temps partagé (cahier des charges §6.3,
 
 ## Tableau de bord d'impact
 
-- Euros effectivement versés (mois en cours, UTC, et depuis le début) : équivalent EUR des contributions réussies, nettes des remboursements et des litiges perdus ; nombre de projets soutenus (part nette positive) ; minutes de mentorat et d'expertise déclarées, confirmées, contestées.
+- Euros effectivement versés (mois en cours, UTC, et depuis le début) : équivalent EUR des contributions réussies, nettes des remboursements et des litiges perdus ; montant net de chacun des douze derniers mois (`monthly`, `YYYY-MM` en UTC, du plus ancien au mois en cours, zéro pour un mois sans contribution), pour le graphique de l'engagement ; nombre de projets soutenus (part nette positive) ; minutes de mentorat et d'expertise déclarées, confirmées, contestées.
 - Pour un membre (contributions en son nom) et pour une organisation (contributions faites en son nom ; pas d'heures, personnelles).
 - Historique téléchargeable en CSV (RFC 4180, cellules protégées contre l'injection de formules).
 - Projection reconstructible (ADR 0053) : `engagement.contribution_facts`, mise à jour sur les événements du module payments par relecture de sa façade, reconstruite par `EngagementService.rebuild`.

@@ -40,3 +40,16 @@ export function assertPastDate(date: string, now: Date): void {
 export function monthStart(now: Date): Date {
   return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1));
 }
+
+/** Months of the engagement chart (section 9.4): the current one and the eleven before. */
+export const DASHBOARD_MONTHS = 12;
+
+/** `YYYY-MM` of the months ending with the current one, oldest first, UTC. */
+export function lastMonths(now: Date, count: number): string[] {
+  return Array.from({ length: count }, (_, index) => {
+    const month = new Date(
+      Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - (count - 1 - index), 1),
+    );
+    return month.toISOString().slice(0, 7);
+  });
+}
