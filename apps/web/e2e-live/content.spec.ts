@@ -204,6 +204,10 @@ test.describe('publications', () => {
     await first.click();
     const viewer = a.page.getByRole('dialog', { name: /^Images de la publication/ });
     await expect(viewer.getByText('1 / 5')).toBeVisible();
+    // The keys go to the viewer once it holds the focus (WebKit moves it after the transition).
+    await expect
+      .poll(() => viewer.evaluate((dialog) => dialog.contains(document.activeElement)))
+      .toBe(true);
     await a.page.keyboard.press('ArrowRight');
     await expect(viewer.getByText('2 / 5')).toBeVisible();
     await a.page.keyboard.press('Escape');
@@ -558,11 +562,12 @@ test.describe('the feed of a demonstration member', () => {
     const entry = feed.locator('[data-feed-index="6"]');
     await expect
       .poll(async () => {
-        await page.mouse.wheel(0, 400);
+        // Scrolled by the page: WebKit delivers the wheel of Playwright later, under load.
+        await page.evaluate(() => window.scrollBy(0, 400));
         return entry.count();
       })
       .toBe(1);
-    // The position once the page is still: WebKit may apply the last turn of the wheel later.
+    // The position once the page is still.
     let left = -1;
     await expect
       .poll(
