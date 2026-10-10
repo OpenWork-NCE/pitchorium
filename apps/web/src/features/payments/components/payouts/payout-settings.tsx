@@ -4,17 +4,42 @@ import { payoutControllerKyc, payoutControllerRefresh } from '@pitchorium/api-cl
 import type { KycOverview, PaymentCoverage, PayoutAccount } from '@pitchorium/contracts';
 import { ExternalLink } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
-import { useEffect, useRef, useState } from 'react';
-import { Alert, Badge, Button, Card, DescriptionList, Heading } from '@/components/ui';
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
+import {
+  Alert,
+  Badge,
+  Button,
+  Card,
+  DescriptionList,
+  Heading,
+  Loading,
+  Skeleton,
+} from '@/components/ui';
 import { countryName } from '@/lib/format/countries';
 import { publicEnv } from '@/lib/public-env';
 import { safePaymentUrl } from '../../lib/payment-url';
 import { usePaymentProblem } from '../shared/use-payment-problem';
 import { CoverageOverview } from './coverage-overview';
-import { KycSection } from './kyc-section';
-import { PayoutChoice } from './payout-choice';
+
+/* The choice of the payout (its search of a country, its form) and the identity check (its
+ * upload) load after the page: an account already open reads its state first (ADR 0094). */
+const PayoutChoice = lazy(() =>
+  import('./payout-choice').then((module) => ({ default: module.PayoutChoice })),
+);
+const KycSection = lazy(() =>
+  import('./kyc-section').then((module) => ({ default: module.KycSection })),
+);
 
 const STATUS_TONES = { pending: 'info', active: 'success', restricted: 'warning' } as const;
+
+/** The place of a part that loads, at its height. */
+function Pending({ label }: { label: string }) {
+  return (
+    <Loading label={label}>
+      <Skeleton className="h-24 w-full" />
+    </Loading>
+  );
+}
 
 /** The payout account of the holder and where it stands, with its next action. */
 function AccountCard({
@@ -173,18 +198,22 @@ export function PayoutSettings({
             </Heading>
             <p className="text-sm text-muted">{t('chooseDescription')}</p>
           </div>
-          <PayoutChoice
-            coverage={coverage}
-            mode={account ? 'change' : 'create'}
-            current={account}
-            onSaved={(next) => void saved(next)}
-            {...(account ? { onCancel: () => setChanging(false) } : {})}
-          />
+          <Suspense fallback={<Pending label={t('loading')} />}>
+            <PayoutChoice
+              coverage={coverage}
+              mode={account ? 'change' : 'create'}
+              current={account}
+              onSaved={(next) => void saved(next)}
+              {...(account ? { onCancel: () => setChanging(false) } : {})}
+            />
+          </Suspense>
         </Card>
       )}
       {kyc ? (
         <Card className="grid gap-4">
-          <KycSection overview={kyc} onSubmitted={setKyc} />
+          <Suspense fallback={<Pending label={t('loading')} />}>
+            <KycSection overview={kyc} onSubmitted={setKyc} />
+          </Suspense>
         </Card>
       ) : null}
     </div>

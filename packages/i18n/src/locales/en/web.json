@@ -2805,7 +2805,8 @@
         "title": "Payouts are for project holders",
         "body": "To receive contributions, first complete: {{elements}}.",
         "action": "Complete my profile"
-      }
+      },
+      "loading": "Loading"
     },
     "prerequisites": {
       "payout_account": "A covered payout account is needed to receive online contributions. It is chosen in “Payout and verification”.",

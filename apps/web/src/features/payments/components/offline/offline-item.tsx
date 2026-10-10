@@ -8,20 +8,12 @@ import {
 import type { OfflineContribution, OfflineContributionStatus } from '@pitchorium/contracts';
 import { FileText } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
-import { useState } from 'react';
-import {
-  Alert,
-  Badge,
-  Button,
-  Dialog,
-  DialogContent,
-  Field,
-  RelativeTime,
-  Textarea,
-} from '@/components/ui';
+import { lazy, Suspense, useState } from 'react';
+import { Alert, Badge, Button, RelativeTime } from '@/components/ui';
 import { formatMoney } from '@/lib/format/money';
-import { PAYMENT_LIMITS } from '../../lib/limits';
 import { usePaymentProblem } from '../shared/use-payment-problem';
+
+const RejectDialog = lazy(() => import('./reject-dialog'));
 
 const TONES: Record<OfflineContributionStatus, 'info' | 'accent' | 'success' | 'danger'> = {
   declared: 'info',
@@ -56,7 +48,6 @@ export function OfflineItem({
   const [busy, setBusy] = useState<'confirm' | 'reject' | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [rejecting, setRejecting] = useState(false);
-  const [reason, setReason] = useState('');
 
   async function confirm() {
     setBusy('confirm');
@@ -70,14 +61,13 @@ export function OfflineItem({
     }
   }
 
-  async function reject() {
-    if (!reason.trim()) return;
+  async function reject(reason: string) {
+    if (!reason) return;
     setBusy('reject');
     setError(null);
     try {
-      onChanged(await offlineContributionsControllerReject(item.id, { reason: reason.trim() }));
+      onChanged(await offlineContributionsControllerReject(item.id, { reason }));
       setRejecting(false);
-      setReason('');
     } catch (failure) {
       setError(problem(failure));
     } finally {
@@ -164,36 +154,16 @@ export function OfflineItem({
           </Button>
         </div>
       ) : null}
-      <Dialog open={rejecting} onOpenChange={setRejecting}>
-        <DialogContent title={t('rejectTitle')} description={t('rejectDescription')} size="sm">
-          <Field
-            label={t('rejectReason')}
-            counter={{ count: reason.length, max: PAYMENT_LIMITS.decisionReason }}
-          >
-            <Textarea
-              value={reason}
-              maxLength={PAYMENT_LIMITS.decisionReason}
-              rows={3}
-              onChange={(event) => setReason(event.target.value)}
-            />
-          </Field>
-          <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-            <Button type="button" variant="ghost" onClick={() => setRejecting(false)}>
-              {t('cancel')}
-            </Button>
-            <Button
-              type="button"
-              variant="danger"
-              loading={busy === 'reject'}
-              loadingLabel={t('rejecting')}
-              disabledReason={reason.trim() ? undefined : t('reasonRequired')}
-              onClick={() => void reject()}
-            >
-              {t('rejectAction')}
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      {rejecting ? (
+        <Suspense fallback={null}>
+          <RejectDialog
+            open={rejecting}
+            onOpenChange={setRejecting}
+            busy={busy === 'reject'}
+            onReject={(reason) => void reject(reason)}
+          />
+        </Suspense>
+      ) : null}
     </article>
   );
 }

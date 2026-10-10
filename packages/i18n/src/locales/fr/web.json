@@ -2805,7 +2805,8 @@
         "title": "Versement réservé aux porteurs de projet",
         "body": "Pour recevoir des contributions, complétez d’abord : {{elements}}.",
         "action": "Compléter mon profil"
-      }
+      },
+      "loading": "Chargement"
     },
     "prerequisites": {
       "payout_account": "Un compte de versement couvert est nécessaire pour recevoir des contributions en ligne. Il se choisit dans « Versement et vérification ».",

@@ -10,6 +10,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import {
   Badge,
+  DeferredSelect,
   EmptyState,
   ErrorState,
   Field,
@@ -17,7 +18,6 @@ import {
   Loading,
   Pagination,
   RelativeTime,
-  Select,
   Skeleton,
 } from '@/components/ui';
 import { routes } from '@/config/routes';
@@ -72,7 +72,7 @@ export function MyContributions() {
           {t('title')}
         </Heading>
         <Field label={t('filter')} className="w-full sm:w-64">
-          <Select
+          <DeferredSelect
             value={status}
             onValueChange={setStatus}
             options={[
