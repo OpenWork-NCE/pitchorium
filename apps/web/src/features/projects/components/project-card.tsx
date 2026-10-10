@@ -55,7 +55,15 @@ export function ProjectCard({
     : undefined;
 
   return (
-    <Card padding="none" className={cn('grid min-w-0 overflow-hidden', className)}>
+    // One column that never grows past the card, the cover at its ratio and the body filling the
+    // rest: cards of a row stretched to the same height keep their covers alike.
+    <Card
+      padding="none"
+      className={cn(
+        'grid min-w-0 grid-cols-[minmax(0,1fr)] grid-rows-[auto_1fr] overflow-hidden',
+        className,
+      )}
+    >
       <div
         className={cn(
           'relative bg-cover-placeholder',
@@ -82,7 +90,7 @@ export function ProjectCard({
           />
         ) : null}
       </div>
-      <div className={cn('grid min-w-0 gap-4', compact ? 'p-4' : 'p-5')}>
+      <div className={cn('grid min-w-0 content-start gap-4', compact ? 'p-4' : 'p-5')}>
         {compact ? null : (
           <div className="flex flex-wrap items-center gap-2">
             <Badge tone="accent">{reference(`projectStatuses.${project.status}`)}</Badge>
