@@ -60,7 +60,7 @@ export async function EngagementDashboard({
         ) : (
           <ul className="grid gap-2 sm:grid-cols-2">
             {projects.map((project) => (
-              <li key={project.slug}>
+              <li key={project.slug} className="min-w-0">
                 <Card padding="sm" className="flex items-center justify-between gap-3">
                   <Link
                     href={routes.project(project.slug)}
