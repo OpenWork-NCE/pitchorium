@@ -30,15 +30,22 @@ export function Truncate({ children, lines = 3, className }: TruncateProps) {
   const id = useId();
 
   // Measured by a ResizeObserver, which reports once at once and on every change: never inside
-  // the hydration of a page that shows many cut texts (a feed).
+  // the hydration of a page that shows many cut texts (a feed). Measured again once the fonts are
+  // loaded: the clamped box keeps its height while its text, wider in the brand font, overflows.
   useEffect(() => {
     const element = ref.current;
     if (!element || expanded) return;
-    const observer = new ResizeObserver(() =>
-      setClamped(element.scrollHeight > element.clientHeight + 1),
-    );
+    const measure = () => setClamped(element.scrollHeight > element.clientHeight + 1);
+    const observer = new ResizeObserver(measure);
     observer.observe(element);
-    return () => observer.disconnect();
+    // Absent from jsdom (unit tests).
+    const fonts = (document as { fonts?: FontFaceSet }).fonts;
+    fonts?.addEventListener('loadingdone', measure);
+    void fonts?.ready.then(measure);
+    return () => {
+      observer.disconnect();
+      fonts?.removeEventListener('loadingdone', measure);
+    };
   }, [expanded, children]);
 
   return (
