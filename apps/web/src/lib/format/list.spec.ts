@@ -23,3 +23,12 @@ describe('lists in a sentence', () => {
     expect(formatNames(['Senegal', 'Mali', 'Niger'], 'en')).toBe('Senegal, Mali, and Niger');
   });
 });
+
+describe('inSentence of a name', () => {
+  it('keeps the case of a name of several capitalised words, not of a noun before an acronym', () => {
+    expect(inSentence('Apple Pay', 'fr')).toBe('Apple Pay');
+    expect(inSentence('Mobile Money (MTN)', 'fr')).toBe('Mobile Money (MTN)');
+    expect(inSentence('Prélèvement SEPA', 'fr')).toBe('prélèvement SEPA');
+    expect(inSentence('Carte bancaire', 'fr')).toBe('carte bancaire');
+  });
+});

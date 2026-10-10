@@ -1,11 +1,14 @@
 /**
  * Lower-case first letter of a label used in the middle of a sentence (« Photo de couverture »
  * becomes « photo de couverture »); an acronym or a name with a capital inside its first word
- * (« KYC », « LinkedIn ») keeps its case.
+ * (« KYC », « LinkedIn ») or a name of several capitalised words (« Apple Pay ») keeps its case.
  */
 export function inSentence(label: string, locale: string): string {
-  const firstWord = label.split(' ')[0] ?? '';
+  const [firstWord = '', ...rest] = label.split(' ');
   if (/\p{Lu}/u.test(firstWord.slice(1))) return label;
+  // A name of several capitalised words (« Apple Pay », « Mobile Money ») keeps its case; an
+  // acronym after a common noun (« Prélèvement SEPA ») does not make it a name.
+  if (rest.some((word) => /^\p{Lu}\p{Ll}/u.test(word))) return label;
   return label.charAt(0).toLocaleLowerCase(locale) + label.slice(1);
 }
 
