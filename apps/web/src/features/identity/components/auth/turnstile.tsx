@@ -18,19 +18,23 @@ declare global {
   }
 }
 
-const SCRIPT_URL = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+const CLOUDFLARE_SCRIPT_URL =
+  'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
 
 /** How long a submit waits for the challenge to finish before saying it failed. */
 const CHALLENGE_WAIT_MS = 15_000;
 
 let scriptLoading: Promise<TurnstileApi> | undefined;
 
-/** Loads the script of Cloudflare once, on the screens that need it only (ADR 0103). */
-function loadTurnstile(): Promise<TurnstileApi> {
+/**
+ * Loads the script of Cloudflare once, on the screens that need it only (ADR 0103), or the local
+ * stand-in the api names outside production (same contract, ADR 0143).
+ */
+function loadTurnstile(scriptUrl: string | null): Promise<TurnstileApi> {
   if (window.turnstile) return Promise.resolve(window.turnstile);
   scriptLoading ??= new Promise((resolve, reject) => {
     const script = document.createElement('script');
-    script.src = SCRIPT_URL;
+    script.src = scriptUrl ?? CLOUDFLARE_SCRIPT_URL;
     script.async = true;
     script.onload = () =>
       window.turnstile ? resolve(window.turnstile) : reject(new Error('turnstile'));
@@ -85,7 +89,7 @@ export function useTurnstile(settings: TurnstileSettings | null, action: string)
     if (!settings || !container.current) return;
     let cancelled = false;
     const element = container.current;
-    loadTurnstile().then(
+    loadTurnstile(settings.scriptUrl).then(
       (api) => {
         if (cancelled) return;
         widgetId.current = api.render(element, {
