@@ -13,6 +13,36 @@ export const FIXED_PARITIES: Readonly<Record<string, string>> = {
   XAF: '655.957',
 };
 
+/**
+ * Countries whose currency is a CFA franc at a fixed parity (ADR 0130): the West African
+ * Economic and Monetary Union (UEMOA, XOF, issued by the BCEAO) and the Central African Economic
+ * and Monetary Community (CEMAC, XAF, issued by the BEAC).
+ */
+export const FIXED_PARITY_COUNTRIES: Readonly<Record<string, 'XOF' | 'XAF'>> = {
+  BJ: 'XOF',
+  BF: 'XOF',
+  CI: 'XOF',
+  GW: 'XOF',
+  ML: 'XOF',
+  NE: 'XOF',
+  SN: 'XOF',
+  TG: 'XOF',
+  CM: 'XAF',
+  CF: 'XAF',
+  CG: 'XAF',
+  GA: 'XAF',
+  GQ: 'XAF',
+  TD: 'XAF',
+};
+
+/** The CFA franc of a country and its parity, null for a country whose currency floats. */
+export function fixedParityOf(
+  country: string | null,
+): { currency: 'XOF' | 'XAF'; unitsPerEur: string } | null {
+  const currency = country ? FIXED_PARITY_COUNTRIES[country] : undefined;
+  return currency ? { currency, unitsPerEur: FIXED_PARITIES[currency]! } : null;
+}
+
 /** Units of a currency for one euro, as a decimal string, with its source and date. */
 export interface Rate {
   unitsPerEur: string;

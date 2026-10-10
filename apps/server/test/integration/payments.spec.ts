@@ -450,6 +450,20 @@ describe('payments', () => {
     ]);
   });
 
+  it('tells a member the CFA franc of their declared country, none for another', async () => {
+    await ama.agent.patch('/v1/me/profile').send({ countryCode: 'CI' }).expect(200);
+    expect((await ama.agent.get('/v1/me/indicative-currency').expect(200)).body).toEqual({
+      country: 'CI',
+      fixedParity: { currency: 'XOF', unitsPerEur: '655.957' },
+    });
+    await ama.agent.patch('/v1/me/profile').send({ countryCode: 'FR' }).expect(200);
+    expect((await ama.agent.get('/v1/me/indicative-currency').expect(200)).body).toEqual({
+      country: 'FR',
+      fixedParity: null,
+    });
+    await request(app.getHttpServer()).get('/v1/me/indicative-currency').expect(401);
+  });
+
   it('pays in XAF with the exact EUR equivalent of the fixed parity', async () => {
     const before = await collected(project.id);
     const quote = await ama.agent

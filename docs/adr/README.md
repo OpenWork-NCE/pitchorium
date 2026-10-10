@@ -131,3 +131,4 @@ Un fichier par décision, numéroté, au format Contexte / Décision / Conséque
 | [0125](0125-no-database-snapshot-for-tests.md)              | Pas d'instantané de base pour les tests                      |
 | [0126](0126-test-malware-scanner-in-end-to-end-journeys.md) | Adaptateur de test de l'antivirus dans les parcours          |
 | [0127](0127-tagging-of-critical-journeys.md)                | Étiquetage des parcours critiques                            |
+| [0130](0130-indicative-cfa-equivalent.md)                   | Équivalent indicatif en francs CFA                           |

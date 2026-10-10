@@ -66,6 +66,23 @@ export const fxRateSchema = z.object({
   at: z.iso.datetime(),
 });
 
+/**
+ * Currency in which a member may read the amounts of a project as an indicative equivalent: the
+ * CFA franc of their declared country (UEMOA or CEMAC), at its fixed legal parity; null for any
+ * other country, whose currency floats (ADR 0130).
+ */
+export const indicativeCurrencySchema = z.object({
+  /** Declared country of the member, null when not declared. */
+  country: countryCodeSchema.nullable(),
+  fixedParity: z
+    .object({
+      currency: z.enum(['XOF', 'XAF']),
+      /** Units of the currency for one euro: `655.957`. */
+      unitsPerEur: decimalStringSchema,
+    })
+    .nullable(),
+});
+
 export const paymentOptionsQuerySchema = z.object({
   /** Country of the contributor; the declared country of the profile by default. */
   country: countryCodeSchema.optional(),
@@ -431,6 +448,7 @@ export type PaymentMethod = z.infer<typeof paymentMethodSchema>;
 export type ContributionStatus = z.infer<typeof contributionStatusSchema>;
 export type RewardReservationState = z.infer<typeof rewardReservationStateSchema>;
 export type FxRateSource = z.infer<typeof fxRateSourceSchema>;
+export type IndicativeCurrency = z.infer<typeof indicativeCurrencySchema>;
 export type FxRate = z.infer<typeof fxRateSchema>;
 export type PaymentOptions = z.infer<typeof paymentOptionsSchema>;
 export type PaymentMethodOption = z.infer<typeof paymentMethodOptionSchema>;

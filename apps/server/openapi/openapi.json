@@ -18569,6 +18569,104 @@
         "x-access": "project.impact.assess"
       }
     },
+    "/v1/me/indicative-currency": {
+      "get": {
+        "operationId": "ContributionsController_indicativeCurrency",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IndicativeCurrencyDto_Output"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error (RFC 9457 problem details)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "UNAUTHENTICATED": {
+                    "$ref": "#/components/examples/UNAUTHENTICATED"
+                  },
+                  "FORBIDDEN": {
+                    "$ref": "#/components/examples/FORBIDDEN"
+                  },
+                  "ACCESS_ORIGIN_NOT_ALLOWED": {
+                    "$ref": "#/components/examples/ACCESS_ORIGIN_NOT_ALLOWED"
+                  },
+                  "ACCESS_PREREQUISITES_MISSING": {
+                    "$ref": "#/components/examples/ACCESS_PREREQUISITES_MISSING"
+                  },
+                  "ACCESS_ACCOUNT_SUSPENDED": {
+                    "$ref": "#/components/examples/ACCESS_ACCOUNT_SUSPENDED"
+                  },
+                  "RATE_LIMITED": {
+                    "$ref": "#/components/examples/RATE_LIMITED"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "tags": [
+          "payments"
+        ],
+        "summary": "Indicative currency",
+        "description": "Action `payment.quote` (session cookie).\n\nErrors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.",
+        "x-error-codes": [
+          "UNAUTHENTICATED",
+          "FORBIDDEN",
+          "ACCESS_ORIGIN_NOT_ALLOWED",
+          "ACCESS_PREREQUISITES_MISSING",
+          "ACCESS_ACCOUNT_SUSPENDED",
+          "RATE_LIMITED",
+          "PAYMENTS_PROJECT_NOT_OPEN",
+          "PAYMENTS_HOLDER_NOT_READY",
+          "PAYMENTS_NO_PAYMENT_ROUTE",
+          "PAYMENTS_METHOD_NOT_AVAILABLE",
+          "PAYMENTS_CURRENCY_NOT_AVAILABLE",
+          "PAYMENTS_INSTRUMENT_NOT_ACCEPTED",
+          "PAYMENTS_INSTRUMENT_NOT_COLLECTIBLE",
+          "PAYMENTS_LICENSED_PARTNER_REQUIRED",
+          "PAYMENTS_AMOUNT_OUT_OF_RANGE",
+          "PAYMENTS_REWARD_NOT_ELIGIBLE",
+          "PAYMENTS_ANONYMOUS_NOT_ALLOWED",
+          "PAYMENTS_RATE_LIMITED",
+          "PAYMENTS_CONTRIBUTION_NOT_FOUND",
+          "PAYMENTS_INVALID_TRANSITION",
+          "PAYMENTS_REFUND_INVALID",
+          "PAYMENTS_PROVIDER_UNAVAILABLE",
+          "PAYMENTS_PAYOUT_ACCOUNT_EXISTS",
+          "PAYMENTS_PAYOUT_ACCOUNT_NOT_FOUND",
+          "PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED",
+          "PAYMENTS_PAYOUT_DETAILS_REQUIRED",
+          "PAYMENTS_KYC_NOT_MANUAL",
+          "PAYMENTS_KYC_PENDING",
+          "PAYMENTS_KYC_ALREADY_VERIFIED",
+          "PAYMENTS_KYC_NOT_FOUND",
+          "PAYMENTS_KYC_ALREADY_DECIDED",
+          "PAYMENTS_OFFLINE_NOT_FOUND",
+          "PAYMENTS_OFFLINE_AMOUNT_INVALID",
+          "PAYMENTS_OFFLINE_INVALID_TRANSITION",
+          "PAYMENTS_OFFLINE_PROOF_REQUIRED",
+          "PAYMENTS_DISCREPANCY_NOT_FOUND",
+          "PAYMENTS_WEBHOOK_INVALID"
+        ],
+        "x-access": "payment.quote"
+      }
+    },
     "/v1/projects/{projectId}/payment-options": {
       "get": {
         "operationId": "ContributionsController_options",
@@ -54231,6 +54329,55 @@
         "required": [
           "methodologyId",
           "answers"
+        ],
+        "additionalProperties": false
+      },
+      "IndicativeCurrencyDto_Output": {
+        "type": "object",
+        "properties": {
+          "country": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[A-Z]{2}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "fixedParity": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "currency": {
+                    "type": "string",
+                    "enum": [
+                      "XOF",
+                      "XAF"
+                    ]
+                  },
+                  "unitsPerEur": {
+                    "type": "string",
+                    "pattern": "^(0|[1-9]\\d*)(\\.\\d+)?$"
+                  }
+                },
+                "required": [
+                  "currency",
+                  "unitsPerEur"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "country",
+          "fixedParity"
         ],
         "additionalProperties": false
       },

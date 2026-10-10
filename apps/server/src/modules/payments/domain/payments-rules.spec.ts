@@ -8,7 +8,7 @@ import {
 } from './capability-matrix';
 import { commissionOn, commissionRefundFor, eurPartFor } from './commission';
 import { assertCollectible, assertTransition, canTransition } from './contribution';
-import { eurEquivalent, fixedRate, smallestAmountReaching } from './fx';
+import { eurEquivalent, fixedParityOf, fixedRate, smallestAmountReaching } from './fx';
 import {
   assertBalanced,
   balances,
@@ -53,6 +53,15 @@ describe('conversion to the EUR equivalent', () => {
     expect(eurEquivalent(xof(3n), PARITY)).toEqual(eur(0n));
     expect(eurEquivalent(xof(4n), PARITY)).toEqual(eur(1n));
     expect(eurEquivalent(Money.of(65_596n, 'XAF'), PARITY)).toEqual(eur(10_000n));
+  });
+
+  it('gives the CFA franc of a country of the UEMOA or of the CEMAC, none for another', () => {
+    expect(fixedParityOf('SN')).toEqual({ currency: 'XOF', unitsPerEur: '655.957' });
+    expect(fixedParityOf('GW')).toEqual({ currency: 'XOF', unitsPerEur: '655.957' });
+    expect(fixedParityOf('CM')).toEqual({ currency: 'XAF', unitsPerEur: '655.957' });
+    expect(fixedParityOf('GQ')).toEqual({ currency: 'XAF', unitsPerEur: '655.957' });
+    // Comoros: another franc, another parity; Ghana and France: no fixed parity to the euro.
+    for (const country of ['KM', 'GH', 'FR', null]) expect(fixedParityOf(country)).toBeNull();
   });
 
   it('keeps euros as they are and refuses an unknown rate', () => {

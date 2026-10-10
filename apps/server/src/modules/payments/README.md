@@ -30,6 +30,7 @@ Espèces, virement institutionnel (montant en EUR, XOF ou XAF), engagement de lo
 ## Routes
 
 - `GET /v1/projects/{projectId}/payment-options?country=` et `POST /v1/projects/{projectId}/contribution-quotes` (`payment.quote`)
+- `GET /v1/me/indicative-currency` (`payment.quote`) : le franc CFA du pays déclaré du membre (UEMOA : XOF, CEMAC : XAF) et sa parité fixe, `null` pour une devise flottante ; les pages affichent les montants d'un projet en équivalent indicatif (ADR 0130)
 - `POST /v1/projects/{projectId}/contributions` (`payment.contribute`, `Idempotency-Key`), `POST /v1/organizations/{organizationId}/contributions` (`payment.contribute.organization`, `owner` ou `admin`, `Idempotency-Key`)
 - `GET /v1/me/contributions`, `GET /v1/me/contributions/{contributionId}`, `POST /v1/me/contributions/{contributionId}/return` (`payment.contribution.read`), `POST /v1/me/contributions/{contributionId}/cancel` (`payment.contribution.cancel`)
 - `GET /v1/projects/{projectId}/contributions`, `GET /v1/projects/{projectId}/offline-contributions` (`payment.project.contributions.read`, propriétaires), `GET /v1/projects/{projectId}/contributions/export` (CSV, `payment.project.contributions.export`, propriétaires)

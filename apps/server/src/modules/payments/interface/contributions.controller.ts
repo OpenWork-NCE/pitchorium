@@ -16,6 +16,8 @@ import {
   contributionListQuerySchema,
   contributionPageSchema,
   type ContributionQuote,
+  type IndicativeCurrency,
+  indicativeCurrencySchema,
   contributionQuoteRequestSchema,
   contributionQuoteSchema,
   contributionSchema,
@@ -63,6 +65,7 @@ class ContributionListQueryDto extends createZodDto(contributionListQuerySchema)
 class ProjectContributionPageDto extends createZodDto(projectContributionPageSchema) {}
 class SupporterPageDto extends createZodDto(supporterPageSchema) {}
 class PageQueryDto extends createZodDto(cursorPageQuerySchema) {}
+class IndicativeCurrencyDto extends createZodDto(indicativeCurrencySchema) {}
 
 /** The public list of supporters changes with each contribution: a short cache. */
 const SUPPORTERS_CACHE = 'public, max-age=60';
@@ -80,6 +83,18 @@ export class ContributionsController {
     private readonly contributions: ContributionsService,
     private readonly exports: ExportsService,
   ) {}
+
+  /**
+   * The CFA franc of the declared country of the member and its fixed parity, in which the pages
+   * show amounts as an indicative equivalent; null for a floating currency (ADR 0130).
+   */
+  @Get('me/indicative-currency')
+  @RequireAction('payment.quote')
+  @ZodSerializerDto(IndicativeCurrencyDto)
+  @ApiOkResponse({ type: IndicativeCurrencyDto.Output })
+  indicativeCurrency(@CurrentPrincipal() principal: Principal): Promise<IndicativeCurrency> {
+    return this.quotes.indicativeCurrency(principal.userId);
+  }
 
   /** Methods really available to this contributor (declared country) for this project. */
   @Get('projects/:projectId/payment-options')

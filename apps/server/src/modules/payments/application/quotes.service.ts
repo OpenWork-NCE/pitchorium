@@ -3,6 +3,7 @@ import {
   type ContributionKind,
   type ContributionQuote,
   type ContributionRequestKind,
+  type IndicativeCurrency,
   type PaymentMethod,
   type PaymentOptions,
   type PaymentsUnavailableReason,
@@ -13,7 +14,7 @@ import { ProfilesFacade } from '../../profiles';
 import { type FundableProject, ProjectsFacade } from '../../projects';
 import { type PaymentCapability, PROVIDER_CAPABILITIES } from '../domain/capability-matrix';
 import { assertCollectible } from '../domain/contribution';
-import { EUR, eurEquivalent, type Rate, smallestAmountReaching } from '../domain/fx';
+import { EUR, eurEquivalent, fixedParityOf, type Rate, smallestAmountReaching } from '../domain/fx';
 import type { PayoutAccountRecord } from '../domain/payout';
 import { assertWithinBounds, buildQuote, type Quote, type RewardTerms } from '../domain/quote';
 import {
@@ -80,6 +81,15 @@ export class QuotesService {
       unavailableReason = 'no_payment_route';
     }
     return { project, account, route, contributorCountry, unavailableReason };
+  }
+
+  /**
+   * The CFA franc in which a member may read amounts as an indicative equivalent, from the
+   * country of their profile (ADR 0130).
+   */
+  async indicativeCurrency(userId: string): Promise<IndicativeCurrency> {
+    const country = await this.profiles.countryOf(userId);
+    return { country, fixedParity: fixedParityOf(country) };
   }
 
   async options(

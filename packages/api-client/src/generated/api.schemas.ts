@@ -8110,6 +8110,25 @@ export interface PrefillDtoOutput {
   answers: PrefillDtoOutputAnswers;
 }
 
+export type IndicativeCurrencyDtoOutputFixedParityCurrency =
+  (typeof IndicativeCurrencyDtoOutputFixedParityCurrency)[keyof typeof IndicativeCurrencyDtoOutputFixedParityCurrency];
+
+export const IndicativeCurrencyDtoOutputFixedParityCurrency = {
+  XOF: 'XOF',
+  XAF: 'XAF',
+} as const;
+
+export type IndicativeCurrencyDtoOutputFixedParity = {
+  currency: IndicativeCurrencyDtoOutputFixedParityCurrency;
+  /** @pattern ^(0|[1-9]\d*)(\.\d+)?$ */
+  unitsPerEur: string;
+} | null;
+
+export interface IndicativeCurrencyDtoOutput {
+  country: string | null;
+  fixedParity: IndicativeCurrencyDtoOutputFixedParity;
+}
+
 export type PaymentOptionsDtoOutputUnavailableReason =
   | (typeof PaymentOptionsDtoOutputUnavailableReason)[keyof typeof PaymentOptionsDtoOutputUnavailableReason]
   | null;
