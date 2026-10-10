@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { API_ORIGIN, DEMO_PASSWORD } from '../support/fixtures';
+import { layoutProblems } from './layout-guard';
 
 /**
  * Pages of the projects and of the impact (PROMPT FRONT 5A), server components out of reach of
@@ -77,6 +78,7 @@ for (const page of PAGES) {
             ),
           );
         });
+        expect(await layoutProblems(tab, 'body')).toEqual([]);
         await expect(tab).toHaveScreenshot(`${page.id}-${viewport.name}-${theme}.png`, {
           fullPage: true,
           // Animations brought to their end state: a stable capture.

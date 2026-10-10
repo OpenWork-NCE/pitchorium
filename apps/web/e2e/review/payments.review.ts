@@ -1,5 +1,6 @@
 import { type BrowserContext, expect, type Locator, type Page, test } from '@playwright/test';
 import { API_ORIGIN, DEMO_PASSWORD } from '../support/fixtures';
+import { layoutProblems } from './layout-guard';
 
 /**
  * Screens of the contributions, the payout and the engagement (PROMPT FRONT 5B), on the build of
@@ -201,6 +202,7 @@ for (const screen of SCREENS) {
         const region = screen.act ? await screen.act(tab, viewport.name === 'mobile') : null;
         await expect(tab.locator('main [aria-busy="true"]:not([data-outcome])')).toHaveCount(0);
         await expect(tab.locator('main [data-loading]')).toHaveCount(0);
+        expect(await layoutProblems(tab, 'body')).toEqual([]);
         const name = `${screen.id}-${viewport.name}-${theme}.png`;
         const options = { animations: 'disabled' as const };
         const box = region ? await region.boundingBox() : null;
