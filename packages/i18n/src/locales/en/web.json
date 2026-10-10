@@ -893,7 +893,10 @@
       "fundingTarget": "Funding target",
       "pitch": "Pitch",
       "needs": "Needs",
-      "soughtExpertise": "Sought expertise"
+      "soughtExpertise": "Sought expertise",
+      "methodology": "See the methodology of the impact",
+      "impactAssess": "Assess the impact of my activity",
+      "impactManage": "Review the impact assessment and its history"
     },
     "contributor": {
       "title": "Contributor facet",

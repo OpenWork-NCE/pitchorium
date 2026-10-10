@@ -7,6 +7,7 @@ import {
   DescriptionList,
   Heading,
   ImpactBadge,
+  Link,
   Money,
   Tag,
   Text,
@@ -133,9 +134,17 @@ export async function EntrepreneurSection({
                   score: detail.value,
                   max: detail.maxValue,
                 }))}
+                methodology={{ href: routes.impactMethodology, label: t('methodology') }}
               />
             ) : null}
           </div>
+          {editable ? (
+            <p className="text-sm">
+              <Link href={routes.profileImpact} variant="standalone">
+                {impact ? t('impactManage') : t('impactAssess')}
+              </Link>
+            </p>
+          ) : null}
           <DescriptionList
             items={[
               {

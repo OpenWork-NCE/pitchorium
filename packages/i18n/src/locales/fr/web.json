@@ -893,7 +893,10 @@
       "fundingTarget": "Financement visé",
       "pitch": "Pitch",
       "needs": "Besoins",
-      "soughtExpertise": "Expertises recherchées"
+      "soughtExpertise": "Expertises recherchées",
+      "methodology": "Voir la méthodologie de l’impact",
+      "impactAssess": "Évaluer l’impact de mon activité",
+      "impactManage": "Revoir l’évaluation d’impact et son historique"
     },
     "contributor": {
       "title": "Volet contributeur",
