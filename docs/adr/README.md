@@ -142,3 +142,5 @@ Un fichier par décision, numéroté, au format Contexte / Décision / Conséque
 | [0136](0136-contribution-journey.md)                                  | Parcours de contribution                                        |
 | [0137](0137-return-polling.md)                                        | Interrogation de l'état au retour du prestataire                |
 | [0138](0138-availability-and-unavailable-methods-in-the-interface.md) | États de disponibilité et moyens indisponibles dans l'interface |
+| [0139](0139-coverage-presentation-and-payout-choice.md)               | Présentation de la couverture et choix du versement             |
+| [0140](0140-display-of-bank-details.md)                               | Affichage des données bancaires                                 |

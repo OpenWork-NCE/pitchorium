@@ -45,6 +45,11 @@ export const routes = {
   settingsPrivacy: '/settings/privacy',
   /** « Mes organisations »: the organisations of the member and their role. */
   settingsOrganizations: '/settings/organizations',
+  /**
+   * « Versement et vérification »: payout account and identity check of a holder (§9.5); also the
+   * return address of a hosted onboarding the api gives the provider.
+   */
+  settingsPayouts: '/settings/payouts',
   // Pages of a resource, one address for visitors and members (ADR 0101), the showcase included.
   project: (slug: string) => `/projects/${encodeURIComponent(slug)}`,
   /** Creation of a project, step by step (`new` is a reserved slug, ADR 0131). */

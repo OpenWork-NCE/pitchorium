@@ -1875,7 +1875,8 @@
       "security": "Sécurité",
       "preferences": "Préférences",
       "privacy": "Confidentialité et réseau",
-      "organizations": "Mes organisations"
+      "organizations": "Mes organisations",
+      "payouts": "Versement et vérification"
     },
     "account": {
       "email": {
@@ -2663,6 +2664,122 @@
         "waitUploads": "Attendez la fin de l’envoi des pièces.",
         "cancel": "Annuler"
       }
+    },
+    "payouts": {
+      "chooseTitle": "Choisir votre option de versement",
+      "changeTitle": "Changer d’option de versement",
+      "chooseDescription": "Les contributions en ligne à vos projets arrivent sur ce compte, chez un prestataire agréé. Pitchorium ne détient jamais les fonds.",
+      "coverage": {
+        "title": "Zones couvertes",
+        "principle": "Ce qui compte est le pays du compte bancaire qui reçoit les fonds, pas votre pays de résidence ni celui du projet : un porteur établi au Sénégal peut recevoir sur un compte en France s’il remplit les conditions du prestataire.",
+        "none": "Aucune option de versement n’est ouverte pour le moment.",
+        "countries": "Pays du compte de versement : {{countries}}.",
+        "currencies": "Devise de versement : {{currencies}}.",
+        "methods": "Vos contributeurs pourront payer par : {{methods}}.",
+        "verified": "Couverture vérifiée auprès des prestataires (version {{version}}, vérifiée depuis le {{date}})."
+      },
+      "choice": {
+        "country": "Pays de votre compte bancaire",
+        "countryHint": "Le pays où est tenu le compte qui recevra les fonds.",
+        "countryPlaceholder": "Choisir un pays",
+        "uncoveredTitle": "Aucune option couverte pour un compte dans ce pays ({{country}})",
+        "uncoveredBody": "Les prestataires vérifiés n’ouvrent pas encore de compte de versement dans ce pays.",
+        "uncoveredOther": "Si vous détenez un compte dans un pays couvert ({{countries}}), choisissez ce pays.",
+        "uncoveredAlternatives": "En attendant, vos projets restent ouverts au love money, aux manifestations d’intérêt et aux contributions hors plateforme.",
+        "option": "Option de versement",
+        "optionTitle": "{{provider}}, compte tenu dans ce pays : {{country}}",
+        "settledIn": "Versement en {{currency}}",
+        "requirements": "Conditions du prestataire",
+        "documents": "Pièces demandées",
+        "companyOnly": "(pour un compte au nom d’une société)",
+        "contributorsPay": "Vos contributeurs pourront payer par",
+        "methodFrom": "{{method}}, depuis : {{countries}}",
+        "notCovered": "Non couvert avec cette option : {{methods}}.",
+        "sameOption": "C’est l’option de votre compte actuel.",
+        "confirm": "Je confirme remplir les conditions de {{provider}} pour un compte tenu dans ce pays ({{country}}).",
+        "confirmFirst": "Confirmez d’abord remplir les conditions du prestataire.",
+        "submit": "Ouvrir mon compte de versement",
+        "submitChange": "Changer d’option de versement",
+        "saving": "Enregistrement en cours",
+        "cancel": "Annuler",
+        "changeTitle": "Ce que change un changement d’option",
+        "changeNewAccount": "Un nouveau compte est ouvert chez le prestataire choisi ; il reçoit les prochaines contributions.",
+        "changeStripeCountry": "Le pays d’un compte Stripe ne peut jamais être modifié : pour un autre pays, un nouveau compte est ouvert.",
+        "changeKept": "Votre compte actuel reste chez son prestataire pour les contributions déjà reçues (remboursements et litiges compris).",
+        "stale": {
+          "title": "Reconnectez-vous pour changer de compte",
+          "body": "Changer la destination de l’argent exige une connexion récente. Reconnectez-vous, puis revenez ici.",
+          "action": "Se reconnecter"
+        },
+        "bank": {
+          "title": "Coordonnées bancaires",
+          "privacy": "Transmises directement au prestataire, jamais conservées par Pitchorium ni par votre navigateur.",
+          "accountName": "Titulaire du compte",
+          "bankCode": "Code de la banque",
+          "bankCodeHint": "Le code de votre banque, tel que le prestataire le demande.",
+          "accountNumber": "Numéro de compte",
+          "mobileNumber": "Numéro Mobile Money",
+          "mobileNumberHint": "Au format international, par exemple +233201234567.",
+          "continue": "Vérifier avant l’envoi",
+          "review": "Vérifiez vos coordonnées, masquées à l’affichage",
+          "edit": "Modifier les coordonnées",
+          "incomplete": "Renseignez le titulaire, le code de la banque et le numéro de compte."
+        }
+      },
+      "account": {
+        "title": "Votre compte de versement",
+        "provider": "Prestataire",
+        "country": "Pays du compte",
+        "currency": "Devise de versement",
+        "openTitle": "Contributions ouvertes",
+        "openBody": "Vos projets reçoivent des contributions en ligne sur ce compte.",
+        "notCoveredTitle": "Compte plus couvert",
+        "notCoveredBody": "Cette option n’est plus couverte par la vérification des prestataires : vos projets ne reçoivent plus de contributions en ligne. Choisissez une autre option.",
+        "pendingTitle": "Contributions pas encore ouvertes",
+        "pendingKyc": "Il reste à faire vérifier votre identité, plus bas.",
+        "pendingAccount": "Le prestataire n’a pas encore activé votre compte : terminez les étapes demandées chez lui.",
+        "continueOnboarding": "Continuer chez le prestataire",
+        "refresh": "Actualiser l’état",
+        "refreshing": "Actualisation en cours",
+        "change": "Changer d’option de versement"
+      },
+      "kyc": {
+        "title": "Vérification d’identité",
+        "noAccount": "La vérification d’identité suit le choix du compte de versement.",
+        "provider": {
+          "not_submitted": "Le prestataire vérifie votre identité pendant l’ouverture du compte.",
+          "pending": "Le prestataire examine votre identité.",
+          "verified": "Votre identité est vérifiée par le prestataire.",
+          "rejected": "Le prestataire n’a pas pu vérifier votre identité : reprenez les étapes chez lui."
+        },
+        "manual_review": {
+          "not_submitted": "Déposez une pièce d’identité : l’équipe de Pitchorium l’examine.",
+          "pending": "Vos pièces sont en cours d’examen par l’équipe de Pitchorium.",
+          "verified": "Votre identité est vérifiée.",
+          "rejected": "La vérification a été refusée : lisez le motif, puis déposez de nouvelles pièces."
+        },
+        "rejectedTitle": "Motif du refus",
+        "submittedAt": "Dernier dépôt le {{date}}.",
+        "documents": "Pièces d’identité",
+        "documentsLimits": "PDF, JPEG ou PNG, {{max}} fichiers au plus. Privées : lues par l’équipe de vérification seulement.",
+        "certification": "Je certifie que ces pièces sont authentiques et me concernent.",
+        "certificationRequired": "Cochez d’abord la certification.",
+        "documentsRequired": "Déposez d’abord au moins une pièce.",
+        "waitUploads": "Attendez la fin de l’envoi des pièces.",
+        "submit": "Envoyer pour vérification",
+        "resubmit": "Envoyer de nouvelles pièces",
+        "submitting": "Envoi en cours"
+      },
+      "unavailable": {
+        "title": "Versement réservé aux porteurs de projet",
+        "body": "Pour recevoir des contributions, complétez d’abord : {{elements}}.",
+        "action": "Compléter mon profil"
+      }
+    },
+    "prerequisites": {
+      "payout_account": "Un compte de versement couvert est nécessaire pour recevoir des contributions en ligne. Il se choisit dans « Versement et vérification ».",
+      "kyc_verified": "Votre identité doit être vérifiée avant l’ouverture des contributions en ligne. Elle se fait dans « Versement et vérification ».",
+      "action": "Ouvrir « Versement et vérification »"
     }
   }
 }

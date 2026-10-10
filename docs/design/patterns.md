@@ -119,6 +119,13 @@ Comment assembler les composants (`components.md`) pour les situations récurren
 - Récapitulatif : le devis de l'api en chiffres tabulaires et toutes les décimales de la devise (`financial`), les mentions du §9.5 et « Pitchorium ne détient pas les fonds » sur un fond creux, puis « Payer 40,00 € » en pleine largeur ; un seul paiement par intention (double clic sans effet).
 - Retour : en attente (indicateur sobre, partir est possible, « Vérifier à nouveau »), payé (coche dessinée, montant compté, paliers débloqués, « pas un reçu fiscal », suivre puis partager, WhatsApp en premier, aucun effet festif), non payé (explication, rien n'est prélevé, « Réessayer » avec les mêmes choix).
 
+## Versement et vérification (§9.5, ADR 0139, 0140)
+
+- En tête, le principe : le pays du compte bancaire décide, pas le pays de résidence ni celui du projet ; puis la couverture, option par option.
+- Choix en deux temps : le pays du compte, puis l'option (conditions et pièces, moyens des contributeurs, ce qui n'est pas couvert) ; une case de confirmation explicite ; les coordonnées bancaires relues masquées avant l'envoi. Un pays sans option dit pourquoi et ce qui reste possible.
+- Un changement d'option explique ses conséquences avant la confirmation ; un refus de l'api désactive l'action avec sa raison ; une session trop ancienne propose de se reconnecter.
+- KYC : état en badge, motif d'un refus en `Alert`, dépôt de pièces privées et certification.
+
 ## Impact (§12, ADR 0036)
 
 - `/impact/methodology` : critères, échelle, pondérations et version en vigueur, mention « auto-déclaré, non certifié » ; sans méthodologie publiée, un état qui le dit.

@@ -162,6 +162,14 @@ export const CLIENT_MESSAGES = {
     'reference.paymentMethods',
     'reference.mobileMoneyOperators',
     'reference.offlineContributionKinds',
+    'reference.offlineContributionStatuses',
+    'reference.contributionStatuses',
+    // Payout and identity check of a holder (« Versement et vérification »).
+    'reference.paymentProviders',
+    'reference.payoutRequirements',
+    'reference.payoutDocuments',
+    'reference.payoutAccountStatuses',
+    'reference.kycStatuses',
   ],
   admin: [
     ...DOCUMENT_MESSAGES,

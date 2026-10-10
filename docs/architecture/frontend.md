@@ -69,7 +69,7 @@ sequenceDiagram
 - Les écrans de `(auth)` lisent `GET /v1/auth-configuration` côté serveur (`lib/auth/configuration.ts`) : fournisseurs OAuth, Turnstile (script de Cloudflare chargé par ces seuls écrans, cadre permis par la CSP), versions des conditions. Le client Better Auth se charge au premier envoi ; `authCall` y ajoute le jeton Turnstile et lit le délai d'une limite.
 - Toute connexion revient à `/continue?redirectTo=` (serveur) : conditions à accepter d'abord, puis la page demandée, validée sur la même origine (`lib/auth/redirect.ts`, aussi pour le proxy). Un nouveau compte passe par `/onboarding` (conditions, intention, profil minimum).
 - Prérequis : `PrerequisiteGateProvider` (coquille membre) et `useWithPrerequisites` ouvrent le formulaire de chaque élément manquant puis rejouent l'action ; dialogue et formulaires chargés au premier refus. Les éléments viennent tous de l'api (ADR 0109) : l'entrée de l'administration et la bannière de double authentification lisent `GET /v1/me/prerequisites/trust.moderation.read`.
-- Paramètres : `/settings/account`, `/settings/security`, `/settings/privacy` (confidentialité et réseau), `/settings/organizations` (« Mes organisations », aussi dans le menu du compte), `/settings/preferences`, une adresse par section ; `(admin)` renvoie vers la sécurité un rôle privilégié dont l'api demande la double authentification.
+- Paramètres : `/settings/account`, `/settings/security`, `/settings/privacy` (confidentialité et réseau), `/settings/organizations` (« Mes organisations », aussi dans le menu du compte), `/settings/preferences`, `/settings/payouts` (versement et vérification, pour un membre qui a un volet entrepreneur), une adresse par section ; `(admin)` renvoie vers la sécurité un rôle privilégié dont l'api demande la double authentification.
 
 ## Profils, organisations et réseau (PROMPT FRONT 3)
 
@@ -95,7 +95,7 @@ sequenceDiagram
 
 ## Contributions et versement (PROMPT FRONT 5B)
 
-- Pages : `/contributions/{id}/return` (`(app)`, retour du prestataire, adresse donnée par l'api, ADR 0137) ; le parcours « Contribuer » s'ouvre sur la page projet (`?contribute=<étape>`, ADR 0136).
+- Pages : `/contributions/{id}/return` (`(app)`, retour du prestataire, adresse donnée par l'api, ADR 0137) ; `/settings/payouts` (« Versement et vérification » : couverture, choix et changement du versement, KYC, ADR 0139 et 0140, aussi l'adresse de retour d'un onboarding hébergé) ; le parcours « Contribuer » s'ouvre sur la page projet (`?contribute=<étape>`, ADR 0136).
 - Feature `payments` : règles d'affichage pures et testées dans `lib/` (présentation de chaque code de disponibilité, moyens disponibles et indisponibles, étapes du parcours, interrogation du retour, adresse de paiement, masquage, couverture, limites recopiées des contrats) ; entrée « Contribuer » chargée à la demande (`LazyContributeEntry`, composée par la page projet avec la vue de l'api), parcours et déclaration hors plateforme chargés à l'ouverture.
 - Données : options relues 500 ms après un changement de pays, de devise ou de montant (`usePaymentOptions`) ; devis relu de même (`useQuote`) ; contribution créée avec une `Idempotency-Key` par intention ; état du retour relu par `createPoller` ; aucun état de paiement dans le stockage du navigateur.
 

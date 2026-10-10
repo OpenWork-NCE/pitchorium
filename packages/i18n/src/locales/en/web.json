@@ -1875,7 +1875,8 @@
       "security": "Security",
       "preferences": "Preferences",
       "privacy": "Privacy and network",
-      "organizations": "My organizations"
+      "organizations": "My organizations",
+      "payouts": "Payout and verification"
     },
     "account": {
       "email": {
@@ -2663,6 +2664,122 @@
         "waitUploads": "Wait until the documents are sent.",
         "cancel": "Cancel"
       }
+    },
+    "payouts": {
+      "chooseTitle": "Choose your payout option",
+      "changeTitle": "Change your payout option",
+      "chooseDescription": "Online contributions to your projects reach this account, at a licensed provider. Pitchorium never holds the funds.",
+      "coverage": {
+        "title": "Covered areas",
+        "principle": "What matters is the country of the bank account that receives the funds, not your country of residence nor the project’s: a holder based in Senegal may receive on an account in France if they meet the conditions of the provider.",
+        "none": "No payout option is open for now.",
+        "countries": "Country of the payout account: {{countries}}.",
+        "currencies": "Payout currency: {{currencies}}.",
+        "methods": "Your contributors will be able to pay by: {{methods}}.",
+        "verified": "Coverage checked with the providers (version {{version}}, checked since {{date}})."
+      },
+      "choice": {
+        "country": "Country of your bank account",
+        "countryHint": "The country where the account that will receive the funds is held.",
+        "countryPlaceholder": "Choose a country",
+        "uncoveredTitle": "No covered option for an account in {{country}}",
+        "uncoveredBody": "The verified providers do not open payout accounts in this country yet.",
+        "uncoveredOther": "If you hold an account in a covered country ({{countries}}), choose that country.",
+        "uncoveredAlternatives": "Meanwhile, your projects stay open to love money, expressions of interest and off-platform contributions.",
+        "option": "Payout option",
+        "optionTitle": "{{provider}}, account in {{country}}",
+        "settledIn": "Paid out in {{currency}}",
+        "requirements": "Conditions of the provider",
+        "documents": "Documents asked",
+        "companyOnly": "(for an account in the name of a company)",
+        "contributorsPay": "Your contributors will be able to pay by",
+        "methodFrom": "{{method}}, from: {{countries}}",
+        "notCovered": "Not covered with this option: {{methods}}.",
+        "sameOption": "This is the option of your current account.",
+        "confirm": "I confirm I meet the conditions of {{provider}} for an account in {{country}}.",
+        "confirmFirst": "Confirm first that you meet the conditions of the provider.",
+        "submit": "Open my payout account",
+        "submitChange": "Change payout option",
+        "saving": "Saving",
+        "cancel": "Cancel",
+        "changeTitle": "What a change of option means",
+        "changeNewAccount": "A new account is opened at the provider chosen; it receives the next contributions.",
+        "changeStripeCountry": "The country of a Stripe account can never be changed: for another country, a new account is opened.",
+        "changeKept": "Your current account stays at its provider for the contributions already received (refunds and disputes included).",
+        "stale": {
+          "title": "Sign in again to change your account",
+          "body": "Changing where the money goes requires a recent sign-in. Sign in again, then come back here.",
+          "action": "Sign in again"
+        },
+        "bank": {
+          "title": "Bank details",
+          "privacy": "Sent directly to the provider, never kept by Pitchorium nor by your browser.",
+          "accountName": "Account holder",
+          "bankCode": "Bank code",
+          "bankCodeHint": "The code of your bank, as the provider asks for it.",
+          "accountNumber": "Account number",
+          "mobileNumber": "Mobile money number",
+          "mobileNumberHint": "In international format, for instance +233201234567.",
+          "continue": "Review before sending",
+          "review": "Check your details, masked on screen",
+          "edit": "Edit the details",
+          "incomplete": "Fill in the holder, the bank code and the account number."
+        }
+      },
+      "account": {
+        "title": "Your payout account",
+        "provider": "Provider",
+        "country": "Country of the account",
+        "currency": "Payout currency",
+        "openTitle": "Contributions open",
+        "openBody": "Your projects receive online contributions on this account.",
+        "notCoveredTitle": "Account no longer covered",
+        "notCoveredBody": "This option is no longer covered by the check of the providers: your projects no longer receive online contributions. Choose another option.",
+        "pendingTitle": "Contributions not open yet",
+        "pendingKyc": "Your identity still has to be verified, below.",
+        "pendingAccount": "The provider has not activated your account yet: finish the steps it asks for.",
+        "continueOnboarding": "Continue at the provider",
+        "refresh": "Refresh the state",
+        "refreshing": "Refreshing",
+        "change": "Change payout option"
+      },
+      "kyc": {
+        "title": "Identity verification",
+        "noAccount": "The identity verification follows the choice of the payout account.",
+        "provider": {
+          "not_submitted": "The provider verifies your identity while opening the account.",
+          "pending": "The provider is examining your identity.",
+          "verified": "Your identity is verified by the provider.",
+          "rejected": "The provider could not verify your identity: resume the steps with it."
+        },
+        "manual_review": {
+          "not_submitted": "Upload an identity document: the Pitchorium team examines it.",
+          "pending": "Your documents are being examined by the Pitchorium team.",
+          "verified": "Your identity is verified.",
+          "rejected": "The verification was refused: read the reason, then upload new documents."
+        },
+        "rejectedTitle": "Reason for the refusal",
+        "submittedAt": "Last upload on {{date}}.",
+        "documents": "Identity documents",
+        "documentsLimits": "PDF, JPEG or PNG, {{max}} files at most. Private: read by the verification team only.",
+        "certification": "I certify these documents are genuine and are mine.",
+        "certificationRequired": "Tick the certification first.",
+        "documentsRequired": "Upload at least one document first.",
+        "waitUploads": "Wait until the documents are sent.",
+        "submit": "Send for verification",
+        "resubmit": "Send new documents",
+        "submitting": "Sending"
+      },
+      "unavailable": {
+        "title": "Payouts are for project holders",
+        "body": "To receive contributions, first complete: {{elements}}.",
+        "action": "Complete my profile"
+      }
+    },
+    "prerequisites": {
+      "payout_account": "A covered payout account is needed to receive online contributions. It is chosen in “Payout and verification”.",
+      "kyc_verified": "Your identity must be verified before online contributions open. It is done in “Payout and verification”.",
+      "action": "Open “Payout and verification”"
     }
   }
 }
