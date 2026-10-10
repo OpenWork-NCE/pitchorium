@@ -128,3 +128,12 @@ gh run download <id> -n diagnose-firefox-1
 - Comparer avec le poste : nombre de processeurs, fuseau (UTC sur le runner), polices, latence, ordre des tests (`--repeat-each` garde l'ordre du fichier), parallélisme (un worker), base partagée entre parcours.
 - Le garde de la console (`e2e/support/console-guard.ts`) ajoute à une erreur le nom, le message, le code et la pile des objets `Error` reçus : Firefox n'écrit que « Error » pour `console.error(error)`.
 - Une correction est prouvée par 30 passages consécutifs sur le runner, dans le moteur en cause.
+
+## Préchargement en 404 sous `next dev`
+
+Sous `pnpm dev` seulement, une page qui sert visiteurs et membres (`/projects`, `/projects/{slug}`) précharge pour un membre un fragment que le serveur de développement ne sert pas (`/_next/static/chunks/apps_web_src_<hachage>_._.js`, 404, puis l'avertissement « preloaded using link preload but not used ») :
+
+- cause : le rendu serveur de `LazyMemberFrame` (`next/dynamic`) ajoute un `<link rel="preload">` pour chaque fragment listé par le `react-loadable-manifest.json` de la page ; en développement, Turbopack y inscrit un fragment qu'il n'émet jamais (absent de `.next/dev/static/chunks`, reproduit depuis un `.next/dev` vide) ;
+- sans effet : le cadre membre se charge par ses vrais fragments (200) et s'affiche ;
+- la production n'est pas touchée : dans `.next-e2e` et `.next-live`, chaque fragment des 59 manifestes existe, et les suites simulée et réelle passent avec le garde strict ;
+- exception du garde de la console limitée à `E2E_NEXT_DEV=1` (suite lancée contre `pnpm dev` par `test:e2e:live:run`) et au seul message 404 d'un fichier de `/_next/static/chunks/` ; sans cette variable, le même parcours échoue sur ce 404, et la CI ne la pose jamais.

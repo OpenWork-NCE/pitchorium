@@ -16,6 +16,16 @@ import {
 /** Warnings of React and Next.js about a server render the browser does not match. */
 const HYDRATION = /hydrat|did not match|server rendered (HTML|text)|Expected server HTML/i;
 
+/**
+ * `next dev` only (E2E_NEXT_DEV=1, a suite run against `pnpm dev`): the server render of a
+ * `next/dynamic` component preloads the chunks its dev manifest lists, one of which Turbopack
+ * never emits in development (the member frame), so that preload answers 404 while the module
+ * loads from its real chunks. Proved in docs/architecture/testing.md; production builds, the
+ * only ones of the CI, list existing chunks only and keep the guard strict.
+ */
+const NEXT_DEV = process.env.E2E_NEXT_DEV === '1';
+const DEV_CHUNK_PRELOAD = /^https?:\/\/[^/]+\/_next\/static\/chunks\/[\w.-]+\.js$/;
+
 /** Patterns the current test declared as expected, cleared after each test. */
 let allowed: RegExp[] = [];
 
@@ -82,6 +92,13 @@ async function watch(
       /(Failed to execute ‘postMessage’|Unable to post message to) .*challenges\.cloudflare\.com/.test(
         text,
       )
+    ) {
+      return;
+    }
+    if (
+      NEXT_DEV &&
+      text === 'Failed to load resource: the server responded with a status of 404 (Not Found)' &&
+      DEV_CHUNK_PRELOAD.test(location.url)
     ) {
       return;
     }
