@@ -81,6 +81,8 @@ export interface DemoProject {
     amount: number;
     /** Paid in XOF: `amount` euros at the fixed parity, exactly. */
     inXof?: boolean;
+    /** By mobile money (in XOF, from a member of a mobile money country), by card otherwise. */
+    mobileMoney?: boolean;
     daysAfterPublication: number;
     rewardIndex?: number;
   }[];
@@ -97,9 +99,11 @@ export interface DemoProject {
 }
 
 /**
- * Country of the payout account each collecting holder chose: never the country of their profile
- * nor of their project (ADR 0043). Aïssatou lives in Senegal and Jean-Baptiste in Côte d'Ivoire,
- * where no rail is verified: their accounts are in France.
+ * Country of the payout account each collecting holder chose at the simulated provider: never the
+ * country of their profile nor of their project (ADR 0043, 0134). Aïssatou lives in Senegal and
+ * Jean-Baptiste in Côte d'Ivoire, where no rail is verified: their accounts are in France. Grace,
+ * in Kenya, has none: no rail serves Kenya, her campaign shows a holder without a covered payout
+ * account.
  */
 export const DEMO_PAYOUT_COUNTRIES: Readonly<Record<string, string>> = {
   aissatou: 'FR',
@@ -159,6 +163,14 @@ export const DEMO_PROJECTS: readonly DemoProject[] = [
       { contributor: 'kofi', amount: 5_000, daysAfterPublication: 1 },
       { contributor: 'fatou', amount: 2_400, daysAfterPublication: 4, rewardIndex: 0 },
       { contributor: 'thierry', amount: 5_000, daysAfterPublication: 9, rewardIndex: 1 },
+      // From Côte d'Ivoire, by mobile money: offered there, never to Fatou in Belgium.
+      {
+        contributor: 'jeanbaptiste',
+        amount: 1_500,
+        inXof: true,
+        mobileMoney: true,
+        daysAfterPublication: 12,
+      },
     ],
     updates: [
       {
@@ -278,6 +290,14 @@ export const DEMO_PROJECTS: readonly DemoProject[] = [
     contributions: [
       { contributor: 'fatou', amount: 9_000, inXof: true, daysAfterPublication: 3 },
       { contributor: 'koffi', amount: 9_000, daysAfterPublication: 30 },
+      // From Senegal, by mobile money, in the same franc as the project's country.
+      {
+        contributor: 'aissatou',
+        amount: 500,
+        inXof: true,
+        mobileMoney: true,
+        daysAfterPublication: 35,
+      },
     ],
     updates: [
       {

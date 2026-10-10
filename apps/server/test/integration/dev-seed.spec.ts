@@ -8,6 +8,7 @@ import { S3ObjectStorage } from '../../src/platform/storage/s3-object-storage';
 import {
   DEMO_EMAIL_DOMAIN,
   DEMO_PASSWORD,
+  demoId,
   type DevSeedResult,
   seedDevData,
 } from '../../scripts/dev-seed/seed-dev-data';
@@ -18,6 +19,7 @@ import { seedDevProjectFiles } from '../../scripts/dev-seed/seed-dev-project-fil
 import { createSeedContext, seedDevProjects } from '../../scripts/dev-seed/seed-dev-projects';
 import { seedDevTrust } from '../../scripts/dev-seed/seed-dev-trust';
 import { MethodologiesService } from '../../src/modules/impact/application/methodologies.service';
+import { QuotesService } from '../../src/modules/payments/application/quotes.service';
 import { ReconciliationService } from '../../src/modules/payments/application/reconciliation.service';
 import { FixedClock } from '../../src/platform/kernel';
 import { createApiTestApp } from './support/api-app';
@@ -115,7 +117,7 @@ describe('development data', () => {
         methodologies: 1,
         assessments: 7,
         projects: 8,
-        contributions: 11,
+        contributions: 13,
         projectFollows: 8,
         projectPosts: 2,
       });
@@ -157,12 +159,51 @@ describe('development data', () => {
       const paid = await query<{ count: string }>(
         `SELECT count(*) FROM payments.contributions WHERE status = 'succeeded'`,
       );
-      expect(Number(paid[0]?.count)).toBe(11);
+      expect(Number(paid[0]?.count)).toBe(13);
       const report = await context
         .get(ReconciliationService, { strict: false })
         .run(365 * 86_400_000);
       expect(report.discrepancies).toEqual([]);
-      expect(report.checkedTransactions).toBe(11);
+      expect(report.checkedTransactions).toBe(13);
+      // Payment coverage (ADR 0134, 0135): Aïssatou lives in Senegal and collects through the
+      // account she chose in France; Grace, in Kenya, has no covered payout account.
+      const member = (key: string) => demoId(`member:${key}`);
+      const [aissatou] = await query<{ resident: string; payout: string }>(
+        `SELECT p.country_code AS resident, a.country AS payout
+         FROM payments.payout_accounts a JOIN profiles.profiles p ON p.user_id = a.user_id
+         WHERE a.user_id = $1`,
+        [member('aissatou')],
+      );
+      expect(aissatou).toEqual({ resident: 'SN', payout: 'FR' });
+      const projectOf = async (owner: string) =>
+        (
+          await query<{ id: string }>(
+            `SELECT id FROM projects.projects WHERE owner_id = $1 AND status = 'funding'`,
+            [member(owner)],
+          )
+        )[0]?.id ?? '';
+      const quotes = context.get(QuotesService, { strict: false });
+      const kisumu = await quotes.options(await projectOf('grace'), member('nadia'), {});
+      expect(kisumu).toMatchObject({
+        availability: 'holder_without_covered_payout_account',
+        rail: null,
+        acceptsPayments: false,
+      });
+      const thies = await projectOf('aissatou');
+      const fromBelgium = await quotes.options(thies, member('fatou'), {});
+      expect(fromBelgium).toMatchObject({
+        availability: 'open',
+        rail: { provider: 'simulated', payoutCountry: 'FR', payoutCurrency: 'EUR' },
+        contributorCountry: 'BE',
+        unavailableMethods: [{ method: 'mobile_money', reason: 'contributor_country_not_covered' }],
+      });
+      const fromIvoryCoast = await quotes.options(thies, member('jeanbaptiste'), {});
+      expect(fromIvoryCoast.unavailableMethods).toEqual([]);
+      const mobileMoney = await query<{ count: string }>(
+        `SELECT count(*) FROM payments.contributions
+         WHERE method = 'mobile_money' AND status = 'succeeded' AND currency = 'XOF'`,
+      );
+      expect(Number(mobileMoney[0]?.count)).toBe(2);
       const withProjects = await counts();
       expect(await seedDevProjects(context, clock)).toEqual({
         methodologies: 0,

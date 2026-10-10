@@ -189,7 +189,7 @@ export async function seedDevProjects(
     const request = {
       kind: rewardId ? ('reward_crowdfunding' as const) : ('donation' as const),
       amount: contribution.inXof ? francs(contribution.amount) : euros(contribution.amount),
-      method: 'card' as const,
+      method: contribution.mobileMoney ? ('mobile_money' as const) : ('card' as const),
       ...(rewardId ? { rewardId } : {}),
       publicDisplay: index % 2 === 0,
       anonymous: false,
