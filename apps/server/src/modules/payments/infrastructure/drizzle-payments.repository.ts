@@ -174,6 +174,7 @@ export class DrizzlePaymentsRepository extends PaymentsRepository {
           filter.projectId ? eq(table.projectId, filter.projectId) : undefined,
           filter.organizationId ? eq(table.organizationId, filter.organizationId) : undefined,
           filter.status ? eq(table.status, filter.status) : undefined,
+          filter.kind ? eq(table.kind, filter.kind) : undefined,
           before(sql`(${table.createdAt}, ${table.id})`, after),
         ),
       )

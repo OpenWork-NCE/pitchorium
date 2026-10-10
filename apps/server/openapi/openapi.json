@@ -19172,6 +19172,19 @@
                 "dispute_lost"
               ]
             }
+          },
+          {
+            "name": "kind",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "donation",
+                "reward_crowdfunding",
+                "love_money"
+              ]
+            }
           }
         ],
         "responses": {
@@ -19475,6 +19488,19 @@
                 "disputed",
                 "dispute_won",
                 "dispute_lost"
+              ]
+            }
+          },
+          {
+            "name": "kind",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "donation",
+                "reward_crowdfunding",
+                "love_money"
               ]
             }
           }

@@ -17244,6 +17244,7 @@ export type ContributionsControllerOfProjectParams = {
    */
   limit?: number;
   status?: ContributionsControllerOfProjectStatus;
+  kind?: ContributionsControllerOfProjectKind;
 };
 
 export type ContributionsControllerOfProjectStatus =
@@ -17262,6 +17263,15 @@ export const ContributionsControllerOfProjectStatus = {
   dispute_lost: 'dispute_lost',
 } as const;
 
+export type ContributionsControllerOfProjectKind =
+  (typeof ContributionsControllerOfProjectKind)[keyof typeof ContributionsControllerOfProjectKind];
+
+export const ContributionsControllerOfProjectKind = {
+  donation: 'donation',
+  reward_crowdfunding: 'reward_crowdfunding',
+  love_money: 'love_money',
+} as const;
+
 export type ContributionsControllerMineParams = {
   /**
    * @minLength 1
@@ -17274,6 +17284,7 @@ export type ContributionsControllerMineParams = {
    */
   limit?: number;
   status?: ContributionsControllerMineStatus;
+  kind?: ContributionsControllerMineKind;
 };
 
 export type ContributionsControllerMineStatus =
@@ -17290,6 +17301,15 @@ export const ContributionsControllerMineStatus = {
   disputed: 'disputed',
   dispute_won: 'dispute_won',
   dispute_lost: 'dispute_lost',
+} as const;
+
+export type ContributionsControllerMineKind =
+  (typeof ContributionsControllerMineKind)[keyof typeof ContributionsControllerMineKind];
+
+export const ContributionsControllerMineKind = {
+  donation: 'donation',
+  reward_crowdfunding: 'reward_crowdfunding',
+  love_money: 'love_money',
 } as const;
 
 export type ContributionsControllerSupportersParams = {

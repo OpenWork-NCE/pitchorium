@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type {
   Contribution,
+  ContributionKind,
   ContributionStatus,
   CreateContributionRequest,
   CursorPage,
@@ -216,10 +217,19 @@ export class ContributionsService {
 
   async mine(
     contributorId: string,
-    query: { cursor?: string | undefined; limit: number; status?: ContributionStatus | undefined },
+    query: {
+      cursor?: string | undefined;
+      limit: number;
+      status?: ContributionStatus | undefined;
+      kind?: ContributionKind | undefined;
+    },
   ): Promise<CursorPage<Contribution>> {
     const rows = await this.payments.contributions(
-      { contributorId, ...(query.status ? { status: query.status } : {}) },
+      {
+        contributorId,
+        ...(query.status ? { status: query.status } : {}),
+        ...(query.kind ? { kind: query.kind } : {}),
+      },
       decodeKeyset(query.cursor),
       query.limit + 1,
     );
@@ -229,10 +239,19 @@ export class ContributionsService {
   /** Contributions of a project for its owners, the contributor shown unless anonymous. */
   async ofProject(
     projectId: string,
-    query: { cursor?: string | undefined; limit: number; status?: ContributionStatus | undefined },
+    query: {
+      cursor?: string | undefined;
+      limit: number;
+      status?: ContributionStatus | undefined;
+      kind?: ContributionKind | undefined;
+    },
   ): Promise<CursorPage<ProjectContribution>> {
     const rows = await this.payments.contributions(
-      { projectId, ...(query.status ? { status: query.status } : {}) },
+      {
+        projectId,
+        ...(query.status ? { status: query.status } : {}),
+        ...(query.kind ? { kind: query.kind } : {}),
+      },
       decodeKeyset(query.cursor),
       query.limit + 1,
     );

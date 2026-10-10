@@ -1,4 +1,5 @@
 import type {
+  ContributionKind,
   ContributionStatus,
   DiscrepancyKind,
   Locale,
@@ -238,6 +239,7 @@ export interface ContributionFilter {
   projectId?: string;
   organizationId?: string;
   status?: ContributionStatus;
+  kind?: ContributionKind;
 }
 
 export abstract class PaymentsRepository {

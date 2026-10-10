@@ -372,6 +372,7 @@ export const contributionIdParamsSchema = z.object({ contributionId: uuidV7Schem
 
 export const contributionListQuerySchema = cursorPageQuerySchema.extend({
   status: contributionStatusSchema.optional(),
+  kind: contributionKindSchema.optional(),
 });
 
 export const contributionPageSchema = cursorPageSchema(contributionSchema);

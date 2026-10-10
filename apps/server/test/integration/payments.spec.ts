@@ -542,6 +542,17 @@ describe('payments', () => {
     expect(await collected(project.id)).toBe(240_000n);
     const tiers = (await ama.agent.get(`/v1/projects/${project.id}`).expect(200)).body as Project;
     expect(tiers.tiers[0]?.unlocked).toBe(true);
+    // The team filters the contributions of its project by kind.
+    const ofKind = async (kind: string) =>
+      (
+        (
+          await holder.agent
+            .get(`/v1/projects/${project.id}/contributions?kind=${kind}`)
+            .expect(200)
+        ).body as { items: Contribution[] }
+      ).items.map((item) => item.id);
+    expect(await ofKind('reward_crowdfunding')).toEqual([contribution.id]);
+    expect(await ofKind('donation')).toEqual([]);
     const ledger = await query<{ account: string; amount: string }>(
       `SELECT l.account, l.amount_minor::text AS amount FROM payments.ledger_lines l
        JOIN payments.ledger_entries e ON e.id = l.entry_id
