@@ -13,7 +13,7 @@ export default async function SettingsLayout({ children }: { children: ReactNode
         <Heading level={1} size="page">
           {t('title')}
         </Heading>
-        <div className="grid gap-6 lg:grid-cols-[12rem_minmax(0,1fr)] lg:gap-10">
+        <div className="grid gap-6 lg:grid-cols-[14rem_minmax(0,1fr)] lg:gap-10">
           <SettingsNav />
           <div className="min-w-0">{children}</div>
         </div>

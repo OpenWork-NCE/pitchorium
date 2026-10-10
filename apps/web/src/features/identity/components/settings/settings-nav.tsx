@@ -38,7 +38,7 @@ export function SettingsNav() {
                 href={href}
                 aria-current={current ? 'page' : undefined}
                 className={cn(
-                  'block rounded-md px-3 py-2 text-sm font-medium whitespace-nowrap transition-colors duration-(--duration-micro) hover:bg-surface-sunken',
+                  'block rounded-md px-3 py-2 text-sm font-medium whitespace-nowrap transition-colors duration-(--duration-micro) hover:bg-surface-sunken lg:whitespace-normal',
                   current ? 'bg-accent-subtle text-on-accent-subtle' : 'text-muted',
                 )}
               >
