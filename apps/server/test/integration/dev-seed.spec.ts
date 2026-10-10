@@ -14,6 +14,7 @@ import {
 import { seedDevContent } from '../../scripts/dev-seed/seed-dev-content';
 import { sampleSuggestions, seedDevDiscovery } from '../../scripts/dev-seed/seed-dev-discovery';
 import { seedDevMessaging } from '../../scripts/dev-seed/seed-dev-messaging';
+import { seedDevProjectFiles } from '../../scripts/dev-seed/seed-dev-project-files';
 import { createSeedContext, seedDevProjects } from '../../scripts/dev-seed/seed-dev-projects';
 import { seedDevTrust } from '../../scripts/dev-seed/seed-dev-trust';
 import { MethodologiesService } from '../../src/modules/impact/application/methodologies.service';
@@ -278,6 +279,34 @@ describe('development data', () => {
     } finally {
       await context.close();
     }
+
+    // The gallery with its text alternatives and the private documents, once (FRONT 5A).
+    expect(await seedDevProjectFiles(handle.db, storage, new Date())).toBe(6);
+    expect(await seedDevProjectFiles(handle.db, storage, new Date())).toBe(0);
+    const [thies] = await query<{ gallery: number; alts: number; documents: number }>(
+      `SELECT cardinality(gallery_media_ids) AS gallery,
+         (SELECT count(*) FROM jsonb_object_keys(gallery_alts))::int AS alts,
+         cardinality(document_media_ids) AS documents
+       FROM projects.projects WHERE video_id IS NOT NULL AND status = 'funding'
+       ORDER BY published_at LIMIT 1`,
+    );
+    expect(thies).toEqual({ gallery: 3, alts: 3, documents: 2 });
+    // A reward sold out, an interest of each type, a project carried by the Fondation Teranga
+    // (verified by seedDevNetwork).
+    const soldOut = await query<{ count: string }>(
+      'SELECT count(*) FROM projects.rewards WHERE quantity IS NOT NULL AND confirmed >= quantity',
+    );
+    expect(Number(soldOut[0]?.count)).toBeGreaterThan(0);
+    const kinds = await query<{ kind: string }>(
+      'SELECT DISTINCT kind FROM projects.interests ORDER BY kind',
+    );
+    expect(kinds.map((row) => row.kind)).toEqual(['equity', 'general', 'grant', 'honor_loan']);
+    const carriers = await query<{ slug: string }>(
+      `SELECT DISTINCT o.slug FROM projects.projects p
+       JOIN organizations.organizations o ON o.id = p.organization_id
+       WHERE p.status <> 'draft' ORDER BY o.slug`,
+    );
+    expect(carriers.map((row) => row.slug)).toContain('fondation-teranga');
 
     // Each image waits in the quarantine for the worker, announced by its event.
     const [asset] = await query<{ id: string; declared_size: number }>(

@@ -6,6 +6,7 @@ import { seedDevContent } from './dev-seed/seed-dev-content';
 import { DEMO_EMAIL_DOMAIN, DEMO_PASSWORD, seedDevData } from './dev-seed/seed-dev-data';
 import { sampleSuggestions, seedDevDiscovery } from './dev-seed/seed-dev-discovery';
 import { seedDevMessaging } from './dev-seed/seed-dev-messaging';
+import { seedDevProjectFiles } from './dev-seed/seed-dev-project-files';
 import { DEMO_EXTERNAL_INVITEE, seedDevNetwork } from './dev-seed/seed-dev-network';
 import { createSeedContext, seedDevProjects } from './dev-seed/seed-dev-projects';
 import { DEMO_MODERATORS, seedDevTrust } from './dev-seed/seed-dev-trust';
@@ -43,7 +44,8 @@ async function main(): Promise<void> {
         await context.close();
       }
     })();
-    const inserted = Object.entries({ ...result, ...services })
+    const projectFiles = await seedDevProjectFiles(db, storage, now);
+    const inserted = Object.entries({ ...result, ...services, projectFiles })
       .map(([name, count]) => `${count} ${name}`)
       .join(', ');
     process.stdout.write(

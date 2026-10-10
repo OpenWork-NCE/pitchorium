@@ -84,6 +84,10 @@ export interface DemoProject {
     daysAfterPublication: number;
     rewardIndex?: number;
   }[];
+  /** Images of the gallery (abstract demonstration images), each with its text alternative. */
+  gallery?: { hue: number; alt: string }[];
+  /** Private documents of the project: abstract PDFs, by number of pages. */
+  documents?: number[];
   updates?: { author: string; daysAfterPublication: number; text: string }[];
   editor?: { member: string; function: string };
   interests?: { member: string; kind: ProjectInterestKind; message: string; amount?: number }[];
@@ -127,8 +131,16 @@ export const DEMO_PROJECTS: readonly DemoProject[] = [
         description: 'Une journée avec une coopérative, transport depuis Thiès compris.',
         minAmount: 250,
         instruments: ['donation', 'reward_crowdfunding'],
+        // A single place, taken by a contribution below: the reward shows as sold out.
+        quantity: 1,
       },
     ],
+    gallery: [
+      { hue: 32, alt: 'Image abstraite de démonstration, tons ocre.' },
+      { hue: 140, alt: 'Image abstraite de démonstration, tons verts.' },
+      { hue: 210, alt: 'Image abstraite de démonstration, tons bleus.' },
+    ],
+    documents: [3, 1],
     publishedDaysAgo: 20,
     contributions: [
       { contributor: 'kofi', amount: 5_000, daysAfterPublication: 1 },
@@ -154,6 +166,12 @@ export const DEMO_PROJECTS: readonly DemoProject[] = [
         kind: 'grant',
         message: 'La fondation peut cofinancer la formation à la maintenance.',
         amount: 8_000,
+      },
+      {
+        member: 'kofi',
+        kind: 'honor_loan',
+        message: 'Un prêt d’honneur pour l’achat groupé des kits, à discuter.',
+        amount: 3_000,
       },
     ],
     followers: ['kofi', 'fatou', 'thierry'],
@@ -228,6 +246,8 @@ export const DEMO_PROJECTS: readonly DemoProject[] = [
   {
     key: 'sechoir-soubre',
     owner: 'jeanbaptiste',
+    // Carried by the Fondation Teranga, verified by seed-dev-network.ts.
+    organizationKey: 'teranga',
     title: 'Séchoir solaire pour le cacao de Soubré',
     summary: 'Un séchoir solaire partagé pour améliorer la qualité du cacao de cinq villages.',
     description:
@@ -356,6 +376,7 @@ export const DEMO_PROJECTS: readonly DemoProject[] = [
     sectorCode: 'education',
     impactArea: 'Région de Ségou, Mali',
     countryCodes: ['ML'],
+    gallery: [{ hue: 265, alt: 'Image abstraite de démonstration, tons violets.' }],
     instruments: ['donation', 'grant'],
     tiers: [
       { threshold: 15_000, description: 'Camion et aménagement' },

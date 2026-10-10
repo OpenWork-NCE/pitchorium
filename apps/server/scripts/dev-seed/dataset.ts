@@ -424,7 +424,8 @@ export const DEMO_ORGANIZATIONS: readonly DemoOrganization[] = [
     foundedYear: 2016,
     hue: 340,
     owner: 'nadia',
-    admins: [],
+    // Jean-Baptiste carries the dryer of Soubré for the foundation (projects-dataset.ts).
+    admins: ['jeanbaptiste'],
     members: ['aissatou'],
   },
   {

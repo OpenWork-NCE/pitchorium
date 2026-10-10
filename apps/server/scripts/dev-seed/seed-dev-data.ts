@@ -85,7 +85,7 @@ export function demoId(key: string): string {
 const emailOf = (member: DemoMember) =>
   `${member.handle.replaceAll('-', '.')}@${DEMO_EMAIL_DOMAIN}`;
 
-interface PendingImage {
+export interface PendingImage {
   id: string;
   /** A document is a PDF of `pages` pages; every other kind a PNG. */
   kind: DemoImageKind | 'document';
@@ -487,20 +487,40 @@ export async function seedDevData(options: DevSeedOptions): Promise<DevSeedResul
     }
   });
 
-  // Files after the commit (no storage call in a transaction, ADR 0019): each new asset is
-  // uploaded to the quarantine and announced to the worker, as a confirmed upload.
-  for (const image of images) {
+  // Files after the commit (no storage call in a transaction, ADR 0019).
+  result.media += await uploadDemoFiles(
+    db,
+    storage,
+    images.map((image) => ({ ...image, ownerId: ownerOf(image, userId) })),
+    now,
+  );
+  return result;
+}
+
+/**
+ * Each new demonstration file uploaded to the quarantine and announced to the worker, as a
+ * confirmed upload, already attached to its resource (the worker makes it ready); a file that
+ * exists is skipped. Returns the number of files created.
+ */
+export async function uploadDemoFiles(
+  db: Database,
+  storage: ObjectStorage,
+  files: readonly (PendingImage & { ownerId: string })[],
+  now: Date,
+): Promise<number> {
+  let created = 0;
+  for (const image of files) {
     const content =
       image.kind === 'document'
         ? demoDocument(image.hue, image.pages ?? 1)
         : await demoImage(image.kind, image.hue, image.variant);
     const contentType = image.kind === 'document' ? 'application/pdf' : 'image/png';
-    const created = await db.transaction(async (tx) => {
-      const inserted = await tx
+    const inserted = await db.transaction(async (tx) => {
+      const rows = await tx
         .insert(mediaAssets)
         .values({
           id: image.id,
-          ownerId: ownerOf(image, userId),
+          ownerId: image.ownerId,
           usage: image.usage,
           source: 'upload',
           status: 'processing',
@@ -517,7 +537,7 @@ export async function seedDevData(options: DevSeedOptions): Promise<DevSeedResul
         })
         .onConflictDoNothing()
         .returning({ id: mediaAssets.id });
-      if (inserted.length === 0) return false;
+      if (rows.length === 0) return false;
       await tx.insert(outboxEvents).values({
         id: demoId(`event:uploaded:${image.id}`),
         aggregateType: 'media_asset',
@@ -529,8 +549,8 @@ export async function seedDevData(options: DevSeedOptions): Promise<DevSeedResul
       });
       return true;
     });
-    if (!created) continue;
-    result.media += 1;
+    if (!inserted) continue;
+    created += 1;
     await storage.putObject({
       visibility: 'private',
       key: `quarantine/${image.id}`,
@@ -538,7 +558,7 @@ export async function seedDevData(options: DevSeedOptions): Promise<DevSeedResul
       contentType,
     });
   }
-  return result;
+  return created;
 }
 
 /** Owner of a demonstration file: the member of the profile, the owner of the organization. */
