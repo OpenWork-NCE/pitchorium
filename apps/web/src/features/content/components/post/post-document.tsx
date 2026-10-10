@@ -1,6 +1,5 @@
 'use client';
 
-import { mediaControllerDownload } from '@pitchorium/api-client';
 import type { PostDocument as PostDocumentData } from '@pitchorium/contracts';
 import { Download, ExternalLink, FileText } from 'lucide-react';
 import { useTranslations } from 'next-intl';
@@ -31,6 +30,9 @@ export function PostDocument({
     const opened = action === 'open' ? window.open('', '_blank', 'noopener') : null;
     setBusy(action);
     try {
+      // The client of the api (and TanStack Query with it) stays out of the first load of a
+      // visitor's page: loaded at the click.
+      const { mediaControllerDownload } = await import('@pitchorium/api-client');
       const { url } = await mediaControllerDownload(document.mediaId);
       if (action === 'open') {
         if (opened) opened.location.href = url;
