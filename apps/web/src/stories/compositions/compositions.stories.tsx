@@ -978,8 +978,11 @@ export const FeedVariants: Story = {
     const canvas = within(canvasElement);
     await expect(canvas.getByRole('feed', { name: 'Fil d’actualité' })).toBeVisible();
     await expect(await canvas.findByText('À la une')).toBeVisible();
-    await expect(canvas.getAllByText('Rapport de saison 2026')[0]).toBeVisible();
-    await expect(canvas.getByRole('button', { name: 'Agrandir l’image 1 sur 5' })).toBeVisible();
+    // The virtualized feed mounts its entries after the hydration: waited for, not read at once.
+    await expect((await canvas.findAllByText('Rapport de saison 2026'))[0]).toBeVisible();
+    await expect(
+      await canvas.findByRole('button', { name: 'Agrandir l’image 1 sur 5' }),
+    ).toBeVisible();
   },
 };
 

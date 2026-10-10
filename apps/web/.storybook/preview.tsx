@@ -2,10 +2,15 @@ import type { Decorator, Preview } from '@storybook/nextjs-vite';
 import { NextIntlClientProvider } from 'next-intl';
 import { ThemeProvider } from 'next-themes';
 import { type ReactNode, useEffect } from 'react';
+import { configure } from 'storybook/test';
 import { messagesFor } from '../src/lib/i18n/messages';
 import { STORY_NOW } from '../src/stories/compositions/fixtures';
 import { fontVariables } from '../src/styles/fonts';
 import '../src/styles/globals.css';
+
+// The stories run as tests two themes at once, many files in parallel: under that load an element
+// a play function waits for (findBy, waitFor) can take more than the 1 s of Testing Library.
+configure({ asyncUtilTimeout: 5000 });
 
 type ThemeGlobal = 'light' | 'dark' | 'side-by-side';
 
