@@ -176,7 +176,8 @@ function parameters(text: string): string {
 }
 
 function quote(literal: string): string {
-  return literal.replace(/'/g, "''").replace(/[{}<>#|]/g, (char) => `'${char}'`);
+  // A run of syntax characters is quoted at once: `'#''#'` would read as `#'#` (`''` is a quote).
+  return literal.replace(/'/g, "''").replace(/[{}<>#|]+/g, (run) => `'${run}'`);
 }
 
 /**

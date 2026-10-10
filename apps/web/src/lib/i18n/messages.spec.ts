@@ -9,6 +9,8 @@ describe('messages', () => {
 
   it('quotes the ICU syntax characters of plain text', () => {
     expect(toIcu("l'api {ok} <b> #1")).toBe("l''api '{'ok'}' '<'b'>' '#'1");
+    // A run of them is quoted at once, never as `'#''#'` (an escaped quote in the middle).
+    expect(toIcu('## pour un titre')).toBe("'##' pour un titre");
     // A pair of tags is a rich tag of next-intl (t.rich), its parameters converted inside.
     expect(toIcu('J’accepte les <link>conditions</link> (version {{version}}).')).toBe(
       'J’accepte les <link>conditions</link> (version {version}).',
