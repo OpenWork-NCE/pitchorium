@@ -98,7 +98,6 @@ export function OverviewPanel({ follow }: { follow: FollowState | null }) {
         ) : (
           <p className="text-sm text-muted">{funding('goalUnset')}</p>
         )}
-        <p className="text-sm text-muted">{t('contributionsLater')}</p>
       </Card>
       <div className="flex flex-wrap gap-2">
         <Button asChild variant="secondary">
