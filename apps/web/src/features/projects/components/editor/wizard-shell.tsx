@@ -68,7 +68,10 @@ export function WizardShell({ step, children }: { step: WizardStep; children: Re
         </div>
         <p className="max-w-prose text-muted">{t(`steps.${step}.description`)}</p>
       </header>
-      <nav aria-label={t('stepsLabel')} className="-mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
+      <nav
+        aria-label={t('stepsLabel')}
+        className="relative -mx-4 min-w-0 overflow-x-auto px-4 sm:mx-0 sm:px-0"
+      >
         <p className="mb-2 text-sm text-muted sm:sr-only">
           {t('position', { current: index + 1, total: steps.length })}
         </p>
