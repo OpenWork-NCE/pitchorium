@@ -102,6 +102,11 @@ Comment assembler les composants (`components.md`) pour les situations récurren
 - `/saved` (menu du compte) : les publications enregistrées, la dernière enregistrée d'abord.
 - Page d'un membre et d'une organisation : section « Activité » avec leurs publications selon ce que l'api montre au lecteur ; un visiteur lit les premières rendues par le serveur et la suite à la demande.
 
+## Impact (§12, ADR 0036)
+
+- `/impact/methodology` : critères, échelle, pondérations et version en vigueur, mention « auto-déclaré, non certifié » ; sans méthodologie publiée, un état qui le dit.
+- `ImpactBadge` mène partout au détail par critère et à la méthodologie ; `/profile/impact` évalue le volet entrepreneur, avec l'historique et la réévaluation proposée quand la version change.
+
 ## Conversation (§10.4)
 
 - Un séparateur par jour, dans le fuseau du membre : « Aujourd'hui », « Hier », puis la date (jour de la semaine, jour et mois, l'année si elle diffère) ; c'est un titre, pour s'y rendre au lecteur d'écran.

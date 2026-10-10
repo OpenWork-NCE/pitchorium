@@ -140,6 +140,32 @@ export const CLIENT_MESSAGES = {
     'reference.prerequisiteElements',
   ],
   dev: [...DOCUMENT_MESSAGES, 'web.health'],
+  /**
+   * The assistant and the management of a project (PROMPT FRONT 5A): the texts of the member
+   * space and those of the creation, the edition, the team and the self-declared impact. Its
+   * pages replace the messages of the shell for their content only (ScopedMessages).
+   */
+  projectEditor: [
+    ...DOCUMENT_MESSAGES,
+    ...DESIGN_SYSTEM_MESSAGES,
+    ...MENTIONS,
+    'errors',
+    'web.access',
+    'web.projects',
+    'web.impact',
+    'web.content.images',
+    'web.content.viewer',
+    'web.content.document',
+    'reference.projectStatuses',
+    'reference.projectTeamRoles',
+    'reference.projectInterestKinds',
+    'reference.fundingInstruments',
+    'reference.sectors',
+    'reference.sectorsShort',
+    'reference.mediaRejectionReasons',
+    'reference.prerequisiteElements',
+    'reference.impactDemo',
+  ],
 } as const satisfies Record<string, readonly string[]>;
 
 export type MessageScope = keyof typeof CLIENT_MESSAGES;

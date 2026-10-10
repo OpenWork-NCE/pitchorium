@@ -1780,5 +1780,50 @@
     "title": "Activité",
     "empty": "Aucune publication pour l’instant.",
     "more": "Afficher plus de publications"
+  },
+  "impact": {
+    "unavailable": {
+      "title": "Aucune méthodologie publiée",
+      "body": "Le score d’impact attend la publication de la méthodologie : aucun score n’est demandé ni affiché d’ici là, et la publication d’un projet n’en a pas besoin."
+    },
+    "form": {
+      "label": "Évaluation de l’impact",
+      "methodology": "Méthodologie {{name}}, version {{version}}",
+      "current": "Score actuel : {{score}} sur 100, niveau {{level}} (version {{version}}).",
+      "reassess": "La méthodologie est passée à la version {{version}} : une nouvelle évaluation est proposée.",
+      "required": "Choisissez une réponse.",
+      "saving": "Enregistrement en cours"
+    },
+    "methodology": {
+      "title": "Méthodologie de l’impact",
+      "description": "Les critères, l’échelle et les pondérations du score d’impact auto-déclaré des projets et des entrepreneurs de Pitchorium.",
+      "lede": "Comment se calcule le score d’impact affiché à côté des projets et des entrepreneurs.",
+      "version": "{{name}}, version {{version}}, publiée le {{date}}.",
+      "notCertified": "Le score est déclaré par le porteur lui-même, selon cette méthodologie. Pitchorium ne le vérifie pas : ce n’est ni une certification, ni un label.",
+      "criteria": "Les {{count}} critères",
+      "criterion": "{{index}}. {{label}}",
+      "weight": "Pondération : {{percent}}",
+      "scale": "Échelle de réponse",
+      "levels": "Les niveaux",
+      "score": "Le score, de 0 à 100, est la moyenne des réponses pondérée par critère.",
+      "emerging": "{{level}} : moins de 40",
+      "moderate": "{{level}} : de 40 à 69",
+      "strong": "{{level}} : 70 et plus"
+    },
+    "entrepreneur": {
+      "title": "Impact de mon activité",
+      "description": "Votre évaluation auto-déclarée, affichée sur votre profil et reprise par vos projets.",
+      "back": "Revenir à mon profil",
+      "methodology": "Voir la méthodologie de l’impact",
+      "failed": "La méthodologie n’a pas pu être lue.",
+      "submit": "Enregistrer l’évaluation",
+      "update": "Mettre à jour l’évaluation",
+      "saved": "Évaluation enregistrée.",
+      "history": "Historique",
+      "noHistory": "Aucune évaluation pour l’instant.",
+      "version": "version {{version}}",
+      "score": "{{score}} sur 100, {{level}}",
+      "prefilled": "reprise"
+    }
   }
 }

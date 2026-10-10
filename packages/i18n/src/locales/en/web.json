@@ -1780,5 +1780,50 @@
     "title": "Activity",
     "empty": "No post yet.",
     "more": "Show more posts"
+  },
+  "impact": {
+    "unavailable": {
+      "title": "No methodology published",
+      "body": "The impact score waits for the publication of the methodology: no score is asked for or shown until then, and the publication of a project does not need one."
+    },
+    "form": {
+      "label": "Assessment of the impact",
+      "methodology": "Methodology {{name}}, version {{version}}",
+      "current": "Current score: {{score}} out of 100, level {{level}} (version {{version}}).",
+      "reassess": "The methodology moved to version {{version}}: a new assessment is proposed.",
+      "required": "Choose an answer.",
+      "saving": "Saving"
+    },
+    "methodology": {
+      "title": "Methodology of the impact",
+      "description": "The criteria, the scale and the weights of the self-declared impact score of the projects and entrepreneurs of Pitchorium.",
+      "lede": "How the impact score shown next to the projects and the entrepreneurs is computed.",
+      "version": "{{name}}, version {{version}}, published on {{date}}.",
+      "notCertified": "The score is declared by the holder themselves, under this methodology. Pitchorium does not check it: it is neither a certification nor a label.",
+      "criteria": "The {{count}} criteria",
+      "criterion": "{{index}}. {{label}}",
+      "weight": "Weight: {{percent}}",
+      "scale": "Answer scale",
+      "levels": "The levels",
+      "score": "The score, from 0 to 100, is the average of the answers weighted by criterion.",
+      "emerging": "{{level}}: below 40",
+      "moderate": "{{level}}: from 40 to 69",
+      "strong": "{{level}}: 70 and above"
+    },
+    "entrepreneur": {
+      "title": "Impact of my activity",
+      "description": "Your self-declared assessment, shown on your profile and taken up by your projects.",
+      "back": "Back to my profile",
+      "methodology": "See the methodology of the impact",
+      "failed": "The methodology could not be read.",
+      "submit": "Save the assessment",
+      "update": "Update the assessment",
+      "saved": "Assessment saved.",
+      "history": "History",
+      "noHistory": "No assessment yet.",
+      "version": "version {{version}}",
+      "score": "{{score}} out of 100, {{level}}",
+      "prefilled": "taken up"
+    }
   }
 }

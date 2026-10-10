@@ -47,6 +47,10 @@ export const routes = {
   settingsOrganizations: '/settings/organizations',
   // Pages of a resource, one address for visitors and members (ADR 0101), the showcase included.
   project: (slug: string) => `/projects/${encodeURIComponent(slug)}`,
+  /** The methodology of the self-declared impact in force (§12). */
+  impactMethodology: '/impact/methodology',
+  /** The self-declared impact of the entrepreneur facet of the member, and its history. */
+  profileImpact: '/profile/impact',
   member: (handle: string) => `/members/${encodeURIComponent(handle)}`,
   /** Network lists of a member (connections, followers, following), as their privacy allows. */
   memberNetwork: (handle: string) => `/members/${encodeURIComponent(handle)}/network`,

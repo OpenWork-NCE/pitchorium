@@ -8,7 +8,7 @@ import { PUBLIC_SITEMAP_SOURCES } from '@/lib/seo/sitemap-sources';
  * Public pages, in every active locale with their alternates: the home page, the showcase of the
  * projects, then the pages of the public resources, at their one address (ADR 0101).
  */
-const STATIC_PATHS = ['/', routes.projects] as const;
+const STATIC_PATHS = ['/', routes.projects, routes.impactMethodology] as const;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const { locales } = await getActiveLocales();
