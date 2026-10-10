@@ -10187,6 +10187,13 @@ export type DashboardDtoOutputGivenTotal = {
   currency: string;
 };
 
+export type DashboardDtoOutputGivenLastTwelveMonths = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+};
+
 export type DashboardDtoOutputMinutes = {
   /**
    * @minimum -9007199254740991
@@ -10222,6 +10229,7 @@ export interface DashboardDtoOutput {
   owner: DashboardDtoOutputOwner;
   givenThisMonth: DashboardDtoOutputGivenThisMonth;
   givenTotal: DashboardDtoOutputGivenTotal;
+  givenLastTwelveMonths: DashboardDtoOutputGivenLastTwelveMonths;
   /**
    * @minimum -9007199254740991
    * @maximum 9007199254740991

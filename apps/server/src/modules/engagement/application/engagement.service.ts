@@ -114,6 +114,10 @@ export class EngagementService {
       owner: giver,
       givenThisMonth: Money.of(totals.givenThisMonthEurMinor, 'EUR').toJSON(),
       givenTotal: Money.of(totals.givenEurMinor, 'EUR').toJSON(),
+      givenLastTwelveMonths: Money.of(
+        months.reduce((sum, month) => sum + (given.get(month) ?? 0n), 0n),
+        'EUR',
+      ).toJSON(),
       projectsSupported: totals.projectsSupported,
       minutes: {
         // Every declared minute, whatever the answer; confirmed and disputed apart.

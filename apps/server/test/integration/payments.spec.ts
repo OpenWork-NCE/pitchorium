@@ -588,6 +588,7 @@ describe('payments', () => {
       expect(current).toMatchObject({
         givenTotal: eur(2_400),
         givenThisMonth: eur(2_400),
+        givenLastTwelveMonths: eur(2_400),
         projectsSupported: 1,
       });
       // Twelve months for the chart, the current one last with what was given in it.

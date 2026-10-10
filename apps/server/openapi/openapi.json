@@ -58910,6 +58910,24 @@
             ],
             "additionalProperties": false
           },
+          "givenLastTwelveMonths": {
+            "type": "object",
+            "properties": {
+              "amountMinor": {
+                "type": "string",
+                "pattern": "^-?(0|[1-9]\\d*)$"
+              },
+              "currency": {
+                "type": "string",
+                "pattern": "^[A-Z]{3}$"
+              }
+            },
+            "required": [
+              "amountMinor",
+              "currency"
+            ],
+            "additionalProperties": false
+          },
           "projectsSupported": {
             "type": "integer",
             "minimum": -9007199254740991,
@@ -58986,6 +59004,7 @@
           "owner",
           "givenThisMonth",
           "givenTotal",
+          "givenLastTwelveMonths",
           "projectsSupported",
           "minutes",
           "monthStart",

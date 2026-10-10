@@ -13,6 +13,8 @@ export const impactDashboardSchema = z.object({
   /** EUR equivalent of the succeeded contributions, net of refunds and lost disputes. */
   givenThisMonth: moneySchema,
   givenTotal: moneySchema,
+  /** Net EUR of the twelve months of `monthly`, the current one included. */
+  givenLastTwelveMonths: moneySchema,
   projectsSupported: z.number().int(),
   minutes: z.object({
     declared: z.number().int(),

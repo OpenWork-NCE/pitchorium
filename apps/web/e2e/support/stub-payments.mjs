@@ -543,6 +543,7 @@ const DASHBOARD = {
   owner: { type: 'member', id: '0192f4a0-0000-7000-8000-000000000001' },
   givenThisMonth: eur(120),
   givenTotal: eur(3_570),
+  givenLastTwelveMonths: eur(3_570),
   projectsSupported: 3,
   minutes: { declared: 330, confirmed: 210, disputed: 60 },
   monthStart: '2026-10-01T00:00:00.000Z',
