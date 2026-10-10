@@ -22,7 +22,7 @@ Bloquant. Workflow `.github/workflows/ci.yaml`, 15 minutes au plus ; le job `lev
 - Lint, frontières (règles ESLint), typecheck, tests unitaires.
 - Tests d'intégration, répartis en deux jobs (`vitest --shard`), chacun avec ses conteneurs Testcontainers, vrai ClamAV compris (module `media`).
 - Scénarios de bout en bout de l'api (`apps/server/test/e2e` : contribution simulée notifiée en temps réel, messagerie en temps réel, signalement, export et effacement, événement et mission).
-- Build une seule fois (job `build`, action `.github/actions/build`) : paquets, api, worker, `.next-e2e` et `.next-live`, publiés comme artefact `build` du run et réutilisés par les jobs de tests (ADR 0124) ; JavaScript initial par groupe de routes et par vue (`check:bundles .next-e2e --views`).
+- Build une seule fois (job `build`, action `.github/actions/build`) : paquets, api, worker, `.next-e2e` et `.next-live`, publiés comme artefact `build` du run et réutilisés par les jobs de tests (ADR 0124) ; JavaScript initial par groupe de routes et par vue (`check:bundles .next-e2e --views`) dans son propre job, pour qu'un budget dépassé n'empêche pas les suites de tourner.
 - Suite simulée du web dans Chromium (image Playwright, captures de référence comprises), `--max-failures=5`.
 - Parcours critiques contre la vraie api dans Chromium (`@critical`, ADR 0127), `--max-failures=5`.
 - Lighthouse : un passage sur une page de chaque sorte (éditoriale, authentification, fil, profil public, publication publique), mêmes seuils (`LHCI_RUNS=1`, `LHCI_SCOPE=representative`).

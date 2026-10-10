@@ -128,8 +128,19 @@ jobs:
       - uses: ./.github/actions/build
         with:
           web-e2e: ${{ needs.changes.outputs.web }}
+
+  # Its own job: a budget exceeded does not keep the suites below from running.
+  bundles:
+    needs: [changes, build]
+    if: needs.changes.outputs.web == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: ./.github/actions/setup
+      - uses: actions/download-artifact@v8.0.2
+        with:
+          name: build
       - name: Initial JavaScript per route group and per view of the public pages
-        if: needs.changes.outputs.web == 'true'
         run: pnpm --filter @pitchorium/web check:bundles .next-e2e --views
 
   web-e2e-tests:
@@ -317,6 +328,7 @@ jobs:
       - integration-tests
       - api-e2e-tests
       - build
+      - bundles
       - web-e2e-tests
       - live-critical
       - lighthouse
