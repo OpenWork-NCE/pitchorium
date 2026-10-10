@@ -538,6 +538,38 @@ export class DrizzlePaymentsRepository extends PaymentsRepository {
       .where(eq(paymentsPayoutAccounts.userId, userId));
   }
 
+  async replacePayoutAccount(
+    previousProviderAccountId: string,
+    account: PayoutAccountRecord,
+  ): Promise<boolean> {
+    const replaced = await this.db
+      .update(paymentsPayoutAccounts)
+      .set(account)
+      .where(
+        and(
+          eq(paymentsPayoutAccounts.userId, account.userId),
+          eq(paymentsPayoutAccounts.providerAccountId, previousProviderAccountId),
+        ),
+      )
+      .returning({ userId: paymentsPayoutAccounts.userId });
+    return replaced.length > 0;
+  }
+
+  async hasPendingContributions(provider: ProviderId, providerAccountId: string): Promise<boolean> {
+    const [row] = await this.db
+      .select({ id: paymentsContributions.id })
+      .from(paymentsContributions)
+      .where(
+        and(
+          eq(paymentsContributions.provider, provider),
+          eq(paymentsContributions.providerAccountId, providerAccountId),
+          eq(paymentsContributions.status, 'pending_payment'),
+        ),
+      )
+      .limit(1);
+    return row !== undefined;
+  }
+
   async payoutAccountsOf(provider: ProviderId): Promise<PayoutAccountRecord[]> {
     const rows = await this.db
       .select()

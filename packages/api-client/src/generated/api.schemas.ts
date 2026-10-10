@@ -808,6 +808,7 @@ export const ActionPrerequisitesDtoOutputCode = {
   PAYMENTS_PAYOUT_ACCOUNT_EXISTS: 'PAYMENTS_PAYOUT_ACCOUNT_EXISTS',
   PAYMENTS_PAYOUT_ACCOUNT_NOT_FOUND: 'PAYMENTS_PAYOUT_ACCOUNT_NOT_FOUND',
   PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED: 'PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED',
+  PAYMENTS_PAYOUT_CHANGE_REFUSED: 'PAYMENTS_PAYOUT_CHANGE_REFUSED',
   PAYMENTS_PAYOUT_DETAILS_REQUIRED: 'PAYMENTS_PAYOUT_DETAILS_REQUIRED',
   PAYMENTS_KYC_NOT_MANUAL: 'PAYMENTS_KYC_NOT_MANUAL',
   PAYMENTS_KYC_PENDING: 'PAYMENTS_KYC_PENDING',
@@ -9401,6 +9402,15 @@ export interface ProofsDto {
   mediaIds: string[];
 }
 
+export type PayoutAccountDtoOutputProvider =
+  (typeof PayoutAccountDtoOutputProvider)[keyof typeof PayoutAccountDtoOutputProvider];
+
+export const PayoutAccountDtoOutputProvider = {
+  stripe: 'stripe',
+  flutterwave: 'flutterwave',
+  simulated: 'simulated',
+} as const;
+
 export type PayoutAccountDtoOutputStatus =
   (typeof PayoutAccountDtoOutputStatus)[keyof typeof PayoutAccountDtoOutputStatus];
 
@@ -9441,7 +9451,18 @@ export type PayoutAccountDtoOutputKyc = {
   status: PayoutAccountDtoOutputKycStatus;
 };
 
+export type PayoutAccountDtoOutputChangeRefusal =
+  | (typeof PayoutAccountDtoOutputChangeRefusal)[keyof typeof PayoutAccountDtoOutputChangeRefusal]
+  | null;
+
+export const PayoutAccountDtoOutputChangeRefusal = {
+  campaign_in_progress: 'campaign_in_progress',
+  payments_pending: 'payments_pending',
+  same_option: 'same_option',
+} as const;
+
 export interface PayoutAccountDtoOutput {
+  provider: PayoutAccountDtoOutputProvider;
   /** @pattern ^[A-Z]{2}$ */
   country: string;
   currency: string;
@@ -9451,11 +9472,22 @@ export interface PayoutAccountDtoOutput {
   onboardingUrl: string | null;
   kyc: PayoutAccountDtoOutputKyc;
   collectionOpen: boolean;
+  covered: boolean;
+  changeRefusal: PayoutAccountDtoOutputChangeRefusal;
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
   createdAt: string;
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
   updatedAt: string;
 }
+
+export type CreatePayoutAccountDtoProvider =
+  (typeof CreatePayoutAccountDtoProvider)[keyof typeof CreatePayoutAccountDtoProvider];
+
+export const CreatePayoutAccountDtoProvider = {
+  stripe: 'stripe',
+  flutterwave: 'flutterwave',
+  simulated: 'simulated',
+} as const;
 
 export type CreatePayoutAccountDtoBankAccount = {
   /**
@@ -9478,8 +9510,10 @@ export type CreatePayoutAccountDtoBankAccount = {
 };
 
 export interface CreatePayoutAccountDto {
+  provider: CreatePayoutAccountDtoProvider;
   /** @pattern ^[A-Z]{2}$ */
   country: string;
+  eligibilityConfirmed: true;
   bankAccount?: CreatePayoutAccountDtoBankAccount;
 }
 
@@ -16434,6 +16468,7 @@ export const ProblemDetailsCode = {
   PAYMENTS_PAYOUT_ACCOUNT_EXISTS: 'PAYMENTS_PAYOUT_ACCOUNT_EXISTS',
   PAYMENTS_PAYOUT_ACCOUNT_NOT_FOUND: 'PAYMENTS_PAYOUT_ACCOUNT_NOT_FOUND',
   PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED: 'PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED',
+  PAYMENTS_PAYOUT_CHANGE_REFUSED: 'PAYMENTS_PAYOUT_CHANGE_REFUSED',
   PAYMENTS_PAYOUT_DETAILS_REQUIRED: 'PAYMENTS_PAYOUT_DETAILS_REQUIRED',
   PAYMENTS_KYC_NOT_MANUAL: 'PAYMENTS_KYC_NOT_MANUAL',
   PAYMENTS_KYC_PENDING: 'PAYMENTS_KYC_PENDING',

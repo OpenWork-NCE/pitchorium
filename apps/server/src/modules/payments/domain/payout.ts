@@ -1,4 +1,4 @@
-import type { PayoutAccountStatus } from '@pitchorium/contracts';
+import type { PayoutAccountStatus, PayoutChangeRefusalReason } from '@pitchorium/contracts';
 import type { ProviderId } from './capability-matrix';
 
 export interface PayoutAccountRecord {
@@ -51,4 +51,39 @@ export function collectionOpen(
   latest: KycSubmissionRecord | null,
 ): boolean {
   return account?.status === 'active' && isKycVerified(account, latest);
+}
+
+/** What decides whether a holder may change their payout option now (ADR 0134). */
+export interface PayoutChangeFacts {
+  current: { provider: string; country: string };
+  /** Collected contributions are open on the current account (active, covered, KYC). */
+  collecting: boolean;
+  /** A project of the holder is in funding (`funding` or `funded`, before its end). */
+  campaignInProgress: boolean;
+  /** Payment sessions are still pending on the current account. */
+  paymentsPending: boolean;
+}
+
+/**
+ * Why the payout option cannot change now, or null. A change never moves an existing account
+ * at the provider (the country of a Stripe account is final): it opens a new one, and the
+ * contributions already paid keep their own account. It is refused while a campaign collects on
+ * the current account, so that one campaign is not split between two rails, and while payments
+ * are pending on it. A holder whose account no longer collects (no longer covered, restricted,
+ * identity not verified) may change during a campaign.
+ */
+export function payoutChangeRefusal(
+  facts: PayoutChangeFacts,
+  choice?: { provider: string; country: string },
+): PayoutChangeRefusalReason | null {
+  if (
+    choice &&
+    choice.provider === facts.current.provider &&
+    choice.country === facts.current.country
+  ) {
+    return 'same_option';
+  }
+  if (facts.campaignInProgress && facts.collecting) return 'campaign_in_progress';
+  if (facts.paymentsPending) return 'payments_pending';
+  return null;
 }

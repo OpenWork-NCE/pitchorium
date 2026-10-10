@@ -317,6 +317,19 @@ export abstract class PaymentsRepository {
   ): Promise<PayoutAccountRecord | null>;
   abstract insertPayoutAccount(account: PayoutAccountRecord): Promise<boolean>;
   abstract updatePayoutAccount(userId: string, patch: Partial<PayoutAccountRecord>): Promise<void>;
+  /**
+   * Replaces the payout account of a holder by a new one, if the current one is still the
+   * account given (a concurrent change wins once); false otherwise.
+   */
+  abstract replacePayoutAccount(
+    previousProviderAccountId: string,
+    account: PayoutAccountRecord,
+  ): Promise<boolean>;
+  /** Payment sessions still pending on a payout account. */
+  abstract hasPendingContributions(
+    provider: ProviderId,
+    providerAccountId: string,
+  ): Promise<boolean>;
   abstract payoutAccountsOf(provider: ProviderId): Promise<PayoutAccountRecord[]>;
 
   abstract insertKycSubmission(submission: KycSubmissionRecord): Promise<boolean>;

@@ -141,7 +141,7 @@ describe('payment providers', () => {
     const created = await holder.agent
       .post('/v1/me/payout-account')
       .set('Idempotency-Key', randomUUID())
-      .send({ country: 'FR' });
+      .send({ provider: 'stripe', country: 'FR', eligibilityConfirmed: true });
     expect(created.status, JSON.stringify(created.body)).toBe(201);
     expect(created.body as PayoutAccount).toMatchObject({
       status: 'pending',
@@ -245,7 +245,9 @@ describe('payment providers', () => {
       .post('/v1/me/payout-account')
       .set('Idempotency-Key', randomUUID())
       .send({
+        provider: 'flutterwave',
         country: 'NG',
+        eligibilityConfirmed: true,
         bankAccount: { bankCode: '044', accountNumber: '0690000031', accountName: 'Lagos Recycle' },
       });
     expect(created.status, JSON.stringify(created.body)).toBe(201);
@@ -260,7 +262,9 @@ describe('payment providers', () => {
       .post('/v1/me/payout-account')
       .set('Idempotency-Key', randomUUID())
       .send({
+        provider: 'flutterwave',
         country: 'SN',
+        eligibilityConfirmed: true,
         bankAccount: { bankCode: 'SN01', accountNumber: '0001112223', accountName: 'Awa' },
       })
       .expect(422);

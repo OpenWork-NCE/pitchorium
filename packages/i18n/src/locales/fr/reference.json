@@ -641,6 +641,11 @@
     "active": "Actif",
     "restricted": "Restreint"
   },
+  "payoutChangeRefusalReasons": {
+    "campaign_in_progress": "Une de vos campagnes est en cours de financement : changez de compte de versement après sa clôture.",
+    "payments_pending": "Des paiements sont encore en attente sur votre compte de versement actuel : réessayez quand ils sont terminés.",
+    "same_option": "C'est déjà votre compte de versement."
+  },
   "kycStatuses": {
     "not_submitted": "Non transmis",
     "pending": "En cours de vérification",

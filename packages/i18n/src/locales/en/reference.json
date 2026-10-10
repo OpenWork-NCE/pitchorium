@@ -641,6 +641,11 @@
     "active": "Active",
     "restricted": "Restricted"
   },
+  "payoutChangeRefusalReasons": {
+    "campaign_in_progress": "One of your campaigns is being funded: change your payout account once it has closed.",
+    "payments_pending": "Payments are still pending on your current payout account: try again once they are complete.",
+    "same_option": "This is already your payout account."
+  },
   "kycStatuses": {
     "not_submitted": "Not submitted",
     "pending": "Under review",

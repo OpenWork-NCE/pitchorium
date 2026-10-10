@@ -159,7 +159,9 @@ export async function seedDevProjects(
     const payout = get(PayoutService);
     if (!(await get(PaymentsRepository).findPayoutAccount(ownerId))) {
       await payout.create(ownerId, {
+        provider: 'simulated',
         country,
+        eligibilityConfirmed: true,
         bankAccount: { bankCode: 'DEMO', accountNumber: '00000000', accountName: 'DEMO' },
       });
     }

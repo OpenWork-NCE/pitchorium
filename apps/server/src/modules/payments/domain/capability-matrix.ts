@@ -1,6 +1,7 @@
 import type {
   MobileMoneyOperator,
   PaymentMethod,
+  PaymentProvider,
   PayoutDocument,
   PayoutRequirement,
   PayoutRequirementScope,
@@ -18,7 +19,7 @@ export const CAPABILITY_MATRIX_VERSION = '2026-10-10';
 /** Every verified entry was checked in the documentation of its provider on this date or later. */
 export const CAPABILITY_MATRIX_VERIFIED_AT = '2026-10-07';
 
-export type ProviderId = 'stripe' | 'flutterwave' | 'simulated';
+export type ProviderId = PaymentProvider;
 
 /** Contributor countries a payment capability serves: every country, or a list. */
 export type ContributorCountries = '*' | readonly string[];

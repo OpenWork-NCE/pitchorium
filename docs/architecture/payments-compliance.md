@@ -20,6 +20,7 @@ Le module payments repose sur des hypothèses juridiques qu'un conseil doit vali
 - Rail Stripe : la vérification d'identité du compte connecté par Stripe fait foi.
 - Rail Flutterwave : revue manuelle par un administrateur de Pitchorium (pièces privées, décision motivée, audit). À valider : niveau de vérification exigé, pièces attendues par pays, conservation, et qui porte l'obligation (Pitchorium, Flutterwave, ou les deux).
 - Les contributions encaissées ne s'ouvrent qu'après KYC et activation du compte de versement ; un projet peut être publié avant.
+- Compte de versement hors du pays de résidence (ADR 0134) : le porteur choisit le pays de son compte ; un résident du Sénégal peut recevoir sur un compte en France s'il remplit les conditions du prestataire (Stripe : adresse et compte bancaire dans ce pays, passeport). À valider : obligations fiscales et déclaratives du porteur, et vigilance de Pitchorium sur un compte tenu hors du pays de résidence (question 123).
 
 ## 4. Lutte contre le blanchiment et le financement du terrorisme
 

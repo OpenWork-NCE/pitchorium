@@ -56,13 +56,15 @@ sequenceDiagram
 - Remboursement (administrateur, ou décision de modération par `PaymentsFacade.refundForModeration`) : écriture `refund`, commission remboursée au prorata (arrondie au supérieur), `reverseFunding` de la part EUR (arrondie à l'inférieur, la dernière part donnant le reste), libération de la contrepartie au remboursement total.
 - Litige : `dispute_opened` à l'ouverture ; gagné, contre-écriture `dispute_won` ; perdu, `dispute_lost` et `reverseFunding` de la part EUR.
 
-## Routage des rails (ADR 0043)
+## Choix du versement (ADR 0043, 0134)
 
-Le rail dépend du pays du compte de versement du porteur, jamais du contributeur :
+Le rail d'un projet découle du compte de versement actif de son porteur, jamais du contributeur, du pays du profil ni du pays du projet. Le porteur choisit le prestataire et le pays de son compte parmi les combinaisons de la couverture publique ; un porteur établi au Sénégal qui détient un compte bancaire éligible en France ouvre un compte de versement en France.
 
-1. Stripe Connect si la configuration vérifiée le sert dans ce pays (ADR 0044) ;
-2. sinon Flutterwave, avec un sous-compte et un partage du paiement (ADR 0045) ;
-3. sinon aucun : `PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED` à la création du compte de versement.
+- `POST /v1/me/payout-account` (`payment.payout.configure`) : `provider`, `country`, `eligibilityConfirmed: true` (le porteur confirme remplir les conditions du prestataire pour ce pays), `bankAccount` pour un prestataire `bank_details`. Une combinaison non couverte (prestataire inactif, pays non vérifié) : `422 PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED`. L'option du compte existant reprend ce compte (`200`, nouveau lien d'onboarding s'il est hébergé et inachevé) ; une autre option : `409 PAYMENTS_PAYOUT_ACCOUNT_EXISTS`.
+- `PUT /v1/me/payout-account` (`payment.payout.change`, session récente) : change d'option. Un nouveau compte est ouvert chez le prestataire choisi et remplace l'ancien, qui reste chez son prestataire pour les contributions déjà reçues (chaque contribution garde son compte : remboursements, litiges et rapprochement ne changent pas) ; le pays d'un compte Stripe ne change jamais. Audit `payments.payout-account-changed` (ancien et nouveau prestataire, pays, référence de l'ancien compte), événement `payments.payout-account.onboarded.v1` ou `payments.payout-account.updated.v1` (`fields: provider, country`).
+- Refus de changement, `409 PAYMENTS_PAYOUT_CHANGE_REFUSED` avec `reason` : `same_option` (option actuelle) ; `campaign_in_progress` (un projet du porteur est en `funding` ou `funded` et le compte actuel encaisse : actif, couvert, KYC vérifié), pour qu'une campagne ne soit pas partagée entre deux rails ni deux devises ; `payments_pending` (des sessions de paiement sont en attente sur le compte actuel). Reprise : après la clôture de la campagne et la fin des paiements en attente. Un compte qui n'encaisse plus (plus couvert, restreint, KYC manquant) peut changer pendant une campagne : aucune contribution n'y passe.
+- La vue du compte donne `provider`, `covered` (la couverture vérifiée sert encore ce prestataire et ce pays), `collectionOpen` (couvert, actif et KYC vérifié) et `changeRefusal` (raison d'un refus maintenant, ou `null`). L'élément d'accès `payout_account` exige un compte actif et couvert.
+- KYC : la vérification manuelle approuvée vaut pour la personne et reste acquise après un changement ; la vérification de Stripe vaut pour son compte.
 
 Avec `PAYMENTS_MODE=simulated` (développement, tests, refusé en production), le prestataire simulé remplace les deux rails et sert leurs pays de versement vérifiés, réglés en EUR ; son Mobile Money n'est proposé qu'aux contributeurs des pays où un rail réel l'a vérifié (ADR 0052).
 

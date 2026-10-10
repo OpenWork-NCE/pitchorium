@@ -20,6 +20,8 @@ Espèces, virement institutionnel (montant en EUR, XOF ou XAF), engagement de lo
 
 ## Compte de versement et KYC (ADR 0044, 0045, 0050)
 
+- Choix explicite (ADR 0134) : le porteur choisit le prestataire et le pays de son compte parmi la couverture publique (`provider`, `country`, `eligibilityConfirmed`), jamais déduits de son profil ni de ses projets ; `PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED` hors couverture. La même option reprend le compte (`200`) ; le changement (`PUT`) ouvre un nouveau compte, refusé par `PAYMENTS_PAYOUT_CHANGE_REFUSED` (`same_option`, `campaign_in_progress`, `payments_pending`) ; règles dans `docs/architecture/payments.md`.
+
 - Stripe : compte équivalent Standard créé par Accounts v2 sans donnée d'identité (Stripe la collecte, ADR 0044), onboarding hébergé (`onboardingUrl`), état relu au retour (`POST /v1/me/payout-account/refresh`) et sur `account.updated` ; la vérification Stripe fait foi.
 - Flutterwave et simulé : coordonnées bancaires transmises au prestataire (sous-compte), non conservées ; KYC par revue manuelle (pièces `verification_document` privées, décision motivée, audit).
 
@@ -37,7 +39,7 @@ Espèces, virement institutionnel (montant en EUR, XOF ou XAF), engagement de lo
 - `GET /v1/public/projects/{projectId}/supporters` (public, `Cache-Control: public, max-age=60`)
 - `GET /v1/public/payments/coverage` (public, `Cache-Control: public, max-age=3600`) : couverture vérifiée des prestataires actifs, éligibilité des porteurs comprise (ADR 0133)
 - `POST /v1/projects/{projectId}/offline-contributions` (`payment.offline.declare`), `POST /v1/projects/{projectId}/team/offline-contributions` (`payment.offline.declare.team`), `GET /v1/me/offline-contributions`, `POST /v1/offline-contributions/{id}/confirm`, `POST /v1/offline-contributions/{id}/reject`, `PUT /v1/offline-contributions/{id}/proofs` (`payment.offline.respond`)
-- `GET|POST /v1/me/payout-account`, `POST /v1/me/payout-account/refresh` (`payment.payout.configure`), `GET /v1/me/kyc`, `POST /v1/me/kyc/submissions` (`payment.kyc.submit`)
+- `GET|POST /v1/me/payout-account`, `POST /v1/me/payout-account/refresh` (`payment.payout.configure`), `PUT /v1/me/payout-account` (`payment.payout.change`, session récente, `Idempotency-Key`), `GET /v1/me/kyc`, `POST /v1/me/kyc/submissions` (`payment.kyc.submit`)
 - Administration (administrateurs avec double authentification) : `GET /v1/admin/payments/contributions/{id}`, `POST /v1/admin/payments/contributions/{id}/refunds` (`payment.refund`) ; `GET /v1/admin/payments/kyc-submissions`, `GET .../{id}`, `POST .../{id}/decision` (`payment.kyc.review`) ; `GET /v1/admin/payments/offline-contributions`, `POST .../{id}/decision` (`payment.offline.validate`) ; `GET /v1/admin/payments/discrepancies`, `POST .../{id}/resolve`, `POST /v1/admin/payments/reconciliation-runs` (`payment.reconciliation.manage`)
 - Hors OpenAPI : `POST /v1/payments/webhooks/{stripe|flutterwave|simulated}` (signature du prestataire) ; `GET|POST /v1/payments/simulated/checkout/{session}[/{scenario}]` (mode simulé, hors production)
 
@@ -66,7 +68,7 @@ Espèces, virement institutionnel (montant en EUR, XOF ou XAF), engagement de lo
 | `payments.offline-contribution.validated.v1`      | `projectId`, `kind`, `by`, `eurMinor`                                                                        |
 | `payments.offline-contribution.rejected.v1`       | `projectId`, `kind`, `by`                                                                                    |
 | `payments.payout-account.onboarded.v1`            | `provider`, `country`                                                                                        |
-| `payments.payout-account.updated.v1`              | `status`, `fields`                                                                                           |
+| `payments.payout-account.updated.v1`              | `status`, `fields` (`created`, `status`, `verification`, ou `provider` et `country` après un changement)     |
 | `payments.kyc.submitted.v1`                       | `submissionId`                                                                                               |
 | `payments.kyc.approved.v1`                        | `submissionId`, `mode`                                                                                       |
 | `payments.kyc.rejected.v1`                        | `submissionId`, `decidedBy`                                                                                  |
@@ -79,7 +81,7 @@ Espèces, virement institutionnel (montant en EUR, XOF ou XAF), engagement de lo
 
 ## Dépendances
 
-identity (email, nom, langue, double authentification), access (enregistrement KYC et prérequis, rôles des lecteurs de pièces), profiles (pays déclaré, cartes, identifiants publics), organizations (rôle, cartes, projets soutenus), media (pièces privées), projects (projet, contrepartie, réservation, collecté).
+identity (email, nom, langue, double authentification), access (enregistrement KYC et prérequis, rôles des lecteurs de pièces), profiles (pays déclaré, cartes, identifiants publics), organizations (rôle, cartes, projets soutenus), media (pièces privées), projects (projet, contrepartie, réservation, collecté, projets portés en campagne pour le changement de compte).
 
 ## Données personnelles (RGPD)
 

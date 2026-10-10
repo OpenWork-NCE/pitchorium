@@ -63,10 +63,8 @@ export class PaymentsFacade implements OnModuleInit {
     });
     this.access.registerPrerequisiteProvider({
       elements: ['payout_account'],
-      missing: async (userId) => {
-        const account = await this.payments.findPayoutAccount(userId);
-        return account?.status === 'active' ? [] : ['payout_account'];
-      },
+      missing: async (userId) =>
+        (await this.payout.hasCollectingAccount(userId)) ? [] : ['payout_account'],
     });
     this.organizations.registerProjectsProvider({
       carried: () => Promise.resolve([]),

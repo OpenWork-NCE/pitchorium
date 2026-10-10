@@ -7,13 +7,6 @@ import {
   type ProviderId,
 } from './capability-matrix';
 
-/**
- * Order of preference of the rails (section 9.2): Stripe Connect when its verified
- * configuration serves the payout country of the holder, Flutterwave otherwise; the simulated
- * provider replaces both (ADR 0052).
- */
-const ORDER: readonly ProviderId[] = ['stripe', 'flutterwave', 'simulated'];
-
 export interface PayoutRoute {
   provider: ProviderId;
   country: string;
@@ -21,18 +14,28 @@ export interface PayoutRoute {
 }
 
 /**
- * The rail is decided by the country of the payout account of the holder, never by the
- * contributor (ADR 0043). Null when no enabled provider has a verified capability there.
+ * The route of the payout option a holder chose: the provider, enabled, has a verified payout
+ * capability in this country (ADR 0134). The rail of a project follows from it, never from the
+ * contributor nor from the country of a profile or a project (ADR 0043). Null otherwise.
  */
-export function routeFor(country: string, enabled: readonly ProviderId[]): PayoutRoute | null {
-  for (const provider of ORDER) {
-    if (!enabled.includes(provider)) continue;
-    const found = PROVIDER_CAPABILITIES[provider].payoutCountries.find(
-      (entry) => entry.country === country && entry.verified,
-    );
-    if (found) return { provider, country, currency: found.currency };
-  }
-  return null;
+export function payoutRoute(
+  provider: ProviderId,
+  country: string,
+  enabled: readonly ProviderId[],
+): PayoutRoute | null {
+  if (!enabled.includes(provider)) return null;
+  const found = PROVIDER_CAPABILITIES[provider].payoutCountries.find(
+    (entry) => entry.country === country && entry.verified,
+  );
+  return found ? { provider, country, currency: found.currency } : null;
+}
+
+/** An existing payout account is still covered: same route, same settlement currency. */
+export function isCovered(
+  account: { provider: ProviderId; country: string; currency: string },
+  enabled: readonly ProviderId[],
+): boolean {
+  return payoutRoute(account.provider, account.country, enabled)?.currency === account.currency;
 }
 
 function serves(capability: PaymentCapability, contributorCountry: string | null): boolean {

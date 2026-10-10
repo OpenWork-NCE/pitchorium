@@ -11,6 +11,7 @@ import { TransactionManager } from '../../../platform/database';
 import { Clock, DomainError } from '../../../platform/kernel';
 import { IdentityFacade } from '../../identity';
 import { MediaFacade } from '../../media';
+import { ProjectsFacade } from '../../projects';
 import { PROVIDER_CAPABILITIES, type ProviderId } from '../domain/capability-matrix';
 import {
   KycApproved,
@@ -25,8 +26,10 @@ import {
   type KycSubmissionRecord,
   type PayoutAccountRecord,
   type PayoutAccountState,
+  type PayoutChangeFacts,
+  payoutChangeRefusal,
 } from '../domain/payout';
-import { routeFor } from '../domain/routing';
+import { isCovered, payoutRoute, type PayoutRoute } from '../domain/routing';
 import { PaymentsEventsRecorder } from './payments-events.recorder';
 import { KycProvider, PaymentProviders, PaymentsRepository } from './ports';
 
@@ -36,9 +39,16 @@ export const KYC_SUBMISSION_RESOURCE = 'kyc_submission';
 const accountNotFound = () =>
   new DomainError('PAYMENTS_PAYOUT_ACCOUNT_NOT_FOUND', 'No payout account');
 
+/** A payout account created, or the existing one resumed for the same option. */
+export interface PayoutAccountResult {
+  account: PayoutAccount;
+  created: boolean;
+}
+
 /**
- * Payout account and KYC of a holder (section 9.5). The route is decided by the country of the
- * payout account (ADR 0043); Stripe verifies the holder itself, the other routes go through a
+ * Payout account and KYC of a holder (section 9.5). The holder chooses the provider and the
+ * country of the account among the covered combinations, which decide the rail of their
+ * projects (ADR 0043, 0134); Stripe verifies the holder itself, the other routes go through a
  * manual review (ADR 0050). Collected contributions open once both are complete.
  */
 @Injectable()
@@ -49,6 +59,7 @@ export class PayoutService {
     private readonly kyc: KycProvider,
     private readonly identity: IdentityFacade,
     private readonly media: MediaFacade,
+    private readonly projects: ProjectsFacade,
     private readonly events: PaymentsEventsRecorder,
     private readonly audit: AuditService,
     private readonly transactions: TransactionManager,
@@ -56,24 +67,96 @@ export class PayoutService {
     @Inject(COMMON_CONFIG) private readonly config: CommonConfig,
   ) {}
 
-  async create(userId: string, request: CreatePayoutAccountRequest): Promise<PayoutAccount> {
-    if (await this.payments.findPayoutAccount(userId)) {
+  /**
+   * Opens the payout account of the option chosen; for the option of the existing account,
+   * resumes it (a fresh onboarding link when hosted). Another option goes through `change`.
+   */
+  async create(userId: string, request: CreatePayoutAccountRequest): Promise<PayoutAccountResult> {
+    const existing = await this.payments.findPayoutAccount(userId);
+    if (existing) {
+      if (existing.provider === request.provider && existing.country === request.country) {
+        return { account: await this.view(userId), created: false };
+      }
       throw new DomainError('PAYMENTS_PAYOUT_ACCOUNT_EXISTS', 'A payout account already exists');
     }
-    const route = routeFor(request.country, this.providers.enabled());
+    const route = this.routeOf(request);
+    const opened = await this.open(userId, route, request);
+    await this.transactions.run(async () => {
+      if (!(await this.payments.insertPayoutAccount(opened))) {
+        throw new DomainError('PAYMENTS_PAYOUT_ACCOUNT_EXISTS', 'A payout account already exists');
+      }
+      await this.audit.record({
+        actor: { type: 'user', id: userId },
+        action: 'payments.payout-account-created',
+        target: { type: 'payout_account', id: userId },
+        metadata: { provider: route.provider, country: route.country },
+      });
+      await this.recordOpened(opened, ['created']);
+    });
+    return { account: await this.view(userId), created: true };
+  }
+
+  /**
+   * Another payout option (ADR 0134): a new account at the provider chosen, which becomes the
+   * account of the holder; the previous one stays at its provider for the contributions it
+   * received. Refused while a campaign collects on the current account or payments are pending.
+   */
+  async change(userId: string, request: CreatePayoutAccountRequest): Promise<PayoutAccount> {
+    const current = await this.payments.findPayoutAccount(userId);
+    if (!current) throw accountNotFound();
+    const route = this.routeOf(request);
+    const refusal = payoutChangeRefusal(await this.changeFacts(current), request);
+    if (refusal) {
+      throw new DomainError('PAYMENTS_PAYOUT_CHANGE_REFUSED', 'The payout option cannot change', {
+        reason: refusal,
+      });
+    }
+    const opened = await this.open(userId, route, request);
+    await this.transactions.run(async () => {
+      if (!(await this.payments.replacePayoutAccount(current.providerAccountId, opened))) {
+        throw new DomainError('CONFLICT', 'The payout account changed meanwhile');
+      }
+      await this.audit.record({
+        actor: { type: 'user', id: userId },
+        action: 'payments.payout-account-changed',
+        target: { type: 'payout_account', id: userId },
+        metadata: {
+          provider: route.provider,
+          country: route.country,
+          previousProvider: current.provider,
+          previousCountry: current.country,
+          previousProviderAccountId: current.providerAccountId,
+        },
+      });
+      await this.recordOpened(opened, ['provider', 'country']);
+    });
+    return this.view(userId);
+  }
+
+  /** The route of the option chosen, or the stable refusal of an option not covered. */
+  private routeOf(request: CreatePayoutAccountRequest): PayoutRoute {
+    const route = payoutRoute(request.provider, request.country, this.providers.enabled());
     if (!route) {
       throw new DomainError(
         'PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED',
-        `No verified payment route serves ${request.country}`,
+        `${request.provider} has no verified route for ${request.country}`,
       );
     }
+    return route;
+  }
+
+  /** Creates the account at the provider, outside any transaction (ADR 0019). */
+  private async open(
+    userId: string,
+    route: PayoutRoute,
+    request: CreatePayoutAccountRequest,
+  ): Promise<PayoutAccountRecord> {
     const capabilities = PROVIDER_CAPABILITIES[route.provider];
     if (capabilities.onboarding === 'bank_details' && !request.bankAccount) {
       throw new DomainError('PAYMENTS_PAYOUT_DETAILS_REQUIRED', 'Bank details are required');
     }
     const user = await this.identity.findUser(userId);
     if (!user) throw new DomainError('IDENTITY_USER_NOT_FOUND', 'User not found');
-    // Outside any transaction (ADR 0019): the provider creates the account first.
     const created = await this.providers.payout(route.provider).createAccount({
       userId,
       country: route.country,
@@ -84,7 +167,7 @@ export class PayoutService {
       commissionRateBps: this.config.payments.commission.rateBps,
     });
     const now = this.clock.now();
-    const account: PayoutAccountRecord = {
+    return {
       userId,
       provider: route.provider,
       country: route.country,
@@ -97,29 +180,46 @@ export class PayoutService {
       createdAt: now,
       updatedAt: now,
     };
-    await this.transactions.run(async () => {
-      if (!(await this.payments.insertPayoutAccount(account))) {
-        throw new DomainError('PAYMENTS_PAYOUT_ACCOUNT_EXISTS', 'A payout account already exists');
-      }
-      await this.audit.record({
-        actor: { type: 'user', id: userId },
-        action: 'payments.payout-account-created',
-        target: { type: 'payout_account', id: userId },
-        metadata: { provider: route.provider, country: route.country },
+  }
+
+  private async recordOpened(account: PayoutAccountRecord, fields: string[]): Promise<void> {
+    if (account.status === 'active') {
+      await this.events.record(PayoutAccountOnboarded, account.userId, {
+        provider: account.provider,
+        country: account.country,
       });
-      if (account.status === 'active') {
-        await this.events.record(PayoutAccountOnboarded, userId, {
-          provider: route.provider,
-          country: route.country,
-        });
-      } else {
-        await this.events.record(PayoutAccountUpdated, userId, {
-          status: account.status,
-          fields: ['created'],
-        });
-      }
-    });
-    return this.view(userId);
+    } else {
+      await this.events.record(PayoutAccountUpdated, account.userId, {
+        status: account.status,
+        fields,
+      });
+    }
+  }
+
+  /** Campaigns of the holder in funding, and payments pending on the current account. */
+  private async changeFacts(account: PayoutAccountRecord): Promise<PayoutChangeFacts> {
+    const owned = await this.projects.fundables(
+      await this.projects.ownedProjectIds(account.userId),
+    );
+    const campaignInProgress = [...owned.values()].some(
+      (project) =>
+        project.ownerId === account.userId &&
+        (project.status === 'funding' || project.status === 'funded'),
+    );
+    return {
+      current: { provider: account.provider, country: account.country },
+      collecting:
+        this.covers(account) && collectionOpen(account, await this.kyc.latest(account.userId)),
+      campaignInProgress,
+      paymentsPending: await this.payments.hasPendingContributions(
+        account.provider,
+        account.providerAccountId,
+      ),
+    };
+  }
+
+  private covers(account: PayoutAccountRecord): boolean {
+    return isCovered(account, this.providers.enabled());
   }
 
   async view(userId: string): Promise<PayoutAccount> {
@@ -132,14 +232,18 @@ export class PayoutService {
             .payout(account.provider)
             .onboardingLink(account.providerAccountId, this.returnUrl())
         : null;
+    const covered = this.covers(account);
     return {
+      provider: account.provider,
       country: account.country,
       currency: account.currency,
       status: account.status,
       onboarding: account.onboarding,
       onboardingUrl,
       kyc: { mode: account.kycMode, status: kycStatus(account, latest) },
-      collectionOpen: collectionOpen(account, latest),
+      collectionOpen: covered && collectionOpen(account, latest),
+      covered,
+      changeRefusal: payoutChangeRefusal(await this.changeFacts(account)),
       createdAt: account.createdAt.toISOString(),
       updatedAt: account.updatedAt.toISOString(),
     };
@@ -301,12 +405,20 @@ export class PayoutService {
     );
   }
 
-  /** Holder ready to collect: active payout account and verified identity. */
+  /** Holder ready to collect: active and covered payout account, verified identity. */
   async collectionOpen(userId: string): Promise<boolean> {
-    return collectionOpen(
-      await this.payments.findPayoutAccount(userId),
-      await this.kyc.latest(userId),
+    const account = await this.payments.findPayoutAccount(userId);
+    return (
+      account !== null &&
+      this.covers(account) &&
+      collectionOpen(account, await this.kyc.latest(userId))
     );
+  }
+
+  /** An active payout account the verified coverage still serves (`payout_account`). */
+  async hasCollectingAccount(userId: string): Promise<boolean> {
+    const account = await this.payments.findPayoutAccount(userId);
+    return account?.status === 'active' && this.covers(account);
   }
 
   private returnUrl(): string {

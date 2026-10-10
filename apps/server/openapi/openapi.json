@@ -18670,6 +18670,7 @@
           "PAYMENTS_PAYOUT_ACCOUNT_EXISTS",
           "PAYMENTS_PAYOUT_ACCOUNT_NOT_FOUND",
           "PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED",
+          "PAYMENTS_PAYOUT_CHANGE_REFUSED",
           "PAYMENTS_PAYOUT_DETAILS_REQUIRED",
           "PAYMENTS_KYC_NOT_MANUAL",
           "PAYMENTS_KYC_PENDING",
@@ -18796,6 +18797,7 @@
           "PAYMENTS_PAYOUT_ACCOUNT_EXISTS",
           "PAYMENTS_PAYOUT_ACCOUNT_NOT_FOUND",
           "PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED",
+          "PAYMENTS_PAYOUT_CHANGE_REFUSED",
           "PAYMENTS_PAYOUT_DETAILS_REQUIRED",
           "PAYMENTS_KYC_NOT_MANUAL",
           "PAYMENTS_KYC_PENDING",
@@ -18927,6 +18929,7 @@
           "PAYMENTS_PAYOUT_ACCOUNT_EXISTS",
           "PAYMENTS_PAYOUT_ACCOUNT_NOT_FOUND",
           "PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED",
+          "PAYMENTS_PAYOUT_CHANGE_REFUSED",
           "PAYMENTS_PAYOUT_DETAILS_REQUIRED",
           "PAYMENTS_KYC_NOT_MANUAL",
           "PAYMENTS_KYC_PENDING",
@@ -19082,6 +19085,7 @@
           "PAYMENTS_PAYOUT_ACCOUNT_EXISTS",
           "PAYMENTS_PAYOUT_ACCOUNT_NOT_FOUND",
           "PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED",
+          "PAYMENTS_PAYOUT_CHANGE_REFUSED",
           "PAYMENTS_PAYOUT_DETAILS_REQUIRED",
           "PAYMENTS_KYC_NOT_MANUAL",
           "PAYMENTS_KYC_PENDING",
@@ -19238,6 +19242,7 @@
           "PAYMENTS_PAYOUT_ACCOUNT_EXISTS",
           "PAYMENTS_PAYOUT_ACCOUNT_NOT_FOUND",
           "PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED",
+          "PAYMENTS_PAYOUT_CHANGE_REFUSED",
           "PAYMENTS_PAYOUT_DETAILS_REQUIRED",
           "PAYMENTS_KYC_NOT_MANUAL",
           "PAYMENTS_KYC_PENDING",
@@ -19393,6 +19398,7 @@
           "PAYMENTS_PAYOUT_ACCOUNT_EXISTS",
           "PAYMENTS_PAYOUT_ACCOUNT_NOT_FOUND",
           "PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED",
+          "PAYMENTS_PAYOUT_CHANGE_REFUSED",
           "PAYMENTS_PAYOUT_DETAILS_REQUIRED",
           "PAYMENTS_KYC_NOT_MANUAL",
           "PAYMENTS_KYC_PENDING",
@@ -19537,6 +19543,7 @@
           "PAYMENTS_PAYOUT_ACCOUNT_EXISTS",
           "PAYMENTS_PAYOUT_ACCOUNT_NOT_FOUND",
           "PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED",
+          "PAYMENTS_PAYOUT_CHANGE_REFUSED",
           "PAYMENTS_PAYOUT_DETAILS_REQUIRED",
           "PAYMENTS_KYC_NOT_MANUAL",
           "PAYMENTS_KYC_PENDING",
@@ -19654,6 +19661,7 @@
           "PAYMENTS_PAYOUT_ACCOUNT_EXISTS",
           "PAYMENTS_PAYOUT_ACCOUNT_NOT_FOUND",
           "PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED",
+          "PAYMENTS_PAYOUT_CHANGE_REFUSED",
           "PAYMENTS_PAYOUT_DETAILS_REQUIRED",
           "PAYMENTS_KYC_NOT_MANUAL",
           "PAYMENTS_KYC_PENDING",
@@ -19771,6 +19779,7 @@
           "PAYMENTS_PAYOUT_ACCOUNT_EXISTS",
           "PAYMENTS_PAYOUT_ACCOUNT_NOT_FOUND",
           "PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED",
+          "PAYMENTS_PAYOUT_CHANGE_REFUSED",
           "PAYMENTS_PAYOUT_DETAILS_REQUIRED",
           "PAYMENTS_KYC_NOT_MANUAL",
           "PAYMENTS_KYC_PENDING",
@@ -19888,6 +19897,7 @@
           "PAYMENTS_PAYOUT_ACCOUNT_EXISTS",
           "PAYMENTS_PAYOUT_ACCOUNT_NOT_FOUND",
           "PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED",
+          "PAYMENTS_PAYOUT_CHANGE_REFUSED",
           "PAYMENTS_PAYOUT_DETAILS_REQUIRED",
           "PAYMENTS_KYC_NOT_MANUAL",
           "PAYMENTS_KYC_PENDING",
@@ -20005,6 +20015,7 @@
           "PAYMENTS_PAYOUT_ACCOUNT_EXISTS",
           "PAYMENTS_PAYOUT_ACCOUNT_NOT_FOUND",
           "PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED",
+          "PAYMENTS_PAYOUT_CHANGE_REFUSED",
           "PAYMENTS_PAYOUT_DETAILS_REQUIRED",
           "PAYMENTS_KYC_NOT_MANUAL",
           "PAYMENTS_KYC_PENDING",
@@ -20118,6 +20129,7 @@
           "PAYMENTS_PAYOUT_ACCOUNT_EXISTS",
           "PAYMENTS_PAYOUT_ACCOUNT_NOT_FOUND",
           "PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED",
+          "PAYMENTS_PAYOUT_CHANGE_REFUSED",
           "PAYMENTS_PAYOUT_DETAILS_REQUIRED",
           "PAYMENTS_KYC_NOT_MANUAL",
           "PAYMENTS_KYC_PENDING",
@@ -20191,6 +20203,7 @@
           "PAYMENTS_PAYOUT_ACCOUNT_EXISTS",
           "PAYMENTS_PAYOUT_ACCOUNT_NOT_FOUND",
           "PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED",
+          "PAYMENTS_PAYOUT_CHANGE_REFUSED",
           "PAYMENTS_PAYOUT_DETAILS_REQUIRED",
           "PAYMENTS_KYC_NOT_MANUAL",
           "PAYMENTS_KYC_PENDING",
@@ -20346,6 +20359,7 @@
           "PAYMENTS_PAYOUT_ACCOUNT_EXISTS",
           "PAYMENTS_PAYOUT_ACCOUNT_NOT_FOUND",
           "PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED",
+          "PAYMENTS_PAYOUT_CHANGE_REFUSED",
           "PAYMENTS_PAYOUT_DETAILS_REQUIRED",
           "PAYMENTS_KYC_NOT_MANUAL",
           "PAYMENTS_KYC_PENDING",
@@ -20496,6 +20510,7 @@
           "PAYMENTS_PAYOUT_ACCOUNT_EXISTS",
           "PAYMENTS_PAYOUT_ACCOUNT_NOT_FOUND",
           "PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED",
+          "PAYMENTS_PAYOUT_CHANGE_REFUSED",
           "PAYMENTS_PAYOUT_DETAILS_REQUIRED",
           "PAYMENTS_KYC_NOT_MANUAL",
           "PAYMENTS_KYC_PENDING",
@@ -20651,6 +20666,7 @@
           "PAYMENTS_PAYOUT_ACCOUNT_EXISTS",
           "PAYMENTS_PAYOUT_ACCOUNT_NOT_FOUND",
           "PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED",
+          "PAYMENTS_PAYOUT_CHANGE_REFUSED",
           "PAYMENTS_PAYOUT_DETAILS_REQUIRED",
           "PAYMENTS_KYC_NOT_MANUAL",
           "PAYMENTS_KYC_PENDING",
@@ -20789,6 +20805,7 @@
           "PAYMENTS_PAYOUT_ACCOUNT_EXISTS",
           "PAYMENTS_PAYOUT_ACCOUNT_NOT_FOUND",
           "PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED",
+          "PAYMENTS_PAYOUT_CHANGE_REFUSED",
           "PAYMENTS_PAYOUT_DETAILS_REQUIRED",
           "PAYMENTS_KYC_NOT_MANUAL",
           "PAYMENTS_KYC_PENDING",
@@ -20906,6 +20923,7 @@
           "PAYMENTS_PAYOUT_ACCOUNT_EXISTS",
           "PAYMENTS_PAYOUT_ACCOUNT_NOT_FOUND",
           "PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED",
+          "PAYMENTS_PAYOUT_CHANGE_REFUSED",
           "PAYMENTS_PAYOUT_DETAILS_REQUIRED",
           "PAYMENTS_KYC_NOT_MANUAL",
           "PAYMENTS_KYC_PENDING",
@@ -21037,6 +21055,7 @@
           "PAYMENTS_PAYOUT_ACCOUNT_EXISTS",
           "PAYMENTS_PAYOUT_ACCOUNT_NOT_FOUND",
           "PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED",
+          "PAYMENTS_PAYOUT_CHANGE_REFUSED",
           "PAYMENTS_PAYOUT_DETAILS_REQUIRED",
           "PAYMENTS_KYC_NOT_MANUAL",
           "PAYMENTS_KYC_PENDING",
@@ -21168,6 +21187,7 @@
           "PAYMENTS_PAYOUT_ACCOUNT_EXISTS",
           "PAYMENTS_PAYOUT_ACCOUNT_NOT_FOUND",
           "PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED",
+          "PAYMENTS_PAYOUT_CHANGE_REFUSED",
           "PAYMENTS_PAYOUT_DETAILS_REQUIRED",
           "PAYMENTS_KYC_NOT_MANUAL",
           "PAYMENTS_KYC_PENDING",
@@ -21266,6 +21286,7 @@
           "PAYMENTS_PAYOUT_ACCOUNT_EXISTS",
           "PAYMENTS_PAYOUT_ACCOUNT_NOT_FOUND",
           "PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED",
+          "PAYMENTS_PAYOUT_CHANGE_REFUSED",
           "PAYMENTS_PAYOUT_DETAILS_REQUIRED",
           "PAYMENTS_KYC_NOT_MANUAL",
           "PAYMENTS_KYC_PENDING",
@@ -21308,6 +21329,16 @@
           }
         },
         "responses": {
+          "200": {
+            "description": "Existing account resumed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayoutAccountDto_Output"
+                }
+              }
+            }
+          },
           "201": {
             "description": "",
             "content": {
@@ -21405,6 +21436,7 @@
           "PAYMENTS_PAYOUT_ACCOUNT_EXISTS",
           "PAYMENTS_PAYOUT_ACCOUNT_NOT_FOUND",
           "PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED",
+          "PAYMENTS_PAYOUT_CHANGE_REFUSED",
           "PAYMENTS_PAYOUT_DETAILS_REQUIRED",
           "PAYMENTS_KYC_NOT_MANUAL",
           "PAYMENTS_KYC_PENDING",
@@ -21419,6 +21451,150 @@
           "PAYMENTS_WEBHOOK_INVALID"
         ],
         "x-access": "payment.payout.configure"
+      },
+      "put": {
+        "operationId": "PayoutController_change",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "Client-generated unique key (UUIDv7 recommended). Replays return the stored response.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255,
+              "pattern": "^[\\x21-\\x7E]+$"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePayoutAccountDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayoutAccountDto_Output"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error (RFC 9457 problem details)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "VALIDATION_FAILED": {
+                    "$ref": "#/components/examples/VALIDATION_FAILED"
+                  },
+                  "PAYLOAD_TOO_LARGE": {
+                    "$ref": "#/components/examples/PAYLOAD_TOO_LARGE"
+                  },
+                  "UNAUTHENTICATED": {
+                    "$ref": "#/components/examples/UNAUTHENTICATED"
+                  },
+                  "FORBIDDEN": {
+                    "$ref": "#/components/examples/FORBIDDEN"
+                  },
+                  "ACCESS_ORIGIN_NOT_ALLOWED": {
+                    "$ref": "#/components/examples/ACCESS_ORIGIN_NOT_ALLOWED"
+                  },
+                  "ACCESS_PREREQUISITES_MISSING": {
+                    "$ref": "#/components/examples/ACCESS_PREREQUISITES_MISSING"
+                  },
+                  "ACCESS_ACCOUNT_SUSPENDED": {
+                    "$ref": "#/components/examples/ACCESS_ACCOUNT_SUSPENDED"
+                  },
+                  "ACCESS_REAUTHENTICATION_REQUIRED": {
+                    "$ref": "#/components/examples/ACCESS_REAUTHENTICATION_REQUIRED"
+                  },
+                  "IDEMPOTENCY_KEY_MISSING": {
+                    "$ref": "#/components/examples/IDEMPOTENCY_KEY_MISSING"
+                  },
+                  "IDEMPOTENCY_REQUEST_IN_PROGRESS": {
+                    "$ref": "#/components/examples/IDEMPOTENCY_REQUEST_IN_PROGRESS"
+                  },
+                  "IDEMPOTENCY_KEY_REUSED": {
+                    "$ref": "#/components/examples/IDEMPOTENCY_KEY_REUSED"
+                  },
+                  "RATE_LIMITED": {
+                    "$ref": "#/components/examples/RATE_LIMITED"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "tags": [
+          "payments"
+        ],
+        "summary": "Change",
+        "description": "Action `payment.payout.change` (session cookie).\n\nPrerequisites: email_verified, profile.entrepreneur_facet.\n\nRequires a recent sign-in.\n\nIdempotent: the `Idempotency-Key` header is required, a replay returns the stored answer.\n\nErrors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.",
+        "x-error-codes": [
+          "VALIDATION_FAILED",
+          "PAYLOAD_TOO_LARGE",
+          "UNAUTHENTICATED",
+          "FORBIDDEN",
+          "ACCESS_ORIGIN_NOT_ALLOWED",
+          "ACCESS_PREREQUISITES_MISSING",
+          "ACCESS_ACCOUNT_SUSPENDED",
+          "ACCESS_REAUTHENTICATION_REQUIRED",
+          "IDEMPOTENCY_KEY_MISSING",
+          "IDEMPOTENCY_REQUEST_IN_PROGRESS",
+          "IDEMPOTENCY_KEY_REUSED",
+          "RATE_LIMITED",
+          "PAYMENTS_PROJECT_NOT_OPEN",
+          "PAYMENTS_HOLDER_NOT_READY",
+          "PAYMENTS_NO_PAYMENT_ROUTE",
+          "PAYMENTS_METHOD_NOT_AVAILABLE",
+          "PAYMENTS_CURRENCY_NOT_AVAILABLE",
+          "PAYMENTS_INSTRUMENT_NOT_ACCEPTED",
+          "PAYMENTS_INSTRUMENT_NOT_COLLECTIBLE",
+          "PAYMENTS_LICENSED_PARTNER_REQUIRED",
+          "PAYMENTS_AMOUNT_OUT_OF_RANGE",
+          "PAYMENTS_REWARD_NOT_ELIGIBLE",
+          "PAYMENTS_ANONYMOUS_NOT_ALLOWED",
+          "PAYMENTS_RATE_LIMITED",
+          "PAYMENTS_CONTRIBUTION_NOT_FOUND",
+          "PAYMENTS_INVALID_TRANSITION",
+          "PAYMENTS_REFUND_INVALID",
+          "PAYMENTS_PROVIDER_UNAVAILABLE",
+          "PAYMENTS_PAYOUT_ACCOUNT_EXISTS",
+          "PAYMENTS_PAYOUT_ACCOUNT_NOT_FOUND",
+          "PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED",
+          "PAYMENTS_PAYOUT_CHANGE_REFUSED",
+          "PAYMENTS_PAYOUT_DETAILS_REQUIRED",
+          "PAYMENTS_KYC_NOT_MANUAL",
+          "PAYMENTS_KYC_PENDING",
+          "PAYMENTS_KYC_ALREADY_VERIFIED",
+          "PAYMENTS_KYC_NOT_FOUND",
+          "PAYMENTS_KYC_ALREADY_DECIDED",
+          "PAYMENTS_OFFLINE_NOT_FOUND",
+          "PAYMENTS_OFFLINE_AMOUNT_INVALID",
+          "PAYMENTS_OFFLINE_INVALID_TRANSITION",
+          "PAYMENTS_OFFLINE_PROOF_REQUIRED",
+          "PAYMENTS_DISCREPANCY_NOT_FOUND",
+          "PAYMENTS_WEBHOOK_INVALID"
+        ],
+        "x-access": "payment.payout.change"
       }
     },
     "/v1/me/payout-account/refresh": {
@@ -21503,6 +21679,7 @@
           "PAYMENTS_PAYOUT_ACCOUNT_EXISTS",
           "PAYMENTS_PAYOUT_ACCOUNT_NOT_FOUND",
           "PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED",
+          "PAYMENTS_PAYOUT_CHANGE_REFUSED",
           "PAYMENTS_PAYOUT_DETAILS_REQUIRED",
           "PAYMENTS_KYC_NOT_MANUAL",
           "PAYMENTS_KYC_PENDING",
@@ -21601,6 +21778,7 @@
           "PAYMENTS_PAYOUT_ACCOUNT_EXISTS",
           "PAYMENTS_PAYOUT_ACCOUNT_NOT_FOUND",
           "PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED",
+          "PAYMENTS_PAYOUT_CHANGE_REFUSED",
           "PAYMENTS_PAYOUT_DETAILS_REQUIRED",
           "PAYMENTS_KYC_NOT_MANUAL",
           "PAYMENTS_KYC_PENDING",
@@ -21742,6 +21920,7 @@
           "PAYMENTS_PAYOUT_ACCOUNT_EXISTS",
           "PAYMENTS_PAYOUT_ACCOUNT_NOT_FOUND",
           "PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED",
+          "PAYMENTS_PAYOUT_CHANGE_REFUSED",
           "PAYMENTS_PAYOUT_DETAILS_REQUIRED",
           "PAYMENTS_KYC_NOT_MANUAL",
           "PAYMENTS_KYC_PENDING",
@@ -21863,6 +22042,7 @@
           "PAYMENTS_PAYOUT_ACCOUNT_EXISTS",
           "PAYMENTS_PAYOUT_ACCOUNT_NOT_FOUND",
           "PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED",
+          "PAYMENTS_PAYOUT_CHANGE_REFUSED",
           "PAYMENTS_PAYOUT_DETAILS_REQUIRED",
           "PAYMENTS_KYC_NOT_MANUAL",
           "PAYMENTS_KYC_PENDING",
@@ -22022,6 +22202,7 @@
           "PAYMENTS_PAYOUT_ACCOUNT_EXISTS",
           "PAYMENTS_PAYOUT_ACCOUNT_NOT_FOUND",
           "PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED",
+          "PAYMENTS_PAYOUT_CHANGE_REFUSED",
           "PAYMENTS_PAYOUT_DETAILS_REQUIRED",
           "PAYMENTS_KYC_NOT_MANUAL",
           "PAYMENTS_KYC_PENDING",
@@ -22159,6 +22340,7 @@
           "PAYMENTS_PAYOUT_ACCOUNT_EXISTS",
           "PAYMENTS_PAYOUT_ACCOUNT_NOT_FOUND",
           "PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED",
+          "PAYMENTS_PAYOUT_CHANGE_REFUSED",
           "PAYMENTS_PAYOUT_DETAILS_REQUIRED",
           "PAYMENTS_KYC_NOT_MANUAL",
           "PAYMENTS_KYC_PENDING",
@@ -22276,6 +22458,7 @@
           "PAYMENTS_PAYOUT_ACCOUNT_EXISTS",
           "PAYMENTS_PAYOUT_ACCOUNT_NOT_FOUND",
           "PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED",
+          "PAYMENTS_PAYOUT_CHANGE_REFUSED",
           "PAYMENTS_PAYOUT_DETAILS_REQUIRED",
           "PAYMENTS_KYC_NOT_MANUAL",
           "PAYMENTS_KYC_PENDING",
@@ -22407,6 +22590,7 @@
           "PAYMENTS_PAYOUT_ACCOUNT_EXISTS",
           "PAYMENTS_PAYOUT_ACCOUNT_NOT_FOUND",
           "PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED",
+          "PAYMENTS_PAYOUT_CHANGE_REFUSED",
           "PAYMENTS_PAYOUT_DETAILS_REQUIRED",
           "PAYMENTS_KYC_NOT_MANUAL",
           "PAYMENTS_KYC_PENDING",
@@ -22545,6 +22729,7 @@
           "PAYMENTS_PAYOUT_ACCOUNT_EXISTS",
           "PAYMENTS_PAYOUT_ACCOUNT_NOT_FOUND",
           "PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED",
+          "PAYMENTS_PAYOUT_CHANGE_REFUSED",
           "PAYMENTS_PAYOUT_DETAILS_REQUIRED",
           "PAYMENTS_KYC_NOT_MANUAL",
           "PAYMENTS_KYC_PENDING",
@@ -22676,6 +22861,7 @@
           "PAYMENTS_PAYOUT_ACCOUNT_EXISTS",
           "PAYMENTS_PAYOUT_ACCOUNT_NOT_FOUND",
           "PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED",
+          "PAYMENTS_PAYOUT_CHANGE_REFUSED",
           "PAYMENTS_PAYOUT_DETAILS_REQUIRED",
           "PAYMENTS_KYC_NOT_MANUAL",
           "PAYMENTS_KYC_PENDING",
@@ -22812,6 +22998,7 @@
           "PAYMENTS_PAYOUT_ACCOUNT_EXISTS",
           "PAYMENTS_PAYOUT_ACCOUNT_NOT_FOUND",
           "PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED",
+          "PAYMENTS_PAYOUT_CHANGE_REFUSED",
           "PAYMENTS_PAYOUT_DETAILS_REQUIRED",
           "PAYMENTS_KYC_NOT_MANUAL",
           "PAYMENTS_KYC_PENDING",
@@ -22943,6 +23130,7 @@
           "PAYMENTS_PAYOUT_ACCOUNT_EXISTS",
           "PAYMENTS_PAYOUT_ACCOUNT_NOT_FOUND",
           "PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED",
+          "PAYMENTS_PAYOUT_CHANGE_REFUSED",
           "PAYMENTS_PAYOUT_DETAILS_REQUIRED",
           "PAYMENTS_KYC_NOT_MANUAL",
           "PAYMENTS_KYC_PENDING",
@@ -23041,6 +23229,7 @@
           "PAYMENTS_PAYOUT_ACCOUNT_EXISTS",
           "PAYMENTS_PAYOUT_ACCOUNT_NOT_FOUND",
           "PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED",
+          "PAYMENTS_PAYOUT_CHANGE_REFUSED",
           "PAYMENTS_PAYOUT_DETAILS_REQUIRED",
           "PAYMENTS_KYC_NOT_MANUAL",
           "PAYMENTS_KYC_PENDING",
@@ -36675,6 +36864,7 @@
                   "PAYMENTS_PAYOUT_ACCOUNT_EXISTS",
                   "PAYMENTS_PAYOUT_ACCOUNT_NOT_FOUND",
                   "PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED",
+                  "PAYMENTS_PAYOUT_CHANGE_REFUSED",
                   "PAYMENTS_PAYOUT_DETAILS_REQUIRED",
                   "PAYMENTS_KYC_NOT_MANUAL",
                   "PAYMENTS_KYC_PENDING",
@@ -57011,6 +57201,14 @@
       "PayoutAccountDto_Output": {
         "type": "object",
         "properties": {
+          "provider": {
+            "type": "string",
+            "enum": [
+              "stripe",
+              "flutterwave",
+              "simulated"
+            ]
+          },
           "country": {
             "type": "string",
             "pattern": "^[A-Z]{2}$"
@@ -57068,6 +57266,24 @@
           "collectionOpen": {
             "type": "boolean"
           },
+          "covered": {
+            "type": "boolean"
+          },
+          "changeRefusal": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "campaign_in_progress",
+                  "payments_pending",
+                  "same_option"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "createdAt": {
             "type": "string",
             "format": "date-time",
@@ -57080,6 +57296,7 @@
           }
         },
         "required": [
+          "provider",
           "country",
           "currency",
           "status",
@@ -57087,6 +57304,8 @@
           "onboardingUrl",
           "kyc",
           "collectionOpen",
+          "covered",
+          "changeRefusal",
           "createdAt",
           "updatedAt"
         ],
@@ -57095,9 +57314,21 @@
       "CreatePayoutAccountDto": {
         "type": "object",
         "properties": {
+          "provider": {
+            "type": "string",
+            "enum": [
+              "stripe",
+              "flutterwave",
+              "simulated"
+            ]
+          },
           "country": {
             "type": "string",
             "pattern": "^[A-Z]{2}$"
+          },
+          "eligibilityConfirmed": {
+            "type": "boolean",
+            "const": true
           },
           "bankAccount": {
             "type": "object",
@@ -57130,7 +57361,9 @@
           }
         },
         "required": [
-          "country"
+          "provider",
+          "country",
+          "eligibilityConfirmed"
         ]
       },
       "KycOverviewDto_Output": {
@@ -73166,6 +73399,7 @@
               "PAYMENTS_PAYOUT_ACCOUNT_EXISTS",
               "PAYMENTS_PAYOUT_ACCOUNT_NOT_FOUND",
               "PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED",
+              "PAYMENTS_PAYOUT_CHANGE_REFUSED",
               "PAYMENTS_PAYOUT_DETAILS_REQUIRED",
               "PAYMENTS_KYC_NOT_MANUAL",
               "PAYMENTS_KYC_PENDING",
@@ -74541,9 +74775,18 @@
       "PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED": {
         "value": {
           "type": "urn:pitchorium:problem:payments-payout-country-not-supported",
-          "title": "No verified payment route serves this payout country",
+          "title": "The provider has no verified route for this payout country",
           "status": 422,
           "code": "PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED",
+          "requestId": "0199c1f4-7d4e-7c2a-9b1e-3f5a6c7d8e9f"
+        }
+      },
+      "PAYMENTS_PAYOUT_CHANGE_REFUSED": {
+        "value": {
+          "type": "urn:pitchorium:problem:payments-payout-change-refused",
+          "title": "The payout option cannot change now",
+          "status": 409,
+          "code": "PAYMENTS_PAYOUT_CHANGE_REFUSED",
           "requestId": "0199c1f4-7d4e-7c2a-9b1e-3f5a6c7d8e9f"
         }
       },

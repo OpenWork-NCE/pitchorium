@@ -415,9 +415,28 @@ export const payoutAccountStatusSchema = z.enum(PAYOUT_ACCOUNT_STATUSES);
 export const KYC_STATUSES = ['not_submitted', 'pending', 'verified', 'rejected'] as const;
 export const kycStatusSchema = z.enum(KYC_STATUSES);
 
+/**
+ * Why the payout option of a holder cannot change now (ADR 0134): a campaign of theirs is in
+ * funding while contributions are open on the current account, payments are still pending on it,
+ * or the option asked is the current one.
+ */
+export const PAYOUT_CHANGE_REFUSAL_REASONS = [
+  'campaign_in_progress',
+  'payments_pending',
+  'same_option',
+] as const;
+export const payoutChangeRefusalReasonSchema = z.enum(PAYOUT_CHANGE_REFUSAL_REASONS);
+
+/**
+ * The payout option a holder chooses among the covered combinations of the public coverage:
+ * never deduced from the country of their profile nor of their projects (ADR 0134).
+ */
 export const createPayoutAccountRequestSchema = z.object({
-  /** Country of the bank account that receives the funds: it decides the payment route. */
+  provider: paymentProviderSchema,
+  /** Country of the bank account that receives the funds. */
   country: countryCodeSchema,
+  /** The holder confirms they meet the requirements of the provider for this country. */
+  eligibilityConfirmed: z.literal(true),
   /** Bank details, for the routes that create a payout sub-account. */
   bankAccount: z
     .object({
@@ -433,6 +452,7 @@ export const createPayoutAccountRequestSchema = z.object({
 });
 
 export const payoutAccountSchema = z.object({
+  provider: paymentProviderSchema,
   country: countryCodeSchema,
   /** Currency of the funds received. */
   currency: z.string(),
@@ -445,6 +465,10 @@ export const payoutAccountSchema = z.object({
   }),
   /** Collected contributions are open on the projects of the holder. */
   collectionOpen: z.boolean(),
+  /** The provider and the country are still served by the verified coverage. */
+  covered: z.boolean(),
+  /** Why the payout option cannot change now, null when it can (`PUT /v1/me/payout-account`). */
+  changeRefusal: payoutChangeRefusalReasonSchema.nullable(),
   createdAt: z.iso.datetime(),
   updatedAt: z.iso.datetime(),
 });
@@ -594,6 +618,7 @@ export type OfflineContribution = z.infer<typeof offlineContributionSchema>;
 export type PayoutAccountStatus = z.infer<typeof payoutAccountStatusSchema>;
 export type KycStatus = z.infer<typeof kycStatusSchema>;
 export type CreatePayoutAccountRequest = z.infer<typeof createPayoutAccountRequestSchema>;
+export type PayoutChangeRefusalReason = z.infer<typeof payoutChangeRefusalReasonSchema>;
 export type PayoutAccount = z.infer<typeof payoutAccountSchema>;
 export type SubmitKycRequest = z.infer<typeof submitKycRequestSchema>;
 export type KycSubmission = z.infer<typeof kycSubmissionSchema>;

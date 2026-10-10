@@ -264,7 +264,8 @@ export class SimulatedProvider implements PaymentProvider, PayoutAccountProvider
   async createAccount(
     request: CreatePayoutAccountRequest,
   ): Promise<{ providerAccountId: string; state: PayoutAccountState }> {
-    const id = `sim_acct_${request.userId}`;
+    // One account per holder and country: a change of option opens another one (ADR 0134).
+    const id = `sim_acct_${request.userId}_${request.country.toLowerCase()}`;
     await this.db
       .insert(paymentsSimulatedAccounts)
       .values({ id, userId: request.userId, country: request.country, createdAt: this.clock.now() })

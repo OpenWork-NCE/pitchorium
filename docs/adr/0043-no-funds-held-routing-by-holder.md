@@ -1,6 +1,6 @@
 # 0043. Non-détention des fonds et routage par le porteur
 
-Statut : acceptée (2026-10-07). Hypothèses juridiques à valider (`docs/architecture/payments-compliance.md`).
+Statut : acceptée (2026-10-07), choix explicite du prestataire par le porteur depuis l'ADR 0134. Hypothèses juridiques à valider (`docs/architecture/payments-compliance.md`).
 
 ## Contexte
 

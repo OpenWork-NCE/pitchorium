@@ -23,7 +23,8 @@ import {
   UnbalancedLedgerEntryError,
 } from './ledger';
 import { assertWithinBounds, buildQuote } from './quote';
-import { availablePayments, estimateFee, requirePayment, routeFor } from './routing';
+import { payoutChangeRefusal } from './payout';
+import { availablePayments, estimateFee, isCovered, payoutRoute, requirePayment } from './routing';
 
 const AT = new Date('2026-10-07T10:00:00.000Z');
 const eur = (minor: bigint) => Money.of(minor, 'EUR');
@@ -328,33 +329,53 @@ describe('ledger', () => {
 describe('routing and capabilities', () => {
   const live = ['stripe', 'flutterwave'] as const;
 
-  it('routes by the payout country of the holder, Stripe first when verified', () => {
-    expect(routeFor('FR', live)).toEqual({ provider: 'stripe', country: 'FR', currency: 'EUR' });
-    expect(routeFor('NG', live)).toEqual({
+  it('routes by the provider and the payout country the holder chose, verified only', () => {
+    expect(payoutRoute('stripe', 'FR', live)).toEqual({
+      provider: 'stripe',
+      country: 'FR',
+      currency: 'EUR',
+    });
+    expect(payoutRoute('flutterwave', 'NG', live)).toEqual({
       provider: 'flutterwave',
       country: 'NG',
       currency: 'NGN',
     });
-    expect(routeFor('NG', ['stripe'])).toBeNull();
+    // The route takes the option chosen, nothing else: a holder living in Senegal, where no rail
+    // is verified, collects through the account they hold in France.
+    expect(payoutRoute('stripe', 'FR', live)?.country).toBe('FR');
+    // A provider serves its own verified countries only, and only when enabled.
+    expect(payoutRoute('flutterwave', 'FR', live)).toBeNull();
+    expect(payoutRoute('stripe', 'NG', live)).toBeNull();
+    expect(payoutRoute('flutterwave', 'NG', ['stripe'])).toBeNull();
     // Not verified anywhere: no route rather than a guess.
-    expect(routeFor('SN', live)).toBeNull();
-    expect(routeFor('GB', live)).toBeNull();
+    expect(payoutRoute('stripe', 'SN', live)).toBeNull();
+    expect(payoutRoute('flutterwave', 'SN', live)).toBeNull();
+    expect(payoutRoute('stripe', 'GB', live)).toBeNull();
     // The simulated provider serves the payout countries of the live rails, in EUR.
-    expect(routeFor('SN', ['simulated'])).toBeNull();
-    expect(routeFor('FR', ['simulated'])).toEqual({
+    expect(payoutRoute('simulated', 'SN', ['simulated'])).toBeNull();
+    expect(payoutRoute('simulated', 'FR', ['simulated'])).toEqual({
       provider: 'simulated',
       country: 'FR',
       currency: 'EUR',
     });
-    expect(routeFor('NG', ['simulated'])).toEqual({
+    expect(payoutRoute('simulated', 'NG', ['simulated'])).toEqual({
       provider: 'simulated',
       country: 'NG',
       currency: 'EUR',
     });
+    expect(payoutRoute('stripe', 'FR', ['simulated'])).toBeNull();
+  });
+
+  it('tells whether an existing payout account is still covered', () => {
+    const account = { provider: 'stripe' as const, country: 'FR', currency: 'EUR' };
+    expect(isCovered(account, live)).toBe(true);
+    expect(isCovered({ ...account, country: 'SN' }, live)).toBe(false);
+    expect(isCovered({ ...account, currency: 'XOF' }, live)).toBe(false);
+    expect(isCovered(account, ['flutterwave'])).toBe(false);
   });
 
   it('offers simulated mobile money where a live rail verified it only', () => {
-    const route = routeFor('FR', ['simulated']);
+    const route = payoutRoute('simulated', 'FR', ['simulated']);
     if (!route) throw new Error('No route');
     const methods = (country: string) =>
       new Set(availablePayments(route, country).map((payment) => payment.method));
@@ -364,8 +385,8 @@ describe('routing and capabilities', () => {
   });
 
   it('offers only the verified methods for this contributor and this route', () => {
-    const stripe = routeFor('FR', live);
-    const flutterwave = routeFor('NG', live);
+    const stripe = payoutRoute('stripe', 'FR', live);
+    const flutterwave = payoutRoute('flutterwave', 'NG', live);
     if (!stripe || !flutterwave) throw new Error('No route');
     expect(availablePayments(stripe, 'SN').map((payment) => payment.method)).toEqual([
       'card',
@@ -419,5 +440,60 @@ describe('routing and capabilities', () => {
           .map((entry) => entry.country),
       ),
     );
+  });
+});
+
+describe('change of the payout option', () => {
+  const facts = {
+    current: { provider: 'stripe', country: 'FR' },
+    collecting: true,
+    campaignInProgress: false,
+    paymentsPending: false,
+  };
+
+  it('allows another option when no campaign collects and no payment is pending', () => {
+    expect(payoutChangeRefusal(facts, { provider: 'flutterwave', country: 'NG' })).toBeNull();
+    expect(payoutChangeRefusal(facts, { provider: 'stripe', country: 'BE' })).toBeNull();
+    expect(payoutChangeRefusal(facts)).toBeNull();
+  });
+
+  it('refuses the current option, whatever the state', () => {
+    expect(payoutChangeRefusal(facts, { provider: 'stripe', country: 'FR' })).toBe('same_option');
+    expect(
+      payoutChangeRefusal(
+        { ...facts, campaignInProgress: true },
+        { provider: 'stripe', country: 'FR' },
+      ),
+    ).toBe('same_option');
+  });
+
+  it('refuses while a campaign collects on the current account', () => {
+    const during = { ...facts, campaignInProgress: true };
+    expect(payoutChangeRefusal(during, { provider: 'flutterwave', country: 'NG' })).toBe(
+      'campaign_in_progress',
+    );
+    expect(payoutChangeRefusal(during)).toBe('campaign_in_progress');
+    // An account that no longer collects (not covered, restricted, KYC missing) may change.
+    expect(
+      payoutChangeRefusal(
+        { ...during, collecting: false },
+        { provider: 'flutterwave', country: 'NG' },
+      ),
+    ).toBeNull();
+  });
+
+  it('refuses while payments are pending on the current account', () => {
+    expect(
+      payoutChangeRefusal(
+        { ...facts, paymentsPending: true },
+        { provider: 'stripe', country: 'BE' },
+      ),
+    ).toBe('payments_pending');
+    expect(
+      payoutChangeRefusal(
+        { ...facts, collecting: false, campaignInProgress: true, paymentsPending: true },
+        { provider: 'stripe', country: 'BE' },
+      ),
+    ).toBe('payments_pending');
   });
 });

@@ -130,6 +130,9 @@ Valeurs provisoires livrées et documentées : la plateforme fonctionne avec ell
 - **64.** La migration éventuelle vers l'API v4 de Flutterwave (authentification OAuth, signature HMAC des webhooks).
 - **65.** Le journal du temps partagé : durée maximale d'une déclaration (provisoirement 24 heures), délai pour déclarer, sort d'une déclaration sans réponse du bénéficiaire, et prise en compte des heures dans le tableau de bord d'une organisation (aujourd'hui aucune : les heures sont personnelles).
 - **66.** Le tableau de bord d'impact ne compte que les contributions encaissées (§9.4) : les contributions hors plateforme validées doivent-elles y figurer ?
+- **121.** Un compte de versement porté par une organisation (par exemple une société française qui porte un projet au Sénégal) : aujourd'hui le compte est celui du membre porteur, qui peut seulement l'ouvrir au nom d'une société sur les pages de Stripe. Un compte d'organisation implique la vérification de la société (immatriculation, représentant, bénéficiaires effectifs) et une règle pour les projets portés par l'organisation.
+- **122.** Les prestataires futurs pour les pays sans rail (Afrique francophone, Kenya, Afrique du Sud, Royaume-Uni et Suisse, voir 9, 61 et 62), et leur compatibilité avec la non-détention des fonds (ADR 0043) : versement direct au porteur ou partage à la source, sans solde tenu par Pitchorium.
+- **123.** Les règles provisoires du changement de compte de versement (ADR 0134) : refus pendant une campagne qui encaisse et tant que des paiements sont en attente, nouveau compte à chaque changement, session récente ; et un compte tenu hors du pays de résidence du porteur (obligations fiscales et déclaratives, vigilance).
 
 ### Messagerie
 

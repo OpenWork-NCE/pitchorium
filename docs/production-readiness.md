@@ -4,9 +4,9 @@ Liste ordonnée : chaque étape suppose les précédentes faites. Responsables :
 
 ## 1. Décisions préalables
 
-1. **Juridique** : valider le schéma des paiements, l'absence de détention de fonds, les seuils anti-blanchiment, les dons anonymes, la portée des contributions hors plateforme (questions 51 à 58, 60 ; `docs/architecture/payments-compliance.md`).
+1. **Juridique** : valider le schéma des paiements, l'absence de détention de fonds, les seuils anti-blanchiment, les dons anonymes, la portée des contributions hors plateforme, les règles de changement du compte de versement (questions 51 à 58, 60, 123 ; `docs/architecture/payments-compliance.md`).
 2. **Client et juridique** : pays d'établissement de Pitchorium et TVA sur la commission (question 59).
-3. **Client** : prestataire pour l'Afrique francophone et le Kenya, confirmation des capacités Stripe et Flutterwave (questions 9, 10, 61, 62).
+3. **Client** : prestataire pour l'Afrique francophone et le Kenya, confirmation des capacités Stripe et Flutterwave, prestataires des pays sans rail (questions 9, 10, 61, 62, 122).
 4. **Client** : critères, pondérations et paliers du score d'impact, publiés ensuite comme méthodologie par un administrateur (questions 1 à 3).
 5. **Client et juridique** : textes des CGU et de la politique de confidentialité, et leurs versions ; durées de conservation ; obligations DSA (questions 20, 31, 81, 84 à 86 ; `docs/compliance/records-of-processing.md` à finaliser).
 6. **Client** : hébergeur, région, outil de traces et projet Sentry (questions 24, 26) ; hébergement de l'application web (question 96).

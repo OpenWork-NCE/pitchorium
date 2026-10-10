@@ -65,6 +65,14 @@ const PAYMENTS_ENV = {
   PAYMENTS_ENHANCED_VERIFICATION_EUR_MINOR: '500000',
 };
 
+/** The payout option Fatou chooses: her bank account in France. */
+const FATOU_PAYOUT = {
+  provider: 'simulated',
+  country: 'FR',
+  eligibilityConfirmed: true,
+  bankAccount: { bankCode: 'FR001', accountNumber: '00012345678', accountName: 'Fatou Sall' },
+};
+
 /** Payments and engagement (sections 9 and 9.4) with the simulated provider. */
 describe('payments', () => {
   let app: NestExpressApplication;
@@ -197,19 +205,35 @@ describe('payments', () => {
       .send({ kind: 'love_money_commitment', description: 'Je soutiens Fatou.' })
       .expect(201);
 
+    // Fatou lives in Senegal, where no rail is verified: she chooses her account in France.
+    await holder.agent.patch('/v1/me/profile').send({ countryCode: 'SN' }).expect(200);
+    const unsupported = await holder.agent
+      .post('/v1/me/payout-account')
+      .set('Idempotency-Key', randomUUID())
+      .send({ ...FATOU_PAYOUT, country: 'SN' })
+      .expect(422);
+    expect(unsupported.body).toMatchObject({ code: 'PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED' });
+    const unconfirmed = await holder.agent
+      .post('/v1/me/payout-account')
+      .set('Idempotency-Key', randomUUID())
+      .send({ ...FATOU_PAYOUT, eligibilityConfirmed: false })
+      .expect(400);
+    expect(unconfirmed.body).toMatchObject({ code: 'VALIDATION_FAILED' });
     const account = await holder.agent
       .post('/v1/me/payout-account')
       .set('Idempotency-Key', randomUUID())
-      .send({
-        country: 'FR',
-        bankAccount: { bankCode: 'FR001', accountNumber: '00012345678', accountName: 'Fatou Sall' },
-      });
+      .send(FATOU_PAYOUT);
     expect(account.status, JSON.stringify(account.body)).toBe(201);
     expect(account.body as PayoutAccount).toMatchObject({
+      provider: 'simulated',
+      country: 'FR',
+      currency: 'EUR',
       status: 'active',
       onboarding: 'bank_details',
       kyc: { mode: 'manual_review', status: 'not_submitted' },
       collectionOpen: false,
+      covered: true,
+      changeRefusal: null,
     });
     const document = await readyDocument(holder.userId);
     const submission = await holder.agent
@@ -248,6 +272,92 @@ describe('payments', () => {
       'payments.kyc-submitted',
       'payments.kyc-approved',
     ]);
+  });
+
+  it('resumes the option of the account, and refuses to change it while the campaign collects', async () => {
+    const resumed = await holder.agent
+      .post('/v1/me/payout-account')
+      .set('Idempotency-Key', randomUUID())
+      .send(FATOU_PAYOUT);
+    expect(resumed.status, JSON.stringify(resumed.body)).toBe(200);
+    expect(resumed.body).toMatchObject({
+      provider: 'simulated',
+      country: 'FR',
+      collectionOpen: true,
+      changeRefusal: 'campaign_in_progress',
+    });
+    const other = { ...FATOU_PAYOUT, country: 'NG' };
+    const exists = await holder.agent
+      .post('/v1/me/payout-account')
+      .set('Idempotency-Key', randomUUID())
+      .send(other)
+      .expect(409);
+    expect(exists.body).toMatchObject({ code: 'PAYMENTS_PAYOUT_ACCOUNT_EXISTS' });
+    const during = await holder.agent
+      .put('/v1/me/payout-account')
+      .set('Idempotency-Key', randomUUID())
+      .send(other)
+      .expect(409);
+    expect(during.body).toMatchObject({
+      code: 'PAYMENTS_PAYOUT_CHANGE_REFUSED',
+      reason: 'campaign_in_progress',
+    });
+    const same = await holder.agent
+      .put('/v1/me/payout-account')
+      .set('Idempotency-Key', randomUUID())
+      .send(FATOU_PAYOUT)
+      .expect(409);
+    expect(same.body).toMatchObject({ reason: 'same_option' });
+    const stripe = await holder.agent
+      .post('/v1/me/payout-account')
+      .set('Idempotency-Key', randomUUID())
+      .send({ ...FATOU_PAYOUT, provider: 'stripe' })
+      .expect(409);
+    expect(stripe.body).toMatchObject({ code: 'PAYMENTS_PAYOUT_ACCOUNT_EXISTS' });
+  });
+
+  it('changes the payout option of a holder without campaign: a new account, audited', async () => {
+    const kwame = await entrepreneur(app, 'kwame@example.com', 'Kwame Boateng');
+    await kwame.agent
+      .post('/v1/me/payout-account')
+      .set('Idempotency-Key', randomUUID())
+      .send({ ...FATOU_PAYOUT, provider: 'stripe' })
+      .expect(422);
+    const ghana = await kwame.agent
+      .post('/v1/me/payout-account')
+      .set('Idempotency-Key', randomUUID())
+      .send({ ...FATOU_PAYOUT, country: 'GH' })
+      .expect(201);
+    expect(ghana.body).toMatchObject({ country: 'GH', changeRefusal: null });
+    const [before] = await query<{ provider_account_id: string }>(
+      'SELECT provider_account_id FROM payments.payout_accounts WHERE user_id = $1',
+      [kwame.userId],
+    );
+    const changed = await kwame.agent
+      .put('/v1/me/payout-account')
+      .set('Idempotency-Key', randomUUID())
+      .send(FATOU_PAYOUT);
+    expect(changed.status, JSON.stringify(changed.body)).toBe(200);
+    expect(changed.body).toMatchObject({ provider: 'simulated', country: 'FR', currency: 'EUR' });
+    const [after] = await query<{ provider_account_id: string }>(
+      'SELECT provider_account_id FROM payments.payout_accounts WHERE user_id = $1',
+      [kwame.userId],
+    );
+    expect(after?.provider_account_id).not.toBe(before?.provider_account_id);
+    const [audit] = await query<{ metadata: Record<string, string> }>(
+      `SELECT metadata FROM platform.audit_log WHERE action = 'payments.payout-account-changed'`,
+    );
+    expect(audit?.metadata).toMatchObject({
+      provider: 'simulated',
+      country: 'FR',
+      previousCountry: 'GH',
+      previousProviderAccountId: before?.provider_account_id,
+    });
+    await kwame.agent
+      .put('/v1/me/payout-account')
+      .set('Idempotency-Key', randomUUID())
+      .send({ ...FATOU_PAYOUT, country: 'CM' })
+      .expect(422);
   });
 
   it('pays a contribution with a reward end to end: quote, session, webhook, ledger, tier, email', async () => {

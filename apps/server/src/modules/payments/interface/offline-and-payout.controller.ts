@@ -8,6 +8,7 @@ import {
   Post,
   Put,
   Query,
+  Res,
 } from '@nestjs/common';
 import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import {
@@ -31,6 +32,7 @@ import {
   projectIdParamsSchema,
   submitKycRequestSchema,
 } from '@pitchorium/contracts';
+import type { Response } from 'express';
 import { createZodDto, ZodSerializerDto } from 'nestjs-zod';
 import { CurrentPrincipal, type Principal, RequireAction } from '../../../platform/http';
 import { Idempotent } from '../../../platform/idempotency';
@@ -176,17 +178,42 @@ export class PayoutController {
     return this.payout.view(principal.userId);
   }
 
-  /** The country of the bank account decides the payment route; `onboardingUrl` when hosted. */
+  /**
+   * The provider and the country of the bank account the holder chose among the covered
+   * combinations decide the rail of their projects (ADR 0134); `onboardingUrl` when hosted. The
+   * option of the existing account resumes it (200), another one is refused: `PUT` changes it.
+   */
   @Post('payout-account')
   @RequireAction('payment.payout.configure')
   @Idempotent()
   @ZodSerializerDto(PayoutAccountDto)
   @ApiCreatedResponse({ type: PayoutAccountDto.Output })
-  create(
+  @ApiOkResponse({ type: PayoutAccountDto.Output, description: 'Existing account resumed' })
+  async create(
+    @CurrentPrincipal() principal: Principal,
+    @Body() body: CreatePayoutAccountDto,
+    @Res({ passthrough: true }) response: Response,
+  ): Promise<PayoutAccount> {
+    const result = await this.payout.create(principal.userId, body);
+    if (!result.created) response.status(HttpStatus.OK);
+    return result.account;
+  }
+
+  /**
+   * Another payout option: a new account at the provider chosen. Refused while a campaign
+   * collects on the current account or payments are pending on it (`PAYMENTS_PAYOUT_CHANGE_REFUSED`
+   * with its reason, ADR 0134).
+   */
+  @Put('payout-account')
+  @RequireAction('payment.payout.change')
+  @Idempotent()
+  @ZodSerializerDto(PayoutAccountDto)
+  @ApiOkResponse({ type: PayoutAccountDto.Output })
+  change(
     @CurrentPrincipal() principal: Principal,
     @Body() body: CreatePayoutAccountDto,
   ): Promise<PayoutAccount> {
-    return this.payout.create(principal.userId, body);
+    return this.payout.change(principal.userId, body);
   }
 
   /** Reads the account again at the provider (return from the hosted onboarding). */

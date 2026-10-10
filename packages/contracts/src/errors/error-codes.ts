@@ -289,7 +289,11 @@ export const errorCodes = {
   PAYMENTS_PAYOUT_ACCOUNT_NOT_FOUND: { status: 404, title: 'Payout account not found' },
   PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED: {
     status: 422,
-    title: 'No verified payment route serves this payout country',
+    title: 'The provider has no verified route for this payout country',
+  },
+  PAYMENTS_PAYOUT_CHANGE_REFUSED: {
+    status: 409,
+    title: 'The payout option cannot change now',
   },
   PAYMENTS_PAYOUT_DETAILS_REQUIRED: {
     status: 422,
