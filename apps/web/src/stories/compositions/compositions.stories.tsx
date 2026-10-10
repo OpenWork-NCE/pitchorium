@@ -134,7 +134,7 @@ function Feed({ loading }: { loading: boolean }) {
       <ThreeColumnLayout
         leftLabel="Votre profil"
         rightLabel="Personnes pertinentes pour vous"
-        left={<ProfileCompletion variant="card" />}
+        left={<ProfileCompletion member={currentUser} variant="card" />}
         right={
           <>
             <ProjectCard project={project} variant="compact" headingLevel={2} />
@@ -148,7 +148,7 @@ function Feed({ loading }: { loading: boolean }) {
           </Heading>
           <FeedComposer />
           <div className="lg:hidden">
-            <ProfileCompletion variant="module" />
+            <ProfileCompletion member={currentUser} variant="module" />
           </div>
           {loading ? (
             <Loading className="grid gap-4">
@@ -203,10 +203,10 @@ export const ProfileCardStory: Story = {
     <MemberRuntime>
       <div className="flex flex-wrap items-start gap-6 p-1">
         <div className="w-full max-w-xs">
-          <ProfileCompletion variant="card" />
+          <ProfileCompletion member={currentUser} variant="card" />
         </div>
         <div className="w-full max-w-md">
-          <ProfileCompletion variant="module" />
+          <ProfileCompletion member={currentUser} variant="module" />
         </div>
       </div>
     </MemberRuntime>

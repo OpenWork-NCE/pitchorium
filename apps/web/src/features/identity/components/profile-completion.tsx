@@ -1,11 +1,9 @@
-'use client';
-
+import type { CurrentUserDtoOutput } from '@pitchorium/api-client';
 import { useLocale, useTranslations } from 'next-intl';
 import { Avatar, Button, Card, Heading, Progress, Text } from '@/components/ui';
 import { routes } from '@/config/routes';
 import { Link } from '@/i18n/navigation';
 import { formatList } from '@/lib/format/list';
-import { useCurrentMember } from './current-member';
 
 /** Elements of the profile named in the module, the rest summed up by the percentage. */
 const NAMED_MISSING = 3;
@@ -13,13 +11,19 @@ const NAMED_MISSING = 3;
 /**
  * Strength of the profile of the member (§10.1) and what it misses. `card`: the left column of a
  * wide screen, with the identity of the member; `module`: at the top of the feed on a narrow
- * screen, only while the profile is incomplete.
+ * screen, only while the profile is incomplete. A server component: the member comes from the
+ * page, read for its render.
  */
-export function ProfileCompletion({ variant }: { variant: 'card' | 'module' }) {
+export function ProfileCompletion({
+  member,
+  variant,
+}: {
+  member: CurrentUserDtoOutput;
+  variant: 'card' | 'module';
+}) {
   const t = useTranslations('web.profile.completion');
   const elements = useTranslations('reference.profileElements');
   const locale = useLocale();
-  const member = useCurrentMember();
   const { percent, missing } = member.profileStrength;
   const incomplete = percent < 100;
   if (variant === 'module' && !incomplete) return null;

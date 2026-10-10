@@ -9,6 +9,7 @@ import { SuggestionsList } from '@/features/discovery';
 import { ProfileCompletion } from '@/features/identity';
 import { asLocale } from '@/i18n/routing';
 import { configureServerApi } from '@/lib/api/server';
+import { getCurrentMember } from '@/lib/auth/session';
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations('web.nav');
@@ -40,12 +41,12 @@ async function firstRead(): Promise<[FeedPage | null, Suggestion[]]> {
 export default async function Page({ params }: PageProps<'/[locale]/feed'>) {
   setRequestLocale(asLocale((await params).locale));
   const t = await getTranslations('web');
-  const [feed, suggestions] = await firstRead();
+  const [[feed, suggestions], member] = await Promise.all([firstRead(), getCurrentMember()]);
   return (
     <ThreeColumnLayout
       leftLabel={t('feed.profileColumn')}
       rightLabel={t('feed.suggestions')}
-      left={<ProfileCompletion variant="card" />}
+      left={member ? <ProfileCompletion member={member} variant="card" /> : null}
       right={<SuggestionsList suggestions={suggestions.slice(0, 5)} />}
     >
       <div className="grid gap-4">
@@ -54,7 +55,7 @@ export default async function Page({ params }: PageProps<'/[locale]/feed'>) {
         </Heading>
         <FeedComposer />
         <div className="lg:hidden">
-          <ProfileCompletion variant="module" />
+          {member ? <ProfileCompletion member={member} variant="module" /> : null}
         </div>
         <FeedStream initialPage={feed} suggestions={suggestions} />
       </div>

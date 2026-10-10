@@ -33,6 +33,18 @@ Une page de ressource (`(public)`, ADR 0101) sert un visiteur et un membre à la
 - `check:bundles --views` sert le build des tests de bout en bout avec l'api simulée et lit chaque page de ressource comme visiteur et comme membre : le JavaScript que charge son HTML (scripts et préchargements, sans les polyfills `noModule`) est mesuré par vue, 190 kB pour un visiteur (le cadre public seul), 250 kB pour un membre. Un chargement à la demande n'échappe pas à la mesure : préchargé par le HTML d'une vue, il compte dans cette vue.
 - Mesures (build des tests de bout en bout) : profil 177,1 kB en visiteur (211,4 kB avant) et 217,7 kB en membre ; réseau d'un membre 178,8 et 228,7 kB ; organisation 184,1 et 215,1 kB ; vitrine et projet 165,1 et 194,9 kB.
 
+## Marge de 10 % (complément du 2026-10-10, PROMPT FRONT 5A)
+
+Le fil (245,9 kB sur 250 au niveau 3) et la vue visiteur d'un profil (189 kB sur 190) n'avaient plus de marge avant les pages des projets. Objectif : 10 % au moins sous chaque budget pour ces pages et pour toute page nouvelle.
+
+- Zod : `lib/zod.ts` désactivait la sonde d'`eval` par `config` de `zod/v4/core`, dont le cœur (4,3 kB) partait sur chaque page ; l'objet de configuration que Zod 4 partage sur `globalThis` est désormais écrit sans importer Zod (test des deux ordres de chargement).
+- Messages : compilés une fois par langue sur le serveur (`icu-minify`), lus par le formateur de messages compilés de use-intl ; l'analyseur ICU (environ 8 kB) quitte toutes les pages (ADR 0084).
+- Vue visiteur : le document d'une publication charge le client de l'api au clic, la ligne de relation de l'aperçu d'un membre à la première ouverture ; TanStack Query et le client généré (12 kB) n'arrivaient que par eux.
+- Fil : TanStack Virtual (6,6 kB) se charge après l'hydratation (`useDeferredWindowVirtualizer`, mêmes options et mêmes règles que `useWindowVirtualizer`), les premières entrées rendues par le serveur restant en place (ADR 0121) ; la complétion du profil devient un composant serveur et `Progress` n'emploie plus Radix.
+- nuqs n'est plus monté par la coquille membre ni par `ClientData` : chaque composant à onglets ou à filtres dans l'adresse le monte (`UrlStateProvider`).
+- Mesures (`check:bundles .next-e2e --views`) : fil 247,5 puis 223,2 kB ; profil 189,0 puis 168,3 kB en vue visiteur, 240,4 puis 229,8 kB en vue membre ; organisation 188,3 puis 167,2 kB en visiteur, 234,8 puis 223,6 kB en membre ; publication 180,7 puis 160,0 kB en visiteur ; page éditoriale 171,4 puis 159,0 kB ; connexion 197,6 puis 185,2 kB ; sécurité des paramètres 242,1 puis 226,0 kB.
+- Limite connue : dans la vue membre d'une page de ressource, la coquille et les îlots chargés à la demande sont des groupes de morceaux frères, et Turbopack copie dans chacun les modules qu'ils partagent (TanStack Query, `config/routes.ts`) ; `turbopackChunking.requestCost` n'y change rien. Le profil en vue membre reste à 229,8 kB (8 % de marge).
+
 ## Conséquences
 
 - Un nouveau composant client lit ses textes dans un sous-arbre listé par `CLIENT_MESSAGES` pour son groupe ; un test vérifie que chaque chemin existe.
