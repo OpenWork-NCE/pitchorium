@@ -24,7 +24,7 @@ export interface AuthFrameTexts {
  */
 export function AuthFrame({ texts, children }: { texts: AuthFrameTexts; children: ReactNode }) {
   return (
-    <div className="flex min-h-dvh flex-col bg-background lg:grid lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+    <div className="group/auth flex min-h-dvh flex-col bg-background lg:grid lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
       <div className="relative order-1 flex flex-col lg:order-2 lg:min-h-dvh">
         <div className="relative flex w-full items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-10">
           <Link href={routes.home} aria-label={texts.homeLink} className="-ml-1 rounded-md">
@@ -41,9 +41,13 @@ export function AuthFrame({ texts, children }: { texts: AuthFrameTexts; children
           </div>
         </Main>
       </div>
+      {/* On a phone, invisible while the page streams in (loading.tsx of the group): painted under an
+          empty card, the panel was pushed down by the form (layout shift of 0.33 on one load in
+          three on a slow network). Invisible, its moves are not shifts, and its background, the
+          largest paint of the page, still loads at once. */}
       <aside
         aria-label={texts.label}
-        className="relative order-2 flex-1 overflow-hidden bg-brand-panel px-6 py-12 text-on-brand-panel sm:px-10 lg:order-1 lg:flex lg:min-h-dvh lg:flex-col lg:justify-end lg:p-14"
+        className="relative order-2 flex-1 overflow-hidden bg-brand-panel px-6 py-12 text-on-brand-panel max-lg:group-has-[[data-page-loading]]/auth:invisible sm:px-10 lg:order-1 lg:flex lg:min-h-dvh lg:flex-col lg:justify-end lg:p-14"
       >
         <span
           aria-hidden

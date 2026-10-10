@@ -120,7 +120,7 @@ Comment assembler les composants (`components.md`) pour les situations récurren
 - Un champ dont le contrôle se charge à la demande (recherche, liste) garde la forme d'un champ pendant ce temps (`FieldSkeleton` : bordure, hauteur, texte indicatif) ; les captures de revue attendent la fin des chargements différés (`aria-busy`, `data-loading`).
 - Premier rendu par le serveur : la page arrive remplie, sans squelette.
 - Données chargées dans le navigateur : `Loading` (région annoncée « Chargement en cours ») autour de `Skeleton` de la forme exacte du contenu (mêmes hauteurs, mêmes colonnes) ; aucun décalage quand le contenu arrive.
-- Page qui attend sa navigation : `loading.tsx` du groupe, barre fine sous le bandeau.
+- Page qui attend sa navigation : `loading.tsx` du groupe, barre fine sous le bandeau. Dans l'écran partagé de l'authentification, le panneau de marque est invisible sur téléphone tant que cet état est là (`data-page-loading`) : peint sous une carte vide, il était poussé par le formulaire arrivé ensuite (décalage de mise en page de 0,33 sur un chargement sur trois en réseau lent). Invisible plutôt que retiré (`visibility`), il garde sa place et son fond, le plus grand élément de la page, se charge aussitôt (LCP inchangé).
 - Action en cours : `Button` en `loading`, ou `Spinner` dans une zone de moins de 48 px. Jamais de voile bloquant sur toute la page.
 
 ## Vide

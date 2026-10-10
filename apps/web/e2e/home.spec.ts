@@ -94,3 +94,40 @@ test.describe('errors', () => {
     ).toBeVisible();
   });
 });
+
+test.describe('sign-in page', () => {
+  test('keeps the brand panel of a phone still while the page streams in @phone', async ({
+    page,
+  }) => {
+    // Painted under the empty card of the loading state, the panel was pushed down by the form
+    // (layout shift on a slow network): invisible on a phone while the loading state is there.
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/fr/sign-in');
+    const panel = page.getByRole('complementary', { name: 'Pitchorium' });
+    await expect(panel).toBeVisible();
+    // The loading state, then the form that replaces it and grows the card.
+    const shift = await page.getByRole('main').evaluate(async (main) => {
+      let total = 0;
+      new PerformanceObserver((list) => {
+        for (const entry of list.getEntries())
+          total += (entry as unknown as { value: number }).value;
+      }).observe({ type: 'layout-shift' });
+      const frame = () =>
+        new Promise((resolve) => requestAnimationFrame(() => setTimeout(resolve)));
+      const loading = Object.assign(document.createElement('div'), { hidden: true });
+      loading.setAttribute('data-page-loading', '');
+      main.append(loading);
+      await frame();
+      const form = Object.assign(document.createElement('div'), { style: 'height: 400px' });
+      main.append(form);
+      await frame();
+      loading.remove();
+      await frame();
+      await frame();
+      form.remove();
+      return total;
+    });
+    expect(shift).toBe(0);
+    await expect(panel).toBeVisible();
+  });
+});
