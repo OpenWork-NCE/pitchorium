@@ -91,5 +91,5 @@ export function useJourney(
       return next;
     });
   }, []);
-  return { choices, steps, update, replace: setChoices };
+  return { choices, steps, update };
 }

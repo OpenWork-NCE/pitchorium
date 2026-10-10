@@ -6,11 +6,11 @@ import {
   getOrganizationsControllerMineQueryKey,
   organizationsControllerMine,
 } from '@pitchorium/api-client';
-import type { Contribution, PaymentOptions } from '@pitchorium/contracts';
+import type { Contribution, MyOrganization, PaymentOptions } from '@pitchorium/contracts';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { parseAsString, useQueryState } from 'nuqs';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Button, Dialog, DialogContent, Loading, Skeleton } from '@/components/ui';
 import { useCurrentMember } from '@/features/identity';
 import { type JourneyKind, type JourneyStep, neighbourStep } from '../../lib/journey';
@@ -49,17 +49,11 @@ function choicesOf(contribution: Contribution): Partial<JourneyChoices> {
 /**
  * The journey of a contribution (§9.3, ADR 0136): a dialog on a computer, the whole screen on a
  * phone, one step per screen and per address (`?contribute=<step>`, the back button of the
- * browser goes to the previous step). The choices live in this dialog only; a new attempt after
- * a failure (`?from=<contribution>`) reads them from the contribution the api kept.
+ * browser goes to the previous step). It opens once the organisations of the member (the step
+ * « au nom de ») and, for a new attempt after a failure (`?from=<contribution>`), the choices the
+ * api kept are read: no step appears late, and the address of the step asked is kept.
  */
-export default function ContributeDialog({
-  project,
-  options: initialOptions,
-  step: rawStep,
-  retryOf,
-  onStep,
-  onClose,
-}: {
+export default function ContributeDialog(props: {
   project: ContributeProject;
   options: PaymentOptions;
   step: string;
@@ -68,22 +62,69 @@ export default function ContributeDialog({
   onClose: () => void;
 }) {
   const t = useTranslations('web.payments.journey');
-  const member = useCurrentMember();
-  const [, setInterest] = useQueryState('interest', parseAsString);
   const organizations = useQuery({
     queryKey: getOrganizationsControllerMineQueryKey(),
     queryFn: ({ signal }) => organizationsControllerMine({ signal }),
     staleTime: 60_000,
   });
-  const contributing = useMemo(
-    () => (organizations.data?.items ?? []).filter((entry) => CONTRIBUTING_ROLES.has(entry.role)),
-    [organizations.data],
-  );
   const retry = useQuery({
-    queryKey: getContributionsControllerOneQueryKey(retryOf ?? ''),
-    queryFn: ({ signal }) => contributionsControllerOne(retryOf!, { signal }),
-    enabled: retryOf !== null,
+    queryKey: getContributionsControllerOneQueryKey(props.retryOf ?? ''),
+    queryFn: ({ signal }) => contributionsControllerOne(props.retryOf!, { signal }),
+    enabled: props.retryOf !== null,
   });
+  if (organizations.isPending || (props.retryOf !== null && retry.isPending)) {
+    return (
+      <Dialog open onOpenChange={(open) => (open ? undefined : props.onClose())}>
+        <DialogContent
+          size="lg"
+          title={t('title', { title: props.project.title })}
+          className="max-sm:h-dvh max-sm:max-h-dvh max-sm:rounded-none"
+          data-testid="contribute-dialog"
+        >
+          <Loading label={t('loading')}>
+            <Skeleton className="h-40 w-full" />
+          </Loading>
+        </DialogContent>
+      </Dialog>
+    );
+  }
+  const contributing = (organizations.data?.items ?? []).filter((entry) =>
+    CONTRIBUTING_ROLES.has(entry.role),
+  );
+  return (
+    <Journey
+      {...props}
+      organizations={contributing}
+      initial={{
+        country: props.options.contributorCountry,
+        currency: props.options.currencies[0]?.currency ?? null,
+        ...(retry.data ? choicesOf(retry.data) : {}),
+      }}
+    />
+  );
+}
+
+/** The steps of the journey; its choices live in this dialog only. */
+function Journey({
+  project,
+  options: initialOptions,
+  step: rawStep,
+  onStep,
+  onClose,
+  organizations: contributing,
+  initial,
+}: {
+  project: ContributeProject;
+  options: PaymentOptions;
+  step: string;
+  onStep: (step: JourneyStep) => void;
+  onClose: () => void;
+  organizations: MyOrganization[];
+  initial: Partial<JourneyChoices>;
+}) {
+  const t = useTranslations('web.payments.journey');
+  const member = useCurrentMember();
+  const [, setInterest] = useQueryState('interest', parseAsString);
   const hasRewards = useCallback(
     (kind: JourneyKind | null) =>
       kind === 'reward_crowdfunding' &&
@@ -94,20 +135,7 @@ export default function ContributeDialog({
     () => ({ hasRewards, hasOrganizations: contributing.length > 0 }),
     [hasRewards, contributing.length],
   );
-  const { choices, steps, update, replace } = useJourney(
-    {
-      country: initialOptions.contributorCountry,
-      currency: initialOptions.currencies[0]?.currency ?? null,
-    },
-    context,
-  );
-  // A new attempt: the choices of the contribution the api kept, once.
-  const prefilled = useRef(false);
-  useEffect(() => {
-    if (prefilled.current || !retry.data) return;
-    prefilled.current = true;
-    replace((previous) => ({ ...previous, ...choicesOf(retry.data) }));
-  }, [retry.data, replace]);
+  const { choices, steps, update } = useJourney(initial, context);
 
   // Read again when the country, the currency or the amount change (debounced).
   const live = usePaymentOptions(project.id, {
@@ -151,7 +179,6 @@ export default function ContributeDialog({
     const missing = firstIncompleteStep(steps.slice(0, index + 1), choices);
     return missing === step;
   })();
-  const loadingRetry = retryOf !== null && retry.isPending;
   const [declared, setDeclared] = useState(false);
 
   function openInterest() {
@@ -160,13 +187,7 @@ export default function ContributeDialog({
   }
 
   let body;
-  if (loadingRetry) {
-    body = (
-      <Loading label={t('loading')}>
-        <Skeleton className="h-40 w-full" />
-      </Loading>
-    );
-  } else if (step === 'kind') {
+  if (step === 'kind') {
     body = (
       <KindStep
         choices={choices}
