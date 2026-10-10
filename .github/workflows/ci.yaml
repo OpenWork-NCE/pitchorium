@@ -222,7 +222,7 @@ jobs:
 
   # Only when a component, a story, a style or the tokens change; always at level 3.
   storybook:
-    needs: changes
+    needs: [changes, build]
     if: needs.changes.outputs.visual == 'true'
     runs-on: ubuntu-latest
     steps:
@@ -230,6 +230,10 @@ jobs:
       - uses: ./.github/actions/setup
       - run: pnpm turbo run build --filter=@pitchorium/web^...
       - run: pnpm turbo run build-storybook --filter=@pitchorium/web
+      # The pages of the projects are captured on the build of the end-to-end tests (.next-e2e).
+      - uses: actions/download-artifact@v8.0.2
+        with:
+          name: build
       - name: Stories as tests (play functions, accessibility, both themes)
         run: pnpm --filter @pitchorium/web test:stories
       - name: Review captures compared with the committed ones

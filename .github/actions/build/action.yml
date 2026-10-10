@@ -5,7 +5,7 @@ description: >-
   build artifact of the run, reused by every job of tests (ADR 0124).
 inputs:
   web-e2e:
-    description: Build .next-e2e too (stub suite, Lighthouse, check:bundles).
+    description: Build .next-e2e too (stub suite, Lighthouse, check:bundles, review captures).
     default: 'true'
 runs:
   using: composite

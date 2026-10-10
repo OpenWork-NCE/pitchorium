@@ -45,10 +45,12 @@ const areas = files
   ? (() => {
       const code = files.filter((file) => !isDocumentation(file) || isShared(file));
       const shared = code.some(isShared);
+      const visual = shared || files.some(isVisual);
+      // The review captures of the pages of the projects need the build of the stub suite.
       return {
-        code: code.length > 0,
-        web: shared || code.some((file) => !isServerOnly(file)),
-        visual: shared || files.some(isVisual),
+        code: code.length > 0 || visual,
+        web: visual || shared || code.some((file) => !isServerOnly(file)),
+        visual,
       };
     })()
   : { code: true, web: true, visual: true };

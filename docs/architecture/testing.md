@@ -26,7 +26,7 @@ Bloquant. Workflow `.github/workflows/ci.yaml`, 15 minutes au plus ; le job `lev
 - Suite simulée du web dans Chromium (image Playwright, captures de référence comprises), `--max-failures=5`.
 - Parcours critiques contre la vraie api dans Chromium (`@critical`, ADR 0127), `--max-failures=5`.
 - Lighthouse : un passage sur une page de chaque sorte (éditoriale, authentification, fil, profil public, publication publique), mêmes seuils (`LHCI_RUNS=1`, `LHCI_SCOPE=representative`).
-- Storybook : stories comme tests dans les deux thèmes et captures de revue comparées aux captures commitées (`review:check`), seulement si un composant, une story, un style, les traductions ou les tokens changent.
+- Storybook : stories comme tests dans les deux thèmes et captures de revue comparées aux captures commitées (`review:check`, compositions de Storybook et pages des projets sur le build `.next-e2e` du job de build), seulement si un composant, une story, un style, les traductions ou les tokens changent.
 - Cohérence : migrations (`db:check`, `db:generate` sans différence), OpenAPI et client Orval à jour, clés de traduction (`i18n:check`), code mort (knip).
 - Sécurité : secrets de l'historique (gitleaks), dépendances vulnérables, licences ; image Docker construite et analysée par Trivy ; CodeQL (workflow `codeql.yaml`).
 - Conventional Commits (pull requests).
