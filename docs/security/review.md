@@ -37,7 +37,7 @@ Derrière un proxy, `TRUST_PROXY_HOPS` doit valoir le nombre exact de proxys pou
 
 ## Réauthentification
 
-Actions `recentAuthentication` (session de moins de `ACCESS_REAUTHENTICATION_MAX_AGE_MINUTES`, 15 minutes) : gestion des rôles, remboursement, remboursements d'un projet gelé, modification d'un feature flag, demande de suppression de compte. Les rôles privilégiés exigent en plus la double authentification (`two_factor`). Vérifié par `access-policy.spec.ts`.
+Actions `recentAuthentication` (session de moins de `ACCESS_REAUTHENTICATION_MAX_AGE_MINUTES`, 15 minutes) : gestion des rôles, remboursement, remboursements d'un projet gelé, modification d'un feature flag, demande de suppression de compte, changement du compte de versement d'un porteur. Les rôles privilégiés exigent en plus la double authentification (`two_factor`). Vérifié par `access-policy.spec.ts`.
 
 ## Entrées
 

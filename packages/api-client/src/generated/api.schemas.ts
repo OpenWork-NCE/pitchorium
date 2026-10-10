@@ -595,6 +595,7 @@ export const ActionPrerequisitesDtoOutputAction = {
   paymentofflinerespond: 'payment.offline.respond',
   paymentofflinevalidate: 'payment.offline.validate',
   paymentpayoutconfigure: 'payment.payout.configure',
+  paymentpayoutchange: 'payment.payout.change',
   paymentkycsubmit: 'payment.kyc.submit',
   paymentkycreview: 'payment.kyc.review',
   paymentrefund: 'payment.refund',

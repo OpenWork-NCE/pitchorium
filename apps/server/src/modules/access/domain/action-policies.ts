@@ -139,6 +139,13 @@ export const ACTION_POLICIES: Readonly<Record<Action, ActionPolicy>> = {
     requires: ['email_verified', 'profile.entrepreneur_facet'],
     sensitive: true,
   },
+  // Another provider or country for the payouts: where the money goes changes, so a recent
+  // sign-in, like a refund (payments README).
+  'payment.payout.change': {
+    requires: ['email_verified', 'profile.entrepreneur_facet'],
+    sensitive: true,
+    recentAuthentication: true,
+  },
   'payment.kyc.submit': {
     requires: ['email_verified', 'profile.entrepreneur_facet'],
     sensitive: true,

@@ -85,6 +85,7 @@ export const ACTIONS = [
   'payment.offline.respond',
   'payment.offline.validate',
   'payment.payout.configure',
+  'payment.payout.change',
   'payment.kyc.submit',
   'payment.kyc.review',
   'payment.refund',

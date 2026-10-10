@@ -268,6 +268,7 @@ const MATRIX: Record<Action, Record<Scenario, Expected>> = {
   'payment.offline.respond': organizationRoleRequired,
   'payment.offline.validate': adminsWith2fa,
   'payment.payout.configure': entrepreneursWithVerifiedEmail,
+  'payment.payout.change': entrepreneursWithVerifiedEmail,
   'payment.kyc.submit': entrepreneursWithVerifiedEmail,
   'payment.kyc.review': adminsWith2fa,
   'payment.refund': adminsWith2fa,
@@ -580,6 +581,21 @@ describe('access policies', () => {
     }
     // Reading stays open on the same session.
     expect(decide('access.roles.read', stale)).toEqual({ allowed: true });
+  });
+
+  it('asks a holder to sign in again before changing where the payouts go', () => {
+    const holder = facts('entrepreneur');
+    const stale = {
+      ...holder,
+      actor: actor({ authenticatedAt: new Date(NOW.getTime() - 3_600_000) }),
+    };
+    expect(decide('payment.payout.change', stale)).toEqual({
+      allowed: false,
+      code: 'ACCESS_REAUTHENTICATION_REQUIRED',
+      missing: [],
+    });
+    expect(decide('payment.payout.configure', stale)).toEqual({ allowed: true });
+    expect(decide('payment.payout.change', holder)).toEqual({ allowed: true });
   });
 
   it('asks for the minimum profile before a connection request, with the email at once', () => {
