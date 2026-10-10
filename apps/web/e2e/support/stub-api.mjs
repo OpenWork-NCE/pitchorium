@@ -7,6 +7,7 @@
 import { createServer } from 'node:http';
 import { Server } from 'socket.io';
 import { contentRoutes } from './stub-content.mjs';
+import { collectionMissing, paymentRoutes } from './stub-payments.mjs';
 import { projectRoutes } from './stub-projects.mjs';
 
 const port = Number(process.env.STUB_API_PORT ?? 3299);
@@ -586,6 +587,7 @@ function prerequisites(request, action) {
     missing.push('email_verified');
   }
   if (CONSOLE_ACTIONS.includes(action) && !account.twoFactorEnabled) missing.push('two_factor');
+  if (action === 'payment.collection.open') missing.push(...collectionMissing(request));
   return {
     status: 200,
     body: {
@@ -629,7 +631,8 @@ const server = createServer(async (request, response) => {
     return;
   }
   const handler = routes[`${request.method} ${path}`];
-  const project = projects(request, path, new URL(request.url ?? '/', 'http://stub'));
+  const url = new URL(request.url ?? '/', `http://localhost:${port}`);
+  const project = (await payments(request, path, url)) ?? projects(request, path, url);
   const read =
     project ?? (request.method === 'GET' ? resource(request, path) : reaction(request, path));
   const result = prerequisite
@@ -655,6 +658,8 @@ const content = contentRoutes({
   readJson,
   state: () => state,
 });
+
+const payments = paymentRoutes({ sessionOf, problem, readJson, state: () => state });
 
 const projects = projectRoutes({
   origin: `http://localhost:${port}`,

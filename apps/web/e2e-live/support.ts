@@ -170,6 +170,13 @@ export async function signInWithPassword(
   await page.getByRole('button', { name: 'Se connecter' }).click();
 }
 
+/**
+ * The administrator of the journeys: a demonstration moderator promoted by scripts/e2e-live.sh
+ * (`admin:create`), its session written once per run by global-setup.ts.
+ */
+export const ADMIN_EMAIL = 'claudine.pierre.louis@demo.pitchorium.test';
+export const ADMIN_STATE = 'node_modules/.cache/pitchorium-live/admin-state.json';
+
 /** Origins of the run (scripts/e2e-live.sh). */
 export const WEB_URL = process.env.LIVE_WEB_URL ?? 'http://localhost:3200';
 export const API_URL = process.env.LIVE_API_URL ?? 'http://localhost:3000';
@@ -180,7 +187,7 @@ export const FAKE_OAUTH_URL = process.env.FAKE_OAUTH_URL ?? 'http://127.0.0.1:34
  * key of the live environment accepts it (ADR 0103), for the members a journey creates through
  * the api rather than through the screens.
  */
-const TEST_CAPTCHA_TOKEN = 'XXXX.DUMMY.TOKEN.XXXX';
+export const TEST_CAPTCHA_TOKEN = 'XXXX.DUMMY.TOKEN.XXXX';
 
 /** A call to the api with the cookies of the page, from the trusted origin of the web app. */
 export async function api(
@@ -350,4 +357,106 @@ export async function choose(
   await scope.getByRole('combobox', { name: label }).click();
   if (search) await page.keyboard.type(search);
   await page.getByRole('option', { name: option }).first().click();
+}
+
+export const DEMO_PASSWORD = 'pitchorium-demo-2026';
+export const eur = (euros: number) => ({ amountMinor: String(euros * 100), currency: 'EUR' });
+
+/** A new member with an entrepreneur facet, signed in in a context of their own. */
+export async function entrepreneur(
+  browser: Browser,
+  label: string,
+  name: string,
+  options: MemberOptions = {},
+) {
+  const member = await memberPage(browser, label, { name, ...options });
+  await ok(
+    api(member.page, 'POST', '/v1/me/profile/entrepreneur-facet', {
+      companyName: `${name} SARL`,
+      sectorCode: 'energy',
+      stageCode: 'prototype',
+      companyCountryCode: 'SN',
+    }),
+  );
+  return member;
+}
+
+/** A demonstration member (`pnpm db:seed:dev`) signed in in a context of their own. */
+export async function demoPage(browser: Browser, email: string) {
+  const context = await browser.newContext();
+  const page = await context.newPage();
+  await ok(api(page, 'POST', '/v1/auth/sign-in/email', { email, password: DEMO_PASSWORD }));
+  return { context, page };
+}
+
+/** Answers every criterion of the published methodology at its highest level. */
+export async function impactAnswers(
+  page: Page,
+): Promise<{ methodologyId: string; answers: Record<string, string> }> {
+  const methodology = (await (await ok(api(page, 'GET', '/v1/impact/methodology'))).json()) as {
+    id: string;
+    criteria: { key: string; scale: { key: string }[] }[];
+  };
+  return {
+    methodologyId: methodology.id,
+    answers: Object.fromEntries(
+      methodology.criteria.map((criterion) => [criterion.key, criterion.scale.at(-1)!.key]),
+    ),
+  };
+}
+
+/** A complete project through the api, published unless asked otherwise. */
+export async function apiProject(
+  page: Page,
+  title: string,
+  {
+    publish = true,
+    goal = 20_000,
+    tiers = [goal / 4, goal],
+    instruments = ['donation', 'reward_crowdfunding'],
+  }: { publish?: boolean; goal?: number; tiers?: number[]; instruments?: string[] } = {},
+): Promise<{ id: string; slug: string }> {
+  const created = (await (
+    await ok(
+      api(page, 'POST', '/v1/projects', {
+        title,
+        summary: 'Des pompes solaires louées aux coopératives maraîchères.',
+        description: '## Pourquoi\n\nLes maraîchères perdent un tiers de leurs récoltes.',
+        sectorCode: 'energy',
+        impactArea: 'Région de Thiès',
+        countryCodes: ['SN'],
+        instruments,
+        goal: eur(goal),
+        durationDays: 45,
+      }),
+    )
+  ).json()) as { id: string; slug: string };
+  await ok(
+    api(page, 'PUT', `/v1/projects/${created.id}/tiers`, {
+      tiers: tiers.map((threshold, index) => ({
+        threshold: eur(threshold),
+        description:
+          index === tiers.length - 1 ? 'L’atelier de maintenance' : 'Deux pompes installées',
+      })),
+    }),
+  );
+  await ok(
+    api(page, 'POST', `/v1/projects/${created.id}/impact-assessments`, await impactAnswers(page)),
+  );
+  if (publish) {
+    await ok(
+      api(page, 'POST', `/v1/projects/${created.id}/publish`, { publicDisplayConsent: true }),
+    );
+  }
+  return created;
+}
+
+/** The administrator of the journeys, signed in once per run (global-setup.ts), or null. */
+export async function adminPage(browser: Browser) {
+  const { existsSync, readFileSync } = await import('node:fs');
+  if (!existsSync(ADMIN_STATE)) return null;
+  const state = JSON.parse(readFileSync(ADMIN_STATE, 'utf8')) as { cookies: unknown[] };
+  if (state.cookies.length === 0) return null;
+  const context = await browser.newContext({ storageState: ADMIN_STATE });
+  return { context, page: await context.newPage() };
 }

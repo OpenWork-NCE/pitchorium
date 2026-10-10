@@ -1,6 +1,6 @@
 # Captures de revue
 
-Captures des compositions de référence de Storybook (`apps/web/src/stories/compositions`) et des pages des projets et de l'impact, pour la revue de design. Chaque composition assemble le système (`docs/design/components.md`) sur des données typées par `@pitchorium/contracts` ; les textes sont des maquettes, pas des données métier. Les pages, composants serveur hors de portée de Storybook, sont prises sur le build des tests de bout en bout (`.next-e2e`) servi avec l'api simulée (`e2e/support/serve.mjs`, contenus de `stub-projects.mjs`), par `e2e/review/pages.review.ts`.
+Captures des compositions de référence de Storybook (`apps/web/src/stories/compositions`) et des pages des projets, de l'impact, des contributions, du versement et de l'engagement, pour la revue de design. Chaque composition assemble le système (`docs/design/components.md`) sur des données typées par `@pitchorium/contracts` ; les textes sont des maquettes, pas des données métier. Les pages, composants serveur hors de portée de Storybook, sont prises sur le build des tests de bout en bout (`.next-e2e`) servi avec l'api simulée (`e2e/support/serve.mjs`, contenus de `stub-projects.mjs`), par `e2e/review/pages.review.ts`.
 
 ## Contenu
 
@@ -23,6 +23,7 @@ Fichiers `<composition>-<format>-<thème>.png` : format `desktop` (1280x800) ou 
 - `wizard-<étape>` : les dix étapes de l'assistant de création sur un brouillon (`essentials`, `story`, `media`, `funding`, `rewards`, `instruments`, `impact`, `team`, `preview`, `publish`).
 - `manage-overview` et `manage-interests` : espace de gestion du projet, vue d'ensemble et manifestations d'intérêt.
 - `methodology` : méthodologie d'impact en vigueur.
+- Contributions, versement et engagement (PROMPT FRONT 5B, `e2e/review/payments.review.ts`, contenus de `stub-payments.mjs` ; l'état est choisi par un cookie du contexte, `stub_availability`, `stub_payout`, `stub_pending`) : `availability-<état>` (le bloc financement, ou l'entrée sur téléphone, pour `open`, `holder-not-verified`, `holder-without-covered-payout-account`, `funding-frozen`, `campaign-closed`, et `resume`, un paiement en attente proposé à nouveau) ; `journey-<étape>` (le dialogue de chaque étape : `kind`, `country`, `amount` avec l'équivalent en euros, `reward` sous le minimum avec l'ajustement, `behalf`, `display`, `method-unavailable` depuis la France, `review` avec le devis et les mentions) ; `return-pending`, `return-paid`, `return-unpaid` ; `contribution-detail` (paiement en francs CFA remboursé en partie) et `contribution-lock-expired` ; `manage-contributions`, `manage-offline`, `manage-supporters`, `manage-collection-banner` ; `payouts-choice` (France : conditions, moyens, ce qui n'est pas couvert), `payouts-uncovered` (Sénégal), `payouts-account` (compte en attente du prestataire), `payouts-kyc-rejected` ; `dashboard` et `time-log`.
 - `settings-security` : paramètres de sécurité, mot de passe (fermeture des autres sessions annoncée), double authentification, sessions actives avec cet appareil marqué et révocation.
 
 ## Régénérer et vérifier

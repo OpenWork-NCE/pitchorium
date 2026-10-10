@@ -183,6 +183,8 @@ step 'buckets' "${compose[@]}" run --rm minio-init
 step 'migrations' pnpm db:migrate
 step 'reference data' pnpm db:seed
 step 'demonstration data' pnpm --filter @pitchorium/server db:seed:dev
+# The administrator of the journeys that review an identity check (e2e-live/global-setup.ts).
+step 'administrator' pnpm --filter @pitchorium/server admin:create --email claudine.pierre.louis@demo.pitchorium.test
 
 start oauth bash -c "cd apps/server && exec node -r @swc-node/register test/oauth/server.ts"
 start api bash -c "cd apps/server && exec node -r @swc-node/register -r ./test/oauth/reroute.ts dist/main.api.js"

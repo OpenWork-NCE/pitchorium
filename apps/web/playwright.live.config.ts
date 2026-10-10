@@ -13,6 +13,8 @@ import { ciOptions, trace } from './e2e/support/ci-options';
  */
 export default defineConfig({
   testDir: 'e2e-live',
+  // The session of the administrator that reviews identity checks, once per run.
+  globalSetup: './e2e-live/global-setup.ts',
   workers: 1,
   fullyParallel: false,
   ...ciOptions,

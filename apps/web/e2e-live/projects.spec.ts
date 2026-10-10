@@ -1,9 +1,13 @@
 import AxeBuilder from '@axe-core/playwright';
-import type { Browser, Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
 import {
   allowConsole,
   api,
+  apiProject,
   choose,
+  demoPage,
+  entrepreneur,
+  eur,
   expect,
   hydrated,
   memberPage,
@@ -12,85 +16,6 @@ import {
   test,
   WEB_URL,
 } from './support';
-
-const DEMO_PASSWORD = 'pitchorium-demo-2026';
-const eur = (euros: number) => ({ amountMinor: String(euros * 100), currency: 'EUR' });
-
-/** A new member with an entrepreneur facet, signed in in a context of their own. */
-async function entrepreneur(browser: Browser, label: string, name: string) {
-  const member = await memberPage(browser, label, { name });
-  await ok(
-    api(member.page, 'POST', '/v1/me/profile/entrepreneur-facet', {
-      companyName: `${name} SARL`,
-      sectorCode: 'energy',
-      stageCode: 'prototype',
-      companyCountryCode: 'SN',
-    }),
-  );
-  return member;
-}
-
-/** A demonstration member (`pnpm db:seed:dev`) signed in in a context of their own. */
-async function demoPage(browser: Browser, email: string) {
-  const context = await browser.newContext();
-  const page = await context.newPage();
-  await ok(api(page, 'POST', '/v1/auth/sign-in/email', { email, password: DEMO_PASSWORD }));
-  return { context, page };
-}
-
-/** Answers every criterion of the published methodology at its highest level. */
-async function answers(
-  page: Page,
-): Promise<{ methodologyId: string; answers: Record<string, string> }> {
-  const methodology = (await (await ok(api(page, 'GET', '/v1/impact/methodology'))).json()) as {
-    id: string;
-    criteria: { key: string; scale: { key: string }[] }[];
-  };
-  return {
-    methodologyId: methodology.id,
-    answers: Object.fromEntries(
-      methodology.criteria.map((criterion) => [criterion.key, criterion.scale.at(-1)!.key]),
-    ),
-  };
-}
-
-/** A complete project through the api, published unless asked otherwise. */
-async function apiProject(
-  page: Page,
-  title: string,
-  { publish = true, goal = 20_000 }: { publish?: boolean; goal?: number } = {},
-): Promise<{ id: string; slug: string }> {
-  const created = (await (
-    await ok(
-      api(page, 'POST', '/v1/projects', {
-        title,
-        summary: 'Des pompes solaires louées aux coopératives maraîchères.',
-        description: '## Pourquoi\n\nLes maraîchères perdent un tiers de leurs récoltes.',
-        sectorCode: 'energy',
-        impactArea: 'Région de Thiès',
-        countryCodes: ['SN'],
-        instruments: ['donation', 'reward_crowdfunding'],
-        goal: eur(goal),
-        durationDays: 45,
-      }),
-    )
-  ).json()) as { id: string; slug: string };
-  await ok(
-    api(page, 'PUT', `/v1/projects/${created.id}/tiers`, {
-      tiers: [
-        { threshold: eur(goal / 4), description: 'Deux pompes installées' },
-        { threshold: eur(goal), description: 'L’atelier de maintenance' },
-      ],
-    }),
-  );
-  await ok(api(page, 'POST', `/v1/projects/${created.id}/impact-assessments`, await answers(page)));
-  if (publish) {
-    await ok(
-      api(page, 'POST', `/v1/projects/${created.id}/publish`, { publicDisplayConsent: true }),
-    );
-  }
-  return created;
-}
 
 /** Waits for the indicator of the assistant to say the draft is saved. */
 async function saved(page: Page) {
