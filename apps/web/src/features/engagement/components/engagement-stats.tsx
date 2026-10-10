@@ -2,7 +2,8 @@
 
 import type { ImpactDashboard } from '@pitchorium/contracts';
 import { useLocale, useTranslations } from 'next-intl';
-import { Stat } from '@/components/ui';
+import { Link, Stat } from '@/components/ui';
+import { routes } from '@/config/routes';
 import { formatMoney } from '@/lib/format/money';
 import { hoursAndMinutes } from '../lib/chart';
 
@@ -15,10 +16,13 @@ import { hoursAndMinutes } from '../lib/chart';
 export function EngagementStats({
   dashboard,
   hours,
+  timeLog,
 }: {
   dashboard: ImpactDashboard;
   /** The hours are personal: a member's dashboard only. */
   hours: boolean;
+  /** Text of the way to the shared time log, under the hours. */
+  timeLog: string;
 }) {
   const t = useTranslations('web.engagement.stats');
   const locale = useLocale();
@@ -54,7 +58,16 @@ export function EngagementStats({
           label={t('hoursDeclared')}
           value={dashboard.minutes.declared}
           format={duration}
-          hint={t('hoursConfirmed', { duration: duration(dashboard.minutes.confirmed) })}
+          hint={
+            <span className="grid gap-2">
+              <span>
+                {t('hoursConfirmed', { duration: duration(dashboard.minutes.confirmed) })}
+              </span>
+              <Link href={routes.timeLog} variant="standalone" className="text-sm">
+                {timeLog}
+              </Link>
+            </span>
+          }
         />
       ) : null}
     </dl>

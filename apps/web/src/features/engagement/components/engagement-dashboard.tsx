@@ -40,14 +40,7 @@ export async function EngagementDashboard({
   return (
     <div className="grid gap-8">
       <Callout>{t('notABank')}</Callout>
-      <EngagementStats dashboard={dashboard} hours={member} />
-      {member ? (
-        <p className="text-sm">
-          <Link href={routes.timeLog} variant="standalone">
-            {t('timeLog')}
-          </Link>
-        </p>
-      ) : null}
+      <EngagementStats dashboard={dashboard} hours={member} timeLog={t('timeLog')} />
       <Card role="region" aria-labelledby="engagement-chart" className="grid gap-5">
         <Heading level={2} size="card" id="engagement-chart">
           {chart('title')}
@@ -55,28 +48,37 @@ export async function EngagementDashboard({
         <EngagementChart monthly={dashboard.monthly} total={dashboard.givenLastTwelveMonths} />
         <HistoryDownload organizationId={organizationId} />
       </Card>
-      <section aria-labelledby="supported-projects" className="grid gap-4">
+      <section
+        aria-labelledby="supported-projects"
+        className="grid grid-cols-[minmax(0,1fr)] gap-4"
+      >
         <Heading level={2} size="section" id="supported-projects">
           {t('projects')}
         </Heading>
         {projects.length === 0 ? (
           <p className="text-sm text-muted">{t('noProject')}</p>
         ) : (
-          <ul className="grid gap-2 sm:grid-cols-2">
-            {projects.map((project) => (
-              <li key={project.slug} className="min-w-0">
-                <Card padding="sm" className="flex items-center justify-between gap-3">
+          // One list in one card, a row per project: never a lone half-width card.
+          <Card padding="none">
+            <ul className="divide-y divide-border">
+              {projects.map((project) => (
+                <li
+                  key={project.slug}
+                  className="flex min-w-0 items-center justify-between gap-3 px-5 py-3.5"
+                >
                   <Link
                     href={routes.project(project.slug)}
                     className="min-w-0 truncate font-medium"
                   >
                     {project.title}
                   </Link>
-                  {project.status ? <Badge>{statuses(project.status)}</Badge> : null}
-                </Card>
-              </li>
-            ))}
-          </ul>
+                  {project.status ? (
+                    <Badge className="shrink-0">{statuses(project.status)}</Badge>
+                  ) : null}
+                </li>
+              ))}
+            </ul>
+          </Card>
         )}
       </section>
       {children}
