@@ -70,7 +70,7 @@ L'écran « Contribuer » reçoit `GET /v1/projects/{id}/payment-options` : les 
 
 ## Matrice de capacités
 
-Données de configuration versionnées : `apps/server/src/modules/payments/domain/capability-matrix.ts` (`CAPABILITY_MATRIX_VERSION = 2026-10-07`). Chaque entrée porte ses sources ; une capacité non confirmée par la documentation officielle est `verified: false` et n'est jamais proposée. Vérifié le 2026-10-07.
+Données de configuration versionnées : `apps/server/src/modules/payments/domain/capability-matrix.ts` (`CAPABILITY_MATRIX_VERSION = 2026-10-10`). Chaque entrée porte ses sources ; une capacité non confirmée par la documentation officielle est `verified: false` et n'est jamais proposée. Capacités vérifiées le 2026-10-07, conditions d'éligibilité le 2026-10-10 (`CAPABILITY_MATRIX_VERIFIED_AT = 2026-10-07` : toute entrée l'a été à cette date ou après). Opérateurs de Mobile Money en codes stables (`mtn`, `orange_money`, `moov`, `wave`, `mpesa`, `airtel`, `telecel`, `airteltigo`, `mobicash`).
 
 ### Stripe Connect
 
@@ -103,6 +103,21 @@ Données de configuration versionnées : `apps/server/src/modules/payments/domai
 | Taux de change                  | `GET /v3/transfers/rates`, indicatif (« estimation », mis à jour plusieurs fois par jour)                                                                                                                                            | developer.flutterwave.com/v3.0/docs/transfer-rates       |
 
 Le paramètre `payment_options` de Flutterwave Standard n'est pas envoyé : ses valeurs pour le Mobile Money francophone diffèrent entre deux tableaux de la documentation ; la page hébergée filtre elle-même les moyens par devise.
+
+### Éligibilité des porteurs
+
+Ce que chaque prestataire demande pour ouvrir un compte de versement, en codes (`PAYOUT_REQUIREMENTS`, `PAYOUT_DOCUMENTS` de `packages/contracts`), portée `all` ou `company` (compte ouvert au nom d'une société). Vérifié le 2026-10-10.
+
+| Prestataire | Conditions                                                                                                                                                                                                                                                                               | Pièces                                                                                                                               | Source                                                                                                                                                                                                                                                                                     |
+| ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Stripe      | Adresse physique dans le pays du compte, où recevoir du courrier, pas une boîte postale ; compte bancaire dans ce pays ; téléphone ; site présentant l'activité ; acceptation du contrat Stripe. Société : immatriculée dans le pays du compte, numéro fiscal. Pays du compte définitif. | Pièce d'identité officielle ; passeport si le pays de résidence diffère du pays du compte. Société : justificatif d'immatriculation. | support.stripe.com/questions/requirements-to-open-a-stripe-account-in-another-country, docs.stripe.com/acceptable-verification-documents, docs.stripe.com/connect/required-verification-information, support.stripe.com/questions/stripe-account-country-can-t-be-changed-after-activation |
+| Flutterwave | Compte bancaire du pays du sous-compte (« the country the bank account is in »), nom de l'activité, téléphone ; la plateforme vérifie elle-même ses marchands                                                                                                                            | Revue manuelle de Pitchorium (ADR 0050) : pièce d'identité ; liste par pays à fixer (question 57)                                    | developer.flutterwave.com/v3.0/docs/split-payments                                                                                                                                                                                                                                         |
+
+Un porteur établi au Sénégal peut donc ouvrir un compte Stripe en France s'il y a une adresse et un compte bancaire, avec son passeport ; un compte Flutterwave au Nigeria avec un compte bancaire nigérian.
+
+## Couverture publique (ADR 0133)
+
+`GET /v1/public/payments/coverage`, sans session, `Cache-Control: public, max-age=3600` (la matrice ne change qu'au déploiement) : version et date de vérification de la matrice ; pour chaque prestataire actif (`PAYMENTS_MODE` et identifiants), dans l'ordre de la matrice : mode d'onboarding et de KYC, règle des devises (`payout_currency` ou `any`), pays de versement vérifiés et leur devise, devises de versement et de paiement, paiements (devise, moyen, opérateurs, pays des contributeurs ou `null` pour tous, bornes vérifiées ou `null`), éligibilité. Seules les capacités vérifiées et atteignables figurent : une capacité `verified: false`, un prestataire inactif, ou un paiement dans une devise qu'aucun pays de versement vérifié ne règle (Mobile Money francophone de Flutterwave) n'apparaissent pas. Uniquement des codes (prestataire, pays ISO 3166-1, devise ISO 4217, moyen, opérateur, condition, pièce), libellés par `packages/i18n` (`reference`).
 
 ## Devises et conversion (ADR 0046)
 

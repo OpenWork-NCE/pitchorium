@@ -1,4 +1,4 @@
-import type { PaymentMethod } from '@pitchorium/contracts';
+import type { MobileMoneyOperator, PaymentMethod } from '@pitchorium/contracts';
 import { DomainError, Money } from '../../../platform/kernel';
 import {
   type PaymentCapability,
@@ -62,11 +62,12 @@ export function availablePayments(
 /** Groups the methods by currency, operators merged; currencies in order of first appearance. */
 export function methodsByCurrency(
   payments: readonly PaymentCapability[],
-): Map<string, { method: PaymentMethod; operators: string[] }[]> {
-  const grouped = new Map<string, Map<PaymentMethod, Set<string>>>();
+): Map<string, { method: PaymentMethod; operators: MobileMoneyOperator[] }[]> {
+  const grouped = new Map<string, Map<PaymentMethod, Set<MobileMoneyOperator>>>();
   for (const capability of payments) {
-    const methods = grouped.get(capability.currency) ?? new Map<PaymentMethod, Set<string>>();
-    const operators = methods.get(capability.method) ?? new Set<string>();
+    const methods =
+      grouped.get(capability.currency) ?? new Map<PaymentMethod, Set<MobileMoneyOperator>>();
+    const operators = methods.get(capability.method) ?? new Set<MobileMoneyOperator>();
     for (const operator of capability.operators) operators.add(operator);
     methods.set(capability.method, operators);
     grouped.set(capability.currency, methods);

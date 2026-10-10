@@ -554,6 +554,54 @@
     "bank_account": "Compte bancaire",
     "ussd": "USSD"
   },
+  "paymentProviders": {
+    "stripe": "Stripe",
+    "flutterwave": "Flutterwave",
+    "simulated": "Prestataire simulé"
+  },
+  "mobileMoneyOperators": {
+    "mtn": "MTN",
+    "orange_money": "Orange Money",
+    "moov": "Moov",
+    "wave": "Wave",
+    "mpesa": "M-Pesa",
+    "airtel": "Airtel",
+    "telecel": "Telecel",
+    "airteltigo": "AirtelTigo",
+    "mobicash": "Mobicash",
+    "simulated_money": "Mobile Money simulé"
+  },
+  "paymentCurrencyRules": {
+    "payout_currency": "Dans la devise du compte de versement uniquement",
+    "any": "Dans toutes les devises proposées"
+  },
+  "payoutOnboardings": {
+    "hosted": "Sur les pages du prestataire",
+    "bank_details": "Coordonnées bancaires saisies sur Pitchorium"
+  },
+  "kycModes": {
+    "provider": "Vérification par le prestataire",
+    "manual_review": "Vérification par Pitchorium"
+  },
+  "payoutRequirements": {
+    "address_in_payout_country": "Une adresse dans le pays du compte, où recevoir du courrier (pas une boîte postale)",
+    "company_registered_in_payout_country": "Une société immatriculée dans le pays du compte",
+    "bank_account_in_payout_country": "Un compte bancaire dans le pays du compte",
+    "phone_number": "Un numéro de téléphone",
+    "tax_id": "Un numéro d'identification fiscale",
+    "business_website": "Un site ou une page qui présente l'activité",
+    "business_name": "Le nom de l'activité",
+    "provider_terms_acceptance": "L'acceptation du contrat du prestataire"
+  },
+  "payoutDocuments": {
+    "identity_document": "Une pièce d'identité officielle",
+    "passport_if_resident_elsewhere": "Un passeport si vous résidez hors du pays du compte",
+    "company_registration_document": "Un justificatif d'immatriculation de la société"
+  },
+  "payoutRequirementScopes": {
+    "all": "Tous les porteurs",
+    "company": "Compte ouvert au nom d'une société"
+  },
   "paymentsUnavailableReasons": {
     "project_not_open": "Le projet n'accepte pas de contribution",
     "holder_not_ready": "Le porteur n'a pas encore ouvert les contributions",

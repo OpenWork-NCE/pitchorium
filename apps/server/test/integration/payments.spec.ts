@@ -6,6 +6,7 @@ import type {
   ContributionQuote,
   ImpactDashboard,
   OfflineContribution,
+  PaymentCoverage,
   PaymentOptions,
   PayoutAccount,
   Project,
@@ -150,6 +151,28 @@ describe('payments', () => {
   afterAll(async () => {
     await worker?.close();
     await app?.close();
+  });
+
+  it('publishes the coverage of the payments to anyone, cached, without a session', async () => {
+    const response = await request(app.getHttpServer())
+      .get('/v1/public/payments/coverage')
+      .expect(200);
+    expect(response.headers['cache-control']).toBe('public, max-age=3600');
+    expect(response.headers['set-cookie']).toBeUndefined();
+    const coverage = response.body as PaymentCoverage;
+    expect(coverage.matrixVersion).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    expect(coverage.providers.map((provider) => provider.provider)).toEqual(['simulated']);
+    const countries = coverage.providers[0]?.payoutCountries.map((entry) => entry.country);
+    expect(countries).toEqual(expect.arrayContaining(['FR', 'NG', 'GH']));
+    expect(countries).not.toContain('SN');
+    expect(coverage.providers[0]?.payments).toContainEqual(
+      expect.objectContaining({
+        method: 'mobile_money',
+        currency: 'XOF',
+        operators: ['simulated_money'],
+        contributorCountries: expect.arrayContaining(['SN', 'CI']),
+      }),
+    );
   });
 
   it('refuses collected contributions without KYC, then opens them after the review', async () => {

@@ -1,4 +1,10 @@
-import type { PaymentMethod } from '@pitchorium/contracts';
+import type {
+  MobileMoneyOperator,
+  PaymentMethod,
+  PayoutDocument,
+  PayoutRequirement,
+  PayoutRequirementScope,
+} from '@pitchorium/contracts';
 
 /**
  * Capabilities of the payment providers (section 9.2), as configuration data. Every entry gives
@@ -7,7 +13,10 @@ import type { PaymentMethod } from '@pitchorium/contracts';
  * Changing an entry means checking the source again and bumping the version.
  * @public Recorded in docs/architecture/payments.md.
  */
-export const CAPABILITY_MATRIX_VERSION = '2026-10-07';
+export const CAPABILITY_MATRIX_VERSION = '2026-10-10';
+
+/** Every verified entry was checked in the documentation of its provider on this date or later. */
+export const CAPABILITY_MATRIX_VERIFIED_AT = '2026-10-07';
 
 export type ProviderId = 'stripe' | 'flutterwave' | 'simulated';
 
@@ -27,7 +36,7 @@ export interface PaymentCapability {
   currency: string;
   method: PaymentMethod;
   /** Mobile money operators, empty for the other methods. */
-  operators: readonly string[];
+  operators: readonly MobileMoneyOperator[];
   contributorCountries: ContributorCountries;
   /** Provider minimum and maximum in minor units of the currency, null when not documented. */
   minMinor: bigint | null;
@@ -50,6 +59,13 @@ export interface FeeSchedule {
   sources: readonly string[];
 }
 
+/** What the provider asks of a holder to open a payout account, from its documentation. */
+export interface ProviderEligibility {
+  requirements: readonly { code: PayoutRequirement; scope: PayoutRequirementScope }[];
+  documents: readonly { code: PayoutDocument; scope: PayoutRequirementScope }[];
+  sources: readonly string[];
+}
+
 export interface ProviderCapabilities {
   provider: ProviderId;
   /** How the holder onboards: hosted pages of the provider, or bank details sent from here. */
@@ -64,6 +80,7 @@ export interface ProviderCapabilities {
   payoutCountries: readonly PayoutCountryCapability[];
   payments: readonly PaymentCapability[];
   fees: readonly FeeSchedule[];
+  eligibility: ProviderEligibility;
 }
 
 const STRIPE = {
@@ -75,6 +92,10 @@ const STRIPE = {
   connectMethods: 'https://docs.stripe.com/payments/payment-methods/payment-method-connect-support',
   sepa: 'https://docs.stripe.com/payments/sepa-debit',
   pricing: 'https://stripe.com/fr/pricing',
+  otherCountry:
+    'https://support.stripe.com/questions/requirements-to-open-a-stripe-account-in-another-country',
+  documents: 'https://docs.stripe.com/acceptable-verification-documents',
+  requirements: 'https://docs.stripe.com/connect/required-verification-information',
 } as const;
 
 const FLUTTERWAVE = {
@@ -248,6 +269,31 @@ export const STRIPE_CAPABILITIES: ProviderCapabilities = {
       sources: [STRIPE.pricing],
     },
   ],
+  /**
+   * Checked on 2026-10-10. A business account needs a legal entity registered in the country of
+   * the account; every account a physical address there where mail is received (not a P.O. box),
+   * a phone number and a bank account in that country (otherCountry). A person whose country of
+   * residence differs from the country of the account verifies their identity with a passport
+   * (documents). Website, terms of service and bank account appear among the requirements of an
+   * account in France (requirements). The country of an account cannot change afterwards.
+   */
+  eligibility: {
+    requirements: [
+      { code: 'address_in_payout_country', scope: 'all' },
+      { code: 'bank_account_in_payout_country', scope: 'all' },
+      { code: 'phone_number', scope: 'all' },
+      { code: 'business_website', scope: 'all' },
+      { code: 'provider_terms_acceptance', scope: 'all' },
+      { code: 'company_registered_in_payout_country', scope: 'company' },
+      { code: 'tax_id', scope: 'company' },
+    ],
+    documents: [
+      { code: 'identity_document', scope: 'all' },
+      { code: 'passport_if_resident_elsewhere', scope: 'all' },
+      { code: 'company_registration_document', scope: 'company' },
+    ],
+    sources: [STRIPE.otherCountry, STRIPE.documents, STRIPE.requirements],
+  },
 };
 
 export const FLUTTERWAVE_CAPABILITIES: ProviderCapabilities = {
@@ -302,7 +348,7 @@ export const FLUTTERWAVE_CAPABILITIES: ProviderCapabilities = {
     {
       currency: 'GHS',
       method: 'mobile_money',
-      operators: ['MTN', 'Telecel', 'AirtelTigo'],
+      operators: ['mtn', 'telecel', 'airteltigo'],
       contributorCountries: ['GH'],
       minMinor: null,
       maxMinor: null,
@@ -313,7 +359,7 @@ export const FLUTTERWAVE_CAPABILITIES: ProviderCapabilities = {
     {
       currency: 'UGX',
       method: 'mobile_money',
-      operators: ['MTN', 'Airtel'],
+      operators: ['mtn', 'airtel'],
       contributorCountries: ['UG'],
       minMinor: null,
       maxMinor: null,
@@ -323,7 +369,7 @@ export const FLUTTERWAVE_CAPABILITIES: ProviderCapabilities = {
     {
       currency: 'KES',
       method: 'mobile_money',
-      operators: ['M-Pesa'],
+      operators: ['mpesa'],
       contributorCountries: ['KE'],
       minMinor: null,
       maxMinor: null,
@@ -333,7 +379,7 @@ export const FLUTTERWAVE_CAPABILITIES: ProviderCapabilities = {
     {
       currency: 'XOF',
       method: 'mobile_money',
-      operators: ['MTN', 'Orange Money', 'Moov', 'Wave'],
+      operators: ['mtn', 'orange_money', 'moov', 'wave'],
       contributorCountries: ['CI'],
       minMinor: null,
       maxMinor: null,
@@ -343,7 +389,7 @@ export const FLUTTERWAVE_CAPABILITIES: ProviderCapabilities = {
     {
       currency: 'XOF',
       method: 'mobile_money',
-      operators: ['Orange Money', 'Wave'],
+      operators: ['orange_money', 'wave'],
       contributorCountries: ['SN'],
       minMinor: null,
       maxMinor: null,
@@ -353,7 +399,7 @@ export const FLUTTERWAVE_CAPABILITIES: ProviderCapabilities = {
     {
       currency: 'XOF',
       method: 'mobile_money',
-      operators: ['Orange Money', 'Mobicash'],
+      operators: ['orange_money', 'mobicash'],
       contributorCountries: ['BF'],
       minMinor: null,
       maxMinor: null,
@@ -363,7 +409,7 @@ export const FLUTTERWAVE_CAPABILITIES: ProviderCapabilities = {
     {
       currency: 'XAF',
       method: 'mobile_money',
-      operators: ['MTN', 'Orange Money'],
+      operators: ['mtn', 'orange_money'],
       contributorCountries: ['CM'],
       minMinor: null,
       maxMinor: null,
@@ -405,6 +451,21 @@ export const FLUTTERWAVE_CAPABILITIES: ProviderCapabilities = {
       sources: [FLUTTERWAVE.pricingNg],
     })),
   ],
+  /**
+   * Checked on 2026-10-10: a subaccount takes the bank code and number, « the country the bank
+   * account is in », a business name and a business mobile number; the platform « is responsible
+   * for thoroughly vetting the merchants » (split-payments), hence the manual review of the
+   * identity by Pitchorium (ADR 0050), whose documents remain to set (open question 57).
+   */
+  eligibility: {
+    requirements: [
+      { code: 'bank_account_in_payout_country', scope: 'all' },
+      { code: 'business_name', scope: 'all' },
+      { code: 'phone_number', scope: 'all' },
+    ],
+    documents: [{ code: 'identity_document', scope: 'all' }],
+    sources: [FLUTTERWAVE.split],
+  },
 };
 
 /** Verified payout countries of the live rails, in matrix order. */
@@ -454,7 +515,7 @@ export const SIMULATED_CAPABILITIES: ProviderCapabilities = {
         .map((method) => ({
           currency,
           method,
-          operators: method === 'mobile_money' ? ['Simulated Money'] : [],
+          operators: method === 'mobile_money' ? (['simulated_money'] as const) : [],
           contributorCountries:
             method === 'mobile_money' ? LIVE_MOBILE_MONEY_COUNTRIES : ('*' as const),
           minMinor: null,
@@ -465,6 +526,12 @@ export const SIMULATED_CAPABILITIES: ProviderCapabilities = {
     ),
   ],
   fees: [],
+  /** Bank details and the manual review, like a subaccount (development and tests). */
+  eligibility: {
+    requirements: [{ code: 'bank_account_in_payout_country', scope: 'all' }],
+    documents: [{ code: 'identity_document', scope: 'all' }],
+    sources: [],
+  },
 };
 
 export const PROVIDER_CAPABILITIES: Readonly<Record<ProviderId, ProviderCapabilities>> = {

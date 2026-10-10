@@ -35,6 +35,113 @@ export const PAYMENT_METHODS = [
 ] as const;
 export const paymentMethodSchema = z.enum(PAYMENT_METHODS);
 
+/** Payment providers (ADR 0043 to 0045); `simulated` in development and tests only (ADR 0052). */
+export const PAYMENT_PROVIDERS = ['stripe', 'flutterwave', 'simulated'] as const;
+export const paymentProviderSchema = z.enum(PAYMENT_PROVIDERS);
+
+/** Mobile money operators, as stable codes. */
+export const MOBILE_MONEY_OPERATORS = [
+  'mtn',
+  'orange_money',
+  'moov',
+  'wave',
+  'mpesa',
+  'airtel',
+  'telecel',
+  'airteltigo',
+  'mobicash',
+  'simulated_money',
+] as const;
+export const mobileMoneyOperatorSchema = z.enum(MOBILE_MONEY_OPERATORS);
+
+/** `hosted`: identity and bank details on the pages of the provider; `bank_details`: here. */
+export const PAYOUT_ONBOARDINGS = ['hosted', 'bank_details'] as const;
+export const payoutOnboardingSchema = z.enum(PAYOUT_ONBOARDINGS);
+
+/** `provider`: the provider verifies the holder; `manual_review`: Pitchorium does (ADR 0050). */
+export const KYC_MODES = ['provider', 'manual_review'] as const;
+export const kycModeSchema = z.enum(KYC_MODES);
+
+/**
+ * Currencies a provider accepts on a holder's rail: `payout_currency`, the currency of the payout
+ * account only; `any`, every currency it lists.
+ */
+export const PAYMENT_CURRENCY_RULES = ['payout_currency', 'any'] as const;
+export const paymentCurrencyRuleSchema = z.enum(PAYMENT_CURRENCY_RULES);
+
+/**
+ * What a provider asks of a holder to open a payout account (section 9.5), as its official
+ * documentation states it (docs/architecture/payments.md).
+ */
+export const PAYOUT_REQUIREMENTS = [
+  'address_in_payout_country',
+  'company_registered_in_payout_country',
+  'bank_account_in_payout_country',
+  'phone_number',
+  'tax_id',
+  'business_website',
+  'business_name',
+  'provider_terms_acceptance',
+] as const;
+export const payoutRequirementSchema = z.enum(PAYOUT_REQUIREMENTS);
+
+/** Documents a holder provides to the provider, or to the manual review of Pitchorium. */
+export const PAYOUT_DOCUMENTS = [
+  'identity_document',
+  'passport_if_resident_elsewhere',
+  'company_registration_document',
+] as const;
+export const payoutDocumentSchema = z.enum(PAYOUT_DOCUMENTS);
+
+/** Who a requirement applies to: every holder, or a holder onboarding a legal entity. */
+export const PAYOUT_REQUIREMENT_SCOPES = ['all', 'company'] as const;
+export const payoutRequirementScopeSchema = z.enum(PAYOUT_REQUIREMENT_SCOPES);
+
+export const payoutEligibilitySchema = z.object({
+  requirements: z.array(
+    z.object({ code: payoutRequirementSchema, scope: payoutRequirementScopeSchema }),
+  ),
+  documents: z.array(z.object({ code: payoutDocumentSchema, scope: payoutRequirementScopeSchema })),
+});
+
+/** A verified payment capability of a provider, as the public coverage lists it. */
+export const coveredPaymentSchema = z.object({
+  currency: z.string(),
+  method: paymentMethodSchema,
+  /** Mobile money operators, empty for the other methods. */
+  operators: z.array(mobileMoneyOperatorSchema),
+  /** Countries of the contributors served, null for every country. */
+  contributorCountries: z.array(countryCodeSchema).nullable(),
+  /** Verified bounds of the provider, null when its documentation gives none. */
+  min: moneySchema.nullable(),
+  max: moneySchema.nullable(),
+});
+
+export const providerCoverageSchema = z.object({
+  provider: paymentProviderSchema,
+  onboarding: payoutOnboardingSchema,
+  kycMode: kycModeSchema,
+  paymentCurrencyRule: paymentCurrencyRuleSchema,
+  /** Countries a payout account may be opened in, with the currency it is settled in. */
+  payoutCountries: z.array(z.object({ country: countryCodeSchema, currency: z.string() })),
+  payoutCurrencies: z.array(z.string()),
+  paymentCurrencies: z.array(z.string()),
+  payments: z.array(coveredPaymentSchema),
+  eligibility: payoutEligibilitySchema,
+});
+
+/**
+ * Public coverage of the payments (section 9.2): for each active provider, its verified and
+ * enabled capabilities only, as stable codes the clients translate.
+ */
+export const paymentCoverageSchema = z.object({
+  /** Version of the capability matrix (`capability-matrix.ts`). */
+  matrixVersion: z.string(),
+  /** Every capability listed was checked in the provider documentation on this date or later. */
+  verifiedAt: z.iso.date(),
+  providers: z.array(providerCoverageSchema),
+});
+
 export const CONTRIBUTION_STATUSES = [
   'pending_payment',
   'succeeded',
@@ -99,7 +206,7 @@ export const paymentsUnavailableReasonSchema = z.enum(PAYMENTS_UNAVAILABLE_REASO
 export const paymentMethodOptionSchema = z.object({
   method: paymentMethodSchema,
   /** Mobile money operators, empty for the other methods. */
-  operators: z.array(z.string()),
+  operators: z.array(mobileMoneyOperatorSchema),
 });
 
 export const paymentCurrencyOptionSchema = z.object({
@@ -330,12 +437,10 @@ export const payoutAccountSchema = z.object({
   /** Currency of the funds received. */
   currency: z.string(),
   status: payoutAccountStatusSchema,
-  /** `hosted`: identity and bank details on the page of the provider; `bank_details`: here. */
-  onboarding: z.enum(['hosted', 'bank_details']),
+  onboarding: payoutOnboardingSchema,
   onboardingUrl: z.string().nullable(),
   kyc: z.object({
-    /** `provider`: the provider verifies the holder; `manual_review`: Pitchorium does. */
-    mode: z.enum(['provider', 'manual_review']),
+    mode: kycModeSchema,
     status: kycStatusSchema,
   }),
   /** Collected contributions are open on the projects of the holder. */
@@ -366,7 +471,7 @@ export const kycSubmissionSchema = z.object({
 });
 
 export const kycOverviewSchema = z.object({
-  mode: z.enum(['provider', 'manual_review']).nullable(),
+  mode: kycModeSchema.nullable(),
   status: kycStatusSchema,
   latest: kycSubmissionSchema.nullable(),
 });
@@ -445,6 +550,18 @@ export const resolveDiscrepancyRequestSchema = z.object({ note: decisionReasonSc
 export type ContributionKind = z.infer<typeof contributionKindSchema>;
 export type ContributionRequestKind = z.infer<typeof contributionRequestKindSchema>;
 export type PaymentMethod = z.infer<typeof paymentMethodSchema>;
+export type PaymentProvider = z.infer<typeof paymentProviderSchema>;
+export type MobileMoneyOperator = z.infer<typeof mobileMoneyOperatorSchema>;
+export type PayoutOnboarding = z.infer<typeof payoutOnboardingSchema>;
+export type KycMode = z.infer<typeof kycModeSchema>;
+export type PaymentCurrencyRule = z.infer<typeof paymentCurrencyRuleSchema>;
+export type PayoutRequirement = z.infer<typeof payoutRequirementSchema>;
+export type PayoutDocument = z.infer<typeof payoutDocumentSchema>;
+export type PayoutRequirementScope = z.infer<typeof payoutRequirementScopeSchema>;
+export type PayoutEligibility = z.infer<typeof payoutEligibilitySchema>;
+export type CoveredPayment = z.infer<typeof coveredPaymentSchema>;
+export type ProviderCoverage = z.infer<typeof providerCoverageSchema>;
+export type PaymentCoverage = z.infer<typeof paymentCoverageSchema>;
 export type ContributionStatus = z.infer<typeof contributionStatusSchema>;
 export type RewardReservationState = z.infer<typeof rewardReservationStateSchema>;
 export type FxRateSource = z.infer<typeof fxRateSourceSchema>;

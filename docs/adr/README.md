@@ -136,3 +136,4 @@ Un fichier par décision, numéroté, au format Contexte / Décision / Conséque
 | [0130](0130-indicative-cfa-equivalent.md)                   | Équivalent indicatif en francs CFA                           |
 | [0131](0131-project-wizard-api-draft.md)                    | Assistant de création avec brouillon dans l'api              |
 | [0132](0132-project-mobile-action-bar.md)                   | Barre d'action mobile de la page projet                      |
+| [0133](0133-public-payment-coverage.md)                     | Couverture publique des paiements                            |

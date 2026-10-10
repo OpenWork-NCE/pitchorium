@@ -1,7 +1,8 @@
 import { randomUUID } from 'node:crypto';
 import type { NestExpressApplication } from '@nestjs/platform-express';
 import type { TestingModule } from '@nestjs/testing';
-import type { PayoutAccount } from '@pitchorium/contracts';
+import type { PaymentCoverage, PayoutAccount } from '@pitchorium/contracts';
+import request from 'supertest';
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import { AccessModule } from '../../src/modules/access';
 import { ContentModule } from '../../src/modules/content';
@@ -113,6 +114,25 @@ describe('payment providers', () => {
     await app?.close();
     await stripe.stop();
     await flutterwave.stop();
+  });
+
+  it('publishes the verified coverage of Stripe and Flutterwave only', async () => {
+    const coverage = (
+      await request(app.getHttpServer()).get('/v1/public/payments/coverage').expect(200)
+    ).body as PaymentCoverage;
+    expect(coverage.providers.map((provider) => provider.provider)).toEqual([
+      'stripe',
+      'flutterwave',
+    ]);
+    const payoutCountries = coverage.providers.flatMap((provider) =>
+      provider.payoutCountries.map((entry) => `${provider.provider}:${entry.country}`),
+    );
+    expect(payoutCountries).toEqual(expect.arrayContaining(['stripe:FR', 'flutterwave:NG']));
+    expect(payoutCountries.some((entry) => entry.endsWith(':SN'))).toBe(false);
+    const methods = coverage.providers.flatMap((provider) =>
+      provider.payments.map((payment) => payment.method),
+    );
+    expect(methods).not.toContain('paypal');
   });
 
   it('routes a holder in France to Stripe Connect: hosted onboarding, direct charge, signed event', async () => {

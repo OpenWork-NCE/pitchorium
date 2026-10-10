@@ -554,6 +554,54 @@
     "bank_account": "Bank account",
     "ussd": "USSD"
   },
+  "paymentProviders": {
+    "stripe": "Stripe",
+    "flutterwave": "Flutterwave",
+    "simulated": "Simulated provider"
+  },
+  "mobileMoneyOperators": {
+    "mtn": "MTN",
+    "orange_money": "Orange Money",
+    "moov": "Moov",
+    "wave": "Wave",
+    "mpesa": "M-Pesa",
+    "airtel": "Airtel",
+    "telecel": "Telecel",
+    "airteltigo": "AirtelTigo",
+    "mobicash": "Mobicash",
+    "simulated_money": "Simulated mobile money"
+  },
+  "paymentCurrencyRules": {
+    "payout_currency": "In the currency of the payout account only",
+    "any": "In every currency offered"
+  },
+  "payoutOnboardings": {
+    "hosted": "On the pages of the provider",
+    "bank_details": "Bank details entered on Pitchorium"
+  },
+  "kycModes": {
+    "provider": "Verified by the provider",
+    "manual_review": "Verified by Pitchorium"
+  },
+  "payoutRequirements": {
+    "address_in_payout_country": "An address in the country of the account where you receive mail (not a P.O. box)",
+    "company_registered_in_payout_country": "A company registered in the country of the account",
+    "bank_account_in_payout_country": "A bank account in the country of the account",
+    "phone_number": "A phone number",
+    "tax_id": "A tax identification number",
+    "business_website": "A website or page presenting the activity",
+    "business_name": "The name of the activity",
+    "provider_terms_acceptance": "Acceptance of the provider's agreement"
+  },
+  "payoutDocuments": {
+    "identity_document": "An official identity document",
+    "passport_if_resident_elsewhere": "A passport if you live outside the country of the account",
+    "company_registration_document": "A proof of registration of the company"
+  },
+  "payoutRequirementScopes": {
+    "all": "Every holder",
+    "company": "Account opened for a company"
+  },
   "paymentsUnavailableReasons": {
     "project_not_open": "The project does not accept contributions",
     "holder_not_ready": "The project holder has not opened contributions yet",

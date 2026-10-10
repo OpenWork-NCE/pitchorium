@@ -50,6 +50,8 @@ const PUBLIC_ROUTES = [
   'GET /v1/public/projects/{projectId}/posts',
   'GET /v1/public/projects/{projectId}/updates',
   'GET /v1/public/projects/{projectId}/supporters',
+  // Coverage of the payments, readable before signing up (ADR 0133).
+  'GET /v1/public/payments/coverage',
   'GET /v1/public/events',
   'GET /v1/public/events/{slug}',
   'GET /v1/public/events/{slug}/ics',

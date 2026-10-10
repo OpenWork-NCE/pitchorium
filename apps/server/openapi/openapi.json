@@ -20133,6 +20133,79 @@
         "x-access": "public"
       }
     },
+    "/v1/public/payments/coverage": {
+      "get": {
+        "operationId": "CoverageController_read",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentCoverageDto_Output"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error (RFC 9457 problem details)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "RATE_LIMITED": {
+                    "$ref": "#/components/examples/RATE_LIMITED"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "payments"
+        ],
+        "summary": "Read",
+        "description": "Public: no session needed.\n\nErrors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.",
+        "x-error-codes": [
+          "RATE_LIMITED",
+          "PAYMENTS_PROJECT_NOT_OPEN",
+          "PAYMENTS_HOLDER_NOT_READY",
+          "PAYMENTS_NO_PAYMENT_ROUTE",
+          "PAYMENTS_METHOD_NOT_AVAILABLE",
+          "PAYMENTS_CURRENCY_NOT_AVAILABLE",
+          "PAYMENTS_INSTRUMENT_NOT_ACCEPTED",
+          "PAYMENTS_INSTRUMENT_NOT_COLLECTIBLE",
+          "PAYMENTS_LICENSED_PARTNER_REQUIRED",
+          "PAYMENTS_AMOUNT_OUT_OF_RANGE",
+          "PAYMENTS_REWARD_NOT_ELIGIBLE",
+          "PAYMENTS_ANONYMOUS_NOT_ALLOWED",
+          "PAYMENTS_RATE_LIMITED",
+          "PAYMENTS_CONTRIBUTION_NOT_FOUND",
+          "PAYMENTS_INVALID_TRANSITION",
+          "PAYMENTS_REFUND_INVALID",
+          "PAYMENTS_PROVIDER_UNAVAILABLE",
+          "PAYMENTS_PAYOUT_ACCOUNT_EXISTS",
+          "PAYMENTS_PAYOUT_ACCOUNT_NOT_FOUND",
+          "PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED",
+          "PAYMENTS_PAYOUT_DETAILS_REQUIRED",
+          "PAYMENTS_KYC_NOT_MANUAL",
+          "PAYMENTS_KYC_PENDING",
+          "PAYMENTS_KYC_ALREADY_VERIFIED",
+          "PAYMENTS_KYC_NOT_FOUND",
+          "PAYMENTS_KYC_ALREADY_DECIDED",
+          "PAYMENTS_OFFLINE_NOT_FOUND",
+          "PAYMENTS_OFFLINE_AMOUNT_INVALID",
+          "PAYMENTS_OFFLINE_INVALID_TRANSITION",
+          "PAYMENTS_OFFLINE_PROOF_REQUIRED",
+          "PAYMENTS_DISCREPANCY_NOT_FOUND",
+          "PAYMENTS_WEBHOOK_INVALID"
+        ],
+        "x-access": "public"
+      }
+    },
     "/v1/projects/{projectId}/offline-contributions": {
       "post": {
         "operationId": "OfflineContributionsController_declare",
@@ -54513,7 +54586,19 @@
                       "operators": {
                         "type": "array",
                         "items": {
-                          "type": "string"
+                          "type": "string",
+                          "enum": [
+                            "mtn",
+                            "orange_money",
+                            "moov",
+                            "wave",
+                            "mpesa",
+                            "airtel",
+                            "telecel",
+                            "airteltigo",
+                            "mobicash",
+                            "simulated_money"
+                          ]
                         }
                       }
                     },
@@ -54835,7 +54920,19 @@
                 "operators": {
                   "type": "array",
                   "items": {
-                    "type": "string"
+                    "type": "string",
+                    "enum": [
+                      "mtn",
+                      "orange_money",
+                      "moov",
+                      "wave",
+                      "mpesa",
+                      "airtel",
+                      "telecel",
+                      "airteltigo",
+                      "mobicash",
+                      "simulated_money"
+                    ]
                   }
                 }
               },
@@ -56064,6 +56161,293 @@
           "nextCursor",
           "contributionCount",
           "commitmentCount"
+        ],
+        "additionalProperties": false
+      },
+      "PaymentCoverageDto_Output": {
+        "type": "object",
+        "properties": {
+          "matrixVersion": {
+            "type": "string"
+          },
+          "verifiedAt": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "providers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "provider": {
+                  "type": "string",
+                  "enum": [
+                    "stripe",
+                    "flutterwave",
+                    "simulated"
+                  ]
+                },
+                "onboarding": {
+                  "type": "string",
+                  "enum": [
+                    "hosted",
+                    "bank_details"
+                  ]
+                },
+                "kycMode": {
+                  "type": "string",
+                  "enum": [
+                    "provider",
+                    "manual_review"
+                  ]
+                },
+                "paymentCurrencyRule": {
+                  "type": "string",
+                  "enum": [
+                    "payout_currency",
+                    "any"
+                  ]
+                },
+                "payoutCountries": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "country": {
+                        "type": "string",
+                        "pattern": "^[A-Z]{2}$"
+                      },
+                      "currency": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "country",
+                      "currency"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "payoutCurrencies": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "paymentCurrencies": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "payments": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "currency": {
+                        "type": "string"
+                      },
+                      "method": {
+                        "type": "string",
+                        "enum": [
+                          "card",
+                          "sepa_debit",
+                          "apple_pay",
+                          "google_pay",
+                          "paypal",
+                          "mobile_money",
+                          "bank_transfer",
+                          "bank_account",
+                          "ussd"
+                        ]
+                      },
+                      "operators": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "enum": [
+                            "mtn",
+                            "orange_money",
+                            "moov",
+                            "wave",
+                            "mpesa",
+                            "airtel",
+                            "telecel",
+                            "airteltigo",
+                            "mobicash",
+                            "simulated_money"
+                          ]
+                        }
+                      },
+                      "contributorCountries": {
+                        "anyOf": [
+                          {
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "pattern": "^[A-Z]{2}$"
+                            }
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "min": {
+                        "anyOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "amountMinor": {
+                                "type": "string",
+                                "pattern": "^-?(0|[1-9]\\d*)$"
+                              },
+                              "currency": {
+                                "type": "string",
+                                "pattern": "^[A-Z]{3}$"
+                              }
+                            },
+                            "required": [
+                              "amountMinor",
+                              "currency"
+                            ],
+                            "additionalProperties": false
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "max": {
+                        "anyOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "amountMinor": {
+                                "type": "string",
+                                "pattern": "^-?(0|[1-9]\\d*)$"
+                              },
+                              "currency": {
+                                "type": "string",
+                                "pattern": "^[A-Z]{3}$"
+                              }
+                            },
+                            "required": [
+                              "amountMinor",
+                              "currency"
+                            ],
+                            "additionalProperties": false
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      }
+                    },
+                    "required": [
+                      "currency",
+                      "method",
+                      "operators",
+                      "contributorCountries",
+                      "min",
+                      "max"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "eligibility": {
+                  "type": "object",
+                  "properties": {
+                    "requirements": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "code": {
+                            "type": "string",
+                            "enum": [
+                              "address_in_payout_country",
+                              "company_registered_in_payout_country",
+                              "bank_account_in_payout_country",
+                              "phone_number",
+                              "tax_id",
+                              "business_website",
+                              "business_name",
+                              "provider_terms_acceptance"
+                            ]
+                          },
+                          "scope": {
+                            "type": "string",
+                            "enum": [
+                              "all",
+                              "company"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "code",
+                          "scope"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "documents": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "code": {
+                            "type": "string",
+                            "enum": [
+                              "identity_document",
+                              "passport_if_resident_elsewhere",
+                              "company_registration_document"
+                            ]
+                          },
+                          "scope": {
+                            "type": "string",
+                            "enum": [
+                              "all",
+                              "company"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "code",
+                          "scope"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "requirements",
+                    "documents"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "provider",
+                "onboarding",
+                "kycMode",
+                "paymentCurrencyRule",
+                "payoutCountries",
+                "payoutCurrencies",
+                "paymentCurrencies",
+                "payments",
+                "eligibility"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "matrixVersion",
+          "verifiedAt",
+          "providers"
         ],
         "additionalProperties": false
       },

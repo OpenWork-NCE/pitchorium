@@ -8177,9 +8177,25 @@ export const PaymentOptionsDtoOutputCurrenciesItemMethodsItemMethod = {
   ussd: 'ussd',
 } as const;
 
+export type PaymentOptionsDtoOutputCurrenciesItemMethodsItemOperatorsItem =
+  (typeof PaymentOptionsDtoOutputCurrenciesItemMethodsItemOperatorsItem)[keyof typeof PaymentOptionsDtoOutputCurrenciesItemMethodsItemOperatorsItem];
+
+export const PaymentOptionsDtoOutputCurrenciesItemMethodsItemOperatorsItem = {
+  mtn: 'mtn',
+  orange_money: 'orange_money',
+  moov: 'moov',
+  wave: 'wave',
+  mpesa: 'mpesa',
+  airtel: 'airtel',
+  telecel: 'telecel',
+  airteltigo: 'airteltigo',
+  mobicash: 'mobicash',
+  simulated_money: 'simulated_money',
+} as const;
+
 export type PaymentOptionsDtoOutputCurrenciesItemMethodsItem = {
   method: PaymentOptionsDtoOutputCurrenciesItemMethodsItemMethod;
-  operators: string[];
+  operators: PaymentOptionsDtoOutputCurrenciesItemMethodsItemOperatorsItem[];
 };
 
 export type PaymentOptionsDtoOutputCurrenciesItem = {
@@ -8340,9 +8356,25 @@ export const QuoteDtoOutputMethodsItemMethod = {
   ussd: 'ussd',
 } as const;
 
+export type QuoteDtoOutputMethodsItemOperatorsItem =
+  (typeof QuoteDtoOutputMethodsItemOperatorsItem)[keyof typeof QuoteDtoOutputMethodsItemOperatorsItem];
+
+export const QuoteDtoOutputMethodsItemOperatorsItem = {
+  mtn: 'mtn',
+  orange_money: 'orange_money',
+  moov: 'moov',
+  wave: 'wave',
+  mpesa: 'mpesa',
+  airtel: 'airtel',
+  telecel: 'telecel',
+  airteltigo: 'airteltigo',
+  mobicash: 'mobicash',
+  simulated_money: 'simulated_money',
+} as const;
+
 export type QuoteDtoOutputMethodsItem = {
   method: QuoteDtoOutputMethodsItemMethod;
-  operators: string[];
+  operators: QuoteDtoOutputMethodsItemOperatorsItem[];
 };
 
 export interface QuoteDtoOutput {
@@ -8960,6 +8992,172 @@ export interface SupporterPageDtoOutput {
    * @maximum 9007199254740991
    */
   commitmentCount: number;
+}
+
+export type PaymentCoverageDtoOutputProvidersItemProvider =
+  (typeof PaymentCoverageDtoOutputProvidersItemProvider)[keyof typeof PaymentCoverageDtoOutputProvidersItemProvider];
+
+export const PaymentCoverageDtoOutputProvidersItemProvider = {
+  stripe: 'stripe',
+  flutterwave: 'flutterwave',
+  simulated: 'simulated',
+} as const;
+
+export type PaymentCoverageDtoOutputProvidersItemOnboarding =
+  (typeof PaymentCoverageDtoOutputProvidersItemOnboarding)[keyof typeof PaymentCoverageDtoOutputProvidersItemOnboarding];
+
+export const PaymentCoverageDtoOutputProvidersItemOnboarding = {
+  hosted: 'hosted',
+  bank_details: 'bank_details',
+} as const;
+
+export type PaymentCoverageDtoOutputProvidersItemKycMode =
+  (typeof PaymentCoverageDtoOutputProvidersItemKycMode)[keyof typeof PaymentCoverageDtoOutputProvidersItemKycMode];
+
+export const PaymentCoverageDtoOutputProvidersItemKycMode = {
+  provider: 'provider',
+  manual_review: 'manual_review',
+} as const;
+
+export type PaymentCoverageDtoOutputProvidersItemPaymentCurrencyRule =
+  (typeof PaymentCoverageDtoOutputProvidersItemPaymentCurrencyRule)[keyof typeof PaymentCoverageDtoOutputProvidersItemPaymentCurrencyRule];
+
+export const PaymentCoverageDtoOutputProvidersItemPaymentCurrencyRule = {
+  payout_currency: 'payout_currency',
+  any: 'any',
+} as const;
+
+export type PaymentCoverageDtoOutputProvidersItemPayoutCountriesItem = {
+  /** @pattern ^[A-Z]{2}$ */
+  country: string;
+  currency: string;
+};
+
+export type PaymentCoverageDtoOutputProvidersItemPaymentsItemMethod =
+  (typeof PaymentCoverageDtoOutputProvidersItemPaymentsItemMethod)[keyof typeof PaymentCoverageDtoOutputProvidersItemPaymentsItemMethod];
+
+export const PaymentCoverageDtoOutputProvidersItemPaymentsItemMethod = {
+  card: 'card',
+  sepa_debit: 'sepa_debit',
+  apple_pay: 'apple_pay',
+  google_pay: 'google_pay',
+  paypal: 'paypal',
+  mobile_money: 'mobile_money',
+  bank_transfer: 'bank_transfer',
+  bank_account: 'bank_account',
+  ussd: 'ussd',
+} as const;
+
+export type PaymentCoverageDtoOutputProvidersItemPaymentsItemOperatorsItem =
+  (typeof PaymentCoverageDtoOutputProvidersItemPaymentsItemOperatorsItem)[keyof typeof PaymentCoverageDtoOutputProvidersItemPaymentsItemOperatorsItem];
+
+export const PaymentCoverageDtoOutputProvidersItemPaymentsItemOperatorsItem = {
+  mtn: 'mtn',
+  orange_money: 'orange_money',
+  moov: 'moov',
+  wave: 'wave',
+  mpesa: 'mpesa',
+  airtel: 'airtel',
+  telecel: 'telecel',
+  airteltigo: 'airteltigo',
+  mobicash: 'mobicash',
+  simulated_money: 'simulated_money',
+} as const;
+
+export type PaymentCoverageDtoOutputProvidersItemPaymentsItemMin = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+} | null;
+
+export type PaymentCoverageDtoOutputProvidersItemPaymentsItemMax = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+} | null;
+
+export type PaymentCoverageDtoOutputProvidersItemPaymentsItem = {
+  currency: string;
+  method: PaymentCoverageDtoOutputProvidersItemPaymentsItemMethod;
+  operators: PaymentCoverageDtoOutputProvidersItemPaymentsItemOperatorsItem[];
+  contributorCountries: string[] | null;
+  min: PaymentCoverageDtoOutputProvidersItemPaymentsItemMin;
+  max: PaymentCoverageDtoOutputProvidersItemPaymentsItemMax;
+};
+
+export type PaymentCoverageDtoOutputProvidersItemEligibilityRequirementsItemCode =
+  (typeof PaymentCoverageDtoOutputProvidersItemEligibilityRequirementsItemCode)[keyof typeof PaymentCoverageDtoOutputProvidersItemEligibilityRequirementsItemCode];
+
+export const PaymentCoverageDtoOutputProvidersItemEligibilityRequirementsItemCode = {
+  address_in_payout_country: 'address_in_payout_country',
+  company_registered_in_payout_country: 'company_registered_in_payout_country',
+  bank_account_in_payout_country: 'bank_account_in_payout_country',
+  phone_number: 'phone_number',
+  tax_id: 'tax_id',
+  business_website: 'business_website',
+  business_name: 'business_name',
+  provider_terms_acceptance: 'provider_terms_acceptance',
+} as const;
+
+export type PaymentCoverageDtoOutputProvidersItemEligibilityRequirementsItemScope =
+  (typeof PaymentCoverageDtoOutputProvidersItemEligibilityRequirementsItemScope)[keyof typeof PaymentCoverageDtoOutputProvidersItemEligibilityRequirementsItemScope];
+
+export const PaymentCoverageDtoOutputProvidersItemEligibilityRequirementsItemScope = {
+  all: 'all',
+  company: 'company',
+} as const;
+
+export type PaymentCoverageDtoOutputProvidersItemEligibilityRequirementsItem = {
+  code: PaymentCoverageDtoOutputProvidersItemEligibilityRequirementsItemCode;
+  scope: PaymentCoverageDtoOutputProvidersItemEligibilityRequirementsItemScope;
+};
+
+export type PaymentCoverageDtoOutputProvidersItemEligibilityDocumentsItemCode =
+  (typeof PaymentCoverageDtoOutputProvidersItemEligibilityDocumentsItemCode)[keyof typeof PaymentCoverageDtoOutputProvidersItemEligibilityDocumentsItemCode];
+
+export const PaymentCoverageDtoOutputProvidersItemEligibilityDocumentsItemCode = {
+  identity_document: 'identity_document',
+  passport_if_resident_elsewhere: 'passport_if_resident_elsewhere',
+  company_registration_document: 'company_registration_document',
+} as const;
+
+export type PaymentCoverageDtoOutputProvidersItemEligibilityDocumentsItemScope =
+  (typeof PaymentCoverageDtoOutputProvidersItemEligibilityDocumentsItemScope)[keyof typeof PaymentCoverageDtoOutputProvidersItemEligibilityDocumentsItemScope];
+
+export const PaymentCoverageDtoOutputProvidersItemEligibilityDocumentsItemScope = {
+  all: 'all',
+  company: 'company',
+} as const;
+
+export type PaymentCoverageDtoOutputProvidersItemEligibilityDocumentsItem = {
+  code: PaymentCoverageDtoOutputProvidersItemEligibilityDocumentsItemCode;
+  scope: PaymentCoverageDtoOutputProvidersItemEligibilityDocumentsItemScope;
+};
+
+export type PaymentCoverageDtoOutputProvidersItemEligibility = {
+  requirements: PaymentCoverageDtoOutputProvidersItemEligibilityRequirementsItem[];
+  documents: PaymentCoverageDtoOutputProvidersItemEligibilityDocumentsItem[];
+};
+
+export type PaymentCoverageDtoOutputProvidersItem = {
+  provider: PaymentCoverageDtoOutputProvidersItemProvider;
+  onboarding: PaymentCoverageDtoOutputProvidersItemOnboarding;
+  kycMode: PaymentCoverageDtoOutputProvidersItemKycMode;
+  paymentCurrencyRule: PaymentCoverageDtoOutputProvidersItemPaymentCurrencyRule;
+  payoutCountries: PaymentCoverageDtoOutputProvidersItemPayoutCountriesItem[];
+  payoutCurrencies: string[];
+  paymentCurrencies: string[];
+  payments: PaymentCoverageDtoOutputProvidersItemPaymentsItem[];
+  eligibility: PaymentCoverageDtoOutputProvidersItemEligibility;
+};
+
+export interface PaymentCoverageDtoOutput {
+  matrixVersion: string;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))$ */
+  verifiedAt: string;
+  providers: PaymentCoverageDtoOutputProvidersItem[];
 }
 
 export type DeclareOfflineDtoKind =

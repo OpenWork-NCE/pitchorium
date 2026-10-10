@@ -2,6 +2,7 @@ import { BullModule } from '@nestjs/bullmq';
 import { type DynamicModule, Module, type Provider } from '@nestjs/common';
 import { ContributionEffectsService } from './application/contribution-effects.service';
 import { ContributionsService } from './application/contributions.service';
+import { CoverageService } from './application/coverage.service';
 import { ExportsService } from './application/exports.service';
 import { OfflineService } from './application/offline.service';
 import { PaymentsEventsRecorder } from './application/payments-events.recorder';
@@ -27,6 +28,7 @@ import {
 import { PaymentsMailer } from './infrastructure/payments-mailer';
 import { AdminPaymentsController } from './interface/admin-payments.controller';
 import { ContributionsController } from './interface/contributions.controller';
+import { CoverageController } from './interface/coverage.controller';
 import {
   OfflineContributionsController,
   PayoutController,
@@ -81,12 +83,14 @@ export class PaymentsModule {
       global: true,
       controllers: [
         ContributionsController,
+        CoverageController,
         OfflineContributionsController,
         PayoutController,
         AdminPaymentsController,
       ],
       providers: [
         ...SHARED_PROVIDERS,
+        CoverageService,
         ContributionResolver,
         ProjectTeamResolver,
         OrganizationRoleResolver,

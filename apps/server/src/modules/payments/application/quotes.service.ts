@@ -5,6 +5,7 @@ import {
   type ContributionRequestKind,
   type IndicativeCurrency,
   type PaymentMethod,
+  type PaymentMethodOption,
   type PaymentOptions,
   type PaymentsUnavailableReason,
 } from '@pitchorium/contracts';
@@ -279,10 +280,7 @@ function largestAmountWithin(eur: Money, currency: string, rate: Rate): Money {
   return eurEquivalent(candidate, rate).compare(eur) <= 0 ? candidate : Money.zero(currency);
 }
 
-export function quoteView(
-  quote: Quote,
-  methods: { method: PaymentMethod; operators: string[] }[],
-): ContributionQuote {
+export function quoteView(quote: Quote, methods: PaymentMethodOption[]): ContributionQuote {
   return {
     kind: quote.kind,
     amount: quote.amount.toJSON(),
