@@ -677,7 +677,7 @@
     "showcase": {
       "title": "Projets",
       "description": "Les projets à impact d’Afrique et des Caraïbes : leur histoire, leur financement, leurs paliers et leur impact auto-déclaré.",
-      "lede": "Des entrepreneurs d’Afrique et des Caraïbes, des campagnes lisibles, un impact auto-déclaré.",
+      "lede": "Des projets d’Afrique et des Caraïbes, portés par leurs entrepreneurs. Chaque campagne montre son objectif, ses paliers et son impact auto-déclaré.",
       "featured": "Sélection de l’équipe",
       "all_projects": "Tous les projets",
       "filters": "Filtrer les projets",
@@ -696,7 +696,7 @@
       "empty": "Aucun projet publié pour l’instant",
       "emptyBody": "Les projets apparaissent ici dès leur publication.",
       "emptyFiltered": "Aucun projet ne correspond à ces filtres",
-      "emptyFilteredBody": "Élargissez la recherche : retirez un filtre ou réinitialisez-les.",
+      "emptyFilteredBody": "Retirez un filtre ou réinitialisez-les pour voir plus de projets.",
       "error": "La vitrine n’a pas pu être chargée",
       "errorBody": "Réessayez dans un instant.",
       "moreError": "Les projets suivants n’ont pas pu être chargés. Réessayez."
@@ -4052,137 +4052,140 @@
     },
     "home": {
       "kicker": "Afrique · Caraïbes · Diaspora européenne",
-      "title": "Le réseau professionnel où se rencontrent les entrepreneurs d’Afrique et des Caraïbes et ceux qui veulent les soutenir.",
-      "lede": "Ni un Instagram africain, ni un Kickstarter générique : le lieu d’affaires de la synergie Afrique–Diaspora.",
+      "title": "Le lieu d’affaires de la synergie Afrique–Diaspora.",
+      "lede": "Le réseau professionnel où les entrepreneurs d’Afrique et des Caraïbes rencontrent celles et ceux qui veulent les soutenir, depuis l’Europe et la diaspora.",
       "join": "Rejoindre Pitchorium",
-      "howItWorks": "Comprendre le fonctionnement",
+      "howItWorks": "Découvrir le fonctionnement",
       "description": "Le réseau professionnel et la plateforme de financement à impact entre l’Afrique, les Caraïbes et la diaspora européenne.",
-      "usesKicker": "Trois usages, une seule plateforme",
+      "usesKicker": "Ce que vous faites sur Pitchorium",
       "usesTitle": "Se lier, découvrir, soutenir.",
       "uses": {
         "connect": {
-          "title": "Se présenter et se lier",
-          "body": "Un profil, un réseau, un fil et une messagerie, comme sur un réseau d’affaires."
+          "kicker": "Se lier",
+          "title": "Rencontrez les personnes qui comptent pour votre projet.",
+          "body": "Présentez-vous en quelques minutes, développez votre réseau et échangez par message. Pitchorium vous suggère des profils et vous dit pourquoi."
         },
         "discover": {
-          "title": "Découvrir des projets à impact",
-          "body": "Des campagnes lisibles : objectif, paliers, contreparties et actualités."
+          "kicker": "Découvrir",
+          "title": "Voyez où en est chaque projet, en un coup d’œil.",
+          "body": "Objectif, paliers, contreparties, actualités : chaque campagne se lit clairement. Vous savez ce que votre soutien permet."
         },
         "support": {
-          "title": "Soutenir concrètement",
-          "body": "Don, love money, mécénat, mise en relation ou temps, avec de vrais flux d’argent là où la loi le permet."
+          "kicker": "Soutenir",
+          "title": "Soutenez à votre façon, et gardez la trace de ce que vous donnez.",
+          "body": "Don, love money, mécénat, mise en relation ou temps. Vous payez par carte, virement ou Mobile Money selon votre pays, et votre tableau de bord réunit vos contributions confirmées."
         }
       },
-      "audiencesKicker": "Deux publics",
-      "audiencesTitle": "Un même lieu pour celles et ceux qui portent et celles et ceux qui soutiennent.",
+      "audiencesKicker": "Pour qui",
+      "audiencesTitle": "Un même lieu, que vous portiez un projet ou que vous le souteniez.",
       "entrepreneur": {
         "title": "Je porte un projet",
-        "body": "Vous portez une entreprise ou un projet en Afrique ou dans les Caraïbes, et cherchez visibilité, réseau, financement, mentorat ou partenariats.",
+        "body": "Vous développez une entreprise ou un projet en Afrique ou dans les Caraïbes. Vous trouvez ici de la visibilité, un réseau, des financements, du mentorat et des partenaires.",
         "steps": {
-          "first": "Rejoindre en un clic, compléter son profil ensuite",
-          "second": "Créer la page publique de son projet, ses paliers et ses contreparties",
-          "third": "Recevoir des contributions réelles, après vérification d’identité"
+          "first": "Rejoignez Pitchorium en un clic, complétez votre profil ensuite",
+          "second": "Publiez la page de votre projet, ses paliers et ses contreparties",
+          "third": "Recevez de vraies contributions, une fois votre identité vérifiée"
         }
       },
       "contributor": {
         "title": "Je souhaite soutenir",
-        "body": "Investisseur, mécène, mentor, expert, partenaire ou recruteur : un même compte peut porter plusieurs casquettes, à préciser à tout moment.",
+        "body": "Investisseur, mécène, mentor, expert, partenaire ou recruteur : un seul compte vous suffit pour plusieurs casquettes, que vous précisez quand vous le souhaitez.",
         "steps": {
-          "first": "Découvrir des projets et des personnes",
-          "second": "Contribuer par carte, virement ou Mobile Money selon les moyens disponibles",
-          "third": "Suivre son engagement : versements réels, projets soutenus, heures données"
+          "first": "Découvrez des projets et des personnes",
+          "second": "Contribuez par carte, virement ou Mobile Money, selon votre pays",
+          "third": "Suivez votre engagement : sommes versées, projets soutenus, heures données"
         }
       },
-      "principlesKicker": "Principes de confiance",
-      "principlesTitle": "Ce sur quoi Pitchorium ne transige pas.",
+      "principlesKicker": "Nos engagements",
+      "principlesTitle": "Ce sur quoi vous pouvez compter.",
       "principles": {
         "money": {
-          "title": "L’argent est réel, ou il n’est pas affiché",
-          "body": "Pas de solde fictif, pas de bouton « payer » cosmétique."
+          "title": "Les montants affichés sont de vrais paiements confirmés",
+          "body": "Aucun solde fictif, aucun bouton « payer » de façade : une contribution compte une fois son paiement confirmé."
         },
         "impact": {
-          "title": "L’impact est déclaré, jamais certifié",
-          "body": "Le score oriente ; il n’est pas un label."
+          "title": "L’impact est déclaré par le porteur, jamais présenté comme certifié",
+          "body": "Le score d’impact vous aide à vous orienter, selon une méthodologie publique. Ce n’est ni un label ni une certification."
         },
         "languages": {
-          "title": "Une langue mal traduite vaut mieux absente",
-          "body": "Une langue n’est proposée que si un humain la tient."
+          "title": "Les langues proposées sont relues par des personnes",
+          "body": "Une langue n’est ouverte qu’une fois ses textes relus par une personne qui la parle."
         },
         "public": {
-          "title": "Des pages publiques",
-          "body": "Un projet, un profil, une organisation se partagent, s’indexent et se citent."
+          "title": "Vos pages publiques se partagent facilement",
+          "body": "Un projet, un profil ou une organisation a sa propre page, que vous partagez et que les moteurs de recherche trouvent."
         }
       },
       "projectsKicker": "Projets",
       "projectsTitle": "Des projets à découvrir.",
       "allProjects": "Voir tous les projets",
-      "joinTitle": "Rejoignez Pitchorium en moins d’une minute.",
-      "joinBody": "Complétez votre profil quand vous en comprenez l’intérêt."
+      "joinTitle": "Rejoignez la synergie Afrique–Diaspora.",
+      "joinBody": "En moins d’une minute, avec Google, LinkedIn, Microsoft ou votre email. Vous complétez votre profil quand vous en voyez l’intérêt."
     },
     "howItWorks": {
       "title": "Comment fonctionne Pitchorium",
-      "lede": "Deux couches, comme tout réseau professionnel sérieux : un site public pour comprendre et découvrir, un espace membre pour se lier, publier, gérer et contribuer.",
+      "lede": "Découvrez librement les projets et les profils publics. Rejoignez Pitchorium pour vous lier, publier, gérer votre projet et contribuer.",
       "description": "Le parcours d’un entrepreneur et celui d’un contributeur sur Pitchorium.",
-      "entrepreneursTitle": "Pour les entrepreneurs",
+      "entrepreneursTitle": "Vous portez un projet",
       "entrepreneurs": {
         "enter": {
-          "title": "Entrer vite",
-          "body": "On rejoint Pitchorium par Google, LinkedIn ou un email, sans formulaire bloquant. On précise son intention, puis son profil à tout moment."
+          "title": "Entrez en une minute",
+          "body": "Rejoignez Pitchorium avec Google, LinkedIn, Microsoft ou votre email, sans long formulaire. Dites ce que vous venez chercher, puis complétez votre profil quand vous le souhaitez."
         },
         "present": {
-          "title": "Présenter son projet",
-          "body": "Une page publique de projet : objectif, paliers indépendants, contreparties, actualités et impact auto-déclaré."
+          "title": "Présentez votre projet",
+          "body": "Votre projet a sa page publique : objectif, paliers, contreparties, actualités et impact auto-déclaré."
         },
         "verify": {
-          "title": "Être vérifié",
-          "body": "La vérification d’identité du porteur précède le premier versement."
+          "title": "Faites vérifier votre identité",
+          "body": "Votre identité est vérifiée avant votre premier versement : vos contributeurs savent à qui ils donnent."
         },
         "receive": {
-          "title": "Recevoir des contributions réelles",
-          "body": "Le palier se met à jour au paiement, sans case à cocher manuelle."
+          "title": "Recevez de vraies contributions",
+          "body": "Chaque paiement confirmé fait avancer votre collecte et vos paliers, automatiquement."
         }
       },
-      "contributorsTitle": "Pour les contributeurs",
+      "contributorsTitle": "Vous souhaitez soutenir",
       "contributors": {
         "discover": {
-          "title": "Découvrir",
-          "body": "Vitrine de projets, recherche et suggestions selon vos casquettes, vos secteurs et vos pays."
+          "title": "Trouvez des projets",
+          "body": "Parcourez la vitrine, cherchez par pays ou par secteur, et recevez des suggestions adaptées à vos casquettes."
         },
         "choose": {
-          "title": "Choisir son soutien",
-          "body": "Don, contribution avec contrepartie ou love money, et la contrepartie éligible si le projet en a."
+          "title": "Choisissez votre soutien",
+          "body": "Don, contribution avec contrepartie ou love money : vous choisissez, et les contreparties auxquelles vous avez droit vous sont proposées."
         },
         "pay": {
-          "title": "Payer chez un prestataire agréé",
-          "body": "Les moyens de paiement réels selon votre pays, sur une page sécurisée ; la commission est affichée avant le paiement."
+          "title": "Payez en toute sécurité",
+          "body": "Vous payez sur la page sécurisée d’un prestataire de paiement agréé, avec les moyens disponibles dans votre pays. La commission vous est indiquée avant de payer."
         },
         "follow": {
-          "title": "Suivre son engagement",
-          "body": "Confirmation par email, puis un tableau de bord : euros versés, projets soutenus, heures déclarées."
+          "title": "Suivez votre engagement",
+          "body": "Vous recevez une confirmation par email, puis votre tableau de bord réunit les sommes versées, les projets soutenus et les heures données."
         }
       },
       "transparencyLink": "Transparence et frais"
     },
     "transparency": {
       "title": "Transparence et frais",
-      "lede": "Ce que coûte une contribution, qui détient les fonds et ce qu’une contribution n’est pas.",
+      "lede": "Ce que coûte une contribution, qui détient l’argent et ce qu’une contribution n’est pas. Tout vous est dit avant de payer.",
       "description": "Commission, frais des prestataires, détention des fonds, impact auto-déclaré et couverture des paiements de Pitchorium.",
-      "commissionTitle": "Commission de la plateforme",
-      "commissionBody": "Pitchorium prélève une commission de {{rate}} à la source sur chaque contribution payée. Elle est affichée avant le paiement, avec le montant reçu par le projet.",
+      "commissionTitle": "Commission de Pitchorium",
+      "commissionBody": "Pitchorium prélève une commission de {{rate}} sur chaque contribution payée. Vous la voyez avant de payer, avec le montant que reçoit le projet.",
       "commissionUnavailable": "Le taux de commission n’a pas pu être lu pour le moment.",
-      "feesTitle": "Frais des prestataires",
-      "feesBody": "Les prestataires de paiement facturent leurs propres frais, selon le moyen de paiement et la devise. Leur estimation est affichée avant le paiement, à côté de la commission.",
-      "fundsTitle": "Pitchorium ne détient pas les fonds",
-      "fundsBody": "Les paiements sont encaissés par des prestataires agréés, qui versent les fonds au porteur du projet. Pitchorium n’est ni une banque ni un établissement de paiement.",
-      "impactTitle": "Un impact auto-déclaré",
-      "impactBody": "Le score d’impact est déclaré par le porteur du projet selon une méthodologie publique. Il oriente ; il n’est ni un label ni une certification.",
+      "feesTitle": "Frais des prestataires de paiement",
+      "feesBody": "Les prestataires de paiement facturent leurs propres frais, selon le moyen de paiement et la devise. Vous voyez leur estimation avant de payer, à côté de la commission.",
+      "fundsTitle": "Pitchorium ne détient pas votre argent",
+      "fundsBody": "Vos paiements sont encaissés par des prestataires de paiement agréés, qui versent les fonds au porteur du projet. Pitchorium n’est ni une banque ni un établissement de paiement.",
+      "impactTitle": "Un impact déclaré par le porteur",
+      "impactBody": "Le porteur du projet déclare son score d’impact selon une méthodologie publique. Ce score vous aide à vous orienter : ce n’est ni un label ni une certification.",
       "impactLink": "Lire la méthodologie",
-      "titleTitle": "Une contribution n’est pas un titre",
-      "titleBody": "Un don ou une contribution avec contrepartie ne donne aucune part du capital ni aucun droit financier. Un palier débloqué n’est pas une garantie de succès.",
+      "titleTitle": "Une contribution n’est pas un placement",
+      "titleBody": "Un don ou une contribution avec contrepartie ne vous donne aucune part du capital ni aucun droit financier. Un palier atteint ne garantit pas la réussite du projet.",
       "taxTitle": "Pas de reçu fiscal",
       "taxBody": "Pitchorium ne délivre pas de reçu fiscal pour une contribution.",
-      "coverageTitle": "Couverture des paiements",
-      "coverageBody": "Les pays où un porteur peut recevoir des fonds et les moyens de paiement disponibles, tels que vérifiés le {{date}}.",
+      "coverageTitle": "Où et comment payer",
+      "coverageBody": "Les pays où un porteur de projet peut recevoir des fonds et les moyens de paiement disponibles, vérifiés le {{date}}.",
       "coverageUnavailable": "La couverture des paiements n’a pas pu être lue pour le moment.",
       "payoutCountries": "Pays de versement",
       "methods": "Moyens de paiement",

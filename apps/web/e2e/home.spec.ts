@@ -6,7 +6,7 @@ test.describe('home page', () => {
     await expect(page).toHaveTitle('Pitchorium');
     await expect(page.locator('html')).toHaveAttribute('lang', 'fr');
     await expect(page.getByRole('heading', { level: 1 })).toContainText(
-      'Le réseau professionnel où se rencontrent',
+      'Le lieu d’affaires de la synergie Afrique–Diaspora.',
     );
     await expect(page.getByRole('link', { name: 'Accueil de Pitchorium' })).toBeVisible();
     const fonts = await page.evaluate(async () => {
@@ -27,7 +27,7 @@ test.describe('home page', () => {
     await page.goto('/en');
     await expect(page.locator('html')).toHaveAttribute('lang', 'en');
     await expect(page.getByRole('heading', { level: 1 })).toContainText(
-      'The professional network where',
+      'The business place of the Africa–Diaspora synergy.',
     );
   });
 
@@ -93,10 +93,10 @@ test.describe('editorial and legal pages', () => {
   test('how it works and transparency read the commission from the api', async ({ page }) => {
     await page.goto('/fr/how-it-works');
     await expect(
-      page.getByRole('heading', { level: 2, name: 'Pour les entrepreneurs' }),
+      page.getByRole('heading', { level: 2, name: 'Vous portez un projet' }),
     ).toBeVisible();
     await expect(
-      page.getByRole('heading', { level: 2, name: 'Pour les contributeurs' }),
+      page.getByRole('heading', { level: 2, name: 'Vous souhaitez soutenir' }),
     ).toBeVisible();
     await page.goto('/fr/transparency');
     await expect(page.locator('[data-commission-rate="500"]')).toContainText('5 %');

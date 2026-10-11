@@ -1,6 +1,6 @@
 # Direction artistique
 
-Contrat visuel de l'application web : chaque composant de `apps/web/src/components/ui` et chaque coquille le respecte, chaque revue de design s'y réfère. Décision : ADR 0095. Valeurs : `tokens.md`, typographie : `typography.md`, mouvement : `motion.md`, marque : `brand-usage.md`, composants : `components.md`, usages : `patterns.md`.
+Contrat visuel de l'application web : chaque composant de `apps/web/src/components/ui` et chaque coquille le respecte, chaque revue de design s'y réfère. Décision : ADR 0095. Valeurs : `tokens.md`, typographie : `typography.md`, voix des textes : `voice.md`, mouvement : `motion.md`, marque : `brand-usage.md`, composants : `components.md`, usages : `patterns.md`.
 
 ## Principes
 
