@@ -51,3 +51,23 @@ export function showcaseQuery(
     ...(options.cursor ? { cursor: options.cursor } : {}),
   };
 }
+
+/** A filter in force, as a removable chip: its key in the address and its label. */
+export interface ActiveFilter {
+  key: 'country' | 'sector' | 'status' | 'impact';
+  label: string;
+}
+
+/**
+ * The chips of the filters in force, in the order of the bar; a value the options do not know
+ * keeps its code rather than disappearing. The sort is not a filter.
+ */
+export function activeFilters(
+  filters: Pick<ShowcaseFilters, 'country' | 'sector' | 'status' | 'impact'>,
+  labelOf: (key: ActiveFilter['key'], value: string) => string | undefined,
+): ActiveFilter[] {
+  return (['country', 'sector', 'status', 'impact'] as const).flatMap((key) => {
+    const value = filters[key];
+    return value ? [{ key, label: labelOf(key, value) ?? value }] : [];
+  });
+}

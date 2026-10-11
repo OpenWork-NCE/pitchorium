@@ -701,7 +701,20 @@
       "emptyFilteredBody": "Remove a filter or reset them to see more projects.",
       "error": "The showcase could not be loaded",
       "errorBody": "Try again in a moment.",
-      "moreError": "The next projects could not be loaded. Try again."
+      "moreError": "The next projects could not be loaded. Try again.",
+      "results": {
+        "one": "{{count}} project",
+        "other": "{{count}} projects"
+      },
+      "resultsMore": "More than {{count}} projects",
+      "filtersButton": "Filters",
+      "activeFilters": {
+        "one": "{{count}} active filter",
+        "other": "{{count}} active filters"
+      },
+      "active": "Active filters",
+      "removeFilter": "Remove the filter {{label}}",
+      "showResults": "See the results"
     },
     "shareImage": {
       "funding": "{{collected}} raised of {{goal}} · {{percent}}%"

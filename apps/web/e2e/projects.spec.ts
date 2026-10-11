@@ -159,12 +159,45 @@ test.describe('the showcase of the projects', () => {
     await expect(
       page.getByRole('heading', { name: 'Aucun projet ne correspond à ces filtres' }),
     ).toBeVisible();
-    await page.getByRole('button', { name: 'Réinitialiser les filtres' }).click();
+    // The filters in force as removable chips, and the reset beside them.
+    const chips = page.getByRole('list', { name: 'Filtres actifs' });
+    await expect(chips.getByRole('listitem')).toHaveCount(2);
+    await chips.getByRole('button', { name: 'Retirer le filtre Guinée-Bissau' }).click();
+    await page.waitForURL((url) => !url.search.includes('country='));
+    await expect(chips.getByRole('listitem')).toHaveCount(1);
+    await page.getByRole('button', { name: 'Réinitialiser les filtres' }).first().click();
     await page.waitForURL((url) => !url.search.includes('status='));
     await expect(
       page.getByRole('heading', { level: 3, name: 'Ferme solaire coopérative de Thiès' }).first(),
     ).toBeVisible();
+    await expect(page.getByRole('list', { name: 'Filtres actifs' })).toHaveCount(0);
   });
+
+  test(
+    'filters from a sheet on a phone, its count on the button, the chips above the results',
+    { tag: '@phone' },
+    async ({ page }) => {
+      await page.setViewportSize({ width: 390, height: 844 });
+      await page.goto('/fr/projects');
+      await page.waitForLoadState('networkidle');
+      // The results show from the first screen, under the button of the filters.
+      await expect(page.getByRole('heading', { level: 3 }).first()).toBeInViewport();
+      await page.getByRole('button', { name: 'Filtres', exact: true }).click();
+      const sheet = page.getByRole('dialog', { name: 'Filtrer les projets' });
+      await sheet.getByRole('combobox', { name: 'Statut' }).click();
+      await page.getByRole('option', { name: 'Clôturé' }).click();
+      await page.waitForURL(/status=closed/);
+      await sheet.getByRole('button', { name: 'Voir les résultats' }).click();
+      await expect(sheet).toHaveCount(0);
+      await expect(page.getByRole('button', { name: /Filtres.*1 filtre actif/ })).toBeVisible();
+      await expect(
+        page.getByRole('list', { name: 'Filtres actifs' }).getByRole('listitem'),
+      ).toHaveText(['Clôturé']);
+      await expect(
+        page.getByRole('heading', { level: 3, name: 'Séchoirs à poisson de Mbour' }),
+      ).toBeVisible();
+    },
+  );
 });
 
 /** The self-declared impact (§12): the methodology, and its absence. */

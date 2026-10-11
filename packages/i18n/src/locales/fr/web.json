@@ -701,7 +701,20 @@
       "emptyFilteredBody": "Retirez un filtre ou réinitialisez-les pour voir plus de projets.",
       "error": "La vitrine n’a pas pu être chargée",
       "errorBody": "Réessayez dans un instant.",
-      "moreError": "Les projets suivants n’ont pas pu être chargés. Réessayez."
+      "moreError": "Les projets suivants n’ont pas pu être chargés. Réessayez.",
+      "results": {
+        "one": "{{count}} projet",
+        "other": "{{count}} projets"
+      },
+      "resultsMore": "Plus de {{count}} projets",
+      "filtersButton": "Filtres",
+      "activeFilters": {
+        "one": "{{count}} filtre actif",
+        "other": "{{count}} filtres actifs"
+      },
+      "active": "Filtres actifs",
+      "removeFilter": "Retirer le filtre {{label}}",
+      "showResults": "Voir les résultats"
     },
     "shareImage": {
       "funding": "{{collected}} collectés sur {{goal}} · {{percent}} %"

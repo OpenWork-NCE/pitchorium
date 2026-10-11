@@ -2,7 +2,6 @@ import type { ProjectCard as ProjectCardData } from '@pitchorium/contracts';
 import { FolderSearch } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 import { EmptyState, Heading } from '@/components/ui';
-import { ProjectCard } from '../project-card';
 import { ProjectGrid } from '../project-grid';
 import { ResetFilters, ShowcaseBrowser } from './showcase-browser';
 import { ShowcaseMore } from './showcase-more';
@@ -40,20 +39,26 @@ export async function ProjectShowcase({
   const filtered = isFiltered(filters);
   const items = page?.items ?? [];
   return (
-    <div className="grid gap-10">
-      {featured.length > 0 && !filtered ? (
-        <section aria-labelledby="featured-title" className="grid gap-4">
-          <Heading level={2} size="section" id="featured-title">
-            {t('featured')}
+    // The filters first, then the results: the first screen shows projects.
+    <ShowcaseBrowser
+      countries={countries}
+      sectors={sectors}
+      impactAvailable={impactAvailable}
+      results={page ? { shown: items.length, more: page.nextCursor !== null } : null}
+    >
+      <div className="grid gap-10">
+        {featured.length > 0 && !filtered ? (
+          <section aria-labelledby="featured-title" className="grid gap-4">
+            <Heading level={2} size="section" id="featured-title">
+              {t('featured')}
+            </Heading>
+            <ProjectGrid projects={featured} />
+          </section>
+        ) : null}
+        <section aria-labelledby="all-title" className="grid gap-6">
+          <Heading level={2} size="section" id="all-title">
+            {t('all_projects')}
           </Heading>
-          <ProjectGrid projects={featured} />
-        </section>
-      ) : null}
-      <section aria-labelledby="all-title" className="grid gap-6">
-        <Heading level={2} size="section" id="all-title">
-          {t('all_projects')}
-        </Heading>
-        <ShowcaseBrowser countries={countries} sectors={sectors} impactAvailable={impactAvailable}>
           {page === null ? (
             <EmptyState size="page" title={t('error')} description={t('errorBody')} />
           ) : items.length === 0 ? (
@@ -69,13 +74,8 @@ export async function ProjectShowcase({
             )
           ) : (
             <div className="grid gap-6">
-              <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {items.map((project) => (
-                  <li key={project.id} className="grid">
-                    <ProjectCard project={project} headingLevel={3} />
-                  </li>
-                ))}
-              </ul>
+              {/* Laid out from their count: one project filtered is featured, never a third. */}
+              <ProjectGrid projects={items} />
               <ShowcaseMore
                 filters={filters}
                 impactAvailable={impactAvailable}
@@ -85,8 +85,8 @@ export async function ProjectShowcase({
               />
             </div>
           )}
-        </ShowcaseBrowser>
-      </section>
-    </div>
+        </section>
+      </div>
+    </ShowcaseBrowser>
   );
 }
