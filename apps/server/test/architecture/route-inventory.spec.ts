@@ -65,6 +65,8 @@ const PUBLIC_ROUTES = [
   'GET /v1/public/discovery/sections/{section}',
   // One-click unsubscribe (RFC 8058): the signed token authenticates the request.
   'POST /v1/notifications/unsubscribe',
+  // Its undo from the page of the web app, by the same signed token.
+  'POST /v1/notifications/resubscribe',
   // Notices of illegal content from anyone (DSA article 16), rate limited.
   'POST /v1/public/reports',
   // What an invitation received by email invites to: a read, the token in the body rather than
@@ -89,6 +91,7 @@ describe('route inventory', () => {
       ({ access, route }) => access === 'public' && !route.startsWith('GET '),
     ).map(({ route }) => route);
     expect(writes.sort()).toEqual([
+      'POST /v1/notifications/resubscribe',
       'POST /v1/notifications/unsubscribe',
       'POST /v1/public/organization-invitations/preview',
       'POST /v1/public/reports',

@@ -1,5 +1,6 @@
 import type {
   NotificationChannel,
+  NotificationFamily,
   NotificationPriority,
   NotificationTargetType,
   NotificationType,
@@ -557,3 +558,44 @@ export function pathOf(type: NotificationTargetType, key: string): string {
       return '/me/privacy';
   }
 }
+
+/**
+ * Types of each family the member filters by (§10.5); a type of no family (messages, events,
+ * missions, organizations, security, moderation, privacy) shows under « tout » only.
+ */
+export const NOTIFICATION_FAMILY_TYPES: Readonly<
+  Record<NotificationFamily, readonly NotificationType[]>
+> = {
+  mentions: ['mention'],
+  network: [
+    'connection_request',
+    'connection_accepted',
+    'new_follower',
+    'message_request',
+    'message_request_accepted',
+    'introduction_proposed',
+    'introduction_completed',
+    'introduction_declined',
+    'profile_views',
+    'new_suggestions',
+  ],
+  posts: ['reaction', 'comment', 'followed_post'],
+  projects: [
+    'project_contribution',
+    'tier_unlocked',
+    'project_update',
+    'project_ending_soon',
+    'project_funded',
+    'project_closed',
+    'project_interest',
+    'project_team_invitation',
+    'project_team_joined',
+    'project_team_invitation_declined',
+    'contribution_refunded',
+    'offline_contribution_declared',
+    'offline_contribution_decided',
+    'time_entry_declared',
+    'time_entry_answered',
+    'kyc_decided',
+  ],
+};

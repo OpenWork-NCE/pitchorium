@@ -60,6 +60,8 @@ const commonEnvSchema = z.object({
     .max(10_080)
     .default(1440),
   NOTIFICATIONS_LOW_PRIORITY_PER_DAY: z.coerce.number().int().min(1).max(1000).default(20),
+  // Local hour of the digests: the worker sends them, the api tells the member when.
+  NOTIFICATIONS_DIGEST_HOUR: z.coerce.number().int().min(0).max(23).default(8),
   ACCESS_REAUTHENTICATION_MAX_AGE_MINUTES: z.coerce.number().int().min(1).max(1440).default(15),
   TRUST_MODERATOR_MAX_SUSPENSION_DAYS: z.coerce.number().int().min(1).max(365).default(30),
   TRUST_APPEAL_WINDOW_DAYS: z.coerce.number().int().min(1).max(3650).default(183),
@@ -201,7 +203,6 @@ const workerEnvSchema = commonEnvSchema.extend({
     .min(1)
     .max(10_080)
     .default(30),
-  NOTIFICATIONS_DIGEST_HOUR: z.coerce.number().int().min(0).max(23).default(8),
   NOTIFICATIONS_EVENT_REMINDER_HOURS: z.coerce.number().int().min(1).max(336).default(24),
   PAYMENTS_RECONCILIATION_LOOKBACK_DAYS: z.coerce.number().int().min(1).max(90).default(3),
   CDN_PURGE_PROVIDER: z.enum(['none', 'cloudflare']).default('none'),

@@ -256,6 +256,17 @@ describe('notifications', () => {
     const email = await mailpit.waitFor(ama.email, 'Kofi Mensah a commenté votre publication');
     expect(email.text).toContain(`/posts/${post.body.id}`);
 
+    // Families of the page of notifications (§10.5): the api decides the types of each.
+    const family = async (name: string) =>
+      (
+        (await ama.agent.get(`/v1/me/notifications?family=${name}`).expect(200)).body as {
+          items: Notification[];
+        }
+      ).items.map((n) => n.type);
+    expect((await family('posts')).sort()).toEqual(['comment', 'reaction']);
+    expect(await family('network')).toEqual(['connection_request']);
+    expect(await family('mentions')).toEqual([]);
+
     // Messaging: a message between connected members.
     await write(kofi, await handleOf(ama), 'Bonjour Ama');
     await waitFor(ama, 'message');
@@ -423,6 +434,11 @@ describe('notifications', () => {
         .send({ emailDigest: 'daily' })
         .expect(200);
     }
+    // When the digests leave, as the member's settings say it.
+    expect(
+      ((await kofi.agent.get('/v1/me/notification-preferences')).body as NotificationPreferences)
+        .digestSchedule,
+    ).toEqual({ hour: 8, weeklyDay: 'monday', timeZone: 'Europe/Paris' });
     // 2026-10-12 06:30 UTC: 08:30 in Paris, 02:30 in Port-au-Prince.
     clock.set(new Date('2026-10-12T06:30:00Z'));
     const facade = worker.get(NotificationsFacade);
@@ -441,6 +457,22 @@ describe('notifications', () => {
     expect(await emails.digests()).toBe(1);
     await mailpit.waitFor(awa.email, 'Your daily summary: 1 notifications');
     expect(await digestsTo(kofi.email)).toHaveLength(1);
+
+    // The page of the footer turns the digest off, then restores it to its rhythm.
+    const { text } = await mailpit.waitFor(kofi.email, 'Votre résumé du jour');
+    const token = /\/unsubscribe\?token=([\w.-]+)/.exec(text)?.[1];
+    const off = await request(app.getHttpServer())
+      .post(`/v1/notifications/unsubscribe?token=${token}`)
+      .expect(200);
+    expect(off.body).toEqual({ scope: 'digest', previousDigest: 'daily' });
+    await request(app.getHttpServer())
+      .post(`/v1/notifications/resubscribe?token=${token}`)
+      .send({ emailDigest: 'daily' })
+      .expect(200, { scope: 'digest', previousDigest: null });
+    expect(
+      ((await kofi.agent.get('/v1/me/notification-preferences')).body as NotificationPreferences)
+        .emailDigest,
+    ).toBe('daily');
   });
 
   it('emails unread messages after the delay, grouped by conversation, then unsubscribes in one click', async () => {
@@ -476,10 +508,19 @@ describe('notifications', () => {
       .type('form')
       .send('List-Unsubscribe=One-Click')
       .expect(200);
-    expect(unsubscribed.body).toEqual({ scope: 'message' });
-    const preferences = (await kofi.agent.get('/v1/me/notification-preferences'))
-      .body as NotificationPreferences;
-    expect(preferences.types.find((p) => p.type === 'message')?.channels.email).toBe(false);
+    expect(unsubscribed.body).toEqual({ scope: 'message', previousDigest: null });
+    const emailOfMessages = async () =>
+      (
+        (await kofi.agent.get('/v1/me/notification-preferences')).body as NotificationPreferences
+      ).types.find((p) => p.type === 'message')?.channels.email;
+    expect(await emailOfMessages()).toBe(false);
+    // The footer opens the page of the web app, which can undo it with the same token.
+    expect(email.text).toContain(`/unsubscribe${url.search}`);
+    await request(app.getHttpServer())
+      .post(`/v1/notifications/resubscribe${url.search}`)
+      .send({})
+      .expect(200);
+    expect(await emailOfMessages()).toBe(true);
     await request(app.getHttpServer())
       .post('/v1/notifications/unsubscribe?token=forged.token-value-x')
       .expect(400);

@@ -81,6 +81,8 @@ export abstract class NotificationsRepository {
   abstract notifications(
     recipientId: string,
     unreadOnly: boolean,
+    /** Null for every type. */
+    types: readonly NotificationType[] | null,
     after: KeysetPosition | null,
     limit: number,
   ): Promise<NotificationRecord[]>;

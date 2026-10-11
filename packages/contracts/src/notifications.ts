@@ -127,12 +127,21 @@ export const notificationSchema = z.object({
   updatedAt: z.iso.datetime(),
 });
 
+/**
+ * Families a member filters the notifications by (§10.5): mentions, network (connections,
+ * followers, introductions, visits), publications (reactions, comments, followed posts),
+ * projects and contributions. The types of each family are decided by the api.
+ */
+export const NOTIFICATION_FAMILIES = ['mentions', 'network', 'posts', 'projects'] as const;
+export const notificationFamilySchema = z.enum(NOTIFICATION_FAMILIES);
+
 export const notificationPageSchema = cursorPageSchema(notificationSchema);
 export const notificationListQuerySchema = cursorPageQuerySchema.extend({
   unread: z
     .enum(['true', 'false'])
     .transform((value) => value === 'true')
     .optional(),
+  family: notificationFamilySchema.optional(),
 });
 export const notificationIdParamsSchema = z.object({ notificationId: uuidV7Schema });
 
@@ -143,9 +152,29 @@ export const notificationTypePreferenceSchema = z.object({
   channels: z.object({ in_app: z.boolean(), email: z.boolean() }),
 });
 
+/** Weekdays, Monday first (ISO 8601). */
+export const WEEKDAYS = [
+  'monday',
+  'tuesday',
+  'wednesday',
+  'thursday',
+  'friday',
+  'saturday',
+  'sunday',
+] as const;
+export const weekdaySchema = z.enum(WEEKDAYS);
+
 export const notificationPreferencesSchema = z.object({
   emailDigest: emailDigestSchema,
   types: z.array(notificationTypePreferenceSchema),
+  /** When the digests leave, in the time zone of the member (ADR 0061). */
+  digestSchedule: z.object({
+    /** Local hour from which a digest is sent (0 to 23). */
+    hour: z.number().int().min(0).max(23),
+    weeklyDay: weekdaySchema,
+    /** IANA time zone of the member. */
+    timeZone: z.string(),
+  }),
 });
 
 export const updateNotificationPreferencesRequestSchema = z.object({
@@ -179,6 +208,14 @@ export const countersSchema = z.object({
 export const unsubscribeQuerySchema = z.object({ token: z.string().min(16).max(512) });
 export const unsubscribeResultSchema = z.object({
   scope: z.union([notificationTypeSchema, z.literal('digest')]),
+  /** The digest before it was turned off, to restore it; null for the email of a type. */
+  previousDigest: emailDigestSchema.nullable(),
+});
+
+/** Undo of an unsubscribe by the same signed token: the email of the type, or the digest. */
+export const resubscribeRequestSchema = z.object({
+  /** The digest to restore (`daily` or `weekly`), for a token of the digest. */
+  emailDigest: z.enum(['daily', 'weekly']).optional(),
 });
 
 export type NotificationType = z.infer<typeof notificationTypeSchema>;
@@ -195,3 +232,6 @@ export type UpdateNotificationPreferencesRequest = z.infer<
 >;
 export type Counters = z.infer<typeof countersSchema>;
 export type UnsubscribeResult = z.infer<typeof unsubscribeResultSchema>;
+export type ResubscribeRequest = z.infer<typeof resubscribeRequestSchema>;
+export type NotificationFamily = z.infer<typeof notificationFamilySchema>;
+export type Weekday = z.infer<typeof weekdaySchema>;

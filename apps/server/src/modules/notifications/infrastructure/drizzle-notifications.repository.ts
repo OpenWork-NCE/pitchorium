@@ -183,6 +183,7 @@ export class DrizzleNotificationsRepository extends NotificationsRepository {
   async notifications(
     recipientId: string,
     unreadOnly: boolean,
+    types: readonly NotificationType[] | null,
     after: KeysetPosition | null,
     limit: number,
   ): Promise<NotificationRecord[]> {
@@ -194,6 +195,7 @@ export class DrizzleNotificationsRepository extends NotificationsRepository {
           eq(notifications.recipientId, recipientId),
           eq(notifications.inApp, true),
           unreadOnly ? isNull(notifications.readAt) : undefined,
+          types ? inArray(notifications.type, [...types]) : undefined,
           after
             ? sql`(${notifications.updatedAt}, ${notifications.id}) < (${after.at}, ${after.key}::uuid)`
             : undefined,

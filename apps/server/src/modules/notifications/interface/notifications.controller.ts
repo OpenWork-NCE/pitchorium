@@ -21,6 +21,7 @@ import {
   notificationPageSchema,
   type NotificationPreferences,
   notificationPreferencesSchema,
+  resubscribeRequestSchema,
   type UnsubscribeResult,
   unsubscribeQuerySchema,
   unsubscribeResultSchema,
@@ -41,6 +42,7 @@ class UpdateNotificationPreferencesDto extends createZodDto(
 ) {}
 class UnsubscribeQueryDto extends createZodDto(unsubscribeQuerySchema) {}
 class UnsubscribeResultDto extends createZodDto(unsubscribeResultSchema) {}
+class ResubscribeDto extends createZodDto(resubscribeRequestSchema) {}
 class ReadAllDto extends createZodDto(z.object({ read: z.number().int() })) {}
 
 /** Notifications of the member (§10.5), unified counters, preferences, unsubscribe. */
@@ -130,5 +132,18 @@ export class NotificationsController {
   @ApiOkResponse({ type: UnsubscribeResultDto.Output })
   unsubscribe(@Query() query: UnsubscribeQueryDto): Promise<UnsubscribeResult> {
     return this.reads.unsubscribe(query.token);
+  }
+
+  /** Undo of an unsubscribe from the page of the web app, by the same signed token. */
+  @Post('notifications/resubscribe')
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  @ZodSerializerDto(UnsubscribeResultDto)
+  @ApiOkResponse({ type: UnsubscribeResultDto.Output })
+  resubscribe(
+    @Query() query: UnsubscribeQueryDto,
+    @Body() body: ResubscribeDto,
+  ): Promise<UnsubscribeResult> {
+    return this.reads.resubscribe(query.token, body);
   }
 }

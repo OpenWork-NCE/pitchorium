@@ -26,7 +26,7 @@ Types couverts : `connection_request`, `connection_accepted`, `new_follower` (su
 
 ## Digests (ADR 0061)
 
-`emailDigest` : `off` (un email par notification), `daily` (§10.5, facultatif) ou `weekly` (§14, V2, le lundi). Tâche toutes les 15 minutes : un digest part à partir de `NOTIFICATIONS_DIGEST_HOUR` (8 h, provisoire), heure locale du fuseau du membre (module identity, `timeZone`), une fois par jour local (ou par lundi local).
+`emailDigest` : `off` (un email par notification), `daily` (§10.5, facultatif) ou `weekly` (§14, V2, le lundi). Tâche toutes les 15 minutes : un digest part à partir de `NOTIFICATIONS_DIGEST_HOUR` (8 h, provisoire), heure locale du fuseau du membre (module identity, `timeZone`), une fois par jour local (ou par lundi local). Les préférences rendent ce moment (`digestSchedule` : heure, jour de l'hebdomadaire, fuseau du membre) : l'api et le worker lisent la même heure.
 
 ## Messages non lus par email (§10.4)
 
@@ -34,12 +34,12 @@ Si le membre a activé l'email du type `message` (désactivé par défaut), un m
 
 ## Délivrabilité (ADR 0062)
 
-- Désinscription en un clic pour tout email non transactionnel : en-têtes `List-Unsubscribe` (`<API_PUBLIC_URL>/v1/notifications/unsubscribe?token=...`) et `List-Unsubscribe-Post: List-Unsubscribe=One-Click` (RFC 8058), lien vers la page de l'application web en pied d'email ; jeton signé (HMAC SHA-256, `EMAIL_LINK_SECRET`) qui désactive l'email du type, ou le digest.
+- Désinscription en un clic pour tout email non transactionnel : en-têtes `List-Unsubscribe` (`<API_PUBLIC_URL>/v1/notifications/unsubscribe?token=...`) et `List-Unsubscribe-Post: List-Unsubscribe=One-Click` (RFC 8058), lien vers la page de l'application web en pied d'email ; jeton signé (HMAC SHA-256, `EMAIL_LINK_SECRET`) qui désactive l'email du type, ou le digest (la réponse donne le rythme précédent, `previousDigest`). La page `<WEB_APP_URL>/unsubscribe?token=` du pied de l'email l'appelle et propose d'annuler : `POST /v1/notifications/resubscribe?token=` (même jeton) réactive l'email du type, ou rend au digest le rythme donné.
 - Webhook Resend `POST /v1/notifications/webhooks/resend`, signé par Svix (`RESEND_WEBHOOK_SECRET`), dédupliqué par l'inbox : un rebond permanent ou une plainte ajoute l'adresse à la liste de suppression, que le mailer consulte avant chaque envoi.
 
 ## Lecture
 
-`GET /v1/me/notifications?unread=&cursor=&limit=` (curseur), `POST /v1/me/notifications/{id}/read`, `POST /v1/me/notifications/read-all`, `DELETE /v1/me/notifications/{id}`, `GET /v1/me/counters` (notifications et messages non lus, demandes de message, invitations en attente : connexions, introductions, équipes de projet, organisations), poussés aussi en temps réel (événement `counters`).
+`GET /v1/me/notifications?unread=&family=&cursor=&limit=` (curseur ; `family` : `mentions`, `network`, `posts` ou `projects`, types de chaque famille dans `NOTIFICATION_FAMILY_TYPES`, `domain/notification-types.ts` ; un type sans famille ne paraît que sans filtre), `POST /v1/me/notifications/{id}/read`, `POST /v1/me/notifications/read-all`, `DELETE /v1/me/notifications/{id}`, `GET /v1/me/counters` (notifications et messages non lus, demandes de message, invitations en attente : connexions, introductions, équipes de projet, organisations), poussés aussi en temps réel (événement `counters`).
 
 Une notification sur une publication (réaction, commentaire, mention, publication suivie) porte son début (`excerpt`, 140 caractères au plus, coupé au dernier mot) lu à la présentation avec les règles de visibilité de content : une publication supprimée ou devenue invisible n'en a pas. Une demande de connexion porte son identifiant (`data.requestId`), pour l'accepter ou l'ignorer depuis la notification.
 
@@ -52,7 +52,7 @@ Purge quotidienne des notifications sans activité depuis `NOTIFICATIONS_RETENTI
 - `GET /v1/me/notifications`, `GET /v1/me/counters`, `GET /v1/me/notification-preferences` (`notifications.read`)
 - `POST /v1/me/notifications/{notificationId}/read`, `POST /v1/me/notifications/read-all`, `DELETE /v1/me/notifications/{notificationId}` (`notifications.manage`)
 - `PATCH /v1/me/notification-preferences` (`notifications.preferences.update`)
-- `POST /v1/notifications/unsubscribe?token=` (public, jeton signé)
+- `POST /v1/notifications/unsubscribe?token=`, `POST /v1/notifications/resubscribe?token=` (publiques, jeton signé)
 - Hors OpenAPI : `POST /v1/notifications/webhooks/resend` (signature Svix)
 
 ## Schéma `notifications`

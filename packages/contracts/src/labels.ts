@@ -228,6 +228,9 @@ export const TECHNICAL_ENUMS: readonly string[] = [
   'introductionRoleSchema',
   'notificationPrioritySchema',
   'notificationTargetTypeSchema',
+  // Filters and the moment of the digests, said by the web in its own words.
+  'notificationFamilySchema',
+  'weekdaySchema',
   'eventModerationStatusSchema',
   'myEventRoleSchema',
   'missionModerationStatusSchema',

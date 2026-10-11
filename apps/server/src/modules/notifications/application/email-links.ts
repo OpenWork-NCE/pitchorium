@@ -49,7 +49,7 @@ export class EmailLinks {
   }
 
   unsubscribePage(token: string): string {
-    return `${this.config.webAppUrl}/notifications/unsubscribe?token=${token}`;
+    return `${this.config.webAppUrl}/unsubscribe?token=${token}`;
   }
 
   webUrl(path: string): string {

@@ -65,7 +65,12 @@ export interface CommonConfig {
   emailLinkSecret: string;
   /** Provisional values (docs/open-questions.md). */
   messaging: { defaultPolicy: MessagePolicy; editWindowMs: number };
-  notifications: { aggregationWindowMs: number; lowPriorityPerDay: number };
+  notifications: {
+    aggregationWindowMs: number;
+    lowPriorityPerDay: number;
+    /** Local hour of the digests in the time zone of each member. */
+    digestHour: number;
+  };
 }
 
 export interface PaymentsConfig {
@@ -190,8 +195,6 @@ export interface WorkerConfig extends CommonConfig {
     retentionDays: number;
     fanoutBatchSize: number;
     unreadMessageEmailDelayMs: number;
-    /** Local hour of the digests in the time zone of each member. */
-    digestHour: number;
     /** Delay before the start of an event at which its attendees are reminded. */
     eventReminderMs: number;
   };
@@ -318,6 +321,7 @@ function toCommonConfig(env: CommonEnv): CommonConfig {
     notifications: {
       aggregationWindowMs: env.NOTIFICATIONS_AGGREGATION_WINDOW_MINUTES * 60_000,
       lowPriorityPerDay: env.NOTIFICATIONS_LOW_PRIORITY_PER_DAY,
+      digestHour: env.NOTIFICATIONS_DIGEST_HOUR,
     },
   };
 }
@@ -413,7 +417,6 @@ export function parseWorkerConfig(rawEnv: RawEnv): WorkerConfig {
       retentionDays: env.NOTIFICATIONS_RETENTION_DAYS,
       fanoutBatchSize: env.NOTIFICATIONS_FANOUT_BATCH_SIZE,
       unreadMessageEmailDelayMs: env.NOTIFICATIONS_UNREAD_MESSAGE_EMAIL_DELAY_MINUTES * 60_000,
-      digestHour: env.NOTIFICATIONS_DIGEST_HOUR,
       eventReminderMs: env.NOTIFICATIONS_EVENT_REMINDER_HOURS * 3_600_000,
     },
     worker: { healthPort: env.WORKER_HEALTH_PORT },

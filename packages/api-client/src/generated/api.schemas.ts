@@ -14843,9 +14843,33 @@ export type NotificationPreferencesDtoOutputTypesItem = {
   channels: NotificationPreferencesDtoOutputTypesItemChannels;
 };
 
+export type NotificationPreferencesDtoOutputDigestScheduleWeeklyDay =
+  (typeof NotificationPreferencesDtoOutputDigestScheduleWeeklyDay)[keyof typeof NotificationPreferencesDtoOutputDigestScheduleWeeklyDay];
+
+export const NotificationPreferencesDtoOutputDigestScheduleWeeklyDay = {
+  monday: 'monday',
+  tuesday: 'tuesday',
+  wednesday: 'wednesday',
+  thursday: 'thursday',
+  friday: 'friday',
+  saturday: 'saturday',
+  sunday: 'sunday',
+} as const;
+
+export type NotificationPreferencesDtoOutputDigestSchedule = {
+  /**
+   * @minimum 0
+   * @maximum 23
+   */
+  hour: number;
+  weeklyDay: NotificationPreferencesDtoOutputDigestScheduleWeeklyDay;
+  timeZone: string;
+};
+
 export interface NotificationPreferencesDtoOutput {
   emailDigest: NotificationPreferencesDtoOutputEmailDigest;
   types: NotificationPreferencesDtoOutputTypesItem[];
+  digestSchedule: NotificationPreferencesDtoOutputDigestSchedule;
 }
 
 export type UpdateNotificationPreferencesDtoEmailDigest =
@@ -14937,6 +14961,16 @@ export interface UpdateNotificationPreferencesDto {
   changes?: UpdateNotificationPreferencesDtoChangesItem[];
 }
 
+export type UnsubscribeResultDtoOutputPreviousDigest =
+  | (typeof UnsubscribeResultDtoOutputPreviousDigest)[keyof typeof UnsubscribeResultDtoOutputPreviousDigest]
+  | null;
+
+export const UnsubscribeResultDtoOutputPreviousDigest = {
+  off: 'off',
+  daily: 'daily',
+  weekly: 'weekly',
+} as const;
+
 export interface UnsubscribeResultDtoOutput {
   scope:
     | 'connection_request'
@@ -14994,6 +15028,19 @@ export interface UnsubscribeResultDtoOutput {
     | 'erasure_scheduled'
     | 'erasure_reminder'
     | 'digest';
+  previousDigest: UnsubscribeResultDtoOutputPreviousDigest;
+}
+
+export type ResubscribeDtoEmailDigest =
+  (typeof ResubscribeDtoEmailDigest)[keyof typeof ResubscribeDtoEmailDigest];
+
+export const ResubscribeDtoEmailDigest = {
+  daily: 'daily',
+  weekly: 'weekly',
+} as const;
+
+export interface ResubscribeDto {
+  emailDigest?: ResubscribeDtoEmailDigest;
 }
 
 export type CreateReportDtoTargetType =
@@ -18283,6 +18330,7 @@ export type NotificationsControllerListParams = {
    */
   limit?: number;
   unread?: NotificationsControllerListUnread;
+  family?: NotificationsControllerListFamily;
 };
 
 export type NotificationsControllerListUnread =
@@ -18293,7 +18341,25 @@ export const NotificationsControllerListUnread = {
   false: 'false',
 } as const;
 
+export type NotificationsControllerListFamily =
+  (typeof NotificationsControllerListFamily)[keyof typeof NotificationsControllerListFamily];
+
+export const NotificationsControllerListFamily = {
+  mentions: 'mentions',
+  network: 'network',
+  posts: 'posts',
+  projects: 'projects',
+} as const;
+
 export type NotificationsControllerUnsubscribeParams = {
+  /**
+   * @minLength 16
+   * @maxLength 512
+   */
+  token: string;
+};
+
+export type NotificationsControllerResubscribeParams = {
   /**
    * @minLength 16
    * @maxLength 512

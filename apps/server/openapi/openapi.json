@@ -31945,6 +31945,20 @@
                 "false"
               ]
             }
+          },
+          {
+            "name": "family",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "mentions",
+                "network",
+                "posts",
+                "projects"
+              ]
+            }
           }
         ],
         "responses": {
@@ -32536,6 +32550,81 @@
         "description": "Public: no session needed.\n\nErrors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.",
         "x-error-codes": [
           "VALIDATION_FAILED",
+          "RATE_LIMITED",
+          "NOTIFICATIONS_NOT_FOUND",
+          "NOTIFICATIONS_PREFERENCE_LOCKED",
+          "NOTIFICATIONS_UNSUBSCRIBE_INVALID",
+          "NOTIFICATIONS_WEBHOOK_INVALID"
+        ],
+        "x-access": "public"
+      }
+    },
+    "/v1/notifications/resubscribe": {
+      "post": {
+        "operationId": "NotificationsController_resubscribe",
+        "parameters": [
+          {
+            "name": "token",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "minLength": 16,
+              "maxLength": 512,
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResubscribeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnsubscribeResultDto_Output"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error (RFC 9457 problem details)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "VALIDATION_FAILED": {
+                    "$ref": "#/components/examples/VALIDATION_FAILED"
+                  },
+                  "PAYLOAD_TOO_LARGE": {
+                    "$ref": "#/components/examples/PAYLOAD_TOO_LARGE"
+                  },
+                  "RATE_LIMITED": {
+                    "$ref": "#/components/examples/RATE_LIMITED"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "notifications"
+        ],
+        "summary": "Resubscribe",
+        "description": "Public: no session needed.\n\nErrors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.",
+        "x-error-codes": [
+          "VALIDATION_FAILED",
+          "PAYLOAD_TOO_LARGE",
           "RATE_LIMITED",
           "NOTIFICATIONS_NOT_FOUND",
           "NOTIFICATIONS_PREFERENCE_LOCKED",
@@ -70228,11 +70317,43 @@
               ],
               "additionalProperties": false
             }
+          },
+          "digestSchedule": {
+            "type": "object",
+            "properties": {
+              "hour": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 23
+              },
+              "weeklyDay": {
+                "type": "string",
+                "enum": [
+                  "monday",
+                  "tuesday",
+                  "wednesday",
+                  "thursday",
+                  "friday",
+                  "saturday",
+                  "sunday"
+                ]
+              },
+              "timeZone": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "hour",
+              "weeklyDay",
+              "timeZone"
+            ],
+            "additionalProperties": false
           }
         },
         "required": [
           "emailDigest",
-          "types"
+          "types",
+          "digestSchedule"
         ],
         "additionalProperties": false
       },
@@ -70402,12 +70523,40 @@
                 "const": "digest"
               }
             ]
+          },
+          "previousDigest": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "off",
+                  "daily",
+                  "weekly"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "required": [
-          "scope"
+          "scope",
+          "previousDigest"
         ],
         "additionalProperties": false
+      },
+      "ResubscribeDto": {
+        "type": "object",
+        "properties": {
+          "emailDigest": {
+            "type": "string",
+            "enum": [
+              "daily",
+              "weekly"
+            ]
+          }
+        }
       },
       "CreateReportDto": {
         "type": "object",

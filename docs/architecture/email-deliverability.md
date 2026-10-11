@@ -28,7 +28,7 @@ L'email de test technique (`technical-test`) n'est envoyé par aucune route ni t
   - `List-Unsubscribe: <https://<API_PUBLIC_URL>/v1/notifications/unsubscribe?token=...>`
   - `List-Unsubscribe-Post: List-Unsubscribe=One-Click`
 - Le client de messagerie envoie un `POST` sans session à cette URL ; le jeton (HMAC SHA-256 de l'identifiant du membre et de la portée, clé `EMAIL_LINK_SECRET`) suffit. Portée : l'email d'un type de notification, ou le digest.
-- Le pied de l'email renvoie vers la page de l'application web `<WEB_APP_URL>/notifications/unsubscribe?token=...`, qui appelle la même route.
+- Le pied de l'email renvoie vers la page de l'application web `<WEB_APP_URL>/unsubscribe?token=...`, qui appelle la même route, dit ce qui a été désactivé et permet d'annuler (`POST /v1/notifications/resubscribe?token=`, même jeton : l'email du type réactivé, ou le digest rendu à son rythme précédent, `previousDigest`).
 - Les emails transactionnels (sécurité, paiements, KYC, conditions, invitations à jeton) n'ont pas de lien de désinscription : ils ne sont pas désactivables.
 
 ## Rebonds et plaintes

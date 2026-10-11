@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import {
   type Counters,
   type CursorPage,
@@ -7,12 +7,17 @@ import {
   type NotificationChannel,
   type NotificationListQuery,
   type NotificationPreferences,
+  type ResubscribeRequest,
   type UnsubscribeResult,
+  WEEKDAYS,
   type UpdateNotificationPreferencesRequest,
 } from '@pitchorium/contracts';
+import { COMMON_CONFIG, type CommonConfig } from '../../../platform/config';
 import { TransactionManager } from '../../../platform/database';
 import { Clock, decodeKeyset, DomainError, encodeKeyset } from '../../../platform/kernel';
-import { NOTIFICATION_DEFINITIONS } from '../domain/notification-types';
+import { IdentityFacade } from '../../identity';
+import { WEEKLY_DIGEST_WEEKDAY } from '../domain/digest';
+import { NOTIFICATION_DEFINITIONS, NOTIFICATION_FAMILY_TYPES } from '../domain/notification-types';
 import { assertEditable, resolveChannels } from '../domain/preferences';
 import { CountersService } from './counters.service';
 import { EmailLinks } from './email-links';
@@ -29,12 +34,15 @@ export class NotificationReadsService {
     private readonly links: EmailLinks,
     private readonly transactions: TransactionManager,
     private readonly clock: Clock,
+    private readonly identity: IdentityFacade,
+    @Inject(COMMON_CONFIG) private readonly config: CommonConfig,
   ) {}
 
   async list(userId: string, query: NotificationListQuery): Promise<CursorPage<Notification>> {
     const records = await this.notifications.notifications(
       userId,
       query.unread ?? false,
+      query.family ? NOTIFICATION_FAMILY_TYPES[query.family] : null,
       decodeKeyset(query.cursor),
       query.limit + 1,
     );
@@ -76,12 +84,18 @@ export class NotificationReadsService {
   }
 
   async preferences(userId: string): Promise<NotificationPreferences> {
-    const [stored, settings] = await Promise.all([
+    const [stored, settings, users] = await Promise.all([
       this.notifications.preferencesOf([userId]),
       this.notifications.settings(userId),
+      this.identity.findUsers([userId]),
     ]);
     return {
       emailDigest: settings?.emailDigest ?? 'off',
+      digestSchedule: {
+        hour: this.config.notifications.digestHour,
+        weeklyDay: WEEKDAYS[WEEKLY_DIGEST_WEEKDAY - 1]!,
+        timeZone: users.get(userId)?.timeZone ?? 'UTC',
+      },
       types: NOTIFICATION_TYPES.map((type) => {
         const definition = NOTIFICATION_DEFINITIONS[type];
         const chosen = new Map<NotificationChannel, boolean>(
@@ -123,13 +137,41 @@ export class NotificationReadsService {
     }
     const now = this.clock.now();
     if (verified.scope === 'digest') {
+      const previous = (await this.notifications.settings(verified.userId))?.emailDigest ?? 'off';
       await this.notifications.setDigest(verified.userId, 'off', now);
-    } else if (!NOTIFICATION_DEFINITIONS[verified.scope].transactional) {
+      return { scope: 'digest', previousDigest: previous };
+    }
+    if (!NOTIFICATION_DEFINITIONS[verified.scope].transactional) {
       await this.notifications.setPreference(
         { userId: verified.userId, type: verified.scope, channel: 'email', enabled: false },
         now,
       );
     }
-    return { scope: verified.scope };
+    return { scope: verified.scope, previousDigest: null };
+  }
+
+  /**
+   * Undo of an unsubscribe from its page (§10.5), by the same signed token: the email of the
+   * type is turned on again, or the digest restored to the given rhythm.
+   */
+  async resubscribe(token: string, request: ResubscribeRequest): Promise<UnsubscribeResult> {
+    const verified = this.links.verify(token);
+    if (!verified) {
+      throw new DomainError('NOTIFICATIONS_UNSUBSCRIBE_INVALID', 'Invalid unsubscribe token');
+    }
+    const now = this.clock.now();
+    if (verified.scope === 'digest') {
+      if (request.emailDigest) {
+        await this.notifications.setDigest(verified.userId, request.emailDigest, now);
+      }
+      return { scope: 'digest', previousDigest: null };
+    }
+    if (!NOTIFICATION_DEFINITIONS[verified.scope].transactional) {
+      await this.notifications.setPreference(
+        { userId: verified.userId, type: verified.scope, channel: 'email', enabled: true },
+        now,
+      );
+    }
+    return { scope: verified.scope, previousDigest: null };
   }
 }
