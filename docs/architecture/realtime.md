@@ -80,6 +80,13 @@ sequenceDiagram
 - Les séquences d'une conversation commencent à 1 et n'ont pas de trou : un client qui voit un écart demande `messaging:sync`.
 - Les accusés de lecture ne reculent jamais ; `mine: true` signale aux autres appareils du lecteur que la conversation est lue.
 
+## Côté web (`apps/web/src/lib/realtime`)
+
+- Connexion ouverte à l'inactivité de la page par la coquille membre, reprise progressive (`reconnectionDelay` 1 s, maximum 30 s, part aléatoire de moitié), fermée après une minute d'onglet masqué et rouverte quand il se montre.
+- Chaque événement passe son schéma des contrats (chargés au premier événement), puis va au cache (compteurs écrits, listes de conversations relues) et aux pages qui l'écoutent (`useRealtime`) ; une notification ne relit jamais sa liste (ADR 0148).
+- Au retour du canal, `local:resumed` : les compteurs, les listes et la conversation ouverte sont relus, cette dernière par `afterSequence` jusqu'à la fin ; un message dont la séquence saute la suivante déclenche le même rattrapage.
+- L'envoi passe par HTTP (mutation gardée hors ligne, ADR 0102) ; l'indicateur de saisie par `messaging:typing`, au plus toutes les 3 s, jamais en file.
+
 ## Côté serveur
 
 - `platform/realtime` : `MembersGateway` (room `user:<id>`), `RealtimePublisher` (port, adaptateur `@socket.io/redis-emitter`, utilisable par l'api et le worker), `RedisIoAdapter` (garde du handshake fourni par access).
