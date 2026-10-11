@@ -42,7 +42,14 @@ export function connect(queryClient: QueryClient): () => void {
     handlers ??= import('./realtime-handlers').then((module) =>
       module.realtimeHandlers(queryClient),
     );
-    void handlers.then((byEvent) => byEvent[event]?.(payload));
+    const loading = handlers;
+    void loading
+      .then((byEvent) => byEvent[event]?.(payload))
+      .catch(() => {
+        // The code of the handlers could not load (offline): the next event tries again, and
+        // what this one said is read again at the reconnection (`local:resumed`).
+        if (handlers === loading) handlers = undefined;
+      });
   });
 
   let connectedOnce = false;
