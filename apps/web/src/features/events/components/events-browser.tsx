@@ -92,7 +92,13 @@ function Browser({ signedIn, countries, sectors, languages, children }: EventsBr
           <form
             role="search"
             aria-label={t('filters')}
-            className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5"
+            // The day field takes its own width (its segments never clip); the selects share the
+            // rest: nothing overflows its column.
+            className={
+              state.tab === 'upcoming'
+                ? 'grid gap-4 sm:grid-cols-2 lg:grid-cols-[minmax(0,1fr)_max-content_repeat(3,minmax(0,1fr))]'
+                : 'grid gap-4 sm:grid-cols-2 lg:grid-cols-4'
+            }
             onSubmit={(event) => event.preventDefault()}
           >
             {select(
