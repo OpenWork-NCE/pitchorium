@@ -7,6 +7,7 @@
 import { createServer } from 'node:http';
 import { Server } from 'socket.io';
 import { contentRoutes } from './stub-content.mjs';
+import { messagingRoutes } from './stub-messaging.mjs';
 import { collectionMissing, paymentRoutes } from './stub-payments.mjs';
 import { projectRoutes } from './stub-projects.mjs';
 
@@ -632,7 +633,10 @@ const server = createServer(async (request, response) => {
   }
   const handler = routes[`${request.method} ${path}`];
   const url = new URL(request.url ?? '/', `http://localhost:${port}`);
-  const project = (await payments(request, path, url)) ?? projects(request, path, url);
+  const project =
+    (await messaging(request, path, url)) ??
+    (await payments(request, path, url)) ??
+    projects(request, path, url);
   const read =
     project ?? (request.method === 'GET' ? resource(request, path) : reaction(request, path));
   const result = prerequisite
@@ -652,6 +656,15 @@ const server = createServer(async (request, response) => {
 const content = contentRoutes({
   origin: `http://localhost:${port}`,
   authors: AUTHORS,
+  accounts: ACCOUNTS,
+  sessionOf,
+  problem,
+  readJson,
+  state: () => state,
+});
+
+const messaging = messagingRoutes({
+  origin: `http://localhost:${port}`,
   accounts: ACCOUNTS,
   sessionOf,
   problem,
