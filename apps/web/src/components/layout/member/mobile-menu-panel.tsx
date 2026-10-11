@@ -107,6 +107,13 @@ export default function MobileMenuPanel({
                 {t('dashboard')}
               </Link>
             </Button>
+            {(['discover', 'events', 'missions'] as const).map((key) => (
+              <Button key={key} asChild variant="outline" size="sm">
+                <Link href={routes[key]} onClick={() => onOpenChange(false)}>
+                  {t(key)}
+                </Link>
+              </Button>
+            ))}
             <Button asChild variant="outline" size="sm">
               <Link href={routes.invitations} onClick={() => onOpenChange(false)}>
                 {t('invitations')}

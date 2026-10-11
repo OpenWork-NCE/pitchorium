@@ -1,6 +1,17 @@
 'use client';
 
-import { BellOff, FolderPlus, Keyboard, Moon, PenSquare, Sun } from 'lucide-react';
+import {
+  BellOff,
+  Briefcase,
+  CalendarDays,
+  CalendarPlus,
+  Compass,
+  FolderPlus,
+  Keyboard,
+  Moon,
+  PenSquare,
+  Sun,
+} from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useTheme } from 'next-themes';
 import { type CommandAction, notify, useShortcutsHelp } from '@/components/ui';
@@ -11,7 +22,8 @@ import { useOnline } from '@/lib/query/offline';
 import { NAV_ITEMS } from './member-nav';
 
 /**
- * Quick actions of the command palette: create, the sections, mark the notifications as read
+ * Quick actions of the command palette: create (a publication, a project, an event), the
+ * sections, « Découvrir », the events and the missions, mark the notifications as read
  * (sent once even offline, ADR 0097), the theme and the help of the shortcuts. Given as a
  * function: their labels are formatted when the palette opens, not while the page starts.
  */
@@ -36,6 +48,30 @@ export function useQuickActions(): () => CommandAction[] {
       label: nav('createProject'),
       icon: <FolderPlus />,
       onSelect: () => router.push(routes.createProject),
+    },
+    {
+      id: 'create-event',
+      label: t('createEvent'),
+      icon: <CalendarPlus />,
+      onSelect: () => router.push(routes.createEvent),
+    },
+    {
+      id: 'go-discover',
+      label: t('goTo', { section: t('discover') }),
+      icon: <Compass />,
+      onSelect: () => router.push(routes.discover),
+    },
+    {
+      id: 'go-events',
+      label: t('goTo', { section: t('events') }),
+      icon: <CalendarDays />,
+      onSelect: () => router.push(routes.events),
+    },
+    {
+      id: 'go-missions',
+      label: t('goTo', { section: t('missions') }),
+      icon: <Briefcase />,
+      onSelect: () => router.push(routes.missions),
     },
     ...NAV_ITEMS.map((item) => {
       const Icon = item.icon;

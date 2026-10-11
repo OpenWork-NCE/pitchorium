@@ -28,7 +28,10 @@
     "menu": "Menu",
     "shortcuts": "Raccourcis clavier",
     "dashboard": "Tableau de bord",
-    "invitations": "Invitations"
+    "invitations": "Invitations",
+    "discover": "Découvrir",
+    "events": "Événements",
+    "missions": "Missions"
   },
   "theme": {
     "label": "Thème",
@@ -514,7 +517,11 @@
     "queued": "Hors ligne : l’action partira au retour de la connexion.",
     "toDark": "Passer au thème sombre",
     "toLight": "Passer au thème clair",
-    "shortcuts": "Afficher les raccourcis clavier"
+    "shortcuts": "Afficher les raccourcis clavier",
+    "createEvent": "Créer un événement",
+    "discover": "Découvrir",
+    "events": "Événements",
+    "missions": "Missions"
   },
   "shortcuts": {
     "goTo": "Aller à : {{section}}",

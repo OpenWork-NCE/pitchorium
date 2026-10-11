@@ -2,9 +2,12 @@
 
 import {
   Bookmark,
+  Briefcase,
+  CalendarDays,
   ChartColumn,
   Building2,
   CircleUser,
+  Compass,
   Keyboard,
   Languages,
   LogOut,
@@ -114,6 +117,24 @@ export function UserMenuPanel({
             <Link href={routes.settingsOrganizations}>
               <Building2 aria-hidden />
               {t('organizations')}
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href={routes.discover}>
+              <Compass aria-hidden />
+              {t('discover')}
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href={routes.events}>
+              <CalendarDays aria-hidden />
+              {t('events')}
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href={routes.missions}>
+              <Briefcase aria-hidden />
+              {t('missions')}
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>

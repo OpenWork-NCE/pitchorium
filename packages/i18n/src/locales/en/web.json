@@ -28,7 +28,10 @@
     "menu": "Menu",
     "shortcuts": "Keyboard shortcuts",
     "dashboard": "Dashboard",
-    "invitations": "Invitations"
+    "invitations": "Invitations",
+    "discover": "Discover",
+    "events": "Events",
+    "missions": "Missions"
   },
   "theme": {
     "label": "Theme",
@@ -514,7 +517,11 @@
     "queued": "Offline: the action will leave when the connection is back.",
     "toDark": "Switch to the dark theme",
     "toLight": "Switch to the light theme",
-    "shortcuts": "Show the keyboard shortcuts"
+    "shortcuts": "Show the keyboard shortcuts",
+    "createEvent": "Create an event",
+    "discover": "Discover",
+    "events": "Events",
+    "missions": "Missions"
   },
   "shortcuts": {
     "goTo": "Go to: {{section}}",
