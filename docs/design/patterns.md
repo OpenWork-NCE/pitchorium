@@ -76,6 +76,14 @@ Comment assembler les composants (`components.md`) pour les situations récurren
 - Paramètres « Calendrier » : adresse secrète affichée une fois, à copier, avec l'avertissement ; régénérer, révoquer ; instructions pour Google Agenda, Apple Calendrier et Outlook.
 - Fil : un événement d'un membre ou d'une organisation suivis est une carte simple qui mène à sa page.
 
+## Missions d'expertise (§6.3, §14, ADR 0071, 0154)
+
+- Mécénat de compétences bénévole, jamais un job board : la mention « bénévole » est visible sur la liste, la page, le dialogue d'engagement et la page d'un engagement ; ni salaire, ni contrat, ni « postuler ».
+- `/missions` : offres et demandes en grille (sens, domaine, format et heures, mode, auteur), filtres sens, domaine, mode, secteur, pays et langue dans l'adresse ; pour un membre, « Mes missions » et « Mes engagements » (rôle : je donne mon temps, je suis aidé).
+- `/missions/{id}` : contenu, auteur avec son aperçu, « En bref » ; proposer son aide (demande) ou solliciter (offre) avec un message, pour soi ou un projet de son équipe ; l'auteur voit les engagements reçus et ferme la mission (confirmé).
+- `/missions/engagements/{id}` : les deux parties, les messages, l'état ; accepter ou refuser (auteur), marquer comme terminée (l'expert déclare durée, date et ce qui a été fait : une entrée du journal du temps, confirmée par la personne aidée, sans seconde saisie), annuler ou retirer (confirmé) ; le temps déclaré et son état mènent au journal du temps.
+- Création : offre (la casquette expert ou mentor manquante ouvre le volet contributeur, puis l'offre repart) ou demande ; refus du vocabulaire d'emploi et des heures expliqués sous le champ.
+
 ## Fil d'actualité (§10.3, ADR 0032, 0117, 0121)
 
 - Pas de grand titre visible au-dessus du fil : un `h1` masqué visuellement (« Accueil ») ; la place est prise par « Commencer une publication », qui ouvre le composeur (aussi depuis « Publier » du bandeau, `/feed?compose=1`).

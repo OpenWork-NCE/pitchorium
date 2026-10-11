@@ -378,7 +378,11 @@
       "endsAfterStart": "The end must be after the start."
     },
     "problems": {
-      "EVENTS_SCHEDULE_INVALID": "Check the dates: the end must be after the start, the event lasts {{days}} days at most and cannot be over already."
+      "EVENTS_SCHEDULE_INVALID": "Check the dates: the end must be after the start, the event lasts {{days}} days at most and cannot be over already.",
+      "MISSIONS_JOB_POSTING_REFUSED": "A mission is voluntary: remove the vocabulary of a job offer (salary, pay, contract, permanent, hiring, full-time…). Describe the help given, not a position.",
+      "MISSIONS_HOURS_EXCEEDED": "Too many hours for this format: {{session}} h at most for a session, {{short}} h for a short mission. Beyond that it would be a job, not skills sponsorship.",
+      "MISSIONS_PROJECT_ROLE_REQUIRED": "Only the team of the project may publish a request in its name.",
+      "MISSIONS_FIELDS_INVALID": "An on-site mission names at least one country."
     },
     "reasons": {
       "https_required": "The address must start with https:// (http:// is not accepted).",
@@ -3803,6 +3807,219 @@
           "steps": "In Outlook on the web, “Add calendar”, “Subscribe from web”, paste the address, name the calendar and import."
         }
       }
+    }
+  },
+  "missions": {
+    "list": {
+      "title": "Expertise missions",
+      "description": "Voluntary mentoring and expertise between the diaspora, Africa and the Caribbean: offers from experts and requests from projects.",
+      "lede": "Experts and mentors offer a few hours; project holders ask for a hand. Everything is voluntary.",
+      "volunteerTitle": "Skills sponsorship, voluntary",
+      "volunteer": "A mission is neither a job nor a paid service: no salary, no contract. The hours given are declared in the shared time log and confirmed by the person helped.",
+      "views": "Views of the missions",
+      "tabs": {
+        "all": "All missions",
+        "mine": "My missions",
+        "engagements": "My engagements"
+      },
+      "filters": "Filters of the missions",
+      "any": "Any",
+      "direction": "Direction",
+      "kind": "Field",
+      "mode": "Mode",
+      "sector": "Sector",
+      "country": "Country",
+      "language": "Language",
+      "role": "Role",
+      "roles": {
+        "expert": "I give my time",
+        "beneficiary": "I am helped"
+      },
+      "offer": "Offer a mission",
+      "request": "Ask for help",
+      "error": "The missions could not be loaded",
+      "errorBody": "Try again in a moment.",
+      "moreError": "The next missions could not be loaded.",
+      "empty": {
+        "all": {
+          "title": "No open mission",
+          "body": "Offers from experts and requests from projects appear here."
+        },
+        "filtered": {
+          "title": "No mission with these filters",
+          "body": "Remove a filter to see more missions."
+        },
+        "mine": {
+          "title": "No mission published",
+          "body": "Offer your time as an expert or mentor, or ask for help for your project."
+        },
+        "engagements": {
+          "title": "No engagement",
+          "body": "Your applications and solicitations appear here, with their state."
+        }
+      }
+    },
+    "card": {
+      "hours": "{{format}} · {{hours}} h",
+      "by": "By {{name}}",
+      "byForProject": "By {{name}} for {{project}}",
+      "volunteer": "Voluntary"
+    },
+    "page": {
+      "offeredBy": "Offered by",
+      "requestedBy": "Requested by",
+      "forProject": "for",
+      "volunteerTitle": "Voluntary skills sponsorship mission",
+      "volunteer": "No pay and no contract. The hours given are declared at the end of the mission in the shared time log, then confirmed by the person helped.",
+      "description": "Description",
+      "details": "At a glance",
+      "format": "Format",
+      "hours": "{{format}}, {{hours}} h estimated",
+      "mode": "Mode",
+      "countries": "Countries",
+      "languages": "Languages",
+      "sectors": "Sectors",
+      "skills": "Skills sought",
+      "desiredBy": "Wished by",
+      "capacity": "Missions in progress",
+      "capacityOf": "{{active}} out of {{capacity}} at once",
+      "takePart": "Take part",
+      "yourMission": "Your mission",
+      "signIn": "Sign in to take part",
+      "closed": "This mission is closed: it no longer receives new engagements.",
+      "yourEngagement": "See my exchange"
+    },
+    "engage": {
+      "apply": "Offer my help",
+      "solicit": "Request this mission",
+      "applyHint": "You give your time: present what you can bring.",
+      "solicitHint": "You are helped: present your need and your project.",
+      "applyTitle": "Offer my help",
+      "solicitTitle": "Request this mission",
+      "volunteer": "Voluntary mission: no pay and no contract.",
+      "forProject": "For",
+      "forMyself": "Myself",
+      "message": "Message",
+      "applyMessageHint": "Your useful experience and your availability.",
+      "solicitMessageHint": "Your need, your project and your availability.",
+      "messageRequired": "Write a message to the author of the mission.",
+      "send": "Send",
+      "sending": "Sending",
+      "cancel": "Cancel",
+      "applySent": "Offer sent.",
+      "solicitSent": "Request sent.",
+      "mayNeed": "Depending on the direction of the mission, an expert or mentor hat, or an entrepreneur facet, may be asked."
+    },
+    "author": {
+      "engagements": "Engagements received",
+      "none": "No engagement yet.",
+      "close": "Close the mission",
+      "closeTitle": "Close this mission?",
+      "closeBody": "It no longer receives new engagements; those in progress continue until they end.",
+      "closed": "Mission closed."
+    },
+    "engagement": {
+      "title": "Engagement on a mission",
+      "breadcrumb": "My engagements",
+      "seeMission": "See the mission",
+      "volunteer": "Voluntary skills sponsorship: the time given is declared once, at the end, in the shared time log.",
+      "roles": {
+        "expert": "Gives their time",
+        "beneficiary": "Is helped"
+      },
+      "withExpert": "With {{name}}, who gives their time",
+      "withBeneficiary": "With {{name}}, who is helped",
+      "forProject": "For the project",
+      "messages": "Exchanges",
+      "askedOn": "Request of {{date}}",
+      "answer": "Answer",
+      "time": "Time declared",
+      "timeDeclared": "{{hours}} h · {{status}}",
+      "timeToConfirm": "Confirm or dispute these hours in your time log.",
+      "timeAwaiting": "The hours await the confirmation of the person helped.",
+      "timeAnswered": "The hours were answered in the time log.",
+      "timeLog": "Open the time log",
+      "answerMessage": "Answer message",
+      "accept": "Accept",
+      "accepting": "Accepting",
+      "accepted": "Engagement accepted: the mission is in progress.",
+      "decline": "Decline",
+      "declining": "Declining",
+      "declined": "Engagement declined.",
+      "complete": "Mark as completed",
+      "completeTitle": "Complete the mission",
+      "completeBody": "Declare the time given: it goes into the shared time log, where the person helped confirms it. No second entry.",
+      "duration": "Duration",
+      "hours": "Hours",
+      "minutes": "Minutes",
+      "date": "Date",
+      "description": "What was done",
+      "descriptionHint": "A few lines, visible to the person helped.",
+      "completeSubmit": "Complete and declare the time",
+      "completing": "Saving",
+      "completed": "Mission completed: the time is declared in the time log.",
+      "back": "Back",
+      "cancel": "Cancel the mission",
+      "cancelTitle": "Cancel the mission in progress?",
+      "cancelBody": "The other person is told. No time is declared.",
+      "withdraw": "Withdraw my request",
+      "withdrawTitle": "Withdraw your request?",
+      "withdrawBody": "The author of the mission will no longer be able to answer it.",
+      "canceled": "Engagement canceled."
+    },
+    "form": {
+      "title": "Publish a mission",
+      "lede": "An offer of your time as an expert or mentor, or a request for help for your project. Always voluntary.",
+      "direction": "Direction",
+      "directions": {
+        "offer": "I offer my time",
+        "request": "I ask for help"
+      },
+      "directionHints": {
+        "offer": "As an expert or mentor: a hat of your contributor facet.",
+        "request": "For your company or a project of your team."
+      },
+      "project": "In the name of the project",
+      "projectNone": "None: for me",
+      "missionTitle": "Title",
+      "description": "Description",
+      "descriptionHints": {
+        "offer": "What you offer, for whom, how. No pay and no contract.",
+        "request": "Your need, the context and what help would change. No pay and no contract."
+      },
+      "kind": "Field",
+      "domain": "Area of expertise",
+      "domainHint": "For example: accounting, irrigation, digital marketing.",
+      "format": "Format",
+      "formatHours": "{{hours}} h at most",
+      "estimatedHours": "Estimated hours",
+      "estimatedHoursHint": "{{hours}} h at most for this format.",
+      "mode": "Mode",
+      "countries": "Countries",
+      "countriesHint": "At least one country for an on-site mission.",
+      "languages": "Languages",
+      "sectors": "Sectors",
+      "capacity": "Missions at once",
+      "capacityHint": "{{max}} at most.",
+      "skills": "Skills sought",
+      "skillsHint": "One per line.",
+      "desiredBy": "Wished by",
+      "visibility": "Audience",
+      "visibilityHints": {
+        "members": "Signed-in members of Pitchorium.",
+        "public": "Everyone; requires your public page."
+      },
+      "choose": "Choose",
+      "publish": "Publish the mission",
+      "publishing": "Publishing",
+      "cancel": "Cancel"
+    },
+    "refusals": {
+      "jobPosting": "A mission is voluntary: remove the vocabulary of a job offer (salary, pay, contract, permanent, hiring, full-time…).",
+      "hours": "Too many hours for this format: {{session}} h at most for a session, {{short}} h for a short mission.",
+      "hat": "An offer requires the expert or mentor hat on your contributor facet.",
+      "fields": "An on-site mission names at least one country.",
+      "beneficiary": "A request comes from an entrepreneur or the team of a project."
     }
   }
 }

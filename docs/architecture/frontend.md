@@ -125,6 +125,11 @@ sequenceDiagram
 - Feature `events` : règles pures testées dans `lib/` (état de l'inscription, places restantes, lien Google Agenda et carte, JSON-LD, adresse des filtres, limites recopiées des contrats) ; page en composants serveur, inscription, participants et actions des organisateurs en îlots chargés pour un membre seulement ; formulaire chargé après la page (schéma et Zod à l'inactivité) ; image par `ImageCropDialog` au format `event_image` (16:9).
 - Fil : `EventFeedCard` (feature `content`) pour les éléments `event`.
 
+## Missions (PROMPT FRONT 7)
+
+- Pages (`(public)`) : `/missions` (offres et demandes, « Mes missions » et « Mes engagements » jamais indexés), `/missions/{id}` (vue publique quand l'auteur l'a choisie, sans `JobPosting`, ADR 0154), `/missions/new?direction=offer|request` et `/missions/engagements/{id}` (membre ; cible des notifications des missions). Question 132 fermée : les notifications des événements et des missions mènent à leurs pages ; celles des signalements, de la modération et des données personnelles restent sans lien jusqu'à leurs pages (PROMPT FRONT 8, `features/notifications/lib/target.ts`).
+- Feature `missions` : règles pures testées (actions d'un engagement selon son état et le rôle du lecteur, refus liés au bénévolat, adresse des filtres, limites recopiées) ; page en composants serveur, engagement et panneau de l'auteur en îlots d'un membre ; formulaire chargé après la page ; `useCompletePrerequisites` (feature `access`) ouvre le volet contributeur quand une offre est refusée faute de casquette.
+
 ## Fournisseurs
 
 Chaque groupe ne charge que ce qu'il utilise (ADR 0094) :

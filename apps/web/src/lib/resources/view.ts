@@ -15,7 +15,7 @@ interface ResourceReads<T> {
   forVisitor: () => Promise<T>;
 }
 
-function isNotFound(error: unknown): boolean {
+export function isNotFound(error: unknown): boolean {
   return (
     error instanceof ApiProblemError &&
     // Absent, or not visible to this reader: the api answers 404 (403 for a forbidden read).

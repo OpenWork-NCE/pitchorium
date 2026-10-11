@@ -378,7 +378,11 @@
       "endsAfterStart": "La fin doit être après le début."
     },
     "problems": {
-      "EVENTS_SCHEDULE_INVALID": "Vérifiez les dates : la fin doit être après le début, l’événement dure {{days}} jours au plus et ne peut pas être déjà terminé."
+      "EVENTS_SCHEDULE_INVALID": "Vérifiez les dates : la fin doit être après le début, l’événement dure {{days}} jours au plus et ne peut pas être déjà terminé.",
+      "MISSIONS_JOB_POSTING_REFUSED": "Une mission est bénévole : retirez le vocabulaire d’une offre d’emploi (salaire, rémunération, contrat, CDI, recrutement, temps plein…). Décrivez l’aide apportée, pas un poste.",
+      "MISSIONS_HOURS_EXCEEDED": "Trop d’heures pour ce format : {{session}} h au plus pour une session, {{short}} h pour une mission courte. Au-delà, ce serait un emploi, pas du mécénat de compétences.",
+      "MISSIONS_PROJECT_ROLE_REQUIRED": "Seule l’équipe du projet peut publier une demande en son nom.",
+      "MISSIONS_FIELDS_INVALID": "Une mission sur place indique au moins un pays."
     },
     "reasons": {
       "https_required": "L’adresse doit commencer par https:// (http:// n’est pas accepté).",
@@ -3803,6 +3807,219 @@
           "steps": "Dans Outlook sur le web, « Ajouter un calendrier », « S’abonner à partir du web », collez l’adresse, nommez le calendrier et importez."
         }
       }
+    }
+  },
+  "missions": {
+    "list": {
+      "title": "Missions d’expertise",
+      "description": "Mentorat et expertise bénévoles entre la diaspora, l’Afrique et les Caraïbes : des offres d’experts et des demandes de projets.",
+      "lede": "Des experts et des mentors offrent quelques heures ; des porteurs de projets demandent un coup de main. Tout est bénévole.",
+      "volunteerTitle": "Mécénat de compétences, bénévole",
+      "volunteer": "Une mission n’est ni un emploi ni une prestation payée : pas de salaire, pas de contrat. Les heures données sont déclarées dans le journal du temps partagé et confirmées par la personne aidée.",
+      "views": "Vues des missions",
+      "tabs": {
+        "all": "Toutes les missions",
+        "mine": "Mes missions",
+        "engagements": "Mes engagements"
+      },
+      "filters": "Filtres des missions",
+      "any": "Tous",
+      "direction": "Sens",
+      "kind": "Domaine",
+      "mode": "Mode",
+      "sector": "Secteur",
+      "country": "Pays",
+      "language": "Langue",
+      "role": "Rôle",
+      "roles": {
+        "expert": "Je donne mon temps",
+        "beneficiary": "Je suis aidé"
+      },
+      "offer": "Proposer une mission",
+      "request": "Demander de l’aide",
+      "error": "Les missions n’ont pas pu être chargées",
+      "errorBody": "Réessayez dans un instant.",
+      "moreError": "Les missions suivantes n’ont pas pu être chargées.",
+      "empty": {
+        "all": {
+          "title": "Aucune mission ouverte",
+          "body": "Les offres des experts et les demandes des projets apparaissent ici."
+        },
+        "filtered": {
+          "title": "Aucune mission avec ces filtres",
+          "body": "Retirez un filtre pour voir plus de missions."
+        },
+        "mine": {
+          "title": "Aucune mission publiée",
+          "body": "Proposez votre temps comme expert ou mentor, ou demandez de l’aide pour votre projet."
+        },
+        "engagements": {
+          "title": "Aucun engagement",
+          "body": "Vos candidatures et vos sollicitations apparaissent ici, avec leur état."
+        }
+      }
+    },
+    "card": {
+      "hours": "{{format}} · {{hours}} h",
+      "by": "Par {{name}}",
+      "byForProject": "Par {{name}} pour {{project}}",
+      "volunteer": "Bénévole"
+    },
+    "page": {
+      "offeredBy": "Proposée par",
+      "requestedBy": "Demandée par",
+      "forProject": "pour",
+      "volunteerTitle": "Mission bénévole de mécénat de compétences",
+      "volunteer": "Aucune rémunération ni contrat. Les heures données sont déclarées à la fin de la mission dans le journal du temps partagé, puis confirmées par la personne aidée.",
+      "description": "Description",
+      "details": "En bref",
+      "format": "Format",
+      "hours": "{{format}}, {{hours}} h estimées",
+      "mode": "Mode",
+      "countries": "Pays",
+      "languages": "Langues",
+      "sectors": "Secteurs",
+      "skills": "Compétences recherchées",
+      "desiredBy": "Souhaitée avant le",
+      "capacity": "Missions en cours",
+      "capacityOf": "{{active}} sur {{capacity}} à la fois",
+      "takePart": "Participer",
+      "yourMission": "Votre mission",
+      "signIn": "Se connecter pour participer",
+      "closed": "Cette mission est fermée : elle ne reçoit plus de nouvel engagement.",
+      "yourEngagement": "Voir mon échange"
+    },
+    "engage": {
+      "apply": "Proposer mon aide",
+      "solicit": "Solliciter cette mission",
+      "applyHint": "Vous donnez de votre temps : présentez ce que vous pouvez apporter.",
+      "solicitHint": "Vous êtes aidé : présentez votre besoin et votre projet.",
+      "applyTitle": "Proposer mon aide",
+      "solicitTitle": "Solliciter cette mission",
+      "volunteer": "Mission bénévole : aucune rémunération ni contrat.",
+      "forProject": "Pour",
+      "forMyself": "Moi-même",
+      "message": "Message",
+      "applyMessageHint": "Votre expérience utile et vos disponibilités.",
+      "solicitMessageHint": "Votre besoin, votre projet et vos disponibilités.",
+      "messageRequired": "Écrivez un message à l’auteur de la mission.",
+      "send": "Envoyer",
+      "sending": "Envoi en cours",
+      "cancel": "Annuler",
+      "applySent": "Proposition envoyée.",
+      "solicitSent": "Sollicitation envoyée.",
+      "mayNeed": "Selon le sens de la mission, une casquette d’expert ou de mentor, ou un volet entrepreneur, peut être demandé."
+    },
+    "author": {
+      "engagements": "Engagements reçus",
+      "none": "Aucun engagement pour l’instant.",
+      "close": "Fermer la mission",
+      "closeTitle": "Fermer cette mission ?",
+      "closeBody": "Elle ne reçoit plus de nouvel engagement ; ceux en cours continuent jusqu’à leur fin.",
+      "closed": "Mission fermée."
+    },
+    "engagement": {
+      "title": "Engagement sur une mission",
+      "breadcrumb": "Mes engagements",
+      "seeMission": "Voir la mission",
+      "volunteer": "Mécénat de compétences bénévole : le temps donné se déclare une fois, à la fin, dans le journal du temps partagé.",
+      "roles": {
+        "expert": "Donne son temps",
+        "beneficiary": "Est aidé"
+      },
+      "withExpert": "Avec {{name}}, qui donne son temps",
+      "withBeneficiary": "Avec {{name}}, qui est aidé",
+      "forProject": "Pour le projet",
+      "messages": "Échanges",
+      "askedOn": "Demande du {{date}}",
+      "answer": "Réponse",
+      "time": "Temps déclaré",
+      "timeDeclared": "{{hours}} h · {{status}}",
+      "timeToConfirm": "Confirmez ou contestez ces heures dans votre journal du temps.",
+      "timeAwaiting": "Les heures attendent la confirmation de la personne aidée.",
+      "timeAnswered": "Les heures ont reçu leur réponse dans le journal du temps.",
+      "timeLog": "Ouvrir le journal du temps",
+      "answerMessage": "Message de réponse",
+      "accept": "Accepter",
+      "accepting": "Acceptation en cours",
+      "accepted": "Engagement accepté : la mission est en cours.",
+      "decline": "Refuser",
+      "declining": "Refus en cours",
+      "declined": "Engagement refusé.",
+      "complete": "Marquer comme terminée",
+      "completeTitle": "Terminer la mission",
+      "completeBody": "Déclarez le temps donné : il entre dans le journal du temps partagé, où la personne aidée le confirme. Pas de seconde saisie.",
+      "duration": "Durée",
+      "hours": "Heures",
+      "minutes": "Minutes",
+      "date": "Date",
+      "description": "Ce qui a été fait",
+      "descriptionHint": "Quelques lignes, visibles de la personne aidée.",
+      "completeSubmit": "Terminer et déclarer le temps",
+      "completing": "Enregistrement en cours",
+      "completed": "Mission terminée : le temps est déclaré dans le journal du temps.",
+      "back": "Retour",
+      "cancel": "Annuler la mission",
+      "cancelTitle": "Annuler la mission en cours ?",
+      "cancelBody": "L’autre personne est prévenue. Aucun temps n’est déclaré.",
+      "withdraw": "Retirer ma demande",
+      "withdrawTitle": "Retirer votre demande ?",
+      "withdrawBody": "L’auteur de la mission ne pourra plus y répondre.",
+      "canceled": "Engagement annulé."
+    },
+    "form": {
+      "title": "Publier une mission",
+      "lede": "Une offre de votre temps comme expert ou mentor, ou une demande d’aide pour votre projet. Toujours bénévole.",
+      "direction": "Sens",
+      "directions": {
+        "offer": "J’offre mon temps",
+        "request": "Je demande de l’aide"
+      },
+      "directionHints": {
+        "offer": "Comme expert ou mentor : une casquette de votre volet contributeur.",
+        "request": "Pour votre entreprise ou un projet de votre équipe."
+      },
+      "project": "Au nom du projet",
+      "projectNone": "Aucun : pour moi",
+      "missionTitle": "Titre",
+      "description": "Description",
+      "descriptionHints": {
+        "offer": "Ce que vous proposez, pour qui, comment. Pas de rémunération ni de contrat.",
+        "request": "Votre besoin, le contexte et ce qu’une aide changerait. Pas de rémunération ni de contrat."
+      },
+      "kind": "Domaine",
+      "domain": "Champ d’expertise",
+      "domainHint": "Par exemple : comptabilité, irrigation, marketing digital.",
+      "format": "Format",
+      "formatHours": "{{hours}} h au plus",
+      "estimatedHours": "Heures estimées",
+      "estimatedHoursHint": "{{hours}} h au plus pour ce format.",
+      "mode": "Mode",
+      "countries": "Pays",
+      "countriesHint": "Au moins un pays pour une mission sur place.",
+      "languages": "Langues",
+      "sectors": "Secteurs",
+      "capacity": "Missions en même temps",
+      "capacityHint": "{{max}} au plus.",
+      "skills": "Compétences recherchées",
+      "skillsHint": "Une par ligne.",
+      "desiredBy": "Souhaitée avant le",
+      "visibility": "Audience",
+      "visibilityHints": {
+        "members": "Les membres connectés de Pitchorium.",
+        "public": "Tout le monde ; demande votre page publique."
+      },
+      "choose": "Choisir",
+      "publish": "Publier la mission",
+      "publishing": "Publication en cours",
+      "cancel": "Annuler"
+    },
+    "refusals": {
+      "jobPosting": "Une mission est bénévole : retirez le vocabulaire d’une offre d’emploi (salaire, rémunération, contrat, CDI, recrutement, temps plein…).",
+      "hours": "Trop d’heures pour ce format : {{session}} h au plus pour une session, {{short}} h pour une mission courte.",
+      "hat": "Une offre demande la casquette expert ou mentor sur votre volet contributeur.",
+      "fields": "Une mission sur place indique au moins un pays.",
+      "beneficiary": "Une demande vient d’un entrepreneur ou de l’équipe d’un projet."
     }
   }
 }

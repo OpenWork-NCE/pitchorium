@@ -100,6 +100,8 @@ export const eventEdit = (slug: string) => `/events/${encodeURIComponent(slug)}/
 export const missions = '/missions';
 /** A mission, by its identifier (it has no slug). */
 export const mission = (id: string) => `/missions/${encodeURIComponent(id)}`;
+/** An engagement on a mission: who gives their time, who is helped, its state and its hours. */
+export const missionEngagement = (id: string) => `/missions/engagements/${encodeURIComponent(id)}`;
 /** Creation of a mission: an offer (`?direction=offer`) or a request (`?direction=request`). */
 export const createMission = '/missions/new';
 /** The results of the global search (§10.6): query, kind and filters in the address. */
