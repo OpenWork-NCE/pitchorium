@@ -33,14 +33,11 @@ test('answers every interaction within 200 ms on a slowed processor', async ({ p
   await watchInteractions(page);
   await page.goto('/fr', { waitUntil: 'networkidle' });
 
-  await page.getByRole('button', { name: 'Vérifier les fondations' }).click();
-  await expect(page.getByText('Les fondations répondent.')).toBeVisible();
   await page.getByRole('button', { name: 'Passer au thème sombre' }).click();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
   await page.getByRole('button', { name: 'Langue' }).click();
-  await expect(page.getByRole('link', { name: 'English' })).toBeVisible();
+  await expect(page.getByRole('banner').getByRole('link', { name: 'English' })).toBeVisible();
   await page.keyboard.press('Escape');
-  await page.getByRole('radio', { name: 'Clair' }).click();
   await page.waitForTimeout(500);
 
   expect(await longestInteraction(page)).toBeLessThan(200);

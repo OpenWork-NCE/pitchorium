@@ -76,6 +76,11 @@ export const projectEdit = (slug: string, step: string) =>
 export const projectManage = (slug: string) => `/projects/${encodeURIComponent(slug)}/manage`;
 /** The methodology of the self-declared impact in force (§12). */
 export const impactMethodology = '/impact/methodology';
+/** Editorial pages of the public site (ADR 0156). */
+export const howItWorks = '/how-it-works';
+export const transparency = '/transparency';
+/** A legal page, rendered from its Markdown file (ADR 0157). */
+export const legal = (document: string) => `/legal/${encodeURIComponent(document)}`;
 /** The self-declared impact of the entrepreneur facet of the member, and its history. */
 export const profileImpact = '/profile/impact';
 export const member = (handle: string) => `/members/${encodeURIComponent(handle)}`;

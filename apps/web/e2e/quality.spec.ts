@@ -10,6 +10,11 @@ const PAGES = [
   '/fr/sign-in/password',
   '/fr/sign-up',
   '/fr/forgot-password',
+  // Editorial and legal pages of the public site (PROMPT FRONT 8A).
+  '/fr/how-it-works',
+  '/fr/transparency',
+  '/fr/legal/terms',
+  '/en/legal/cookies',
   // Pages of resources a visitor reads (PROMPT FRONT 3).
   '/fr/members/aissatou-ba',
   '/fr/organizations/fondation-teranga',
@@ -46,9 +51,6 @@ test.describe('content security policy', () => {
     await page.getByRole('button', { name: 'Passer au thème sombre' }).click();
     await page.getByRole('button', { name: 'Langue' }).click();
     await page.keyboard.press('Escape');
-    await page.getByRole('radio', { name: 'Clair' }).click();
-    await page.getByRole('button', { name: 'Vérifier les fondations' }).click();
-    await expect(page.getByText('Les fondations répondent.')).toBeVisible();
     await page.mouse.wheel(0, 2000);
     await page.waitForTimeout(500);
     expect(cspViolations).toEqual([]);

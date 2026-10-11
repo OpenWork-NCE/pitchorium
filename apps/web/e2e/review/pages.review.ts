@@ -3,7 +3,8 @@ import { API_ORIGIN, DEMO_PASSWORD } from '../support/fixtures';
 import { layoutProblems } from './layout-guard';
 
 /**
- * Pages of the projects and of the impact (PROMPT FRONT 5A), server components out of reach of
+ * Pages of the public site (PROMPT FRONT 8A), of the projects and of the impact (PROMPT FRONT 5A),
+ * server components out of reach of
  * Storybook: captured on the build of the end-to-end tests served with the stub api
  * (e2e/support/serve.mjs, port 3201), in both themes and both sizes (docs/design/review).
  */
@@ -23,7 +24,14 @@ const STEPS = [
   'publish',
 ];
 
-const PAGES: { id: string; path: string; member: boolean }[] = [
+const PAGES: { id: string; path: string; member: boolean; element?: string }[] = [
+  // The public editorial site (PROMPT FRONT 8A): its pages, a legal page awaiting validation and
+  // the footer alone.
+  { id: 'home', path: '/fr', member: false },
+  { id: 'how-it-works', path: '/fr/how-it-works', member: false },
+  { id: 'transparency', path: '/fr/transparency', member: false },
+  { id: 'legal-terms', path: '/fr/legal/terms', member: false },
+  { id: 'footer', path: '/fr/legal/cookies', member: false, element: 'footer' },
   { id: 'showcase', path: '/fr/projects', member: false },
   { id: 'project-visitor', path: '/fr/projects/ferme-solaire-thies', member: false },
   { id: 'project-member', path: '/fr/projects/ferme-solaire-thies', member: true },
@@ -79,11 +87,18 @@ for (const page of PAGES) {
           );
         });
         expect(await layoutProblems(tab, 'body')).toEqual([]);
-        await expect(tab).toHaveScreenshot(`${page.id}-${viewport.name}-${theme}.png`, {
-          fullPage: true,
-          // Animations brought to their end state: a stable capture.
-          animations: 'disabled',
-        });
+        const name = `${page.id}-${viewport.name}-${theme}.png`;
+        if (page.element) {
+          await expect(tab.locator(page.element)).toHaveScreenshot(name, {
+            animations: 'disabled',
+          });
+        } else {
+          await expect(tab).toHaveScreenshot(name, {
+            fullPage: true,
+            // Animations brought to their end state: a stable capture.
+            animations: 'disabled',
+          });
+        }
         await context.close();
       });
     }

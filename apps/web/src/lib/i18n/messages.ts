@@ -30,7 +30,7 @@ const DOCUMENT_MESSAGES = ['web.a11y', 'web.theme', 'web.locale', 'web.error'] a
 /**
  * Messages serialized to the browser by each route group: what its client components read,
  * nothing more (the server components read every namespace). A path is a namespace or a subtree
- * (`web.home`); the bundle regime is in ADR 0094.
+ * (`web.marketing`); the bundle regime is in ADR 0094.
  */
 /** Texts of the design system and of the forms (components/ui), for the interactive groups. */
 const DESIGN_SYSTEM_MESSAGES = ['web.ui', 'web.forms'] as const;
@@ -190,7 +190,8 @@ const MEMBER_MESSAGES = [
 
 export const CLIENT_MESSAGES = {
   document: DOCUMENT_MESSAGES,
-  marketing: [...DOCUMENT_MESSAGES, 'web.home'],
+  // The cards of the projects of the home page: their amounts, progress and impact badges.
+  marketing: [...DOCUMENT_MESSAGES, ...MENTIONS, 'web.ui.funding', 'web.ui.impact', 'web.ui.money'],
   public: [
     ...DOCUMENT_MESSAGES,
     ...DESIGN_SYSTEM_MESSAGES,

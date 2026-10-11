@@ -51,22 +51,6 @@
       "ln": "Lingála"
     }
   },
-  "home": {
-    "eyebrow": "Provisional version",
-    "title": "A professional impact network between Africa, the Caribbean and the European diaspora.",
-    "lede": "This page checks the foundations of the application before the first journeys arrive: brand, theme, languages and motion.",
-    "foundations": "Foundations",
-    "fonts": "Brand typefaces",
-    "fontsValue": "Bricolage Grotesque, Poppins",
-    "theme": "Active theme",
-    "locale": "Page language: {{name}}",
-    "activeLocales": "Active languages",
-    "motion": "Motion",
-    "motionFull": "Full",
-    "motionReduced": "Reduced",
-    "check": "Check the foundations",
-    "checked": "The foundations respond."
-  },
   "notFound": {
     "code": "404",
     "title": "This page does not exist.",
@@ -3063,7 +3047,8 @@
       "notASecurity": "A donation is not a financial security.",
       "noGuarantee": "An unlocked milestone is not a guarantee of the success of the project.",
       "selfDeclared": "The impact of the project is self-declared, not certified.",
-      "notTaxReceipt": "The confirmation email is not a tax receipt."
+      "notTaxReceipt": "The confirmation email is not a tax receipt.",
+      "transparency": "Transparency and fees"
     },
     "return": {
       "metaTitle": "Payment return",
@@ -4032,6 +4017,176 @@
       "hat": "An offer requires the expert or mentor hat on your contributor facet.",
       "fields": "An on-site mission names at least one country.",
       "beneficiary": "A request comes from an entrepreneur or the team of a project."
+    }
+  },
+  "marketing": {
+    "nav": {
+      "label": "Pages of Pitchorium",
+      "howItWorks": "How it works",
+      "transparency": "Transparency and fees",
+      "projects": "Projects",
+      "methodology": "Impact methodology"
+    },
+    "footer": {
+      "label": "Footer",
+      "legal": "Legal information",
+      "language": "Language",
+      "contact": "Contact: <email>{{address}}</email>",
+      "about": "Pitchorium",
+      "tagline": "Africa · Caribbean · European diaspora"
+    },
+    "legalNames": {
+      "terms": "Terms of use",
+      "privacy": "Privacy policy",
+      "legal-notice": "Legal notice",
+      "cookies": "Cookie policy",
+      "reporting": "Reporting and point of contact",
+      "accessibility": "Accessibility statement"
+    },
+    "legal": {
+      "kicker": "Legal information",
+      "pendingTitle": "Text awaiting legal validation",
+      "pendingBody": "This page gives the structure of the document. Its text will be published once validated by the legal counsel of Pitchorium.",
+      "version": "Version in force: {{version}}",
+      "description": "{{title}} of Pitchorium."
+    },
+    "home": {
+      "kicker": "Africa · Caribbean · European diaspora",
+      "title": "The professional network where the entrepreneurs of Africa and the Caribbean meet those who want to support them.",
+      "lede": "Neither an African Instagram nor a generic Kickstarter: the business place of the Africa–Diaspora synergy.",
+      "join": "Join Pitchorium",
+      "howItWorks": "See how it works",
+      "description": "The professional network and impact funding platform between Africa, the Caribbean and the European diaspora.",
+      "usesKicker": "Three uses, one platform",
+      "usesTitle": "Connect, discover, support.",
+      "uses": {
+        "connect": {
+          "title": "Introduce yourself and connect",
+          "body": "A profile, a network, a feed and messages, as on a business network."
+        },
+        "discover": {
+          "title": "Discover impact projects",
+          "body": "Readable campaigns: goal, milestones, rewards and updates."
+        },
+        "support": {
+          "title": "Support for real",
+          "body": "Donation, love money, patronage, introductions or time, with real money flows where the law allows."
+        }
+      },
+      "audiencesKicker": "Two audiences",
+      "audiencesTitle": "One place for those who build and those who support.",
+      "entrepreneur": {
+        "title": "I run a project",
+        "body": "You run a company or a project in Africa or the Caribbean, and look for visibility, network, funding, mentoring or partnerships.",
+        "steps": {
+          "first": "Join in one click, complete your profile later",
+          "second": "Create the public page of your project, its milestones and rewards",
+          "third": "Receive real contributions, after identity verification"
+        }
+      },
+      "contributor": {
+        "title": "I want to support",
+        "body": "Investor, patron, mentor, expert, partner or recruiter: one account can wear several hats, set at any time.",
+        "steps": {
+          "first": "Discover projects and people",
+          "second": "Contribute by card, transfer or Mobile Money depending on the available methods",
+          "third": "Follow your engagement: real payments, projects supported, hours given"
+        }
+      },
+      "principlesKicker": "Principles of trust",
+      "principlesTitle": "What Pitchorium does not compromise on.",
+      "principles": {
+        "money": {
+          "title": "Money is real, or it is not shown",
+          "body": "No fictitious balance, no cosmetic “pay” button."
+        },
+        "impact": {
+          "title": "Impact is declared, never certified",
+          "body": "The score guides; it is not a label."
+        },
+        "languages": {
+          "title": "A badly translated language is better absent",
+          "body": "A language is offered only if a human maintains it."
+        },
+        "public": {
+          "title": "Public pages",
+          "body": "A project, a profile, an organisation can be shared, indexed and quoted."
+        }
+      },
+      "projectsKicker": "Projects",
+      "projectsTitle": "Projects to discover.",
+      "allProjects": "See all projects",
+      "joinTitle": "Join Pitchorium in less than a minute.",
+      "joinBody": "Complete your profile when you see why it matters."
+    },
+    "howItWorks": {
+      "title": "How Pitchorium works",
+      "lede": "Two layers, as on any serious professional network: a public site to understand and discover, a member space to connect, publish, manage and contribute.",
+      "description": "The journey of an entrepreneur and of a contributor on Pitchorium.",
+      "entrepreneursTitle": "For entrepreneurs",
+      "entrepreneurs": {
+        "enter": {
+          "title": "Get in fast",
+          "body": "Join Pitchorium with Google, LinkedIn or an email, with no blocking form. State your intention, then your profile at any time."
+        },
+        "present": {
+          "title": "Present your project",
+          "body": "A public project page: goal, independent milestones, rewards, updates and self-declared impact."
+        },
+        "verify": {
+          "title": "Get verified",
+          "body": "The identity of the project holder is verified before the first payout."
+        },
+        "receive": {
+          "title": "Receive real contributions",
+          "body": "The milestone updates on payment, with no manual checkbox."
+        }
+      },
+      "contributorsTitle": "For contributors",
+      "contributors": {
+        "discover": {
+          "title": "Discover",
+          "body": "Project showcase, search and suggestions from your hats, sectors and countries."
+        },
+        "choose": {
+          "title": "Choose your support",
+          "body": "Donation, contribution with a reward or love money, and the eligible reward if the project has one."
+        },
+        "pay": {
+          "title": "Pay with a licensed provider",
+          "body": "The real payment methods of your country, on a secure page; the commission is shown before payment."
+        },
+        "follow": {
+          "title": "Follow your engagement",
+          "body": "Confirmation by email, then a dashboard: euros paid, projects supported, hours declared."
+        }
+      },
+      "transparencyLink": "Transparency and fees"
+    },
+    "transparency": {
+      "title": "Transparency and fees",
+      "lede": "What a contribution costs, who holds the funds and what a contribution is not.",
+      "description": "Commission, provider fees, holding of funds, self-declared impact and payment coverage of Pitchorium.",
+      "commissionTitle": "Platform commission",
+      "commissionBody": "Pitchorium takes a commission of {{rate}} at the source on each paid contribution. It is shown before payment, with the amount received by the project.",
+      "commissionUnavailable": "The commission rate could not be read for now.",
+      "feesTitle": "Provider fees",
+      "feesBody": "Payment providers charge their own fees, depending on the payment method and the currency. Their estimate is shown before payment, next to the commission.",
+      "fundsTitle": "Pitchorium does not hold the funds",
+      "fundsBody": "Payments are collected by licensed providers, who pay the funds out to the project holder. Pitchorium is neither a bank nor a payment institution.",
+      "impactTitle": "A self-declared impact",
+      "impactBody": "The impact score is declared by the project holder following a public methodology. It guides; it is neither a label nor a certification.",
+      "impactLink": "Read the methodology",
+      "titleTitle": "A contribution is not a security",
+      "titleBody": "A donation or a contribution with a reward gives no share of the capital and no financial right. An unlocked milestone is no guarantee of success.",
+      "taxTitle": "No tax receipt",
+      "taxBody": "Pitchorium issues no tax receipt for a contribution.",
+      "coverageTitle": "Payment coverage",
+      "coverageBody": "The countries where a holder can receive funds and the available payment methods, as verified on {{date}}.",
+      "coverageUnavailable": "The payment coverage could not be read for now.",
+      "payoutCountries": "Payout countries",
+      "methods": "Payment methods",
+      "providerLabel": "Provider {{index}}"
     }
   }
 }

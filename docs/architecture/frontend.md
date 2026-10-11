@@ -130,6 +130,15 @@ sequenceDiagram
 - Pages (`(public)`) : `/missions` (offres et demandes, « Mes missions » et « Mes engagements » jamais indexés), `/missions/{id}` (vue publique quand l'auteur l'a choisie, sans `JobPosting`, ADR 0154), `/missions/new?direction=offer|request` et `/missions/engagements/{id}` (membre ; cible des notifications des missions). Question 132 fermée : les notifications des événements et des missions mènent à leurs pages ; celles des signalements, de la modération et des données personnelles restent sans lien jusqu'à leurs pages (PROMPT FRONT 8, `features/notifications/lib/target.ts`).
 - Feature `missions` : règles pures testées (actions d'un engagement selon son état et le rôle du lecteur, refus liés au bénévolat, adresse des filtres, limites recopiées) ; page en composants serveur, engagement et panneau de l'auteur en îlots d'un membre ; formulaire chargé après la page ; `useCompletePrerequisites` (feature `access`) ouvre le volet contributeur quand une offre est refusée faute de casquette.
 
+## Site public et pages juridiques (PROMPT FRONT 8A)
+
+- Pages (`(marketing)`, ADR 0156) : `/{locale}` (accueil éditorial, projets mis en avant lus par `GET /v1/public/projects?featured=true`, puis les plus récents), `/how-it-works`, `/transparency` (commission et couverture de `GET /v1/public/payments/coverage`), `/legal/{document}` (`terms`, `privacy`, `legal-notice`, `cookies`, `reporting`, `accessibility`).
+- Textes juridiques (ADR 0157) : Markdown versionné dans `apps/web/content/legal/<langue>/`, lu sur le serveur (`loadLegalDocument`, `process.cwd()`), analysé par `features/marketing/lib/markdown.ts` ; version des conditions et de la confidentialité lue dans `GET /v1/legal-documents/current` ; bloc « en attente de validation juridique » tant que `status: pending`. L'onboarding renvoie à `/legal/terms` et `/legal/privacy` (sauf `NEXT_PUBLIC_LEGAL_*_URL`).
+- Pied de page `SiteFooter` (coquilles publique et éditoriale) : pages, accueil dans chaque langue active, `CONTACT_EMAIL` (serveur).
+- SEO : sitemap avec les pages éditoriales et juridiques, JSON-LD `Organization` et `WebSite` sur l'accueil, image de partage par page (`lib/seo/editorial-share-image.tsx`).
+- Cookies : aucun bandeau (ADR 0158, `docs/compliance/cookies.md`).
+- Messages du groupe : `web.a11y`, `web.theme`, `web.locale`, `web.error`, les mentions et `web.ui.funding`, `web.ui.impact`, `web.ui.money` (cartes de projet) ; les textes de `web.marketing` restent sur le serveur.
+
 ## Fournisseurs
 
 Chaque groupe ne charge que ce qu'il utilise (ADR 0094) :

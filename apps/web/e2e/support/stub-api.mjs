@@ -399,6 +399,11 @@ let io;
 
 /** Routes of the stub: `[method path]` to a handler returning `{ status, body, headers? }`. */
 const routes = {
+  // The legal versions in force, shown on the legal pages (ADR 0157).
+  'GET /v1/legal-documents/current': () => ({
+    status: 200,
+    body: { termsVersion: '2026-10-01', privacyVersion: '2026-10-01', minimumAge: 18 },
+  }),
   'GET /v1/locales': () => ({ status: 200, body: { defaultLocale: 'fr', locales: ['fr', 'en'] } }),
   'GET /v1/auth-configuration': () => ({
     status: 200,

@@ -152,3 +152,7 @@ Un fichier par décision, numéroté, au format Contexte / Décision / Conséque
 | [0146](0146-history-anchoring-and-virtualization.md)                  | Ancrage et virtualisation de l'historique d'une conversation    |
 | [0147](0147-messaging-drafts.md)                                      | Brouillons de la messagerie                                     |
 | [0148](0148-new-notifications-pill.md)                                | Pastille des nouvelles notifications                            |
+| [0155](0155-flutterwave-rates-contract.md)                            | Contrat du taux indicatif de Flutterwave                        |
+| [0156](0156-public-site-and-d4.md)                                    | Site public éditorial et dialecte D4                            |
+| [0157](0157-versioned-legal-pages.md)                                 | Pages juridiques versionnées, en attente de validation          |
+| [0158](0158-cookies-without-consent-banner.md)                        | Cookies et consentement : aucun bandeau                         |

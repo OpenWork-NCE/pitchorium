@@ -1,7 +1,8 @@
 import type { ReactNode } from 'react';
+import { SiteFooter } from '@/features/marketing';
+import { env } from '@/lib/env';
 import { InteractiveRuntime } from '../interactive-runtime';
 import { SiteHeader } from '../site-header';
-import { Footer } from './parts';
 
 /**
  * Indexable public pages of a visitor: profile, organisation, project, event, showcase (ADR 0101).
@@ -15,7 +16,7 @@ export function PublicShell({ children }: { children: ReactNode }) {
       <div className="flex min-h-dvh flex-col">
         <SiteHeader />
         <div className="flex-1">{children}</div>
-        <Footer />
+        <SiteFooter contactEmail={env.CONTACT_EMAIL} />
       </div>
     </InteractiveRuntime>
   );

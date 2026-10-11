@@ -74,7 +74,7 @@ describe('architecture rules of the web app', { timeout: 60_000 }, () => {
     expect(
       await rulesFor(
         'src/app/[locale]/(marketing)/violation.tsx',
-        "import { Foundations } from '@/features/marketing/components/foundations';\nexport const X = Foundations;\n",
+        "import { HomePage } from '@/features/marketing/components/home-page';\nexport const X = HomePage;\n",
       ),
     ).toContain('boundaries/dependencies');
   });

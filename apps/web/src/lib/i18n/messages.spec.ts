@@ -27,10 +27,11 @@ describe('messages', () => {
       web: Record<string, unknown>;
       errors?: unknown;
     };
-    expect(Object.keys(marketing)).toEqual(['web']);
+    expect(Object.keys(marketing).sort()).toEqual(['common', 'reference', 'web']);
     expect(Object.keys(marketing.web).sort()).toEqual(
-      ['a11y', 'error', 'home', 'locale', 'theme'].sort(),
+      ['a11y', 'error', 'locale', 'notices', 'theme', 'ui'].sort(),
     );
+    expect(Object.keys(marketing.web.ui as object).sort()).toEqual(['funding', 'impact', 'money']);
   });
 
   it('knows every path of every scope', () => {

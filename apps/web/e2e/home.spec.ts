@@ -1,11 +1,13 @@
 import { allowConsole, expect, test } from './support/fixtures';
 
-test.describe('provisional home page', () => {
+test.describe('home page', () => {
   test('renders in French with the brand, the fonts and the active locales', async ({ page }) => {
     await page.goto('/fr');
     await expect(page).toHaveTitle('Pitchorium');
     await expect(page.locator('html')).toHaveAttribute('lang', 'fr');
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('Un réseau professionnel');
+    await expect(page.getByRole('heading', { level: 1 })).toContainText(
+      'Le réseau professionnel où se rencontrent',
+    );
     await expect(page.getByRole('link', { name: 'Accueil de Pitchorium' })).toBeVisible();
     const fonts = await page.evaluate(async () => {
       await document.fonts.ready;
@@ -25,7 +27,7 @@ test.describe('provisional home page', () => {
     await page.goto('/en');
     await expect(page.locator('html')).toHaveAttribute('lang', 'en');
     await expect(page.getByRole('heading', { level: 1 })).toContainText(
-      'A professional impact network',
+      'The professional network where',
     );
   });
 
@@ -50,12 +52,67 @@ test.describe('provisional home page', () => {
     await expect(page).toHaveURL(/\/en$/);
   });
 
-  test('answers the primary button in place', async ({ page }) => {
+  test('describes the structured data of Pitchorium and of its site', async ({ page }) => {
     await page.goto('/fr');
-    await page.getByRole('button', { name: 'Vérifier les fondations' }).click();
+    const types = await page
+      .locator('script[type="application/ld+json"]')
+      .evaluateAll((scripts) =>
+        scripts.map(
+          (script) => (JSON.parse(script.textContent ?? '{}') as { '@type': string })['@type'],
+        ),
+      );
+    expect(types.sort()).toEqual(['Organization', 'WebSite']);
+  });
+
+  test('shows the real projects of the api and links the editorial pages', async ({ page }) => {
+    await page.goto('/fr');
+    await expect(page.locator('[data-home-projects] li').first()).toBeVisible();
+    const footer = page.getByRole('contentinfo');
+    await expect(footer.getByRole('link', { name: 'Transparence et frais' })).toBeVisible();
+    await footer.getByRole('link', { name: 'Politique de cookies' }).click();
+    await expect(page).toHaveURL(/\/fr\/legal\/cookies$/);
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Politique de cookies');
+  });
+
+  test('shows every element in its final state with less motion', async ({ browser }) => {
+    const context = await browser.newContext({ reducedMotion: 'reduce' });
+    const page = await context.newPage();
+    await page.goto('/fr');
+    const moving = await page.evaluate(
+      () =>
+        document
+          .getAnimations()
+          .filter((animation) => animation.playState === 'running' && animation.effect).length,
+    );
+    expect(moving).toBe(0);
+    await context.close();
+  });
+});
+
+test.describe('editorial and legal pages', () => {
+  test('how it works and transparency read the commission from the api', async ({ page }) => {
+    await page.goto('/fr/how-it-works');
     await expect(
-      page.getByRole('status').filter({ hasText: 'Les fondations répondent.' }),
+      page.getByRole('heading', { level: 2, name: 'Pour les entrepreneurs' }),
     ).toBeVisible();
+    await expect(
+      page.getByRole('heading', { level: 2, name: 'Pour les contributeurs' }),
+    ).toBeVisible();
+    await page.goto('/fr/transparency');
+    await expect(page.locator('[data-commission-rate="500"]')).toContainText('5 %');
+    await expect(page.locator('[data-coverage]')).toContainText('Mobile Money');
+  });
+
+  test('a legal page shows its version in force and the block awaiting validation', async ({
+    page,
+  }) => {
+    await page.goto('/fr/legal/terms');
+    await expect(page.locator('[data-legal-version="2026-10-01"]')).toBeVisible();
+    await expect(page.getByText('Texte en attente de validation juridique')).toBeVisible();
+    await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
+      'content',
+      /\/fr\/legal\/terms\/opengraph-image/,
+    );
   });
 });
 

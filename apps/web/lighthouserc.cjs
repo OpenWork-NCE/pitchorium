@@ -32,8 +32,19 @@ const VISITOR_PAGES = REPRESENTATIVE
       '/fr/posts/0192f4a0-2000-7000-8000-000000000004',
       // The page of a project, the heart of the webapp (§11.2, e2e/support/stub-projects.mjs).
       '/fr/projects/ferme-solaire-thies',
+      // An editorial page of the public site, reading the api (PROMPT FRONT 8A).
+      '/fr/transparency',
     ]
   : [
+      // The editorial and legal pages of the public site (PROMPT FRONT 8A, ADR 0156, 0157).
+      '/fr/how-it-works',
+      '/fr/transparency',
+      '/fr/legal/terms',
+      '/fr/legal/privacy',
+      '/fr/legal/legal-notice',
+      '/fr/legal/cookies',
+      '/fr/legal/reporting',
+      '/fr/legal/accessibility',
       '/fr/members/aissatou-ba',
       '/fr/organizations/fondation-teranga',
       '/fr/posts/0192f4a0-2000-7000-8000-000000000004',
@@ -91,6 +102,8 @@ module.exports = {
           matchingUrlPattern: 'localhost:3201/(fr|en)$',
           assertions: {
             ...THRESHOLDS,
+            // The home page, first impression of the site: 95 at least on the mobile profile.
+            'categories:performance': ['error', { minScore: 0.95 }],
             'categories:seo': ['error', { minScore: 1 }],
             // Every script of the editorial page, transferred: initial chunks plus GSAP and the
             // chunks loaded on demand.
@@ -110,6 +123,11 @@ module.exports = {
               { maxNumericValue: 250, aggregationMethod: 'pessimistic' },
             ],
           },
+        },
+        {
+          // Editorial and legal pages of the public site (ADR 0156, 0157): indexed, SEO included.
+          matchingUrlPattern: 'localhost:3201/fr/(how-it-works|transparency|legal/[a-z-]+)$',
+          assertions: { ...THRESHOLDS, 'categories:seo': ['error', { minScore: 1 }] },
         },
         {
           // Public pages of resources read by a visitor (ADR 0101): indexed, SEO included.

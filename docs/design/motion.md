@@ -26,10 +26,10 @@ dialect:
   secondary: null
 
 hero:
-  title: web.home.title
-  lede: web.home.lede
-  ctas: []
-  extras: [{ text: web.home.eyebrow, role: copy }]
+  title: web.marketing.home.title
+  lede: web.marketing.home.lede
+  ctas: [web.marketing.home.join, web.marketing.home.howItWorks]
+  extras: [{ text: web.marketing.home.kicker, role: copy }]
   partners: []
 
 matter:
@@ -50,9 +50,14 @@ infinite: []
 kinetic: null
 
 rest:
-  - { id: foundations, items: [fonts, theme, locales, motion] }
+  - { id: uses, items: [connect, discover, support] }
+  - { id: audiences, items: [entrepreneur, contributor] }
+  - { id: principles, items: [money, impact, languages, public] }
+  - { id: projects, items: [api] }
+  - { id: join, items: [signUp] }
 
-footer: { wordmark: '', links: [], social: [] }
+footer:
+  { wordmark: '', links: [howItWorks, transparency, projects, methodology, legal], social: [] }
 
 cursor: false
 page_transition: fade
@@ -61,7 +66,7 @@ velocity_skew: false
 reduced_motion: honor
 ```
 
-Les champs vides sont des primitives absentes. Le héros et les sections sont ceux de l'accueil provisoire ; l'accueil éditorial reprendra ce YAML avec ses sections.
+Les champs vides sont des primitives absentes. L'accueil éditorial (ADR 0156) garde ce YAML : héros `web.marketing.home.title`, `lede` et `kicker`, sections décrites plus bas.
 
 ## Tokens
 
@@ -127,3 +132,13 @@ Moins de mouvement veut dire `prefers-reduced-motion: reduce`, `prefers-reduced-
 - Onglets de la recherche, des événements et des missions : l'indicateur partagé (`SharedIndicator`).
 - Inscription à un événement : libellé du bouton changé par `LabelSwap` (même largeur), position dans la liste d'attente comptée par `AnimatedNumber` ; état final immédiat avec moins de mouvement.
 - Vue visiteur de Découvrir et sections d'une page d'événement : révélation D4 par `Reveal` (CSS liée au défilement, repli IntersectionObserver), sans GSAP : son poids n'entre pas dans le budget de la vue visiteur. Aucun nom de transition de vue ajouté.
+
+## Site public éditorial (PROMPT FRONT 8A, ADR 0156)
+
+- Titre `h1` de chaque page éditoriale et juridique : mots révélés depuis leur masque en CSS (`title-reveal`, `TitleWords`), peints dès le rendu serveur.
+- Titres de section : `SplitHeading` (GSAP et SplitText chargés à l'approche, vue visiteur seulement).
+- Cartes des projets de l'accueil : révélation par `clip-path` du bas vers le haut (`clip-reveal`, liée au défilement).
+- Motif de la marque de l'appel final : entrée par un zoom de 1,08 (H24, `hero-scale-crop`) et parallaxe de 8 % au plus (`parallax-soft`, de -4 % à +4 %).
+- Pied de page découvert (H29, `footer-uncover`) : le contenu glisse au-dessus du pied de page épinglé en bas, à partir de 768 x 640 px ; défilement natif.
+- Lavage de couleur (H22) non retenu : une seule couleur d'accent, aucun décor gratuit (`direction.md`).
+- Animations liées au défilement (`animation-timeline: view()`) seulement avec le mouvement complet ; avec moins de mouvement ou sans cette prise en charge, état final dès la première peinture. Aucun nom de transition de vue ajouté.

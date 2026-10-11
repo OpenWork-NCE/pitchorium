@@ -64,4 +64,5 @@ Application web (`apps/web`, `docs/architecture/frontend.md`) : build par `pnpm 
 - Paiements, KYC, anti-blanchiment : questions 13, 14, 51 à 58, 60.
 - Equity et prêts : licence ECSP ou partenaire habilité (question 14) ; les flags restent inactifs jusque-là.
 - Textes légaux, conservation, DSA : questions 20, 31, 81, 84 à 86.
+- **Bloquant pour la mise en production** : fourniture et validation des textes juridiques publiés sur le site (conditions générales, politique de confidentialité, mentions légales, politique de cookies, point de contact DSA, déclaration d'accessibilité), puis `status: validated` dans leurs fichiers et versions de l'api alignées (question 135, ADR 0157) ; adresse de contact publique (question 134).
 - Langues swahili, wolof, lingala : relecture humaine native (question 21), indépendante du lancement en français et en anglais.

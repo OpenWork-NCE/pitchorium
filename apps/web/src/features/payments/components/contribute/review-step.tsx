@@ -10,7 +10,9 @@ import { ShieldCheck } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { type ReactNode, useMemo, useRef, useState } from 'react';
 import { Alert, Button, DrawnCheck, Field, Loading, Skeleton, Textarea } from '@/components/ui';
+import * as routes from '@/config/paths';
 import { useWithPrerequisites } from '@/features/access';
+import { Link } from '@/i18n/navigation';
 import { formatDateTimeShort } from '../../lib/format';
 import { PAYMENT_LIMITS } from '../../lib/limits';
 import { safePaymentUrl } from '../../lib/payment-url';
@@ -127,6 +129,13 @@ export function PaymentMentions({ kind }: { kind: ContributionKind }) {
         <li>{t('selfDeclared')}</li>
         <li>{t('notTaxReceipt')}</li>
       </ul>
+      <Link
+        href={routes.transparency}
+        target="_blank"
+        className="w-fit link-underline-hover text-accent underline"
+      >
+        {t('transparency')}
+      </Link>
     </div>
   );
 }

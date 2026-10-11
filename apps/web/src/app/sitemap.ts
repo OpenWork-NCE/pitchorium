@@ -1,14 +1,23 @@
 import type { MetadataRoute } from 'next';
 import * as routes from '@/config/paths';
 import { localizedUrl } from '@/config/seo';
+import { LEGAL_DOCUMENTS } from '@/features/marketing';
 import { getActiveLocales } from '@/lib/i18n/active-locales';
 import { PUBLIC_SITEMAP_SOURCES } from '@/lib/seo/sitemap-sources';
 
 /**
- * Public pages, in every active locale with their alternates: the home page, the showcase of the
- * projects, then the pages of the public resources, at their one address (ADR 0101).
+ * Public pages, in every active locale with their alternates: the home page, the editorial and
+ * legal pages (ADR 0156, 0157), the showcase of the projects, then the pages of the public
+ * resources, at their one address (ADR 0101).
  */
-const STATIC_PATHS = ['/', routes.projects, routes.impactMethodology] as const;
+const STATIC_PATHS = [
+  '/',
+  routes.howItWorks,
+  routes.transparency,
+  ...LEGAL_DOCUMENTS.map((document) => routes.legal(document)),
+  routes.projects,
+  routes.impactMethodology,
+];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const { locales } = await getActiveLocales();

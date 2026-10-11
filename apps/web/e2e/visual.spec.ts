@@ -1,7 +1,7 @@
 import { expect, signIn, stub, test } from './support/fixtures';
 
 /**
- * Reference screenshots of the provisional home page, compared in the official Playwright image
+ * Reference screenshots of the editorial home page, compared in the official Playwright image
  * (playwright.config.ts). Reduced motion gives every element its final state.
  */
 test.skip(

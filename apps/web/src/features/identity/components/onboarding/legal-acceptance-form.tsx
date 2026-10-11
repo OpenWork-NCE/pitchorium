@@ -1,7 +1,7 @@
 'use client';
 
 import { accountControllerAccept, type LegalVersionsDtoOutput } from '@pitchorium/api-client';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import type { ReactNode } from 'react';
 import { z } from 'zod';
 import {
@@ -13,6 +13,7 @@ import {
   useApplyProblem,
   useZodForm,
 } from '@/components/ui';
+import * as routes from '@/config/paths';
 import { publicEnv } from '@/lib/public-env';
 
 /** Three boxes to tick, each a declaration of the member; the api receives the versions. */
@@ -51,6 +52,7 @@ export function LegalAcceptanceForm({
   onAccepted: () => void | Promise<void>;
 }) {
   const t = useTranslations('web.onboarding.terms');
+  const locale = useLocale();
   const form = useZodForm(legalFormSchema, {
     defaultValues: { terms: false, privacy: false, adult: false } as never,
   });
@@ -93,14 +95,22 @@ export function LegalAcceptanceForm({
         'terms',
         t.rich('acceptTerms', {
           version: versions.termsVersion,
-          link: (chunks) => <TextLink href={publicEnv.legalTermsUrl}>{chunks}</TextLink>,
+          link: (chunks) => (
+            <TextLink href={publicEnv.legalTermsUrl ?? `/${locale}${routes.legal('terms')}`}>
+              {chunks}
+            </TextLink>
+          ),
         }),
       )}
       {box(
         'privacy',
         t.rich('acceptPrivacy', {
           version: versions.privacyVersion,
-          link: (chunks) => <TextLink href={publicEnv.legalPrivacyUrl}>{chunks}</TextLink>,
+          link: (chunks) => (
+            <TextLink href={publicEnv.legalPrivacyUrl ?? `/${locale}${routes.legal('privacy')}`}>
+              {chunks}
+            </TextLink>
+          ),
         }),
       )}
       {box('adult', t('declareAge', { age: versions.minimumAge }))}

@@ -8,11 +8,13 @@ import { Link } from '@/i18n/navigation';
 
 /**
  * Header of the editorial and public pages: horizontal logo aligned left (brand guide), the
- * symbol below 640 px, then the slot of the shell, the language, the theme and the sign-in.
+ * symbol below 640 px, the editorial pages from 1 024 px (the footer lists them below), then the
+ * slot of the shell, the language, the theme and the sign-in.
  */
 export function SiteHeader({ children }: { children?: ReactNode }) {
   const t = useTranslations('web.a11y');
   const nav = useTranslations('web.nav');
+  const pages = useTranslations('web.marketing.nav');
   return (
     <header className="sticky top-0 z-(--z-header) border-b border-border bg-background">
       <div className="mx-auto flex h-18 max-w-7xl items-center gap-4 px-4 sm:px-6">
@@ -20,6 +22,26 @@ export function SiteHeader({ children }: { children?: ReactNode }) {
           <BrandSymbol className="sm:hidden" />
           <BrandLogo className="hidden sm:block" />
         </Link>
+        <nav aria-label={pages('label')} className="ml-4 hidden lg:block">
+          <ul className="flex items-center gap-1 text-sm font-medium">
+            {(
+              [
+                [routes.howItWorks, pages('howItWorks')],
+                [routes.transparency, pages('transparency')],
+                [routes.projects, pages('projects')],
+              ] as const
+            ).map(([href, label]) => (
+              <li key={href}>
+                <Link
+                  href={href}
+                  className="inline-flex h-9 items-center rounded-full px-3 text-muted hover:bg-surface-sunken hover:text-foreground"
+                >
+                  {label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
         <div className="ml-auto flex items-center gap-1">
           {children}
           <LocaleSwitcher />

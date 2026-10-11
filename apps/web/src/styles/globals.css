@@ -784,3 +784,65 @@ html[data-theme-transition='fade']::view-transition-new(root) {
     transition-duration: 0.01ms !important;
   }
 }
+
+/*
+ * Public editorial pages (D4, ADR 0156). Every rule moves only `transform` and `clip-path`, and
+ * only with the full motion: with less motion, or without scroll-driven animations, each element
+ * is in its final state from the first paint.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  /* Image revealed by its clip-path as it enters the screen (bottom up, `curtain`). */
+  @supports (animation-timeline: view()) {
+    .clip-reveal {
+      animation: clip-reveal linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 60%;
+    }
+
+    /* Parallax of the brand motif, 8 % of its height at most, tied to the scroll. */
+    .parallax-soft {
+      animation: parallax-soft linear both;
+      animation-timeline: view();
+      animation-range: cover 0% cover 100%;
+    }
+  }
+}
+
+@keyframes clip-reveal {
+  from {
+    clip-path: inset(100% 0 0 0);
+  }
+
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes parallax-soft {
+  from {
+    transform: translateY(-4%);
+  }
+
+  to {
+    transform: translateY(4%);
+  }
+}
+
+/*
+ * Footer uncovered (H29): on the editorial pages the content slides up over a footer pinned at
+ * the bottom of the screen, from 768 px wide and 640 px high (the footer fits in it there); a
+ * native scroll, nothing is hijacked.
+ */
+@media (min-width: 768px) and (min-height: 640px) {
+  .footer-uncover {
+    position: sticky;
+    bottom: 0;
+    z-index: 0;
+  }
+
+  .footer-uncover-content {
+    position: relative;
+    z-index: 1;
+    background-color: var(--color-background);
+  }
+}

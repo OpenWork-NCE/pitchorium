@@ -20,6 +20,8 @@ export const env = createEnv({
     WEB_CLIENT_ADDRESS_SECRET: z.string().min(32).optional(),
     /** Trusted proxies in front of this server; 0: no visitor address is relayed. */
     WEB_TRUST_PROXY_HOPS: z.coerce.number().int().min(0).default(0),
+    /** Contact address shown in the footer of the public pages; none shown without it. */
+    CONTACT_EMAIL: z.email().optional(),
   },
   client: {
     /** Public origin of the web app (canonical URLs, sitemap, share images). */
