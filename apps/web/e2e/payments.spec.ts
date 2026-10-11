@@ -181,4 +181,25 @@ test.describe('contributing on a phone', { tag: '@phone' }, () => {
       expect(Math.round(amount.y + amount.height)).toBe(viewport.height);
     }).toPass();
   });
+
+  test('keeps « Continuer » and « Payer » in view at the bottom of the sheet', async ({ page }) => {
+    await signIn(page, MEMBER);
+    const dialog = await toQuote(page);
+    const viewport = page.viewportSize()!;
+    const pay = dialog.getByTestId('pay');
+    // The quote, its mentions and the actions are taller than the screen: the content scrolls
+    // under the actions, which stay above the bottom edge.
+    await expect(pay).toBeInViewport({ ratio: 1 });
+    const actions = dialog.locator('[data-dialog-actions]');
+    await expect(async () => {
+      // At the bottom edge of the sheet, inside its border of 1 px.
+      const box = (await actions.boundingBox())!;
+      expect(Math.round(box.y + box.height)).toBeGreaterThanOrEqual(viewport.height - 1);
+    }).toPass();
+    await dialog.evaluate((element) => element.scrollTo(0, 0));
+    await expect(pay).toBeInViewport({ ratio: 1 });
+    await page.goBack();
+    await expect(dialog).toHaveAttribute('data-step', 'method');
+    await expect(dialog.getByRole('button', { name: 'Continuer' })).toBeInViewport({ ratio: 1 });
+  });
 });

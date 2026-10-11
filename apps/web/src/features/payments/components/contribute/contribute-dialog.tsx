@@ -11,7 +11,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { parseAsString, useQueryState } from 'nuqs';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, Dialog, DialogContent, Loading, Skeleton } from '@/components/ui';
+import { Button, Dialog, DialogActions, DialogContent, Loading, Skeleton } from '@/components/ui';
 import { useCurrentMember } from '@/features/identity';
 import { type JourneyKind, type JourneyStep, neighbourStep } from '../../lib/journey';
 import type { ContributeProject } from './contribute-entry';
@@ -185,6 +185,13 @@ function Journey({
     void setInterest('1');
   }
 
+  // « Retour » of the last step, held by its own actions with « Payer » or « Déclarer ».
+  const backButton =
+    previous && !declared ? (
+      <Button type="button" variant="ghost" onClick={() => onStep(previous)}>
+        {t('back')}
+      </Button>
+    ) : null;
   let body;
   if (step === 'kind') {
     body = (
@@ -235,13 +242,16 @@ function Journey({
   } else if (choices.kind === 'love_money_commitment') {
     body = (
       <CommitmentStep
+        back={backButton}
         projectId={project.id}
         onDeclared={() => setDeclared(true)}
         onDone={onClose}
       />
     );
   } else {
-    body = <ReviewStep projectId={project.id} choices={choices} onStep={onStep} />;
+    body = (
+      <ReviewStep projectId={project.id} choices={choices} onStep={onStep} back={backButton} />
+    );
   }
 
   return (
@@ -261,19 +271,9 @@ function Journey({
       >
         <div className="grid gap-6">
           <div className="grid content-start gap-6">{body}</div>
-          {step === 'review' ? (
-            previous && !declared ? (
-              <Button
-                type="button"
-                variant="ghost"
-                className="justify-self-start"
-                onClick={() => onStep(previous)}
-              >
-                {t('back')}
-              </Button>
-            ) : null
-          ) : (
-            <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-between">
+          {/* The review holds its own actions (« Payer » and « Retour »), kept in view the same way. */}
+          {step === 'review' ? null : (
+            <DialogActions className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-between">
               {previous ? (
                 <Button type="button" variant="ghost" onClick={() => onStep(previous)}>
                   {t('back')}
@@ -296,7 +296,7 @@ function Journey({
                   {t('next')}
                 </Button>
               ) : null}
-            </div>
+            </DialogActions>
           )}
         </div>
       </DialogContent>

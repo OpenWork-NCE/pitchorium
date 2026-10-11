@@ -9,7 +9,16 @@ import type { Contribution, ContributionKind, ContributionQuote } from '@pitchor
 import { ShieldCheck } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { type ReactNode, useMemo, useRef, useState } from 'react';
-import { Alert, Button, DrawnCheck, Field, Loading, Skeleton, Textarea } from '@/components/ui';
+import {
+  Alert,
+  Button,
+  DialogActions,
+  DrawnCheck,
+  Field,
+  Loading,
+  Skeleton,
+  Textarea,
+} from '@/components/ui';
 import * as routes from '@/config/paths';
 import { useWithPrerequisites } from '@/features/access';
 import { Link } from '@/i18n/navigation';
@@ -150,10 +159,13 @@ export function ReviewStep({
   projectId,
   choices,
   onStep,
+  back = null,
 }: {
   projectId: string;
   choices: JourneyChoices;
   onStep: (step: JourneyStep) => void;
+  /** « Retour », beside « Payer » in the actions kept in view. */
+  back?: ReactNode;
 }) {
   const t = useTranslations('web.payments.journey.review');
   const locale = useLocale();
@@ -257,20 +269,23 @@ export function ReviewStep({
           {refusal.text}
         </Alert>
       ) : null}
-      <Button
-        type="button"
-        size="lg"
-        className="w-full"
-        loading={busy}
-        loadingLabel={t('paying')}
-        disabledReason={quote.data ? undefined : t('waitQuote')}
-        onClick={() => void pay()}
-        data-testid="pay"
-      >
-        {quote.data
-          ? t('pay', { amount: formatMoney(quote.data.amount, locale, 'financial') })
-          : t('payPending')}
-      </Button>
+      <DialogActions className="grid gap-2">
+        <Button
+          type="button"
+          size="lg"
+          className="w-full"
+          loading={busy}
+          loadingLabel={t('paying')}
+          disabledReason={quote.data ? undefined : t('waitQuote')}
+          onClick={() => void pay()}
+          data-testid="pay"
+        >
+          {quote.data
+            ? t('pay', { amount: formatMoney(quote.data.amount, locale, 'financial') })
+            : t('payPending')}
+        </Button>
+        {back ? <div className="justify-self-start">{back}</div> : null}
+      </DialogActions>
     </div>
   );
 }
@@ -283,8 +298,11 @@ export function CommitmentStep({
   projectId,
   onDeclared,
   onDone,
+  back = null,
 }: {
   projectId: string;
+  /** « Retour », beside « Déclarer » in the actions kept in view. */
+  back?: ReactNode;
   /** The commitment is recorded: nothing to go back to. */
   onDeclared: () => void;
   onDone: () => void;
@@ -354,14 +372,17 @@ export function CommitmentStep({
           {error}
         </Alert>
       ) : null}
-      <Button
-        type="button"
-        loading={busy}
-        loadingLabel={t('declaring')}
-        onClick={() => void declare()}
-      >
-        {t('declare')}
-      </Button>
+      <DialogActions className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-between">
+        {back ?? <span />}
+        <Button
+          type="button"
+          loading={busy}
+          loadingLabel={t('declaring')}
+          onClick={() => void declare()}
+        >
+          {t('declare')}
+        </Button>
+      </DialogActions>
     </div>
   );
 }
