@@ -159,3 +159,4 @@ Un fichier par décision, numéroté, au format Contexte / Décision / Conséque
 | [0159](0159-editorial-voice.md)                                       | Voix éditoriale                                                 |
 | [0160](0160-generated-demo-visuals.md)                                | Visuels de démonstration générés                                |
 | [0161](0161-content-adaptive-layouts.md)                              | Mises en page qui s'adaptent au contenu                         |
+| [0162](0162-product-previews-captured-in-the-app.md)                  | Aperçus du produit capturés dans l'application                  |

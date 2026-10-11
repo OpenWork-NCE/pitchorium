@@ -159,6 +159,28 @@
     --action-bar-height: calc(5.25rem + 1px + max(0.75rem, env(safe-area-inset-bottom)));
   }
 
+  /* A preview of the product that is the largest paint (ProductPreview, priority): the image of
+     the theme of the system loads first; a theme chosen against the system shows its own. */
+  @media (prefers-color-scheme: light) {
+    [data-theme='dark'] .preview-system {
+      display: none;
+    }
+
+    [data-theme='dark'] .preview-chosen-dark {
+      display: contents;
+    }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    [data-theme='light'] .preview-system {
+      display: none;
+    }
+
+    [data-theme='light'] .preview-chosen-light {
+      display: contents;
+    }
+  }
+
   @media (width < 64rem) {
     body:has([data-action-bar]) {
       padding-bottom: var(--action-bar-height);

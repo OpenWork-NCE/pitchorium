@@ -44,6 +44,7 @@
     "check:box-drawing": "sh scripts/check-box-drawing.sh",
     "check:changed": "sh scripts/check-changed.sh",
     "brand:sync": "pnpm --filter @pitchorium/web brand:sync",
+    "marketing:captures": "pnpm --filter @pitchorium/web marketing:captures",
     "storybook": "pnpm --filter @pitchorium/web storybook",
     "verify:clean": "bash scripts/verify-clean.sh",
     "prepare": "husky"

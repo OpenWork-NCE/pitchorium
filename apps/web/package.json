@@ -29,6 +29,7 @@
     "build-storybook": "storybook build --quiet",
     "review:captures": "sh scripts/review-captures.sh --update-snapshots=all",
     "review:check": "sh scripts/review-captures.sh",
+    "marketing:captures": "sh scripts/marketing-captures.sh",
     "brand:sync": "node scripts/brand-sync.mjs",
     "demo:visuals": "node scripts/demo-visuals.mjs"
   },
