@@ -155,7 +155,7 @@ function InvitationCard({ invitation }: { invitation: ReceivedInvitation }) {
           </Button>
           <Button
             type="button"
-            variant="ghost"
+            variant="outline"
             loading={pending === 'decline'}
             loadingLabel={t('declining')}
             onClick={() => void answer('decline')}
