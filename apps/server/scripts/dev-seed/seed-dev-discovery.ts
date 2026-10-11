@@ -41,9 +41,14 @@ interface DemoEvent {
   request: Omit<CreateEventRequest, 'startsAt' | 'endsAt' | 'organizationId' | 'projectId'>;
   /** Registered in this order: beyond the capacity, the waiting list. */
   attendees: string[];
+  /** Canceled after the registrations, with this reason. */
+  canceled?: string;
 }
 
-/** A past event, an upcoming one full with a waiting list, an upcoming public webinar. */
+/**
+ * A past event, an upcoming one full with a waiting list, an upcoming public webinar, a hybrid
+ * forum in the zone of Port-au-Prince, and a canceled one: every state and several zones.
+ */
 const EVENTS: readonly DemoEvent[] = [
   {
     organizer: 'aissatou',
@@ -115,6 +120,55 @@ const EVENTS: readonly DemoEvent[] = [
       visibility: 'public',
     },
     attendees: ['thierry', 'claudine'],
+  },
+  {
+    organizer: 'marieclaire',
+    inDays: 40,
+    hours: 4,
+    request: {
+      title: 'Forum Caraïbes-diaspora de l’économie solidaire',
+      description:
+        '## Programme\n\nTables rondes sur les **coopératives**, le tourisme solidaire et les transferts de la diaspora.',
+      format: 'hybrid',
+      timeZone: 'America/Port-au-Prince',
+      location: {
+        name: 'Parc historique de la canne',
+        address: null,
+        city: 'Jacmel',
+        countryCode: 'HT',
+      },
+      onlineUrl: 'https://meet.example.org/forum-caraibes',
+      language: 'fr',
+      sectorCodes: ['accommodation_food', 'finance_insurance'],
+      countryCodes: ['HT', 'FR'],
+      imageMediaId: null,
+      imageAlt: null,
+      capacity: 120,
+      visibility: 'public',
+    },
+    attendees: ['nadia', 'fatou'],
+  },
+  {
+    organizer: 'samuel',
+    inDays: 6,
+    hours: 2,
+    request: {
+      title: 'Rencontre des assureurs agricoles de Kano',
+      description: 'Échanges sur la micro-assurance récolte et les données météo.',
+      format: 'in_person',
+      timeZone: 'Africa/Lagos',
+      location: { name: 'Chambre de commerce', address: null, city: 'Kano', countryCode: 'NG' },
+      onlineUrl: null,
+      language: 'en',
+      sectorCodes: ['finance_insurance'],
+      countryCodes: ['NG'],
+      imageMediaId: null,
+      imageAlt: null,
+      capacity: 30,
+      visibility: 'members',
+    },
+    attendees: ['kofi', 'ama'],
+    canceled: 'La salle n’est plus disponible ; une nouvelle date sera annoncée.',
   },
 ];
 
@@ -226,6 +280,7 @@ export async function seedDevDiscovery(
       await registrations.register(event.id, userId(attendee), attendee !== 'rodrigue');
       result.registrations += 1;
     }
+    if (demo.canceled) await events.cancel(event.id, userId(demo.organizer), demo.canceled);
   }
   // The past event is completed, as the scheduled task of the worker does.
   clock.set(now);
@@ -292,6 +347,51 @@ export async function seedDevDiscovery(
       });
       result.missionEngagements += 1;
     }
+  }
+
+  // A mission in progress (Jean-Baptiste mentored by Koffi), an application declined (Grace on
+  // the financial review) and one canceled (Thierry on the distribution request).
+  const exportId = created.get('export-mentoring');
+  const jeanbaptiste = userId('jeanbaptiste');
+  if (
+    exportId &&
+    !(await missionsRepository.engagementsOfMember(jeanbaptiste, [exportId])).has(exportId)
+  ) {
+    clock.set(new Date(now.getTime() - 6 * DAY_MS));
+    const engagement = await missions.request(exportId, jeanbaptiste, {
+      message:
+        'Nous préparons nos premiers contrats au Ghana : un mentorat nous aiderait beaucoup.',
+      projectId: null,
+    });
+    clock.set(new Date(now.getTime() - 5 * DAY_MS));
+    await missions.answer(engagement.id, 'accepted', 'Volontiers, commençons lundi.');
+    result.missionEngagements += 1;
+  }
+  const grace = userId('grace');
+  if (
+    reviewId &&
+    !(await missionsRepository.engagementsOfMember(grace, [reviewId])).has(reviewId)
+  ) {
+    clock.set(new Date(now.getTime() - 4 * DAY_MS));
+    const engagement = await missions.request(reviewId, grace, {
+      message: 'Pourriez-vous relire le plan de nos kiosques de Kisumu ?',
+      projectId: null,
+    });
+    await missions.answer(engagement.id, 'declined', 'Mes deux places sont prises ce mois-ci.');
+    result.missionEngagements += 1;
+  }
+  const thierry = userId('thierry');
+  if (
+    requestId &&
+    !(await missionsRepository.engagementsOfMember(thierry, [requestId])).has(requestId)
+  ) {
+    clock.set(new Date(now.getTime() - 3 * DAY_MS));
+    const engagement = await missions.request(requestId, thierry, {
+      message: 'Je peux regarder vos marges de revendeurs.',
+      projectId: null,
+    });
+    await missions.cancel(engagement.id, thierry);
+    result.missionEngagements += 1;
   }
 
   // The search projection and the suggestions, from the facades.

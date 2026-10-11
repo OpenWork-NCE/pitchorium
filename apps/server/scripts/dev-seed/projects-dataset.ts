@@ -69,6 +69,8 @@ export interface DemoProject {
   rewards?: DemoReward[];
   /** Days before the seeding; absent for a draft. */
   publishedDaysAgo?: number;
+  /** An invitation to the team left pending (FRONT 7: answered from the notification). */
+  pendingMember?: { member: string; function: string };
   /** Paid contributions applied through the facade, with the reward taken by each. */
   /**
    * Contributions paid through the payments module and its simulated provider (ADR 0035), by a
@@ -202,6 +204,7 @@ export const DEMO_PROJECTS: readonly DemoProject[] = [
       },
     ],
     editor: { member: 'moussa', function: 'Responsable de la formation' },
+    pendingMember: { member: 'ama', function: 'Paiements mobiles' },
     interests: [
       {
         member: 'nadia',

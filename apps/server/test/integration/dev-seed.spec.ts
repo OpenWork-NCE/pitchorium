@@ -295,16 +295,16 @@ describe('development data', () => {
       expect(await counts()).toEqual(withMessaging);
       // Events, missions and the search index, through the services and the facades.
       expect(await seedDevDiscovery(context, clock)).toMatchObject({
-        events: 3,
-        registrations: 10,
+        events: 5,
+        registrations: 14,
         missions: 3,
-        missionEngagements: 2,
+        missionEngagements: 5,
       });
       const registrations = await query<{ status: string; count: string }>(
         `SELECT status, count(*) FROM events.registrations GROUP BY status ORDER BY status`,
       );
       expect(registrations.map((row) => [row.status, Number(row.count)])).toEqual([
-        ['registered', 8],
+        ['registered', 12],
         ['waitlisted', 2],
       ]);
       const [past] = await query<{ status: string }>(

@@ -289,6 +289,13 @@ export async function seedDevProjects(
       });
       await team.accept(projectId, userId(demo.editor.member));
     }
+    if (demo.pendingMember) {
+      await get(TeamService).invite(projectId, ownerId, {
+        handle: handleOf(demo.pendingMember.member),
+        role: 'editor',
+        function: demo.pendingMember.function,
+      });
+    }
     if (!publishedAt) return;
 
     at(0);
