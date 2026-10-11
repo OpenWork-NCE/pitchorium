@@ -4,12 +4,13 @@ import { setRequestLocale } from 'next-intl/server';
 import { SingleColumnLayout } from '@/components/layout/page-layouts';
 import * as routes from '@/config/paths';
 import { siteConfig } from '@/config/site';
-import { LazyContributeEntry, VisitorContribute } from '@/features/payments';
+import { VisitorContribute } from '@/features/payments';
 import { countryNames, ProjectPage, projectJsonLd } from '@/features/projects';
 import { asLocale } from '@/i18n/routing';
 import { resourceMetadata } from '@/lib/resources/metadata';
 import { jsonLd } from '@/lib/seo/json-ld';
 import { readMemberContext, readProject } from './read-project';
+import { ContributeEntryIsland, MemberActionsIsland } from './islands';
 
 export async function generateMetadata({
   params,
@@ -64,8 +65,8 @@ export default async function Page({ params }: PageProps<'/[locale]/projects/[sl
       ? null
       : resource.view === 'member'
         ? {
-            block: <LazyContributeEntry project={entry} layout="stack" />,
-            bar: <LazyContributeEntry project={entry} layout="bar" />,
+            block: <ContributeEntryIsland project={entry} layout="stack" />,
+            bar: <ContributeEntryIsland project={entry} layout="bar" />,
           }
         : resource.view === 'visitor' && open
           ? { block: <VisitorContribute path={path} />, bar: <VisitorContribute path={path} /> }
@@ -78,6 +79,7 @@ export default async function Page({ params }: PageProps<'/[locale]/projects/[sl
         view={resource.view}
         url={url}
         path={path}
+        islands={{ memberActions: MemberActionsIsland }}
         follow={context.follow}
         parity={context.parity}
         contribute={contribute}

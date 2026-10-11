@@ -6,7 +6,7 @@ import { SingleColumnLayout } from '@/components/layout/page-layouts';
 import { Button } from '@/components/ui';
 import * as routes from '@/config/paths';
 import { siteConfig } from '@/config/site';
-import { LazyRelationshipActions, ProfileViewsSummary } from '@/features/network';
+import { ProfileViewsSummary } from '@/features/network';
 import { ActivitySection } from '@/features/content';
 import { IntroduceButton, MessageButton } from '@/features/messaging';
 import { MemberProfile, personJsonLd } from '@/features/profiles';
@@ -18,6 +18,7 @@ import { withRedirect } from '@/lib/auth/redirect';
 import { getCurrentMember } from '@/lib/auth/session';
 import { resourceMetadata } from '@/lib/resources/metadata';
 import { jsonLd } from '@/lib/seo/json-ld';
+import { MemberActivityIsland, RelationshipActionsIsland } from './islands';
 import { readProfile as read } from './read-profile';
 
 export async function generateMetadata({
@@ -70,7 +71,7 @@ export default async function Page({ params }: PageProps<'/[locale]/members/[han
       </Button>
     ) : relationship && !owner ? (
       <div className="flex flex-wrap items-start gap-2">
-        <LazyRelationshipActions
+        <RelationshipActionsIsland
           handle={profile.handle}
           name={profile.displayName}
           relationship={relationship}
@@ -106,6 +107,7 @@ export default async function Page({ params }: PageProps<'/[locale]/members/[han
         <ActivitySection
           author={{ kind: 'member', handle: profile.handle }}
           signedIn={member !== null}
+          memberActivity={MemberActivityIsland}
         />
       </div>
       {resource.view === 'visitor' ? (

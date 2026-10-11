@@ -7,7 +7,6 @@ import { Button } from '@/components/ui';
 import * as routes from '@/config/paths';
 import { siteConfig } from '@/config/site';
 import { ActivitySection } from '@/features/content';
-import { LazyFollowButton } from '@/features/network';
 import { OrganizationProfile, organizationJsonLd } from '@/features/organizations';
 import { Link } from '@/i18n/navigation';
 import { asLocale } from '@/i18n/routing';
@@ -16,6 +15,7 @@ import { withRedirect } from '@/lib/auth/redirect';
 import { resourceMetadata } from '@/lib/resources/metadata';
 import { jsonLd } from '@/lib/seo/json-ld';
 import { readOrganization } from './read-organization';
+import { FollowButtonIsland, MemberActivityIsland } from './islands';
 
 export async function generateMetadata({
   params,
@@ -62,7 +62,7 @@ export default async function Page({ params }: PageProps<'/[locale]/organization
         <Link href={withRedirect(routes.signIn, path)}>{t('joinToFollow')}</Link>
       </Button>
     ) : follow ? (
-      <LazyFollowButton
+      <FollowButtonIsland
         type="organization"
         targetKey={organization.id}
         name={organization.name}
@@ -81,6 +81,7 @@ export default async function Page({ params }: PageProps<'/[locale]/organization
         <ActivitySection
           author={{ kind: 'organization', slug: organization.slug }}
           signedIn={resource.view === 'member'}
+          memberActivity={MemberActivityIsland}
         />
       </div>
       {resource.view === 'visitor' ? (
