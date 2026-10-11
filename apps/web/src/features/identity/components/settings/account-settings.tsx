@@ -5,7 +5,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Badge, Button, DescriptionList, Skeleton } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { authCall, useAuthFailureMessage } from '../../lib/auth-call';
 import { absoluteUrl } from '../auth/targets';
 import { useCurrentMember } from '../current-member';

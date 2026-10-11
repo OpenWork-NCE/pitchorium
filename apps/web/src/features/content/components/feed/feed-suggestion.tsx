@@ -6,7 +6,7 @@ import { useTranslations } from 'next-intl';
 import type { ComponentProps } from 'react';
 import { Card, Heading } from '@/components/ui';
 import { SuggestionsList, useSuggestionReason } from '@/features/discovery';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { Link } from '@/i18n/navigation';
 
 type Position = Omit<ComponentProps<'article'>, 'children'>;

@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { Avatar } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { Link } from '@/i18n/navigation';
 
 /** What a row of a list of the network shows: a member, an organization or a project. */

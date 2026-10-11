@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { SingleColumnLayout } from '@/components/layout/page-layouts';
 import { Heading, Link } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { TimeLog } from '@/features/engagement';
 import { asLocale } from '@/i18n/routing';
 import { memberSupportedProjects } from '../read-supported';

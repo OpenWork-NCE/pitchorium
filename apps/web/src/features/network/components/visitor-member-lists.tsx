@@ -2,7 +2,7 @@ import { ApiProblemError } from '@pitchorium/api-client';
 import { Lock } from 'lucide-react';
 import { getFormatter, getTranslations } from 'next-intl/server';
 import { EmptyState } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { Link } from '@/i18n/navigation';
 import { configureServerApi } from '@/lib/api/server';
 import { cn } from '@/lib/cn';

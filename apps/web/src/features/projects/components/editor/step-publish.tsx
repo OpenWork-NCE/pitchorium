@@ -14,7 +14,7 @@ import {
   Link,
   Text,
 } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { useAccess, useWithPrerequisites } from '@/features/access';
 import { useRouter } from '@/i18n/navigation';
 import { missingSteps } from '../../lib/wizard-steps';

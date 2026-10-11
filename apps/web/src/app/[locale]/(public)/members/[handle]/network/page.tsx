@@ -4,7 +4,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { ClientData } from '@/components/layout/client-data';
 import { SingleColumnLayout } from '@/components/layout/page-layouts';
 import { Heading, Link } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import {
   LazyMemberLists,
   VISITOR_FOLLOW_TYPES,

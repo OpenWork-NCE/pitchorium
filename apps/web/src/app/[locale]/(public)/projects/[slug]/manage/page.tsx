@@ -5,7 +5,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { ScopedMessages } from '@/components/layout/scoped-messages';
 import { SingleColumnLayout } from '@/components/layout/page-layouts';
 import { Heading, Link } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import {
   LazyCollectionBanner,
   LazyProjectContributions,

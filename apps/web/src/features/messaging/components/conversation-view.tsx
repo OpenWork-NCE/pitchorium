@@ -5,7 +5,7 @@ import { ArrowLeft, BellOff, ShieldOff } from 'lucide-react';
 import { useLocale, useTimeZone, useTranslations } from 'next-intl';
 import { lazy, Suspense, useMemo } from 'react';
 import { Avatar, AvatarGroup, Button, EmptyState, ErrorState, IconButton } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { useCurrentMember } from '@/features/identity';
 import { Link } from '@/i18n/navigation';
 import { formatNames } from '@/lib/format/list';

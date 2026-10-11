@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 import { initialCounters } from '@/components/layout/member/initial-counters';
 import { MemberShell } from '@/components/layout/member/member-shell';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { getCurrentMember } from '@/lib/auth/session';
 
 /** Member space: a valid session is required (`GET /v1/me`), the realtime channel is open. */

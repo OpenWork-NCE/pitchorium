@@ -4,7 +4,7 @@ import type { AuthConfigurationDtoOutput } from '@pitchorium/api-client';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Button } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { authCall, useAuthFailureMessage } from '../../lib/auth-call';
 import { absoluteUrl, continuePath } from './targets';
 

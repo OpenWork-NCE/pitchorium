@@ -14,7 +14,7 @@ import {
   Text,
   VerifiedBadge,
 } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { MemberHoverCard } from '@/features/profiles';
 import { Link as LocaleLink } from '@/i18n/navigation';
 import { countryName } from '@/lib/format/countries';

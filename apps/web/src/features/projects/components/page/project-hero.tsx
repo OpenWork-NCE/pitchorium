@@ -3,7 +3,7 @@ import { getImageProps } from 'next/image';
 import { getTranslations } from 'next-intl/server';
 import type { CSSProperties, ReactNode } from 'react';
 import { Avatar, Badge, Heading, Text, VerifiedBadge } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { siteConfig } from '@/config/site';
 import { MemberHoverCard } from '@/features/profiles';
 import { Link } from '@/i18n/navigation';

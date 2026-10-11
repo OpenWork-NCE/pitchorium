@@ -13,7 +13,7 @@ import {
   Text,
   VerifiedBadge,
 } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { Link as LocaleLink } from '@/i18n/navigation';
 import { countryName } from '@/lib/format/countries';
 import { formatNames } from '@/lib/format/list';

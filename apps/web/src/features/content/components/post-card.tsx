@@ -3,7 +3,7 @@ import { Repeat2 } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import type { ComponentProps, ReactNode } from 'react';
 import { Button, Card, Notice } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { Link } from '@/i18n/navigation';
 import { cn } from '@/lib/cn';
 import { withRedirect } from '@/lib/auth/redirect';

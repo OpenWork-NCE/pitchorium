@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { preload } from 'react-dom';
 import { BrandLogo } from '@/components/brand';
 import { ThemeToggle } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { LocaleSwitcher } from '@/features/localization';
 import { Link } from '@/i18n/navigation';
 import { Main } from '../page-layouts';

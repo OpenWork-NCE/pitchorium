@@ -13,7 +13,7 @@ import {
   Separator,
   ThemeSelector,
 } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { useCurrentMember, useSignOut } from '@/features/identity';
 import { LocaleSwitcher } from '@/features/localization';
 import { Link, usePathname } from '@/i18n/navigation';

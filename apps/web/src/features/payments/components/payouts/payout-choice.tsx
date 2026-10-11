@@ -24,7 +24,7 @@ import {
   Input,
   RadioGroup,
 } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { Link } from '@/i18n/navigation';
 import { withRedirect } from '@/lib/auth/redirect';
 import { countryName, countryOptions } from '@/lib/format/countries';

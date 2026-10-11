@@ -1,5 +1,6 @@
 import type { MetadataRoute } from 'next';
-import { ADMIN_SEGMENTS, MEMBER_SEGMENTS, routes } from '@/config/routes';
+import * as routes from '@/config/paths';
+import { ADMIN_SEGMENTS, MEMBER_SEGMENTS } from '@/config/routes';
 import { siteConfig } from '@/config/site';
 
 const PRIVATE_SEGMENTS = [...MEMBER_SEGMENTS, ...ADMIN_SEGMENTS, routes.health.slice(1)];

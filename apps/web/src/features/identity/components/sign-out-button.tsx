@@ -5,7 +5,7 @@ import { LogOut } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useTransition } from 'react';
 import { Button } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { useRouter } from '@/i18n/navigation';
 import { clearComposerDraft } from '@/lib/drafts/composer-drafts';
 import { sendPendingViews } from '@/lib/views/pending-views';

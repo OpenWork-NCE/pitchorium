@@ -1,7 +1,7 @@
 import { HandHeart } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 import { Button } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { Link } from '@/i18n/navigation';
 import { withRedirect } from '@/lib/auth/redirect';
 

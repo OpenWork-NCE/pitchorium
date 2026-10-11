@@ -2,7 +2,7 @@ import type { Locale, Project } from '@pitchorium/contracts';
 import { CheckCircle2, Circle } from 'lucide-react';
 import { getFormatter, getTranslations } from 'next-intl/server';
 import { Avatar, Badge, Card, Link, MarkdownContent, Notice, Text } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { MemberHoverCard } from '@/features/profiles';
 import { formatMoney } from '@/lib/format/money';
 import { pluralOf } from '@/lib/i18n/plural-of';

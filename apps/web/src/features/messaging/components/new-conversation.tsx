@@ -6,7 +6,7 @@ import { ArrowLeft, Inbox, ShieldOff } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Avatar, Button, Callout, EmptyState, IconButton } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { useWithPrerequisites } from '@/features/access';
 import { Link, useRouter } from '@/i18n/navigation';
 import { useMessagingProblem } from '../hooks/use-messaging-problem';

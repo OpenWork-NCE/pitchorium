@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 import { DataProvider } from '@/components/layout/data-provider';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { getCurrentMember } from '@/lib/auth/session';
 import { withRedirect } from '@/lib/auth/redirect';
 

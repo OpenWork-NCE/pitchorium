@@ -4,7 +4,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { ScopedMessages } from '@/components/layout/scoped-messages';
 import { SingleColumnLayout } from '@/components/layout/page-layouts';
 import { Heading, Text } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { CreateProject } from '@/features/projects';
 import { asLocale } from '@/i18n/routing';
 import { withRedirect } from '@/lib/auth/redirect';

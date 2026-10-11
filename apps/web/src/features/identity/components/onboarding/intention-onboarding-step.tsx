@@ -1,7 +1,7 @@
 'use client';
 
 import type { Intention } from '@pitchorium/contracts';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { useRouter } from '@/i18n/navigation';
 import { IntentionStep } from './intention-step';
 import { OnboardingFrame } from './onboarding-frame';

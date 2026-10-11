@@ -35,7 +35,7 @@ import {
   IconButton,
   notify,
 } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { useSendAsMessage } from '@/lib/actions/send-as-message';
 import { useProblemText } from './use-problem-text';
 

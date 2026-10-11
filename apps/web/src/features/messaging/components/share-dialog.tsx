@@ -19,7 +19,7 @@ import {
   notify,
   Textarea,
 } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { useWithPrerequisites } from '@/features/access';
 import { useRouter } from '@/i18n/navigation';
 import { formatNames } from '@/lib/format/list';

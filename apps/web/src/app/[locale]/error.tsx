@@ -1,7 +1,7 @@
 'use client';
 
 import { ErrorBoundaryView } from '@/components/layout/states/error-boundary';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 
 /** Unexpected error of a page outside the route groups. */
 export default function LocaleError(props: {

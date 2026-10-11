@@ -1,5 +1,5 @@
 import { notFound, redirect } from 'next/navigation';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { resumeStep } from '@/features/projects';
 import { asLocale } from '@/i18n/routing';
 import { withRedirect } from '@/lib/auth/redirect';

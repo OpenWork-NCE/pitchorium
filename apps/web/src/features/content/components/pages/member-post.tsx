@@ -3,7 +3,7 @@
 import type { Post } from '@pitchorium/contracts';
 import { useLocale } from 'next-intl';
 import { useState } from 'react';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { MemberHoverCard } from '@/features/profiles';
 import { useRouter } from '@/i18n/navigation';
 import { cn } from '@/lib/cn';

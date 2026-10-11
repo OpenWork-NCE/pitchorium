@@ -4,7 +4,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { initialCounters } from '@/components/layout/member/initial-counters';
 import { SingleColumnLayout } from '@/components/layout/page-layouts';
 import { Heading } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { NetworkPage } from '@/features/network';
 import { asLocale } from '@/i18n/routing';
 import { getCurrentMember } from '@/lib/auth/session';

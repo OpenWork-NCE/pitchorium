@@ -2,7 +2,7 @@ import { getTranslations } from 'next-intl/server';
 import type { ReactNode } from 'react';
 import { BrandSymbol } from '@/components/brand';
 import { AnnouncerProvider, Badge, ThemeToggle } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { SignOutButton } from '@/features/identity';
 import { Link } from '@/i18n/navigation';
 import { DataProvider } from '../data-provider';

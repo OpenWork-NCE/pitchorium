@@ -30,7 +30,7 @@ import {
   useApplyProblem,
   useZodForm,
 } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { useRouter } from '@/i18n/navigation';
 import { changeOrganizationSlugRequest, updateOrganizationRequest } from '../../lib/schemas';
 import { orNull } from '../../lib/values';

@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { ScopedMessages } from '@/components/layout/scoped-messages';
 import { SingleColumnLayout } from '@/components/layout/page-layouts';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { siteConfig } from '@/config/site';
 import { ProjectEditor, ProjectPage } from '@/features/projects';
 import { asLocale } from '@/i18n/routing';

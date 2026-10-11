@@ -25,7 +25,7 @@ import {
   Skeleton,
   FilterButtons,
 } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { useCounters } from '@/features/notifications';
 import { Link } from '@/i18n/navigation';
 import { cn } from '@/lib/cn';

@@ -8,7 +8,7 @@ import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { SingleColumnLayout } from '@/components/layout/page-layouts';
 import { Heading } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { EngagementDashboard } from '@/features/engagement';
 import { MyContributions, MyOffline } from '@/features/payments';
 import { Link } from '@/i18n/navigation';

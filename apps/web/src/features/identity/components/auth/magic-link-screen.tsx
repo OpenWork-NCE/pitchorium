@@ -4,7 +4,7 @@ import type { AuthConfigurationDtoOutput } from '@pitchorium/api-client';
 import { emailRequest } from '../../lib/auth-schemas';
 import { useLocale, useTranslations } from 'next-intl';
 import { Button, Form, FormActions, FormField, Input, useZodForm } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { Link, useRouter } from '@/i18n/navigation';
 import { withRedirect } from '@/lib/auth/redirect';
 import { useAuthFailureMessage } from '../../lib/auth-call';

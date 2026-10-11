@@ -1,7 +1,7 @@
 import type { DiscoveryCard } from '@pitchorium/contracts';
 import type { ReactNode } from 'react';
 import { Avatar } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { Link } from '@/i18n/navigation';
 import { cn } from '@/lib/cn';
 

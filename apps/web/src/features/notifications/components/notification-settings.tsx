@@ -21,7 +21,7 @@ import {
   Text,
   useAnnounce,
 } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { cn } from '@/lib/cn';
 import { sectionsOf } from '../lib/sections';
 

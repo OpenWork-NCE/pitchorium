@@ -1,4 +1,4 @@
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { withRedirect } from '@/lib/auth/redirect';
 
 /**

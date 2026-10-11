@@ -2,7 +2,7 @@ import type { Contribution } from '@pitchorium/contracts';
 import { getLocale, getTranslations } from 'next-intl/server';
 import type { ReactNode } from 'react';
 import { Badge, Button, DescriptionList, Heading, Link, Notice } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { formatMoney } from '@/lib/format/money';
 import { formatDateTimeShort } from '../../lib/format';
 import { statusTone } from '../../lib/status';

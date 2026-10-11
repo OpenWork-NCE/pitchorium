@@ -30,7 +30,7 @@ import {
   Text,
   useAnnounce,
 } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { useCurrentMember } from '@/features/identity';
 import { useRouter } from '@/i18n/navigation';
 import { PROJECT_LIMITS } from '../../lib/limits';

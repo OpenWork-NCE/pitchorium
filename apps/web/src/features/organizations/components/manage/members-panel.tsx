@@ -35,7 +35,7 @@ import {
   useApplyProblem,
   useZodForm,
 } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { useCurrentMember } from '@/features/identity';
 import { MemberHoverCard } from '@/features/profiles';
 import { useRouter } from '@/i18n/navigation';

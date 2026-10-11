@@ -3,7 +3,7 @@
 import type { CountersDtoOutput } from '@pitchorium/api-client';
 import { useTranslations } from 'next-intl';
 import { BrandSymbol } from '@/components/brand';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { GlobalSearch } from '@/features/discovery';
 import { UserMenu } from '@/features/identity';
 import { useCounters } from '@/features/notifications';

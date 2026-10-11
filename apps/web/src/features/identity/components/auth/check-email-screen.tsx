@@ -5,7 +5,7 @@ import { MailCheck } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { Link } from '@/i18n/navigation';
 import { withRedirect } from '@/lib/auth/redirect';
 import { type AuthOutcome, authCall, useAuthFailureMessage } from '../../lib/auth-call';

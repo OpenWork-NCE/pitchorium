@@ -14,7 +14,7 @@ import {
   useApplyProblem,
   useZodForm,
 } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { useRouter } from '@/i18n/navigation';
 import type { EditorProps } from '../profile-editor';
 import { EditorDialog } from './editor-dialog';

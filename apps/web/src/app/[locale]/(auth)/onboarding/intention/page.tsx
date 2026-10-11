@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { IntentionOnboardingStep } from '@/features/identity';
 import { asLocale } from '@/i18n/routing';
 import { getCurrentMember } from '@/lib/auth/session';

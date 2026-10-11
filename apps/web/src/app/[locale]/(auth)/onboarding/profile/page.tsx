@@ -2,7 +2,7 @@ import { meControllerProfile, profilesControllerReferenceData } from '@pitchoriu
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { ProfileOnboardingStep } from '@/features/identity';
 import { asLocale } from '@/i18n/routing';
 import { configureServerApi } from '@/lib/api/server';

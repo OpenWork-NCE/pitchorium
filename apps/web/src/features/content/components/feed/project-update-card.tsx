@@ -2,7 +2,7 @@ import type { ProjectUpdateFeedEntry } from '@pitchorium/contracts';
 import { Megaphone } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { Avatar, Card, RelativeTime, Truncate } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { Link } from '@/i18n/navigation';
 
 /**

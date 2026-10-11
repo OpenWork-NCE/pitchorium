@@ -1,7 +1,7 @@
 import { Construction } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 import { EmptyState } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { AdminPage } from './admin-page';
 
 type Section = 'dashboard' | 'moderation' | 'members' | 'flags';

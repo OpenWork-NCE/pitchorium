@@ -12,7 +12,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Button, Card, Checkbox, EmptyState, Heading, Text, useAnnounce } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { useRouter } from '@/i18n/navigation';
 import { useProblemText } from './shared/use-problem-text';
 

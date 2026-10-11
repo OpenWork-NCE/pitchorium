@@ -3,7 +3,7 @@
 import { projectsControllerCreate } from '@pitchorium/api-client';
 import { useTranslations } from 'next-intl';
 import { Button, Form, FormActions, useApplyProblem, useZodForm } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { useWithPrerequisites } from '@/features/access';
 import { useRouter } from '@/i18n/navigation';
 import { EssentialsFields, type EssentialsValues } from './essentials-fields';

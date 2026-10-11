@@ -1,4 +1,4 @@
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { authCall } from '../../lib/auth-call';
 import { absoluteUrl, continuePath } from './targets';
 

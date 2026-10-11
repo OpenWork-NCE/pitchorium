@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { Link, usePathname } from '@/i18n/navigation';
 import { cn } from '@/lib/cn';
 import { useCurrentMember } from '../current-member';

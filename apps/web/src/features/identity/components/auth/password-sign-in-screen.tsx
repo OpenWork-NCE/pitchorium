@@ -12,7 +12,7 @@ import {
   PasswordInput,
   useZodForm,
 } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { Link, useRouter } from '@/i18n/navigation';
 import { withRedirect } from '@/lib/auth/redirect';
 import { authCall, useAuthFailureMessage } from '../../lib/auth-call';

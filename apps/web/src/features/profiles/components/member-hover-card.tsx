@@ -3,7 +3,7 @@
 import type { MemberCard } from '@pitchorium/contracts';
 import { lazy, type ReactNode, Suspense, useState } from 'react';
 import { Avatar, HoverCard, Skeleton } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { Link } from '@/i18n/navigation';
 
 /** The relation, read at the first opening: its query (and the client of the api) loads then. */

@@ -12,7 +12,7 @@ import { Check, Clock, X } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { AvatarGroup, Badge, Button, Card, notify, RelativeTime } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { Link } from '@/i18n/navigation';
 import { useMessagingProblem } from '../hooks/use-messaging-problem';
 

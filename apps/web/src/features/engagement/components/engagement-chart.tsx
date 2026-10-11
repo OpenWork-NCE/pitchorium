@@ -4,7 +4,7 @@ import type { ImpactDashboard } from '@pitchorium/contracts';
 import { useLocale, useTranslations } from 'next-intl';
 import { BarChart, Button, Link } from '@/components/ui';
 import { peakIndex } from '@/components/ui/chart-scale';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { formatCompactMoney, formatMoney } from '@/lib/format/money';
 import { monthlyValues } from '../lib/chart';
 

@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { notFound, permanentRedirect } from 'next/navigation';
 import { setRequestLocale } from 'next-intl/server';
 import { SingleColumnLayout } from '@/components/layout/page-layouts';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { siteConfig } from '@/config/site';
 import { LazyContributeEntry, VisitorContribute } from '@/features/payments';
 import { countryNames, ProjectPage, projectJsonLd } from '@/features/projects';

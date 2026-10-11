@@ -17,7 +17,7 @@ import {
   RelativeTime,
   Skeleton,
 } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { Link } from '@/i18n/navigation';
 import { usePlural } from '@/lib/i18n/plural';
 import { usePaymentProblem } from '../shared/use-payment-problem';

@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { getCurrentMember } from '@/lib/auth/session';
 
 /** « Profil » of the member space: the page of the member at its one address (ADR 0101). */

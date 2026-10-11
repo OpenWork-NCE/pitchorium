@@ -1,7 +1,7 @@
 import { accessControllerPrerequisites } from '@pitchorium/api-client';
 import { notFound, redirect } from 'next/navigation';
 import { AdminShell } from '@/components/layout/admin/admin-shell';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { configureServerApi } from '@/lib/api/server';
 import { getCurrentMember } from '@/lib/auth/session';
 

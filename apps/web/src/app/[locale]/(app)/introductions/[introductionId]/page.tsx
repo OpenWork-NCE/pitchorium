@@ -5,7 +5,7 @@ import { notFound } from 'next/navigation';
 import { SingleColumnLayout } from '@/components/layout/page-layouts';
 import { ScopedMessages } from '@/components/layout/scoped-messages';
 import { Heading, Link } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { IntroductionCard } from '@/features/messaging';
 import { asLocale } from '@/i18n/routing';
 import { configureServerApi } from '@/lib/api/server';

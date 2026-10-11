@@ -16,7 +16,7 @@ import {
   Tabs,
   TabsPanel,
 } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { Link } from '@/i18n/navigation';
 import { REACTIONS } from '../../lib/reactions';
 import { REACTION_ICONS } from '../reaction-summary';

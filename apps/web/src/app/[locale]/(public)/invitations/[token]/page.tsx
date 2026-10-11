@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
 import { SingleColumnLayout } from '@/components/layout/page-layouts';
 import { Avatar, Button, Card, EmptyState, Heading, Text, VerifiedBadge } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { InvitationResponse } from '@/features/organizations';
 import { Link } from '@/i18n/navigation';
 import { asLocale } from '@/i18n/routing';

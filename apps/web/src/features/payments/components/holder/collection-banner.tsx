@@ -3,7 +3,7 @@
 import { useAccessControllerPrerequisites } from '@pitchorium/api-client';
 import { useLocale, useTranslations } from 'next-intl';
 import { Alert, Button } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { Link } from '@/i18n/navigation';
 import { formatList } from '@/lib/format/list';
 import { usePaymentOptions } from '../contribute/use-payment-options';

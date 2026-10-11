@@ -28,7 +28,7 @@ import {
   notify,
   useAnnounce,
 } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { MemberHoverCard } from '@/features/profiles';
 import { Link } from '@/i18n/navigation';
 import { CursorList, useCursorList } from './cursor-list';

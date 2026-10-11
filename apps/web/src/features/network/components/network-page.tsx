@@ -25,7 +25,7 @@ import {
   TabsPanel,
   useAnnounce,
 } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { SuggestionsList } from '@/features/discovery';
 import { Link } from '@/i18n/navigation';
 import { usePlural } from '@/lib/i18n/plural';

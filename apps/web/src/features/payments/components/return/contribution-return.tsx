@@ -12,7 +12,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { AnimatedNumber } from '@/components/motion';
 import { Alert, Button, DrawnCheck, Heading, Notice, Spinner } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { Link } from '@/i18n/navigation';
 import { formatMoney } from '@/lib/format/money';
 import { createPoller, RETURN_POLL_INTERVAL_MS, RETURN_POLL_MAX_MS } from '../../lib/poll';

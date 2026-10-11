@@ -32,7 +32,7 @@ import {
   DropdownMenuTrigger,
   useShortcutsHelp,
 } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { useMemberLocaleChange } from '@/features/localization';
 import { Link } from '@/i18n/navigation';
 import { AccountButton } from './account-button';

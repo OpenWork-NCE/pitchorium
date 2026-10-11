@@ -1,5 +1,5 @@
 import { notFound, permanentRedirect, redirect } from 'next/navigation';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import type { WizardStep } from '@/features/projects';
 import type { Locale } from '@pitchorium/contracts';
 import { withRedirect } from '@/lib/auth/redirect';

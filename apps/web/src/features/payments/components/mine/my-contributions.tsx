@@ -20,7 +20,7 @@ import {
   RelativeTime,
   Skeleton,
 } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { Link } from '@/i18n/navigation';
 import { formatMoney } from '@/lib/format/money';
 import { statusTone } from '../../lib/status';

@@ -2,7 +2,7 @@ import { organizationsControllerMine } from '@pitchorium/api-client';
 import { Plus } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 import { Avatar, Button, Card, EmptyState, Heading, Text, VerifiedBadge } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { Link } from '@/i18n/navigation';
 import { canManage } from '../lib/roles';
 

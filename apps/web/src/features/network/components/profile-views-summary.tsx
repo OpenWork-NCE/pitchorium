@@ -4,7 +4,7 @@ import {
 } from '@pitchorium/api-client';
 import { getTranslations } from 'next-intl/server';
 import { Alert, Card, Count, Heading, Link } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 
 async function Periods({ summary }: { summary: ProfileViewsSummaryDtoOutput }) {
   const t = await getTranslations('web.network.views');

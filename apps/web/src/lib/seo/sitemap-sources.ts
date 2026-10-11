@@ -5,7 +5,7 @@ import {
   profilesControllerPublicPages,
   projectsControllerPublicShowcase,
 } from '@pitchorium/api-client';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { configureServerApi } from '@/lib/api/server';
 
 /** Pages read per source: 100 items each, 2 000 addresses at most per kind. */

@@ -13,7 +13,7 @@ import {
   Input,
   useZodForm,
 } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { Link } from '@/i18n/navigation';
 import { authCall, useAuthFailureMessage } from '../../lib/auth-call';
 import { AuthScreen } from './auth-screen';

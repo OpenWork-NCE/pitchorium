@@ -5,7 +5,7 @@ import { Handshake, MessageSquare } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { lazy, Suspense, useState } from 'react';
 import { Button } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { Link } from '@/i18n/navigation';
 
 const loadIntroduce = () => import('./introduce-dialog');

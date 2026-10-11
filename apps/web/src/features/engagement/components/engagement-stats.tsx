@@ -3,7 +3,7 @@
 import type { ImpactDashboard } from '@pitchorium/contracts';
 import { useLocale, useTranslations } from 'next-intl';
 import { Link, Stat } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { formatMoney } from '@/lib/format/money';
 import { hoursAndMinutes } from '../lib/chart';
 

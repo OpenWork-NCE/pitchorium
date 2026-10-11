@@ -14,7 +14,7 @@ import { useTranslations } from 'next-intl';
 import { useEffect, useId, useRef } from 'react';
 import { SharedIndicator } from '@/components/motion';
 import { CountBadge, useAnnounce, useShortcuts } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { Link, usePathname, useRouter } from '@/i18n/navigation';
 import { cn } from '@/lib/cn';
 import { usePlural } from '@/lib/i18n/plural';

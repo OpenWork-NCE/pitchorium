@@ -25,7 +25,7 @@ import {
   useAnnounce,
   VerifiedBadge,
 } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { useWithPrerequisites } from '@/features/access';
 import { Link, useRouter } from '@/i18n/navigation';
 import { useOrganizationProblem } from './manage/use-organization-problem';

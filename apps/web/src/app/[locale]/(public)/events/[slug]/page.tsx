@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { cache } from 'react';
 import { ResourcePlaceholder } from '@/components/layout/resource-placeholder';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { asLocale } from '@/i18n/routing';
 import { configureServerApi } from '@/lib/api/server';
 import { getCurrentMember } from '@/lib/auth/session';

@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { getCurrentMember } from '@/lib/auth/session';
 import { REDIRECT_PARAM, safeRedirect, withRedirect } from '@/lib/auth/redirect';
 import { firstParam } from '@/lib/search-params';

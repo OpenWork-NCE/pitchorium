@@ -3,7 +3,7 @@
 import { FolderPlus, PenSquare } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { Button, IconButton } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { Can } from '@/features/access';
 import { useCurrentMember } from '@/features/identity';
 import { Link, usePathname } from '@/i18n/navigation';

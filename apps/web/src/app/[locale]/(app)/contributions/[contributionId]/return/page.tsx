@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { SingleColumnLayout } from '@/components/layout/page-layouts';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { siteConfig } from '@/config/site';
 import { FollowButton } from '@/features/network';
 import { ContributionReturn, contributionIdFromPath } from '@/features/payments';

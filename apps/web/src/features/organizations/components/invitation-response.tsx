@@ -4,7 +4,7 @@ import { invitationsControllerAccept, invitationsControllerDecline } from '@pitc
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Alert, Button, FormActions, useAnnounce } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { useWithPrerequisites } from '@/features/access';
 import { useRouter } from '@/i18n/navigation';
 import { useOrganizationProblem } from './manage/use-organization-problem';

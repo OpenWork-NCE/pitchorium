@@ -2,7 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { Link } from '@/i18n/navigation';
 
 /**

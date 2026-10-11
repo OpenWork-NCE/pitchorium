@@ -1,5 +1,5 @@
 import type { MetadataRoute } from 'next';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { localizedUrl } from '@/config/seo';
 import { getActiveLocales } from '@/lib/i18n/active-locales';
 import { PUBLIC_SITEMAP_SOURCES } from '@/lib/seo/sitemap-sources';

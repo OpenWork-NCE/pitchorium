@@ -1,7 +1,7 @@
 'use client';
 
 import { ErrorBoundaryView } from '@/components/layout/states/error-boundary';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 
 /** Unexpected error of a page of the group, inside its shell. */
 export default function GroupError(props: {

@@ -18,7 +18,7 @@ import {
   Text,
   useAnnounce,
 } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { useMessagingProblem } from '../hooks/use-messaging-problem';
 
 const POLICIES = [

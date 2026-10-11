@@ -2,7 +2,7 @@ import type { ImpactDashboard, ProjectStatus } from '@pitchorium/contracts';
 import { getTranslations } from 'next-intl/server';
 import type { ReactNode } from 'react';
 import { Badge, Callout, Card, Heading, Link } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { EngagementChart } from './engagement-chart';
 import { EngagementStats } from './engagement-stats';
 import { HistoryDownload } from './history-download';

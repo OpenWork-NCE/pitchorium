@@ -24,7 +24,7 @@ import {
   useApplyProblem,
   useZodForm,
 } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import type { PrerequisiteFormProps } from '@/features/access';
 import { Link, useRouter } from '@/i18n/navigation';
 import { countryOptions } from '@/lib/format/countries';

@@ -4,7 +4,7 @@ import { notFound, permanentRedirect } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { SingleColumnLayout } from '@/components/layout/page-layouts';
 import { Button } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { siteConfig } from '@/config/site';
 import { LazyRelationshipActions, ProfileViewsSummary } from '@/features/network';
 import { ActivitySection } from '@/features/content';

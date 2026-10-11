@@ -24,7 +24,7 @@ import {
   FilterButtons,
   useAnnounce,
 } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { Link } from '@/i18n/navigation';
 import { usePlural } from '@/lib/i18n/plural';
 import { REALTIME_EVENTS } from '@/lib/realtime/realtime-bus';

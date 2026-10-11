@@ -1,7 +1,7 @@
 'use client';
 
 import type { ComboboxOption } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { OnboardingFrame, useEnterProduct } from './onboarding-frame';
 import { type ProfileStepInitial, ProfileStep } from './profile-step';
 

@@ -1,4 +1,4 @@
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { redirect } from '@/i18n/navigation';
 import { asLocale } from '@/i18n/routing';
 

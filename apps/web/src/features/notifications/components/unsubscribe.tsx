@@ -10,7 +10,7 @@ import { useTranslations } from 'next-intl';
 import { useEffect, useRef, useState } from 'react';
 import { Button, EmptyState, Heading, Spinner, Text } from '@/components/ui';
 import { Link } from '@/i18n/navigation';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { configureBrowserApi } from '@/lib/api/browser';
 import { withRedirect } from '@/lib/auth/redirect';
 

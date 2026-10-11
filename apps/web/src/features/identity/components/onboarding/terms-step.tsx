@@ -1,7 +1,7 @@
 'use client';
 
 import type { LegalVersionsDtoOutput } from '@pitchorium/api-client';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { useRouter } from '@/i18n/navigation';
 import { LegalAcceptanceForm } from './legal-acceptance-form';
 import { OnboardingFrame, useEnterProduct } from './onboarding-frame';

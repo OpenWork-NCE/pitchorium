@@ -3,7 +3,7 @@ import { Globe, Handshake, Users } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import type { ReactNode } from 'react';
 import { Avatar, Badge, RelativeTime, VerifiedBadge } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { Link } from '@/i18n/navigation';
 
 const VISIBILITY_ICONS: Record<PostVisibility, typeof Globe> = {

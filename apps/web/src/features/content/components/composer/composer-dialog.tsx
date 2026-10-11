@@ -25,7 +25,7 @@ import {
   Select,
   Switch,
 } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { useWithPrerequisites } from '@/features/access';
 import { useCurrentMember } from '@/features/identity';
 import { languageOptions } from '@/features/profiles';

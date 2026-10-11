@@ -4,7 +4,7 @@ import { AlertCircle, Check, CloudUpload } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import type { ReactNode } from 'react';
 import { Button, Heading } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { Link, useRouter } from '@/i18n/navigation';
 import { cn } from '@/lib/cn';
 import { neighbours, stepComplete, type WizardStep, WIZARD_STEPS } from '../../lib/wizard-steps';

@@ -7,7 +7,7 @@ import { lazy, type ReactNode, Suspense } from 'react';
 import { IconSwap } from '@/components/motion';
 import { Avatar, Button, Notice } from '@/components/ui';
 import { Link } from '@/i18n/navigation';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { cn } from '@/lib/cn';
 import type { PendingMessage, Receipt } from '../lib/thread';
 import type { ThreadItem } from '../lib/thread-rows';

@@ -2,7 +2,7 @@ import type { FollowState, Locale, Project } from '@pitchorium/contracts';
 import { getTranslations } from 'next-intl/server';
 import type { ReactNode } from 'react';
 import { Alert, Button, ImpactBadge } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { ActivitySection, ImageGallery } from '@/features/content';
 import { Link } from '@/i18n/navigation';
 import { withRedirect } from '@/lib/auth/redirect';

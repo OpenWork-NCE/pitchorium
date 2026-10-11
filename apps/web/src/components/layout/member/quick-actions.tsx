@@ -4,7 +4,7 @@ import { BellOff, FolderPlus, Keyboard, Moon, PenSquare, Sun } from 'lucide-reac
 import { useTranslations } from 'next-intl';
 import { useTheme } from 'next-themes';
 import { type CommandAction, notify, useShortcutsHelp } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { useMarkAllNotificationsRead } from '@/features/notifications';
 import { useRouter } from '@/i18n/navigation';
 import { useOnline } from '@/lib/query/offline';

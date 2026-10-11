@@ -3,7 +3,7 @@
 import { useLocale, useTranslations } from 'next-intl';
 import { type ReactNode, useState } from 'react';
 import { Banner, Button } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { Link, usePathname } from '@/i18n/navigation';
 import { withRedirect } from '@/lib/auth/redirect';
 import { useAccess } from '@/features/access';

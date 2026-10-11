@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Container } from '@/components/layout/container';
 import { Heading, Text } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { alternatesFor } from '@/config/seo';
 import { MethodologyPage, MethodologyUnavailable } from '@/features/impact';
 import { asLocale } from '@/i18n/routing';

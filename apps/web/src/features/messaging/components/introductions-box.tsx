@@ -9,7 +9,7 @@ import { type InfiniteData, useInfiniteQuery, useQueryClient } from '@tanstack/r
 import { Handshake } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { Button, EmptyState, ErrorState, Loading, Skeleton } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { Link } from '@/i18n/navigation';
 import { answerOf, IntroductionCard } from './introduction-card';
 

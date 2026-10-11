@@ -3,7 +3,7 @@ import { ArrowRight } from 'lucide-react';
 import { getImageProps } from 'next/image';
 import { useLocale, useTranslations } from 'next-intl';
 import { Badge, Button, Card, FundingProgress, Heading, ImpactBadge, Text } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { Link } from '@/i18n/navigation';
 import { cn } from '@/lib/cn';
 

@@ -4,7 +4,7 @@ import { useInterestsControllerList } from '@pitchorium/api-client';
 import type { FollowState } from '@pitchorium/contracts';
 import { useLocale, useTranslations } from 'next-intl';
 import { Button, Card, FundingProgress, Heading, Stat } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { Link } from '@/i18n/navigation';
 import { pluralOf } from '@/lib/i18n/plural-of';
 import { fundingState } from '../../lib/funding-state';

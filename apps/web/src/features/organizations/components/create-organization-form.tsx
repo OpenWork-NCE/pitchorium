@@ -6,7 +6,7 @@ import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import type { Control } from 'react-hook-form';
 import { Button, Form, FormActions, Stepper, useApplyProblem, useZodForm } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { useWithPrerequisites } from '@/features/access';
 import { useRouter } from '@/i18n/navigation';
 import { createOrganizationRequest } from '../lib/schemas';

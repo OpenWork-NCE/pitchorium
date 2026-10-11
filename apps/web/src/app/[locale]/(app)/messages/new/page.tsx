@@ -6,7 +6,7 @@ import {
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { NewConversation } from '@/features/messaging';
 import { redirect } from '@/i18n/navigation';
 import { asLocale } from '@/i18n/routing';

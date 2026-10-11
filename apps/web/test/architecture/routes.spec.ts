@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 
 const root = join(import.meta.dirname, '../..');
 const pages = join(root, 'src/app/[locale]');

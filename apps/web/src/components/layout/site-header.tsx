@@ -2,7 +2,7 @@ import { useTranslations } from 'next-intl';
 import type { ReactNode } from 'react';
 import { BrandLogo, BrandSymbol } from '@/components/brand';
 import { Button, ThemeToggle } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { LocaleSwitcher } from '@/features/localization';
 import { Link } from '@/i18n/navigation';
 

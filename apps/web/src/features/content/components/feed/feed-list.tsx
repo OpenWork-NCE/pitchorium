@@ -20,7 +20,7 @@ import { Button, EmptyState, ErrorState, Pagination, useAnnounce } from '@/compo
 import { useMotionPreference } from '@/components/motion';
 import { useWithPrerequisites } from '@/features/access';
 import { MemberHoverCard } from '@/features/profiles';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { Link } from '@/i18n/navigation';
 import { interleave } from '@/lib/collections/interleave';
 import { reportError } from '@/lib/observability/report-error';

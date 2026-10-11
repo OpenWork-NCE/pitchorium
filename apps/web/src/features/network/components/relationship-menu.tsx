@@ -6,7 +6,7 @@ import { MoreHorizontal } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { type ComponentType, useCallback, useEffect, useState } from 'react';
 import { AlertDialog, IconButton, notify } from '@/components/ui';
-import { routes } from '@/config/routes';
+import * as routes from '@/config/paths';
 import { useRouter } from '@/i18n/navigation';
 import { preloadWhenIdle } from '@/lib/preload';
 import type { RelationshipMenuPanel } from './relationship-menu-panel';
