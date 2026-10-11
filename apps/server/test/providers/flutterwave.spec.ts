@@ -179,33 +179,45 @@ describe.skipIf(!KEY)('Flutterwave sandbox', () => {
     }
   });
 
-  it('reads the indicative rate of a currency against the euro', async (context) => {
-    const provider = new FlutterwaveFxRateProvider({
-      secretKey: KEY,
-      webhookSecretHash: 'unused',
-      apiBaseUrl: BASE,
-    });
-    try {
-      const rate = await provider.rate('NGN', new Date());
-      expect(rate.unitsPerEur).toMatch(/^\d+(\.\d+)?$/);
-      // Naira per euro, not euros per naira: the rate field goes the other way (ADR 0155).
-      expect(Number(rate.unitsPerEur)).toBeGreaterThan(1);
-    } catch (error) {
-      // Reported as a skip with its reason, never as a pass, only when the sandbox also refuses
-      // the documented example itself (ADR 0054, ADR 0155): the outage is then on its side.
-      const documented = await raw(
-        'flutterwave',
-        `${BASE}/v3/transfers/rates?amount=1000&destination_currency=USD&source_currency=NGN`,
-        { method: 'GET', headers: { authorization: `Bearer ${KEY}` } },
-      );
-      if (documented.status >= 400) {
-        context.skip(
-          `Flutterwave sandbox refuses its documented example (${documented.status} ${JSON.stringify(documented.body)}): ${String(error)}`,
-        );
+  // Two calls at most, each bounded by the timeout of the client: room for both.
+  it(
+    'reads the indicative rate of a currency against the euro',
+    { timeout: 60_000 },
+    async (context) => {
+      const provider = new FlutterwaveFxRateProvider({
+        secretKey: KEY,
+        webhookSecretHash: 'unused',
+        apiBaseUrl: BASE,
+      });
+      try {
+        const rate = await provider.rate('NGN', new Date());
+        expect(rate.unitsPerEur).toMatch(/^\d+(\.\d+)?$/);
+        // Naira per euro, not euros per naira: the rate field goes the other way (ADR 0155).
+        expect(Number(rate.unitsPerEur)).toBeGreaterThan(1);
+      } catch (error) {
+        // Reported as a skip with its reason, never as a pass, only when the sandbox also refuses
+        // the documented example itself (ADR 0054, ADR 0155): the outage is then on its side.
+        // An example left unanswered is the same outage (nightly of 2026-10-11: no answer at all).
+        const documented = await raw(
+          'flutterwave',
+          `${BASE}/v3/transfers/rates?amount=1000&destination_currency=USD&source_currency=NGN`,
+          { method: 'GET', headers: { authorization: `Bearer ${KEY}` } },
+        ).catch((failure: unknown) => failure);
+        if (!('status' in Object(documented))) {
+          context.skip(
+            `Flutterwave sandbox leaves its documented example unanswered (${String(documented)}): ${String(error)}`,
+          );
+        }
+        const answer = documented as Awaited<ReturnType<typeof raw>>;
+        if (answer.status >= 400) {
+          context.skip(
+            `Flutterwave sandbox refuses its documented example (${answer.status} ${JSON.stringify(answer.body)}): ${String(error)}`,
+          );
+        }
+        throw error;
       }
-      throw error;
-    }
-  });
+    },
+  );
 
   it('accepts a documented notification carrying the secret hash, and only with it', () => {
     const body = JSON.stringify({
