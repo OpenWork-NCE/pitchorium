@@ -139,7 +139,7 @@ export function ProjectInvitationAnswer({
         </Button>
         <Button
           type="button"
-          variant="ghost"
+          variant="outline"
           loading={busy === 'decline'}
           loadingLabel={t('declining')}
           onClick={() => void answer(false)}
