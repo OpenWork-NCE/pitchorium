@@ -53,6 +53,8 @@ for (const viewport of VIEWPORTS) {
       await page.goto('/fr/feed');
       await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
       await page.evaluate(() => document.fonts.ready);
+      // The feed hydrated: the long first publication measured and cut, its « Voir plus » shown.
+      await expect(page.getByRole('button', { name: 'Voir plus' }).first()).toBeVisible();
       await expect(page).toHaveScreenshot(`member-shell-${viewport.name}-${colorScheme}.png`);
       await context.close();
     });
