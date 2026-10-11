@@ -523,12 +523,10 @@ export function pathOf(type: NotificationTargetType, key: string): string {
     case 'project':
       return `/projects/${key}`;
     case 'project_invitations':
-      // The invitations of the member head the showcase of the projects.
-      return '/projects';
-    case 'organization':
-      return `/organizations/${key}`;
     case 'organization_invitations':
-      // Answered by the link of its email (a token): the organization, meanwhile.
+      // The invitations of the member, answered without the email (ADR 0149).
+      return '/network/invitations';
+    case 'organization':
       return `/organizations/${key}`;
     case 'contribution':
       return `/contributions/${key}`;
