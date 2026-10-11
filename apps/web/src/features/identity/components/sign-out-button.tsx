@@ -13,9 +13,9 @@ import { clearPersistedMutations } from '@/lib/query/persisted-mutations';
 
 /**
  * Ends the session on the api, forgets the cached data of the member, the actions kept on the
- * device (ADR 0102) and the draft of the composer (ADR 0122), back to the home page; the views
- * the page still holds leave first (ADR 0116). The authentication client loads on demand: it is not
- * part of the first load (ADR 0094).
+ * device (ADR 0102), the draft of the composer (ADR 0122) and those of the conversations
+ * (ADR 0147), back to the home page; the views the page still holds leave first (ADR 0116). The
+ * authentication client loads on demand: it is not part of the first load (ADR 0094).
  */
 export function useSignOut(): () => Promise<void> {
   const queryClient = useQueryClient();
@@ -26,7 +26,9 @@ export function useSignOut(): () => Promise<void> {
     await sendPendingViews();
     await authClient.signOut();
     queryClient.clear();
-    await Promise.all([clearPersistedMutations(), clearComposerDraft()]);
+    // The drafts of the conversations: their module loads with the sign-out only.
+    const { clearMessageDrafts } = await import('@/lib/drafts/message-drafts');
+    await Promise.all([clearPersistedMutations(), clearComposerDraft(), clearMessageDrafts()]);
     router.replace(routes.home);
   };
 }
