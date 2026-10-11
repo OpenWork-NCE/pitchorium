@@ -66,6 +66,7 @@ const PAIRS: [string, string, number][] = [
   ['on-brand-panel', 'brand-panel', TEXT],
   ['on-brand-panel', 'viewer-backdrop', TEXT],
   ['foreground', 'message-received', TEXT],
+  ['foreground', 'chip', TEXT],
   ['on-accent', 'accent-strong', TEXT],
   ['on-accent-subtle', 'accent-subtle', TEXT],
   ['on-highlight', 'highlight', TEXT],
@@ -112,6 +113,12 @@ describe('messages received (A16)', () => {
     expect(luminance(resolve(dark, 'message-received'))).toBeGreaterThan(
       luminance(resolve(dark, 'surface')),
     );
+  });
+});
+
+describe('neutral badges and chips', () => {
+  it('sit a step lighter than the card in the dark theme, never a darker hole', () => {
+    expect(luminance(resolve(dark, 'chip'))).toBeGreaterThan(luminance(resolve(dark, 'surface')));
   });
 });
 

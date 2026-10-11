@@ -90,6 +90,8 @@
   --cover-placeholder: var(--violet-100);
   /* A message received: a step from its card, lighter in the dark theme, never darker. */
   --message-received: var(--neutral-100);
+  /* A neutral badge or chip: a step from its card, lighter in the dark theme, never a hole. */
+  --chip: var(--neutral-100);
   --shadow-color: 18 18 18;
   --shadow-strength: 0.08;
 
@@ -177,6 +179,7 @@
   --viewer-backdrop: var(--neutral-950);
   --cover-placeholder: var(--violet-900);
   --message-received: #2a2830;
+  --chip: #2a2830;
   --shadow-color: 0 0 0;
   --shadow-strength: 0.4;
 

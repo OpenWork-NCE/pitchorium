@@ -29,6 +29,7 @@
   --color-viewer-backdrop: var(--viewer-backdrop);
   --color-cover-placeholder: var(--cover-placeholder);
   --color-message-received: var(--message-received);
+  --color-chip: var(--chip);
   --color-accent-subtle: var(--accent-subtle);
   --color-on-accent-subtle: var(--on-accent-subtle);
   --color-link: var(--link);
