@@ -3,7 +3,7 @@
 export const PREVIEW_SIZES = {
   funding: {
     width: 352,
-    height: 1085,
+    height: 469,
     widths: [480, 704],
   },
   'project-page': {
