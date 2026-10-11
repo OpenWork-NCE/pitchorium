@@ -1,6 +1,6 @@
 import type { Locale, Organization } from '@pitchorium/contracts';
 import { CalendarDays, Globe, MapPin, Settings } from 'lucide-react';
-import Image from 'next/image';
+import { getImageProps } from 'next/image';
 import { getTranslations } from 'next-intl/server';
 import type { ReactNode } from 'react';
 import {
@@ -59,13 +59,18 @@ export async function OrganizationProfile({
         <Card padding="none" className="overflow-hidden" data-organization-header="">
           <div className="relative aspect-[3/1] bg-cover-placeholder sm:aspect-[4/1]">
             {organization.coverUrl ? (
-              <Image
-                src={organization.coverUrl}
-                alt=""
-                fill
-                priority
-                sizes="(min-width: 1024px) 680px, 100vw"
-                className="object-cover object-center"
+              // A server component: the optimised sources without the client component of the image
+              // (ADR 0094), out of the first load of the visitor's view (FRONT 8A, A4).
+              // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
+              <img
+                {...getImageProps({
+                  src: organization.coverUrl,
+                  alt: '',
+                  fill: true,
+                  priority: true,
+                  sizes: '(min-width: 1024px) 680px, 100vw',
+                  className: 'object-cover object-center',
+                }).props}
               />
             ) : (
               <div
