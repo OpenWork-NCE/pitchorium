@@ -8,6 +8,13 @@ export interface ConversationListItem {
   participant: ParticipantRecord;
 }
 
+/** Narrowing of a list of conversations: unread only, or with one of these members. */
+export interface ConversationFilter {
+  unread: boolean;
+  /** Null for no narrowing by participant. */
+  peerIds: readonly string[] | null;
+}
+
 export abstract class MessagingRepository {
   /** Transaction-scoped advisory lock on a key. */
   abstract lock(key: string): Promise<void>;
@@ -49,9 +56,12 @@ export abstract class MessagingRepository {
     userId: string,
     box: ConversationBox,
     hiddenPeerIds: readonly string[],
+    filter: ConversationFilter,
     after: KeysetPosition | null,
     limit: number,
   ): Promise<ConversationListItem[]>;
+  /** The other members of the conversations the member takes part in, without duplicate. */
+  abstract peersOf(userId: string): Promise<string[]>;
   /** Unread messages by conversation for a participant. */
   abstract unreadCounts(
     userId: string,

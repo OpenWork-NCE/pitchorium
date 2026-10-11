@@ -343,6 +343,7 @@ function message(sequence: number, mine: boolean, body: string, hours: number): 
     moderationStatus: 'visible',
     createdAt: hoursAgo(hours),
     editedAt: null,
+    editableUntil: null,
   };
 }
 

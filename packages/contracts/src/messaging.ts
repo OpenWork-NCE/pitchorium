@@ -103,6 +103,11 @@ export const messageSchema = z.object({
   moderationStatus: messageModerationStatusSchema,
   createdAt: z.iso.datetime(),
   editedAt: z.iso.datetime().nullable(),
+  /**
+   * End of the window in which the sender may edit the message; null for a message of another
+   * participant, or one deleted or moderated.
+   */
+  editableUntil: z.iso.datetime().nullable(),
 });
 
 export const conversationParticipantSchema = z.object({
@@ -133,8 +138,16 @@ export const conversationSchema = z.object({
 });
 
 export const conversationPageSchema = cursorPageSchema(conversationSchema);
+export const CONVERSATION_SEARCH_MAX_LENGTH = 80;
 export const conversationListQuerySchema = cursorPageQuerySchema.extend({
   box: conversationBoxSchema.default('inbox'),
+  /** Only the conversations with an unread message, or marked unread. */
+  unread: z
+    .enum(['true', 'false'])
+    .transform((value) => value === 'true')
+    .optional(),
+  /** Part of the name of another participant, case and accents ignored. */
+  q: z.string().trim().min(1).max(CONVERSATION_SEARCH_MAX_LENGTH).optional(),
 });
 export const conversationIdParamsSchema = z.object({ conversationId: uuidV7Schema });
 export const messageIdParamsSchema = z.object({

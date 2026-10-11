@@ -108,6 +108,45 @@ describe('messaging', () => {
     expect((await conversations(ama))[0]).toMatchObject({ muted: false, archived: false });
   });
 
+  it('narrows the list to unread conversations or to a participant named, and dates the edit window', async () => {
+    await connectMembers(kofi, ama);
+    await connectMembers(kofi, awa);
+    const fromAma = await write(ama, kofiHandle, 'Bonjour');
+    await write(awa, kofiHandle, 'Salut');
+    const list = async (query: string) =>
+      (
+        (await kofi.agent.get(`/v1/messaging/conversations?${query}`).expect(200)).body as {
+          items: Conversation[];
+        }
+      ).items.map((item) => item.participants[0]?.member.handle);
+    expect(await list('q=owu')).toEqual([amaHandle]);
+    // Case and accents ignored, wildcards taken literally.
+    expect(await list('q=NDIAYÉ')).toEqual([awaHandle]);
+    expect(await list('q=%25')).toEqual([]);
+    await kofi.agent
+      .post(`/v1/messaging/conversations/${fromAma.conversationId}/read`)
+      .send({ sequence: 1 })
+      .expect(200);
+    expect(await list('unread=true')).toEqual([awaHandle]);
+    await kofi.agent
+      .patch(`/v1/messaging/conversations/${fromAma.conversationId}`)
+      .send({ unread: true })
+      .expect(200);
+    expect((await list('unread=true')).sort()).toEqual([amaHandle, awaHandle].sort());
+    // The window to edit is given to the sender only.
+    expect(new Date(fromAma.editableUntil!).getTime() - new Date(fromAma.createdAt).getTime()).toBe(
+      15 * 60_000,
+    );
+    const [received] = (
+      (
+        await kofi.agent
+          .get(`/v1/messaging/conversations/${fromAma.conversationId}/messages`)
+          .expect(200)
+      ).body as MessagePage
+    ).items;
+    expect(received?.editableUntil).toBeNull();
+  });
+
   it('turns a first message out of network into a request answered by the recipient', async () => {
     // Ama and Awa share Kofi: second degree, the default policy admits a request.
     await connectMembers(ama, kofi);

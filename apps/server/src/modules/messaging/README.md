@@ -23,7 +23,7 @@ Messagerie (cahier des charges §10.4, avec §7.2 et §10.3) : conversations 1:1
 
 - Texte de 8 000 caractères au plus ; jusqu'à 5 pièces jointes (usage media `message_attachment`, privé, lisibles par les seuls participants qui voient la conversation : règle de lecture enregistrée auprès de media) ; une publication partagée (§10.3 « transférer en message »), vérifiée à l'envoi puis, pour chaque lecteur, à chaque lecture : `sharedPost.post` vaut `null` pour un lecteur hors de son audience. Un message vide est refusé (`MESSAGING_MESSAGE_EMPTY`).
 - Numéro de séquence serveur par conversation (1, 2, 3... sans trou), attribué sous le verrou de la ligne de la conversation ; identifiant client (`clientMessageId`) unique par expéditeur : un envoi rejoué rend le message déjà enregistré, un même identifiant avec un autre contenu répond `MESSAGING_CLIENT_ID_REUSED` (ADR 0056).
-- Modification par l'expéditeur pendant `MESSAGING_EDIT_WINDOW_MINUTES` (15, provisoire), avec l'indicateur `edited` ; suppression en pierre tombale : la séquence reste, le texte, les fichiers (détachés) et la publication partagée disparaissent (`deleted: true`).
+- Modification par l'expéditeur pendant `MESSAGING_EDIT_WINDOW_MINUTES` (15, provisoire), avec l'indicateur `edited` ; la fin de cette fenêtre est donnée à l'expéditeur seul (`editableUntil`, nul pour un autre lecteur ou un message supprimé ou modéré), le web n'en recalcule aucune ; suppression en pierre tombale : la séquence reste, le texte, les fichiers (détachés) et la publication partagée disparaissent (`deleted: true`).
 - `moderation_status` (`visible`, `hidden`, `removed`) modifiable par `MessagingFacade.setMessageModerationStatus` (module trust) : le texte et les fichiers d'un message masqué ne sont plus servis.
 
 ## Lecture et état
@@ -42,7 +42,7 @@ Persistance avant toute diffusion ; diffusion après la validation de la transac
 
 ## Routes
 
-- `GET /v1/messaging/conversations?box=inbox|requests|archived` (`messaging.read`), `POST /v1/messaging/conversations` (`messaging.conversation.start`, `Idempotency-Key`)
+- `GET /v1/messaging/conversations?box=inbox|requests|archived&unread=&q=` (`messaging.read`) : `unread=true` ne garde que les conversations qui ont un message non lu ou sont marquées non lues, `q` celles dont un autre participant porte ce nom (casse et accents ignorés, parmi les membres des conversations du lecteur, par `ProfilesFacade.membersNamed`), `POST /v1/messaging/conversations` (`messaging.conversation.start`, `Idempotency-Key`)
 - `GET|PATCH /v1/messaging/conversations/{conversationId}`, `POST .../leave`, `GET .../messages?afterSequence=|beforeSequence=&limit=`, `POST .../messages` (`Idempotency-Key`), `POST .../read` (`messaging.conversation.participate`, rôle `participant` donné par `ConversationResolver`)
 - `PATCH|DELETE /v1/messaging/conversations/{conversationId}/messages/{messageId}` (`messaging.message.update`, rôle `sender`)
 - `POST /v1/messaging/conversations/{conversationId}/accept`, `POST .../decline` (`messaging.request.respond`, rôle `request_recipient`)

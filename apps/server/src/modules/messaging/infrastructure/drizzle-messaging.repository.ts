@@ -8,7 +8,20 @@ import type {
   MessageModerationStatus,
   MessagePolicy,
 } from '@pitchorium/contracts';
-import { and, asc, count, desc, eq, gt, inArray, isNull, lt, or, sql } from '@pitchorium/db/orm';
+import {
+  and,
+  asc,
+  count,
+  desc,
+  eq,
+  gt,
+  inArray,
+  isNull,
+  lt,
+  ne,
+  or,
+  sql,
+} from '@pitchorium/db/orm';
 import type { SQL } from '@pitchorium/db/orm';
 import {
   messagingConversations,
@@ -19,7 +32,11 @@ import {
 } from '@pitchorium/db/schemas/messaging';
 import { TransactionManager } from '../../../platform/database';
 import type { KeysetPosition } from '../../../platform/kernel';
-import { type ConversationListItem, MessagingRepository } from '../application/ports';
+import {
+  type ConversationFilter,
+  type ConversationListItem,
+  MessagingRepository,
+} from '../application/ports';
 import type {
   ConversationRecord,
   ConversationStatus,
@@ -67,6 +84,34 @@ function withoutHiddenPeers(hiddenPeerIds: readonly string[]): SQL | undefined {
       and hidden.left_at is null
       and hidden.participant_id in (${sql.join(
         hiddenPeerIds.map((id) => sql`${id}::uuid`),
+        sql`, `,
+      )})
+  )`;
+}
+
+/** Marked unread, or a message of another participant after the reading position. */
+function unreadFor(userId: string): SQL | undefined {
+  return or(
+    eq(participants.markedUnread, true),
+    sql`exists (
+      select 1 from ${messages} as unread
+      where unread.conversation_id = ${conversations.id}
+        and unread.sequence > ${participants.lastReadSequence}
+        and unread.sender_id <> ${userId}::uuid
+        and unread.deleted_at is null
+    )`,
+  );
+}
+
+/** One of the given members still takes part in the conversation. */
+function withPeer(peerIds: readonly string[]): SQL {
+  if (peerIds.length === 0) return sql`false`;
+  return sql`exists (
+    select 1 from ${participants} as peer
+    where peer.conversation_id = ${conversations.id}
+      and peer.left_at is null
+      and peer.participant_id in (${sql.join(
+        peerIds.map((id) => sql`${id}::uuid`),
         sql`, `,
       )})
   )`;
@@ -193,6 +238,7 @@ export class DrizzleMessagingRepository extends MessagingRepository {
     userId: string,
     box: ConversationBox,
     hiddenPeerIds: readonly string[],
+    filter: ConversationFilter,
     after: KeysetPosition | null,
     limit: number,
   ): Promise<ConversationListItem[]> {
@@ -216,6 +262,8 @@ export class DrizzleMessagingRepository extends MessagingRepository {
           isNull(participants.leftAt),
           inBox,
           withoutHiddenPeers(hiddenPeerIds),
+          filter.unread ? unreadFor(userId) : undefined,
+          filter.peerIds ? withPeer(filter.peerIds) : undefined,
           after
             ? sql`(${conversations.lastMessageAt}, ${conversations.id}) < (${after.at}, ${after.key}::uuid)`
             : undefined,
@@ -227,6 +275,30 @@ export class DrizzleMessagingRepository extends MessagingRepository {
       conversation: toConversation(row.conversation),
       participant: row.participant,
     }));
+  }
+
+  async peersOf(userId: string): Promise<string[]> {
+    const mine = this.db
+      .select({ conversationId: participants.conversationId })
+      .from(participants)
+      .where(
+        and(
+          eq(participants.participantType, MEMBER_PARTICIPANT),
+          eq(participants.participantId, userId),
+          isNull(participants.leftAt),
+        ),
+      );
+    const rows = await this.db
+      .selectDistinct({ peerId: participants.participantId })
+      .from(participants)
+      .where(
+        and(
+          inArray(participants.conversationId, mine),
+          eq(participants.participantType, MEMBER_PARTICIPANT),
+          ne(participants.participantId, userId),
+        ),
+      );
+    return rows.map((row) => row.peerId);
   }
 
   async unreadCounts(

@@ -10957,6 +10957,7 @@ export type ConversationPageDtoOutputItemsItemLastMessage = {
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
   createdAt: string;
   editedAt: string | null;
+  editableUntil: string | null;
 } | null;
 
 export type ConversationPageDtoOutputItemsItem = {
@@ -11514,6 +11515,7 @@ export interface MessageDtoOutput {
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
   createdAt: string;
   editedAt: string | null;
+  editableUntil: string | null;
 }
 
 export type ConversationDtoOutputKind =
@@ -12054,6 +12056,7 @@ export type ConversationDtoOutputLastMessage = {
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
   createdAt: string;
   editedAt: string | null;
+  editableUntil: string | null;
 } | null;
 
 export interface ConversationDtoOutput {
@@ -12596,6 +12599,7 @@ export type MessagePageDtoOutputItemsItem = {
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
   createdAt: string;
   editedAt: string | null;
+  editableUntil: string | null;
 };
 
 export interface MessagePageDtoOutput {
@@ -17524,6 +17528,12 @@ export type MessagingControllerListParams = {
    */
   limit?: number;
   box?: MessagingControllerListBox;
+  unread?: MessagingControllerListUnread;
+  /**
+   * @minLength 1
+   * @maxLength 80
+   */
+  q?: string;
 };
 
 export type MessagingControllerListBox =
@@ -17533,6 +17543,14 @@ export const MessagingControllerListBox = {
   inbox: 'inbox',
   requests: 'requests',
   archived: 'archived',
+} as const;
+
+export type MessagingControllerListUnread =
+  (typeof MessagingControllerListUnread)[keyof typeof MessagingControllerListUnread];
+
+export const MessagingControllerListUnread = {
+  true: 'true',
+  false: 'false',
 } as const;
 
 export type MessagingControllerMessagesParams = {

@@ -295,10 +295,14 @@ export class ConversationsService {
 
   async list(viewerId: string, query: ConversationListQuery): Promise<CursorPage<Conversation>> {
     const hidden = await this.network.blockedUserIds(viewerId);
+    const peerIds = query.q
+      ? await this.profiles.membersNamed(await this.messaging.peersOf(viewerId), query.q, viewerId)
+      : null;
     const items = await this.messaging.conversations(
       viewerId,
       query.box,
       hidden,
+      { unread: query.unread ?? false, peerIds },
       decodeKeyset(query.cursor),
       query.limit + 1,
     );

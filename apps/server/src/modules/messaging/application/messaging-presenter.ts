@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import type {
   Conversation,
   Introduction,
   MemberCard as MemberCardView,
   Message,
 } from '@pitchorium/contracts';
+import { COMMON_CONFIG, type CommonConfig } from '../../../platform/config';
 import { ContentFacade } from '../../content';
 import { MediaFacade } from '../../media';
 import { type MemberCard, ProfilesFacade } from '../../profiles';
@@ -39,6 +40,7 @@ export class MessagingPresenter {
     private readonly profiles: ProfilesFacade,
     private readonly media: MediaFacade,
     private readonly content: ContentFacade,
+    @Inject(COMMON_CONFIG) private readonly config: CommonConfig,
   ) {}
 
   async messages(viewerId: string, records: readonly MessageRecord[]): Promise<Message[]> {
@@ -80,6 +82,12 @@ export class MessagingPresenter {
         moderationStatus: message.moderationStatus,
         createdAt: message.createdAt.toISOString(),
         editedAt: message.editedAt?.toISOString() ?? null,
+        editableUntil:
+          hidden || message.senderId !== viewerId
+            ? null
+            : new Date(
+                message.createdAt.getTime() + this.config.messaging.editWindowMs,
+              ).toISOString(),
       };
     });
   }
