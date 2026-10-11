@@ -293,7 +293,8 @@ export const NotificationsList: Story = {
 /**
  * A conversation: one separator per day, the messages of one author grouped (avatar once, tighter
  * spacing), the short time under the last of a group (full date in a tooltip), « Lu » under the
- * last message sent, a field that grows with its text and a button to attach a file.
+ * last message sent, a field that grows with its text (Shift Enter for a line, Enter sends on a
+ * computer) and a button to attach an image or a PDF.
  */
 export const Conversation: Story = {
   parameters: { layout: 'padded' },
@@ -311,12 +312,11 @@ export const Conversation: Story = {
       <div className="p-4">
         <ConversationThread
           messages={thread}
-          other={members.kofi}
-          otherLastReadSequence={threadReadBy}
+          participants={[{ member: members.kofi, lastReadSequence: threadReadBy, left: false }]}
         />
       </div>
       <div className="border-t border-border p-3">
-        <MessageComposer onSend={() => undefined} onAttach={() => undefined} />
+        <MessageComposer onSend={() => undefined} />
       </div>
     </Card>
   ),
@@ -327,9 +327,10 @@ export const Conversation: Story = {
     // Four groups, one time under each; « Lu » under the last message sent only.
     await expect(canvas.getAllByRole('time')).toHaveLength(4);
     await expect(canvas.getAllByText('Lu')).toHaveLength(1);
-    await expect(canvas.getByRole('button', { name: 'Joindre un fichier' })).toBeVisible();
+    await expect(canvas.getByRole('button', { name: 'Joindre une image ou un PDF' })).toBeVisible();
+    // On a computer, Shift Enter adds a line and Enter sends.
     const field = canvas.getByRole('textbox', { name: 'Votre message' });
-    await userEvent.type(field, 'Bonne soirée,{Enter}à jeudi.');
+    await userEvent.type(field, 'Bonne soirée,{Shift>}{Enter}{/Shift}à jeudi.');
     await expect(field).toHaveValue('Bonne soirée,\nà jeudi.');
   },
 };

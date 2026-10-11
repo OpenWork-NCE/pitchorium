@@ -6,6 +6,7 @@ import { useTranslations } from 'next-intl';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { lazy, Suspense, useState } from 'react';
 import { Button } from '@/components/ui';
+import { MessageButton } from '@/features/messaging';
 import { FollowButton } from '@/features/network';
 
 const InterestDialog = lazy(() => import('./interest-dialog'));
@@ -14,15 +15,18 @@ const InterestDialog = lazy(() => import('./interest-dialog'));
  * What a member does on the page of a project (§11.2): follow it, its updates then reaching their
  * feed, and express an interest (grant, honour loan, stake, contact). The interest also opens from
  * the address (`?interest=1`), where the journey of a contribution sends an instrument that is
- * never paid online (§9.1). « Contacter » comes with its prompt (FRONT 6).
+ * never paid online (§9.1). « Contacter » opens a conversation with its owner (§10.4).
  */
 export function MemberActions({
   project,
   follow,
   layout = 'stack',
+  contact = null,
 }: {
   project: { id: string; title: string };
   follow: FollowState;
+  /** Handle of the owner to contact, in the funding block; none for the team. */
+  contact?: string | null;
   /** `stack` in the funding block, `bar` in the action bar of a phone. */
   layout?: 'stack' | 'bar';
 }) {
@@ -62,6 +66,9 @@ export function MemberActions({
         <HandCoins aria-hidden />
         {t('interest')}
       </Button>
+      {contact && layout === 'stack' ? (
+        <MessageButton handle={contact} variant="outline" label={t('contact')} />
+      ) : null}
       {opened || asked ? (
         <Suspense fallback={null}>
           <InterestDialog

@@ -97,7 +97,12 @@ export async function ProjectPage({
   ) : null;
   const memberActions =
     signedIn && follow && !draft ? (
-      <LazyMemberActions project={{ id: project.id, title: project.title }} follow={follow} />
+      <LazyMemberActions
+        project={{ id: project.id, title: project.title }}
+        follow={follow}
+        // « Contacter »: a conversation with its owner, for a member outside its team.
+        contact={!team && project.owner ? project.owner.handle : null}
+      />
     ) : null;
   const visitorAction =
     view === 'visitor' ? (

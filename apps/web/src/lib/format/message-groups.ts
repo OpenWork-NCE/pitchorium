@@ -1,5 +1,3 @@
-import { parseAbsolute, toCalendarDate } from '@internationalized/date';
-
 /**
  * Messages of a conversation as they are read (A5): split by day in the time zone of the reader,
  * then in groups of consecutive messages of one author written within GROUP_GAP_MINUTES of the
@@ -24,9 +22,14 @@ export interface MessageDay<T extends Groupable> {
   groups: MessageGroup<T>[];
 }
 
-/** Day of an instant in a time zone, `YYYY-MM-DD`. */
+/** Day of an instant in a time zone, `YYYY-MM-DD` (the Canadian English form is ISO 8601). */
 export function dayOf(instant: string, timeZone: string): string {
-  return toCalendarDate(parseAbsolute(instant, timeZone)).toString();
+  return new Intl.DateTimeFormat('en-CA', {
+    timeZone,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(new Date(instant));
 }
 
 export function groupMessages<T extends Groupable>(

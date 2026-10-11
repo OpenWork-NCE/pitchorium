@@ -33,6 +33,7 @@ Comment assembler les composants (`components.md`) pour les situations récurren
 - Une action impossible dit pourquoi (« C'est votre seule méthode de connexion … ») au lieu d'un bouton désactivé muet ; une action sensible redemande le mot de passe.
 - Une session se décrit par son type d'appareil (icône et libellé), son navigateur, son système et sa dernière activité, jamais par un lieu : l'adresse IP n'est pas géolocalisée (ADR 0107).
 
+- « Messagerie » : qui peut écrire (trois choix décrits), la copie par email des messages non lus. Chaque réglage s'applique dès qu'il change et revient si l'api refuse.
 - « Confidentialité et réseau » : chaque réglage s'applique dès qu'il change (interrupteur, liste), s'affiche avant la réponse et revient si l'api refuse ; un déblocage dit ce qui ne revient pas (connexions et suivis retirés par le blocage).
 
 ## Profils et organisations (§10.1, §10.7, ADR 0113)
@@ -137,12 +138,23 @@ Comment assembler les composants (`components.md`) pour les situations récurren
 - `/impact/methodology` : critères, échelle, pondérations et version en vigueur, mention « auto-déclaré, non certifié » ; sans méthodologie publiée, un état qui le dit.
 - `ImpactBadge` mène partout au détail par critère et à la méthodologie ; `/profile/impact` évalue le volet entrepreneur, avec l'historique et la réévaluation proposée quand la version change.
 
-## Conversation (§10.4)
+## Messagerie (§10.4, ADR 0146, 0147)
 
-- Un séparateur par jour, dans le fuseau du membre : « Aujourd'hui », « Hier », puis la date (jour de la semaine, jour et mois, l'année si elle diffère) ; c'est un titre, pour s'y rendre au lecteur d'écran.
-- Les messages consécutifs d'un même auteur écrits à moins de 5 minutes d'intervalle (`GROUP_GAP_MINUTES`, `lib/format/message-groups.ts`) forment un groupe : l'avatar de l'autre une seule fois, en bas du groupe, un espacement resserré, les coins du côté de l'auteur moins arrondis à l'intérieur du groupe.
-- Sous le dernier message d'un groupe, l'heure courte de la langue (« 14:32 », « 2:32 PM »), la date complète en infobulle au survol et au focus. Sous le dernier message envoyé : « Lu » quand l'autre participant l'a lu (`lastReadSequence`), « Envoyé » sinon.
-- Zone de saisie : elle grandit avec le texte jusqu'à six lignes puis défile ; un bouton joint un fichier ; Entrée va à la ligne, le bouton d'envoi (ou Ctrl Entrée, Cmd Entrée) envoie.
+- Deux panneaux sur un ordinateur (la liste, gardée quand la conversation change, et la conversation) ; sur un téléphone la liste, puis la conversation à sa propre adresse avec un retour. Le cadre remplit la hauteur sous le bandeau, chaque panneau défile seul.
+- Liste : avatar (deux en chevauchement pour un groupe, décoratifs), noms, début du dernier message (« Vous : … », pièce jointe, publication partagée, message supprimé), moment court (l'heure aujourd'hui, le jour de la semaine, puis la date), compteur de non-lus qui roule, sourdine, demande. Filtres (toutes, non lues, demandes, archivées) en boutons pressés sur une ligne qui défile sur un téléphone, recherche sur le nom d'un participant, suite chargée en bas de liste, filtre et recherche dans l'adresse.
+- Un séparateur par jour, dans le fuseau du membre : « Aujourd'hui », « Hier », puis la date ; c'est un titre, pour s'y rendre au lecteur d'écran. Les messages consécutifs d'un même auteur écrits à moins de 5 minutes d'intervalle forment un groupe : l'avatar de l'autre une seule fois, en bas du groupe, le nom de l'auteur au-dessus dans un groupe à trois, un espacement resserré, les coins du côté de l'auteur moins arrondis à l'intérieur du groupe.
+- Sous le dernier message d'un groupe, l'heure courte, la date complète en infobulle au survol et au focus. Sous le dernier message envoyé, l'état par une icône qui change : « Envoi… », « En attente du réseau », « Non envoyé » (raison, « Réessayer », « Retirer »), « Envoyé », « Lu » quand tous les autres l'ont lu.
+- Un message supprimé reste une pierre tombale (« Message supprimé ») ; un message masqué par la modération montre la mention `Notice` ; « (modifié) » suit un message modifié, la date de la modification dite au lecteur d'écran. Les actions d'un message (modifier tant que l'api le permet, supprimer après confirmation) apparaissent au survol et au focus, toujours sur un écran tactile.
+- Fichiers : images dans la visionneuse des publications avec leur texte alternatif, PDF en document avec son titre ; une publication partagée en carte, ou une mention neutre pour un lecteur hors de son audience.
+- Demande reçue : un encadré dit qui souhaite écrire, « Accepter » ou « Refuser » (discret pour l'expéditeur) ; demande envoyée : l'encadré dit qu'elle attend sa réponse, le champ dit pourquoi il est fermé. Une conversation disparue (blocage, demande refusée) donne une page neutre, jamais la raison.
+- Premier message : la page dit avant l'écriture s'il sera une demande ou s'il est refusé par la préférence du membre (`GET /v1/messaging/members/{handle}`) ; les prérequis s'ouvrent à l'envoi.
+- Zone de saisie : elle grandit jusqu'à six lignes puis défile ; sur un ordinateur Entrée envoie et Maj Entrée va à la ligne (dit sous le champ), sur un écran tactile Entrée va à la ligne et le bouton envoie ; brouillon gardé par conversation. Fichiers en ligne au-dessus du champ, chacun avec son texte alternatif ou son titre, sa progression et son refus.
+- Indicateur de saisie : trois points et « Kofi écrit… », une place réservée sous le dernier message pour que rien ne saute.
+
+## Introductions (§10.4, ADR 0058)
+
+- « Présenter à… » sur le profil d'une connexion : une autre connexion à choisir et une note, qui ouvrira la conversation.
+- Boîte des introductions : celles à traiter d'abord, puis les autres ; chaque carte dit qui présente qui, la note, où en sont les réponses (sans jamais nommer qui a décliné), accepter ou décliner, puis la conversation ouverte.
 
 ## Notifications (§10.5)
 

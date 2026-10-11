@@ -36,6 +36,15 @@ export const routes = {
   /** The projects the member follows: a view of the showcase (the right column of a wide screen). */
   followedProjects: '/projects?view=followed',
   messages: '/messages',
+  /** A conversation, beside the list on a computer, on its own on a phone (§10.4). */
+  conversation: (id: string) => `/messages/${encodeURIComponent(id)}`,
+  /** The message requests received (first messages out of network). */
+  messageRequests: '/messages?filter=requests',
+  /** A first message to a member: the conversation once it exists (`?to=<handle>`). */
+  newMessage: (handle: string) => `/messages/new?to=${encodeURIComponent(handle)}`,
+  /** Introductions between three members (§10.4): received, proposed, and one of them. */
+  introductions: '/introductions',
+  introduction: (id: string) => `/introductions/${encodeURIComponent(id)}`,
   notifications: '/notifications',
   profile: '/profile',
   settings: '/settings',
@@ -43,6 +52,10 @@ export const routes = {
   settingsSecurity: '/settings/security',
   settingsPreferences: '/settings/preferences',
   settingsPrivacy: '/settings/privacy',
+  /** Who may write to the member, and the copy of unread messages by email (§10.4). */
+  settingsMessaging: '/settings/messaging',
+  /** The notifications of each type by channel, and the digests (§10.5). */
+  settingsNotifications: '/settings/notifications',
   /** « Mes organisations »: the organisations of the member and their role. */
   settingsOrganizations: '/settings/organizations',
   /**
@@ -78,6 +91,8 @@ export const routes = {
   post: (id: string) => `/posts/${encodeURIComponent(id)}`,
   /** The publications the member saved. */
   saved: '/saved',
+  /** The page of the link of an email that turns its notifications off (`?token=`), no session. */
+  unsubscribe: '/unsubscribe',
   /**
    * Return from the hosted page of a payment provider (§9.3, ADR 0137), the address the api gives
    * the provider: `/contributions/<id>/return`.
@@ -102,6 +117,7 @@ export const MEMBER_SEGMENTS = [
   'contributions',
   'dashboard',
   'feed',
+  'introductions',
   'network',
   'messages',
   'notifications',

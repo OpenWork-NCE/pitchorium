@@ -15,6 +15,8 @@ export { PostImages as ImageGallery } from './components/post/post-images';
 export { PostDocument } from './components/post/post-document';
 /** Photos made lighter in the browser before they are sent (ADR 0120). */
 export { compressImage } from './lib/image-compression';
+/** The same, loaded on demand (a page that sends a photo now and then). */
+export const loadImageCompression = () => import('./lib/image-compression');
 export { PostSkeleton } from './components/post-skeleton';
 export { REACTION_ICONS, ReactionSummary } from './components/reaction-summary';
 export { ActivitySection } from './components/pages/activity-section';

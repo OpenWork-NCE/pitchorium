@@ -8,6 +8,7 @@ import { routes } from '@/config/routes';
 import { siteConfig } from '@/config/site';
 import { LazyRelationshipActions, ProfileViewsSummary } from '@/features/network';
 import { ActivitySection } from '@/features/content';
+import { IntroduceButton, MessageButton } from '@/features/messaging';
 import { MemberProfile, personJsonLd } from '@/features/profiles';
 import { MemberProjects } from '@/features/projects';
 import { Link } from '@/i18n/navigation';
@@ -37,7 +38,8 @@ export async function generateMetadata({
  * Profile of a member (§10.1), at the address of its handle for visitors and members (ADR 0101):
  * the public page a member opened to everyone, or the member view, both as the api gives them; a
  * former handle redirects to the current one. A member reader gets the actions of the
- * relationship, the owner edits the page in place and sees who viewed it.
+ * relationship, « Message » (§10.4) and, for a connection, « Présenter à… »; the owner edits the
+ * page in place and sees who viewed it.
  */
 export default async function Page({ params }: PageProps<'/[locale]/members/[handle]'>) {
   const { locale: raw, handle } = await params;
@@ -67,12 +69,25 @@ export default async function Page({ params }: PageProps<'/[locale]/members/[han
         </Link>
       </Button>
     ) : relationship && !owner ? (
-      <LazyRelationshipActions
-        handle={profile.handle}
-        name={profile.displayName}
-        relationship={relationship}
-        url={address}
-      />
+      <div className="flex flex-wrap items-start gap-2">
+        <LazyRelationshipActions
+          handle={profile.handle}
+          name={profile.displayName}
+          relationship={relationship}
+          url={address}
+        />
+        {relationship.blocked ? null : <MessageButton handle={profile.handle} />}
+        {relationship.connection === 'connected' ? (
+          <IntroduceButton
+            member={{
+              handle: profile.handle,
+              displayName: profile.displayName,
+              headline: profile.headline,
+              avatarUrl: profile.avatarUrl,
+            }}
+          />
+        ) : null}
+      </div>
     ) : undefined;
 
   return (

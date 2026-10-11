@@ -592,7 +592,8 @@
       "newTab": "opens in a new tab"
     },
     "actions": {
-      "interest": "Express an interest"
+      "interest": "Express an interest",
+      "contact": "Contact"
     },
     "interest": {
       "title": "Express an interest",
@@ -1121,7 +1122,8 @@
       "stats": "Statistics",
       "disableComments": "Turn off comments",
       "enableComments": "Turn comments back on",
-      "signInToReact": "Sign in to react"
+      "signInToReact": "Sign in to react",
+      "sendAsMessage": "Send as a message"
     },
     "repost": {
       "title": "Repost",
@@ -1184,19 +1186,260 @@
     }
   },
   "messaging": {
+    "title": "Messages",
     "history": "Messages of the conversation",
     "today": "Today",
     "yesterday": "Yesterday",
     "youWrote": "You wrote:",
     "wrote": "{{name}} wrote:",
+    "someone": "Deleted member",
     "deleted": "Message deleted",
     "edited": "(edited)",
+    "editedAt": "edited on {{date}}",
     "read": "Read",
     "sent": "Sent",
-    "attach": "Attach a file",
+    "sending": "Sending…",
+    "waiting": "Waiting for the network",
+    "failed": "Not sent",
+    "retry": "Try again",
+    "discard": "Remove",
+    "introductionNote": "Note of the introduction",
+    "sharedPost": "Post by {{name}}",
+    "openPost": "View the post",
+    "sharedUnavailable": "This post is not visible to you.",
+    "attachmentsLabel": "Attachments",
+    "attachmentFile": "Document",
+    "older": "Show earlier messages",
+    "loadingOlder": "Loading earlier messages",
+    "newBelow": {
+      "one": "{{count}} new message",
+      "other": "{{count}} new messages"
+    },
+    "typing": {
+      "one": "{{name}} is typing…",
+      "many": "{{names}} are typing…"
+    },
+    "composer": "Write a message",
+    "attach": "Attach an image or a PDF",
     "message": "Your message",
     "placeholder": "Write a message",
-    "send": "Send"
+    "send": "Send",
+    "sendDisabled": "Write a message or attach a file",
+    "enterHint": "Enter to send, Shift + Enter for a new line.",
+    "cannotSend": "You can no longer write in this conversation.",
+    "attachment": {
+      "alt": "Text alternative of {{name}}",
+      "altPlaceholder": "Describe the image for those who cannot see it",
+      "title": "Title of {{name}}",
+      "titlePlaceholder": "Title of the document",
+      "sending": "Sending the file",
+      "checking": "Checking the file",
+      "failed": "The file could not be sent.",
+      "retry": "Send {{name}} again",
+      "remove": "Remove {{name}}",
+      "tooMany": "{{count}} files at most per message: the others were not attached."
+    },
+    "messageActions": "Message actions",
+    "edit": "Edit",
+    "editTitle": "Edit the message",
+    "editLabel": "Text of the message",
+    "save": "Save",
+    "saving": "Saving",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "deleteTitle": "Delete this message?",
+    "deleteBody": "It will be replaced by “Message deleted” for every participant, and its files removed.",
+    "deleteConfirm": "Delete the message",
+    "list": {
+      "title": "Conversations",
+      "search": "Search a participant",
+      "searchLabel": "Search a conversation by the name of a participant",
+      "filters": {
+        "label": "Conversations to show",
+        "all": "All",
+        "unread": "Unread",
+        "requests": "Requests",
+        "archived": "Archived",
+        "requestsCount": "Requests · {{count}}"
+      },
+      "introductions": "Introductions",
+      "introductionsCount": "Introductions · {{count}} to answer",
+      "someone": "Deleted member",
+      "noMessage": "No message",
+      "you": "You: {{text}}",
+      "attachment": {
+        "one": "{{count}} attachment",
+        "other": "{{count}} attachments"
+      },
+      "shared": "Shared post",
+      "moderated": "Message hidden by moderation",
+      "introduction": "Conversation born of an introduction",
+      "muted": "Muted",
+      "request": "Request",
+      "requestSent": "Pending",
+      "unread": {
+        "one": "{{count}} unread message",
+        "other": "{{count}} unread messages"
+      },
+      "markedUnread": "Marked as unread",
+      "noResults": "No conversation with “{{q}}”",
+      "noResultsBody": "The search looks at the names of the other participants.",
+      "error": "The conversations could not be loaded.",
+      "more": "Show more",
+      "loadingMore": "Loading",
+      "empty": {
+        "all": {
+          "title": "No conversation yet",
+          "body": "Write to a member from their profile: with your connections, the conversation opens at once.",
+          "action": "See my network"
+        },
+        "unread": {
+          "title": "All read",
+          "body": "Conversations waiting for you to read them show here."
+        },
+        "requests": {
+          "title": "No request",
+          "body": "First messages from members outside your network arrive here, waiting for your answer."
+        },
+        "archived": {
+          "title": "No archived conversation",
+          "body": "An archived conversation comes back to your inbox with the next message."
+        }
+      }
+    },
+    "thread": {
+      "back": "All conversations",
+      "actions": "Conversation actions",
+      "group": "Conversation born of an introduction",
+      "archive": "Archive",
+      "unarchive": "Move back to the inbox",
+      "archived": "Conversation archived.",
+      "unarchived": "Conversation moved back to the inbox.",
+      "mute": "Mute",
+      "unmute": "Turn notifications back on",
+      "muted": "Conversation muted: no more notifications.",
+      "unmuted": "Notifications back on.",
+      "markUnread": "Mark as unread",
+      "leave": "Leave the conversation",
+      "leaveTitle": "Leave this conversation?",
+      "leaveBody": "You will no longer receive its messages nor be able to write in it. The other participants carry on without you.",
+      "leaveConfirm": "Leave",
+      "choose": "Choose a conversation",
+      "chooseBody": "Its messages show here, beside the list.",
+      "gone": "This conversation is no longer available",
+      "goneBody": "It no longer appears in your messages.",
+      "error": "The conversation could not be loaded."
+    },
+    "request": {
+      "receivedTitle": "{{name}} would like to write to you",
+      "receivedBody": "This member is not in your network. Accept to answer; a decline stays discreet, the sender is not told.",
+      "accept": "Accept",
+      "accepting": "Accepting",
+      "accepted": "Request accepted: you can write.",
+      "decline": "Decline",
+      "declining": "Declining",
+      "sentTitle": "Request sent",
+      "sentBody": "{{name}} is not in your network: your first message waits for their answer. You will be able to write again once the request is accepted.",
+      "sentShort": "Your request waits for the answer of the recipient"
+    },
+    "new": {
+      "title": "New message",
+      "directBody": "Your first message to {{name}} opens the conversation.",
+      "requestTitle": "This first message will be a request",
+      "requestBody": "{{name}} is not in your network: your message will arrive in their requests, and you will be able to write again once they accept it.",
+      "refusedTitle": "This member does not receive messages from you",
+      "refusedBody": "{{name}} only accepts messages from members closer to their network. You can ask to connect from their profile.",
+      "profile": "See their profile",
+      "sharing": "The post will be attached to your message.",
+      "sending": "Sending"
+    },
+    "introductions": {
+      "title": "Introductions",
+      "one": "Introduction",
+      "all": "All introductions",
+      "description": "Introduce two of your connections to each other: when both accept, a conversation of three opens with your note.",
+      "someone": "Deleted member",
+      "youIntroduced": "You introduce {{first}} to {{second}}",
+      "introducedYou": "{{introducer}} introduces you to {{other}}",
+      "status": {
+        "pending": "Pending",
+        "completed": "Concluded",
+        "declined": "Not concluded"
+      },
+      "answer": {
+        "pending": "{{name}} has not answered yet",
+        "accepted": "{{name}} accepted",
+        "declined": "Answer received"
+      },
+      "accept": "Accept",
+      "accepting": "Accepting",
+      "accepted": "Introduction accepted.",
+      "decline": "Decline",
+      "declining": "Declining",
+      "declined": "Introduction declined.",
+      "waitingOther": "You accepted; {{name}} has not answered yet.",
+      "openConversation": "Open the conversation",
+      "waiting": "To answer",
+      "others": "All the others",
+      "empty": "No introduction",
+      "emptyBody": "From the profile of a connection, “Introduce to…” puts two members in touch.",
+      "emptyAction": "See my network",
+      "error": "The introductions could not be loaded.",
+      "more": "Show more",
+      "loadingMore": "Loading"
+    },
+    "introduce": {
+      "title": "Introduce {{name}} to…",
+      "description": "Choose another of your connections and say why they should talk. Each accepts or declines; when both accept, a conversation of three opens with your note.",
+      "second": "Another connection",
+      "secondPlaceholder": "Search your connections",
+      "secondRequired": "Choose the connection to introduce.",
+      "note": "Your note",
+      "noteHint": "It will open the conversation.",
+      "noteRequired": "Write a note.",
+      "submit": "Send the introduction",
+      "sending": "Sending",
+      "sent": "Introduction sent: {{name}} and your other connection will answer it.",
+      "cancel": "Cancel"
+    },
+    "share": {
+      "title": "Send as a message",
+      "description": "The post will be attached to your message; each recipient sees it as their audience allows.",
+      "target": "To whom?",
+      "targetPlaceholder": "A conversation or a connection",
+      "targetRequired": "Choose a conversation or a connection.",
+      "conversation": "Conversation",
+      "connection": "Connection",
+      "note": "A word",
+      "submit": "Send",
+      "sending": "Sending",
+      "sent": "Post sent as a message.",
+      "cancel": "Cancel"
+    },
+    "settings": {
+      "policyTitle": "Who can write to me",
+      "policyHint": "Your connections can always write to you. Outside your network, a first message arrives as a request, which you accept or decline discreetly.",
+      "policyLabel": "Members who can write to you outside your network",
+      "policies": {
+        "connections_only": {
+          "label": "My connections only",
+          "description": "No first message from members outside your network."
+        },
+        "connections_and_second_degree": {
+          "label": "My connections and theirs",
+          "description": "A member who shares at least one connection with you can send you a request."
+        },
+        "verified_members": {
+          "label": "Any verified member",
+          "description": "Any member with a verified email can send you a request."
+        }
+      },
+      "emailTitle": "By email",
+      "unreadCopy": "Email copy of unread messages",
+      "unreadCopyHint": "An email when a message stays unread for a while; nothing for a muted conversation.",
+      "allNotifications": "Other emails are set in <link>Notifications</link>.",
+      "saved": "Preference saved."
+    }
   },
   "network": {
     "request": {
@@ -1893,7 +2136,8 @@
       "preferences": "Preferences",
       "privacy": "Privacy and network",
       "organizations": "My organizations",
-      "payouts": "Payout and verification"
+      "payouts": "Payout and verification",
+      "messaging": "Messages"
     },
     "account": {
       "email": {
@@ -3061,5 +3305,9 @@
         "cancel": "Cancel"
       }
     }
+  },
+  "messagingEntry": {
+    "message": "Message",
+    "introduce": "Introduce to…"
   }
 }

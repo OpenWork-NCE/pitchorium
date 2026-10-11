@@ -477,6 +477,43 @@
   }
 }
 
+/* Messaging (PROMPT FRONT 6, motion.md): a message that arrives fades in and rises a little;
+   three sober dots say that someone types (a static sentence with less motion). */
+@media (prefers-reduced-motion: no-preference) {
+  .message-in {
+    animation: message-in var(--duration-page) var(--ease-enter) both;
+  }
+  .typing-dots > span {
+    animation: typing-dot 1.2s var(--ease-curtain) infinite;
+  }
+  .typing-dots > span:nth-child(2) {
+    animation-delay: 160ms;
+  }
+  .typing-dots > span:nth-child(3) {
+    animation-delay: 320ms;
+  }
+}
+
+@keyframes message-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+@keyframes typing-dot {
+  0%,
+  60%,
+  100% {
+    opacity: 0.35;
+    transform: translateY(0);
+  }
+  30% {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+}
+
 @keyframes reaction-pop {
   from {
     opacity: 0;

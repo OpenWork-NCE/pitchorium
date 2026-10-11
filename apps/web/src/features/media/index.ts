@@ -4,3 +4,5 @@
  */
 export { ImageCropDialog, type ImageTexts } from './components/image-crop-dialog';
 export { MediaRejectedError, type UploadStep, uploadMedia } from './lib/upload';
+/** The same, loaded on demand (a page that sends a file now and then). */
+export const loadUpload = () => import('./lib/upload');

@@ -43,6 +43,11 @@ export interface CommentInput {
 export interface MessageInput {
   conversationId: string;
   body: SendMessageDto;
+  /**
+   * What the thread shows while the message is sent: the attachments with their text and local
+   * preview (an object URL, gone after a reload). Never sent to the api.
+   */
+  display?: { attachments: { mediaId: string; text: string; previewUrl: string | null }[] };
 }
 
 const headers = (key: string) => ({ headers: { 'Idempotency-Key': key } });

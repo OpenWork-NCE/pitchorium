@@ -19,6 +19,7 @@ import {
   MessageSquareText,
   MoreHorizontal,
   Pencil,
+  Send,
   Share2,
   Trash2,
 } from 'lucide-react';
@@ -35,6 +36,7 @@ import {
   notify,
 } from '@/components/ui';
 import { routes } from '@/config/routes';
+import { useSendAsMessage } from '@/lib/actions/send-as-message';
 import { useProblemText } from './use-problem-text';
 
 const loadStats = () => import('./post-stats');
@@ -57,8 +59,8 @@ export interface PostMenuProps {
 /**
  * The panel of « Plus d'actions » of a publication (loaded with its first use, PostMenu): save, hide from one's feed (undone from the toast), copy
  * its address, share it (Web Share on a phone); for its author, edit it, turn its comments off or
- * on, read its statistics, delete it after a confirmation. Message and report come with their
- * prompts (PROMPT FRONT 6 and 8).
+ * on, read its statistics, delete it after a confirmation; send it as a message (§10.3). Report
+ * comes with its prompt (PROMPT FRONT 8).
  */
 export function PostMenuPanel({
   post,
@@ -79,6 +81,7 @@ export function PostMenuPanel({
   const address = () =>
     new URL(`/${locale}${routes.post(post.id)}`, window.location.origin).toString();
   const canShare = typeof navigator !== 'undefined' && 'share' in navigator;
+  const sendAsMessage = useSendAsMessage();
 
   async function save() {
     const saved = !post.saved;
@@ -151,6 +154,12 @@ export function PostMenuPanel({
             <Link2 aria-hidden />
             {t('copyLink')}
           </DropdownMenuItem>
+          {sendAsMessage ? (
+            <DropdownMenuItem onSelect={() => sendAsMessage(post.id)}>
+              <Send aria-hidden />
+              {t('sendAsMessage')}
+            </DropdownMenuItem>
+          ) : null}
           {canShare ? (
             <DropdownMenuItem
               onSelect={() => void navigator.share({ url: address() }).catch(() => undefined)}

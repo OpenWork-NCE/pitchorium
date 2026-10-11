@@ -592,7 +592,8 @@
       "newTab": "s’ouvre dans un nouvel onglet"
     },
     "actions": {
-      "interest": "Manifester un intérêt"
+      "interest": "Manifester un intérêt",
+      "contact": "Contacter"
     },
     "interest": {
       "title": "Manifester un intérêt",
@@ -1121,7 +1122,8 @@
       "stats": "Statistiques",
       "disableComments": "Désactiver les commentaires",
       "enableComments": "Réactiver les commentaires",
-      "signInToReact": "Se connecter pour réagir"
+      "signInToReact": "Se connecter pour réagir",
+      "sendAsMessage": "Envoyer en message"
     },
     "repost": {
       "title": "Repartager la publication",
@@ -1184,19 +1186,260 @@
     }
   },
   "messaging": {
+    "title": "Messages",
     "history": "Messages de la conversation",
     "today": "Aujourd’hui",
     "yesterday": "Hier",
     "youWrote": "Vous avez écrit :",
     "wrote": "{{name}} a écrit :",
+    "someone": "Membre supprimé",
     "deleted": "Message supprimé",
     "edited": "(modifié)",
+    "editedAt": "modifié le {{date}}",
     "read": "Lu",
     "sent": "Envoyé",
-    "attach": "Joindre un fichier",
+    "sending": "Envoi…",
+    "waiting": "En attente du réseau",
+    "failed": "Non envoyé",
+    "retry": "Réessayer",
+    "discard": "Retirer",
+    "introductionNote": "Note de l’introduction",
+    "sharedPost": "Publication de {{name}}",
+    "openPost": "Voir la publication",
+    "sharedUnavailable": "Cette publication n’est pas visible pour vous.",
+    "attachmentsLabel": "Pièces jointes",
+    "attachmentFile": "Document",
+    "older": "Afficher les messages précédents",
+    "loadingOlder": "Chargement des messages précédents",
+    "newBelow": {
+      "one": "{{count}} nouveau message",
+      "other": "{{count}} nouveaux messages"
+    },
+    "typing": {
+      "one": "{{name}} écrit…",
+      "many": "{{names}} écrivent…"
+    },
+    "composer": "Écrire un message",
+    "attach": "Joindre une image ou un PDF",
     "message": "Votre message",
     "placeholder": "Écrire un message",
-    "send": "Envoyer"
+    "send": "Envoyer",
+    "sendDisabled": "Écrivez un message ou joignez un fichier",
+    "enterHint": "Entrée pour envoyer, Maj + Entrée pour aller à la ligne.",
+    "cannotSend": "Vous ne pouvez plus écrire dans cette conversation.",
+    "attachment": {
+      "alt": "Texte alternatif de {{name}}",
+      "altPlaceholder": "Décrivez l’image pour qui ne la voit pas",
+      "title": "Titre de {{name}}",
+      "titlePlaceholder": "Titre du document",
+      "sending": "Envoi du fichier",
+      "checking": "Vérification du fichier",
+      "failed": "L’envoi du fichier a échoué.",
+      "retry": "Envoyer de nouveau {{name}}",
+      "remove": "Retirer {{name}}",
+      "tooMany": "{{count}} fichiers au plus par message : les autres n’ont pas été joints."
+    },
+    "messageActions": "Actions du message",
+    "edit": "Modifier",
+    "editTitle": "Modifier le message",
+    "editLabel": "Texte du message",
+    "save": "Enregistrer",
+    "saving": "Enregistrement",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "deleteTitle": "Supprimer ce message ?",
+    "deleteBody": "Il sera remplacé par « Message supprimé » pour tous les participants, et ses fichiers retirés.",
+    "deleteConfirm": "Supprimer le message",
+    "list": {
+      "title": "Conversations",
+      "search": "Rechercher un participant",
+      "searchLabel": "Rechercher une conversation par le nom d’un participant",
+      "filters": {
+        "label": "Conversations à afficher",
+        "all": "Toutes",
+        "unread": "Non lues",
+        "requests": "Demandes",
+        "archived": "Archivées",
+        "requestsCount": "Demandes · {{count}}"
+      },
+      "introductions": "Introductions",
+      "introductionsCount": "Introductions · {{count}} à traiter",
+      "someone": "Membre supprimé",
+      "noMessage": "Aucun message",
+      "you": "Vous : {{text}}",
+      "attachment": {
+        "one": "{{count}} pièce jointe",
+        "other": "{{count}} pièces jointes"
+      },
+      "shared": "Publication partagée",
+      "moderated": "Message masqué par la modération",
+      "introduction": "Conversation née d’une introduction",
+      "muted": "En sourdine",
+      "request": "Demande",
+      "requestSent": "En attente",
+      "unread": {
+        "one": "{{count}} message non lu",
+        "other": "{{count}} messages non lus"
+      },
+      "markedUnread": "Marquée comme non lue",
+      "noResults": "Aucune conversation avec « {{q}} »",
+      "noResultsBody": "La recherche porte sur le nom des autres participants.",
+      "error": "Les conversations n’ont pas pu être chargées.",
+      "more": "Afficher plus",
+      "loadingMore": "Chargement",
+      "empty": {
+        "all": {
+          "title": "Aucune conversation pour l’instant",
+          "body": "Écrivez à un membre depuis son profil : avec vos connexions, la conversation s’ouvre aussitôt.",
+          "action": "Voir mon réseau"
+        },
+        "unread": {
+          "title": "Tout est lu",
+          "body": "Les conversations qui attendent votre lecture apparaissent ici."
+        },
+        "requests": {
+          "title": "Aucune demande",
+          "body": "Les premiers messages de membres hors de votre réseau arrivent ici, en attendant votre réponse."
+        },
+        "archived": {
+          "title": "Aucune conversation archivée",
+          "body": "Une conversation archivée revient dans votre boîte au prochain message."
+        }
+      }
+    },
+    "thread": {
+      "back": "Toutes les conversations",
+      "actions": "Actions de la conversation",
+      "group": "Conversation née d’une introduction",
+      "archive": "Archiver",
+      "unarchive": "Remettre dans la boîte",
+      "archived": "Conversation archivée.",
+      "unarchived": "Conversation remise dans la boîte.",
+      "mute": "Mettre en sourdine",
+      "unmute": "Réactiver les notifications",
+      "muted": "Conversation en sourdine : plus de notification.",
+      "unmuted": "Notifications réactivées.",
+      "markUnread": "Marquer comme non lue",
+      "leave": "Quitter la conversation",
+      "leaveTitle": "Quitter cette conversation ?",
+      "leaveBody": "Vous ne recevrez plus ses messages et ne pourrez plus y écrire. Les autres participants continuent sans vous.",
+      "leaveConfirm": "Quitter",
+      "choose": "Choisissez une conversation",
+      "chooseBody": "Ses messages s’affichent ici, à côté de la liste.",
+      "gone": "Cette conversation n’est plus disponible",
+      "goneBody": "Elle n’apparaît plus dans votre messagerie.",
+      "error": "La conversation n’a pas pu être chargée."
+    },
+    "request": {
+      "receivedTitle": "{{name}} souhaite vous écrire",
+      "receivedBody": "Ce membre n’est pas dans votre réseau. Acceptez pour lui répondre ; un refus reste discret, l’expéditeur n’en est pas averti.",
+      "accept": "Accepter",
+      "accepting": "Acceptation",
+      "accepted": "Demande acceptée : vous pouvez écrire.",
+      "decline": "Refuser",
+      "declining": "Refus",
+      "sentTitle": "Demande envoyée",
+      "sentBody": "{{name}} n’est pas dans votre réseau : votre premier message attend sa réponse. Vous pourrez écrire de nouveau quand la demande sera acceptée.",
+      "sentShort": "Votre demande attend la réponse du destinataire"
+    },
+    "new": {
+      "title": "Nouveau message",
+      "directBody": "Votre premier message à {{name}} ouvre la conversation.",
+      "requestTitle": "Ce premier message sera une demande",
+      "requestBody": "{{name}} n’est pas dans votre réseau : votre message arrivera dans ses demandes, et vous pourrez écrire de nouveau quand il l’aura acceptée.",
+      "refusedTitle": "Ce membre ne reçoit pas de message de votre part",
+      "refusedBody": "{{name}} n’accepte que les messages de membres plus proches de son réseau. Vous pouvez demander à vous connecter depuis son profil.",
+      "profile": "Voir son profil",
+      "sharing": "La publication sera jointe à votre message.",
+      "sending": "Envoi en cours"
+    },
+    "introductions": {
+      "title": "Introductions",
+      "one": "Introduction",
+      "all": "Toutes les introductions",
+      "description": "Présentez deux de vos connexions l’une à l’autre : quand les deux acceptent, une conversation à trois s’ouvre avec votre note.",
+      "someone": "Membre supprimé",
+      "youIntroduced": "Vous présentez {{first}} à {{second}}",
+      "introducedYou": "{{introducer}} vous présente {{other}}",
+      "status": {
+        "pending": "En attente",
+        "completed": "Conclue",
+        "declined": "Non conclue"
+      },
+      "answer": {
+        "pending": "{{name}} n’a pas encore répondu",
+        "accepted": "{{name}} a accepté",
+        "declined": "Réponse reçue"
+      },
+      "accept": "Accepter",
+      "accepting": "Acceptation",
+      "accepted": "Introduction acceptée.",
+      "decline": "Décliner",
+      "declining": "Refus",
+      "declined": "Introduction déclinée.",
+      "waitingOther": "Vous avez accepté ; {{name}} n’a pas encore répondu.",
+      "openConversation": "Ouvrir la conversation",
+      "waiting": "À traiter",
+      "others": "Toutes les autres",
+      "empty": "Aucune introduction",
+      "emptyBody": "Depuis le profil d’une connexion, « Présenter à… » met deux membres en relation.",
+      "emptyAction": "Voir mon réseau",
+      "error": "Les introductions n’ont pas pu être chargées.",
+      "more": "Afficher plus",
+      "loadingMore": "Chargement"
+    },
+    "introduce": {
+      "title": "Présenter {{name}} à…",
+      "description": "Choisissez une autre de vos connexions et dites pourquoi ils devraient se parler. Chacun accepte ou décline ; à deux acceptations, une conversation à trois s’ouvre avec votre note.",
+      "second": "Une autre connexion",
+      "secondPlaceholder": "Rechercher parmi vos connexions",
+      "secondRequired": "Choisissez la connexion à présenter.",
+      "note": "Votre note",
+      "noteHint": "Elle ouvrira la conversation.",
+      "noteRequired": "Écrivez une note.",
+      "submit": "Envoyer l’introduction",
+      "sending": "Envoi",
+      "sent": "Introduction envoyée : {{name}} et votre autre connexion vont y répondre.",
+      "cancel": "Annuler"
+    },
+    "share": {
+      "title": "Envoyer en message",
+      "description": "La publication sera jointe à votre message ; chaque destinataire la verra selon son audience.",
+      "target": "À qui ?",
+      "targetPlaceholder": "Une conversation ou une connexion",
+      "targetRequired": "Choisissez une conversation ou une connexion.",
+      "conversation": "Conversation",
+      "connection": "Connexion",
+      "note": "Un mot",
+      "submit": "Envoyer",
+      "sending": "Envoi",
+      "sent": "Publication envoyée en message.",
+      "cancel": "Annuler"
+    },
+    "settings": {
+      "policyTitle": "Qui peut m’écrire",
+      "policyHint": "Vos connexions peuvent toujours vous écrire. Hors de votre réseau, un premier message arrive comme une demande, que vous acceptez ou refusez discrètement.",
+      "policyLabel": "Membres qui peuvent vous écrire hors de votre réseau",
+      "policies": {
+        "connections_only": {
+          "label": "Mes connexions seulement",
+          "description": "Aucun premier message de membres hors de votre réseau."
+        },
+        "connections_and_second_degree": {
+          "label": "Mes connexions et leurs connexions",
+          "description": "Un membre qui partage au moins une connexion avec vous peut vous envoyer une demande."
+        },
+        "verified_members": {
+          "label": "Tout membre vérifié",
+          "description": "Tout membre à l’email vérifié peut vous envoyer une demande."
+        }
+      },
+      "emailTitle": "Par email",
+      "unreadCopy": "Copie par email des messages non lus",
+      "unreadCopyHint": "Un email quand un message reste non lu un moment ; rien pour une conversation en sourdine.",
+      "allNotifications": "Les autres emails se règlent dans <link>Notifications</link>.",
+      "saved": "Préférence enregistrée."
+    }
   },
   "network": {
     "request": {
@@ -1893,7 +2136,8 @@
       "preferences": "Préférences",
       "privacy": "Confidentialité et réseau",
       "organizations": "Mes organisations",
-      "payouts": "Versement et vérification"
+      "payouts": "Versement et vérification",
+      "messaging": "Messagerie"
     },
     "account": {
       "email": {
@@ -3061,5 +3305,9 @@
         "cancel": "Annuler"
       }
     }
+  },
+  "messagingEntry": {
+    "message": "Message",
+    "introduce": "Présenter à…"
   }
 }
