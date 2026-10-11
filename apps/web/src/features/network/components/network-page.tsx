@@ -25,7 +25,10 @@ import {
   TabsPanel,
   useAnnounce,
 } from '@/components/ui';
+import { routes } from '@/config/routes';
 import { SuggestionsList } from '@/features/discovery';
+import { Link } from '@/i18n/navigation';
+import { usePlural } from '@/lib/i18n/plural';
 import { ConnectionRequestActions } from './connection-request-actions';
 import { CursorList, useCursorList } from './cursor-list';
 import { MemberLists, MemberRow } from './member-lists';
@@ -57,6 +60,8 @@ function NetworkPageContent({
     initialData: counters ?? undefined,
   });
   const pending = live.data?.invitations.connections ?? 0;
+  const joining =
+    (live.data?.invitations.organizations ?? 0) + (live.data?.invitations.projects ?? 0);
   const [tab, setTab] = useQueryState(
     'view',
     parseAsStringLiteral(TABS).withDefault('invitations'),
@@ -77,6 +82,7 @@ function NetworkPageContent({
       ]}
     >
       <TabsPanel value="invitations">
+        <JoinInvitationsLink count={joining} />
         <Invitations />
       </TabsPanel>
       <TabsPanel value="suggestions">
@@ -105,6 +111,30 @@ function Note({ request }: { request: ConnectionRequest }) {
         })}
       </p>
     </>
+  );
+}
+
+/**
+ * The way to the invitations to join an organisation or a team (ADR 0149), with their number
+ * when some wait for an answer.
+ */
+function JoinInvitationsLink({ count }: { count: number }) {
+  const t = useTranslations('web.network.joinInvitations');
+  const plural = usePlural();
+  return (
+    <Card className="mb-8 flex flex-wrap items-center justify-between gap-3">
+      <div className="grid gap-0.5">
+        <Heading level={2} size="card">
+          {t('title')}
+        </Heading>
+        <p className="text-sm text-muted">
+          {count > 0 ? t(`pending.${plural(count)}`, { count }) : t('description')}
+        </p>
+      </div>
+      <Button asChild size="sm" variant={count > 0 ? 'primary' : 'outline'}>
+        <Link href={routes.invitations}>{t('open')}</Link>
+      </Button>
+    </Card>
   );
 }
 

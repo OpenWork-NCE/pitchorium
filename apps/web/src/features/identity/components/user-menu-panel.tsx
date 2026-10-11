@@ -8,6 +8,7 @@ import {
   Keyboard,
   Languages,
   LogOut,
+  MailOpen,
   Monitor,
   Moon,
   Settings,
@@ -113,6 +114,12 @@ export function UserMenuPanel({
             <Link href={routes.settingsOrganizations}>
               <Building2 aria-hidden />
               {t('organizations')}
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href={routes.invitations}>
+              <MailOpen aria-hidden />
+              {t('invitations')}
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>

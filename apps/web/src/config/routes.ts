@@ -30,6 +30,8 @@ export const routes = {
   // Member space (§6.1): the sections of the header.
   feed: '/feed',
   network: '/network',
+  /** Invitations to join an organisation or the team of a project, answered here (ADR 0149). */
+  invitations: '/network/invitations',
   /** Who viewed the profile of the member (§10.2). */
   profileViews: '/network/profile-views',
   projects: '/projects',

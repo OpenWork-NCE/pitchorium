@@ -27,7 +27,8 @@
     "createProject": "Créer un projet",
     "menu": "Menu",
     "shortcuts": "Raccourcis clavier",
-    "dashboard": "Tableau de bord"
+    "dashboard": "Tableau de bord",
+    "invitations": "Invitations"
   },
   "theme": {
     "label": "Thème",
@@ -665,7 +666,11 @@
       "decline": "Refuser",
       "declining": "Refus en cours",
       "accepted": "Vous avez rejoint l’équipe de {{title}}.",
-      "declined": "Invitation à {{title}} refusée."
+      "declined": "Invitation à {{title}} refusée.",
+      "none": "Aucune invitation d’équipe",
+      "noneHint": "Quand une équipe vous invite à rejoindre son projet, l’invitation apparaît ici.",
+      "dialogTitle": "Rejoindre l’équipe de {{title}}",
+      "closed": "Cette invitation n’attend plus de réponse : elle a déjà été traitée ou retirée par l’équipe."
     },
     "images": {
       "position": "Image {{index}}",
@@ -1619,6 +1624,15 @@
         "one": "abonné",
         "other": "abonnés"
       }
+    },
+    "joinInvitations": {
+      "title": "Invitations à rejoindre",
+      "description": "Les invitations à rejoindre une organisation ou l’équipe d’un projet, à accepter sans passer par l’email.",
+      "pending": {
+        "one": "{{count}} invitation attend votre réponse.",
+        "other": "{{count}} invitations attendent votre réponse."
+      },
+      "open": "Voir les invitations"
     }
   },
   "notifications": {
@@ -2611,6 +2625,19 @@
       "emptyHint": "Créez la page de votre fondation, entreprise, ONG ou institution, ou rejoignez-en une sur invitation.",
       "manage": "Gérer",
       "membership": "Mon adhésion"
+    },
+    "received": {
+      "title": "Organisations",
+      "none": "Aucune invitation d’organisation",
+      "noneHint": "Les invitations envoyées à votre adresse email vérifiée apparaissent ici.",
+      "error": "Les invitations n’ont pas pu être chargées.",
+      "role": "Invitation comme {{role}}, valable jusqu’au {{date}}",
+      "accept": "Rejoindre",
+      "accepting": "Validation en cours",
+      "decline": "Refuser",
+      "declining": "Refus en cours",
+      "accepted": "Vous avez rejoint {{name}}.",
+      "declined": "Invitation de {{name}} refusée."
     }
   },
   "composer": {

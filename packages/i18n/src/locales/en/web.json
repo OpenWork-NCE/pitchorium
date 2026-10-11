@@ -27,7 +27,8 @@
     "createProject": "Create a project",
     "menu": "Menu",
     "shortcuts": "Keyboard shortcuts",
-    "dashboard": "Dashboard"
+    "dashboard": "Dashboard",
+    "invitations": "Invitations"
   },
   "theme": {
     "label": "Theme",
@@ -665,7 +666,11 @@
       "decline": "Decline",
       "declining": "Declining",
       "accepted": "You joined the team of {{title}}.",
-      "declined": "Invitation to {{title}} declined."
+      "declined": "Invitation to {{title}} declined.",
+      "none": "No team invitation",
+      "noneHint": "When a team invites you to join its project, the invitation appears here.",
+      "dialogTitle": "Join the team of {{title}}",
+      "closed": "This invitation no longer awaits an answer: it was already answered or withdrawn by the team."
     },
     "images": {
       "position": "Image {{index}}",
@@ -1619,6 +1624,15 @@
         "one": "follower",
         "other": "followers"
       }
+    },
+    "joinInvitations": {
+      "title": "Invitations to join",
+      "description": "Invitations to join an organization or the team of a project, to accept without going through the email.",
+      "pending": {
+        "one": "{{count}} invitation awaits your answer.",
+        "other": "{{count}} invitations await your answer."
+      },
+      "open": "See the invitations"
     }
   },
   "notifications": {
@@ -2611,6 +2625,19 @@
       "emptyHint": "Create the page of your foundation, company, NGO or institution, or join one by invitation.",
       "manage": "Manage",
       "membership": "My membership"
+    },
+    "received": {
+      "title": "Organizations",
+      "none": "No organization invitation",
+      "noneHint": "Invitations sent to your verified email address appear here.",
+      "error": "The invitations could not be loaded.",
+      "role": "Invited as {{role}}, valid until {{date}}",
+      "accept": "Join",
+      "accepting": "Confirming",
+      "decline": "Decline",
+      "declining": "Declining",
+      "accepted": "You joined {{name}}.",
+      "declined": "Invitation from {{name}} declined."
     }
   },
   "composer": {

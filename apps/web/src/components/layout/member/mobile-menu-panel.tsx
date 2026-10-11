@@ -108,6 +108,11 @@ export default function MobileMenuPanel({
               </Link>
             </Button>
             <Button asChild variant="outline" size="sm">
+              <Link href={routes.invitations} onClick={() => onOpenChange(false)}>
+                {t('invitations')}
+              </Link>
+            </Button>
+            <Button asChild variant="outline" size="sm">
               <Link href={routes.saved} onClick={() => onOpenChange(false)}>
                 {t('saved')}
               </Link>

@@ -24,10 +24,11 @@ import {
   X,
 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { createElement } from 'react';
-import { Avatar, AvatarGroup, IconButton, RelativeTime } from '@/components/ui';
+import { createElement, useState } from 'react';
+import { Avatar, AvatarGroup, Dialog, IconButton, RelativeTime } from '@/components/ui';
 import { REACTION_ICONS } from '@/features/content';
 import { ConnectionRequestActions } from '@/features/network';
+import { LazyProjectInvitationDialogContent } from '@/features/projects';
 import { Link } from '@/i18n/navigation';
 import { cn } from '@/lib/cn';
 import { targetHref } from '../lib/target';
@@ -106,7 +107,16 @@ export function NotificationItem({ notification, onOpen, onRemove }: Notificatio
   const key = `${notification.type}.${others > 0 ? 'many' : 'one'}` as Parameters<typeof t>[0];
   const text = t.has(key) ? t(key, valuesOf(notification, ui('someone'))) : ui('generic');
   const requestId = notification.data['requestId'];
-  const href = targetHref(notification.target);
+  // An invitation to the team of a project is answered in a dialog, with its consent (A1).
+  const teamInvitation =
+    notification.type === 'project_team_invitation' &&
+    notification.target.type === 'project_invitations';
+  const [answering, setAnswering] = useState(false);
+  const href = teamInvitation ? null : targetHref(notification.target);
+  const lineClass = cn(
+    'rounded-xs text-sm text-pretty outline-none after:absolute after:inset-0 after:rounded-lg focus-visible:after:outline-2 focus-visible:after:outline-focus',
+    !notification.read && 'font-medium',
+  );
   const content = (
     <>
       {text}
@@ -147,16 +157,34 @@ export function NotificationItem({ notification, onOpen, onRemove }: Notificatio
         </span>
       </div>
       <div className="grid min-w-0 flex-1 gap-1">
-        {href ? (
+        {teamInvitation ? (
+          <Dialog open={answering} onOpenChange={setAnswering}>
+            <button
+              type="button"
+              aria-haspopup="dialog"
+              onClick={() => {
+                setAnswering(true);
+                if (!notification.read) onOpen?.(notification);
+              }}
+              className={cn(lineClass, 'cursor-pointer text-left')}
+            >
+              {content}
+            </button>
+            {answering ? (
+              <LazyProjectInvitationDialogContent
+                slug={notification.target.key}
+                title={String(notification.data['title'] ?? '')}
+                onClose={() => setAnswering(false)}
+              />
+            ) : null}
+          </Dialog>
+        ) : href ? (
           <Link
             href={href}
             onClick={() => {
               if (!notification.read) onOpen?.(notification);
             }}
-            className={cn(
-              'rounded-xs text-sm text-pretty outline-none after:absolute after:inset-0 after:rounded-lg focus-visible:after:outline-2 focus-visible:after:outline-focus',
-              !notification.read && 'font-medium',
-            )}
+            className={lineClass}
           >
             {content}
           </Link>

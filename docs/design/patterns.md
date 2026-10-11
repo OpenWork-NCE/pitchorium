@@ -49,6 +49,7 @@ Comment assembler les composants (`components.md`) pour les situations récurren
 - Un seul bouton de connexion change d'état : « Se connecter » (dialogue avec une note de 300 caractères au plus), « En attente » (retirer la demande), « En relation » (retirer la connexion) ; une demande reçue donne « Accepter » et « Ignorer ». « Suivre » est à côté, puis un menu « Plus d'actions » (copier le lien, partager, bloquer).
 - Chaque geste réversible s'affiche aussitôt et revient avec sa raison si l'api refuse ; bloquer, retirer une connexion, transférer ou supprimer passent par une confirmation.
 - Ni message ni signalement depuis un profil avant leurs prompts (PROMPT FRONT 6 et 8).
+- Invitations à rejoindre (ADR 0149) : `/network/invitations`, atteinte par le menu du compte et par une carte en tête de l'onglet « Invitations » du réseau (avec le nombre en attente) ; les invitations d'organisation adressées à l'email vérifié, puis celles des équipes de projet avec leur consentement d'affichage public. La notification d'une invitation d'organisation y mène ; celle d'une équipe ouvre sur place le dialogue d'acceptation, consentement compris.
 
 ## Suggestions (§10.2, ADR 0067)
 

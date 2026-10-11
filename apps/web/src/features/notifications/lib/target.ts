@@ -16,7 +16,7 @@ const DELIVERED = [
   /^\/events\/[^/?]+$/,
   /^\/settings\/(payouts|security|privacy)$/,
   /^\/dashboard(\/time)?$/,
-  /^\/network(\/profile-views|\?view=suggestions)?$/,
+  /^\/network(\/profile-views|\/invitations|\?view=suggestions)?$/,
 ] as const;
 
 /** Where the notification leads, or null when its page is not delivered yet. */
