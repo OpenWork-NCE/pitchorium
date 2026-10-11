@@ -72,6 +72,10 @@ test.describe('member shell', () => {
     await expect(page.getByRole('menuitem', { name: 'Tableau de bord' })).toBeFocused();
     await page.keyboard.press('ArrowDown');
     await expect(page.getByRole('menuitem', { name: 'Mes organisations' })).toBeFocused();
+    for (const name of ['Découvrir', 'Événements', 'Missions', 'Invitations']) {
+      await page.keyboard.press('ArrowDown');
+      await expect(page.getByRole('menuitem', { name })).toBeFocused();
+    }
     await page.keyboard.press('ArrowDown');
     await expect(page.getByRole('menuitem', { name: 'Publications enregistrées' })).toBeFocused();
     await page.keyboard.press('ArrowDown');
@@ -131,8 +135,14 @@ test.describe('member shell', () => {
     const palette = page.getByRole('dialog', { name: 'Recherche globale' });
     await expect(palette.getByRole('combobox')).toBeFocused();
     await page.keyboard.type('énergie solaire');
+    // Without a direct result, Enter runs the search on its page.
+    await expect(
+      palette.getByRole('option', { name: /Rechercher « énergie solaire »/ }),
+    ).toHaveAttribute('aria-selected', 'true');
     await page.keyboard.press('Enter');
     await expect(palette).toBeHidden();
+    await expect(page).toHaveURL(/\/fr\/search\?q=/);
+    await page.waitForLoadState('networkidle');
     await page.keyboard.press('Control+k');
     await expect(palette.getByRole('option', { name: 'énergie solaire' })).toBeVisible();
     await expect(palette.getByRole('combobox')).toBeFocused();

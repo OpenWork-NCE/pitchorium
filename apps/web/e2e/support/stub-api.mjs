@@ -7,6 +7,7 @@
 import { createServer } from 'node:http';
 import { Server } from 'socket.io';
 import { contentRoutes } from './stub-content.mjs';
+import { discoveryRoutes } from './stub-discovery.mjs';
 import { messagingRoutes } from './stub-messaging.mjs';
 import { collectionMissing, paymentRoutes } from './stub-payments.mjs';
 import { projectRoutes } from './stub-projects.mjs';
@@ -634,6 +635,7 @@ const server = createServer(async (request, response) => {
   const handler = routes[`${request.method} ${path}`];
   const url = new URL(request.url ?? '/', `http://localhost:${port}`);
   const project =
+    (await discovery(request, path, url)) ??
     (await messaging(request, path, url)) ??
     (await payments(request, path, url)) ??
     projects(request, path, url);
@@ -673,6 +675,15 @@ const messaging = messagingRoutes({
 });
 
 const payments = paymentRoutes({ sessionOf, problem, readJson, state: () => state });
+
+const discovery = discoveryRoutes({
+  origin: `http://localhost:${port}`,
+  accounts: ACCOUNTS,
+  sessionOf,
+  problem,
+  readJson,
+  state: () => state,
+});
 
 const projects = projectRoutes({
   origin: `http://localhost:${port}`,
