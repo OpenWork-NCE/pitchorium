@@ -68,7 +68,7 @@ export function IntroductionAnswer({
         </Button>
         <Button
           size="sm"
-          variant="secondary"
+          variant="outline"
           loading={busy === 'decline'}
           loadingLabel={t('declining')}
           aria-label={t('declineName', { name })}
