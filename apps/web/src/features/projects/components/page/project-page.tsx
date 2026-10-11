@@ -1,10 +1,10 @@
 import type { FollowState, Locale, Project } from '@pitchorium/contracts';
 import { getFormatter, getTranslations } from 'next-intl/server';
-import type { ReactNode } from 'react';
+import type { ComponentType, ReactNode } from 'react';
 import { Bell } from 'lucide-react';
 import { Alert, Button, ImpactBadge } from '@/components/ui';
 import * as routes from '@/config/paths';
-import { ActivitySection, ImageGallery } from '@/features/content';
+import { ActivitySection, ImageGallery, type MemberActivityProps } from '@/features/content';
 import { Link } from '@/i18n/navigation';
 import { withRedirect } from '@/lib/auth/redirect';
 import { pluralOf } from '@/lib/i18n/plural-of';
@@ -14,6 +14,7 @@ import type { FixedParity } from '../../lib/indicative-equivalent';
 import { DocumentsSection } from './documents-section';
 import { FundingPanel } from './funding-panel';
 import { LazyMemberActions } from './lazy-member-actions';
+import type { MemberActionsProps } from './member-actions';
 import { MobileActionBar } from './mobile-action-bar';
 import { ProjectHero } from './project-hero';
 import {
@@ -49,6 +50,14 @@ export interface ProjectPageProps {
    * shown first on a phone, and its short form in the action bar of a phone.
    */
   contribute?: { block: ReactNode; bar: ReactNode } | null;
+  /**
+   * The islands of a member reader, loaded on demand with the other islands of the route (one
+   * chunk for all of them, ADR 0094); each in its own chunk otherwise.
+   */
+  islands?: {
+    memberActions?: ComponentType<MemberActionsProps>;
+    memberActivity?: ComponentType<MemberActivityProps>;
+  };
 }
 
 /**
@@ -66,7 +75,9 @@ export async function ProjectPage({
   follow,
   parity,
   contribute = null,
+  islands = {},
 }: ProjectPageProps) {
+  const MemberActionsIsland = islands.memberActions ?? LazyMemberActions;
   const t = await getTranslations('web.projects.page');
   const funding = await getTranslations('web.projects.funding');
   const format = await getFormatter();
@@ -99,7 +110,7 @@ export async function ProjectPage({
   ) : null;
   const memberActions =
     signedIn && follow && !draft ? (
-      <LazyMemberActions
+      <MemberActionsIsland
         project={{ id: project.id, title: project.title }}
         follow={follow}
         // « Contacter »: a conversation with its owner, for a member outside its team.
@@ -244,6 +255,7 @@ export async function ProjectPage({
               signedIn={signedIn}
               title={t('posts')}
               hideWhenEmpty
+              memberActivity={islands.memberActivity}
             />
           )}
           <ImpactSection project={project} editorial={editorial} />
@@ -253,7 +265,7 @@ export async function ProjectPage({
         <MobileActionBar summary={summary} label={t('actionBar')}>
           {contribute?.bar}
           {memberActions ? (
-            <LazyMemberActions
+            <MemberActionsIsland
               project={{ id: project.id, title: project.title }}
               follow={follow!}
               layout="bar"

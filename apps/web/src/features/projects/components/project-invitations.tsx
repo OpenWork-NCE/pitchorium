@@ -1,7 +1,6 @@
 'use client';
 
 import {
-  getNotificationsControllerCountersQueryKey,
   getTeamControllerInvitationsQueryKey,
   teamControllerAccept,
   teamControllerDecline,
@@ -15,6 +14,7 @@ import { Button, Card, Checkbox, EmptyState, Heading, Text, useAnnounce } from '
 import * as routes from '@/config/paths';
 import { useRouter } from '@/i18n/navigation';
 import { useProblemText } from './shared/use-problem-text';
+import { COUNTERS_QUERY_KEY } from '@/lib/query/keys';
 
 /**
  * The invitations of the member to join the team of a project (§11.2, ADR 0040): accepting asks
@@ -90,7 +90,7 @@ export function ProjectInvitationAnswer({
       );
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: getTeamControllerInvitationsQueryKey() }),
-        queryClient.invalidateQueries({ queryKey: getNotificationsControllerCountersQueryKey() }),
+        queryClient.invalidateQueries({ queryKey: COUNTERS_QUERY_KEY }),
       ]);
       onAnswered?.(accept);
       if (accept) router.push(routes.project(project.slug));

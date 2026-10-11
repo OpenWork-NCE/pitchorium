@@ -17,19 +17,21 @@ const InterestDialog = lazy(() => import('./interest-dialog'));
  * the address (`?interest=1`), where the journey of a contribution sends an instrument that is
  * never paid online (§9.1). « Contacter » opens a conversation with its owner (§10.4).
  */
-export function MemberActions({
-  project,
-  follow,
-  layout = 'stack',
-  contact = null,
-}: {
+export interface MemberActionsProps {
   project: { id: string; title: string };
   follow: FollowState;
   /** Handle of the owner to contact, in the funding block; none for the team. */
   contact?: string | null;
   /** `stack` in the funding block, `bar` in the action bar of a phone. */
   layout?: 'stack' | 'bar';
-}) {
+}
+
+export function MemberActions({
+  project,
+  follow,
+  layout = 'stack',
+  contact = null,
+}: MemberActionsProps) {
   const t = useTranslations('web.projects.actions');
   const [open, setOpen] = useState(false);
   const [opened, setOpened] = useState(false);

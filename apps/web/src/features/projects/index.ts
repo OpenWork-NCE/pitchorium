@@ -21,3 +21,4 @@ export { countryNames } from './lib/countries';
 export type { FixedParity } from './lib/indicative-equivalent';
 export { projectJsonLd } from './lib/json-ld';
 export { isWizardStep, resumeStep, type WizardStep } from './lib/wizard-steps';
+export { MemberActions, type MemberActionsProps } from './components/page/member-actions';
