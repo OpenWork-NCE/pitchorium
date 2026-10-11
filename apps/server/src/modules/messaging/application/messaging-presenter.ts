@@ -66,11 +66,12 @@ export class MessagingPresenter {
         body: hidden ? null : message.body,
         attachments: hidden
           ? []
-          : message.attachmentIds.map((mediaId) => {
+          : message.attachmentIds.map((mediaId, index) => {
               const image = images.get(mediaId);
               return {
                 mediaId,
                 image: image ? { url: image.url, variants: image.variants } : null,
+                text: message.attachmentTexts[index] || null,
               };
             }),
         sharedPost:

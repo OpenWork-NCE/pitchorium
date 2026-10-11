@@ -171,6 +171,7 @@ export async function seedDevMessaging(
       clientMessageId,
       body: text,
       attachmentIds: [],
+      attachmentTexts: [],
     });
     if (!known) result.messages += 1;
   };

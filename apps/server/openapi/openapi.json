@@ -59759,11 +59759,18 @@
                                     "type": "null"
                                   }
                                 ]
+                              },
+                              "text": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
                               }
                             },
                             "required": [
                               "mediaId",
-                              "image"
+                              "image",
+                              "text"
                             ],
                             "additionalProperties": false
                           }
@@ -60959,6 +60966,15 @@
               "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$"
             }
           },
+          "attachmentTexts": {
+            "default": [],
+            "maxItems": 5,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 300
+            }
+          },
           "sharedPostId": {
             "type": "string",
             "format": "uuid",
@@ -61087,11 +61103,18 @@
                       "type": "null"
                     }
                   ]
+                },
+                "text": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
                 }
               },
               "required": [
                 "mediaId",
-                "image"
+                "image",
+                "text"
               ],
               "additionalProperties": false
             }
@@ -62368,11 +62391,18 @@
                               "type": "null"
                             }
                           ]
+                        },
+                        "text": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
                         }
                       },
                       "required": [
                         "mediaId",
-                        "image"
+                        "image",
+                        "text"
                       ],
                       "additionalProperties": false
                     }
@@ -63664,11 +63694,18 @@
                             "type": "null"
                           }
                         ]
+                      },
+                      "text": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
                       }
                     },
                     "required": [
                       "mediaId",
-                      "image"
+                      "image",
+                      "text"
                     ],
                     "additionalProperties": false
                   }
@@ -64787,6 +64824,15 @@
               "type": "string",
               "format": "uuid",
               "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$"
+            }
+          },
+          "attachmentTexts": {
+            "default": [],
+            "maxItems": 5,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 300
             }
           },
           "sharedPostId": {

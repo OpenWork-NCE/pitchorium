@@ -394,7 +394,13 @@ export class DrizzleMessagingRepository extends MessagingRepository {
     patch: Partial<
       Pick<
         MessageRecord,
-        'body' | 'attachmentIds' | 'sharedPostId' | 'editedAt' | 'deletedAt' | 'moderationStatus'
+        | 'body'
+        | 'attachmentIds'
+        | 'attachmentTexts'
+        | 'sharedPostId'
+        | 'editedAt'
+        | 'deletedAt'
+        | 'moderationStatus'
       >
     >,
   ): Promise<void> {

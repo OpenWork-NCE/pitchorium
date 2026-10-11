@@ -1,0 +1,1 @@
+ALTER TABLE "messaging"."messages" ADD COLUMN "attachment_texts" text[] DEFAULT '{}'::text[] NOT NULL;

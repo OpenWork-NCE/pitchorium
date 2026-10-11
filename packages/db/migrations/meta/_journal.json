@@ -190,6 +190,13 @@
       "when": 1791623811085,
       "tag": "0026_projects_image_alts",
       "breakpoints": true
+    },
+    {
+      "idx": 27,
+      "version": "7",
+      "when": 1791679025019,
+      "tag": "0027_messaging_attachment_texts",
+      "breakpoints": true
     }
   ]
 }

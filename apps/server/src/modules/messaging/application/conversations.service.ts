@@ -57,7 +57,13 @@ export interface MessageContent {
   clientMessageId: string;
   body: string;
   attachmentIds: string[];
+  attachmentTexts?: string[] | undefined;
   sharedPostId?: string | undefined;
+}
+
+/** One text per attachment, at its position: those beyond the attachments are dropped. */
+function textsOf(content: MessageContent): string[] {
+  return content.attachmentIds.map((_, index) => content.attachmentTexts?.[index] ?? '');
 }
 
 const active = activeIds;
@@ -265,6 +271,7 @@ export class ConversationsService {
       kind,
       body: content.body,
       attachmentIds: content.attachmentIds,
+      attachmentTexts: textsOf(content),
       sharedPostId: content.sharedPostId ?? null,
       moderationStatus: 'visible',
       createdAt: now,
@@ -478,6 +485,7 @@ export class ConversationsService {
       await this.messaging.updateMessage(messageId, {
         body: '',
         attachmentIds: [],
+        attachmentTexts: [],
         sharedPostId: null,
         deletedAt,
       });
@@ -490,7 +498,14 @@ export class ConversationsService {
     });
     await this.realtime.message(
       'updated',
-      { ...message, body: '', attachmentIds: [], sharedPostId: null, deletedAt },
+      {
+        ...message,
+        body: '',
+        attachmentIds: [],
+        attachmentTexts: [],
+        sharedPostId: null,
+        deletedAt,
+      },
       active(participants),
     );
   }
@@ -542,6 +557,7 @@ export class ConversationsService {
       (existing.deletedAt !== null ||
         (existing.body === content.body &&
           existing.attachmentIds.join() === content.attachmentIds.join() &&
+          existing.attachmentTexts.join('\n') === textsOf(content).join('\n') &&
           existing.sharedPostId === (content.sharedPostId ?? null)));
     if (!same) {
       throw new DomainError('MESSAGING_CLIENT_ID_REUSED', 'Client message id already used');
@@ -561,6 +577,7 @@ function contentOf(request: StartConversationRequest): MessageContent {
     clientMessageId: request.clientMessageId,
     body: request.body,
     attachmentIds: request.attachmentIds,
+    attachmentTexts: request.attachmentTexts,
     sharedPostId: request.sharedPostId,
   };
 }

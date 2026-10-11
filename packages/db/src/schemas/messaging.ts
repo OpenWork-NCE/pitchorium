@@ -96,6 +96,11 @@ export const messagingMessages = messagingSchema.table(
       .array()
       .notNull()
       .default(sql`'{}'::uuid[]`),
+    /** Text alternative or title of each attachment, at the same position. */
+    attachmentTexts: text('attachment_texts')
+      .array()
+      .notNull()
+      .default(sql`'{}'::text[]`),
     sharedPostId: uuid('shared_post_id'),
     moderationStatus: text('moderation_status').notNull().default('visible'),
     createdAt: timestamptz('created_at').notNull(),

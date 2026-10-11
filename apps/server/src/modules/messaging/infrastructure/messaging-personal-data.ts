@@ -44,6 +44,7 @@ export class MessagingPersonalData implements OnModuleInit {
                 conversationId: messagingMessages.conversationId,
                 body: messagingMessages.body,
                 attachmentIds: messagingMessages.attachmentIds,
+                attachmentTexts: messagingMessages.attachmentTexts,
                 sharedPostId: messagingMessages.sharedPostId,
                 createdAt: messagingMessages.createdAt,
                 editedAt: messagingMessages.editedAt,
@@ -80,6 +81,7 @@ export class MessagingPersonalData implements OnModuleInit {
             .set({
               body: '',
               attachmentIds: [],
+              attachmentTexts: [],
               sharedPostId: null,
               deletedAt: sql`coalesce(${messagingMessages.deletedAt}, ${this.clock.now()})`,
             })

@@ -54,6 +54,7 @@ export class MessagingGateway {
         clientMessageId: data.clientMessageId,
         body: data.body,
         attachmentIds: data.attachmentIds,
+        attachmentTexts: data.attachmentTexts,
         sharedPostId: data.sharedPostId,
       });
     });

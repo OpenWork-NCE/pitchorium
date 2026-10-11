@@ -10490,6 +10490,8 @@ export type ConversationPageDtoOutputItemsItemLastMessageAttachmentsItem = {
   /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
   mediaId: string;
   image: ConversationPageDtoOutputItemsItemLastMessageAttachmentsItemImage;
+  /** @nullable */
+  text: string | null;
 };
 
 export type ConversationPageDtoOutputItemsItemLastMessageSharedPostPostAuthor =
@@ -11011,6 +11013,11 @@ export interface StartConversationDto {
    * @items.pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$
    */
   attachmentIds?: string[];
+  /**
+   * @maxItems 5
+   * @items.maxLength 300
+   */
+  attachmentTexts?: string[];
   /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
   sharedPostId?: string;
 }
@@ -11050,6 +11057,8 @@ export type MessageDtoOutputAttachmentsItem = {
   /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
   mediaId: string;
   image: MessageDtoOutputAttachmentsItemImage;
+  /** @nullable */
+  text: string | null;
 };
 
 export type MessageDtoOutputSharedPostPostAuthor =
@@ -11591,6 +11600,8 @@ export type ConversationDtoOutputLastMessageAttachmentsItem = {
   /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
   mediaId: string;
   image: ConversationDtoOutputLastMessageAttachmentsItemImage;
+  /** @nullable */
+  text: string | null;
 };
 
 export type ConversationDtoOutputLastMessageSharedPostPostAuthor =
@@ -12134,6 +12145,8 @@ export type MessagePageDtoOutputItemsItemAttachmentsItem = {
   /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
   mediaId: string;
   image: MessagePageDtoOutputItemsItemAttachmentsItemImage;
+  /** @nullable */
+  text: string | null;
 };
 
 export type MessagePageDtoOutputItemsItemSharedPostPostAuthor =
@@ -12622,6 +12635,11 @@ export interface SendMessageDto {
    * @items.pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$
    */
   attachmentIds?: string[];
+  /**
+   * @maxItems 5
+   * @items.maxLength 300
+   */
+  attachmentTexts?: string[];
   /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
   sharedPostId?: string;
 }

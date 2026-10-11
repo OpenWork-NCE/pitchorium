@@ -222,8 +222,11 @@ describe('messaging', () => {
     await connectMembers(ama, kofi);
     const pdf = await readyMedia(ama.userId, 'message_attachment');
     const conversation = (await write(ama, kofiHandle, 'Le pitch')).conversationId;
-    const sent = (await send(ama, conversation, { attachmentIds: [pdf] })).body as Message;
-    expect(sent.attachments).toEqual([{ mediaId: pdf, image: null }]);
+    const sent = (
+      await send(ama, conversation, { attachmentIds: [pdf], attachmentTexts: ['Pitch 2026'] })
+    ).body as Message;
+    // The title written by the sender travels with the file.
+    expect(sent.attachments).toEqual([{ mediaId: pdf, image: null, text: 'Pitch 2026' }]);
     await kofi.agent.get(`/v1/media/${pdf}/download-url`).expect(200);
     await awa.agent.get(`/v1/media/${pdf}/download-url`).expect(404);
     // A file of another member cannot be attached.

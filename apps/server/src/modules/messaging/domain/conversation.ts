@@ -49,6 +49,8 @@ export interface MessageRecord {
   kind: MessageKind;
   body: string;
   attachmentIds: string[];
+  /** Text alternative or title of each attachment, at the same position ('' for none). */
+  attachmentTexts: string[];
   sharedPostId: string | null;
   moderationStatus: MessageModerationStatus;
   createdAt: Date;

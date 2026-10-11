@@ -8,6 +8,8 @@ import { handleSchema, memberCardSchema } from './profiles.js';
 /** Messaging (§10.4, ADR 0055 to 0058). Limits are provisional (docs/open-questions.md). */
 export const MESSAGE_BODY_MAX_LENGTH = 8000;
 export const MESSAGE_ATTACHMENTS_MAX = 5;
+/** Text alternative of an image, or title of a PDF, sent with a message. */
+export const MESSAGE_ATTACHMENT_TEXT_MAX_LENGTH = 300;
 export const INTRODUCTION_NOTE_MAX_LENGTH = 1000;
 
 /** Who may write to a member out of network; `connections_and_second_degree` by default. */
@@ -54,6 +56,14 @@ const messageContentShape = {
   body: z.string().trim().max(MESSAGE_BODY_MAX_LENGTH).default(''),
   /** Ready files of the sender with the usage `message_attachment`. */
   attachmentIds: z.array(uuidV7Schema).max(MESSAGE_ATTACHMENTS_MAX).default([]),
+  /**
+   * Text alternative of the image, or title of the PDF, at the same position as in
+   * `attachmentIds`; an empty or missing text for none.
+   */
+  attachmentTexts: z
+    .array(z.string().trim().max(MESSAGE_ATTACHMENT_TEXT_MAX_LENGTH))
+    .max(MESSAGE_ATTACHMENTS_MAX)
+    .default([]),
   /** Publication forwarded as a card (§10.3 « transférer en message »). */
   sharedPostId: uuidV7Schema.optional(),
 };
@@ -75,6 +85,8 @@ export const messageAttachmentSchema = z.object({
   image: z
     .object({ url: z.string(), variants: z.record(z.string(), mediaVariantSchema) })
     .nullable(),
+  /** Text alternative of the image, or title of the PDF; null when the sender wrote none. */
+  text: z.string().nullable(),
 });
 
 /** Publication shared in a message, checked against the visibility for each reader. */
