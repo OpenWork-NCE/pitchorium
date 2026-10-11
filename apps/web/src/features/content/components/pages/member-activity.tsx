@@ -3,49 +3,55 @@
 import {
   postsControllerMemberPosts,
   postsControllerOrganizationPosts,
-  projectsControllerPosts,
 } from '@pitchorium/api-client';
 import type { Post } from '@pitchorium/contracts';
-import { useInfiniteQuery } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Pagination } from '@/components/ui';
 import { MemberPost } from './member-post';
-import { type ActivityAuthor, activityKeyOf } from './visitor-activity-pages';
+import type { ActivityAuthor } from './visitor-activity-pages';
 
 type Page = { items: Post[]; nextCursor: string | null };
+
+/** The next publications of an activity read by a member, after a cursor. */
+async function nextPage(author: ActivityAuthor, cursor: string): Promise<Page> {
+  const params = { limit: 10, cursor };
+  if (author.kind === 'member') return postsControllerMemberPosts(author.handle, params);
+  if (author.kind === 'organization') return postsControllerOrganizationPosts(author.slug, params);
+  const { projectsControllerPosts } = await import('./project-posts');
+  return projectsControllerPosts(author.projectId, params);
+}
 
 /**
  * « Activité » of a member or an organization read by a member: their publications as the api
  * lets the reader see them, each with its actions, page by page. Loaded on demand by the page
- * (a visitor gets the list rendered by the server).
+ * (a visitor gets the list rendered by the server). The pages are kept in the component, not in
+ * the cache of TanStack Query: its observer, otherwise copied into this chunk and into the member
+ * shell, would weigh 6 kB more on the member view of a page (ADR 0094).
  */
-export default function MemberActivity({
-  author,
-  initial,
-}: {
+export interface MemberActivityProps {
   author: ActivityAuthor;
   initial: Page;
-}) {
+}
+
+export default function MemberActivity({ author, initial }: MemberActivityProps) {
   const t = useTranslations('web.activity');
   const [removed, setRemoved] = useState<ReadonlySet<string>>(new Set());
-  const activity = useInfiniteQuery({
-    queryKey: ['content', 'activity', author.kind, activityKeyOf(author)],
-    queryFn: ({ pageParam, signal }) => {
-      const params = { limit: 10, ...(pageParam ? { cursor: pageParam } : {}) };
-      return author.kind === 'member'
-        ? postsControllerMemberPosts(author.handle, params, { signal })
-        : author.kind === 'organization'
-          ? postsControllerOrganizationPosts(author.slug, params, { signal })
-          : projectsControllerPosts(author.projectId, params, { signal });
-    },
-    initialPageParam: undefined as string | undefined,
-    getNextPageParam: (page) => page.nextCursor ?? undefined,
-    initialData: { pages: [initial], pageParams: [undefined] },
-  });
-  const posts = (activity.data?.pages ?? [])
-    .flatMap((page) => page.items)
-    .filter((post) => !removed.has(post.id));
+  const [pages, setPages] = useState({ posts: initial.items, cursor: initial.nextCursor });
+  const [loading, setLoading] = useState(false);
+  const posts = pages.posts.filter((post) => !removed.has(post.id));
+  const loadMore = (cursor: string) => {
+    setLoading(true);
+    nextPage(author, cursor)
+      .then((page) =>
+        setPages((current) => ({
+          posts: [...current.posts, ...page.items],
+          cursor: page.nextCursor,
+        })),
+      )
+      .catch(() => undefined)
+      .finally(() => setLoading(false));
+  };
   return (
     <div className="grid gap-4">
       {posts.length === 0 ? <p className="text-sm text-muted">{t('empty')}</p> : null}
@@ -66,11 +72,11 @@ export default function MemberActivity({
           </li>
         ))}
       </ul>
-      {activity.hasNextPage ? (
+      {pages.cursor ? (
         <Pagination
           hasMore
-          loading={activity.isFetchingNextPage}
-          onLoadMore={() => void activity.fetchNextPage()}
+          loading={loading}
+          onLoadMore={() => pages.cursor && loadMore(pages.cursor)}
           shown={posts.length}
         />
       ) : null}

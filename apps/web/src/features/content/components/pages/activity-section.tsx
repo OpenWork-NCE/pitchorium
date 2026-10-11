@@ -6,12 +6,13 @@ import {
   projectsControllerPosts,
   projectsControllerPublicPosts,
 } from '@pitchorium/api-client';
-import type { ReactNode } from 'react';
+import type { ComponentType, ReactNode } from 'react';
 import { getTranslations } from 'next-intl/server';
 import { Heading } from '@/components/ui';
 import { configureServerApi } from '@/lib/api/server';
 import { PostCard } from '../post-card';
 import { LazyMemberActivity } from './lazy-member-activity';
+import type { MemberActivityProps } from './member-activity';
 import { VisitorActivityMore } from './visitor-activity-more';
 import type { ActivityAuthor } from './visitor-activity-pages';
 
@@ -26,6 +27,7 @@ export async function ActivitySection({
   signedIn,
   title,
   hideWhenEmpty = false,
+  memberActivity: MemberActivityIsland = LazyMemberActivity,
 }: {
   author: ActivityAuthor;
   signedIn: boolean;
@@ -33,6 +35,11 @@ export async function ActivitySection({
   title?: ReactNode;
   /** Nothing at all without any publication (a project without attached publications). */
   hideWhenEmpty?: boolean;
+  /**
+   * The activity of a member reader, loaded on demand with the other islands of the page (one
+   * chunk for all of them, ADR 0094); its own chunk otherwise.
+   */
+  memberActivity?: ComponentType<MemberActivityProps>;
 }) {
   const t = await getTranslations('web.activity');
   configureServerApi();
@@ -58,7 +65,7 @@ export async function ActivitySection({
         {title ?? t('title')}
       </Heading>
       {signedIn ? (
-        <LazyMemberActivity author={author} initial={page} />
+        <MemberActivityIsland author={author} initial={page} />
       ) : page.items.length === 0 ? (
         <p className="text-sm text-muted">{t('empty')}</p>
       ) : (

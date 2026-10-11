@@ -20,15 +20,6 @@ export type ActivityAuthor =
   /** The publications attached to a project by its team (§10.3). */
   | { kind: 'project'; projectId: string };
 
-/** The key of an author in the cache: its kind and its identifier. */
-export function activityKeyOf(author: ActivityAuthor): string {
-  return author.kind === 'member'
-    ? author.handle
-    : author.kind === 'organization'
-      ? author.slug
-      : author.projectId;
-}
-
 /** The next public publications of an activity, after a cursor (a plain request). */
 export function nextActivityPage(author: ActivityAuthor, cursor: string) {
   const params = { limit: 10, cursor };

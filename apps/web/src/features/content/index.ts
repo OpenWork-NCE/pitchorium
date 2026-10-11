@@ -23,3 +23,7 @@ export { ActivitySection } from './components/pages/activity-section';
 export { LazyMemberPost } from './components/pages/lazy-member-post';
 export { SavedPosts } from './components/pages/saved-posts';
 export { postAuthorName, socialMediaPostingJsonLd } from './lib/json-ld';
+export {
+  default as MemberActivity,
+  type MemberActivityProps,
+} from './components/pages/member-activity';
