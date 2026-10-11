@@ -5,22 +5,14 @@
  * Errors follow RFC 9457 with a stable `code`; clients translate codes.
  * OpenAPI spec version: 1
  */
-import { useMutation, useQuery } from '@tanstack/react-query';
 import type {
   DataTag,
-  DefinedInitialDataOptions,
-  DefinedUseQueryResult,
   MutationFunction,
-  QueryClient,
   QueryFunction,
   QueryKey,
-  UndefinedInitialDataOptions,
   UseMutationOptions,
-  UseMutationResult,
   UseQueryOptions,
-  UseQueryResult,
 } from '@tanstack/react-query';
-
 import type {
   CalendarFeedDtoOutput,
   CancelEventDto,
@@ -38,26 +30,10 @@ import type {
   RegisterDto,
   UpdateEventDto,
 } from '../api.schemas';
-
 import { apiFetch } from '../../http/fetcher';
 import type { ErrorType } from '../../http/fetcher';
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
-
-const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKey: K } => {
-  const result = { queryKey } as T & { queryKey: K };
-  for (const key of Object.keys(query)) {
-    // The explicit queryKey always wins, matching the previous
-    // `{ ...query, queryKey }` spread where it was set last.
-    if (key === 'queryKey') continue;
-    Object.defineProperty(result, key, {
-      enumerable: true,
-      configurable: true,
-      get: () => (query as Record<string, unknown>)[key],
-    });
-  }
-  return result;
-};
 
 export const getEventsControllerCreateUrl = () => {
   return `/v1/events`;
@@ -145,32 +121,13 @@ export const getEventsControllerCreateMutationOptions = <
 export type EventsControllerCreateMutationResult = NonNullable<
   Awaited<ReturnType<typeof eventsControllerCreate>>
 >;
+
 export type EventsControllerCreateMutationBody = CreateEventDto;
+
 export type EventsControllerCreateMutationError = ErrorType<ProblemDetails>;
+
 export type EventsControllerCreateMutationVariables = { data: CreateEventDto };
 
-/**
- * @summary Create
- */
-export const useEventsControllerCreate = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof eventsControllerCreate>>,
-      TError,
-      EventsControllerCreateMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof eventsControllerCreate>>,
-  TError,
-  EventsControllerCreateMutationVariables,
-  TContext
-> => {
-  return useMutation(getEventsControllerCreateMutationOptions(options), queryClient);
-};
 export const getEventsControllerListUrl = (params?: EventsControllerListParams) => {
   const normalizedParams = new URLSearchParams();
 
@@ -234,88 +191,8 @@ export const getEventsControllerListQueryOptions = <
 export type EventsControllerListQueryResult = NonNullable<
   Awaited<ReturnType<typeof eventsControllerList>>
 >;
+
 export type EventsControllerListQueryError = ErrorType<ProblemDetails>;
-
-export function useEventsControllerList<
-  TData = Awaited<ReturnType<typeof eventsControllerList>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params: undefined | EventsControllerListParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof eventsControllerList>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof eventsControllerList>>,
-          TError,
-          Awaited<ReturnType<typeof eventsControllerList>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useEventsControllerList<
-  TData = Awaited<ReturnType<typeof eventsControllerList>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: EventsControllerListParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof eventsControllerList>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof eventsControllerList>>,
-          TError,
-          Awaited<ReturnType<typeof eventsControllerList>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useEventsControllerList<
-  TData = Awaited<ReturnType<typeof eventsControllerList>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: EventsControllerListParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof eventsControllerList>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary List
- */
-
-export function useEventsControllerList<
-  TData = Awaited<ReturnType<typeof eventsControllerList>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: EventsControllerListParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof eventsControllerList>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getEventsControllerListQueryOptions(params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getEventsControllerPublicListUrl = (params?: EventsControllerPublicListParams) => {
   const normalizedParams = new URLSearchParams();
@@ -385,88 +262,8 @@ export const getEventsControllerPublicListQueryOptions = <
 export type EventsControllerPublicListQueryResult = NonNullable<
   Awaited<ReturnType<typeof eventsControllerPublicList>>
 >;
+
 export type EventsControllerPublicListQueryError = ErrorType<ProblemDetails>;
-
-export function useEventsControllerPublicList<
-  TData = Awaited<ReturnType<typeof eventsControllerPublicList>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params: undefined | EventsControllerPublicListParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof eventsControllerPublicList>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof eventsControllerPublicList>>,
-          TError,
-          Awaited<ReturnType<typeof eventsControllerPublicList>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useEventsControllerPublicList<
-  TData = Awaited<ReturnType<typeof eventsControllerPublicList>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: EventsControllerPublicListParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof eventsControllerPublicList>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof eventsControllerPublicList>>,
-          TError,
-          Awaited<ReturnType<typeof eventsControllerPublicList>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useEventsControllerPublicList<
-  TData = Awaited<ReturnType<typeof eventsControllerPublicList>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: EventsControllerPublicListParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof eventsControllerPublicList>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Public list
- */
-
-export function useEventsControllerPublicList<
-  TData = Awaited<ReturnType<typeof eventsControllerPublicList>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: EventsControllerPublicListParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof eventsControllerPublicList>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getEventsControllerPublicListQueryOptions(params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getEventsControllerMineUrl = (params?: EventsControllerMineParams) => {
   const normalizedParams = new URLSearchParams();
@@ -531,88 +328,8 @@ export const getEventsControllerMineQueryOptions = <
 export type EventsControllerMineQueryResult = NonNullable<
   Awaited<ReturnType<typeof eventsControllerMine>>
 >;
+
 export type EventsControllerMineQueryError = ErrorType<ProblemDetails>;
-
-export function useEventsControllerMine<
-  TData = Awaited<ReturnType<typeof eventsControllerMine>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params: undefined | EventsControllerMineParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof eventsControllerMine>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof eventsControllerMine>>,
-          TError,
-          Awaited<ReturnType<typeof eventsControllerMine>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useEventsControllerMine<
-  TData = Awaited<ReturnType<typeof eventsControllerMine>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: EventsControllerMineParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof eventsControllerMine>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof eventsControllerMine>>,
-          TError,
-          Awaited<ReturnType<typeof eventsControllerMine>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useEventsControllerMine<
-  TData = Awaited<ReturnType<typeof eventsControllerMine>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: EventsControllerMineParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof eventsControllerMine>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Mine
- */
-
-export function useEventsControllerMine<
-  TData = Awaited<ReturnType<typeof eventsControllerMine>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: EventsControllerMineParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof eventsControllerMine>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getEventsControllerMineQueryOptions(params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getEventsControllerBySlugUrl = (slug: string) => {
   return `/v1/events/by-slug/${slug}`;
@@ -670,88 +387,8 @@ export const getEventsControllerBySlugQueryOptions = <
 export type EventsControllerBySlugQueryResult = NonNullable<
   Awaited<ReturnType<typeof eventsControllerBySlug>>
 >;
+
 export type EventsControllerBySlugQueryError = ErrorType<void | ProblemDetails>;
-
-export function useEventsControllerBySlug<
-  TData = Awaited<ReturnType<typeof eventsControllerBySlug>>,
-  TError = ErrorType<void | ProblemDetails>,
->(
-  slug: string,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof eventsControllerBySlug>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof eventsControllerBySlug>>,
-          TError,
-          Awaited<ReturnType<typeof eventsControllerBySlug>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useEventsControllerBySlug<
-  TData = Awaited<ReturnType<typeof eventsControllerBySlug>>,
-  TError = ErrorType<void | ProblemDetails>,
->(
-  slug: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof eventsControllerBySlug>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof eventsControllerBySlug>>,
-          TError,
-          Awaited<ReturnType<typeof eventsControllerBySlug>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useEventsControllerBySlug<
-  TData = Awaited<ReturnType<typeof eventsControllerBySlug>>,
-  TError = ErrorType<void | ProblemDetails>,
->(
-  slug: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof eventsControllerBySlug>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary By slug
- */
-
-export function useEventsControllerBySlug<
-  TData = Awaited<ReturnType<typeof eventsControllerBySlug>>,
-  TError = ErrorType<void | ProblemDetails>,
->(
-  slug: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof eventsControllerBySlug>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getEventsControllerBySlugQueryOptions(slug, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getEventsControllerForPublicUrl = (slug: string) => {
   return `/v1/public/events/${slug}`;
@@ -810,88 +447,8 @@ export const getEventsControllerForPublicQueryOptions = <
 export type EventsControllerForPublicQueryResult = NonNullable<
   Awaited<ReturnType<typeof eventsControllerForPublic>>
 >;
+
 export type EventsControllerForPublicQueryError = ErrorType<void | ProblemDetails>;
-
-export function useEventsControllerForPublic<
-  TData = Awaited<ReturnType<typeof eventsControllerForPublic>>,
-  TError = ErrorType<void | ProblemDetails>,
->(
-  slug: string,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof eventsControllerForPublic>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof eventsControllerForPublic>>,
-          TError,
-          Awaited<ReturnType<typeof eventsControllerForPublic>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useEventsControllerForPublic<
-  TData = Awaited<ReturnType<typeof eventsControllerForPublic>>,
-  TError = ErrorType<void | ProblemDetails>,
->(
-  slug: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof eventsControllerForPublic>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof eventsControllerForPublic>>,
-          TError,
-          Awaited<ReturnType<typeof eventsControllerForPublic>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useEventsControllerForPublic<
-  TData = Awaited<ReturnType<typeof eventsControllerForPublic>>,
-  TError = ErrorType<void | ProblemDetails>,
->(
-  slug: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof eventsControllerForPublic>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary For public
- */
-
-export function useEventsControllerForPublic<
-  TData = Awaited<ReturnType<typeof eventsControllerForPublic>>,
-  TError = ErrorType<void | ProblemDetails>,
->(
-  slug: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof eventsControllerForPublic>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getEventsControllerForPublicQueryOptions(slug, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getEventsControllerPublicIcsUrl = (slug: string) => {
   return `/v1/public/events/${slug}/ics`;
@@ -950,88 +507,8 @@ export const getEventsControllerPublicIcsQueryOptions = <
 export type EventsControllerPublicIcsQueryResult = NonNullable<
   Awaited<ReturnType<typeof eventsControllerPublicIcs>>
 >;
+
 export type EventsControllerPublicIcsQueryError = ErrorType<ProblemDetails>;
-
-export function useEventsControllerPublicIcs<
-  TData = Awaited<ReturnType<typeof eventsControllerPublicIcs>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  slug: string,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof eventsControllerPublicIcs>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof eventsControllerPublicIcs>>,
-          TError,
-          Awaited<ReturnType<typeof eventsControllerPublicIcs>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useEventsControllerPublicIcs<
-  TData = Awaited<ReturnType<typeof eventsControllerPublicIcs>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  slug: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof eventsControllerPublicIcs>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof eventsControllerPublicIcs>>,
-          TError,
-          Awaited<ReturnType<typeof eventsControllerPublicIcs>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useEventsControllerPublicIcs<
-  TData = Awaited<ReturnType<typeof eventsControllerPublicIcs>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  slug: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof eventsControllerPublicIcs>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Public ics
- */
-
-export function useEventsControllerPublicIcs<
-  TData = Awaited<ReturnType<typeof eventsControllerPublicIcs>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  slug: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof eventsControllerPublicIcs>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getEventsControllerPublicIcsQueryOptions(slug, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getEventsControllerByIdUrl = (eventId: string) => {
   return `/v1/events/${eventId}`;
@@ -1089,88 +566,8 @@ export const getEventsControllerByIdQueryOptions = <
 export type EventsControllerByIdQueryResult = NonNullable<
   Awaited<ReturnType<typeof eventsControllerById>>
 >;
+
 export type EventsControllerByIdQueryError = ErrorType<ProblemDetails>;
-
-export function useEventsControllerById<
-  TData = Awaited<ReturnType<typeof eventsControllerById>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  eventId: string,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof eventsControllerById>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof eventsControllerById>>,
-          TError,
-          Awaited<ReturnType<typeof eventsControllerById>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useEventsControllerById<
-  TData = Awaited<ReturnType<typeof eventsControllerById>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  eventId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof eventsControllerById>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof eventsControllerById>>,
-          TError,
-          Awaited<ReturnType<typeof eventsControllerById>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useEventsControllerById<
-  TData = Awaited<ReturnType<typeof eventsControllerById>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  eventId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof eventsControllerById>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary By id
- */
-
-export function useEventsControllerById<
-  TData = Awaited<ReturnType<typeof eventsControllerById>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  eventId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof eventsControllerById>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getEventsControllerByIdQueryOptions(eventId, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getEventsControllerUpdateUrl = (eventId: string) => {
   return `/v1/events/${eventId}`;
@@ -1255,32 +652,13 @@ export const getEventsControllerUpdateMutationOptions = <
 export type EventsControllerUpdateMutationResult = NonNullable<
   Awaited<ReturnType<typeof eventsControllerUpdate>>
 >;
+
 export type EventsControllerUpdateMutationBody = UpdateEventDto;
+
 export type EventsControllerUpdateMutationError = ErrorType<ProblemDetails>;
+
 export type EventsControllerUpdateMutationVariables = { eventId: string; data: UpdateEventDto };
 
-/**
- * @summary Update
- */
-export const useEventsControllerUpdate = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof eventsControllerUpdate>>,
-      TError,
-      EventsControllerUpdateMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof eventsControllerUpdate>>,
-  TError,
-  EventsControllerUpdateMutationVariables,
-  TContext
-> => {
-  return useMutation(getEventsControllerUpdateMutationOptions(options), queryClient);
-};
 export const getEventsControllerDeleteUrl = (eventId: string) => {
   return `/v1/events/${eventId}`;
 };
@@ -1344,30 +722,9 @@ export type EventsControllerDeleteMutationResult = NonNullable<
 >;
 
 export type EventsControllerDeleteMutationError = ErrorType<ProblemDetails>;
+
 export type EventsControllerDeleteMutationVariables = { eventId: string };
 
-/**
- * @summary Delete
- */
-export const useEventsControllerDelete = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof eventsControllerDelete>>,
-      TError,
-      EventsControllerDeleteMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof eventsControllerDelete>>,
-  TError,
-  EventsControllerDeleteMutationVariables,
-  TContext
-> => {
-  return useMutation(getEventsControllerDeleteMutationOptions(options), queryClient);
-};
 export const getEventsControllerIcsUrl = (eventId: string) => {
   return `/v1/events/${eventId}/ics`;
 };
@@ -1424,88 +781,8 @@ export const getEventsControllerIcsQueryOptions = <
 export type EventsControllerIcsQueryResult = NonNullable<
   Awaited<ReturnType<typeof eventsControllerIcs>>
 >;
+
 export type EventsControllerIcsQueryError = ErrorType<ProblemDetails>;
-
-export function useEventsControllerIcs<
-  TData = Awaited<ReturnType<typeof eventsControllerIcs>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  eventId: string,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof eventsControllerIcs>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof eventsControllerIcs>>,
-          TError,
-          Awaited<ReturnType<typeof eventsControllerIcs>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useEventsControllerIcs<
-  TData = Awaited<ReturnType<typeof eventsControllerIcs>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  eventId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof eventsControllerIcs>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof eventsControllerIcs>>,
-          TError,
-          Awaited<ReturnType<typeof eventsControllerIcs>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useEventsControllerIcs<
-  TData = Awaited<ReturnType<typeof eventsControllerIcs>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  eventId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof eventsControllerIcs>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Ics
- */
-
-export function useEventsControllerIcs<
-  TData = Awaited<ReturnType<typeof eventsControllerIcs>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  eventId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof eventsControllerIcs>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getEventsControllerIcsQueryOptions(eventId, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getEventsControllerChangeSlugUrl = (eventId: string) => {
   return `/v1/events/${eventId}/slug`;
@@ -1591,38 +868,16 @@ export const getEventsControllerChangeSlugMutationOptions = <
 export type EventsControllerChangeSlugMutationResult = NonNullable<
   Awaited<ReturnType<typeof eventsControllerChangeSlug>>
 >;
+
 export type EventsControllerChangeSlugMutationBody = ChangeEventSlugDto;
+
 export type EventsControllerChangeSlugMutationError = ErrorType<ProblemDetails>;
+
 export type EventsControllerChangeSlugMutationVariables = {
   eventId: string;
   data: ChangeEventSlugDto;
 };
 
-/**
- * @summary Change slug
- */
-export const useEventsControllerChangeSlug = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof eventsControllerChangeSlug>>,
-      TError,
-      EventsControllerChangeSlugMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof eventsControllerChangeSlug>>,
-  TError,
-  EventsControllerChangeSlugMutationVariables,
-  TContext
-> => {
-  return useMutation(getEventsControllerChangeSlugMutationOptions(options), queryClient);
-};
 export const getEventsControllerPublishUrl = (eventId: string) => {
   return `/v1/events/${eventId}/publish`;
 };
@@ -1688,30 +943,9 @@ export type EventsControllerPublishMutationResult = NonNullable<
 >;
 
 export type EventsControllerPublishMutationError = ErrorType<ProblemDetails>;
+
 export type EventsControllerPublishMutationVariables = { eventId: string };
 
-/**
- * @summary Publish
- */
-export const useEventsControllerPublish = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof eventsControllerPublish>>,
-      TError,
-      EventsControllerPublishMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof eventsControllerPublish>>,
-  TError,
-  EventsControllerPublishMutationVariables,
-  TContext
-> => {
-  return useMutation(getEventsControllerPublishMutationOptions(options), queryClient);
-};
 export const getEventsControllerCancelUrl = (eventId: string) => {
   return `/v1/events/${eventId}/cancel`;
 };
@@ -1795,32 +1029,13 @@ export const getEventsControllerCancelMutationOptions = <
 export type EventsControllerCancelMutationResult = NonNullable<
   Awaited<ReturnType<typeof eventsControllerCancel>>
 >;
+
 export type EventsControllerCancelMutationBody = CancelEventDto;
+
 export type EventsControllerCancelMutationError = ErrorType<ProblemDetails>;
+
 export type EventsControllerCancelMutationVariables = { eventId: string; data: CancelEventDto };
 
-/**
- * @summary Cancel
- */
-export const useEventsControllerCancel = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof eventsControllerCancel>>,
-      TError,
-      EventsControllerCancelMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof eventsControllerCancel>>,
-  TError,
-  EventsControllerCancelMutationVariables,
-  TContext
-> => {
-  return useMutation(getEventsControllerCancelMutationOptions(options), queryClient);
-};
 export const getEventsControllerRegisterUrl = (eventId: string) => {
   return `/v1/events/${eventId}/registration`;
 };
@@ -1906,32 +1121,13 @@ export const getEventsControllerRegisterMutationOptions = <
 export type EventsControllerRegisterMutationResult = NonNullable<
   Awaited<ReturnType<typeof eventsControllerRegister>>
 >;
+
 export type EventsControllerRegisterMutationBody = RegisterDto;
+
 export type EventsControllerRegisterMutationError = ErrorType<ProblemDetails>;
+
 export type EventsControllerRegisterMutationVariables = { eventId: string; data: RegisterDto };
 
-/**
- * @summary Register
- */
-export const useEventsControllerRegister = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof eventsControllerRegister>>,
-      TError,
-      EventsControllerRegisterMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof eventsControllerRegister>>,
-  TError,
-  EventsControllerRegisterMutationVariables,
-  TContext
-> => {
-  return useMutation(getEventsControllerRegisterMutationOptions(options), queryClient);
-};
 export const getEventsControllerWithdrawUrl = (eventId: string) => {
   return `/v1/events/${eventId}/registration`;
 };
@@ -1997,30 +1193,9 @@ export type EventsControllerWithdrawMutationResult = NonNullable<
 >;
 
 export type EventsControllerWithdrawMutationError = ErrorType<ProblemDetails>;
+
 export type EventsControllerWithdrawMutationVariables = { eventId: string };
 
-/**
- * @summary Withdraw
- */
-export const useEventsControllerWithdraw = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof eventsControllerWithdraw>>,
-      TError,
-      EventsControllerWithdrawMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof eventsControllerWithdraw>>,
-  TError,
-  EventsControllerWithdrawMutationVariables,
-  TContext
-> => {
-  return useMutation(getEventsControllerWithdrawMutationOptions(options), queryClient);
-};
 export const getEventsControllerAttendeesUrl = (
   eventId: string,
   params?: EventsControllerAttendeesParams,
@@ -2098,92 +1273,8 @@ export const getEventsControllerAttendeesQueryOptions = <
 export type EventsControllerAttendeesQueryResult = NonNullable<
   Awaited<ReturnType<typeof eventsControllerAttendees>>
 >;
+
 export type EventsControllerAttendeesQueryError = ErrorType<ProblemDetails>;
-
-export function useEventsControllerAttendees<
-  TData = Awaited<ReturnType<typeof eventsControllerAttendees>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  eventId: string,
-  params: undefined | EventsControllerAttendeesParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof eventsControllerAttendees>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof eventsControllerAttendees>>,
-          TError,
-          Awaited<ReturnType<typeof eventsControllerAttendees>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useEventsControllerAttendees<
-  TData = Awaited<ReturnType<typeof eventsControllerAttendees>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  eventId: string,
-  params?: EventsControllerAttendeesParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof eventsControllerAttendees>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof eventsControllerAttendees>>,
-          TError,
-          Awaited<ReturnType<typeof eventsControllerAttendees>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useEventsControllerAttendees<
-  TData = Awaited<ReturnType<typeof eventsControllerAttendees>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  eventId: string,
-  params?: EventsControllerAttendeesParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof eventsControllerAttendees>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Attendees
- */
-
-export function useEventsControllerAttendees<
-  TData = Awaited<ReturnType<typeof eventsControllerAttendees>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  eventId: string,
-  params?: EventsControllerAttendeesParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof eventsControllerAttendees>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getEventsControllerAttendeesQueryOptions(eventId, params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getEventsControllerRotateCalendarUrl = () => {
   return `/v1/me/event-calendar`;
@@ -2247,31 +1338,6 @@ export type EventsControllerRotateCalendarMutationResult = NonNullable<
 
 export type EventsControllerRotateCalendarMutationError = ErrorType<ProblemDetails>;
 
-/**
- * @summary Rotate calendar
- */
-export const useEventsControllerRotateCalendar = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof eventsControllerRotateCalendar>>,
-      TError,
-      void,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof eventsControllerRotateCalendar>>,
-  TError,
-  void,
-  TContext
-> => {
-  return useMutation(getEventsControllerRotateCalendarMutationOptions(options), queryClient);
-};
 export const getEventsControllerRevokeCalendarUrl = () => {
   return `/v1/me/event-calendar`;
 };
@@ -2334,31 +1400,6 @@ export type EventsControllerRevokeCalendarMutationResult = NonNullable<
 
 export type EventsControllerRevokeCalendarMutationError = ErrorType<ProblemDetails>;
 
-/**
- * @summary Revoke calendar
- */
-export const useEventsControllerRevokeCalendar = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof eventsControllerRevokeCalendar>>,
-      TError,
-      void,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof eventsControllerRevokeCalendar>>,
-  TError,
-  void,
-  TContext
-> => {
-  return useMutation(getEventsControllerRevokeCalendarMutationOptions(options), queryClient);
-};
 export const getEventsControllerCalendarUrl = (token: string) => {
   return `/v1/calendars/${token}`;
 };
@@ -2416,85 +1457,5 @@ export const getEventsControllerCalendarQueryOptions = <
 export type EventsControllerCalendarQueryResult = NonNullable<
   Awaited<ReturnType<typeof eventsControllerCalendar>>
 >;
+
 export type EventsControllerCalendarQueryError = ErrorType<ProblemDetails>;
-
-export function useEventsControllerCalendar<
-  TData = Awaited<ReturnType<typeof eventsControllerCalendar>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  token: string,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof eventsControllerCalendar>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof eventsControllerCalendar>>,
-          TError,
-          Awaited<ReturnType<typeof eventsControllerCalendar>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useEventsControllerCalendar<
-  TData = Awaited<ReturnType<typeof eventsControllerCalendar>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  token: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof eventsControllerCalendar>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof eventsControllerCalendar>>,
-          TError,
-          Awaited<ReturnType<typeof eventsControllerCalendar>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useEventsControllerCalendar<
-  TData = Awaited<ReturnType<typeof eventsControllerCalendar>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  token: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof eventsControllerCalendar>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Calendar
- */
-
-export function useEventsControllerCalendar<
-  TData = Awaited<ReturnType<typeof eventsControllerCalendar>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  token: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof eventsControllerCalendar>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getEventsControllerCalendarQueryOptions(token, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}

@@ -5,22 +5,14 @@
  * Errors follow RFC 9457 with a stable `code`; clients translate codes.
  * OpenAPI spec version: 1
  */
-import { useMutation, useQuery } from '@tanstack/react-query';
 import type {
   DataTag,
-  DefinedInitialDataOptions,
-  DefinedUseQueryResult,
   MutationFunction,
-  QueryClient,
   QueryFunction,
   QueryKey,
-  UndefinedInitialDataOptions,
   UseMutationOptions,
-  UseMutationResult,
   UseQueryOptions,
-  UseQueryResult,
 } from '@tanstack/react-query';
-
 import type {
   CountersDtoOutput,
   NotificationPageDtoOutput,
@@ -34,26 +26,10 @@ import type {
   UnsubscribeResultDtoOutput,
   UpdateNotificationPreferencesDto,
 } from '../api.schemas';
-
 import { apiFetch } from '../../http/fetcher';
 import type { ErrorType } from '../../http/fetcher';
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
-
-const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKey: K } => {
-  const result = { queryKey } as T & { queryKey: K };
-  for (const key of Object.keys(query)) {
-    // The explicit queryKey always wins, matching the previous
-    // `{ ...query, queryKey }` spread where it was set last.
-    if (key === 'queryKey') continue;
-    Object.defineProperty(result, key, {
-      enumerable: true,
-      configurable: true,
-      get: () => (query as Record<string, unknown>)[key],
-    });
-  }
-  return result;
-};
 
 export const getNotificationsControllerListUrl = (params?: NotificationsControllerListParams) => {
   const normalizedParams = new URLSearchParams();
@@ -123,88 +99,8 @@ export const getNotificationsControllerListQueryOptions = <
 export type NotificationsControllerListQueryResult = NonNullable<
   Awaited<ReturnType<typeof notificationsControllerList>>
 >;
+
 export type NotificationsControllerListQueryError = ErrorType<ProblemDetails>;
-
-export function useNotificationsControllerList<
-  TData = Awaited<ReturnType<typeof notificationsControllerList>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params: undefined | NotificationsControllerListParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof notificationsControllerList>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof notificationsControllerList>>,
-          TError,
-          Awaited<ReturnType<typeof notificationsControllerList>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useNotificationsControllerList<
-  TData = Awaited<ReturnType<typeof notificationsControllerList>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: NotificationsControllerListParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof notificationsControllerList>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof notificationsControllerList>>,
-          TError,
-          Awaited<ReturnType<typeof notificationsControllerList>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useNotificationsControllerList<
-  TData = Awaited<ReturnType<typeof notificationsControllerList>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: NotificationsControllerListParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof notificationsControllerList>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary List
- */
-
-export function useNotificationsControllerList<
-  TData = Awaited<ReturnType<typeof notificationsControllerList>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: NotificationsControllerListParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof notificationsControllerList>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getNotificationsControllerListQueryOptions(params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getNotificationsControllerReadAllUrl = () => {
   return `/v1/me/notifications/read-all`;
@@ -268,31 +164,6 @@ export type NotificationsControllerReadAllMutationResult = NonNullable<
 
 export type NotificationsControllerReadAllMutationError = ErrorType<ProblemDetails>;
 
-/**
- * @summary Read all
- */
-export const useNotificationsControllerReadAll = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof notificationsControllerReadAll>>,
-      TError,
-      void,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof notificationsControllerReadAll>>,
-  TError,
-  void,
-  TContext
-> => {
-  return useMutation(getNotificationsControllerReadAllMutationOptions(options), queryClient);
-};
 export const getNotificationsControllerReadUrl = (notificationId: string) => {
   return `/v1/me/notifications/${notificationId}/read`;
 };
@@ -357,33 +228,9 @@ export type NotificationsControllerReadMutationResult = NonNullable<
 >;
 
 export type NotificationsControllerReadMutationError = ErrorType<ProblemDetails>;
+
 export type NotificationsControllerReadMutationVariables = { notificationId: string };
 
-/**
- * @summary Read
- */
-export const useNotificationsControllerRead = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof notificationsControllerRead>>,
-      TError,
-      NotificationsControllerReadMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof notificationsControllerRead>>,
-  TError,
-  NotificationsControllerReadMutationVariables,
-  TContext
-> => {
-  return useMutation(getNotificationsControllerReadMutationOptions(options), queryClient);
-};
 export const getNotificationsControllerRemoveUrl = (notificationId: string) => {
   return `/v1/me/notifications/${notificationId}`;
 };
@@ -448,33 +295,9 @@ export type NotificationsControllerRemoveMutationResult = NonNullable<
 >;
 
 export type NotificationsControllerRemoveMutationError = ErrorType<ProblemDetails>;
+
 export type NotificationsControllerRemoveMutationVariables = { notificationId: string };
 
-/**
- * @summary Remove
- */
-export const useNotificationsControllerRemove = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof notificationsControllerRemove>>,
-      TError,
-      NotificationsControllerRemoveMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof notificationsControllerRemove>>,
-  TError,
-  NotificationsControllerRemoveMutationVariables,
-  TContext
-> => {
-  return useMutation(getNotificationsControllerRemoveMutationOptions(options), queryClient);
-};
 export const getNotificationsControllerCountersUrl = () => {
   return `/v1/me/counters`;
 };
@@ -525,84 +348,8 @@ export const getNotificationsControllerCountersQueryOptions = <
 export type NotificationsControllerCountersQueryResult = NonNullable<
   Awaited<ReturnType<typeof notificationsControllerCounters>>
 >;
+
 export type NotificationsControllerCountersQueryError = ErrorType<ProblemDetails>;
-
-export function useNotificationsControllerCounters<
-  TData = Awaited<ReturnType<typeof notificationsControllerCounters>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof notificationsControllerCounters>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof notificationsControllerCounters>>,
-          TError,
-          Awaited<ReturnType<typeof notificationsControllerCounters>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useNotificationsControllerCounters<
-  TData = Awaited<ReturnType<typeof notificationsControllerCounters>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof notificationsControllerCounters>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof notificationsControllerCounters>>,
-          TError,
-          Awaited<ReturnType<typeof notificationsControllerCounters>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useNotificationsControllerCounters<
-  TData = Awaited<ReturnType<typeof notificationsControllerCounters>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof notificationsControllerCounters>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Counters
- */
-
-export function useNotificationsControllerCounters<
-  TData = Awaited<ReturnType<typeof notificationsControllerCounters>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof notificationsControllerCounters>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getNotificationsControllerCountersQueryOptions(options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getNotificationsControllerPreferencesUrl = () => {
   return `/v1/me/notification-preferences`;
@@ -654,84 +401,8 @@ export const getNotificationsControllerPreferencesQueryOptions = <
 export type NotificationsControllerPreferencesQueryResult = NonNullable<
   Awaited<ReturnType<typeof notificationsControllerPreferences>>
 >;
+
 export type NotificationsControllerPreferencesQueryError = ErrorType<ProblemDetails>;
-
-export function useNotificationsControllerPreferences<
-  TData = Awaited<ReturnType<typeof notificationsControllerPreferences>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof notificationsControllerPreferences>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof notificationsControllerPreferences>>,
-          TError,
-          Awaited<ReturnType<typeof notificationsControllerPreferences>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useNotificationsControllerPreferences<
-  TData = Awaited<ReturnType<typeof notificationsControllerPreferences>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof notificationsControllerPreferences>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof notificationsControllerPreferences>>,
-          TError,
-          Awaited<ReturnType<typeof notificationsControllerPreferences>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useNotificationsControllerPreferences<
-  TData = Awaited<ReturnType<typeof notificationsControllerPreferences>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof notificationsControllerPreferences>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Preferences
- */
-
-export function useNotificationsControllerPreferences<
-  TData = Awaited<ReturnType<typeof notificationsControllerPreferences>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof notificationsControllerPreferences>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getNotificationsControllerPreferencesQueryOptions(options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getNotificationsControllerUpdatePreferencesUrl = () => {
   return `/v1/me/notification-preferences`;
@@ -819,40 +490,15 @@ export const getNotificationsControllerUpdatePreferencesMutationOptions = <
 export type NotificationsControllerUpdatePreferencesMutationResult = NonNullable<
   Awaited<ReturnType<typeof notificationsControllerUpdatePreferences>>
 >;
+
 export type NotificationsControllerUpdatePreferencesMutationBody = UpdateNotificationPreferencesDto;
+
 export type NotificationsControllerUpdatePreferencesMutationError = ErrorType<ProblemDetails>;
+
 export type NotificationsControllerUpdatePreferencesMutationVariables = {
   data: UpdateNotificationPreferencesDto;
 };
 
-/**
- * @summary Update preferences
- */
-export const useNotificationsControllerUpdatePreferences = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof notificationsControllerUpdatePreferences>>,
-      TError,
-      NotificationsControllerUpdatePreferencesMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof notificationsControllerUpdatePreferences>>,
-  TError,
-  NotificationsControllerUpdatePreferencesMutationVariables,
-  TContext
-> => {
-  return useMutation(
-    getNotificationsControllerUpdatePreferencesMutationOptions(options),
-    queryClient,
-  );
-};
 export const getNotificationsControllerUnsubscribeUrl = (
   params: NotificationsControllerUnsubscribeParams,
 ) => {
@@ -931,35 +577,11 @@ export type NotificationsControllerUnsubscribeMutationResult = NonNullable<
 >;
 
 export type NotificationsControllerUnsubscribeMutationError = ErrorType<ProblemDetails>;
+
 export type NotificationsControllerUnsubscribeMutationVariables = {
   params: NotificationsControllerUnsubscribeParams;
 };
 
-/**
- * @summary Unsubscribe
- */
-export const useNotificationsControllerUnsubscribe = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof notificationsControllerUnsubscribe>>,
-      TError,
-      NotificationsControllerUnsubscribeMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof notificationsControllerUnsubscribe>>,
-  TError,
-  NotificationsControllerUnsubscribeMutationVariables,
-  TContext
-> => {
-  return useMutation(getNotificationsControllerUnsubscribeMutationOptions(options), queryClient);
-};
 export const getNotificationsControllerResubscribeUrl = (
   params: NotificationsControllerResubscribeParams,
 ) => {
@@ -1058,35 +680,12 @@ export const getNotificationsControllerResubscribeMutationOptions = <
 export type NotificationsControllerResubscribeMutationResult = NonNullable<
   Awaited<ReturnType<typeof notificationsControllerResubscribe>>
 >;
+
 export type NotificationsControllerResubscribeMutationBody = ResubscribeDto;
+
 export type NotificationsControllerResubscribeMutationError = ErrorType<ProblemDetails>;
+
 export type NotificationsControllerResubscribeMutationVariables = {
   data: ResubscribeDto;
   params: NotificationsControllerResubscribeParams;
-};
-
-/**
- * @summary Resubscribe
- */
-export const useNotificationsControllerResubscribe = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof notificationsControllerResubscribe>>,
-      TError,
-      NotificationsControllerResubscribeMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof notificationsControllerResubscribe>>,
-  TError,
-  NotificationsControllerResubscribeMutationVariables,
-  TContext
-> => {
-  return useMutation(getNotificationsControllerResubscribeMutationOptions(options), queryClient);
 };

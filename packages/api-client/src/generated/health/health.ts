@@ -5,40 +5,12 @@
  * Errors follow RFC 9457 with a stable `code`; clients translate codes.
  * OpenAPI spec version: 1
  */
-import { useQuery } from '@tanstack/react-query';
-import type {
-  DataTag,
-  DefinedInitialDataOptions,
-  DefinedUseQueryResult,
-  QueryClient,
-  QueryFunction,
-  QueryKey,
-  UndefinedInitialDataOptions,
-  UseQueryOptions,
-  UseQueryResult,
-} from '@tanstack/react-query';
-
+import type { DataTag, QueryFunction, QueryKey, UseQueryOptions } from '@tanstack/react-query';
 import type { HealthResponseDtoOutput, ProblemDetails } from '../api.schemas';
-
 import { apiFetch } from '../../http/fetcher';
 import type { ErrorType } from '../../http/fetcher';
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
-
-const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKey: K } => {
-  const result = { queryKey } as T & { queryKey: K };
-  for (const key of Object.keys(query)) {
-    // The explicit queryKey always wins, matching the previous
-    // `{ ...query, queryKey }` spread where it was set last.
-    if (key === 'queryKey') continue;
-    Object.defineProperty(result, key, {
-      enumerable: true,
-      configurable: true,
-      get: () => (query as Record<string, unknown>)[key],
-    });
-  }
-  return result;
-};
 
 export const getHealthControllerLiveUrl = () => {
   return `/v1/health/live`;
@@ -87,84 +59,8 @@ export const getHealthControllerLiveQueryOptions = <
 export type HealthControllerLiveQueryResult = NonNullable<
   Awaited<ReturnType<typeof healthControllerLive>>
 >;
+
 export type HealthControllerLiveQueryError = ErrorType<ProblemDetails>;
-
-export function useHealthControllerLive<
-  TData = Awaited<ReturnType<typeof healthControllerLive>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof healthControllerLive>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof healthControllerLive>>,
-          TError,
-          Awaited<ReturnType<typeof healthControllerLive>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useHealthControllerLive<
-  TData = Awaited<ReturnType<typeof healthControllerLive>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof healthControllerLive>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof healthControllerLive>>,
-          TError,
-          Awaited<ReturnType<typeof healthControllerLive>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useHealthControllerLive<
-  TData = Awaited<ReturnType<typeof healthControllerLive>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof healthControllerLive>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Live
- */
-
-export function useHealthControllerLive<
-  TData = Awaited<ReturnType<typeof healthControllerLive>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof healthControllerLive>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getHealthControllerLiveQueryOptions(options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getHealthControllerReadyUrl = () => {
   return `/v1/health/ready`;
@@ -215,81 +111,5 @@ export const getHealthControllerReadyQueryOptions = <
 export type HealthControllerReadyQueryResult = NonNullable<
   Awaited<ReturnType<typeof healthControllerReady>>
 >;
+
 export type HealthControllerReadyQueryError = ErrorType<HealthResponseDtoOutput | ProblemDetails>;
-
-export function useHealthControllerReady<
-  TData = Awaited<ReturnType<typeof healthControllerReady>>,
-  TError = ErrorType<HealthResponseDtoOutput | ProblemDetails>,
->(
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof healthControllerReady>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof healthControllerReady>>,
-          TError,
-          Awaited<ReturnType<typeof healthControllerReady>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useHealthControllerReady<
-  TData = Awaited<ReturnType<typeof healthControllerReady>>,
-  TError = ErrorType<HealthResponseDtoOutput | ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof healthControllerReady>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof healthControllerReady>>,
-          TError,
-          Awaited<ReturnType<typeof healthControllerReady>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useHealthControllerReady<
-  TData = Awaited<ReturnType<typeof healthControllerReady>>,
-  TError = ErrorType<HealthResponseDtoOutput | ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof healthControllerReady>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Ready
- */
-
-export function useHealthControllerReady<
-  TData = Awaited<ReturnType<typeof healthControllerReady>>,
-  TError = ErrorType<HealthResponseDtoOutput | ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof healthControllerReady>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getHealthControllerReadyQueryOptions(options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}

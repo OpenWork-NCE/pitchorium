@@ -5,22 +5,14 @@
  * Errors follow RFC 9457 with a stable `code`; clients translate codes.
  * OpenAPI spec version: 1
  */
-import { useMutation, useQuery } from '@tanstack/react-query';
 import type {
   DataTag,
-  DefinedInitialDataOptions,
-  DefinedUseQueryResult,
   MutationFunction,
-  QueryClient,
   QueryFunction,
   QueryKey,
-  UndefinedInitialDataOptions,
   UseMutationOptions,
-  UseMutationResult,
   UseQueryOptions,
-  UseQueryResult,
 } from '@tanstack/react-query';
-
 import type {
   AcceptDto,
   AssessmentDtoOutput,
@@ -60,26 +52,10 @@ import type {
   UpdatesControllerListParams,
   UpdatesControllerPublicListParams,
 } from '../api.schemas';
-
 import { apiFetch } from '../../http/fetcher';
 import type { ErrorType } from '../../http/fetcher';
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
-
-const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKey: K } => {
-  const result = { queryKey } as T & { queryKey: K };
-  for (const key of Object.keys(query)) {
-    // The explicit queryKey always wins, matching the previous
-    // `{ ...query, queryKey }` spread where it was set last.
-    if (key === 'queryKey') continue;
-    Object.defineProperty(result, key, {
-      enumerable: true,
-      configurable: true,
-      get: () => (query as Record<string, unknown>)[key],
-    });
-  }
-  return result;
-};
 
 export const getProjectsControllerCreateUrl = () => {
   return `/v1/projects`;
@@ -167,32 +143,13 @@ export const getProjectsControllerCreateMutationOptions = <
 export type ProjectsControllerCreateMutationResult = NonNullable<
   Awaited<ReturnType<typeof projectsControllerCreate>>
 >;
+
 export type ProjectsControllerCreateMutationBody = CreateProjectDto;
+
 export type ProjectsControllerCreateMutationError = ErrorType<ProblemDetails>;
+
 export type ProjectsControllerCreateMutationVariables = { data: CreateProjectDto };
 
-/**
- * @summary Create
- */
-export const useProjectsControllerCreate = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof projectsControllerCreate>>,
-      TError,
-      ProjectsControllerCreateMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof projectsControllerCreate>>,
-  TError,
-  ProjectsControllerCreateMutationVariables,
-  TContext
-> => {
-  return useMutation(getProjectsControllerCreateMutationOptions(options), queryClient);
-};
 export const getProjectsControllerShowcaseUrl = (params?: ProjectsControllerShowcaseParams) => {
   const normalizedParams = new URLSearchParams();
 
@@ -259,88 +216,8 @@ export const getProjectsControllerShowcaseQueryOptions = <
 export type ProjectsControllerShowcaseQueryResult = NonNullable<
   Awaited<ReturnType<typeof projectsControllerShowcase>>
 >;
+
 export type ProjectsControllerShowcaseQueryError = ErrorType<ProblemDetails>;
-
-export function useProjectsControllerShowcase<
-  TData = Awaited<ReturnType<typeof projectsControllerShowcase>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params: undefined | ProjectsControllerShowcaseParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerShowcase>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof projectsControllerShowcase>>,
-          TError,
-          Awaited<ReturnType<typeof projectsControllerShowcase>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useProjectsControllerShowcase<
-  TData = Awaited<ReturnType<typeof projectsControllerShowcase>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: ProjectsControllerShowcaseParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerShowcase>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof projectsControllerShowcase>>,
-          TError,
-          Awaited<ReturnType<typeof projectsControllerShowcase>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useProjectsControllerShowcase<
-  TData = Awaited<ReturnType<typeof projectsControllerShowcase>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: ProjectsControllerShowcaseParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerShowcase>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Showcase
- */
-
-export function useProjectsControllerShowcase<
-  TData = Awaited<ReturnType<typeof projectsControllerShowcase>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: ProjectsControllerShowcaseParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerShowcase>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getProjectsControllerShowcaseQueryOptions(params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getProjectsControllerMineUrl = () => {
   return `/v1/me/projects`;
@@ -391,84 +268,8 @@ export const getProjectsControllerMineQueryOptions = <
 export type ProjectsControllerMineQueryResult = NonNullable<
   Awaited<ReturnType<typeof projectsControllerMine>>
 >;
+
 export type ProjectsControllerMineQueryError = ErrorType<ProblemDetails>;
-
-export function useProjectsControllerMine<
-  TData = Awaited<ReturnType<typeof projectsControllerMine>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerMine>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof projectsControllerMine>>,
-          TError,
-          Awaited<ReturnType<typeof projectsControllerMine>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useProjectsControllerMine<
-  TData = Awaited<ReturnType<typeof projectsControllerMine>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerMine>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof projectsControllerMine>>,
-          TError,
-          Awaited<ReturnType<typeof projectsControllerMine>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useProjectsControllerMine<
-  TData = Awaited<ReturnType<typeof projectsControllerMine>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerMine>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Mine
- */
-
-export function useProjectsControllerMine<
-  TData = Awaited<ReturnType<typeof projectsControllerMine>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerMine>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getProjectsControllerMineQueryOptions(options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getProjectsControllerPublicShowcaseUrl = (
   params?: ProjectsControllerPublicShowcaseParams,
@@ -540,88 +341,8 @@ export const getProjectsControllerPublicShowcaseQueryOptions = <
 export type ProjectsControllerPublicShowcaseQueryResult = NonNullable<
   Awaited<ReturnType<typeof projectsControllerPublicShowcase>>
 >;
+
 export type ProjectsControllerPublicShowcaseQueryError = ErrorType<ProblemDetails>;
-
-export function useProjectsControllerPublicShowcase<
-  TData = Awaited<ReturnType<typeof projectsControllerPublicShowcase>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params: undefined | ProjectsControllerPublicShowcaseParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerPublicShowcase>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof projectsControllerPublicShowcase>>,
-          TError,
-          Awaited<ReturnType<typeof projectsControllerPublicShowcase>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useProjectsControllerPublicShowcase<
-  TData = Awaited<ReturnType<typeof projectsControllerPublicShowcase>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: ProjectsControllerPublicShowcaseParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerPublicShowcase>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof projectsControllerPublicShowcase>>,
-          TError,
-          Awaited<ReturnType<typeof projectsControllerPublicShowcase>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useProjectsControllerPublicShowcase<
-  TData = Awaited<ReturnType<typeof projectsControllerPublicShowcase>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: ProjectsControllerPublicShowcaseParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerPublicShowcase>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Public showcase
- */
-
-export function useProjectsControllerPublicShowcase<
-  TData = Awaited<ReturnType<typeof projectsControllerPublicShowcase>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: ProjectsControllerPublicShowcaseParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerPublicShowcase>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getProjectsControllerPublicShowcaseQueryOptions(params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getProjectsControllerForMemberUrl = (slug: string) => {
   return `/v1/projects/by-slug/${slug}`;
@@ -680,88 +401,8 @@ export const getProjectsControllerForMemberQueryOptions = <
 export type ProjectsControllerForMemberQueryResult = NonNullable<
   Awaited<ReturnType<typeof projectsControllerForMember>>
 >;
+
 export type ProjectsControllerForMemberQueryError = ErrorType<void | ProblemDetails>;
-
-export function useProjectsControllerForMember<
-  TData = Awaited<ReturnType<typeof projectsControllerForMember>>,
-  TError = ErrorType<void | ProblemDetails>,
->(
-  slug: string,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerForMember>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof projectsControllerForMember>>,
-          TError,
-          Awaited<ReturnType<typeof projectsControllerForMember>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useProjectsControllerForMember<
-  TData = Awaited<ReturnType<typeof projectsControllerForMember>>,
-  TError = ErrorType<void | ProblemDetails>,
->(
-  slug: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerForMember>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof projectsControllerForMember>>,
-          TError,
-          Awaited<ReturnType<typeof projectsControllerForMember>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useProjectsControllerForMember<
-  TData = Awaited<ReturnType<typeof projectsControllerForMember>>,
-  TError = ErrorType<void | ProblemDetails>,
->(
-  slug: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerForMember>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary For member
- */
-
-export function useProjectsControllerForMember<
-  TData = Awaited<ReturnType<typeof projectsControllerForMember>>,
-  TError = ErrorType<void | ProblemDetails>,
->(
-  slug: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerForMember>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getProjectsControllerForMemberQueryOptions(slug, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getProjectsControllerForPublicUrl = (slug: string) => {
   return `/v1/public/projects/${slug}`;
@@ -820,88 +461,8 @@ export const getProjectsControllerForPublicQueryOptions = <
 export type ProjectsControllerForPublicQueryResult = NonNullable<
   Awaited<ReturnType<typeof projectsControllerForPublic>>
 >;
+
 export type ProjectsControllerForPublicQueryError = ErrorType<void | ProblemDetails>;
-
-export function useProjectsControllerForPublic<
-  TData = Awaited<ReturnType<typeof projectsControllerForPublic>>,
-  TError = ErrorType<void | ProblemDetails>,
->(
-  slug: string,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerForPublic>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof projectsControllerForPublic>>,
-          TError,
-          Awaited<ReturnType<typeof projectsControllerForPublic>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useProjectsControllerForPublic<
-  TData = Awaited<ReturnType<typeof projectsControllerForPublic>>,
-  TError = ErrorType<void | ProblemDetails>,
->(
-  slug: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerForPublic>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof projectsControllerForPublic>>,
-          TError,
-          Awaited<ReturnType<typeof projectsControllerForPublic>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useProjectsControllerForPublic<
-  TData = Awaited<ReturnType<typeof projectsControllerForPublic>>,
-  TError = ErrorType<void | ProblemDetails>,
->(
-  slug: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerForPublic>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary For public
- */
-
-export function useProjectsControllerForPublic<
-  TData = Awaited<ReturnType<typeof projectsControllerForPublic>>,
-  TError = ErrorType<void | ProblemDetails>,
->(
-  slug: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerForPublic>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getProjectsControllerForPublicQueryOptions(slug, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getProjectsControllerPublicPostsUrl = (
   projectId: string,
@@ -981,92 +542,8 @@ export const getProjectsControllerPublicPostsQueryOptions = <
 export type ProjectsControllerPublicPostsQueryResult = NonNullable<
   Awaited<ReturnType<typeof projectsControllerPublicPosts>>
 >;
+
 export type ProjectsControllerPublicPostsQueryError = ErrorType<ProblemDetails>;
-
-export function useProjectsControllerPublicPosts<
-  TData = Awaited<ReturnType<typeof projectsControllerPublicPosts>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  params: undefined | ProjectsControllerPublicPostsParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerPublicPosts>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof projectsControllerPublicPosts>>,
-          TError,
-          Awaited<ReturnType<typeof projectsControllerPublicPosts>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useProjectsControllerPublicPosts<
-  TData = Awaited<ReturnType<typeof projectsControllerPublicPosts>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  params?: ProjectsControllerPublicPostsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerPublicPosts>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof projectsControllerPublicPosts>>,
-          TError,
-          Awaited<ReturnType<typeof projectsControllerPublicPosts>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useProjectsControllerPublicPosts<
-  TData = Awaited<ReturnType<typeof projectsControllerPublicPosts>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  params?: ProjectsControllerPublicPostsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerPublicPosts>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Public posts
- */
-
-export function useProjectsControllerPublicPosts<
-  TData = Awaited<ReturnType<typeof projectsControllerPublicPosts>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  params?: ProjectsControllerPublicPostsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerPublicPosts>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getProjectsControllerPublicPostsQueryOptions(projectId, params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getProjectsControllerGetUrl = (projectId: string) => {
   return `/v1/projects/${projectId}`;
@@ -1124,88 +601,8 @@ export const getProjectsControllerGetQueryOptions = <
 export type ProjectsControllerGetQueryResult = NonNullable<
   Awaited<ReturnType<typeof projectsControllerGet>>
 >;
+
 export type ProjectsControllerGetQueryError = ErrorType<ProblemDetails>;
-
-export function useProjectsControllerGet<
-  TData = Awaited<ReturnType<typeof projectsControllerGet>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerGet>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof projectsControllerGet>>,
-          TError,
-          Awaited<ReturnType<typeof projectsControllerGet>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useProjectsControllerGet<
-  TData = Awaited<ReturnType<typeof projectsControllerGet>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerGet>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof projectsControllerGet>>,
-          TError,
-          Awaited<ReturnType<typeof projectsControllerGet>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useProjectsControllerGet<
-  TData = Awaited<ReturnType<typeof projectsControllerGet>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerGet>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Get
- */
-
-export function useProjectsControllerGet<
-  TData = Awaited<ReturnType<typeof projectsControllerGet>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerGet>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getProjectsControllerGetQueryOptions(projectId, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getProjectsControllerUpdateUrl = (projectId: string) => {
   return `/v1/projects/${projectId}`;
@@ -1290,35 +687,16 @@ export const getProjectsControllerUpdateMutationOptions = <
 export type ProjectsControllerUpdateMutationResult = NonNullable<
   Awaited<ReturnType<typeof projectsControllerUpdate>>
 >;
+
 export type ProjectsControllerUpdateMutationBody = UpdateProjectDto;
+
 export type ProjectsControllerUpdateMutationError = ErrorType<ProblemDetails>;
+
 export type ProjectsControllerUpdateMutationVariables = {
   projectId: string;
   data: UpdateProjectDto;
 };
 
-/**
- * @summary Update
- */
-export const useProjectsControllerUpdate = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof projectsControllerUpdate>>,
-      TError,
-      ProjectsControllerUpdateMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof projectsControllerUpdate>>,
-  TError,
-  ProjectsControllerUpdateMutationVariables,
-  TContext
-> => {
-  return useMutation(getProjectsControllerUpdateMutationOptions(options), queryClient);
-};
 export const getProjectsControllerDeleteUrl = (projectId: string) => {
   return `/v1/projects/${projectId}`;
 };
@@ -1382,30 +760,9 @@ export type ProjectsControllerDeleteMutationResult = NonNullable<
 >;
 
 export type ProjectsControllerDeleteMutationError = ErrorType<ProblemDetails>;
+
 export type ProjectsControllerDeleteMutationVariables = { projectId: string };
 
-/**
- * @summary Delete
- */
-export const useProjectsControllerDelete = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof projectsControllerDelete>>,
-      TError,
-      ProjectsControllerDeleteMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof projectsControllerDelete>>,
-  TError,
-  ProjectsControllerDeleteMutationVariables,
-  TContext
-> => {
-  return useMutation(getProjectsControllerDeleteMutationOptions(options), queryClient);
-};
 export const getProjectsControllerPreviewUrl = (projectId: string) => {
   return `/v1/projects/${projectId}/preview`;
 };
@@ -1463,88 +820,8 @@ export const getProjectsControllerPreviewQueryOptions = <
 export type ProjectsControllerPreviewQueryResult = NonNullable<
   Awaited<ReturnType<typeof projectsControllerPreview>>
 >;
+
 export type ProjectsControllerPreviewQueryError = ErrorType<ProblemDetails>;
-
-export function useProjectsControllerPreview<
-  TData = Awaited<ReturnType<typeof projectsControllerPreview>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerPreview>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof projectsControllerPreview>>,
-          TError,
-          Awaited<ReturnType<typeof projectsControllerPreview>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useProjectsControllerPreview<
-  TData = Awaited<ReturnType<typeof projectsControllerPreview>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerPreview>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof projectsControllerPreview>>,
-          TError,
-          Awaited<ReturnType<typeof projectsControllerPreview>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useProjectsControllerPreview<
-  TData = Awaited<ReturnType<typeof projectsControllerPreview>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerPreview>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Preview
- */
-
-export function useProjectsControllerPreview<
-  TData = Awaited<ReturnType<typeof projectsControllerPreview>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerPreview>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getProjectsControllerPreviewQueryOptions(projectId, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getProjectsControllerPostsUrl = (
   projectId: string,
@@ -1623,92 +900,8 @@ export const getProjectsControllerPostsQueryOptions = <
 export type ProjectsControllerPostsQueryResult = NonNullable<
   Awaited<ReturnType<typeof projectsControllerPosts>>
 >;
+
 export type ProjectsControllerPostsQueryError = ErrorType<ProblemDetails>;
-
-export function useProjectsControllerPosts<
-  TData = Awaited<ReturnType<typeof projectsControllerPosts>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  params: undefined | ProjectsControllerPostsParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerPosts>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof projectsControllerPosts>>,
-          TError,
-          Awaited<ReturnType<typeof projectsControllerPosts>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useProjectsControllerPosts<
-  TData = Awaited<ReturnType<typeof projectsControllerPosts>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  params?: ProjectsControllerPostsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerPosts>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof projectsControllerPosts>>,
-          TError,
-          Awaited<ReturnType<typeof projectsControllerPosts>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useProjectsControllerPosts<
-  TData = Awaited<ReturnType<typeof projectsControllerPosts>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  params?: ProjectsControllerPostsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerPosts>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Posts
- */
-
-export function useProjectsControllerPosts<
-  TData = Awaited<ReturnType<typeof projectsControllerPosts>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  params?: ProjectsControllerPostsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof projectsControllerPosts>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getProjectsControllerPostsQueryOptions(projectId, params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getProjectsControllerChangeSlugUrl = (projectId: string) => {
   return `/v1/projects/${projectId}/slug`;
@@ -1794,38 +987,16 @@ export const getProjectsControllerChangeSlugMutationOptions = <
 export type ProjectsControllerChangeSlugMutationResult = NonNullable<
   Awaited<ReturnType<typeof projectsControllerChangeSlug>>
 >;
+
 export type ProjectsControllerChangeSlugMutationBody = ChangeProjectSlugDto;
+
 export type ProjectsControllerChangeSlugMutationError = ErrorType<ProblemDetails>;
+
 export type ProjectsControllerChangeSlugMutationVariables = {
   projectId: string;
   data: ChangeProjectSlugDto;
 };
 
-/**
- * @summary Change slug
- */
-export const useProjectsControllerChangeSlug = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof projectsControllerChangeSlug>>,
-      TError,
-      ProjectsControllerChangeSlugMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof projectsControllerChangeSlug>>,
-  TError,
-  ProjectsControllerChangeSlugMutationVariables,
-  TContext
-> => {
-  return useMutation(getProjectsControllerChangeSlugMutationOptions(options), queryClient);
-};
 export const getProjectsControllerReplaceTiersUrl = (projectId: string) => {
   return `/v1/projects/${projectId}/tiers`;
 };
@@ -1910,38 +1081,16 @@ export const getProjectsControllerReplaceTiersMutationOptions = <
 export type ProjectsControllerReplaceTiersMutationResult = NonNullable<
   Awaited<ReturnType<typeof projectsControllerReplaceTiers>>
 >;
+
 export type ProjectsControllerReplaceTiersMutationBody = ReplaceTiersDto;
+
 export type ProjectsControllerReplaceTiersMutationError = ErrorType<ProblemDetails>;
+
 export type ProjectsControllerReplaceTiersMutationVariables = {
   projectId: string;
   data: ReplaceTiersDto;
 };
 
-/**
- * @summary Replace tiers
- */
-export const useProjectsControllerReplaceTiers = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof projectsControllerReplaceTiers>>,
-      TError,
-      ProjectsControllerReplaceTiersMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof projectsControllerReplaceTiers>>,
-  TError,
-  ProjectsControllerReplaceTiersMutationVariables,
-  TContext
-> => {
-  return useMutation(getProjectsControllerReplaceTiersMutationOptions(options), queryClient);
-};
 export const getProjectsControllerSetGalleryUrl = (projectId: string) => {
   return `/v1/projects/${projectId}/gallery`;
 };
@@ -2026,38 +1175,16 @@ export const getProjectsControllerSetGalleryMutationOptions = <
 export type ProjectsControllerSetGalleryMutationResult = NonNullable<
   Awaited<ReturnType<typeof projectsControllerSetGallery>>
 >;
+
 export type ProjectsControllerSetGalleryMutationBody = SetGalleryDto;
+
 export type ProjectsControllerSetGalleryMutationError = ErrorType<ProblemDetails>;
+
 export type ProjectsControllerSetGalleryMutationVariables = {
   projectId: string;
   data: SetGalleryDto;
 };
 
-/**
- * @summary Set gallery
- */
-export const useProjectsControllerSetGallery = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof projectsControllerSetGallery>>,
-      TError,
-      ProjectsControllerSetGalleryMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof projectsControllerSetGallery>>,
-  TError,
-  ProjectsControllerSetGalleryMutationVariables,
-  TContext
-> => {
-  return useMutation(getProjectsControllerSetGalleryMutationOptions(options), queryClient);
-};
 export const getProjectsControllerSetDocumentsUrl = (projectId: string) => {
   return `/v1/projects/${projectId}/documents`;
 };
@@ -2142,38 +1269,16 @@ export const getProjectsControllerSetDocumentsMutationOptions = <
 export type ProjectsControllerSetDocumentsMutationResult = NonNullable<
   Awaited<ReturnType<typeof projectsControllerSetDocuments>>
 >;
+
 export type ProjectsControllerSetDocumentsMutationBody = SetDocumentsDto;
+
 export type ProjectsControllerSetDocumentsMutationError = ErrorType<ProblemDetails>;
+
 export type ProjectsControllerSetDocumentsMutationVariables = {
   projectId: string;
   data: SetDocumentsDto;
 };
 
-/**
- * @summary Set documents
- */
-export const useProjectsControllerSetDocuments = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof projectsControllerSetDocuments>>,
-      TError,
-      ProjectsControllerSetDocumentsMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof projectsControllerSetDocuments>>,
-  TError,
-  ProjectsControllerSetDocumentsMutationVariables,
-  TContext
-> => {
-  return useMutation(getProjectsControllerSetDocumentsMutationOptions(options), queryClient);
-};
 export const getProjectsControllerPublishUrl = (projectId: string) => {
   return `/v1/projects/${projectId}/publish`;
 };
@@ -2259,35 +1364,13 @@ export const getProjectsControllerPublishMutationOptions = <
 export type ProjectsControllerPublishMutationResult = NonNullable<
   Awaited<ReturnType<typeof projectsControllerPublish>>
 >;
+
 export type ProjectsControllerPublishMutationBody = PublishDto;
+
 export type ProjectsControllerPublishMutationError = ErrorType<ProblemDetails>;
+
 export type ProjectsControllerPublishMutationVariables = { projectId: string; data: PublishDto };
 
-/**
- * @summary Publish
- */
-export const useProjectsControllerPublish = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof projectsControllerPublish>>,
-      TError,
-      ProjectsControllerPublishMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof projectsControllerPublish>>,
-  TError,
-  ProjectsControllerPublishMutationVariables,
-  TContext
-> => {
-  return useMutation(getProjectsControllerPublishMutationOptions(options), queryClient);
-};
 export const getTeamControllerInviteUrl = (projectId: string) => {
   return `/v1/projects/${projectId}/team/invitations`;
 };
@@ -2375,32 +1458,13 @@ export const getTeamControllerInviteMutationOptions = <
 export type TeamControllerInviteMutationResult = NonNullable<
   Awaited<ReturnType<typeof teamControllerInvite>>
 >;
+
 export type TeamControllerInviteMutationBody = InviteDto;
+
 export type TeamControllerInviteMutationError = ErrorType<ProblemDetails>;
+
 export type TeamControllerInviteMutationVariables = { projectId: string; data: InviteDto };
 
-/**
- * @summary Invite
- */
-export const useTeamControllerInvite = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof teamControllerInvite>>,
-      TError,
-      TeamControllerInviteMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof teamControllerInvite>>,
-  TError,
-  TeamControllerInviteMutationVariables,
-  TContext
-> => {
-  return useMutation(getTeamControllerInviteMutationOptions(options), queryClient);
-};
 export const getTeamControllerUpdateUrl = (projectId: string, handle: string) => {
   return `/v1/projects/${projectId}/team/${handle}`;
 };
@@ -2487,36 +1551,17 @@ export const getTeamControllerUpdateMutationOptions = <
 export type TeamControllerUpdateMutationResult = NonNullable<
   Awaited<ReturnType<typeof teamControllerUpdate>>
 >;
+
 export type TeamControllerUpdateMutationBody = UpdateMemberDto;
+
 export type TeamControllerUpdateMutationError = ErrorType<ProblemDetails>;
+
 export type TeamControllerUpdateMutationVariables = {
   projectId: string;
   handle: string;
   data: UpdateMemberDto;
 };
 
-/**
- * @summary Update
- */
-export const useTeamControllerUpdate = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof teamControllerUpdate>>,
-      TError,
-      TeamControllerUpdateMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof teamControllerUpdate>>,
-  TError,
-  TeamControllerUpdateMutationVariables,
-  TContext
-> => {
-  return useMutation(getTeamControllerUpdateMutationOptions(options), queryClient);
-};
 export const getTeamControllerRemoveUrl = (projectId: string, handle: string) => {
   return `/v1/projects/${projectId}/team/${handle}`;
 };
@@ -2583,30 +1628,9 @@ export type TeamControllerRemoveMutationResult = NonNullable<
 >;
 
 export type TeamControllerRemoveMutationError = ErrorType<ProblemDetails>;
+
 export type TeamControllerRemoveMutationVariables = { projectId: string; handle: string };
 
-/**
- * @summary Remove
- */
-export const useTeamControllerRemove = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof teamControllerRemove>>,
-      TError,
-      TeamControllerRemoveMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof teamControllerRemove>>,
-  TError,
-  TeamControllerRemoveMutationVariables,
-  TContext
-> => {
-  return useMutation(getTeamControllerRemoveMutationOptions(options), queryClient);
-};
 export const getTeamControllerLeaveUrl = (projectId: string) => {
   return `/v1/projects/${projectId}/team/leave`;
 };
@@ -2670,30 +1694,9 @@ export type TeamControllerLeaveMutationResult = NonNullable<
 >;
 
 export type TeamControllerLeaveMutationError = ErrorType<ProblemDetails>;
+
 export type TeamControllerLeaveMutationVariables = { projectId: string };
 
-/**
- * @summary Leave
- */
-export const useTeamControllerLeave = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof teamControllerLeave>>,
-      TError,
-      TeamControllerLeaveMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof teamControllerLeave>>,
-  TError,
-  TeamControllerLeaveMutationVariables,
-  TContext
-> => {
-  return useMutation(getTeamControllerLeaveMutationOptions(options), queryClient);
-};
 export const getTeamControllerInvitationsUrl = () => {
   return `/v1/me/project-invitations`;
 };
@@ -2744,84 +1747,8 @@ export const getTeamControllerInvitationsQueryOptions = <
 export type TeamControllerInvitationsQueryResult = NonNullable<
   Awaited<ReturnType<typeof teamControllerInvitations>>
 >;
+
 export type TeamControllerInvitationsQueryError = ErrorType<ProblemDetails>;
-
-export function useTeamControllerInvitations<
-  TData = Awaited<ReturnType<typeof teamControllerInvitations>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof teamControllerInvitations>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof teamControllerInvitations>>,
-          TError,
-          Awaited<ReturnType<typeof teamControllerInvitations>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useTeamControllerInvitations<
-  TData = Awaited<ReturnType<typeof teamControllerInvitations>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof teamControllerInvitations>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof teamControllerInvitations>>,
-          TError,
-          Awaited<ReturnType<typeof teamControllerInvitations>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useTeamControllerInvitations<
-  TData = Awaited<ReturnType<typeof teamControllerInvitations>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof teamControllerInvitations>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Invitations
- */
-
-export function useTeamControllerInvitations<
-  TData = Awaited<ReturnType<typeof teamControllerInvitations>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof teamControllerInvitations>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getTeamControllerInvitationsQueryOptions(options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getTeamControllerAcceptUrl = (projectId: string) => {
   return `/v1/me/project-invitations/${projectId}/accept`;
@@ -2906,32 +1833,13 @@ export const getTeamControllerAcceptMutationOptions = <
 export type TeamControllerAcceptMutationResult = NonNullable<
   Awaited<ReturnType<typeof teamControllerAccept>>
 >;
+
 export type TeamControllerAcceptMutationBody = AcceptDto;
+
 export type TeamControllerAcceptMutationError = ErrorType<ProblemDetails>;
+
 export type TeamControllerAcceptMutationVariables = { projectId: string; data: AcceptDto };
 
-/**
- * @summary Accept
- */
-export const useTeamControllerAccept = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof teamControllerAccept>>,
-      TError,
-      TeamControllerAcceptMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof teamControllerAccept>>,
-  TError,
-  TeamControllerAcceptMutationVariables,
-  TContext
-> => {
-  return useMutation(getTeamControllerAcceptMutationOptions(options), queryClient);
-};
 export const getTeamControllerDeclineUrl = (projectId: string) => {
   return `/v1/me/project-invitations/${projectId}/decline`;
 };
@@ -2995,30 +1903,9 @@ export type TeamControllerDeclineMutationResult = NonNullable<
 >;
 
 export type TeamControllerDeclineMutationError = ErrorType<ProblemDetails>;
+
 export type TeamControllerDeclineMutationVariables = { projectId: string };
 
-/**
- * @summary Decline
- */
-export const useTeamControllerDecline = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof teamControllerDecline>>,
-      TError,
-      TeamControllerDeclineMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof teamControllerDecline>>,
-  TError,
-  TeamControllerDeclineMutationVariables,
-  TContext
-> => {
-  return useMutation(getTeamControllerDeclineMutationOptions(options), queryClient);
-};
 export const getRewardsControllerCreateUrl = (projectId: string) => {
   return `/v1/projects/${projectId}/rewards`;
 };
@@ -3104,32 +1991,13 @@ export const getRewardsControllerCreateMutationOptions = <
 export type RewardsControllerCreateMutationResult = NonNullable<
   Awaited<ReturnType<typeof rewardsControllerCreate>>
 >;
+
 export type RewardsControllerCreateMutationBody = CreateRewardDto;
+
 export type RewardsControllerCreateMutationError = ErrorType<ProblemDetails>;
+
 export type RewardsControllerCreateMutationVariables = { projectId: string; data: CreateRewardDto };
 
-/**
- * @summary Create
- */
-export const useRewardsControllerCreate = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof rewardsControllerCreate>>,
-      TError,
-      RewardsControllerCreateMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof rewardsControllerCreate>>,
-  TError,
-  RewardsControllerCreateMutationVariables,
-  TContext
-> => {
-  return useMutation(getRewardsControllerCreateMutationOptions(options), queryClient);
-};
 export const getRewardsControllerUpdateUrl = (projectId: string, rewardId: string) => {
   return `/v1/projects/${projectId}/rewards/${rewardId}`;
 };
@@ -3214,36 +2082,17 @@ export const getRewardsControllerUpdateMutationOptions = <
 export type RewardsControllerUpdateMutationResult = NonNullable<
   Awaited<ReturnType<typeof rewardsControllerUpdate>>
 >;
+
 export type RewardsControllerUpdateMutationBody = UpdateRewardDto;
+
 export type RewardsControllerUpdateMutationError = ErrorType<ProblemDetails>;
+
 export type RewardsControllerUpdateMutationVariables = {
   projectId: string;
   rewardId: string;
   data: UpdateRewardDto;
 };
 
-/**
- * @summary Update
- */
-export const useRewardsControllerUpdate = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof rewardsControllerUpdate>>,
-      TError,
-      RewardsControllerUpdateMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof rewardsControllerUpdate>>,
-  TError,
-  RewardsControllerUpdateMutationVariables,
-  TContext
-> => {
-  return useMutation(getRewardsControllerUpdateMutationOptions(options), queryClient);
-};
 export const getRewardsControllerDeleteUrl = (projectId: string, rewardId: string) => {
   return `/v1/projects/${projectId}/rewards/${rewardId}`;
 };
@@ -3308,30 +2157,9 @@ export type RewardsControllerDeleteMutationResult = NonNullable<
 >;
 
 export type RewardsControllerDeleteMutationError = ErrorType<ProblemDetails>;
+
 export type RewardsControllerDeleteMutationVariables = { projectId: string; rewardId: string };
 
-/**
- * @summary Delete
- */
-export const useRewardsControllerDelete = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof rewardsControllerDelete>>,
-      TError,
-      RewardsControllerDeleteMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof rewardsControllerDelete>>,
-  TError,
-  RewardsControllerDeleteMutationVariables,
-  TContext
-> => {
-  return useMutation(getRewardsControllerDeleteMutationOptions(options), queryClient);
-};
 export const getUpdatesControllerPublishUrl = (projectId: string) => {
   return `/v1/projects/${projectId}/updates`;
 };
@@ -3419,35 +2247,16 @@ export const getUpdatesControllerPublishMutationOptions = <
 export type UpdatesControllerPublishMutationResult = NonNullable<
   Awaited<ReturnType<typeof updatesControllerPublish>>
 >;
+
 export type UpdatesControllerPublishMutationBody = CreateUpdateDto;
+
 export type UpdatesControllerPublishMutationError = ErrorType<ProblemDetails>;
+
 export type UpdatesControllerPublishMutationVariables = {
   projectId: string;
   data: CreateUpdateDto;
 };
 
-/**
- * @summary Publish
- */
-export const useUpdatesControllerPublish = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof updatesControllerPublish>>,
-      TError,
-      UpdatesControllerPublishMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof updatesControllerPublish>>,
-  TError,
-  UpdatesControllerPublishMutationVariables,
-  TContext
-> => {
-  return useMutation(getUpdatesControllerPublishMutationOptions(options), queryClient);
-};
 export const getUpdatesControllerListUrl = (
   projectId: string,
   params?: UpdatesControllerListParams,
@@ -3524,92 +2333,8 @@ export const getUpdatesControllerListQueryOptions = <
 export type UpdatesControllerListQueryResult = NonNullable<
   Awaited<ReturnType<typeof updatesControllerList>>
 >;
+
 export type UpdatesControllerListQueryError = ErrorType<ProblemDetails>;
-
-export function useUpdatesControllerList<
-  TData = Awaited<ReturnType<typeof updatesControllerList>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  params: undefined | UpdatesControllerListParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof updatesControllerList>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof updatesControllerList>>,
-          TError,
-          Awaited<ReturnType<typeof updatesControllerList>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useUpdatesControllerList<
-  TData = Awaited<ReturnType<typeof updatesControllerList>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  params?: UpdatesControllerListParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof updatesControllerList>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof updatesControllerList>>,
-          TError,
-          Awaited<ReturnType<typeof updatesControllerList>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useUpdatesControllerList<
-  TData = Awaited<ReturnType<typeof updatesControllerList>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  params?: UpdatesControllerListParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof updatesControllerList>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary List
- */
-
-export function useUpdatesControllerList<
-  TData = Awaited<ReturnType<typeof updatesControllerList>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  params?: UpdatesControllerListParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof updatesControllerList>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getUpdatesControllerListQueryOptions(projectId, params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getUpdatesControllerPublicListUrl = (
   projectId: string,
@@ -3689,92 +2414,8 @@ export const getUpdatesControllerPublicListQueryOptions = <
 export type UpdatesControllerPublicListQueryResult = NonNullable<
   Awaited<ReturnType<typeof updatesControllerPublicList>>
 >;
+
 export type UpdatesControllerPublicListQueryError = ErrorType<ProblemDetails>;
-
-export function useUpdatesControllerPublicList<
-  TData = Awaited<ReturnType<typeof updatesControllerPublicList>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  params: undefined | UpdatesControllerPublicListParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof updatesControllerPublicList>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof updatesControllerPublicList>>,
-          TError,
-          Awaited<ReturnType<typeof updatesControllerPublicList>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useUpdatesControllerPublicList<
-  TData = Awaited<ReturnType<typeof updatesControllerPublicList>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  params?: UpdatesControllerPublicListParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof updatesControllerPublicList>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof updatesControllerPublicList>>,
-          TError,
-          Awaited<ReturnType<typeof updatesControllerPublicList>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useUpdatesControllerPublicList<
-  TData = Awaited<ReturnType<typeof updatesControllerPublicList>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  params?: UpdatesControllerPublicListParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof updatesControllerPublicList>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Public list
- */
-
-export function useUpdatesControllerPublicList<
-  TData = Awaited<ReturnType<typeof updatesControllerPublicList>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  params?: UpdatesControllerPublicListParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof updatesControllerPublicList>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getUpdatesControllerPublicListQueryOptions(projectId, params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getUpdatesControllerEditUrl = (projectId: string, updateId: string) => {
   return `/v1/projects/${projectId}/updates/${updateId}`;
@@ -3862,36 +2503,17 @@ export const getUpdatesControllerEditMutationOptions = <
 export type UpdatesControllerEditMutationResult = NonNullable<
   Awaited<ReturnType<typeof updatesControllerEdit>>
 >;
+
 export type UpdatesControllerEditMutationBody = EditUpdateDto;
+
 export type UpdatesControllerEditMutationError = ErrorType<ProblemDetails>;
+
 export type UpdatesControllerEditMutationVariables = {
   projectId: string;
   updateId: string;
   data: EditUpdateDto;
 };
 
-/**
- * @summary Edit
- */
-export const useUpdatesControllerEdit = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof updatesControllerEdit>>,
-      TError,
-      UpdatesControllerEditMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof updatesControllerEdit>>,
-  TError,
-  UpdatesControllerEditMutationVariables,
-  TContext
-> => {
-  return useMutation(getUpdatesControllerEditMutationOptions(options), queryClient);
-};
 export const getUpdatesControllerDeleteUrl = (projectId: string, updateId: string) => {
   return `/v1/projects/${projectId}/updates/${updateId}`;
 };
@@ -3958,30 +2580,9 @@ export type UpdatesControllerDeleteMutationResult = NonNullable<
 >;
 
 export type UpdatesControllerDeleteMutationError = ErrorType<ProblemDetails>;
+
 export type UpdatesControllerDeleteMutationVariables = { projectId: string; updateId: string };
 
-/**
- * @summary Delete
- */
-export const useUpdatesControllerDelete = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof updatesControllerDelete>>,
-      TError,
-      UpdatesControllerDeleteMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof updatesControllerDelete>>,
-  TError,
-  UpdatesControllerDeleteMutationVariables,
-  TContext
-> => {
-  return useMutation(getUpdatesControllerDeleteMutationOptions(options), queryClient);
-};
 export const getInterestsControllerExpressUrl = (projectId: string) => {
   return `/v1/projects/${projectId}/interests`;
 };
@@ -4070,38 +2671,16 @@ export const getInterestsControllerExpressMutationOptions = <
 export type InterestsControllerExpressMutationResult = NonNullable<
   Awaited<ReturnType<typeof interestsControllerExpress>>
 >;
+
 export type InterestsControllerExpressMutationBody = ExpressInterestDto;
+
 export type InterestsControllerExpressMutationError = ErrorType<ProblemDetails>;
+
 export type InterestsControllerExpressMutationVariables = {
   projectId: string;
   data: ExpressInterestDto;
 };
 
-/**
- * @summary Express
- */
-export const useInterestsControllerExpress = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof interestsControllerExpress>>,
-      TError,
-      InterestsControllerExpressMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof interestsControllerExpress>>,
-  TError,
-  InterestsControllerExpressMutationVariables,
-  TContext
-> => {
-  return useMutation(getInterestsControllerExpressMutationOptions(options), queryClient);
-};
 export const getInterestsControllerListUrl = (
   projectId: string,
   params?: InterestsControllerListParams,
@@ -4179,92 +2758,8 @@ export const getInterestsControllerListQueryOptions = <
 export type InterestsControllerListQueryResult = NonNullable<
   Awaited<ReturnType<typeof interestsControllerList>>
 >;
+
 export type InterestsControllerListQueryError = ErrorType<ProblemDetails>;
-
-export function useInterestsControllerList<
-  TData = Awaited<ReturnType<typeof interestsControllerList>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  params: undefined | InterestsControllerListParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof interestsControllerList>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof interestsControllerList>>,
-          TError,
-          Awaited<ReturnType<typeof interestsControllerList>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useInterestsControllerList<
-  TData = Awaited<ReturnType<typeof interestsControllerList>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  params?: InterestsControllerListParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof interestsControllerList>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof interestsControllerList>>,
-          TError,
-          Awaited<ReturnType<typeof interestsControllerList>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useInterestsControllerList<
-  TData = Awaited<ReturnType<typeof interestsControllerList>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  params?: InterestsControllerListParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof interestsControllerList>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary List
- */
-
-export function useInterestsControllerList<
-  TData = Awaited<ReturnType<typeof interestsControllerList>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  params?: InterestsControllerListParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof interestsControllerList>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getInterestsControllerListQueryOptions(projectId, params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getProjectImpactControllerHistoryUrl = (projectId: string) => {
   return `/v1/projects/${projectId}/impact-assessments`;
@@ -4325,88 +2820,8 @@ export const getProjectImpactControllerHistoryQueryOptions = <
 export type ProjectImpactControllerHistoryQueryResult = NonNullable<
   Awaited<ReturnType<typeof projectImpactControllerHistory>>
 >;
+
 export type ProjectImpactControllerHistoryQueryError = ErrorType<ProblemDetails>;
-
-export function useProjectImpactControllerHistory<
-  TData = Awaited<ReturnType<typeof projectImpactControllerHistory>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof projectImpactControllerHistory>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof projectImpactControllerHistory>>,
-          TError,
-          Awaited<ReturnType<typeof projectImpactControllerHistory>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useProjectImpactControllerHistory<
-  TData = Awaited<ReturnType<typeof projectImpactControllerHistory>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof projectImpactControllerHistory>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof projectImpactControllerHistory>>,
-          TError,
-          Awaited<ReturnType<typeof projectImpactControllerHistory>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useProjectImpactControllerHistory<
-  TData = Awaited<ReturnType<typeof projectImpactControllerHistory>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof projectImpactControllerHistory>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary History
- */
-
-export function useProjectImpactControllerHistory<
-  TData = Awaited<ReturnType<typeof projectImpactControllerHistory>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof projectImpactControllerHistory>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getProjectImpactControllerHistoryQueryOptions(projectId, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getProjectImpactControllerSubmitUrl = (projectId: string) => {
   return `/v1/projects/${projectId}/impact-assessments`;
@@ -4494,38 +2909,16 @@ export const getProjectImpactControllerSubmitMutationOptions = <
 export type ProjectImpactControllerSubmitMutationResult = NonNullable<
   Awaited<ReturnType<typeof projectImpactControllerSubmit>>
 >;
+
 export type ProjectImpactControllerSubmitMutationBody = SubmitAssessmentDto;
+
 export type ProjectImpactControllerSubmitMutationError = ErrorType<ProblemDetails>;
+
 export type ProjectImpactControllerSubmitMutationVariables = {
   projectId: string;
   data: SubmitAssessmentDto;
 };
 
-/**
- * @summary Submit
- */
-export const useProjectImpactControllerSubmit = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof projectImpactControllerSubmit>>,
-      TError,
-      ProjectImpactControllerSubmitMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof projectImpactControllerSubmit>>,
-  TError,
-  ProjectImpactControllerSubmitMutationVariables,
-  TContext
-> => {
-  return useMutation(getProjectImpactControllerSubmitMutationOptions(options), queryClient);
-};
 export const getProjectImpactControllerPrefillUrl = (projectId: string) => {
   return `/v1/projects/${projectId}/impact-assessments/prefill`;
 };
@@ -4585,85 +2978,5 @@ export const getProjectImpactControllerPrefillQueryOptions = <
 export type ProjectImpactControllerPrefillQueryResult = NonNullable<
   Awaited<ReturnType<typeof projectImpactControllerPrefill>>
 >;
+
 export type ProjectImpactControllerPrefillQueryError = ErrorType<ProblemDetails>;
-
-export function useProjectImpactControllerPrefill<
-  TData = Awaited<ReturnType<typeof projectImpactControllerPrefill>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof projectImpactControllerPrefill>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof projectImpactControllerPrefill>>,
-          TError,
-          Awaited<ReturnType<typeof projectImpactControllerPrefill>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useProjectImpactControllerPrefill<
-  TData = Awaited<ReturnType<typeof projectImpactControllerPrefill>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof projectImpactControllerPrefill>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof projectImpactControllerPrefill>>,
-          TError,
-          Awaited<ReturnType<typeof projectImpactControllerPrefill>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useProjectImpactControllerPrefill<
-  TData = Awaited<ReturnType<typeof projectImpactControllerPrefill>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof projectImpactControllerPrefill>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Prefill
- */
-
-export function useProjectImpactControllerPrefill<
-  TData = Awaited<ReturnType<typeof projectImpactControllerPrefill>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof projectImpactControllerPrefill>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getProjectImpactControllerPrefillQueryOptions(projectId, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}

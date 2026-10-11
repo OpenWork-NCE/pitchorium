@@ -5,19 +5,7 @@
  * Errors follow RFC 9457 with a stable `code`; clients translate codes.
  * OpenAPI spec version: 1
  */
-import { useQuery } from '@tanstack/react-query';
-import type {
-  DataTag,
-  DefinedInitialDataOptions,
-  DefinedUseQueryResult,
-  QueryClient,
-  QueryFunction,
-  QueryKey,
-  UndefinedInitialDataOptions,
-  UseQueryOptions,
-  UseQueryResult,
-} from '@tanstack/react-query';
-
+import type { DataTag, QueryFunction, QueryKey, UseQueryOptions } from '@tanstack/react-query';
 import type {
   ProblemDetails,
   ProfileViewDtoOutput,
@@ -25,26 +13,10 @@ import type {
   PublicProfileEntryPageDtoOutput,
   ReferenceDataDtoOutput,
 } from '../api.schemas';
-
 import { apiFetch } from '../../http/fetcher';
 import type { ErrorType } from '../../http/fetcher';
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
-
-const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKey: K } => {
-  const result = { queryKey } as T & { queryKey: K };
-  for (const key of Object.keys(query)) {
-    // The explicit queryKey always wins, matching the previous
-    // `{ ...query, queryKey }` spread where it was set last.
-    if (key === 'queryKey') continue;
-    Object.defineProperty(result, key, {
-      enumerable: true,
-      configurable: true,
-      get: () => (query as Record<string, unknown>)[key],
-    });
-  }
-  return result;
-};
 
 export const getProfilesControllerForMemberUrl = (handle: string) => {
   return `/v1/profiles/${handle}`;
@@ -103,88 +75,8 @@ export const getProfilesControllerForMemberQueryOptions = <
 export type ProfilesControllerForMemberQueryResult = NonNullable<
   Awaited<ReturnType<typeof profilesControllerForMember>>
 >;
+
 export type ProfilesControllerForMemberQueryError = ErrorType<void | ProblemDetails>;
-
-export function useProfilesControllerForMember<
-  TData = Awaited<ReturnType<typeof profilesControllerForMember>>,
-  TError = ErrorType<void | ProblemDetails>,
->(
-  handle: string,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof profilesControllerForMember>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof profilesControllerForMember>>,
-          TError,
-          Awaited<ReturnType<typeof profilesControllerForMember>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useProfilesControllerForMember<
-  TData = Awaited<ReturnType<typeof profilesControllerForMember>>,
-  TError = ErrorType<void | ProblemDetails>,
->(
-  handle: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof profilesControllerForMember>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof profilesControllerForMember>>,
-          TError,
-          Awaited<ReturnType<typeof profilesControllerForMember>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useProfilesControllerForMember<
-  TData = Awaited<ReturnType<typeof profilesControllerForMember>>,
-  TError = ErrorType<void | ProblemDetails>,
->(
-  handle: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof profilesControllerForMember>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary For member
- */
-
-export function useProfilesControllerForMember<
-  TData = Awaited<ReturnType<typeof profilesControllerForMember>>,
-  TError = ErrorType<void | ProblemDetails>,
->(
-  handle: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof profilesControllerForMember>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getProfilesControllerForMemberQueryOptions(handle, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getProfilesControllerPublicPagesUrl = (
   params?: ProfilesControllerPublicPagesParams,
@@ -256,88 +148,8 @@ export const getProfilesControllerPublicPagesQueryOptions = <
 export type ProfilesControllerPublicPagesQueryResult = NonNullable<
   Awaited<ReturnType<typeof profilesControllerPublicPages>>
 >;
+
 export type ProfilesControllerPublicPagesQueryError = ErrorType<ProblemDetails>;
-
-export function useProfilesControllerPublicPages<
-  TData = Awaited<ReturnType<typeof profilesControllerPublicPages>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params: undefined | ProfilesControllerPublicPagesParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof profilesControllerPublicPages>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof profilesControllerPublicPages>>,
-          TError,
-          Awaited<ReturnType<typeof profilesControllerPublicPages>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useProfilesControllerPublicPages<
-  TData = Awaited<ReturnType<typeof profilesControllerPublicPages>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: ProfilesControllerPublicPagesParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof profilesControllerPublicPages>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof profilesControllerPublicPages>>,
-          TError,
-          Awaited<ReturnType<typeof profilesControllerPublicPages>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useProfilesControllerPublicPages<
-  TData = Awaited<ReturnType<typeof profilesControllerPublicPages>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: ProfilesControllerPublicPagesParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof profilesControllerPublicPages>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Public pages
- */
-
-export function useProfilesControllerPublicPages<
-  TData = Awaited<ReturnType<typeof profilesControllerPublicPages>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: ProfilesControllerPublicPagesParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof profilesControllerPublicPages>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getProfilesControllerPublicPagesQueryOptions(params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getProfilesControllerForPublicUrl = (handle: string) => {
   return `/v1/public/profiles/${handle}`;
@@ -396,88 +208,8 @@ export const getProfilesControllerForPublicQueryOptions = <
 export type ProfilesControllerForPublicQueryResult = NonNullable<
   Awaited<ReturnType<typeof profilesControllerForPublic>>
 >;
+
 export type ProfilesControllerForPublicQueryError = ErrorType<void | ProblemDetails>;
-
-export function useProfilesControllerForPublic<
-  TData = Awaited<ReturnType<typeof profilesControllerForPublic>>,
-  TError = ErrorType<void | ProblemDetails>,
->(
-  handle: string,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof profilesControllerForPublic>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof profilesControllerForPublic>>,
-          TError,
-          Awaited<ReturnType<typeof profilesControllerForPublic>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useProfilesControllerForPublic<
-  TData = Awaited<ReturnType<typeof profilesControllerForPublic>>,
-  TError = ErrorType<void | ProblemDetails>,
->(
-  handle: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof profilesControllerForPublic>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof profilesControllerForPublic>>,
-          TError,
-          Awaited<ReturnType<typeof profilesControllerForPublic>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useProfilesControllerForPublic<
-  TData = Awaited<ReturnType<typeof profilesControllerForPublic>>,
-  TError = ErrorType<void | ProblemDetails>,
->(
-  handle: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof profilesControllerForPublic>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary For public
- */
-
-export function useProfilesControllerForPublic<
-  TData = Awaited<ReturnType<typeof profilesControllerForPublic>>,
-  TError = ErrorType<void | ProblemDetails>,
->(
-  handle: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof profilesControllerForPublic>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getProfilesControllerForPublicQueryOptions(handle, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getProfilesControllerReferenceDataUrl = () => {
   return `/v1/reference-data`;
@@ -529,81 +261,5 @@ export const getProfilesControllerReferenceDataQueryOptions = <
 export type ProfilesControllerReferenceDataQueryResult = NonNullable<
   Awaited<ReturnType<typeof profilesControllerReferenceData>>
 >;
+
 export type ProfilesControllerReferenceDataQueryError = ErrorType<ProblemDetails>;
-
-export function useProfilesControllerReferenceData<
-  TData = Awaited<ReturnType<typeof profilesControllerReferenceData>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof profilesControllerReferenceData>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof profilesControllerReferenceData>>,
-          TError,
-          Awaited<ReturnType<typeof profilesControllerReferenceData>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useProfilesControllerReferenceData<
-  TData = Awaited<ReturnType<typeof profilesControllerReferenceData>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof profilesControllerReferenceData>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof profilesControllerReferenceData>>,
-          TError,
-          Awaited<ReturnType<typeof profilesControllerReferenceData>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useProfilesControllerReferenceData<
-  TData = Awaited<ReturnType<typeof profilesControllerReferenceData>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof profilesControllerReferenceData>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Reference data
- */
-
-export function useProfilesControllerReferenceData<
-  TData = Awaited<ReturnType<typeof profilesControllerReferenceData>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof profilesControllerReferenceData>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getProfilesControllerReferenceDataQueryOptions(options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}

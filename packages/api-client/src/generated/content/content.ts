@@ -5,22 +5,14 @@
  * Errors follow RFC 9457 with a stable `code`; clients translate codes.
  * OpenAPI spec version: 1
  */
-import { useMutation, useQuery } from '@tanstack/react-query';
 import type {
   DataTag,
-  DefinedInitialDataOptions,
-  DefinedUseQueryResult,
   MutationFunction,
-  QueryClient,
   QueryFunction,
   QueryKey,
-  UndefinedInitialDataOptions,
   UseMutationOptions,
-  UseMutationResult,
   UseQueryOptions,
-  UseQueryResult,
 } from '@tanstack/react-query';
-
 import type {
   CommentDtoOutput,
   CommentPageDtoOutput,
@@ -53,26 +45,10 @@ import type {
   UpdateCommentDto,
   UpdatePostDto,
 } from '../api.schemas';
-
 import { apiFetch } from '../../http/fetcher';
 import type { ErrorType } from '../../http/fetcher';
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
-
-const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKey: K } => {
-  const result = { queryKey } as T & { queryKey: K };
-  for (const key of Object.keys(query)) {
-    // The explicit queryKey always wins, matching the previous
-    // `{ ...query, queryKey }` spread where it was set last.
-    if (key === 'queryKey') continue;
-    Object.defineProperty(result, key, {
-      enumerable: true,
-      configurable: true,
-      get: () => (query as Record<string, unknown>)[key],
-    });
-  }
-  return result;
-};
 
 export const getPostsControllerReadUrl = (params?: PostsControllerReadParams) => {
   const normalizedParams = new URLSearchParams();
@@ -137,88 +113,8 @@ export const getPostsControllerReadQueryOptions = <
 export type PostsControllerReadQueryResult = NonNullable<
   Awaited<ReturnType<typeof postsControllerRead>>
 >;
+
 export type PostsControllerReadQueryError = ErrorType<ProblemDetails>;
-
-export function usePostsControllerRead<
-  TData = Awaited<ReturnType<typeof postsControllerRead>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params: undefined | PostsControllerReadParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof postsControllerRead>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof postsControllerRead>>,
-          TError,
-          Awaited<ReturnType<typeof postsControllerRead>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function usePostsControllerRead<
-  TData = Awaited<ReturnType<typeof postsControllerRead>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: PostsControllerReadParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof postsControllerRead>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof postsControllerRead>>,
-          TError,
-          Awaited<ReturnType<typeof postsControllerRead>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function usePostsControllerRead<
-  TData = Awaited<ReturnType<typeof postsControllerRead>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: PostsControllerReadParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof postsControllerRead>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Read
- */
-
-export function usePostsControllerRead<
-  TData = Awaited<ReturnType<typeof postsControllerRead>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: PostsControllerReadParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof postsControllerRead>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getPostsControllerReadQueryOptions(params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getPostsControllerNewerUrl = (params: PostsControllerNewerParams) => {
   const normalizedParams = new URLSearchParams();
@@ -283,88 +179,8 @@ export const getPostsControllerNewerQueryOptions = <
 export type PostsControllerNewerQueryResult = NonNullable<
   Awaited<ReturnType<typeof postsControllerNewer>>
 >;
+
 export type PostsControllerNewerQueryError = ErrorType<ProblemDetails>;
-
-export function usePostsControllerNewer<
-  TData = Awaited<ReturnType<typeof postsControllerNewer>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params: PostsControllerNewerParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof postsControllerNewer>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof postsControllerNewer>>,
-          TError,
-          Awaited<ReturnType<typeof postsControllerNewer>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function usePostsControllerNewer<
-  TData = Awaited<ReturnType<typeof postsControllerNewer>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params: PostsControllerNewerParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof postsControllerNewer>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof postsControllerNewer>>,
-          TError,
-          Awaited<ReturnType<typeof postsControllerNewer>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function usePostsControllerNewer<
-  TData = Awaited<ReturnType<typeof postsControllerNewer>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params: PostsControllerNewerParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof postsControllerNewer>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Newer
- */
-
-export function usePostsControllerNewer<
-  TData = Awaited<ReturnType<typeof postsControllerNewer>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params: PostsControllerNewerParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof postsControllerNewer>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getPostsControllerNewerQueryOptions(params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getPostsControllerCreateUrl = () => {
   return `/v1/posts`;
@@ -452,32 +268,13 @@ export const getPostsControllerCreateMutationOptions = <
 export type PostsControllerCreateMutationResult = NonNullable<
   Awaited<ReturnType<typeof postsControllerCreate>>
 >;
+
 export type PostsControllerCreateMutationBody = CreatePostDto;
+
 export type PostsControllerCreateMutationError = ErrorType<ProblemDetails>;
+
 export type PostsControllerCreateMutationVariables = { data: CreatePostDto };
 
-/**
- * @summary Create
- */
-export const usePostsControllerCreate = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof postsControllerCreate>>,
-      TError,
-      PostsControllerCreateMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof postsControllerCreate>>,
-  TError,
-  PostsControllerCreateMutationVariables,
-  TContext
-> => {
-  return useMutation(getPostsControllerCreateMutationOptions(options), queryClient);
-};
 export const getPostsControllerViewsUrl = () => {
   return `/v1/posts/views`;
 };
@@ -560,32 +357,13 @@ export const getPostsControllerViewsMutationOptions = <
 export type PostsControllerViewsMutationResult = NonNullable<
   Awaited<ReturnType<typeof postsControllerViews>>
 >;
+
 export type PostsControllerViewsMutationBody = RecordPostViewsDto;
+
 export type PostsControllerViewsMutationError = ErrorType<ProblemDetails>;
+
 export type PostsControllerViewsMutationVariables = { data: RecordPostViewsDto };
 
-/**
- * @summary Views
- */
-export const usePostsControllerViews = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof postsControllerViews>>,
-      TError,
-      PostsControllerViewsMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof postsControllerViews>>,
-  TError,
-  PostsControllerViewsMutationVariables,
-  TContext
-> => {
-  return useMutation(getPostsControllerViewsMutationOptions(options), queryClient);
-};
 export const getPostsControllerGetUrl = (postId: string) => {
   return `/v1/posts/${postId}`;
 };
@@ -640,82 +418,8 @@ export const getPostsControllerGetQueryOptions = <
 export type PostsControllerGetQueryResult = NonNullable<
   Awaited<ReturnType<typeof postsControllerGet>>
 >;
+
 export type PostsControllerGetQueryError = ErrorType<ProblemDetails>;
-
-export function usePostsControllerGet<
-  TData = Awaited<ReturnType<typeof postsControllerGet>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  postId: string,
-  options: {
-    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof postsControllerGet>>, TError, TData>> &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof postsControllerGet>>,
-          TError,
-          Awaited<ReturnType<typeof postsControllerGet>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function usePostsControllerGet<
-  TData = Awaited<ReturnType<typeof postsControllerGet>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  postId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof postsControllerGet>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof postsControllerGet>>,
-          TError,
-          Awaited<ReturnType<typeof postsControllerGet>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function usePostsControllerGet<
-  TData = Awaited<ReturnType<typeof postsControllerGet>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  postId: string,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof postsControllerGet>>, TError, TData>>;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Get
- */
-
-export function usePostsControllerGet<
-  TData = Awaited<ReturnType<typeof postsControllerGet>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  postId: string,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof postsControllerGet>>, TError, TData>>;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getPostsControllerGetQueryOptions(postId, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getPostsControllerUpdateUrl = (postId: string) => {
   return `/v1/posts/${postId}`;
@@ -800,32 +504,13 @@ export const getPostsControllerUpdateMutationOptions = <
 export type PostsControllerUpdateMutationResult = NonNullable<
   Awaited<ReturnType<typeof postsControllerUpdate>>
 >;
+
 export type PostsControllerUpdateMutationBody = UpdatePostDto;
+
 export type PostsControllerUpdateMutationError = ErrorType<ProblemDetails>;
+
 export type PostsControllerUpdateMutationVariables = { postId: string; data: UpdatePostDto };
 
-/**
- * @summary Update
- */
-export const usePostsControllerUpdate = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof postsControllerUpdate>>,
-      TError,
-      PostsControllerUpdateMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof postsControllerUpdate>>,
-  TError,
-  PostsControllerUpdateMutationVariables,
-  TContext
-> => {
-  return useMutation(getPostsControllerUpdateMutationOptions(options), queryClient);
-};
 export const getPostsControllerDeleteUrl = (postId: string) => {
   return `/v1/posts/${postId}`;
 };
@@ -889,30 +574,9 @@ export type PostsControllerDeleteMutationResult = NonNullable<
 >;
 
 export type PostsControllerDeleteMutationError = ErrorType<ProblemDetails>;
+
 export type PostsControllerDeleteMutationVariables = { postId: string };
 
-/**
- * @summary Delete
- */
-export const usePostsControllerDelete = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof postsControllerDelete>>,
-      TError,
-      PostsControllerDeleteMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof postsControllerDelete>>,
-  TError,
-  PostsControllerDeleteMutationVariables,
-  TContext
-> => {
-  return useMutation(getPostsControllerDeleteMutationOptions(options), queryClient);
-};
 export const getPostsControllerMemberPostsUrl = (
   handle: string,
   params?: PostsControllerMemberPostsParams,
@@ -990,92 +654,8 @@ export const getPostsControllerMemberPostsQueryOptions = <
 export type PostsControllerMemberPostsQueryResult = NonNullable<
   Awaited<ReturnType<typeof postsControllerMemberPosts>>
 >;
+
 export type PostsControllerMemberPostsQueryError = ErrorType<ProblemDetails>;
-
-export function usePostsControllerMemberPosts<
-  TData = Awaited<ReturnType<typeof postsControllerMemberPosts>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  handle: string,
-  params: undefined | PostsControllerMemberPostsParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof postsControllerMemberPosts>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof postsControllerMemberPosts>>,
-          TError,
-          Awaited<ReturnType<typeof postsControllerMemberPosts>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function usePostsControllerMemberPosts<
-  TData = Awaited<ReturnType<typeof postsControllerMemberPosts>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  handle: string,
-  params?: PostsControllerMemberPostsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof postsControllerMemberPosts>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof postsControllerMemberPosts>>,
-          TError,
-          Awaited<ReturnType<typeof postsControllerMemberPosts>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function usePostsControllerMemberPosts<
-  TData = Awaited<ReturnType<typeof postsControllerMemberPosts>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  handle: string,
-  params?: PostsControllerMemberPostsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof postsControllerMemberPosts>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Member posts
- */
-
-export function usePostsControllerMemberPosts<
-  TData = Awaited<ReturnType<typeof postsControllerMemberPosts>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  handle: string,
-  params?: PostsControllerMemberPostsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof postsControllerMemberPosts>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getPostsControllerMemberPostsQueryOptions(handle, params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getPostsControllerPublicMemberPostsUrl = (
   handle: string,
@@ -1157,92 +737,8 @@ export const getPostsControllerPublicMemberPostsQueryOptions = <
 export type PostsControllerPublicMemberPostsQueryResult = NonNullable<
   Awaited<ReturnType<typeof postsControllerPublicMemberPosts>>
 >;
+
 export type PostsControllerPublicMemberPostsQueryError = ErrorType<ProblemDetails>;
-
-export function usePostsControllerPublicMemberPosts<
-  TData = Awaited<ReturnType<typeof postsControllerPublicMemberPosts>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  handle: string,
-  params: undefined | PostsControllerPublicMemberPostsParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof postsControllerPublicMemberPosts>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof postsControllerPublicMemberPosts>>,
-          TError,
-          Awaited<ReturnType<typeof postsControllerPublicMemberPosts>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function usePostsControllerPublicMemberPosts<
-  TData = Awaited<ReturnType<typeof postsControllerPublicMemberPosts>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  handle: string,
-  params?: PostsControllerPublicMemberPostsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof postsControllerPublicMemberPosts>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof postsControllerPublicMemberPosts>>,
-          TError,
-          Awaited<ReturnType<typeof postsControllerPublicMemberPosts>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function usePostsControllerPublicMemberPosts<
-  TData = Awaited<ReturnType<typeof postsControllerPublicMemberPosts>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  handle: string,
-  params?: PostsControllerPublicMemberPostsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof postsControllerPublicMemberPosts>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Public member posts
- */
-
-export function usePostsControllerPublicMemberPosts<
-  TData = Awaited<ReturnType<typeof postsControllerPublicMemberPosts>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  handle: string,
-  params?: PostsControllerPublicMemberPostsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof postsControllerPublicMemberPosts>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getPostsControllerPublicMemberPostsQueryOptions(handle, params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getPostsControllerOrganizationPostsUrl = (
   slug: string,
@@ -1324,92 +820,8 @@ export const getPostsControllerOrganizationPostsQueryOptions = <
 export type PostsControllerOrganizationPostsQueryResult = NonNullable<
   Awaited<ReturnType<typeof postsControllerOrganizationPosts>>
 >;
+
 export type PostsControllerOrganizationPostsQueryError = ErrorType<ProblemDetails>;
-
-export function usePostsControllerOrganizationPosts<
-  TData = Awaited<ReturnType<typeof postsControllerOrganizationPosts>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  slug: string,
-  params: undefined | PostsControllerOrganizationPostsParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof postsControllerOrganizationPosts>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof postsControllerOrganizationPosts>>,
-          TError,
-          Awaited<ReturnType<typeof postsControllerOrganizationPosts>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function usePostsControllerOrganizationPosts<
-  TData = Awaited<ReturnType<typeof postsControllerOrganizationPosts>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  slug: string,
-  params?: PostsControllerOrganizationPostsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof postsControllerOrganizationPosts>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof postsControllerOrganizationPosts>>,
-          TError,
-          Awaited<ReturnType<typeof postsControllerOrganizationPosts>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function usePostsControllerOrganizationPosts<
-  TData = Awaited<ReturnType<typeof postsControllerOrganizationPosts>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  slug: string,
-  params?: PostsControllerOrganizationPostsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof postsControllerOrganizationPosts>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Organization posts
- */
-
-export function usePostsControllerOrganizationPosts<
-  TData = Awaited<ReturnType<typeof postsControllerOrganizationPosts>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  slug: string,
-  params?: PostsControllerOrganizationPostsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof postsControllerOrganizationPosts>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getPostsControllerOrganizationPostsQueryOptions(slug, params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getPostsControllerPublicOrganizationPostsUrl = (
   slug: string,
@@ -1496,108 +908,8 @@ export const getPostsControllerPublicOrganizationPostsQueryOptions = <
 export type PostsControllerPublicOrganizationPostsQueryResult = NonNullable<
   Awaited<ReturnType<typeof postsControllerPublicOrganizationPosts>>
 >;
+
 export type PostsControllerPublicOrganizationPostsQueryError = ErrorType<ProblemDetails>;
-
-export function usePostsControllerPublicOrganizationPosts<
-  TData = Awaited<ReturnType<typeof postsControllerPublicOrganizationPosts>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  slug: string,
-  params: undefined | PostsControllerPublicOrganizationPostsParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof postsControllerPublicOrganizationPosts>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof postsControllerPublicOrganizationPosts>>,
-          TError,
-          Awaited<ReturnType<typeof postsControllerPublicOrganizationPosts>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function usePostsControllerPublicOrganizationPosts<
-  TData = Awaited<ReturnType<typeof postsControllerPublicOrganizationPosts>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  slug: string,
-  params?: PostsControllerPublicOrganizationPostsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof postsControllerPublicOrganizationPosts>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof postsControllerPublicOrganizationPosts>>,
-          TError,
-          Awaited<ReturnType<typeof postsControllerPublicOrganizationPosts>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function usePostsControllerPublicOrganizationPosts<
-  TData = Awaited<ReturnType<typeof postsControllerPublicOrganizationPosts>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  slug: string,
-  params?: PostsControllerPublicOrganizationPostsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof postsControllerPublicOrganizationPosts>>,
-        TError,
-        TData
-      >
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Public organization posts
- */
-
-export function usePostsControllerPublicOrganizationPosts<
-  TData = Awaited<ReturnType<typeof postsControllerPublicOrganizationPosts>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  slug: string,
-  params?: PostsControllerPublicOrganizationPostsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof postsControllerPublicOrganizationPosts>>,
-        TError,
-        TData
-      >
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getPostsControllerPublicOrganizationPostsQueryOptions(slug, params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getPostsControllerGetPublicUrl = (postId: string) => {
   return `/v1/public/posts/${postId}`;
@@ -1656,88 +968,8 @@ export const getPostsControllerGetPublicQueryOptions = <
 export type PostsControllerGetPublicQueryResult = NonNullable<
   Awaited<ReturnType<typeof postsControllerGetPublic>>
 >;
+
 export type PostsControllerGetPublicQueryError = ErrorType<ProblemDetails>;
-
-export function usePostsControllerGetPublic<
-  TData = Awaited<ReturnType<typeof postsControllerGetPublic>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  postId: string,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof postsControllerGetPublic>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof postsControllerGetPublic>>,
-          TError,
-          Awaited<ReturnType<typeof postsControllerGetPublic>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function usePostsControllerGetPublic<
-  TData = Awaited<ReturnType<typeof postsControllerGetPublic>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  postId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof postsControllerGetPublic>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof postsControllerGetPublic>>,
-          TError,
-          Awaited<ReturnType<typeof postsControllerGetPublic>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function usePostsControllerGetPublic<
-  TData = Awaited<ReturnType<typeof postsControllerGetPublic>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  postId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof postsControllerGetPublic>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Get public
- */
-
-export function usePostsControllerGetPublic<
-  TData = Awaited<ReturnType<typeof postsControllerGetPublic>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  postId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof postsControllerGetPublic>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getPostsControllerGetPublicQueryOptions(postId, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getPostsControllerRepostUrl = (postId: string) => {
   return `/v1/posts/${postId}/reposts`;
@@ -1826,32 +1058,13 @@ export const getPostsControllerRepostMutationOptions = <
 export type PostsControllerRepostMutationResult = NonNullable<
   Awaited<ReturnType<typeof postsControllerRepost>>
 >;
+
 export type PostsControllerRepostMutationBody = CreateRepostDto;
+
 export type PostsControllerRepostMutationError = ErrorType<ProblemDetails>;
+
 export type PostsControllerRepostMutationVariables = { postId: string; data: CreateRepostDto };
 
-/**
- * @summary Repost
- */
-export const usePostsControllerRepost = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof postsControllerRepost>>,
-      TError,
-      PostsControllerRepostMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof postsControllerRepost>>,
-  TError,
-  PostsControllerRepostMutationVariables,
-  TContext
-> => {
-  return useMutation(getPostsControllerRepostMutationOptions(options), queryClient);
-};
 export const getPostsControllerReactUrl = (postId: string) => {
   return `/v1/posts/${postId}/reaction`;
 };
@@ -1935,32 +1148,13 @@ export const getPostsControllerReactMutationOptions = <
 export type PostsControllerReactMutationResult = NonNullable<
   Awaited<ReturnType<typeof postsControllerReact>>
 >;
+
 export type PostsControllerReactMutationBody = SetReactionDto;
+
 export type PostsControllerReactMutationError = ErrorType<ProblemDetails>;
+
 export type PostsControllerReactMutationVariables = { postId: string; data: SetReactionDto };
 
-/**
- * @summary React
- */
-export const usePostsControllerReact = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof postsControllerReact>>,
-      TError,
-      PostsControllerReactMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof postsControllerReact>>,
-  TError,
-  PostsControllerReactMutationVariables,
-  TContext
-> => {
-  return useMutation(getPostsControllerReactMutationOptions(options), queryClient);
-};
 export const getPostsControllerUnreactUrl = (postId: string) => {
   return `/v1/posts/${postId}/reaction`;
 };
@@ -2024,30 +1218,9 @@ export type PostsControllerUnreactMutationResult = NonNullable<
 >;
 
 export type PostsControllerUnreactMutationError = ErrorType<ProblemDetails>;
+
 export type PostsControllerUnreactMutationVariables = { postId: string };
 
-/**
- * @summary Unreact
- */
-export const usePostsControllerUnreact = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof postsControllerUnreact>>,
-      TError,
-      PostsControllerUnreactMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof postsControllerUnreact>>,
-  TError,
-  PostsControllerUnreactMutationVariables,
-  TContext
-> => {
-  return useMutation(getPostsControllerUnreactMutationOptions(options), queryClient);
-};
 export const getPostsControllerReactorsUrl = (
   postId: string,
   params?: PostsControllerReactorsParams,
@@ -2125,92 +1298,8 @@ export const getPostsControllerReactorsQueryOptions = <
 export type PostsControllerReactorsQueryResult = NonNullable<
   Awaited<ReturnType<typeof postsControllerReactors>>
 >;
+
 export type PostsControllerReactorsQueryError = ErrorType<ProblemDetails>;
-
-export function usePostsControllerReactors<
-  TData = Awaited<ReturnType<typeof postsControllerReactors>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  postId: string,
-  params: undefined | PostsControllerReactorsParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof postsControllerReactors>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof postsControllerReactors>>,
-          TError,
-          Awaited<ReturnType<typeof postsControllerReactors>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function usePostsControllerReactors<
-  TData = Awaited<ReturnType<typeof postsControllerReactors>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  postId: string,
-  params?: PostsControllerReactorsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof postsControllerReactors>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof postsControllerReactors>>,
-          TError,
-          Awaited<ReturnType<typeof postsControllerReactors>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function usePostsControllerReactors<
-  TData = Awaited<ReturnType<typeof postsControllerReactors>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  postId: string,
-  params?: PostsControllerReactorsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof postsControllerReactors>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Reactors
- */
-
-export function usePostsControllerReactors<
-  TData = Awaited<ReturnType<typeof postsControllerReactors>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  postId: string,
-  params?: PostsControllerReactorsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof postsControllerReactors>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getPostsControllerReactorsQueryOptions(postId, params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getPostsControllerSaveUrl = (postId: string) => {
   return `/v1/posts/${postId}/save`;
@@ -2275,30 +1364,9 @@ export type PostsControllerSaveMutationResult = NonNullable<
 >;
 
 export type PostsControllerSaveMutationError = ErrorType<ProblemDetails>;
+
 export type PostsControllerSaveMutationVariables = { postId: string };
 
-/**
- * @summary Save
- */
-export const usePostsControllerSave = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof postsControllerSave>>,
-      TError,
-      PostsControllerSaveMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof postsControllerSave>>,
-  TError,
-  PostsControllerSaveMutationVariables,
-  TContext
-> => {
-  return useMutation(getPostsControllerSaveMutationOptions(options), queryClient);
-};
 export const getPostsControllerUnsaveUrl = (postId: string) => {
   return `/v1/posts/${postId}/save`;
 };
@@ -2362,30 +1430,9 @@ export type PostsControllerUnsaveMutationResult = NonNullable<
 >;
 
 export type PostsControllerUnsaveMutationError = ErrorType<ProblemDetails>;
+
 export type PostsControllerUnsaveMutationVariables = { postId: string };
 
-/**
- * @summary Unsave
- */
-export const usePostsControllerUnsave = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof postsControllerUnsave>>,
-      TError,
-      PostsControllerUnsaveMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof postsControllerUnsave>>,
-  TError,
-  PostsControllerUnsaveMutationVariables,
-  TContext
-> => {
-  return useMutation(getPostsControllerUnsaveMutationOptions(options), queryClient);
-};
 export const getPostsControllerSavedUrl = (params?: PostsControllerSavedParams) => {
   const normalizedParams = new URLSearchParams();
 
@@ -2451,88 +1498,8 @@ export const getPostsControllerSavedQueryOptions = <
 export type PostsControllerSavedQueryResult = NonNullable<
   Awaited<ReturnType<typeof postsControllerSaved>>
 >;
+
 export type PostsControllerSavedQueryError = ErrorType<ProblemDetails>;
-
-export function usePostsControllerSaved<
-  TData = Awaited<ReturnType<typeof postsControllerSaved>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params: undefined | PostsControllerSavedParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof postsControllerSaved>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof postsControllerSaved>>,
-          TError,
-          Awaited<ReturnType<typeof postsControllerSaved>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function usePostsControllerSaved<
-  TData = Awaited<ReturnType<typeof postsControllerSaved>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: PostsControllerSavedParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof postsControllerSaved>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof postsControllerSaved>>,
-          TError,
-          Awaited<ReturnType<typeof postsControllerSaved>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function usePostsControllerSaved<
-  TData = Awaited<ReturnType<typeof postsControllerSaved>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: PostsControllerSavedParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof postsControllerSaved>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Saved
- */
-
-export function usePostsControllerSaved<
-  TData = Awaited<ReturnType<typeof postsControllerSaved>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: PostsControllerSavedParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof postsControllerSaved>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getPostsControllerSavedQueryOptions(params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getPostsControllerHideUrl = (postId: string) => {
   return `/v1/posts/${postId}/hide`;
@@ -2597,30 +1564,9 @@ export type PostsControllerHideMutationResult = NonNullable<
 >;
 
 export type PostsControllerHideMutationError = ErrorType<ProblemDetails>;
+
 export type PostsControllerHideMutationVariables = { postId: string };
 
-/**
- * @summary Hide
- */
-export const usePostsControllerHide = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof postsControllerHide>>,
-      TError,
-      PostsControllerHideMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof postsControllerHide>>,
-  TError,
-  PostsControllerHideMutationVariables,
-  TContext
-> => {
-  return useMutation(getPostsControllerHideMutationOptions(options), queryClient);
-};
 export const getPostsControllerUnhideUrl = (postId: string) => {
   return `/v1/posts/${postId}/hide`;
 };
@@ -2684,30 +1630,9 @@ export type PostsControllerUnhideMutationResult = NonNullable<
 >;
 
 export type PostsControllerUnhideMutationError = ErrorType<ProblemDetails>;
+
 export type PostsControllerUnhideMutationVariables = { postId: string };
 
-/**
- * @summary Unhide
- */
-export const usePostsControllerUnhide = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof postsControllerUnhide>>,
-      TError,
-      PostsControllerUnhideMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof postsControllerUnhide>>,
-  TError,
-  PostsControllerUnhideMutationVariables,
-  TContext
-> => {
-  return useMutation(getPostsControllerUnhideMutationOptions(options), queryClient);
-};
 export const getPostsControllerStatsUrl = (postId: string) => {
   return `/v1/posts/${postId}/stats`;
 };
@@ -2764,88 +1689,8 @@ export const getPostsControllerStatsQueryOptions = <
 export type PostsControllerStatsQueryResult = NonNullable<
   Awaited<ReturnType<typeof postsControllerStats>>
 >;
+
 export type PostsControllerStatsQueryError = ErrorType<ProblemDetails>;
-
-export function usePostsControllerStats<
-  TData = Awaited<ReturnType<typeof postsControllerStats>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  postId: string,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof postsControllerStats>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof postsControllerStats>>,
-          TError,
-          Awaited<ReturnType<typeof postsControllerStats>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function usePostsControllerStats<
-  TData = Awaited<ReturnType<typeof postsControllerStats>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  postId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof postsControllerStats>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof postsControllerStats>>,
-          TError,
-          Awaited<ReturnType<typeof postsControllerStats>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function usePostsControllerStats<
-  TData = Awaited<ReturnType<typeof postsControllerStats>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  postId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof postsControllerStats>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Stats
- */
-
-export function usePostsControllerStats<
-  TData = Awaited<ReturnType<typeof postsControllerStats>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  postId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof postsControllerStats>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getPostsControllerStatsQueryOptions(postId, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getCommentsControllerCreateUrl = (postId: string) => {
   return `/v1/posts/${postId}/comments`;
@@ -2934,32 +1779,13 @@ export const getCommentsControllerCreateMutationOptions = <
 export type CommentsControllerCreateMutationResult = NonNullable<
   Awaited<ReturnType<typeof commentsControllerCreate>>
 >;
+
 export type CommentsControllerCreateMutationBody = CreateCommentDto;
+
 export type CommentsControllerCreateMutationError = ErrorType<ProblemDetails>;
+
 export type CommentsControllerCreateMutationVariables = { postId: string; data: CreateCommentDto };
 
-/**
- * @summary Create
- */
-export const useCommentsControllerCreate = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof commentsControllerCreate>>,
-      TError,
-      CommentsControllerCreateMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof commentsControllerCreate>>,
-  TError,
-  CommentsControllerCreateMutationVariables,
-  TContext
-> => {
-  return useMutation(getCommentsControllerCreateMutationOptions(options), queryClient);
-};
 export const getCommentsControllerListUrl = (
   postId: string,
   params?: CommentsControllerListParams,
@@ -3036,92 +1862,8 @@ export const getCommentsControllerListQueryOptions = <
 export type CommentsControllerListQueryResult = NonNullable<
   Awaited<ReturnType<typeof commentsControllerList>>
 >;
+
 export type CommentsControllerListQueryError = ErrorType<ProblemDetails>;
-
-export function useCommentsControllerList<
-  TData = Awaited<ReturnType<typeof commentsControllerList>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  postId: string,
-  params: undefined | CommentsControllerListParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof commentsControllerList>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof commentsControllerList>>,
-          TError,
-          Awaited<ReturnType<typeof commentsControllerList>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useCommentsControllerList<
-  TData = Awaited<ReturnType<typeof commentsControllerList>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  postId: string,
-  params?: CommentsControllerListParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof commentsControllerList>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof commentsControllerList>>,
-          TError,
-          Awaited<ReturnType<typeof commentsControllerList>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useCommentsControllerList<
-  TData = Awaited<ReturnType<typeof commentsControllerList>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  postId: string,
-  params?: CommentsControllerListParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof commentsControllerList>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary List
- */
-
-export function useCommentsControllerList<
-  TData = Awaited<ReturnType<typeof commentsControllerList>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  postId: string,
-  params?: CommentsControllerListParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof commentsControllerList>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getCommentsControllerListQueryOptions(postId, params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getCommentsControllerRepliesUrl = (
   commentId: string,
@@ -3201,92 +1943,8 @@ export const getCommentsControllerRepliesQueryOptions = <
 export type CommentsControllerRepliesQueryResult = NonNullable<
   Awaited<ReturnType<typeof commentsControllerReplies>>
 >;
+
 export type CommentsControllerRepliesQueryError = ErrorType<ProblemDetails>;
-
-export function useCommentsControllerReplies<
-  TData = Awaited<ReturnType<typeof commentsControllerReplies>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  commentId: string,
-  params: undefined | CommentsControllerRepliesParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof commentsControllerReplies>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof commentsControllerReplies>>,
-          TError,
-          Awaited<ReturnType<typeof commentsControllerReplies>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useCommentsControllerReplies<
-  TData = Awaited<ReturnType<typeof commentsControllerReplies>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  commentId: string,
-  params?: CommentsControllerRepliesParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof commentsControllerReplies>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof commentsControllerReplies>>,
-          TError,
-          Awaited<ReturnType<typeof commentsControllerReplies>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useCommentsControllerReplies<
-  TData = Awaited<ReturnType<typeof commentsControllerReplies>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  commentId: string,
-  params?: CommentsControllerRepliesParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof commentsControllerReplies>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Replies
- */
-
-export function useCommentsControllerReplies<
-  TData = Awaited<ReturnType<typeof commentsControllerReplies>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  commentId: string,
-  params?: CommentsControllerRepliesParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof commentsControllerReplies>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getCommentsControllerRepliesQueryOptions(commentId, params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getCommentsControllerUpdateUrl = (commentId: string) => {
   return `/v1/comments/${commentId}`;
@@ -3371,35 +2029,16 @@ export const getCommentsControllerUpdateMutationOptions = <
 export type CommentsControllerUpdateMutationResult = NonNullable<
   Awaited<ReturnType<typeof commentsControllerUpdate>>
 >;
+
 export type CommentsControllerUpdateMutationBody = UpdateCommentDto;
+
 export type CommentsControllerUpdateMutationError = ErrorType<ProblemDetails>;
+
 export type CommentsControllerUpdateMutationVariables = {
   commentId: string;
   data: UpdateCommentDto;
 };
 
-/**
- * @summary Update
- */
-export const useCommentsControllerUpdate = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof commentsControllerUpdate>>,
-      TError,
-      CommentsControllerUpdateMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof commentsControllerUpdate>>,
-  TError,
-  CommentsControllerUpdateMutationVariables,
-  TContext
-> => {
-  return useMutation(getCommentsControllerUpdateMutationOptions(options), queryClient);
-};
 export const getCommentsControllerDeleteUrl = (commentId: string) => {
   return `/v1/comments/${commentId}`;
 };
@@ -3463,30 +2102,9 @@ export type CommentsControllerDeleteMutationResult = NonNullable<
 >;
 
 export type CommentsControllerDeleteMutationError = ErrorType<ProblemDetails>;
+
 export type CommentsControllerDeleteMutationVariables = { commentId: string };
 
-/**
- * @summary Delete
- */
-export const useCommentsControllerDelete = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof commentsControllerDelete>>,
-      TError,
-      CommentsControllerDeleteMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof commentsControllerDelete>>,
-  TError,
-  CommentsControllerDeleteMutationVariables,
-  TContext
-> => {
-  return useMutation(getCommentsControllerDeleteMutationOptions(options), queryClient);
-};
 export const getCommentsControllerReactUrl = (commentId: string) => {
   return `/v1/comments/${commentId}/reaction`;
 };
@@ -3570,32 +2188,13 @@ export const getCommentsControllerReactMutationOptions = <
 export type CommentsControllerReactMutationResult = NonNullable<
   Awaited<ReturnType<typeof commentsControllerReact>>
 >;
+
 export type CommentsControllerReactMutationBody = SetReactionDto;
+
 export type CommentsControllerReactMutationError = ErrorType<ProblemDetails>;
+
 export type CommentsControllerReactMutationVariables = { commentId: string; data: SetReactionDto };
 
-/**
- * @summary React
- */
-export const useCommentsControllerReact = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof commentsControllerReact>>,
-      TError,
-      CommentsControllerReactMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof commentsControllerReact>>,
-  TError,
-  CommentsControllerReactMutationVariables,
-  TContext
-> => {
-  return useMutation(getCommentsControllerReactMutationOptions(options), queryClient);
-};
 export const getCommentsControllerUnreactUrl = (commentId: string) => {
   return `/v1/comments/${commentId}/reaction`;
 };
@@ -3659,33 +2258,9 @@ export type CommentsControllerUnreactMutationResult = NonNullable<
 >;
 
 export type CommentsControllerUnreactMutationError = ErrorType<ProblemDetails>;
+
 export type CommentsControllerUnreactMutationVariables = { commentId: string };
 
-/**
- * @summary Unreact
- */
-export const useCommentsControllerUnreact = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof commentsControllerUnreact>>,
-      TError,
-      CommentsControllerUnreactMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof commentsControllerUnreact>>,
-  TError,
-  CommentsControllerUnreactMutationVariables,
-  TContext
-> => {
-  return useMutation(getCommentsControllerUnreactMutationOptions(options), queryClient);
-};
 export const getLinkPreviewsControllerRequestUrl = () => {
   return `/v1/link-previews`;
 };
@@ -3771,35 +2346,13 @@ export const getLinkPreviewsControllerRequestMutationOptions = <
 export type LinkPreviewsControllerRequestMutationResult = NonNullable<
   Awaited<ReturnType<typeof linkPreviewsControllerRequest>>
 >;
+
 export type LinkPreviewsControllerRequestMutationBody = CreateLinkPreviewDto;
+
 export type LinkPreviewsControllerRequestMutationError = ErrorType<ProblemDetails>;
+
 export type LinkPreviewsControllerRequestMutationVariables = { data: CreateLinkPreviewDto };
 
-/**
- * @summary Request
- */
-export const useLinkPreviewsControllerRequest = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof linkPreviewsControllerRequest>>,
-      TError,
-      LinkPreviewsControllerRequestMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof linkPreviewsControllerRequest>>,
-  TError,
-  LinkPreviewsControllerRequestMutationVariables,
-  TContext
-> => {
-  return useMutation(getLinkPreviewsControllerRequestMutationOptions(options), queryClient);
-};
 export const getLinkPreviewsControllerGetUrl = (linkPreviewId: string) => {
   return `/v1/link-previews/${linkPreviewId}`;
 };
@@ -3859,85 +2412,5 @@ export const getLinkPreviewsControllerGetQueryOptions = <
 export type LinkPreviewsControllerGetQueryResult = NonNullable<
   Awaited<ReturnType<typeof linkPreviewsControllerGet>>
 >;
+
 export type LinkPreviewsControllerGetQueryError = ErrorType<ProblemDetails>;
-
-export function useLinkPreviewsControllerGet<
-  TData = Awaited<ReturnType<typeof linkPreviewsControllerGet>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  linkPreviewId: string,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof linkPreviewsControllerGet>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof linkPreviewsControllerGet>>,
-          TError,
-          Awaited<ReturnType<typeof linkPreviewsControllerGet>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useLinkPreviewsControllerGet<
-  TData = Awaited<ReturnType<typeof linkPreviewsControllerGet>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  linkPreviewId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof linkPreviewsControllerGet>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof linkPreviewsControllerGet>>,
-          TError,
-          Awaited<ReturnType<typeof linkPreviewsControllerGet>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useLinkPreviewsControllerGet<
-  TData = Awaited<ReturnType<typeof linkPreviewsControllerGet>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  linkPreviewId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof linkPreviewsControllerGet>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Get
- */
-
-export function useLinkPreviewsControllerGet<
-  TData = Awaited<ReturnType<typeof linkPreviewsControllerGet>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  linkPreviewId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof linkPreviewsControllerGet>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getLinkPreviewsControllerGetQueryOptions(linkPreviewId, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}

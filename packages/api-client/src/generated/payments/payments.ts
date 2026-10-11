@@ -5,22 +5,14 @@
  * Errors follow RFC 9457 with a stable `code`; clients translate codes.
  * OpenAPI spec version: 1
  */
-import { useMutation, useQuery } from '@tanstack/react-query';
 import type {
   DataTag,
-  DefinedInitialDataOptions,
-  DefinedUseQueryResult,
   MutationFunction,
-  QueryClient,
   QueryFunction,
   QueryKey,
-  UndefinedInitialDataOptions,
   UseMutationOptions,
-  UseMutationResult,
   UseQueryOptions,
-  UseQueryResult,
 } from '@tanstack/react-query';
-
 import type {
   ContributionDtoOutput,
   ContributionPageDtoOutput,
@@ -52,26 +44,10 @@ import type {
   SubmitKycDto,
   SupporterPageDtoOutput,
 } from '../api.schemas';
-
 import { apiFetch } from '../../http/fetcher';
 import type { ErrorType } from '../../http/fetcher';
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
-
-const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKey: K } => {
-  const result = { queryKey } as T & { queryKey: K };
-  for (const key of Object.keys(query)) {
-    // The explicit queryKey always wins, matching the previous
-    // `{ ...query, queryKey }` spread where it was set last.
-    if (key === 'queryKey') continue;
-    Object.defineProperty(result, key, {
-      enumerable: true,
-      configurable: true,
-      get: () => (query as Record<string, unknown>)[key],
-    });
-  }
-  return result;
-};
 
 export const getContributionsControllerIndicativeCurrencyUrl = () => {
   return `/v1/me/indicative-currency`;
@@ -127,100 +103,8 @@ export const getContributionsControllerIndicativeCurrencyQueryOptions = <
 export type ContributionsControllerIndicativeCurrencyQueryResult = NonNullable<
   Awaited<ReturnType<typeof contributionsControllerIndicativeCurrency>>
 >;
+
 export type ContributionsControllerIndicativeCurrencyQueryError = ErrorType<ProblemDetails>;
-
-export function useContributionsControllerIndicativeCurrency<
-  TData = Awaited<ReturnType<typeof contributionsControllerIndicativeCurrency>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options: {
-    query: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof contributionsControllerIndicativeCurrency>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof contributionsControllerIndicativeCurrency>>,
-          TError,
-          Awaited<ReturnType<typeof contributionsControllerIndicativeCurrency>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useContributionsControllerIndicativeCurrency<
-  TData = Awaited<ReturnType<typeof contributionsControllerIndicativeCurrency>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof contributionsControllerIndicativeCurrency>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof contributionsControllerIndicativeCurrency>>,
-          TError,
-          Awaited<ReturnType<typeof contributionsControllerIndicativeCurrency>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useContributionsControllerIndicativeCurrency<
-  TData = Awaited<ReturnType<typeof contributionsControllerIndicativeCurrency>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof contributionsControllerIndicativeCurrency>>,
-        TError,
-        TData
-      >
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Indicative currency
- */
-
-export function useContributionsControllerIndicativeCurrency<
-  TData = Awaited<ReturnType<typeof contributionsControllerIndicativeCurrency>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof contributionsControllerIndicativeCurrency>>,
-        TError,
-        TData
-      >
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getContributionsControllerIndicativeCurrencyQueryOptions(options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getContributionsControllerOptionsUrl = (
   projectId: string,
@@ -305,92 +189,8 @@ export const getContributionsControllerOptionsQueryOptions = <
 export type ContributionsControllerOptionsQueryResult = NonNullable<
   Awaited<ReturnType<typeof contributionsControllerOptions>>
 >;
+
 export type ContributionsControllerOptionsQueryError = ErrorType<ProblemDetails>;
-
-export function useContributionsControllerOptions<
-  TData = Awaited<ReturnType<typeof contributionsControllerOptions>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  params: undefined | ContributionsControllerOptionsParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof contributionsControllerOptions>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof contributionsControllerOptions>>,
-          TError,
-          Awaited<ReturnType<typeof contributionsControllerOptions>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useContributionsControllerOptions<
-  TData = Awaited<ReturnType<typeof contributionsControllerOptions>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  params?: ContributionsControllerOptionsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof contributionsControllerOptions>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof contributionsControllerOptions>>,
-          TError,
-          Awaited<ReturnType<typeof contributionsControllerOptions>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useContributionsControllerOptions<
-  TData = Awaited<ReturnType<typeof contributionsControllerOptions>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  params?: ContributionsControllerOptionsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof contributionsControllerOptions>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Options
- */
-
-export function useContributionsControllerOptions<
-  TData = Awaited<ReturnType<typeof contributionsControllerOptions>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  params?: ContributionsControllerOptionsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof contributionsControllerOptions>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getContributionsControllerOptionsQueryOptions(projectId, params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getContributionsControllerQuoteUrl = (projectId: string) => {
   return `/v1/projects/${projectId}/contribution-quotes`;
@@ -476,38 +276,16 @@ export const getContributionsControllerQuoteMutationOptions = <
 export type ContributionsControllerQuoteMutationResult = NonNullable<
   Awaited<ReturnType<typeof contributionsControllerQuote>>
 >;
+
 export type ContributionsControllerQuoteMutationBody = QuoteRequestDto;
+
 export type ContributionsControllerQuoteMutationError = ErrorType<ProblemDetails>;
+
 export type ContributionsControllerQuoteMutationVariables = {
   projectId: string;
   data: QuoteRequestDto;
 };
 
-/**
- * @summary Quote
- */
-export const useContributionsControllerQuote = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof contributionsControllerQuote>>,
-      TError,
-      ContributionsControllerQuoteMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof contributionsControllerQuote>>,
-  TError,
-  ContributionsControllerQuoteMutationVariables,
-  TContext
-> => {
-  return useMutation(getContributionsControllerQuoteMutationOptions(options), queryClient);
-};
 export const getContributionsControllerCreateUrl = (projectId: string) => {
   return `/v1/projects/${projectId}/contributions`;
 };
@@ -596,38 +374,16 @@ export const getContributionsControllerCreateMutationOptions = <
 export type ContributionsControllerCreateMutationResult = NonNullable<
   Awaited<ReturnType<typeof contributionsControllerCreate>>
 >;
+
 export type ContributionsControllerCreateMutationBody = CreateContributionDto;
+
 export type ContributionsControllerCreateMutationError = ErrorType<ProblemDetails>;
+
 export type ContributionsControllerCreateMutationVariables = {
   projectId: string;
   data: CreateContributionDto;
 };
 
-/**
- * @summary Create
- */
-export const useContributionsControllerCreate = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof contributionsControllerCreate>>,
-      TError,
-      ContributionsControllerCreateMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof contributionsControllerCreate>>,
-  TError,
-  ContributionsControllerCreateMutationVariables,
-  TContext
-> => {
-  return useMutation(getContributionsControllerCreateMutationOptions(options), queryClient);
-};
 export const getContributionsControllerOfProjectUrl = (
   projectId: string,
   params?: ContributionsControllerOfProjectParams,
@@ -711,92 +467,8 @@ export const getContributionsControllerOfProjectQueryOptions = <
 export type ContributionsControllerOfProjectQueryResult = NonNullable<
   Awaited<ReturnType<typeof contributionsControllerOfProject>>
 >;
+
 export type ContributionsControllerOfProjectQueryError = ErrorType<ProblemDetails>;
-
-export function useContributionsControllerOfProject<
-  TData = Awaited<ReturnType<typeof contributionsControllerOfProject>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  params: undefined | ContributionsControllerOfProjectParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof contributionsControllerOfProject>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof contributionsControllerOfProject>>,
-          TError,
-          Awaited<ReturnType<typeof contributionsControllerOfProject>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useContributionsControllerOfProject<
-  TData = Awaited<ReturnType<typeof contributionsControllerOfProject>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  params?: ContributionsControllerOfProjectParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof contributionsControllerOfProject>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof contributionsControllerOfProject>>,
-          TError,
-          Awaited<ReturnType<typeof contributionsControllerOfProject>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useContributionsControllerOfProject<
-  TData = Awaited<ReturnType<typeof contributionsControllerOfProject>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  params?: ContributionsControllerOfProjectParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof contributionsControllerOfProject>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Of project
- */
-
-export function useContributionsControllerOfProject<
-  TData = Awaited<ReturnType<typeof contributionsControllerOfProject>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  params?: ContributionsControllerOfProjectParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof contributionsControllerOfProject>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getContributionsControllerOfProjectQueryOptions(projectId, params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getContributionsControllerCreateForOrganizationUrl = (organizationId: string) => {
   return `/v1/organizations/${organizationId}/contributions`;
@@ -889,42 +561,17 @@ export const getContributionsControllerCreateForOrganizationMutationOptions = <
 export type ContributionsControllerCreateForOrganizationMutationResult = NonNullable<
   Awaited<ReturnType<typeof contributionsControllerCreateForOrganization>>
 >;
+
 export type ContributionsControllerCreateForOrganizationMutationBody =
   CreateOrganizationContributionDto;
+
 export type ContributionsControllerCreateForOrganizationMutationError = ErrorType<ProblemDetails>;
+
 export type ContributionsControllerCreateForOrganizationMutationVariables = {
   organizationId: string;
   data: CreateOrganizationContributionDto;
 };
 
-/**
- * @summary Create for organization
- */
-export const useContributionsControllerCreateForOrganization = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof contributionsControllerCreateForOrganization>>,
-      TError,
-      ContributionsControllerCreateForOrganizationMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof contributionsControllerCreateForOrganization>>,
-  TError,
-  ContributionsControllerCreateForOrganizationMutationVariables,
-  TContext
-> => {
-  return useMutation(
-    getContributionsControllerCreateForOrganizationMutationOptions(options),
-    queryClient,
-  );
-};
 export const getContributionsControllerMineUrl = (params?: ContributionsControllerMineParams) => {
   const normalizedParams = new URLSearchParams();
 
@@ -993,88 +640,8 @@ export const getContributionsControllerMineQueryOptions = <
 export type ContributionsControllerMineQueryResult = NonNullable<
   Awaited<ReturnType<typeof contributionsControllerMine>>
 >;
+
 export type ContributionsControllerMineQueryError = ErrorType<ProblemDetails>;
-
-export function useContributionsControllerMine<
-  TData = Awaited<ReturnType<typeof contributionsControllerMine>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params: undefined | ContributionsControllerMineParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof contributionsControllerMine>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof contributionsControllerMine>>,
-          TError,
-          Awaited<ReturnType<typeof contributionsControllerMine>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useContributionsControllerMine<
-  TData = Awaited<ReturnType<typeof contributionsControllerMine>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: ContributionsControllerMineParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof contributionsControllerMine>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof contributionsControllerMine>>,
-          TError,
-          Awaited<ReturnType<typeof contributionsControllerMine>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useContributionsControllerMine<
-  TData = Awaited<ReturnType<typeof contributionsControllerMine>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: ContributionsControllerMineParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof contributionsControllerMine>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Mine
- */
-
-export function useContributionsControllerMine<
-  TData = Awaited<ReturnType<typeof contributionsControllerMine>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: ContributionsControllerMineParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof contributionsControllerMine>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getContributionsControllerMineQueryOptions(params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getContributionsControllerOneUrl = (contributionId: string) => {
   return `/v1/me/contributions/${contributionId}`;
@@ -1133,88 +700,8 @@ export const getContributionsControllerOneQueryOptions = <
 export type ContributionsControllerOneQueryResult = NonNullable<
   Awaited<ReturnType<typeof contributionsControllerOne>>
 >;
+
 export type ContributionsControllerOneQueryError = ErrorType<ProblemDetails>;
-
-export function useContributionsControllerOne<
-  TData = Awaited<ReturnType<typeof contributionsControllerOne>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  contributionId: string,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof contributionsControllerOne>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof contributionsControllerOne>>,
-          TError,
-          Awaited<ReturnType<typeof contributionsControllerOne>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useContributionsControllerOne<
-  TData = Awaited<ReturnType<typeof contributionsControllerOne>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  contributionId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof contributionsControllerOne>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof contributionsControllerOne>>,
-          TError,
-          Awaited<ReturnType<typeof contributionsControllerOne>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useContributionsControllerOne<
-  TData = Awaited<ReturnType<typeof contributionsControllerOne>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  contributionId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof contributionsControllerOne>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary One
- */
-
-export function useContributionsControllerOne<
-  TData = Awaited<ReturnType<typeof contributionsControllerOne>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  contributionId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof contributionsControllerOne>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getContributionsControllerOneQueryOptions(contributionId, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getContributionsControllerReturnedUrl = (contributionId: string) => {
   return `/v1/me/contributions/${contributionId}/return`;
@@ -1280,33 +767,9 @@ export type ContributionsControllerReturnedMutationResult = NonNullable<
 >;
 
 export type ContributionsControllerReturnedMutationError = ErrorType<ProblemDetails>;
+
 export type ContributionsControllerReturnedMutationVariables = { contributionId: string };
 
-/**
- * @summary Returned
- */
-export const useContributionsControllerReturned = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof contributionsControllerReturned>>,
-      TError,
-      ContributionsControllerReturnedMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof contributionsControllerReturned>>,
-  TError,
-  ContributionsControllerReturnedMutationVariables,
-  TContext
-> => {
-  return useMutation(getContributionsControllerReturnedMutationOptions(options), queryClient);
-};
 export const getContributionsControllerCancelUrl = (contributionId: string) => {
   return `/v1/me/contributions/${contributionId}/cancel`;
 };
@@ -1371,33 +834,9 @@ export type ContributionsControllerCancelMutationResult = NonNullable<
 >;
 
 export type ContributionsControllerCancelMutationError = ErrorType<ProblemDetails>;
+
 export type ContributionsControllerCancelMutationVariables = { contributionId: string };
 
-/**
- * @summary Cancel
- */
-export const useContributionsControllerCancel = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof contributionsControllerCancel>>,
-      TError,
-      ContributionsControllerCancelMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof contributionsControllerCancel>>,
-  TError,
-  ContributionsControllerCancelMutationVariables,
-  TContext
-> => {
-  return useMutation(getContributionsControllerCancelMutationOptions(options), queryClient);
-};
 export const getContributionsControllerExportUrl = (projectId: string) => {
   return `/v1/projects/${projectId}/contributions/export`;
 };
@@ -1455,88 +894,8 @@ export const getContributionsControllerExportQueryOptions = <
 export type ContributionsControllerExportQueryResult = NonNullable<
   Awaited<ReturnType<typeof contributionsControllerExport>>
 >;
+
 export type ContributionsControllerExportQueryError = ErrorType<ProblemDetails>;
-
-export function useContributionsControllerExport<
-  TData = Awaited<ReturnType<typeof contributionsControllerExport>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof contributionsControllerExport>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof contributionsControllerExport>>,
-          TError,
-          Awaited<ReturnType<typeof contributionsControllerExport>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useContributionsControllerExport<
-  TData = Awaited<ReturnType<typeof contributionsControllerExport>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof contributionsControllerExport>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof contributionsControllerExport>>,
-          TError,
-          Awaited<ReturnType<typeof contributionsControllerExport>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useContributionsControllerExport<
-  TData = Awaited<ReturnType<typeof contributionsControllerExport>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof contributionsControllerExport>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Export
- */
-
-export function useContributionsControllerExport<
-  TData = Awaited<ReturnType<typeof contributionsControllerExport>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof contributionsControllerExport>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getContributionsControllerExportQueryOptions(projectId, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getContributionsControllerSupportersUrl = (
   projectId: string,
@@ -1621,92 +980,8 @@ export const getContributionsControllerSupportersQueryOptions = <
 export type ContributionsControllerSupportersQueryResult = NonNullable<
   Awaited<ReturnType<typeof contributionsControllerSupporters>>
 >;
+
 export type ContributionsControllerSupportersQueryError = ErrorType<ProblemDetails>;
-
-export function useContributionsControllerSupporters<
-  TData = Awaited<ReturnType<typeof contributionsControllerSupporters>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  params: undefined | ContributionsControllerSupportersParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof contributionsControllerSupporters>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof contributionsControllerSupporters>>,
-          TError,
-          Awaited<ReturnType<typeof contributionsControllerSupporters>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useContributionsControllerSupporters<
-  TData = Awaited<ReturnType<typeof contributionsControllerSupporters>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  params?: ContributionsControllerSupportersParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof contributionsControllerSupporters>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof contributionsControllerSupporters>>,
-          TError,
-          Awaited<ReturnType<typeof contributionsControllerSupporters>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useContributionsControllerSupporters<
-  TData = Awaited<ReturnType<typeof contributionsControllerSupporters>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  params?: ContributionsControllerSupportersParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof contributionsControllerSupporters>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Supporters
- */
-
-export function useContributionsControllerSupporters<
-  TData = Awaited<ReturnType<typeof contributionsControllerSupporters>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  params?: ContributionsControllerSupportersParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof contributionsControllerSupporters>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getContributionsControllerSupportersQueryOptions(projectId, params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getCoverageControllerReadUrl = () => {
   return `/v1/public/payments/coverage`;
@@ -1757,84 +1032,8 @@ export const getCoverageControllerReadQueryOptions = <
 export type CoverageControllerReadQueryResult = NonNullable<
   Awaited<ReturnType<typeof coverageControllerRead>>
 >;
+
 export type CoverageControllerReadQueryError = ErrorType<ProblemDetails>;
-
-export function useCoverageControllerRead<
-  TData = Awaited<ReturnType<typeof coverageControllerRead>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof coverageControllerRead>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof coverageControllerRead>>,
-          TError,
-          Awaited<ReturnType<typeof coverageControllerRead>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useCoverageControllerRead<
-  TData = Awaited<ReturnType<typeof coverageControllerRead>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof coverageControllerRead>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof coverageControllerRead>>,
-          TError,
-          Awaited<ReturnType<typeof coverageControllerRead>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useCoverageControllerRead<
-  TData = Awaited<ReturnType<typeof coverageControllerRead>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof coverageControllerRead>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Read
- */
-
-export function useCoverageControllerRead<
-  TData = Awaited<ReturnType<typeof coverageControllerRead>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof coverageControllerRead>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getCoverageControllerReadQueryOptions(options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getOfflineContributionsControllerDeclareUrl = (projectId: string) => {
   return `/v1/projects/${projectId}/offline-contributions`;
@@ -1924,38 +1123,16 @@ export const getOfflineContributionsControllerDeclareMutationOptions = <
 export type OfflineContributionsControllerDeclareMutationResult = NonNullable<
   Awaited<ReturnType<typeof offlineContributionsControllerDeclare>>
 >;
+
 export type OfflineContributionsControllerDeclareMutationBody = DeclareOfflineDto;
+
 export type OfflineContributionsControllerDeclareMutationError = ErrorType<ProblemDetails>;
+
 export type OfflineContributionsControllerDeclareMutationVariables = {
   projectId: string;
   data: DeclareOfflineDto;
 };
 
-/**
- * @summary Declare
- */
-export const useOfflineContributionsControllerDeclare = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof offlineContributionsControllerDeclare>>,
-      TError,
-      OfflineContributionsControllerDeclareMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof offlineContributionsControllerDeclare>>,
-  TError,
-  OfflineContributionsControllerDeclareMutationVariables,
-  TContext
-> => {
-  return useMutation(getOfflineContributionsControllerDeclareMutationOptions(options), queryClient);
-};
 export const getOfflineContributionsControllerOfProjectUrl = (
   projectId: string,
   params?: OfflineContributionsControllerOfProjectParams,
@@ -2044,112 +1221,8 @@ export const getOfflineContributionsControllerOfProjectQueryOptions = <
 export type OfflineContributionsControllerOfProjectQueryResult = NonNullable<
   Awaited<ReturnType<typeof offlineContributionsControllerOfProject>>
 >;
+
 export type OfflineContributionsControllerOfProjectQueryError = ErrorType<ProblemDetails>;
-
-export function useOfflineContributionsControllerOfProject<
-  TData = Awaited<ReturnType<typeof offlineContributionsControllerOfProject>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  params: undefined | OfflineContributionsControllerOfProjectParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof offlineContributionsControllerOfProject>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof offlineContributionsControllerOfProject>>,
-          TError,
-          Awaited<ReturnType<typeof offlineContributionsControllerOfProject>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useOfflineContributionsControllerOfProject<
-  TData = Awaited<ReturnType<typeof offlineContributionsControllerOfProject>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  params?: OfflineContributionsControllerOfProjectParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof offlineContributionsControllerOfProject>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof offlineContributionsControllerOfProject>>,
-          TError,
-          Awaited<ReturnType<typeof offlineContributionsControllerOfProject>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useOfflineContributionsControllerOfProject<
-  TData = Awaited<ReturnType<typeof offlineContributionsControllerOfProject>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  params?: OfflineContributionsControllerOfProjectParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof offlineContributionsControllerOfProject>>,
-        TError,
-        TData
-      >
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Of project
- */
-
-export function useOfflineContributionsControllerOfProject<
-  TData = Awaited<ReturnType<typeof offlineContributionsControllerOfProject>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  params?: OfflineContributionsControllerOfProjectParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof offlineContributionsControllerOfProject>>,
-        TError,
-        TData
-      >
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getOfflineContributionsControllerOfProjectQueryOptions(
-    projectId,
-    params,
-    options,
-  );
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getOfflineContributionsControllerDeclareForMemberUrl = (projectId: string) => {
   return `/v1/projects/${projectId}/team/offline-contributions`;
@@ -2242,41 +1315,16 @@ export const getOfflineContributionsControllerDeclareForMemberMutationOptions = 
 export type OfflineContributionsControllerDeclareForMemberMutationResult = NonNullable<
   Awaited<ReturnType<typeof offlineContributionsControllerDeclareForMember>>
 >;
+
 export type OfflineContributionsControllerDeclareForMemberMutationBody = DeclareTeamOfflineDto;
+
 export type OfflineContributionsControllerDeclareForMemberMutationError = ErrorType<ProblemDetails>;
+
 export type OfflineContributionsControllerDeclareForMemberMutationVariables = {
   projectId: string;
   data: DeclareTeamOfflineDto;
 };
 
-/**
- * @summary Declare for member
- */
-export const useOfflineContributionsControllerDeclareForMember = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof offlineContributionsControllerDeclareForMember>>,
-      TError,
-      OfflineContributionsControllerDeclareForMemberMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof offlineContributionsControllerDeclareForMember>>,
-  TError,
-  OfflineContributionsControllerDeclareForMemberMutationVariables,
-  TContext
-> => {
-  return useMutation(
-    getOfflineContributionsControllerDeclareForMemberMutationOptions(options),
-    queryClient,
-  );
-};
 export const getOfflineContributionsControllerMineUrl = (
   params?: OfflineContributionsControllerMineParams,
 ) => {
@@ -2347,88 +1395,8 @@ export const getOfflineContributionsControllerMineQueryOptions = <
 export type OfflineContributionsControllerMineQueryResult = NonNullable<
   Awaited<ReturnType<typeof offlineContributionsControllerMine>>
 >;
+
 export type OfflineContributionsControllerMineQueryError = ErrorType<ProblemDetails>;
-
-export function useOfflineContributionsControllerMine<
-  TData = Awaited<ReturnType<typeof offlineContributionsControllerMine>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params: undefined | OfflineContributionsControllerMineParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof offlineContributionsControllerMine>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof offlineContributionsControllerMine>>,
-          TError,
-          Awaited<ReturnType<typeof offlineContributionsControllerMine>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useOfflineContributionsControllerMine<
-  TData = Awaited<ReturnType<typeof offlineContributionsControllerMine>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: OfflineContributionsControllerMineParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof offlineContributionsControllerMine>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof offlineContributionsControllerMine>>,
-          TError,
-          Awaited<ReturnType<typeof offlineContributionsControllerMine>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useOfflineContributionsControllerMine<
-  TData = Awaited<ReturnType<typeof offlineContributionsControllerMine>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: OfflineContributionsControllerMineParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof offlineContributionsControllerMine>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Mine
- */
-
-export function useOfflineContributionsControllerMine<
-  TData = Awaited<ReturnType<typeof offlineContributionsControllerMine>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: OfflineContributionsControllerMineParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof offlineContributionsControllerMine>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getOfflineContributionsControllerMineQueryOptions(params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getOfflineContributionsControllerConfirmUrl = (offlineContributionId: string) => {
   return `/v1/offline-contributions/${offlineContributionId}/confirm`;
@@ -2497,35 +1465,11 @@ export type OfflineContributionsControllerConfirmMutationResult = NonNullable<
 >;
 
 export type OfflineContributionsControllerConfirmMutationError = ErrorType<ProblemDetails>;
+
 export type OfflineContributionsControllerConfirmMutationVariables = {
   offlineContributionId: string;
 };
 
-/**
- * @summary Confirm
- */
-export const useOfflineContributionsControllerConfirm = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof offlineContributionsControllerConfirm>>,
-      TError,
-      OfflineContributionsControllerConfirmMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof offlineContributionsControllerConfirm>>,
-  TError,
-  OfflineContributionsControllerConfirmMutationVariables,
-  TContext
-> => {
-  return useMutation(getOfflineContributionsControllerConfirmMutationOptions(options), queryClient);
-};
 export const getOfflineContributionsControllerRejectUrl = (offlineContributionId: string) => {
   return `/v1/offline-contributions/${offlineContributionId}/reject`;
 };
@@ -2613,38 +1557,16 @@ export const getOfflineContributionsControllerRejectMutationOptions = <
 export type OfflineContributionsControllerRejectMutationResult = NonNullable<
   Awaited<ReturnType<typeof offlineContributionsControllerReject>>
 >;
+
 export type OfflineContributionsControllerRejectMutationBody = RejectionDto;
+
 export type OfflineContributionsControllerRejectMutationError = ErrorType<ProblemDetails>;
+
 export type OfflineContributionsControllerRejectMutationVariables = {
   offlineContributionId: string;
   data: RejectionDto;
 };
 
-/**
- * @summary Reject
- */
-export const useOfflineContributionsControllerReject = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof offlineContributionsControllerReject>>,
-      TError,
-      OfflineContributionsControllerRejectMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof offlineContributionsControllerReject>>,
-  TError,
-  OfflineContributionsControllerRejectMutationVariables,
-  TContext
-> => {
-  return useMutation(getOfflineContributionsControllerRejectMutationOptions(options), queryClient);
-};
 export const getOfflineContributionsControllerProofsUrl = (offlineContributionId: string) => {
   return `/v1/offline-contributions/${offlineContributionId}/proofs`;
 };
@@ -2732,38 +1654,16 @@ export const getOfflineContributionsControllerProofsMutationOptions = <
 export type OfflineContributionsControllerProofsMutationResult = NonNullable<
   Awaited<ReturnType<typeof offlineContributionsControllerProofs>>
 >;
+
 export type OfflineContributionsControllerProofsMutationBody = ProofsDto;
+
 export type OfflineContributionsControllerProofsMutationError = ErrorType<ProblemDetails>;
+
 export type OfflineContributionsControllerProofsMutationVariables = {
   offlineContributionId: string;
   data: ProofsDto;
 };
 
-/**
- * @summary Proofs
- */
-export const useOfflineContributionsControllerProofs = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof offlineContributionsControllerProofs>>,
-      TError,
-      OfflineContributionsControllerProofsMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof offlineContributionsControllerProofs>>,
-  TError,
-  OfflineContributionsControllerProofsMutationVariables,
-  TContext
-> => {
-  return useMutation(getOfflineContributionsControllerProofsMutationOptions(options), queryClient);
-};
 export const getPayoutControllerAccountUrl = () => {
   return `/v1/me/payout-account`;
 };
@@ -2816,84 +1716,8 @@ export const getPayoutControllerAccountQueryOptions = <
 export type PayoutControllerAccountQueryResult = NonNullable<
   Awaited<ReturnType<typeof payoutControllerAccount>>
 >;
+
 export type PayoutControllerAccountQueryError = ErrorType<ProblemDetails>;
-
-export function usePayoutControllerAccount<
-  TData = Awaited<ReturnType<typeof payoutControllerAccount>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof payoutControllerAccount>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof payoutControllerAccount>>,
-          TError,
-          Awaited<ReturnType<typeof payoutControllerAccount>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function usePayoutControllerAccount<
-  TData = Awaited<ReturnType<typeof payoutControllerAccount>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof payoutControllerAccount>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof payoutControllerAccount>>,
-          TError,
-          Awaited<ReturnType<typeof payoutControllerAccount>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function usePayoutControllerAccount<
-  TData = Awaited<ReturnType<typeof payoutControllerAccount>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof payoutControllerAccount>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Account
- */
-
-export function usePayoutControllerAccount<
-  TData = Awaited<ReturnType<typeof payoutControllerAccount>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof payoutControllerAccount>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getPayoutControllerAccountQueryOptions(options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getPayoutControllerCreateUrl = () => {
   return `/v1/me/payout-account`;
@@ -2981,32 +1805,13 @@ export const getPayoutControllerCreateMutationOptions = <
 export type PayoutControllerCreateMutationResult = NonNullable<
   Awaited<ReturnType<typeof payoutControllerCreate>>
 >;
+
 export type PayoutControllerCreateMutationBody = CreatePayoutAccountDto;
+
 export type PayoutControllerCreateMutationError = ErrorType<ProblemDetails>;
+
 export type PayoutControllerCreateMutationVariables = { data: CreatePayoutAccountDto };
 
-/**
- * @summary Create
- */
-export const usePayoutControllerCreate = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof payoutControllerCreate>>,
-      TError,
-      PayoutControllerCreateMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof payoutControllerCreate>>,
-  TError,
-  PayoutControllerCreateMutationVariables,
-  TContext
-> => {
-  return useMutation(getPayoutControllerCreateMutationOptions(options), queryClient);
-};
 export const getPayoutControllerChangeUrl = () => {
   return `/v1/me/payout-account`;
 };
@@ -3095,32 +1900,13 @@ export const getPayoutControllerChangeMutationOptions = <
 export type PayoutControllerChangeMutationResult = NonNullable<
   Awaited<ReturnType<typeof payoutControllerChange>>
 >;
+
 export type PayoutControllerChangeMutationBody = CreatePayoutAccountDto;
+
 export type PayoutControllerChangeMutationError = ErrorType<ProblemDetails>;
+
 export type PayoutControllerChangeMutationVariables = { data: CreatePayoutAccountDto };
 
-/**
- * @summary Change
- */
-export const usePayoutControllerChange = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof payoutControllerChange>>,
-      TError,
-      PayoutControllerChangeMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof payoutControllerChange>>,
-  TError,
-  PayoutControllerChangeMutationVariables,
-  TContext
-> => {
-  return useMutation(getPayoutControllerChangeMutationOptions(options), queryClient);
-};
 export const getPayoutControllerRefreshUrl = () => {
   return `/v1/me/payout-account/refresh`;
 };
@@ -3184,28 +1970,6 @@ export type PayoutControllerRefreshMutationResult = NonNullable<
 
 export type PayoutControllerRefreshMutationError = ErrorType<ProblemDetails>;
 
-/**
- * @summary Refresh
- */
-export const usePayoutControllerRefresh = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof payoutControllerRefresh>>,
-      TError,
-      void,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof payoutControllerRefresh>>,
-  TError,
-  void,
-  TContext
-> => {
-  return useMutation(getPayoutControllerRefreshMutationOptions(options), queryClient);
-};
 export const getPayoutControllerKycUrl = () => {
   return `/v1/me/kyc`;
 };
@@ -3255,84 +2019,8 @@ export const getPayoutControllerKycQueryOptions = <
 export type PayoutControllerKycQueryResult = NonNullable<
   Awaited<ReturnType<typeof payoutControllerKyc>>
 >;
+
 export type PayoutControllerKycQueryError = ErrorType<ProblemDetails>;
-
-export function usePayoutControllerKyc<
-  TData = Awaited<ReturnType<typeof payoutControllerKyc>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof payoutControllerKyc>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof payoutControllerKyc>>,
-          TError,
-          Awaited<ReturnType<typeof payoutControllerKyc>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function usePayoutControllerKyc<
-  TData = Awaited<ReturnType<typeof payoutControllerKyc>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof payoutControllerKyc>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof payoutControllerKyc>>,
-          TError,
-          Awaited<ReturnType<typeof payoutControllerKyc>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function usePayoutControllerKyc<
-  TData = Awaited<ReturnType<typeof payoutControllerKyc>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof payoutControllerKyc>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Kyc
- */
-
-export function usePayoutControllerKyc<
-  TData = Awaited<ReturnType<typeof payoutControllerKyc>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof payoutControllerKyc>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getPayoutControllerKycQueryOptions(options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getPayoutControllerSubmitUrl = () => {
   return `/v1/me/kyc/submissions`;
@@ -3420,29 +2108,9 @@ export const getPayoutControllerSubmitMutationOptions = <
 export type PayoutControllerSubmitMutationResult = NonNullable<
   Awaited<ReturnType<typeof payoutControllerSubmit>>
 >;
-export type PayoutControllerSubmitMutationBody = SubmitKycDto;
-export type PayoutControllerSubmitMutationError = ErrorType<ProblemDetails>;
-export type PayoutControllerSubmitMutationVariables = { data: SubmitKycDto };
 
-/**
- * @summary Submit
- */
-export const usePayoutControllerSubmit = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof payoutControllerSubmit>>,
-      TError,
-      PayoutControllerSubmitMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof payoutControllerSubmit>>,
-  TError,
-  PayoutControllerSubmitMutationVariables,
-  TContext
-> => {
-  return useMutation(getPayoutControllerSubmitMutationOptions(options), queryClient);
-};
+export type PayoutControllerSubmitMutationBody = SubmitKycDto;
+
+export type PayoutControllerSubmitMutationError = ErrorType<ProblemDetails>;
+
+export type PayoutControllerSubmitMutationVariables = { data: SubmitKycDto };

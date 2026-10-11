@@ -5,22 +5,14 @@
  * Errors follow RFC 9457 with a stable `code`; clients translate codes.
  * OpenAPI spec version: 1
  */
-import { useMutation, useQuery } from '@tanstack/react-query';
 import type {
   DataTag,
-  DefinedInitialDataOptions,
-  DefinedUseQueryResult,
   MutationFunction,
-  QueryClient,
   QueryFunction,
   QueryKey,
-  UndefinedInitialDataOptions,
   UseMutationOptions,
-  UseMutationResult,
   UseQueryOptions,
-  UseQueryResult,
 } from '@tanstack/react-query';
-
 import type {
   DashboardDtoOutput,
   DeclareTimeEntryDto,
@@ -31,26 +23,10 @@ import type {
   TimeEntryDtoOutput,
   TimeEntryPageDtoOutput,
 } from '../api.schemas';
-
 import { apiFetch } from '../../http/fetcher';
 import type { ErrorType } from '../../http/fetcher';
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
-
-const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKey: K } => {
-  const result = { queryKey } as T & { queryKey: K };
-  for (const key of Object.keys(query)) {
-    // The explicit queryKey always wins, matching the previous
-    // `{ ...query, queryKey }` spread where it was set last.
-    if (key === 'queryKey') continue;
-    Object.defineProperty(result, key, {
-      enumerable: true,
-      configurable: true,
-      get: () => (query as Record<string, unknown>)[key],
-    });
-  }
-  return result;
-};
 
 export const getEngagementControllerMineUrl = () => {
   return `/v1/me/impact-dashboard`;
@@ -102,84 +78,8 @@ export const getEngagementControllerMineQueryOptions = <
 export type EngagementControllerMineQueryResult = NonNullable<
   Awaited<ReturnType<typeof engagementControllerMine>>
 >;
+
 export type EngagementControllerMineQueryError = ErrorType<ProblemDetails>;
-
-export function useEngagementControllerMine<
-  TData = Awaited<ReturnType<typeof engagementControllerMine>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof engagementControllerMine>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof engagementControllerMine>>,
-          TError,
-          Awaited<ReturnType<typeof engagementControllerMine>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useEngagementControllerMine<
-  TData = Awaited<ReturnType<typeof engagementControllerMine>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof engagementControllerMine>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof engagementControllerMine>>,
-          TError,
-          Awaited<ReturnType<typeof engagementControllerMine>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useEngagementControllerMine<
-  TData = Awaited<ReturnType<typeof engagementControllerMine>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof engagementControllerMine>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Mine
- */
-
-export function useEngagementControllerMine<
-  TData = Awaited<ReturnType<typeof engagementControllerMine>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof engagementControllerMine>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getEngagementControllerMineQueryOptions(options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getEngagementControllerMyHistoryUrl = () => {
   return `/v1/me/impact-dashboard/history`;
@@ -231,84 +131,8 @@ export const getEngagementControllerMyHistoryQueryOptions = <
 export type EngagementControllerMyHistoryQueryResult = NonNullable<
   Awaited<ReturnType<typeof engagementControllerMyHistory>>
 >;
+
 export type EngagementControllerMyHistoryQueryError = ErrorType<ProblemDetails>;
-
-export function useEngagementControllerMyHistory<
-  TData = Awaited<ReturnType<typeof engagementControllerMyHistory>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof engagementControllerMyHistory>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof engagementControllerMyHistory>>,
-          TError,
-          Awaited<ReturnType<typeof engagementControllerMyHistory>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useEngagementControllerMyHistory<
-  TData = Awaited<ReturnType<typeof engagementControllerMyHistory>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof engagementControllerMyHistory>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof engagementControllerMyHistory>>,
-          TError,
-          Awaited<ReturnType<typeof engagementControllerMyHistory>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useEngagementControllerMyHistory<
-  TData = Awaited<ReturnType<typeof engagementControllerMyHistory>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof engagementControllerMyHistory>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary My history
- */
-
-export function useEngagementControllerMyHistory<
-  TData = Awaited<ReturnType<typeof engagementControllerMyHistory>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof engagementControllerMyHistory>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getEngagementControllerMyHistoryQueryOptions(options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getEngagementControllerOrganizationUrl = (organizationId: string) => {
   return `/v1/organizations/${organizationId}/impact-dashboard`;
@@ -370,88 +194,8 @@ export const getEngagementControllerOrganizationQueryOptions = <
 export type EngagementControllerOrganizationQueryResult = NonNullable<
   Awaited<ReturnType<typeof engagementControllerOrganization>>
 >;
+
 export type EngagementControllerOrganizationQueryError = ErrorType<ProblemDetails>;
-
-export function useEngagementControllerOrganization<
-  TData = Awaited<ReturnType<typeof engagementControllerOrganization>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  organizationId: string,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof engagementControllerOrganization>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof engagementControllerOrganization>>,
-          TError,
-          Awaited<ReturnType<typeof engagementControllerOrganization>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useEngagementControllerOrganization<
-  TData = Awaited<ReturnType<typeof engagementControllerOrganization>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  organizationId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof engagementControllerOrganization>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof engagementControllerOrganization>>,
-          TError,
-          Awaited<ReturnType<typeof engagementControllerOrganization>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useEngagementControllerOrganization<
-  TData = Awaited<ReturnType<typeof engagementControllerOrganization>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  organizationId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof engagementControllerOrganization>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Organization
- */
-
-export function useEngagementControllerOrganization<
-  TData = Awaited<ReturnType<typeof engagementControllerOrganization>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  organizationId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof engagementControllerOrganization>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getEngagementControllerOrganizationQueryOptions(organizationId, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getEngagementControllerOrganizationHistoryUrl = (organizationId: string) => {
   return `/v1/organizations/${organizationId}/impact-dashboard/history`;
@@ -518,107 +262,8 @@ export const getEngagementControllerOrganizationHistoryQueryOptions = <
 export type EngagementControllerOrganizationHistoryQueryResult = NonNullable<
   Awaited<ReturnType<typeof engagementControllerOrganizationHistory>>
 >;
+
 export type EngagementControllerOrganizationHistoryQueryError = ErrorType<ProblemDetails>;
-
-export function useEngagementControllerOrganizationHistory<
-  TData = Awaited<ReturnType<typeof engagementControllerOrganizationHistory>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  organizationId: string,
-  options: {
-    query: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof engagementControllerOrganizationHistory>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof engagementControllerOrganizationHistory>>,
-          TError,
-          Awaited<ReturnType<typeof engagementControllerOrganizationHistory>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useEngagementControllerOrganizationHistory<
-  TData = Awaited<ReturnType<typeof engagementControllerOrganizationHistory>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  organizationId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof engagementControllerOrganizationHistory>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof engagementControllerOrganizationHistory>>,
-          TError,
-          Awaited<ReturnType<typeof engagementControllerOrganizationHistory>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useEngagementControllerOrganizationHistory<
-  TData = Awaited<ReturnType<typeof engagementControllerOrganizationHistory>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  organizationId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof engagementControllerOrganizationHistory>>,
-        TError,
-        TData
-      >
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Organization history
- */
-
-export function useEngagementControllerOrganizationHistory<
-  TData = Awaited<ReturnType<typeof engagementControllerOrganizationHistory>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  organizationId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof engagementControllerOrganizationHistory>>,
-        TError,
-        TData
-      >
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getEngagementControllerOrganizationHistoryQueryOptions(
-    organizationId,
-    options,
-  );
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getEngagementControllerDeclareUrl = () => {
   return `/v1/me/time-entries`;
@@ -707,35 +352,13 @@ export const getEngagementControllerDeclareMutationOptions = <
 export type EngagementControllerDeclareMutationResult = NonNullable<
   Awaited<ReturnType<typeof engagementControllerDeclare>>
 >;
+
 export type EngagementControllerDeclareMutationBody = DeclareTimeEntryDto;
+
 export type EngagementControllerDeclareMutationError = ErrorType<ProblemDetails>;
+
 export type EngagementControllerDeclareMutationVariables = { data: DeclareTimeEntryDto };
 
-/**
- * @summary Declare
- */
-export const useEngagementControllerDeclare = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof engagementControllerDeclare>>,
-      TError,
-      EngagementControllerDeclareMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof engagementControllerDeclare>>,
-  TError,
-  EngagementControllerDeclareMutationVariables,
-  TContext
-> => {
-  return useMutation(getEngagementControllerDeclareMutationOptions(options), queryClient);
-};
 export const getEngagementControllerDeclaredUrl = (params?: EngagementControllerDeclaredParams) => {
   const normalizedParams = new URLSearchParams();
 
@@ -804,88 +427,8 @@ export const getEngagementControllerDeclaredQueryOptions = <
 export type EngagementControllerDeclaredQueryResult = NonNullable<
   Awaited<ReturnType<typeof engagementControllerDeclared>>
 >;
+
 export type EngagementControllerDeclaredQueryError = ErrorType<ProblemDetails>;
-
-export function useEngagementControllerDeclared<
-  TData = Awaited<ReturnType<typeof engagementControllerDeclared>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params: undefined | EngagementControllerDeclaredParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof engagementControllerDeclared>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof engagementControllerDeclared>>,
-          TError,
-          Awaited<ReturnType<typeof engagementControllerDeclared>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useEngagementControllerDeclared<
-  TData = Awaited<ReturnType<typeof engagementControllerDeclared>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: EngagementControllerDeclaredParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof engagementControllerDeclared>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof engagementControllerDeclared>>,
-          TError,
-          Awaited<ReturnType<typeof engagementControllerDeclared>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useEngagementControllerDeclared<
-  TData = Awaited<ReturnType<typeof engagementControllerDeclared>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: EngagementControllerDeclaredParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof engagementControllerDeclared>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Declared
- */
-
-export function useEngagementControllerDeclared<
-  TData = Awaited<ReturnType<typeof engagementControllerDeclared>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: EngagementControllerDeclaredParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof engagementControllerDeclared>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getEngagementControllerDeclaredQueryOptions(params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getEngagementControllerReceivedUrl = (params?: EngagementControllerReceivedParams) => {
   const normalizedParams = new URLSearchParams();
@@ -955,88 +498,8 @@ export const getEngagementControllerReceivedQueryOptions = <
 export type EngagementControllerReceivedQueryResult = NonNullable<
   Awaited<ReturnType<typeof engagementControllerReceived>>
 >;
+
 export type EngagementControllerReceivedQueryError = ErrorType<ProblemDetails>;
-
-export function useEngagementControllerReceived<
-  TData = Awaited<ReturnType<typeof engagementControllerReceived>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params: undefined | EngagementControllerReceivedParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof engagementControllerReceived>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof engagementControllerReceived>>,
-          TError,
-          Awaited<ReturnType<typeof engagementControllerReceived>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useEngagementControllerReceived<
-  TData = Awaited<ReturnType<typeof engagementControllerReceived>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: EngagementControllerReceivedParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof engagementControllerReceived>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof engagementControllerReceived>>,
-          TError,
-          Awaited<ReturnType<typeof engagementControllerReceived>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useEngagementControllerReceived<
-  TData = Awaited<ReturnType<typeof engagementControllerReceived>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: EngagementControllerReceivedParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof engagementControllerReceived>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Received
- */
-
-export function useEngagementControllerReceived<
-  TData = Awaited<ReturnType<typeof engagementControllerReceived>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: EngagementControllerReceivedParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof engagementControllerReceived>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getEngagementControllerReceivedQueryOptions(params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getEngagementControllerConfirmUrl = (timeEntryId: string) => {
   return `/v1/time-entries/${timeEntryId}/confirm`;
@@ -1102,33 +565,9 @@ export type EngagementControllerConfirmMutationResult = NonNullable<
 >;
 
 export type EngagementControllerConfirmMutationError = ErrorType<ProblemDetails>;
+
 export type EngagementControllerConfirmMutationVariables = { timeEntryId: string };
 
-/**
- * @summary Confirm
- */
-export const useEngagementControllerConfirm = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof engagementControllerConfirm>>,
-      TError,
-      EngagementControllerConfirmMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof engagementControllerConfirm>>,
-  TError,
-  EngagementControllerConfirmMutationVariables,
-  TContext
-> => {
-  return useMutation(getEngagementControllerConfirmMutationOptions(options), queryClient);
-};
 export const getEngagementControllerDisputeUrl = (timeEntryId: string) => {
   return `/v1/time-entries/${timeEntryId}/dispute`;
 };
@@ -1213,35 +652,12 @@ export const getEngagementControllerDisputeMutationOptions = <
 export type EngagementControllerDisputeMutationResult = NonNullable<
   Awaited<ReturnType<typeof engagementControllerDispute>>
 >;
+
 export type EngagementControllerDisputeMutationBody = DisputeTimeEntryDto;
+
 export type EngagementControllerDisputeMutationError = ErrorType<ProblemDetails>;
+
 export type EngagementControllerDisputeMutationVariables = {
   timeEntryId: string;
   data: DisputeTimeEntryDto;
-};
-
-/**
- * @summary Dispute
- */
-export const useEngagementControllerDispute = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof engagementControllerDispute>>,
-      TError,
-      EngagementControllerDisputeMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof engagementControllerDispute>>,
-  TError,
-  EngagementControllerDisputeMutationVariables,
-  TContext
-> => {
-  return useMutation(getEngagementControllerDisputeMutationOptions(options), queryClient);
 };

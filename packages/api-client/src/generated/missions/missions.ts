@@ -5,22 +5,14 @@
  * Errors follow RFC 9457 with a stable `code`; clients translate codes.
  * OpenAPI spec version: 1
  */
-import { useMutation, useQuery } from '@tanstack/react-query';
 import type {
   DataTag,
-  DefinedInitialDataOptions,
-  DefinedUseQueryResult,
   MutationFunction,
-  QueryClient,
   QueryFunction,
   QueryKey,
-  UndefinedInitialDataOptions,
   UseMutationOptions,
-  UseMutationResult,
   UseQueryOptions,
-  UseQueryResult,
 } from '@tanstack/react-query';
-
 import type {
   AnswerEngagementDto,
   CompleteEngagementDto,
@@ -38,26 +30,10 @@ import type {
   RequestEngagementDto,
   UpdateMissionDto,
 } from '../api.schemas';
-
 import { apiFetch } from '../../http/fetcher';
 import type { ErrorType } from '../../http/fetcher';
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
-
-const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKey: K } => {
-  const result = { queryKey } as T & { queryKey: K };
-  for (const key of Object.keys(query)) {
-    // The explicit queryKey always wins, matching the previous
-    // `{ ...query, queryKey }` spread where it was set last.
-    if (key === 'queryKey') continue;
-    Object.defineProperty(result, key, {
-      enumerable: true,
-      configurable: true,
-      get: () => (query as Record<string, unknown>)[key],
-    });
-  }
-  return result;
-};
 
 export const getMissionsControllerOfferUrl = () => {
   return `/v1/missions/offers`;
@@ -145,32 +121,13 @@ export const getMissionsControllerOfferMutationOptions = <
 export type MissionsControllerOfferMutationResult = NonNullable<
   Awaited<ReturnType<typeof missionsControllerOffer>>
 >;
+
 export type MissionsControllerOfferMutationBody = CreateMissionDto;
+
 export type MissionsControllerOfferMutationError = ErrorType<ProblemDetails>;
+
 export type MissionsControllerOfferMutationVariables = { data: CreateMissionDto };
 
-/**
- * @summary Offer
- */
-export const useMissionsControllerOffer = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof missionsControllerOffer>>,
-      TError,
-      MissionsControllerOfferMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof missionsControllerOffer>>,
-  TError,
-  MissionsControllerOfferMutationVariables,
-  TContext
-> => {
-  return useMutation(getMissionsControllerOfferMutationOptions(options), queryClient);
-};
 export const getMissionsControllerRequestUrl = () => {
   return `/v1/missions/requests`;
 };
@@ -257,35 +214,13 @@ export const getMissionsControllerRequestMutationOptions = <
 export type MissionsControllerRequestMutationResult = NonNullable<
   Awaited<ReturnType<typeof missionsControllerRequest>>
 >;
+
 export type MissionsControllerRequestMutationBody = CreateMissionDto;
+
 export type MissionsControllerRequestMutationError = ErrorType<ProblemDetails>;
+
 export type MissionsControllerRequestMutationVariables = { data: CreateMissionDto };
 
-/**
- * @summary Request
- */
-export const useMissionsControllerRequest = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof missionsControllerRequest>>,
-      TError,
-      MissionsControllerRequestMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof missionsControllerRequest>>,
-  TError,
-  MissionsControllerRequestMutationVariables,
-  TContext
-> => {
-  return useMutation(getMissionsControllerRequestMutationOptions(options), queryClient);
-};
 export const getMissionsControllerListUrl = (params?: MissionsControllerListParams) => {
   const normalizedParams = new URLSearchParams();
 
@@ -349,88 +284,8 @@ export const getMissionsControllerListQueryOptions = <
 export type MissionsControllerListQueryResult = NonNullable<
   Awaited<ReturnType<typeof missionsControllerList>>
 >;
+
 export type MissionsControllerListQueryError = ErrorType<ProblemDetails>;
-
-export function useMissionsControllerList<
-  TData = Awaited<ReturnType<typeof missionsControllerList>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params: undefined | MissionsControllerListParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof missionsControllerList>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof missionsControllerList>>,
-          TError,
-          Awaited<ReturnType<typeof missionsControllerList>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useMissionsControllerList<
-  TData = Awaited<ReturnType<typeof missionsControllerList>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: MissionsControllerListParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof missionsControllerList>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof missionsControllerList>>,
-          TError,
-          Awaited<ReturnType<typeof missionsControllerList>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useMissionsControllerList<
-  TData = Awaited<ReturnType<typeof missionsControllerList>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: MissionsControllerListParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof missionsControllerList>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary List
- */
-
-export function useMissionsControllerList<
-  TData = Awaited<ReturnType<typeof missionsControllerList>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: MissionsControllerListParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof missionsControllerList>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getMissionsControllerListQueryOptions(params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getMissionsControllerPublicListUrl = (params?: MissionsControllerPublicListParams) => {
   const normalizedParams = new URLSearchParams();
@@ -500,88 +355,8 @@ export const getMissionsControllerPublicListQueryOptions = <
 export type MissionsControllerPublicListQueryResult = NonNullable<
   Awaited<ReturnType<typeof missionsControllerPublicList>>
 >;
+
 export type MissionsControllerPublicListQueryError = ErrorType<ProblemDetails>;
-
-export function useMissionsControllerPublicList<
-  TData = Awaited<ReturnType<typeof missionsControllerPublicList>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params: undefined | MissionsControllerPublicListParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof missionsControllerPublicList>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof missionsControllerPublicList>>,
-          TError,
-          Awaited<ReturnType<typeof missionsControllerPublicList>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useMissionsControllerPublicList<
-  TData = Awaited<ReturnType<typeof missionsControllerPublicList>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: MissionsControllerPublicListParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof missionsControllerPublicList>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof missionsControllerPublicList>>,
-          TError,
-          Awaited<ReturnType<typeof missionsControllerPublicList>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useMissionsControllerPublicList<
-  TData = Awaited<ReturnType<typeof missionsControllerPublicList>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: MissionsControllerPublicListParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof missionsControllerPublicList>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Public list
- */
-
-export function useMissionsControllerPublicList<
-  TData = Awaited<ReturnType<typeof missionsControllerPublicList>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: MissionsControllerPublicListParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof missionsControllerPublicList>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getMissionsControllerPublicListQueryOptions(params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getMissionsControllerMineUrl = (params?: MissionsControllerMineParams) => {
   const normalizedParams = new URLSearchParams();
@@ -646,88 +421,8 @@ export const getMissionsControllerMineQueryOptions = <
 export type MissionsControllerMineQueryResult = NonNullable<
   Awaited<ReturnType<typeof missionsControllerMine>>
 >;
+
 export type MissionsControllerMineQueryError = ErrorType<ProblemDetails>;
-
-export function useMissionsControllerMine<
-  TData = Awaited<ReturnType<typeof missionsControllerMine>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params: undefined | MissionsControllerMineParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof missionsControllerMine>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof missionsControllerMine>>,
-          TError,
-          Awaited<ReturnType<typeof missionsControllerMine>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useMissionsControllerMine<
-  TData = Awaited<ReturnType<typeof missionsControllerMine>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: MissionsControllerMineParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof missionsControllerMine>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof missionsControllerMine>>,
-          TError,
-          Awaited<ReturnType<typeof missionsControllerMine>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useMissionsControllerMine<
-  TData = Awaited<ReturnType<typeof missionsControllerMine>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: MissionsControllerMineParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof missionsControllerMine>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Mine
- */
-
-export function useMissionsControllerMine<
-  TData = Awaited<ReturnType<typeof missionsControllerMine>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: MissionsControllerMineParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof missionsControllerMine>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getMissionsControllerMineQueryOptions(params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getMissionsControllerMyEngagementsUrl = (
   params?: MissionsControllerMyEngagementsParams,
@@ -799,88 +494,8 @@ export const getMissionsControllerMyEngagementsQueryOptions = <
 export type MissionsControllerMyEngagementsQueryResult = NonNullable<
   Awaited<ReturnType<typeof missionsControllerMyEngagements>>
 >;
+
 export type MissionsControllerMyEngagementsQueryError = ErrorType<ProblemDetails>;
-
-export function useMissionsControllerMyEngagements<
-  TData = Awaited<ReturnType<typeof missionsControllerMyEngagements>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params: undefined | MissionsControllerMyEngagementsParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof missionsControllerMyEngagements>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof missionsControllerMyEngagements>>,
-          TError,
-          Awaited<ReturnType<typeof missionsControllerMyEngagements>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useMissionsControllerMyEngagements<
-  TData = Awaited<ReturnType<typeof missionsControllerMyEngagements>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: MissionsControllerMyEngagementsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof missionsControllerMyEngagements>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof missionsControllerMyEngagements>>,
-          TError,
-          Awaited<ReturnType<typeof missionsControllerMyEngagements>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useMissionsControllerMyEngagements<
-  TData = Awaited<ReturnType<typeof missionsControllerMyEngagements>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: MissionsControllerMyEngagementsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof missionsControllerMyEngagements>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary My engagements
- */
-
-export function useMissionsControllerMyEngagements<
-  TData = Awaited<ReturnType<typeof missionsControllerMyEngagements>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: MissionsControllerMyEngagementsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof missionsControllerMyEngagements>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getMissionsControllerMyEngagementsQueryOptions(params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getMissionsControllerForPublicUrl = (missionId: string) => {
   return `/v1/public/missions/${missionId}`;
@@ -939,88 +554,8 @@ export const getMissionsControllerForPublicQueryOptions = <
 export type MissionsControllerForPublicQueryResult = NonNullable<
   Awaited<ReturnType<typeof missionsControllerForPublic>>
 >;
+
 export type MissionsControllerForPublicQueryError = ErrorType<ProblemDetails>;
-
-export function useMissionsControllerForPublic<
-  TData = Awaited<ReturnType<typeof missionsControllerForPublic>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  missionId: string,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof missionsControllerForPublic>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof missionsControllerForPublic>>,
-          TError,
-          Awaited<ReturnType<typeof missionsControllerForPublic>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useMissionsControllerForPublic<
-  TData = Awaited<ReturnType<typeof missionsControllerForPublic>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  missionId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof missionsControllerForPublic>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof missionsControllerForPublic>>,
-          TError,
-          Awaited<ReturnType<typeof missionsControllerForPublic>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useMissionsControllerForPublic<
-  TData = Awaited<ReturnType<typeof missionsControllerForPublic>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  missionId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof missionsControllerForPublic>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary For public
- */
-
-export function useMissionsControllerForPublic<
-  TData = Awaited<ReturnType<typeof missionsControllerForPublic>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  missionId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof missionsControllerForPublic>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getMissionsControllerForPublicQueryOptions(missionId, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getMissionsControllerByIdUrl = (missionId: string) => {
   return `/v1/missions/${missionId}`;
@@ -1078,88 +613,8 @@ export const getMissionsControllerByIdQueryOptions = <
 export type MissionsControllerByIdQueryResult = NonNullable<
   Awaited<ReturnType<typeof missionsControllerById>>
 >;
+
 export type MissionsControllerByIdQueryError = ErrorType<ProblemDetails>;
-
-export function useMissionsControllerById<
-  TData = Awaited<ReturnType<typeof missionsControllerById>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  missionId: string,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof missionsControllerById>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof missionsControllerById>>,
-          TError,
-          Awaited<ReturnType<typeof missionsControllerById>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useMissionsControllerById<
-  TData = Awaited<ReturnType<typeof missionsControllerById>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  missionId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof missionsControllerById>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof missionsControllerById>>,
-          TError,
-          Awaited<ReturnType<typeof missionsControllerById>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useMissionsControllerById<
-  TData = Awaited<ReturnType<typeof missionsControllerById>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  missionId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof missionsControllerById>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary By id
- */
-
-export function useMissionsControllerById<
-  TData = Awaited<ReturnType<typeof missionsControllerById>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  missionId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof missionsControllerById>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getMissionsControllerByIdQueryOptions(missionId, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getMissionsControllerUpdateUrl = (missionId: string) => {
   return `/v1/missions/${missionId}`;
@@ -1244,35 +699,16 @@ export const getMissionsControllerUpdateMutationOptions = <
 export type MissionsControllerUpdateMutationResult = NonNullable<
   Awaited<ReturnType<typeof missionsControllerUpdate>>
 >;
+
 export type MissionsControllerUpdateMutationBody = UpdateMissionDto;
+
 export type MissionsControllerUpdateMutationError = ErrorType<ProblemDetails>;
+
 export type MissionsControllerUpdateMutationVariables = {
   missionId: string;
   data: UpdateMissionDto;
 };
 
-/**
- * @summary Update
- */
-export const useMissionsControllerUpdate = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof missionsControllerUpdate>>,
-      TError,
-      MissionsControllerUpdateMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof missionsControllerUpdate>>,
-  TError,
-  MissionsControllerUpdateMutationVariables,
-  TContext
-> => {
-  return useMutation(getMissionsControllerUpdateMutationOptions(options), queryClient);
-};
 export const getMissionsControllerCloseUrl = (missionId: string) => {
   return `/v1/missions/${missionId}/close`;
 };
@@ -1336,30 +772,9 @@ export type MissionsControllerCloseMutationResult = NonNullable<
 >;
 
 export type MissionsControllerCloseMutationError = ErrorType<ProblemDetails>;
+
 export type MissionsControllerCloseMutationVariables = { missionId: string };
 
-/**
- * @summary Close
- */
-export const useMissionsControllerClose = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof missionsControllerClose>>,
-      TError,
-      MissionsControllerCloseMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof missionsControllerClose>>,
-  TError,
-  MissionsControllerCloseMutationVariables,
-  TContext
-> => {
-  return useMutation(getMissionsControllerCloseMutationOptions(options), queryClient);
-};
 export const getMissionsControllerEngageUrl = (missionId: string) => {
   return `/v1/missions/${missionId}/engagements`;
 };
@@ -1447,35 +862,16 @@ export const getMissionsControllerEngageMutationOptions = <
 export type MissionsControllerEngageMutationResult = NonNullable<
   Awaited<ReturnType<typeof missionsControllerEngage>>
 >;
+
 export type MissionsControllerEngageMutationBody = RequestEngagementDto;
+
 export type MissionsControllerEngageMutationError = ErrorType<ProblemDetails>;
+
 export type MissionsControllerEngageMutationVariables = {
   missionId: string;
   data: RequestEngagementDto;
 };
 
-/**
- * @summary Engage
- */
-export const useMissionsControllerEngage = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof missionsControllerEngage>>,
-      TError,
-      MissionsControllerEngageMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof missionsControllerEngage>>,
-  TError,
-  MissionsControllerEngageMutationVariables,
-  TContext
-> => {
-  return useMutation(getMissionsControllerEngageMutationOptions(options), queryClient);
-};
 export const getMissionsControllerEngagementsUrl = (
   missionId: string,
   params?: MissionsControllerEngagementsParams,
@@ -1554,92 +950,8 @@ export const getMissionsControllerEngagementsQueryOptions = <
 export type MissionsControllerEngagementsQueryResult = NonNullable<
   Awaited<ReturnType<typeof missionsControllerEngagements>>
 >;
+
 export type MissionsControllerEngagementsQueryError = ErrorType<ProblemDetails>;
-
-export function useMissionsControllerEngagements<
-  TData = Awaited<ReturnType<typeof missionsControllerEngagements>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  missionId: string,
-  params: undefined | MissionsControllerEngagementsParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof missionsControllerEngagements>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof missionsControllerEngagements>>,
-          TError,
-          Awaited<ReturnType<typeof missionsControllerEngagements>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useMissionsControllerEngagements<
-  TData = Awaited<ReturnType<typeof missionsControllerEngagements>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  missionId: string,
-  params?: MissionsControllerEngagementsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof missionsControllerEngagements>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof missionsControllerEngagements>>,
-          TError,
-          Awaited<ReturnType<typeof missionsControllerEngagements>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useMissionsControllerEngagements<
-  TData = Awaited<ReturnType<typeof missionsControllerEngagements>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  missionId: string,
-  params?: MissionsControllerEngagementsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof missionsControllerEngagements>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Engagements
- */
-
-export function useMissionsControllerEngagements<
-  TData = Awaited<ReturnType<typeof missionsControllerEngagements>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  missionId: string,
-  params?: MissionsControllerEngagementsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof missionsControllerEngagements>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getMissionsControllerEngagementsQueryOptions(missionId, params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getMissionsControllerEngagementUrl = (engagementId: string) => {
   return `/v1/mission-engagements/${engagementId}`;
@@ -1698,88 +1010,8 @@ export const getMissionsControllerEngagementQueryOptions = <
 export type MissionsControllerEngagementQueryResult = NonNullable<
   Awaited<ReturnType<typeof missionsControllerEngagement>>
 >;
+
 export type MissionsControllerEngagementQueryError = ErrorType<ProblemDetails>;
-
-export function useMissionsControllerEngagement<
-  TData = Awaited<ReturnType<typeof missionsControllerEngagement>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  engagementId: string,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof missionsControllerEngagement>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof missionsControllerEngagement>>,
-          TError,
-          Awaited<ReturnType<typeof missionsControllerEngagement>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useMissionsControllerEngagement<
-  TData = Awaited<ReturnType<typeof missionsControllerEngagement>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  engagementId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof missionsControllerEngagement>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof missionsControllerEngagement>>,
-          TError,
-          Awaited<ReturnType<typeof missionsControllerEngagement>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useMissionsControllerEngagement<
-  TData = Awaited<ReturnType<typeof missionsControllerEngagement>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  engagementId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof missionsControllerEngagement>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Engagement
- */
-
-export function useMissionsControllerEngagement<
-  TData = Awaited<ReturnType<typeof missionsControllerEngagement>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  engagementId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof missionsControllerEngagement>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getMissionsControllerEngagementQueryOptions(engagementId, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getMissionsControllerAcceptUrl = (engagementId: string) => {
   return `/v1/mission-engagements/${engagementId}/accept`;
@@ -1864,35 +1096,16 @@ export const getMissionsControllerAcceptMutationOptions = <
 export type MissionsControllerAcceptMutationResult = NonNullable<
   Awaited<ReturnType<typeof missionsControllerAccept>>
 >;
+
 export type MissionsControllerAcceptMutationBody = AnswerEngagementDto;
+
 export type MissionsControllerAcceptMutationError = ErrorType<ProblemDetails>;
+
 export type MissionsControllerAcceptMutationVariables = {
   engagementId: string;
   data: AnswerEngagementDto;
 };
 
-/**
- * @summary Accept
- */
-export const useMissionsControllerAccept = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof missionsControllerAccept>>,
-      TError,
-      MissionsControllerAcceptMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof missionsControllerAccept>>,
-  TError,
-  MissionsControllerAcceptMutationVariables,
-  TContext
-> => {
-  return useMutation(getMissionsControllerAcceptMutationOptions(options), queryClient);
-};
 export const getMissionsControllerDeclineUrl = (engagementId: string) => {
   return `/v1/mission-engagements/${engagementId}/decline`;
 };
@@ -1976,38 +1189,16 @@ export const getMissionsControllerDeclineMutationOptions = <
 export type MissionsControllerDeclineMutationResult = NonNullable<
   Awaited<ReturnType<typeof missionsControllerDecline>>
 >;
+
 export type MissionsControllerDeclineMutationBody = AnswerEngagementDto;
+
 export type MissionsControllerDeclineMutationError = ErrorType<ProblemDetails>;
+
 export type MissionsControllerDeclineMutationVariables = {
   engagementId: string;
   data: AnswerEngagementDto;
 };
 
-/**
- * @summary Decline
- */
-export const useMissionsControllerDecline = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof missionsControllerDecline>>,
-      TError,
-      MissionsControllerDeclineMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof missionsControllerDecline>>,
-  TError,
-  MissionsControllerDeclineMutationVariables,
-  TContext
-> => {
-  return useMutation(getMissionsControllerDeclineMutationOptions(options), queryClient);
-};
 export const getMissionsControllerCompleteUrl = (engagementId: string) => {
   return `/v1/mission-engagements/${engagementId}/complete`;
 };
@@ -2092,38 +1283,16 @@ export const getMissionsControllerCompleteMutationOptions = <
 export type MissionsControllerCompleteMutationResult = NonNullable<
   Awaited<ReturnType<typeof missionsControllerComplete>>
 >;
+
 export type MissionsControllerCompleteMutationBody = CompleteEngagementDto;
+
 export type MissionsControllerCompleteMutationError = ErrorType<ProblemDetails>;
+
 export type MissionsControllerCompleteMutationVariables = {
   engagementId: string;
   data: CompleteEngagementDto;
 };
 
-/**
- * @summary Complete
- */
-export const useMissionsControllerComplete = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof missionsControllerComplete>>,
-      TError,
-      MissionsControllerCompleteMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof missionsControllerComplete>>,
-  TError,
-  MissionsControllerCompleteMutationVariables,
-  TContext
-> => {
-  return useMutation(getMissionsControllerCompleteMutationOptions(options), queryClient);
-};
 export const getMissionsControllerCancelUrl = (engagementId: string) => {
   return `/v1/mission-engagements/${engagementId}/cancel`;
 };
@@ -2187,27 +1356,5 @@ export type MissionsControllerCancelMutationResult = NonNullable<
 >;
 
 export type MissionsControllerCancelMutationError = ErrorType<ProblemDetails>;
-export type MissionsControllerCancelMutationVariables = { engagementId: string };
 
-/**
- * @summary Cancel
- */
-export const useMissionsControllerCancel = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof missionsControllerCancel>>,
-      TError,
-      MissionsControllerCancelMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof missionsControllerCancel>>,
-  TError,
-  MissionsControllerCancelMutationVariables,
-  TContext
-> => {
-  return useMutation(getMissionsControllerCancelMutationOptions(options), queryClient);
-};
+export type MissionsControllerCancelMutationVariables = { engagementId: string };

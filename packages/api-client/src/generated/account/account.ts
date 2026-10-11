@@ -5,22 +5,14 @@
  * Errors follow RFC 9457 with a stable `code`; clients translate codes.
  * OpenAPI spec version: 1
  */
-import { useMutation, useQuery } from '@tanstack/react-query';
 import type {
   DataTag,
-  DefinedInitialDataOptions,
-  DefinedUseQueryResult,
   MutationFunction,
-  QueryClient,
   QueryFunction,
   QueryKey,
-  UndefinedInitialDataOptions,
   UseMutationOptions,
-  UseMutationResult,
   UseQueryOptions,
-  UseQueryResult,
 } from '@tanstack/react-query';
-
 import type {
   AccountPreferencesDtoOutput,
   ActiveLocalesDtoOutput,
@@ -31,26 +23,10 @@ import type {
   ProblemDetails,
   UpdateAccountPreferencesDto,
 } from '../api.schemas';
-
 import { apiFetch } from '../../http/fetcher';
 import type { ErrorType } from '../../http/fetcher';
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
-
-const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKey: K } => {
-  const result = { queryKey } as T & { queryKey: K };
-  for (const key of Object.keys(query)) {
-    // The explicit queryKey always wins, matching the previous
-    // `{ ...query, queryKey }` spread where it was set last.
-    if (key === 'queryKey') continue;
-    Object.defineProperty(result, key, {
-      enumerable: true,
-      configurable: true,
-      get: () => (query as Record<string, unknown>)[key],
-    });
-  }
-  return result;
-};
 
 export const getAccountControllerAuthConfigurationUrl = () => {
   return `/v1/auth-configuration`;
@@ -102,84 +78,8 @@ export const getAccountControllerAuthConfigurationQueryOptions = <
 export type AccountControllerAuthConfigurationQueryResult = NonNullable<
   Awaited<ReturnType<typeof accountControllerAuthConfiguration>>
 >;
+
 export type AccountControllerAuthConfigurationQueryError = ErrorType<ProblemDetails>;
-
-export function useAccountControllerAuthConfiguration<
-  TData = Awaited<ReturnType<typeof accountControllerAuthConfiguration>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof accountControllerAuthConfiguration>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof accountControllerAuthConfiguration>>,
-          TError,
-          Awaited<ReturnType<typeof accountControllerAuthConfiguration>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useAccountControllerAuthConfiguration<
-  TData = Awaited<ReturnType<typeof accountControllerAuthConfiguration>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof accountControllerAuthConfiguration>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof accountControllerAuthConfiguration>>,
-          TError,
-          Awaited<ReturnType<typeof accountControllerAuthConfiguration>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useAccountControllerAuthConfiguration<
-  TData = Awaited<ReturnType<typeof accountControllerAuthConfiguration>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof accountControllerAuthConfiguration>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Auth configuration
- */
-
-export function useAccountControllerAuthConfiguration<
-  TData = Awaited<ReturnType<typeof accountControllerAuthConfiguration>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof accountControllerAuthConfiguration>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getAccountControllerAuthConfigurationQueryOptions(options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getAccountControllerActiveLocalesUrl = () => {
   return `/v1/locales`;
@@ -231,84 +131,8 @@ export const getAccountControllerActiveLocalesQueryOptions = <
 export type AccountControllerActiveLocalesQueryResult = NonNullable<
   Awaited<ReturnType<typeof accountControllerActiveLocales>>
 >;
+
 export type AccountControllerActiveLocalesQueryError = ErrorType<ProblemDetails>;
-
-export function useAccountControllerActiveLocales<
-  TData = Awaited<ReturnType<typeof accountControllerActiveLocales>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof accountControllerActiveLocales>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof accountControllerActiveLocales>>,
-          TError,
-          Awaited<ReturnType<typeof accountControllerActiveLocales>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useAccountControllerActiveLocales<
-  TData = Awaited<ReturnType<typeof accountControllerActiveLocales>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof accountControllerActiveLocales>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof accountControllerActiveLocales>>,
-          TError,
-          Awaited<ReturnType<typeof accountControllerActiveLocales>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useAccountControllerActiveLocales<
-  TData = Awaited<ReturnType<typeof accountControllerActiveLocales>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof accountControllerActiveLocales>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Active locales
- */
-
-export function useAccountControllerActiveLocales<
-  TData = Awaited<ReturnType<typeof accountControllerActiveLocales>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof accountControllerActiveLocales>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getAccountControllerActiveLocalesQueryOptions(options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getAccountControllerCurrentUrl = () => {
   return `/v1/legal-documents/current`;
@@ -360,84 +184,8 @@ export const getAccountControllerCurrentQueryOptions = <
 export type AccountControllerCurrentQueryResult = NonNullable<
   Awaited<ReturnType<typeof accountControllerCurrent>>
 >;
+
 export type AccountControllerCurrentQueryError = ErrorType<ProblemDetails>;
-
-export function useAccountControllerCurrent<
-  TData = Awaited<ReturnType<typeof accountControllerCurrent>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof accountControllerCurrent>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof accountControllerCurrent>>,
-          TError,
-          Awaited<ReturnType<typeof accountControllerCurrent>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useAccountControllerCurrent<
-  TData = Awaited<ReturnType<typeof accountControllerCurrent>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof accountControllerCurrent>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof accountControllerCurrent>>,
-          TError,
-          Awaited<ReturnType<typeof accountControllerCurrent>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useAccountControllerCurrent<
-  TData = Awaited<ReturnType<typeof accountControllerCurrent>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof accountControllerCurrent>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Current
- */
-
-export function useAccountControllerCurrent<
-  TData = Awaited<ReturnType<typeof accountControllerCurrent>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof accountControllerCurrent>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getAccountControllerCurrentQueryOptions(options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getAccountControllerAcceptUrl = () => {
   return `/v1/me/legal-acceptances`;
@@ -525,32 +273,13 @@ export const getAccountControllerAcceptMutationOptions = <
 export type AccountControllerAcceptMutationResult = NonNullable<
   Awaited<ReturnType<typeof accountControllerAccept>>
 >;
+
 export type AccountControllerAcceptMutationBody = LegalAcceptanceRequestDto;
+
 export type AccountControllerAcceptMutationError = ErrorType<ProblemDetails>;
+
 export type AccountControllerAcceptMutationVariables = { data: LegalAcceptanceRequestDto };
 
-/**
- * @summary Accept
- */
-export const useAccountControllerAccept = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof accountControllerAccept>>,
-      TError,
-      AccountControllerAcceptMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof accountControllerAccept>>,
-  TError,
-  AccountControllerAcceptMutationVariables,
-  TContext
-> => {
-  return useMutation(getAccountControllerAcceptMutationOptions(options), queryClient);
-};
 export const getAccountControllerUpdatePreferencesUrl = () => {
   return `/v1/me/preferences`;
 };
@@ -636,34 +365,11 @@ export const getAccountControllerUpdatePreferencesMutationOptions = <
 export type AccountControllerUpdatePreferencesMutationResult = NonNullable<
   Awaited<ReturnType<typeof accountControllerUpdatePreferences>>
 >;
+
 export type AccountControllerUpdatePreferencesMutationBody = UpdateAccountPreferencesDto;
+
 export type AccountControllerUpdatePreferencesMutationError = ErrorType<ProblemDetails>;
+
 export type AccountControllerUpdatePreferencesMutationVariables = {
   data: UpdateAccountPreferencesDto;
-};
-
-/**
- * @summary Update preferences
- */
-export const useAccountControllerUpdatePreferences = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof accountControllerUpdatePreferences>>,
-      TError,
-      AccountControllerUpdatePreferencesMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof accountControllerUpdatePreferences>>,
-  TError,
-  AccountControllerUpdatePreferencesMutationVariables,
-  TContext
-> => {
-  return useMutation(getAccountControllerUpdatePreferencesMutationOptions(options), queryClient);
 };

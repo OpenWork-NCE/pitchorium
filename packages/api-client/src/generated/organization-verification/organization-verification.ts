@@ -5,22 +5,14 @@
  * Errors follow RFC 9457 with a stable `code`; clients translate codes.
  * OpenAPI spec version: 1
  */
-import { useMutation, useQuery } from '@tanstack/react-query';
 import type {
   DataTag,
-  DefinedInitialDataOptions,
-  DefinedUseQueryResult,
   MutationFunction,
-  QueryClient,
   QueryFunction,
   QueryKey,
-  UndefinedInitialDataOptions,
   UseMutationOptions,
-  UseMutationResult,
   UseQueryOptions,
-  UseQueryResult,
 } from '@tanstack/react-query';
-
 import type {
   CreateVerificationRequestDto,
   DecisionDto,
@@ -31,26 +23,10 @@ import type {
   VerificationQueueDtoOutput,
   VerificationRequestDtoOutput,
 } from '../api.schemas';
-
 import { apiFetch } from '../../http/fetcher';
 import type { ErrorType } from '../../http/fetcher';
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
-
-const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKey: K } => {
-  const result = { queryKey } as T & { queryKey: K };
-  for (const key of Object.keys(query)) {
-    // The explicit queryKey always wins, matching the previous
-    // `{ ...query, queryKey }` spread where it was set last.
-    if (key === 'queryKey') continue;
-    Object.defineProperty(result, key, {
-      enumerable: true,
-      configurable: true,
-      get: () => (query as Record<string, unknown>)[key],
-    });
-  }
-  return result;
-};
 
 export const getVerificationControllerRequestUrl = (organizationId: string) => {
   return `/v1/organizations/${organizationId}/verification-requests`;
@@ -143,38 +119,16 @@ export const getVerificationControllerRequestMutationOptions = <
 export type VerificationControllerRequestMutationResult = NonNullable<
   Awaited<ReturnType<typeof verificationControllerRequest>>
 >;
+
 export type VerificationControllerRequestMutationBody = CreateVerificationRequestDto;
+
 export type VerificationControllerRequestMutationError = ErrorType<ProblemDetails>;
+
 export type VerificationControllerRequestMutationVariables = {
   organizationId: string;
   data: CreateVerificationRequestDto;
 };
 
-/**
- * @summary Request
- */
-export const useVerificationControllerRequest = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof verificationControllerRequest>>,
-      TError,
-      VerificationControllerRequestMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof verificationControllerRequest>>,
-  TError,
-  VerificationControllerRequestMutationVariables,
-  TContext
-> => {
-  return useMutation(getVerificationControllerRequestMutationOptions(options), queryClient);
-};
 export const getVerificationControllerHistoryUrl = (organizationId: string) => {
   return `/v1/organizations/${organizationId}/verification-requests`;
 };
@@ -236,88 +190,8 @@ export const getVerificationControllerHistoryQueryOptions = <
 export type VerificationControllerHistoryQueryResult = NonNullable<
   Awaited<ReturnType<typeof verificationControllerHistory>>
 >;
+
 export type VerificationControllerHistoryQueryError = ErrorType<ProblemDetails>;
-
-export function useVerificationControllerHistory<
-  TData = Awaited<ReturnType<typeof verificationControllerHistory>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  organizationId: string,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof verificationControllerHistory>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof verificationControllerHistory>>,
-          TError,
-          Awaited<ReturnType<typeof verificationControllerHistory>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useVerificationControllerHistory<
-  TData = Awaited<ReturnType<typeof verificationControllerHistory>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  organizationId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof verificationControllerHistory>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof verificationControllerHistory>>,
-          TError,
-          Awaited<ReturnType<typeof verificationControllerHistory>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useVerificationControllerHistory<
-  TData = Awaited<ReturnType<typeof verificationControllerHistory>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  organizationId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof verificationControllerHistory>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary History
- */
-
-export function useVerificationControllerHistory<
-  TData = Awaited<ReturnType<typeof verificationControllerHistory>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  organizationId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof verificationControllerHistory>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getVerificationControllerHistoryQueryOptions(organizationId, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getVerificationControllerQueueUrl = (params?: VerificationControllerQueueParams) => {
   const normalizedParams = new URLSearchParams();
@@ -389,88 +263,8 @@ export const getVerificationControllerQueueQueryOptions = <
 export type VerificationControllerQueueQueryResult = NonNullable<
   Awaited<ReturnType<typeof verificationControllerQueue>>
 >;
+
 export type VerificationControllerQueueQueryError = ErrorType<ProblemDetails>;
-
-export function useVerificationControllerQueue<
-  TData = Awaited<ReturnType<typeof verificationControllerQueue>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params: undefined | VerificationControllerQueueParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof verificationControllerQueue>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof verificationControllerQueue>>,
-          TError,
-          Awaited<ReturnType<typeof verificationControllerQueue>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useVerificationControllerQueue<
-  TData = Awaited<ReturnType<typeof verificationControllerQueue>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: VerificationControllerQueueParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof verificationControllerQueue>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof verificationControllerQueue>>,
-          TError,
-          Awaited<ReturnType<typeof verificationControllerQueue>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useVerificationControllerQueue<
-  TData = Awaited<ReturnType<typeof verificationControllerQueue>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: VerificationControllerQueueParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof verificationControllerQueue>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Queue
- */
-
-export function useVerificationControllerQueue<
-  TData = Awaited<ReturnType<typeof verificationControllerQueue>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: VerificationControllerQueueParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof verificationControllerQueue>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getVerificationControllerQueueQueryOptions(params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getVerificationControllerGetUrl = (requestId: string) => {
   return `/v1/admin/organizations/verification-requests/${requestId}`;
@@ -531,88 +325,8 @@ export const getVerificationControllerGetQueryOptions = <
 export type VerificationControllerGetQueryResult = NonNullable<
   Awaited<ReturnType<typeof verificationControllerGet>>
 >;
+
 export type VerificationControllerGetQueryError = ErrorType<ProblemDetails>;
-
-export function useVerificationControllerGet<
-  TData = Awaited<ReturnType<typeof verificationControllerGet>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  requestId: string,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof verificationControllerGet>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof verificationControllerGet>>,
-          TError,
-          Awaited<ReturnType<typeof verificationControllerGet>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useVerificationControllerGet<
-  TData = Awaited<ReturnType<typeof verificationControllerGet>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  requestId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof verificationControllerGet>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof verificationControllerGet>>,
-          TError,
-          Awaited<ReturnType<typeof verificationControllerGet>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useVerificationControllerGet<
-  TData = Awaited<ReturnType<typeof verificationControllerGet>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  requestId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof verificationControllerGet>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Get
- */
-
-export function useVerificationControllerGet<
-  TData = Awaited<ReturnType<typeof verificationControllerGet>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  requestId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof verificationControllerGet>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getVerificationControllerGetQueryOptions(requestId, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getVerificationControllerDecideUrl = (requestId: string) => {
   return `/v1/admin/organizations/verification-requests/${requestId}/decision`;
@@ -700,38 +414,16 @@ export const getVerificationControllerDecideMutationOptions = <
 export type VerificationControllerDecideMutationResult = NonNullable<
   Awaited<ReturnType<typeof verificationControllerDecide>>
 >;
+
 export type VerificationControllerDecideMutationBody = DecisionDto;
+
 export type VerificationControllerDecideMutationError = ErrorType<ProblemDetails>;
+
 export type VerificationControllerDecideMutationVariables = {
   requestId: string;
   data: DecisionDto;
 };
 
-/**
- * @summary Decide
- */
-export const useVerificationControllerDecide = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof verificationControllerDecide>>,
-      TError,
-      VerificationControllerDecideMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof verificationControllerDecide>>,
-  TError,
-  VerificationControllerDecideMutationVariables,
-  TContext
-> => {
-  return useMutation(getVerificationControllerDecideMutationOptions(options), queryClient);
-};
 export const getVerificationControllerRevokeUrl = (organizationId: string) => {
   return `/v1/admin/organizations/${organizationId}/verification-revocation`;
 };
@@ -818,35 +510,12 @@ export const getVerificationControllerRevokeMutationOptions = <
 export type VerificationControllerRevokeMutationResult = NonNullable<
   Awaited<ReturnType<typeof verificationControllerRevoke>>
 >;
+
 export type VerificationControllerRevokeMutationBody = RevocationDto;
+
 export type VerificationControllerRevokeMutationError = ErrorType<ProblemDetails>;
+
 export type VerificationControllerRevokeMutationVariables = {
   organizationId: string;
   data: RevocationDto;
-};
-
-/**
- * @summary Revoke
- */
-export const useVerificationControllerRevoke = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof verificationControllerRevoke>>,
-      TError,
-      VerificationControllerRevokeMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof verificationControllerRevoke>>,
-  TError,
-  VerificationControllerRevokeMutationVariables,
-  TContext
-> => {
-  return useMutation(getVerificationControllerRevokeMutationOptions(options), queryClient);
 };

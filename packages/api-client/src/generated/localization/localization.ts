@@ -5,22 +5,14 @@
  * Errors follow RFC 9457 with a stable `code`; clients translate codes.
  * OpenAPI spec version: 1
  */
-import { useMutation, useQuery } from '@tanstack/react-query';
 import type {
   DataTag,
-  DefinedInitialDataOptions,
-  DefinedUseQueryResult,
   MutationFunction,
-  QueryClient,
   QueryFunction,
   QueryKey,
-  UndefinedInitialDataOptions,
   UseMutationOptions,
-  UseMutationResult,
   UseQueryOptions,
-  UseQueryResult,
 } from '@tanstack/react-query';
-
 import type {
   GlossaryDtoOutput,
   GlossaryTermDtoOutput,
@@ -31,26 +23,10 @@ import type {
   UpsertGlossaryTermDto,
   UsageDtoOutput,
 } from '../api.schemas';
-
 import { apiFetch } from '../../http/fetcher';
 import type { ErrorType } from '../../http/fetcher';
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
-
-const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKey: K } => {
-  const result = { queryKey } as T & { queryKey: K };
-  for (const key of Object.keys(query)) {
-    // The explicit queryKey always wins, matching the previous
-    // `{ ...query, queryKey }` spread where it was set last.
-    if (key === 'queryKey') continue;
-    Object.defineProperty(result, key, {
-      enumerable: true,
-      configurable: true,
-      get: () => (query as Record<string, unknown>)[key],
-    });
-  }
-  return result;
-};
 
 export const getTranslationsControllerTranslateUrl = () => {
   return `/v1/translations`;
@@ -135,35 +111,13 @@ export const getTranslationsControllerTranslateMutationOptions = <
 export type TranslationsControllerTranslateMutationResult = NonNullable<
   Awaited<ReturnType<typeof translationsControllerTranslate>>
 >;
+
 export type TranslationsControllerTranslateMutationBody = TranslateDto;
+
 export type TranslationsControllerTranslateMutationError = ErrorType<ProblemDetails>;
+
 export type TranslationsControllerTranslateMutationVariables = { data: TranslateDto };
 
-/**
- * @summary Translate
- */
-export const useTranslationsControllerTranslate = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof translationsControllerTranslate>>,
-      TError,
-      TranslationsControllerTranslateMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof translationsControllerTranslate>>,
-  TError,
-  TranslationsControllerTranslateMutationVariables,
-  TContext
-> => {
-  return useMutation(getTranslationsControllerTranslateMutationOptions(options), queryClient);
-};
 export const getTranslationsControllerListUrl = () => {
   return `/v1/admin/localization/glossary`;
 };
@@ -216,84 +170,8 @@ export const getTranslationsControllerListQueryOptions = <
 export type TranslationsControllerListQueryResult = NonNullable<
   Awaited<ReturnType<typeof translationsControllerList>>
 >;
+
 export type TranslationsControllerListQueryError = ErrorType<ProblemDetails>;
-
-export function useTranslationsControllerList<
-  TData = Awaited<ReturnType<typeof translationsControllerList>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof translationsControllerList>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof translationsControllerList>>,
-          TError,
-          Awaited<ReturnType<typeof translationsControllerList>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useTranslationsControllerList<
-  TData = Awaited<ReturnType<typeof translationsControllerList>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof translationsControllerList>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof translationsControllerList>>,
-          TError,
-          Awaited<ReturnType<typeof translationsControllerList>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useTranslationsControllerList<
-  TData = Awaited<ReturnType<typeof translationsControllerList>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof translationsControllerList>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary List
- */
-
-export function useTranslationsControllerList<
-  TData = Awaited<ReturnType<typeof translationsControllerList>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof translationsControllerList>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getTranslationsControllerListQueryOptions(options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getTranslationsControllerCreateUrl = () => {
   return `/v1/admin/localization/glossary`;
@@ -382,35 +260,13 @@ export const getTranslationsControllerCreateMutationOptions = <
 export type TranslationsControllerCreateMutationResult = NonNullable<
   Awaited<ReturnType<typeof translationsControllerCreate>>
 >;
+
 export type TranslationsControllerCreateMutationBody = UpsertGlossaryTermDto;
+
 export type TranslationsControllerCreateMutationError = ErrorType<ProblemDetails>;
+
 export type TranslationsControllerCreateMutationVariables = { data: UpsertGlossaryTermDto };
 
-/**
- * @summary Create
- */
-export const useTranslationsControllerCreate = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof translationsControllerCreate>>,
-      TError,
-      TranslationsControllerCreateMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof translationsControllerCreate>>,
-  TError,
-  TranslationsControllerCreateMutationVariables,
-  TContext
-> => {
-  return useMutation(getTranslationsControllerCreateMutationOptions(options), queryClient);
-};
 export const getTranslationsControllerUpdateUrl = (termId: string) => {
   return `/v1/admin/localization/glossary/${termId}`;
 };
@@ -497,38 +353,16 @@ export const getTranslationsControllerUpdateMutationOptions = <
 export type TranslationsControllerUpdateMutationResult = NonNullable<
   Awaited<ReturnType<typeof translationsControllerUpdate>>
 >;
+
 export type TranslationsControllerUpdateMutationBody = UpsertGlossaryTermDto;
+
 export type TranslationsControllerUpdateMutationError = ErrorType<ProblemDetails>;
+
 export type TranslationsControllerUpdateMutationVariables = {
   termId: string;
   data: UpsertGlossaryTermDto;
 };
 
-/**
- * @summary Update
- */
-export const useTranslationsControllerUpdate = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof translationsControllerUpdate>>,
-      TError,
-      TranslationsControllerUpdateMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof translationsControllerUpdate>>,
-  TError,
-  TranslationsControllerUpdateMutationVariables,
-  TContext
-> => {
-  return useMutation(getTranslationsControllerUpdateMutationOptions(options), queryClient);
-};
 export const getTranslationsControllerRemoveUrl = (termId: string) => {
   return `/v1/admin/localization/glossary/${termId}`;
 };
@@ -595,33 +429,9 @@ export type TranslationsControllerRemoveMutationResult = NonNullable<
 >;
 
 export type TranslationsControllerRemoveMutationError = ErrorType<ProblemDetails>;
+
 export type TranslationsControllerRemoveMutationVariables = { termId: string };
 
-/**
- * @summary Remove
- */
-export const useTranslationsControllerRemove = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof translationsControllerRemove>>,
-      TError,
-      TranslationsControllerRemoveMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof translationsControllerRemove>>,
-  TError,
-  TranslationsControllerRemoveMutationVariables,
-  TContext
-> => {
-  return useMutation(getTranslationsControllerRemoveMutationOptions(options), queryClient);
-};
 export const getTranslationsControllerUsageUrl = () => {
   return `/v1/admin/localization/usage`;
 };
@@ -674,84 +484,8 @@ export const getTranslationsControllerUsageQueryOptions = <
 export type TranslationsControllerUsageQueryResult = NonNullable<
   Awaited<ReturnType<typeof translationsControllerUsage>>
 >;
+
 export type TranslationsControllerUsageQueryError = ErrorType<ProblemDetails>;
-
-export function useTranslationsControllerUsage<
-  TData = Awaited<ReturnType<typeof translationsControllerUsage>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof translationsControllerUsage>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof translationsControllerUsage>>,
-          TError,
-          Awaited<ReturnType<typeof translationsControllerUsage>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useTranslationsControllerUsage<
-  TData = Awaited<ReturnType<typeof translationsControllerUsage>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof translationsControllerUsage>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof translationsControllerUsage>>,
-          TError,
-          Awaited<ReturnType<typeof translationsControllerUsage>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useTranslationsControllerUsage<
-  TData = Awaited<ReturnType<typeof translationsControllerUsage>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof translationsControllerUsage>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Usage
- */
-
-export function useTranslationsControllerUsage<
-  TData = Awaited<ReturnType<typeof translationsControllerUsage>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof translationsControllerUsage>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getTranslationsControllerUsageQueryOptions(options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getTranslationsControllerLocalesUrl = () => {
   return `/v1/admin/localization/locales`;
@@ -805,81 +539,5 @@ export const getTranslationsControllerLocalesQueryOptions = <
 export type TranslationsControllerLocalesQueryResult = NonNullable<
   Awaited<ReturnType<typeof translationsControllerLocales>>
 >;
+
 export type TranslationsControllerLocalesQueryError = ErrorType<ProblemDetails>;
-
-export function useTranslationsControllerLocales<
-  TData = Awaited<ReturnType<typeof translationsControllerLocales>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof translationsControllerLocales>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof translationsControllerLocales>>,
-          TError,
-          Awaited<ReturnType<typeof translationsControllerLocales>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useTranslationsControllerLocales<
-  TData = Awaited<ReturnType<typeof translationsControllerLocales>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof translationsControllerLocales>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof translationsControllerLocales>>,
-          TError,
-          Awaited<ReturnType<typeof translationsControllerLocales>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useTranslationsControllerLocales<
-  TData = Awaited<ReturnType<typeof translationsControllerLocales>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof translationsControllerLocales>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Locales
- */
-
-export function useTranslationsControllerLocales<
-  TData = Awaited<ReturnType<typeof translationsControllerLocales>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof translationsControllerLocales>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getTranslationsControllerLocalesQueryOptions(options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}

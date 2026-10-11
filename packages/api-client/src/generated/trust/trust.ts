@@ -5,22 +5,14 @@
  * Errors follow RFC 9457 with a stable `code`; clients translate codes.
  * OpenAPI spec version: 1
  */
-import { useMutation, useQuery } from '@tanstack/react-query';
 import type {
   DataTag,
-  DefinedInitialDataOptions,
-  DefinedUseQueryResult,
   MutationFunction,
-  QueryClient,
   QueryFunction,
   QueryKey,
-  UndefinedInitialDataOptions,
   UseMutationOptions,
-  UseMutationResult,
   UseQueryOptions,
-  UseQueryResult,
 } from '@tanstack/react-query';
-
 import type {
   AnonymousReportDto,
   AppealDtoOutput,
@@ -35,26 +27,10 @@ import type {
   StandingControllerDecisionsParams,
   StandingDtoOutput,
 } from '../api.schemas';
-
 import { apiFetch } from '../../http/fetcher';
 import type { ErrorType } from '../../http/fetcher';
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
-
-const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKey: K } => {
-  const result = { queryKey } as T & { queryKey: K };
-  for (const key of Object.keys(query)) {
-    // The explicit queryKey always wins, matching the previous
-    // `{ ...query, queryKey }` spread where it was set last.
-    if (key === 'queryKey') continue;
-    Object.defineProperty(result, key, {
-      enumerable: true,
-      configurable: true,
-      get: () => (query as Record<string, unknown>)[key],
-    });
-  }
-  return result;
-};
 
 export const getReportsControllerReportUrl = () => {
   return `/v1/reports`;
@@ -140,32 +116,13 @@ export const getReportsControllerReportMutationOptions = <
 export type ReportsControllerReportMutationResult = NonNullable<
   Awaited<ReturnType<typeof reportsControllerReport>>
 >;
+
 export type ReportsControllerReportMutationBody = CreateReportDto;
+
 export type ReportsControllerReportMutationError = ErrorType<ProblemDetails>;
+
 export type ReportsControllerReportMutationVariables = { data: CreateReportDto };
 
-/**
- * @summary Report
- */
-export const useReportsControllerReport = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof reportsControllerReport>>,
-      TError,
-      ReportsControllerReportMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof reportsControllerReport>>,
-  TError,
-  ReportsControllerReportMutationVariables,
-  TContext
-> => {
-  return useMutation(getReportsControllerReportMutationOptions(options), queryClient);
-};
 export const getReportsControllerMineUrl = (params?: ReportsControllerMineParams) => {
   const normalizedParams = new URLSearchParams();
 
@@ -229,88 +186,8 @@ export const getReportsControllerMineQueryOptions = <
 export type ReportsControllerMineQueryResult = NonNullable<
   Awaited<ReturnType<typeof reportsControllerMine>>
 >;
+
 export type ReportsControllerMineQueryError = ErrorType<ProblemDetails>;
-
-export function useReportsControllerMine<
-  TData = Awaited<ReturnType<typeof reportsControllerMine>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params: undefined | ReportsControllerMineParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof reportsControllerMine>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof reportsControllerMine>>,
-          TError,
-          Awaited<ReturnType<typeof reportsControllerMine>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useReportsControllerMine<
-  TData = Awaited<ReturnType<typeof reportsControllerMine>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: ReportsControllerMineParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof reportsControllerMine>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof reportsControllerMine>>,
-          TError,
-          Awaited<ReturnType<typeof reportsControllerMine>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useReportsControllerMine<
-  TData = Awaited<ReturnType<typeof reportsControllerMine>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: ReportsControllerMineParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof reportsControllerMine>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Mine
- */
-
-export function useReportsControllerMine<
-  TData = Awaited<ReturnType<typeof reportsControllerMine>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: ReportsControllerMineParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof reportsControllerMine>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getReportsControllerMineQueryOptions(params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getReportsControllerNoticeUrl = () => {
   return `/v1/public/reports`;
@@ -394,32 +271,13 @@ export const getReportsControllerNoticeMutationOptions = <
 export type ReportsControllerNoticeMutationResult = NonNullable<
   Awaited<ReturnType<typeof reportsControllerNotice>>
 >;
+
 export type ReportsControllerNoticeMutationBody = AnonymousReportDto;
+
 export type ReportsControllerNoticeMutationError = ErrorType<ProblemDetails>;
+
 export type ReportsControllerNoticeMutationVariables = { data: AnonymousReportDto };
 
-/**
- * @summary Notice
- */
-export const useReportsControllerNotice = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof reportsControllerNotice>>,
-      TError,
-      ReportsControllerNoticeMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof reportsControllerNotice>>,
-  TError,
-  ReportsControllerNoticeMutationVariables,
-  TContext
-> => {
-  return useMutation(getReportsControllerNoticeMutationOptions(options), queryClient);
-};
 export const getStandingControllerReadUrl = () => {
   return `/v1/me/moderation`;
 };
@@ -469,84 +327,8 @@ export const getStandingControllerReadQueryOptions = <
 export type StandingControllerReadQueryResult = NonNullable<
   Awaited<ReturnType<typeof standingControllerRead>>
 >;
+
 export type StandingControllerReadQueryError = ErrorType<ProblemDetails>;
-
-export function useStandingControllerRead<
-  TData = Awaited<ReturnType<typeof standingControllerRead>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof standingControllerRead>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof standingControllerRead>>,
-          TError,
-          Awaited<ReturnType<typeof standingControllerRead>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useStandingControllerRead<
-  TData = Awaited<ReturnType<typeof standingControllerRead>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof standingControllerRead>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof standingControllerRead>>,
-          TError,
-          Awaited<ReturnType<typeof standingControllerRead>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useStandingControllerRead<
-  TData = Awaited<ReturnType<typeof standingControllerRead>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof standingControllerRead>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Read
- */
-
-export function useStandingControllerRead<
-  TData = Awaited<ReturnType<typeof standingControllerRead>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof standingControllerRead>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getStandingControllerReadQueryOptions(options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getStandingControllerDecisionsUrl = (params?: StandingControllerDecisionsParams) => {
   const normalizedParams = new URLSearchParams();
@@ -616,88 +398,8 @@ export const getStandingControllerDecisionsQueryOptions = <
 export type StandingControllerDecisionsQueryResult = NonNullable<
   Awaited<ReturnType<typeof standingControllerDecisions>>
 >;
+
 export type StandingControllerDecisionsQueryError = ErrorType<ProblemDetails>;
-
-export function useStandingControllerDecisions<
-  TData = Awaited<ReturnType<typeof standingControllerDecisions>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params: undefined | StandingControllerDecisionsParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof standingControllerDecisions>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof standingControllerDecisions>>,
-          TError,
-          Awaited<ReturnType<typeof standingControllerDecisions>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useStandingControllerDecisions<
-  TData = Awaited<ReturnType<typeof standingControllerDecisions>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: StandingControllerDecisionsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof standingControllerDecisions>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof standingControllerDecisions>>,
-          TError,
-          Awaited<ReturnType<typeof standingControllerDecisions>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useStandingControllerDecisions<
-  TData = Awaited<ReturnType<typeof standingControllerDecisions>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: StandingControllerDecisionsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof standingControllerDecisions>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Decisions
- */
-
-export function useStandingControllerDecisions<
-  TData = Awaited<ReturnType<typeof standingControllerDecisions>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: StandingControllerDecisionsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof standingControllerDecisions>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getStandingControllerDecisionsQueryOptions(params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getStandingControllerAppealUrl = (decisionId: string) => {
   return `/v1/me/moderation/decisions/${decisionId}/appeal`;
@@ -784,32 +486,12 @@ export const getStandingControllerAppealMutationOptions = <
 export type StandingControllerAppealMutationResult = NonNullable<
   Awaited<ReturnType<typeof standingControllerAppeal>>
 >;
+
 export type StandingControllerAppealMutationBody = AppealRequestDto;
+
 export type StandingControllerAppealMutationError = ErrorType<ProblemDetails>;
+
 export type StandingControllerAppealMutationVariables = {
   decisionId: string;
   data: AppealRequestDto;
-};
-
-/**
- * @summary Appeal
- */
-export const useStandingControllerAppeal = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof standingControllerAppeal>>,
-      TError,
-      StandingControllerAppealMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof standingControllerAppeal>>,
-  TError,
-  StandingControllerAppealMutationVariables,
-  TContext
-> => {
-  return useMutation(getStandingControllerAppealMutationOptions(options), queryClient);
 };

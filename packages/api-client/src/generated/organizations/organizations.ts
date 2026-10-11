@@ -5,22 +5,14 @@
  * Errors follow RFC 9457 with a stable `code`; clients translate codes.
  * OpenAPI spec version: 1
  */
-import { useMutation, useQuery } from '@tanstack/react-query';
 import type {
   DataTag,
-  DefinedInitialDataOptions,
-  DefinedUseQueryResult,
   MutationFunction,
-  QueryClient,
   QueryFunction,
   QueryKey,
-  UndefinedInitialDataOptions,
   UseMutationOptions,
-  UseMutationResult,
   UseQueryOptions,
-  UseQueryResult,
 } from '@tanstack/react-query';
-
 import type {
   AttachMediaDto,
   ChangeOrganizationSlugDto,
@@ -41,26 +33,10 @@ import type {
   TransferOwnershipDto,
   UpdateOrganizationDto,
 } from '../api.schemas';
-
 import { apiFetch } from '../../http/fetcher';
 import type { ErrorType } from '../../http/fetcher';
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
-
-const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKey: K } => {
-  const result = { queryKey } as T & { queryKey: K };
-  for (const key of Object.keys(query)) {
-    // The explicit queryKey always wins, matching the previous
-    // `{ ...query, queryKey }` spread where it was set last.
-    if (key === 'queryKey') continue;
-    Object.defineProperty(result, key, {
-      enumerable: true,
-      configurable: true,
-      get: () => (query as Record<string, unknown>)[key],
-    });
-  }
-  return result;
-};
 
 export const getOrganizationsControllerCreateUrl = () => {
   return `/v1/organizations`;
@@ -149,35 +125,13 @@ export const getOrganizationsControllerCreateMutationOptions = <
 export type OrganizationsControllerCreateMutationResult = NonNullable<
   Awaited<ReturnType<typeof organizationsControllerCreate>>
 >;
+
 export type OrganizationsControllerCreateMutationBody = CreateOrganizationDto;
+
 export type OrganizationsControllerCreateMutationError = ErrorType<ProblemDetails>;
+
 export type OrganizationsControllerCreateMutationVariables = { data: CreateOrganizationDto };
 
-/**
- * @summary Create
- */
-export const useOrganizationsControllerCreate = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof organizationsControllerCreate>>,
-      TError,
-      OrganizationsControllerCreateMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof organizationsControllerCreate>>,
-  TError,
-  OrganizationsControllerCreateMutationVariables,
-  TContext
-> => {
-  return useMutation(getOrganizationsControllerCreateMutationOptions(options), queryClient);
-};
 export const getOrganizationsControllerMineUrl = () => {
   return `/v1/me/organizations`;
 };
@@ -228,84 +182,8 @@ export const getOrganizationsControllerMineQueryOptions = <
 export type OrganizationsControllerMineQueryResult = NonNullable<
   Awaited<ReturnType<typeof organizationsControllerMine>>
 >;
+
 export type OrganizationsControllerMineQueryError = ErrorType<ProblemDetails>;
-
-export function useOrganizationsControllerMine<
-  TData = Awaited<ReturnType<typeof organizationsControllerMine>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof organizationsControllerMine>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof organizationsControllerMine>>,
-          TError,
-          Awaited<ReturnType<typeof organizationsControllerMine>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useOrganizationsControllerMine<
-  TData = Awaited<ReturnType<typeof organizationsControllerMine>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof organizationsControllerMine>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof organizationsControllerMine>>,
-          TError,
-          Awaited<ReturnType<typeof organizationsControllerMine>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useOrganizationsControllerMine<
-  TData = Awaited<ReturnType<typeof organizationsControllerMine>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof organizationsControllerMine>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Mine
- */
-
-export function useOrganizationsControllerMine<
-  TData = Awaited<ReturnType<typeof organizationsControllerMine>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof organizationsControllerMine>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getOrganizationsControllerMineQueryOptions(options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getOrganizationsControllerForMemberUrl = (slug: string) => {
   return `/v1/organizations/by-slug/${slug}`;
@@ -366,88 +244,8 @@ export const getOrganizationsControllerForMemberQueryOptions = <
 export type OrganizationsControllerForMemberQueryResult = NonNullable<
   Awaited<ReturnType<typeof organizationsControllerForMember>>
 >;
+
 export type OrganizationsControllerForMemberQueryError = ErrorType<void | ProblemDetails>;
-
-export function useOrganizationsControllerForMember<
-  TData = Awaited<ReturnType<typeof organizationsControllerForMember>>,
-  TError = ErrorType<void | ProblemDetails>,
->(
-  slug: string,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof organizationsControllerForMember>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof organizationsControllerForMember>>,
-          TError,
-          Awaited<ReturnType<typeof organizationsControllerForMember>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useOrganizationsControllerForMember<
-  TData = Awaited<ReturnType<typeof organizationsControllerForMember>>,
-  TError = ErrorType<void | ProblemDetails>,
->(
-  slug: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof organizationsControllerForMember>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof organizationsControllerForMember>>,
-          TError,
-          Awaited<ReturnType<typeof organizationsControllerForMember>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useOrganizationsControllerForMember<
-  TData = Awaited<ReturnType<typeof organizationsControllerForMember>>,
-  TError = ErrorType<void | ProblemDetails>,
->(
-  slug: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof organizationsControllerForMember>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary For member
- */
-
-export function useOrganizationsControllerForMember<
-  TData = Awaited<ReturnType<typeof organizationsControllerForMember>>,
-  TError = ErrorType<void | ProblemDetails>,
->(
-  slug: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof organizationsControllerForMember>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getOrganizationsControllerForMemberQueryOptions(slug, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getOrganizationsControllerPublicPagesUrl = (
   params?: OrganizationsControllerPublicPagesParams,
@@ -522,88 +320,8 @@ export const getOrganizationsControllerPublicPagesQueryOptions = <
 export type OrganizationsControllerPublicPagesQueryResult = NonNullable<
   Awaited<ReturnType<typeof organizationsControllerPublicPages>>
 >;
+
 export type OrganizationsControllerPublicPagesQueryError = ErrorType<ProblemDetails>;
-
-export function useOrganizationsControllerPublicPages<
-  TData = Awaited<ReturnType<typeof organizationsControllerPublicPages>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params: undefined | OrganizationsControllerPublicPagesParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof organizationsControllerPublicPages>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof organizationsControllerPublicPages>>,
-          TError,
-          Awaited<ReturnType<typeof organizationsControllerPublicPages>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useOrganizationsControllerPublicPages<
-  TData = Awaited<ReturnType<typeof organizationsControllerPublicPages>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: OrganizationsControllerPublicPagesParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof organizationsControllerPublicPages>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof organizationsControllerPublicPages>>,
-          TError,
-          Awaited<ReturnType<typeof organizationsControllerPublicPages>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useOrganizationsControllerPublicPages<
-  TData = Awaited<ReturnType<typeof organizationsControllerPublicPages>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: OrganizationsControllerPublicPagesParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof organizationsControllerPublicPages>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Public pages
- */
-
-export function useOrganizationsControllerPublicPages<
-  TData = Awaited<ReturnType<typeof organizationsControllerPublicPages>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: OrganizationsControllerPublicPagesParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof organizationsControllerPublicPages>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getOrganizationsControllerPublicPagesQueryOptions(params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getOrganizationsControllerForPublicUrl = (slug: string) => {
   return `/v1/public/organizations/${slug}`;
@@ -664,88 +382,8 @@ export const getOrganizationsControllerForPublicQueryOptions = <
 export type OrganizationsControllerForPublicQueryResult = NonNullable<
   Awaited<ReturnType<typeof organizationsControllerForPublic>>
 >;
+
 export type OrganizationsControllerForPublicQueryError = ErrorType<void | ProblemDetails>;
-
-export function useOrganizationsControllerForPublic<
-  TData = Awaited<ReturnType<typeof organizationsControllerForPublic>>,
-  TError = ErrorType<void | ProblemDetails>,
->(
-  slug: string,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof organizationsControllerForPublic>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof organizationsControllerForPublic>>,
-          TError,
-          Awaited<ReturnType<typeof organizationsControllerForPublic>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useOrganizationsControllerForPublic<
-  TData = Awaited<ReturnType<typeof organizationsControllerForPublic>>,
-  TError = ErrorType<void | ProblemDetails>,
->(
-  slug: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof organizationsControllerForPublic>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof organizationsControllerForPublic>>,
-          TError,
-          Awaited<ReturnType<typeof organizationsControllerForPublic>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useOrganizationsControllerForPublic<
-  TData = Awaited<ReturnType<typeof organizationsControllerForPublic>>,
-  TError = ErrorType<void | ProblemDetails>,
->(
-  slug: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof organizationsControllerForPublic>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary For public
- */
-
-export function useOrganizationsControllerForPublic<
-  TData = Awaited<ReturnType<typeof organizationsControllerForPublic>>,
-  TError = ErrorType<void | ProblemDetails>,
->(
-  slug: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof organizationsControllerForPublic>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getOrganizationsControllerForPublicQueryOptions(slug, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getOrganizationsControllerUpdateUrl = (organizationId: string) => {
   return `/v1/organizations/${organizationId}`;
@@ -831,38 +469,16 @@ export const getOrganizationsControllerUpdateMutationOptions = <
 export type OrganizationsControllerUpdateMutationResult = NonNullable<
   Awaited<ReturnType<typeof organizationsControllerUpdate>>
 >;
+
 export type OrganizationsControllerUpdateMutationBody = UpdateOrganizationDto;
+
 export type OrganizationsControllerUpdateMutationError = ErrorType<ProblemDetails>;
+
 export type OrganizationsControllerUpdateMutationVariables = {
   organizationId: string;
   data: UpdateOrganizationDto;
 };
 
-/**
- * @summary Update
- */
-export const useOrganizationsControllerUpdate = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof organizationsControllerUpdate>>,
-      TError,
-      OrganizationsControllerUpdateMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof organizationsControllerUpdate>>,
-  TError,
-  OrganizationsControllerUpdateMutationVariables,
-  TContext
-> => {
-  return useMutation(getOrganizationsControllerUpdateMutationOptions(options), queryClient);
-};
 export const getOrganizationsControllerDeleteUrl = (organizationId: string) => {
   return `/v1/organizations/${organizationId}`;
 };
@@ -927,33 +543,9 @@ export type OrganizationsControllerDeleteMutationResult = NonNullable<
 >;
 
 export type OrganizationsControllerDeleteMutationError = ErrorType<ProblemDetails>;
+
 export type OrganizationsControllerDeleteMutationVariables = { organizationId: string };
 
-/**
- * @summary Delete
- */
-export const useOrganizationsControllerDelete = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof organizationsControllerDelete>>,
-      TError,
-      OrganizationsControllerDeleteMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof organizationsControllerDelete>>,
-  TError,
-  OrganizationsControllerDeleteMutationVariables,
-  TContext
-> => {
-  return useMutation(getOrganizationsControllerDeleteMutationOptions(options), queryClient);
-};
 export const getOrganizationsControllerChangeSlugUrl = (organizationId: string) => {
   return `/v1/organizations/${organizationId}/slug`;
 };
@@ -1038,38 +630,16 @@ export const getOrganizationsControllerChangeSlugMutationOptions = <
 export type OrganizationsControllerChangeSlugMutationResult = NonNullable<
   Awaited<ReturnType<typeof organizationsControllerChangeSlug>>
 >;
+
 export type OrganizationsControllerChangeSlugMutationBody = ChangeOrganizationSlugDto;
+
 export type OrganizationsControllerChangeSlugMutationError = ErrorType<ProblemDetails>;
+
 export type OrganizationsControllerChangeSlugMutationVariables = {
   organizationId: string;
   data: ChangeOrganizationSlugDto;
 };
 
-/**
- * @summary Change slug
- */
-export const useOrganizationsControllerChangeSlug = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof organizationsControllerChangeSlug>>,
-      TError,
-      OrganizationsControllerChangeSlugMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof organizationsControllerChangeSlug>>,
-  TError,
-  OrganizationsControllerChangeSlugMutationVariables,
-  TContext
-> => {
-  return useMutation(getOrganizationsControllerChangeSlugMutationOptions(options), queryClient);
-};
 export const getOrganizationsControllerSetLogoUrl = (organizationId: string) => {
   return `/v1/organizations/${organizationId}/logo`;
 };
@@ -1154,38 +724,16 @@ export const getOrganizationsControllerSetLogoMutationOptions = <
 export type OrganizationsControllerSetLogoMutationResult = NonNullable<
   Awaited<ReturnType<typeof organizationsControllerSetLogo>>
 >;
+
 export type OrganizationsControllerSetLogoMutationBody = AttachMediaDto;
+
 export type OrganizationsControllerSetLogoMutationError = ErrorType<ProblemDetails>;
+
 export type OrganizationsControllerSetLogoMutationVariables = {
   organizationId: string;
   data: AttachMediaDto;
 };
 
-/**
- * @summary Set logo
- */
-export const useOrganizationsControllerSetLogo = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof organizationsControllerSetLogo>>,
-      TError,
-      OrganizationsControllerSetLogoMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof organizationsControllerSetLogo>>,
-  TError,
-  OrganizationsControllerSetLogoMutationVariables,
-  TContext
-> => {
-  return useMutation(getOrganizationsControllerSetLogoMutationOptions(options), queryClient);
-};
 export const getOrganizationsControllerRemoveLogoUrl = (organizationId: string) => {
   return `/v1/organizations/${organizationId}/logo`;
 };
@@ -1250,33 +798,9 @@ export type OrganizationsControllerRemoveLogoMutationResult = NonNullable<
 >;
 
 export type OrganizationsControllerRemoveLogoMutationError = ErrorType<ProblemDetails>;
+
 export type OrganizationsControllerRemoveLogoMutationVariables = { organizationId: string };
 
-/**
- * @summary Remove logo
- */
-export const useOrganizationsControllerRemoveLogo = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof organizationsControllerRemoveLogo>>,
-      TError,
-      OrganizationsControllerRemoveLogoMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof organizationsControllerRemoveLogo>>,
-  TError,
-  OrganizationsControllerRemoveLogoMutationVariables,
-  TContext
-> => {
-  return useMutation(getOrganizationsControllerRemoveLogoMutationOptions(options), queryClient);
-};
 export const getOrganizationsControllerSetCoverUrl = (organizationId: string) => {
   return `/v1/organizations/${organizationId}/cover`;
 };
@@ -1361,38 +885,16 @@ export const getOrganizationsControllerSetCoverMutationOptions = <
 export type OrganizationsControllerSetCoverMutationResult = NonNullable<
   Awaited<ReturnType<typeof organizationsControllerSetCover>>
 >;
+
 export type OrganizationsControllerSetCoverMutationBody = AttachMediaDto;
+
 export type OrganizationsControllerSetCoverMutationError = ErrorType<ProblemDetails>;
+
 export type OrganizationsControllerSetCoverMutationVariables = {
   organizationId: string;
   data: AttachMediaDto;
 };
 
-/**
- * @summary Set cover
- */
-export const useOrganizationsControllerSetCover = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof organizationsControllerSetCover>>,
-      TError,
-      OrganizationsControllerSetCoverMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof organizationsControllerSetCover>>,
-  TError,
-  OrganizationsControllerSetCoverMutationVariables,
-  TContext
-> => {
-  return useMutation(getOrganizationsControllerSetCoverMutationOptions(options), queryClient);
-};
 export const getOrganizationsControllerRemoveCoverUrl = (organizationId: string) => {
   return `/v1/organizations/${organizationId}/cover`;
 };
@@ -1457,33 +959,9 @@ export type OrganizationsControllerRemoveCoverMutationResult = NonNullable<
 >;
 
 export type OrganizationsControllerRemoveCoverMutationError = ErrorType<ProblemDetails>;
+
 export type OrganizationsControllerRemoveCoverMutationVariables = { organizationId: string };
 
-/**
- * @summary Remove cover
- */
-export const useOrganizationsControllerRemoveCover = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof organizationsControllerRemoveCover>>,
-      TError,
-      OrganizationsControllerRemoveCoverMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof organizationsControllerRemoveCover>>,
-  TError,
-  OrganizationsControllerRemoveCoverMutationVariables,
-  TContext
-> => {
-  return useMutation(getOrganizationsControllerRemoveCoverMutationOptions(options), queryClient);
-};
 export const getMembersControllerChangeRoleUrl = (organizationId: string, handle: string) => {
   return `/v1/organizations/${organizationId}/members/${handle}`;
 };
@@ -1572,39 +1050,17 @@ export const getMembersControllerChangeRoleMutationOptions = <
 export type MembersControllerChangeRoleMutationResult = NonNullable<
   Awaited<ReturnType<typeof membersControllerChangeRole>>
 >;
+
 export type MembersControllerChangeRoleMutationBody = ChangeRoleDto;
+
 export type MembersControllerChangeRoleMutationError = ErrorType<ProblemDetails>;
+
 export type MembersControllerChangeRoleMutationVariables = {
   organizationId: string;
   handle: string;
   data: ChangeRoleDto;
 };
 
-/**
- * @summary Change role
- */
-export const useMembersControllerChangeRole = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof membersControllerChangeRole>>,
-      TError,
-      MembersControllerChangeRoleMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof membersControllerChangeRole>>,
-  TError,
-  MembersControllerChangeRoleMutationVariables,
-  TContext
-> => {
-  return useMutation(getMembersControllerChangeRoleMutationOptions(options), queryClient);
-};
 export const getMembersControllerRemoveUrl = (organizationId: string, handle: string) => {
   return `/v1/organizations/${organizationId}/members/${handle}`;
 };
@@ -1669,30 +1125,9 @@ export type MembersControllerRemoveMutationResult = NonNullable<
 >;
 
 export type MembersControllerRemoveMutationError = ErrorType<ProblemDetails>;
+
 export type MembersControllerRemoveMutationVariables = { organizationId: string; handle: string };
 
-/**
- * @summary Remove
- */
-export const useMembersControllerRemove = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof membersControllerRemove>>,
-      TError,
-      MembersControllerRemoveMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof membersControllerRemove>>,
-  TError,
-  MembersControllerRemoveMutationVariables,
-  TContext
-> => {
-  return useMutation(getMembersControllerRemoveMutationOptions(options), queryClient);
-};
 export const getMembersControllerLeaveUrl = (organizationId: string) => {
   return `/v1/organizations/${organizationId}/leave`;
 };
@@ -1756,30 +1191,9 @@ export type MembersControllerLeaveMutationResult = NonNullable<
 >;
 
 export type MembersControllerLeaveMutationError = ErrorType<ProblemDetails>;
+
 export type MembersControllerLeaveMutationVariables = { organizationId: string };
 
-/**
- * @summary Leave
- */
-export const useMembersControllerLeave = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof membersControllerLeave>>,
-      TError,
-      MembersControllerLeaveMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof membersControllerLeave>>,
-  TError,
-  MembersControllerLeaveMutationVariables,
-  TContext
-> => {
-  return useMutation(getMembersControllerLeaveMutationOptions(options), queryClient);
-};
 export const getMembersControllerTransferUrl = (organizationId: string) => {
   return `/v1/organizations/${organizationId}/ownership-transfer`;
 };
@@ -1863,38 +1277,16 @@ export const getMembersControllerTransferMutationOptions = <
 export type MembersControllerTransferMutationResult = NonNullable<
   Awaited<ReturnType<typeof membersControllerTransfer>>
 >;
+
 export type MembersControllerTransferMutationBody = TransferOwnershipDto;
+
 export type MembersControllerTransferMutationError = ErrorType<ProblemDetails>;
+
 export type MembersControllerTransferMutationVariables = {
   organizationId: string;
   data: TransferOwnershipDto;
 };
 
-/**
- * @summary Transfer
- */
-export const useMembersControllerTransfer = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof membersControllerTransfer>>,
-      TError,
-      MembersControllerTransferMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof membersControllerTransfer>>,
-  TError,
-  MembersControllerTransferMutationVariables,
-  TContext
-> => {
-  return useMutation(getMembersControllerTransferMutationOptions(options), queryClient);
-};
 export const getInvitationsControllerInviteUrl = (organizationId: string) => {
   return `/v1/organizations/${organizationId}/invitations`;
 };
@@ -1983,38 +1375,16 @@ export const getInvitationsControllerInviteMutationOptions = <
 export type InvitationsControllerInviteMutationResult = NonNullable<
   Awaited<ReturnType<typeof invitationsControllerInvite>>
 >;
+
 export type InvitationsControllerInviteMutationBody = CreateInvitationDto;
+
 export type InvitationsControllerInviteMutationError = ErrorType<ProblemDetails>;
+
 export type InvitationsControllerInviteMutationVariables = {
   organizationId: string;
   data: CreateInvitationDto;
 };
 
-/**
- * @summary Invite
- */
-export const useInvitationsControllerInvite = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof invitationsControllerInvite>>,
-      TError,
-      InvitationsControllerInviteMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof invitationsControllerInvite>>,
-  TError,
-  InvitationsControllerInviteMutationVariables,
-  TContext
-> => {
-  return useMutation(getInvitationsControllerInviteMutationOptions(options), queryClient);
-};
 export const getInvitationsControllerPendingUrl = (organizationId: string) => {
   return `/v1/organizations/${organizationId}/invitations`;
 };
@@ -2078,88 +1448,8 @@ export const getInvitationsControllerPendingQueryOptions = <
 export type InvitationsControllerPendingQueryResult = NonNullable<
   Awaited<ReturnType<typeof invitationsControllerPending>>
 >;
+
 export type InvitationsControllerPendingQueryError = ErrorType<ProblemDetails>;
-
-export function useInvitationsControllerPending<
-  TData = Awaited<ReturnType<typeof invitationsControllerPending>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  organizationId: string,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof invitationsControllerPending>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof invitationsControllerPending>>,
-          TError,
-          Awaited<ReturnType<typeof invitationsControllerPending>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useInvitationsControllerPending<
-  TData = Awaited<ReturnType<typeof invitationsControllerPending>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  organizationId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof invitationsControllerPending>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof invitationsControllerPending>>,
-          TError,
-          Awaited<ReturnType<typeof invitationsControllerPending>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useInvitationsControllerPending<
-  TData = Awaited<ReturnType<typeof invitationsControllerPending>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  organizationId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof invitationsControllerPending>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Pending
- */
-
-export function useInvitationsControllerPending<
-  TData = Awaited<ReturnType<typeof invitationsControllerPending>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  organizationId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof invitationsControllerPending>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getInvitationsControllerPendingQueryOptions(organizationId, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getInvitationsControllerRevokeUrl = (organizationId: string, invitationId: string) => {
   return `/v1/organizations/${organizationId}/invitations/${invitationId}`;
@@ -2228,36 +1518,12 @@ export type InvitationsControllerRevokeMutationResult = NonNullable<
 >;
 
 export type InvitationsControllerRevokeMutationError = ErrorType<ProblemDetails>;
+
 export type InvitationsControllerRevokeMutationVariables = {
   organizationId: string;
   invitationId: string;
 };
 
-/**
- * @summary Revoke
- */
-export const useInvitationsControllerRevoke = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof invitationsControllerRevoke>>,
-      TError,
-      InvitationsControllerRevokeMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof invitationsControllerRevoke>>,
-  TError,
-  InvitationsControllerRevokeMutationVariables,
-  TContext
-> => {
-  return useMutation(getInvitationsControllerRevokeMutationOptions(options), queryClient);
-};
 export const getInvitationsControllerPreviewUrl = () => {
   return `/v1/public/organization-invitations/preview`;
 };
@@ -2341,35 +1607,13 @@ export const getInvitationsControllerPreviewMutationOptions = <
 export type InvitationsControllerPreviewMutationResult = NonNullable<
   Awaited<ReturnType<typeof invitationsControllerPreview>>
 >;
+
 export type InvitationsControllerPreviewMutationBody = InvitationTokenDto;
+
 export type InvitationsControllerPreviewMutationError = ErrorType<ProblemDetails>;
+
 export type InvitationsControllerPreviewMutationVariables = { data: InvitationTokenDto };
 
-/**
- * @summary Preview
- */
-export const useInvitationsControllerPreview = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof invitationsControllerPreview>>,
-      TError,
-      InvitationsControllerPreviewMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof invitationsControllerPreview>>,
-  TError,
-  InvitationsControllerPreviewMutationVariables,
-  TContext
-> => {
-  return useMutation(getInvitationsControllerPreviewMutationOptions(options), queryClient);
-};
 export const getInvitationsControllerAcceptUrl = () => {
   return `/v1/organization-invitations/accept`;
 };
@@ -2455,35 +1699,13 @@ export const getInvitationsControllerAcceptMutationOptions = <
 export type InvitationsControllerAcceptMutationResult = NonNullable<
   Awaited<ReturnType<typeof invitationsControllerAccept>>
 >;
+
 export type InvitationsControllerAcceptMutationBody = InvitationTokenDto;
+
 export type InvitationsControllerAcceptMutationError = ErrorType<ProblemDetails>;
+
 export type InvitationsControllerAcceptMutationVariables = { data: InvitationTokenDto };
 
-/**
- * @summary Accept
- */
-export const useInvitationsControllerAccept = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof invitationsControllerAccept>>,
-      TError,
-      InvitationsControllerAcceptMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof invitationsControllerAccept>>,
-  TError,
-  InvitationsControllerAcceptMutationVariables,
-  TContext
-> => {
-  return useMutation(getInvitationsControllerAcceptMutationOptions(options), queryClient);
-};
 export const getInvitationsControllerDeclineUrl = () => {
   return `/v1/organization-invitations/decline`;
 };
@@ -2569,35 +1791,13 @@ export const getInvitationsControllerDeclineMutationOptions = <
 export type InvitationsControllerDeclineMutationResult = NonNullable<
   Awaited<ReturnType<typeof invitationsControllerDecline>>
 >;
+
 export type InvitationsControllerDeclineMutationBody = InvitationTokenDto;
+
 export type InvitationsControllerDeclineMutationError = ErrorType<ProblemDetails>;
+
 export type InvitationsControllerDeclineMutationVariables = { data: InvitationTokenDto };
 
-/**
- * @summary Decline
- */
-export const useInvitationsControllerDecline = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof invitationsControllerDecline>>,
-      TError,
-      InvitationsControllerDeclineMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof invitationsControllerDecline>>,
-  TError,
-  InvitationsControllerDeclineMutationVariables,
-  TContext
-> => {
-  return useMutation(getInvitationsControllerDeclineMutationOptions(options), queryClient);
-};
 export const getInvitationsControllerReceivedUrl = () => {
   return `/v1/me/organization-invitations`;
 };
@@ -2648,84 +1848,8 @@ export const getInvitationsControllerReceivedQueryOptions = <
 export type InvitationsControllerReceivedQueryResult = NonNullable<
   Awaited<ReturnType<typeof invitationsControllerReceived>>
 >;
+
 export type InvitationsControllerReceivedQueryError = ErrorType<ProblemDetails>;
-
-export function useInvitationsControllerReceived<
-  TData = Awaited<ReturnType<typeof invitationsControllerReceived>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof invitationsControllerReceived>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof invitationsControllerReceived>>,
-          TError,
-          Awaited<ReturnType<typeof invitationsControllerReceived>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useInvitationsControllerReceived<
-  TData = Awaited<ReturnType<typeof invitationsControllerReceived>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof invitationsControllerReceived>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof invitationsControllerReceived>>,
-          TError,
-          Awaited<ReturnType<typeof invitationsControllerReceived>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useInvitationsControllerReceived<
-  TData = Awaited<ReturnType<typeof invitationsControllerReceived>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof invitationsControllerReceived>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Received
- */
-
-export function useInvitationsControllerReceived<
-  TData = Awaited<ReturnType<typeof invitationsControllerReceived>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof invitationsControllerReceived>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getInvitationsControllerReceivedQueryOptions(options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getInvitationsControllerAcceptReceivedUrl = (invitationId: string) => {
   return `/v1/me/organization-invitations/${invitationId}/accept`;
@@ -2796,33 +1920,9 @@ export type InvitationsControllerAcceptReceivedMutationResult = NonNullable<
 >;
 
 export type InvitationsControllerAcceptReceivedMutationError = ErrorType<ProblemDetails>;
+
 export type InvitationsControllerAcceptReceivedMutationVariables = { invitationId: string };
 
-/**
- * @summary Accept received
- */
-export const useInvitationsControllerAcceptReceived = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof invitationsControllerAcceptReceived>>,
-      TError,
-      InvitationsControllerAcceptReceivedMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof invitationsControllerAcceptReceived>>,
-  TError,
-  InvitationsControllerAcceptReceivedMutationVariables,
-  TContext
-> => {
-  return useMutation(getInvitationsControllerAcceptReceivedMutationOptions(options), queryClient);
-};
 export const getInvitationsControllerDeclineReceivedUrl = (invitationId: string) => {
   return `/v1/me/organization-invitations/${invitationId}/decline`;
 };
@@ -2889,30 +1989,5 @@ export type InvitationsControllerDeclineReceivedMutationResult = NonNullable<
 >;
 
 export type InvitationsControllerDeclineReceivedMutationError = ErrorType<ProblemDetails>;
-export type InvitationsControllerDeclineReceivedMutationVariables = { invitationId: string };
 
-/**
- * @summary Decline received
- */
-export const useInvitationsControllerDeclineReceived = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof invitationsControllerDeclineReceived>>,
-      TError,
-      InvitationsControllerDeclineReceivedMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof invitationsControllerDeclineReceived>>,
-  TError,
-  InvitationsControllerDeclineReceivedMutationVariables,
-  TContext
-> => {
-  return useMutation(getInvitationsControllerDeclineReceivedMutationOptions(options), queryClient);
-};
+export type InvitationsControllerDeclineReceivedMutationVariables = { invitationId: string };

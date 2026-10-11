@@ -5,22 +5,14 @@
  * Errors follow RFC 9457 with a stable `code`; clients translate codes.
  * OpenAPI spec version: 1
  */
-import { useMutation, useQuery } from '@tanstack/react-query';
 import type {
   DataTag,
-  DefinedInitialDataOptions,
-  DefinedUseQueryResult,
   MutationFunction,
-  QueryClient,
   QueryFunction,
   QueryKey,
-  UndefinedInitialDataOptions,
   UseMutationOptions,
-  UseMutationResult,
   UseQueryOptions,
-  UseQueryResult,
 } from '@tanstack/react-query';
-
 import type {
   CreateUploadDto,
   MediaAssetDtoOutput,
@@ -30,26 +22,10 @@ import type {
   ProblemDetails,
   UploadTicketDtoOutput,
 } from '../api.schemas';
-
 import { apiFetch } from '../../http/fetcher';
 import type { ErrorType } from '../../http/fetcher';
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
-
-const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKey: K } => {
-  const result = { queryKey } as T & { queryKey: K };
-  for (const key of Object.keys(query)) {
-    // The explicit queryKey always wins, matching the previous
-    // `{ ...query, queryKey }` spread where it was set last.
-    if (key === 'queryKey') continue;
-    Object.defineProperty(result, key, {
-      enumerable: true,
-      configurable: true,
-      get: () => (query as Record<string, unknown>)[key],
-    });
-  }
-  return result;
-};
 
 export const getMediaControllerUsagesUrl = () => {
   return `/v1/media/usages`;
@@ -100,84 +76,8 @@ export const getMediaControllerUsagesQueryOptions = <
 export type MediaControllerUsagesQueryResult = NonNullable<
   Awaited<ReturnType<typeof mediaControllerUsages>>
 >;
+
 export type MediaControllerUsagesQueryError = ErrorType<ProblemDetails>;
-
-export function useMediaControllerUsages<
-  TData = Awaited<ReturnType<typeof mediaControllerUsages>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof mediaControllerUsages>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof mediaControllerUsages>>,
-          TError,
-          Awaited<ReturnType<typeof mediaControllerUsages>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useMediaControllerUsages<
-  TData = Awaited<ReturnType<typeof mediaControllerUsages>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof mediaControllerUsages>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof mediaControllerUsages>>,
-          TError,
-          Awaited<ReturnType<typeof mediaControllerUsages>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useMediaControllerUsages<
-  TData = Awaited<ReturnType<typeof mediaControllerUsages>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof mediaControllerUsages>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Usages
- */
-
-export function useMediaControllerUsages<
-  TData = Awaited<ReturnType<typeof mediaControllerUsages>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof mediaControllerUsages>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getMediaControllerUsagesQueryOptions(options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getMediaControllerRequestUploadUrl = () => {
   return `/v1/media/uploads`;
@@ -264,35 +164,13 @@ export const getMediaControllerRequestUploadMutationOptions = <
 export type MediaControllerRequestUploadMutationResult = NonNullable<
   Awaited<ReturnType<typeof mediaControllerRequestUpload>>
 >;
+
 export type MediaControllerRequestUploadMutationBody = CreateUploadDto;
+
 export type MediaControllerRequestUploadMutationError = ErrorType<ProblemDetails>;
+
 export type MediaControllerRequestUploadMutationVariables = { data: CreateUploadDto };
 
-/**
- * @summary Request upload
- */
-export const useMediaControllerRequestUpload = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof mediaControllerRequestUpload>>,
-      TError,
-      MediaControllerRequestUploadMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof mediaControllerRequestUpload>>,
-  TError,
-  MediaControllerRequestUploadMutationVariables,
-  TContext
-> => {
-  return useMutation(getMediaControllerRequestUploadMutationOptions(options), queryClient);
-};
 export const getMediaControllerConfirmUrl = (mediaId: string) => {
   return `/v1/media/${mediaId}/confirm`;
 };
@@ -356,30 +234,9 @@ export type MediaControllerConfirmMutationResult = NonNullable<
 >;
 
 export type MediaControllerConfirmMutationError = ErrorType<ProblemDetails>;
+
 export type MediaControllerConfirmMutationVariables = { mediaId: string };
 
-/**
- * @summary Confirm
- */
-export const useMediaControllerConfirm = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof mediaControllerConfirm>>,
-      TError,
-      MediaControllerConfirmMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof mediaControllerConfirm>>,
-  TError,
-  MediaControllerConfirmMutationVariables,
-  TContext
-> => {
-  return useMutation(getMediaControllerConfirmMutationOptions(options), queryClient);
-};
 export const getMediaControllerGetUrl = (mediaId: string) => {
   return `/v1/media/${mediaId}`;
 };
@@ -434,82 +291,8 @@ export const getMediaControllerGetQueryOptions = <
 export type MediaControllerGetQueryResult = NonNullable<
   Awaited<ReturnType<typeof mediaControllerGet>>
 >;
+
 export type MediaControllerGetQueryError = ErrorType<ProblemDetails>;
-
-export function useMediaControllerGet<
-  TData = Awaited<ReturnType<typeof mediaControllerGet>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  mediaId: string,
-  options: {
-    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof mediaControllerGet>>, TError, TData>> &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof mediaControllerGet>>,
-          TError,
-          Awaited<ReturnType<typeof mediaControllerGet>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useMediaControllerGet<
-  TData = Awaited<ReturnType<typeof mediaControllerGet>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  mediaId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof mediaControllerGet>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof mediaControllerGet>>,
-          TError,
-          Awaited<ReturnType<typeof mediaControllerGet>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useMediaControllerGet<
-  TData = Awaited<ReturnType<typeof mediaControllerGet>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  mediaId: string,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof mediaControllerGet>>, TError, TData>>;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Get
- */
-
-export function useMediaControllerGet<
-  TData = Awaited<ReturnType<typeof mediaControllerGet>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  mediaId: string,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof mediaControllerGet>>, TError, TData>>;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getMediaControllerGetQueryOptions(mediaId, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getMediaControllerDeleteUrl = (mediaId: string) => {
   return `/v1/media/${mediaId}`;
@@ -574,30 +357,9 @@ export type MediaControllerDeleteMutationResult = NonNullable<
 >;
 
 export type MediaControllerDeleteMutationError = ErrorType<ProblemDetails>;
+
 export type MediaControllerDeleteMutationVariables = { mediaId: string };
 
-/**
- * @summary Delete
- */
-export const useMediaControllerDelete = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof mediaControllerDelete>>,
-      TError,
-      MediaControllerDeleteMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof mediaControllerDelete>>,
-  TError,
-  MediaControllerDeleteMutationVariables,
-  TContext
-> => {
-  return useMutation(getMediaControllerDeleteMutationOptions(options), queryClient);
-};
 export const getMediaControllerDownloadUrl = (
   mediaId: string,
   params?: MediaControllerDownloadParams,
@@ -675,89 +437,5 @@ export const getMediaControllerDownloadQueryOptions = <
 export type MediaControllerDownloadQueryResult = NonNullable<
   Awaited<ReturnType<typeof mediaControllerDownload>>
 >;
+
 export type MediaControllerDownloadQueryError = ErrorType<ProblemDetails>;
-
-export function useMediaControllerDownload<
-  TData = Awaited<ReturnType<typeof mediaControllerDownload>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  mediaId: string,
-  params: undefined | MediaControllerDownloadParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof mediaControllerDownload>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof mediaControllerDownload>>,
-          TError,
-          Awaited<ReturnType<typeof mediaControllerDownload>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useMediaControllerDownload<
-  TData = Awaited<ReturnType<typeof mediaControllerDownload>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  mediaId: string,
-  params?: MediaControllerDownloadParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof mediaControllerDownload>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof mediaControllerDownload>>,
-          TError,
-          Awaited<ReturnType<typeof mediaControllerDownload>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useMediaControllerDownload<
-  TData = Awaited<ReturnType<typeof mediaControllerDownload>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  mediaId: string,
-  params?: MediaControllerDownloadParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof mediaControllerDownload>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Download
- */
-
-export function useMediaControllerDownload<
-  TData = Awaited<ReturnType<typeof mediaControllerDownload>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  mediaId: string,
-  params?: MediaControllerDownloadParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof mediaControllerDownload>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getMediaControllerDownloadQueryOptions(mediaId, params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}

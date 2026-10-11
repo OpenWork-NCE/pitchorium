@@ -17,8 +17,8 @@
     "build": "rm -rf dist && tsc -p tsconfig.build.json",
     "typecheck": "tsc",
     "lint": "eslint .",
-    "api-client:generate": "orval --config orval.config.ts",
-    "api-client:check": "orval --config orval.config.ts && git diff --exit-code -- src/generated && test -z \"$(git ls-files --others --exclude-standard src/generated)\""
+    "api-client:generate": "orval --config orval.config.ts && node scripts/split-hooks.mjs",
+    "api-client:check": "orval --config orval.config.ts && node scripts/split-hooks.mjs && git diff --exit-code -- src/generated && test -z \"$(git ls-files --others --exclude-standard src/generated)\""
   },
   "peerDependencies": {
     "@tanstack/react-query": "5.104.1",

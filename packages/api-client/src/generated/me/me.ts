@@ -5,22 +5,14 @@
  * Errors follow RFC 9457 with a stable `code`; clients translate codes.
  * OpenAPI spec version: 1
  */
-import { useMutation, useQuery } from '@tanstack/react-query';
 import type {
   DataTag,
-  DefinedInitialDataOptions,
-  DefinedUseQueryResult,
   MutationFunction,
-  QueryClient,
   QueryFunction,
   QueryKey,
-  UndefinedInitialDataOptions,
   UseMutationOptions,
-  UseMutationResult,
   UseQueryOptions,
-  UseQueryResult,
 } from '@tanstack/react-query';
-
 import type {
   AttachMediaDto,
   ChangeHandleDto,
@@ -35,26 +27,10 @@ import type {
   UpdateEntrepreneurFacetDto,
   UpdateVisibilityDto,
 } from '../api.schemas';
-
 import { apiFetch } from '../../http/fetcher';
 import type { ErrorType } from '../../http/fetcher';
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
-
-const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKey: K } => {
-  const result = { queryKey } as T & { queryKey: K };
-  for (const key of Object.keys(query)) {
-    // The explicit queryKey always wins, matching the previous
-    // `{ ...query, queryKey }` spread where it was set last.
-    if (key === 'queryKey') continue;
-    Object.defineProperty(result, key, {
-      enumerable: true,
-      configurable: true,
-      get: () => (query as Record<string, unknown>)[key],
-    });
-  }
-  return result;
-};
 
 export const getMeControllerMeUrl = () => {
   return `/v1/me`;
@@ -103,76 +79,8 @@ export const getMeControllerMeQueryOptions = <
 };
 
 export type MeControllerMeQueryResult = NonNullable<Awaited<ReturnType<typeof meControllerMe>>>;
+
 export type MeControllerMeQueryError = ErrorType<ProblemDetails>;
-
-export function useMeControllerMe<
-  TData = Awaited<ReturnType<typeof meControllerMe>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options: {
-    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof meControllerMe>>, TError, TData>> &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof meControllerMe>>,
-          TError,
-          Awaited<ReturnType<typeof meControllerMe>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useMeControllerMe<
-  TData = Awaited<ReturnType<typeof meControllerMe>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof meControllerMe>>, TError, TData>> &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof meControllerMe>>,
-          TError,
-          Awaited<ReturnType<typeof meControllerMe>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useMeControllerMe<
-  TData = Awaited<ReturnType<typeof meControllerMe>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof meControllerMe>>, TError, TData>>;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Me
- */
-
-export function useMeControllerMe<
-  TData = Awaited<ReturnType<typeof meControllerMe>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof meControllerMe>>, TError, TData>>;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getMeControllerMeQueryOptions(options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getMeControllerProfileUrl = () => {
   return `/v1/me/profile`;
@@ -223,84 +131,8 @@ export const getMeControllerProfileQueryOptions = <
 export type MeControllerProfileQueryResult = NonNullable<
   Awaited<ReturnType<typeof meControllerProfile>>
 >;
+
 export type MeControllerProfileQueryError = ErrorType<ProblemDetails>;
-
-export function useMeControllerProfile<
-  TData = Awaited<ReturnType<typeof meControllerProfile>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof meControllerProfile>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof meControllerProfile>>,
-          TError,
-          Awaited<ReturnType<typeof meControllerProfile>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useMeControllerProfile<
-  TData = Awaited<ReturnType<typeof meControllerProfile>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof meControllerProfile>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof meControllerProfile>>,
-          TError,
-          Awaited<ReturnType<typeof meControllerProfile>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useMeControllerProfile<
-  TData = Awaited<ReturnType<typeof meControllerProfile>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof meControllerProfile>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Profile
- */
-
-export function useMeControllerProfile<
-  TData = Awaited<ReturnType<typeof meControllerProfile>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof meControllerProfile>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getMeControllerProfileQueryOptions(options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getMeControllerUpdateProfileUrl = () => {
   return `/v1/me/profile`;
@@ -384,35 +216,13 @@ export const getMeControllerUpdateProfileMutationOptions = <
 export type MeControllerUpdateProfileMutationResult = NonNullable<
   Awaited<ReturnType<typeof meControllerUpdateProfile>>
 >;
+
 export type MeControllerUpdateProfileMutationBody = UpdateBaseProfileDto;
+
 export type MeControllerUpdateProfileMutationError = ErrorType<ProblemDetails>;
+
 export type MeControllerUpdateProfileMutationVariables = { data: UpdateBaseProfileDto };
 
-/**
- * @summary Update profile
- */
-export const useMeControllerUpdateProfile = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof meControllerUpdateProfile>>,
-      TError,
-      MeControllerUpdateProfileMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof meControllerUpdateProfile>>,
-  TError,
-  MeControllerUpdateProfileMutationVariables,
-  TContext
-> => {
-  return useMutation(getMeControllerUpdateProfileMutationOptions(options), queryClient);
-};
 export const getMeControllerSetIntentionUrl = () => {
   return `/v1/me/intention`;
 };
@@ -495,32 +305,13 @@ export const getMeControllerSetIntentionMutationOptions = <
 export type MeControllerSetIntentionMutationResult = NonNullable<
   Awaited<ReturnType<typeof meControllerSetIntention>>
 >;
+
 export type MeControllerSetIntentionMutationBody = SetIntentionDto;
+
 export type MeControllerSetIntentionMutationError = ErrorType<ProblemDetails>;
+
 export type MeControllerSetIntentionMutationVariables = { data: SetIntentionDto };
 
-/**
- * @summary Set intention
- */
-export const useMeControllerSetIntention = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof meControllerSetIntention>>,
-      TError,
-      MeControllerSetIntentionMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof meControllerSetIntention>>,
-  TError,
-  MeControllerSetIntentionMutationVariables,
-  TContext
-> => {
-  return useMutation(getMeControllerSetIntentionMutationOptions(options), queryClient);
-};
 export const getMeControllerChangeHandleUrl = () => {
   return `/v1/me/profile/handle`;
 };
@@ -603,32 +394,13 @@ export const getMeControllerChangeHandleMutationOptions = <
 export type MeControllerChangeHandleMutationResult = NonNullable<
   Awaited<ReturnType<typeof meControllerChangeHandle>>
 >;
+
 export type MeControllerChangeHandleMutationBody = ChangeHandleDto;
+
 export type MeControllerChangeHandleMutationError = ErrorType<ProblemDetails>;
+
 export type MeControllerChangeHandleMutationVariables = { data: ChangeHandleDto };
 
-/**
- * @summary Change handle
- */
-export const useMeControllerChangeHandle = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof meControllerChangeHandle>>,
-      TError,
-      MeControllerChangeHandleMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof meControllerChangeHandle>>,
-  TError,
-  MeControllerChangeHandleMutationVariables,
-  TContext
-> => {
-  return useMutation(getMeControllerChangeHandleMutationOptions(options), queryClient);
-};
 export const getMeControllerUpdateVisibilityUrl = () => {
   return `/v1/me/profile/visibility`;
 };
@@ -712,35 +484,13 @@ export const getMeControllerUpdateVisibilityMutationOptions = <
 export type MeControllerUpdateVisibilityMutationResult = NonNullable<
   Awaited<ReturnType<typeof meControllerUpdateVisibility>>
 >;
+
 export type MeControllerUpdateVisibilityMutationBody = UpdateVisibilityDto;
+
 export type MeControllerUpdateVisibilityMutationError = ErrorType<ProblemDetails>;
+
 export type MeControllerUpdateVisibilityMutationVariables = { data: UpdateVisibilityDto };
 
-/**
- * @summary Update visibility
- */
-export const useMeControllerUpdateVisibility = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof meControllerUpdateVisibility>>,
-      TError,
-      MeControllerUpdateVisibilityMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof meControllerUpdateVisibility>>,
-  TError,
-  MeControllerUpdateVisibilityMutationVariables,
-  TContext
-> => {
-  return useMutation(getMeControllerUpdateVisibilityMutationOptions(options), queryClient);
-};
 export const getMeControllerSetAvatarUrl = () => {
   return `/v1/me/profile/avatar`;
 };
@@ -823,32 +573,13 @@ export const getMeControllerSetAvatarMutationOptions = <
 export type MeControllerSetAvatarMutationResult = NonNullable<
   Awaited<ReturnType<typeof meControllerSetAvatar>>
 >;
+
 export type MeControllerSetAvatarMutationBody = AttachMediaDto;
+
 export type MeControllerSetAvatarMutationError = ErrorType<ProblemDetails>;
+
 export type MeControllerSetAvatarMutationVariables = { data: AttachMediaDto };
 
-/**
- * @summary Set avatar
- */
-export const useMeControllerSetAvatar = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof meControllerSetAvatar>>,
-      TError,
-      MeControllerSetAvatarMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof meControllerSetAvatar>>,
-  TError,
-  MeControllerSetAvatarMutationVariables,
-  TContext
-> => {
-  return useMutation(getMeControllerSetAvatarMutationOptions(options), queryClient);
-};
 export const getMeControllerRemoveAvatarUrl = () => {
   return `/v1/me/profile/avatar`;
 };
@@ -910,28 +641,6 @@ export type MeControllerRemoveAvatarMutationResult = NonNullable<
 
 export type MeControllerRemoveAvatarMutationError = ErrorType<ProblemDetails>;
 
-/**
- * @summary Remove avatar
- */
-export const useMeControllerRemoveAvatar = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof meControllerRemoveAvatar>>,
-      TError,
-      void,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof meControllerRemoveAvatar>>,
-  TError,
-  void,
-  TContext
-> => {
-  return useMutation(getMeControllerRemoveAvatarMutationOptions(options), queryClient);
-};
 export const getMeControllerSetCoverUrl = () => {
   return `/v1/me/profile/cover`;
 };
@@ -1014,32 +723,13 @@ export const getMeControllerSetCoverMutationOptions = <
 export type MeControllerSetCoverMutationResult = NonNullable<
   Awaited<ReturnType<typeof meControllerSetCover>>
 >;
+
 export type MeControllerSetCoverMutationBody = AttachMediaDto;
+
 export type MeControllerSetCoverMutationError = ErrorType<ProblemDetails>;
+
 export type MeControllerSetCoverMutationVariables = { data: AttachMediaDto };
 
-/**
- * @summary Set cover
- */
-export const useMeControllerSetCover = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof meControllerSetCover>>,
-      TError,
-      MeControllerSetCoverMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof meControllerSetCover>>,
-  TError,
-  MeControllerSetCoverMutationVariables,
-  TContext
-> => {
-  return useMutation(getMeControllerSetCoverMutationOptions(options), queryClient);
-};
 export const getMeControllerRemoveCoverUrl = () => {
   return `/v1/me/profile/cover`;
 };
@@ -1101,28 +791,6 @@ export type MeControllerRemoveCoverMutationResult = NonNullable<
 
 export type MeControllerRemoveCoverMutationError = ErrorType<ProblemDetails>;
 
-/**
- * @summary Remove cover
- */
-export const useMeControllerRemoveCover = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof meControllerRemoveCover>>,
-      TError,
-      void,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof meControllerRemoveCover>>,
-  TError,
-  void,
-  TContext
-> => {
-  return useMutation(getMeControllerRemoveCoverMutationOptions(options), queryClient);
-};
 export const getMeControllerCreateEntrepreneurFacetUrl = () => {
   return `/v1/me/profile/entrepreneur-facet`;
 };
@@ -1208,37 +876,15 @@ export const getMeControllerCreateEntrepreneurFacetMutationOptions = <
 export type MeControllerCreateEntrepreneurFacetMutationResult = NonNullable<
   Awaited<ReturnType<typeof meControllerCreateEntrepreneurFacet>>
 >;
+
 export type MeControllerCreateEntrepreneurFacetMutationBody = CreateEntrepreneurFacetDto;
+
 export type MeControllerCreateEntrepreneurFacetMutationError = ErrorType<ProblemDetails>;
+
 export type MeControllerCreateEntrepreneurFacetMutationVariables = {
   data: CreateEntrepreneurFacetDto;
 };
 
-/**
- * @summary Create entrepreneur facet
- */
-export const useMeControllerCreateEntrepreneurFacet = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof meControllerCreateEntrepreneurFacet>>,
-      TError,
-      MeControllerCreateEntrepreneurFacetMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof meControllerCreateEntrepreneurFacet>>,
-  TError,
-  MeControllerCreateEntrepreneurFacetMutationVariables,
-  TContext
-> => {
-  return useMutation(getMeControllerCreateEntrepreneurFacetMutationOptions(options), queryClient);
-};
 export const getMeControllerUpdateEntrepreneurFacetUrl = () => {
   return `/v1/me/profile/entrepreneur-facet`;
 };
@@ -1322,37 +968,15 @@ export const getMeControllerUpdateEntrepreneurFacetMutationOptions = <
 export type MeControllerUpdateEntrepreneurFacetMutationResult = NonNullable<
   Awaited<ReturnType<typeof meControllerUpdateEntrepreneurFacet>>
 >;
+
 export type MeControllerUpdateEntrepreneurFacetMutationBody = UpdateEntrepreneurFacetDto;
+
 export type MeControllerUpdateEntrepreneurFacetMutationError = ErrorType<ProblemDetails>;
+
 export type MeControllerUpdateEntrepreneurFacetMutationVariables = {
   data: UpdateEntrepreneurFacetDto;
 };
 
-/**
- * @summary Update entrepreneur facet
- */
-export const useMeControllerUpdateEntrepreneurFacet = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof meControllerUpdateEntrepreneurFacet>>,
-      TError,
-      MeControllerUpdateEntrepreneurFacetMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof meControllerUpdateEntrepreneurFacet>>,
-  TError,
-  MeControllerUpdateEntrepreneurFacetMutationVariables,
-  TContext
-> => {
-  return useMutation(getMeControllerUpdateEntrepreneurFacetMutationOptions(options), queryClient);
-};
 export const getMeControllerDeleteEntrepreneurFacetUrl = () => {
   return `/v1/me/profile/entrepreneur-facet`;
 };
@@ -1415,31 +1039,6 @@ export type MeControllerDeleteEntrepreneurFacetMutationResult = NonNullable<
 
 export type MeControllerDeleteEntrepreneurFacetMutationError = ErrorType<ProblemDetails>;
 
-/**
- * @summary Delete entrepreneur facet
- */
-export const useMeControllerDeleteEntrepreneurFacet = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof meControllerDeleteEntrepreneurFacet>>,
-      TError,
-      void,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof meControllerDeleteEntrepreneurFacet>>,
-  TError,
-  void,
-  TContext
-> => {
-  return useMutation(getMeControllerDeleteEntrepreneurFacetMutationOptions(options), queryClient);
-};
 export const getMeControllerCreateContributorFacetUrl = () => {
   return `/v1/me/profile/contributor-facet`;
 };
@@ -1525,37 +1124,15 @@ export const getMeControllerCreateContributorFacetMutationOptions = <
 export type MeControllerCreateContributorFacetMutationResult = NonNullable<
   Awaited<ReturnType<typeof meControllerCreateContributorFacet>>
 >;
+
 export type MeControllerCreateContributorFacetMutationBody = CreateContributorFacetDto;
+
 export type MeControllerCreateContributorFacetMutationError = ErrorType<ProblemDetails>;
+
 export type MeControllerCreateContributorFacetMutationVariables = {
   data: CreateContributorFacetDto;
 };
 
-/**
- * @summary Create contributor facet
- */
-export const useMeControllerCreateContributorFacet = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof meControllerCreateContributorFacet>>,
-      TError,
-      MeControllerCreateContributorFacetMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof meControllerCreateContributorFacet>>,
-  TError,
-  MeControllerCreateContributorFacetMutationVariables,
-  TContext
-> => {
-  return useMutation(getMeControllerCreateContributorFacetMutationOptions(options), queryClient);
-};
 export const getMeControllerUpdateContributorFacetUrl = () => {
   return `/v1/me/profile/contributor-facet`;
 };
@@ -1639,37 +1216,15 @@ export const getMeControllerUpdateContributorFacetMutationOptions = <
 export type MeControllerUpdateContributorFacetMutationResult = NonNullable<
   Awaited<ReturnType<typeof meControllerUpdateContributorFacet>>
 >;
+
 export type MeControllerUpdateContributorFacetMutationBody = UpdateContributorFacetDto;
+
 export type MeControllerUpdateContributorFacetMutationError = ErrorType<ProblemDetails>;
+
 export type MeControllerUpdateContributorFacetMutationVariables = {
   data: UpdateContributorFacetDto;
 };
 
-/**
- * @summary Update contributor facet
- */
-export const useMeControllerUpdateContributorFacet = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof meControllerUpdateContributorFacet>>,
-      TError,
-      MeControllerUpdateContributorFacetMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof meControllerUpdateContributorFacet>>,
-  TError,
-  MeControllerUpdateContributorFacetMutationVariables,
-  TContext
-> => {
-  return useMutation(getMeControllerUpdateContributorFacetMutationOptions(options), queryClient);
-};
 export const getMeControllerDeleteContributorFacetUrl = () => {
   return `/v1/me/profile/contributor-facet`;
 };
@@ -1731,29 +1286,3 @@ export type MeControllerDeleteContributorFacetMutationResult = NonNullable<
 >;
 
 export type MeControllerDeleteContributorFacetMutationError = ErrorType<ProblemDetails>;
-
-/**
- * @summary Delete contributor facet
- */
-export const useMeControllerDeleteContributorFacet = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof meControllerDeleteContributorFacet>>,
-      TError,
-      void,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof meControllerDeleteContributorFacet>>,
-  TError,
-  void,
-  TContext
-> => {
-  return useMutation(getMeControllerDeleteContributorFacetMutationOptions(options), queryClient);
-};

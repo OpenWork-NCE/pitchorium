@@ -5,22 +5,14 @@
  * Errors follow RFC 9457 with a stable `code`; clients translate codes.
  * OpenAPI spec version: 1
  */
-import { useMutation, useQuery } from '@tanstack/react-query';
 import type {
   DataTag,
-  DefinedInitialDataOptions,
-  DefinedUseQueryResult,
   MutationFunction,
-  QueryClient,
   QueryFunction,
   QueryKey,
-  UndefinedInitialDataOptions,
   UseMutationOptions,
-  UseMutationResult,
   UseQueryOptions,
-  UseQueryResult,
 } from '@tanstack/react-query';
-
 import type {
   AdminContributionDtoOutput,
   AdminPaymentsControllerDiscrepanciesParams,
@@ -40,26 +32,10 @@ import type {
   RefundRequestDto,
   ResolveDiscrepancyDto,
 } from '../api.schemas';
-
 import { apiFetch } from '../../http/fetcher';
 import type { ErrorType } from '../../http/fetcher';
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
-
-const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKey: K } => {
-  const result = { queryKey } as T & { queryKey: K };
-  for (const key of Object.keys(query)) {
-    // The explicit queryKey always wins, matching the previous
-    // `{ ...query, queryKey }` spread where it was set last.
-    if (key === 'queryKey') continue;
-    Object.defineProperty(result, key, {
-      enumerable: true,
-      configurable: true,
-      get: () => (query as Record<string, unknown>)[key],
-    });
-  }
-  return result;
-};
 
 export const getAdminPaymentsControllerContributionUrl = (contributionId: string) => {
   return `/v1/admin/payments/contributions/${contributionId}`;
@@ -132,104 +108,8 @@ export const getAdminPaymentsControllerContributionQueryOptions = <
 export type AdminPaymentsControllerContributionQueryResult = NonNullable<
   Awaited<ReturnType<typeof adminPaymentsControllerContribution>>
 >;
+
 export type AdminPaymentsControllerContributionQueryError = ErrorType<ProblemDetails>;
-
-export function useAdminPaymentsControllerContribution<
-  TData = Awaited<ReturnType<typeof adminPaymentsControllerContribution>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  contributionId: string,
-  options: {
-    query: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof adminPaymentsControllerContribution>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof adminPaymentsControllerContribution>>,
-          TError,
-          Awaited<ReturnType<typeof adminPaymentsControllerContribution>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useAdminPaymentsControllerContribution<
-  TData = Awaited<ReturnType<typeof adminPaymentsControllerContribution>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  contributionId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof adminPaymentsControllerContribution>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof adminPaymentsControllerContribution>>,
-          TError,
-          Awaited<ReturnType<typeof adminPaymentsControllerContribution>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useAdminPaymentsControllerContribution<
-  TData = Awaited<ReturnType<typeof adminPaymentsControllerContribution>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  contributionId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof adminPaymentsControllerContribution>>,
-        TError,
-        TData
-      >
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Contribution
- */
-
-export function useAdminPaymentsControllerContribution<
-  TData = Awaited<ReturnType<typeof adminPaymentsControllerContribution>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  contributionId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof adminPaymentsControllerContribution>>,
-        TError,
-        TData
-      >
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getAdminPaymentsControllerContributionQueryOptions(contributionId, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getAdminPaymentsControllerRefundUrl = (contributionId: string) => {
   return `/v1/admin/payments/contributions/${contributionId}/refunds`;
@@ -321,38 +201,16 @@ export const getAdminPaymentsControllerRefundMutationOptions = <
 export type AdminPaymentsControllerRefundMutationResult = NonNullable<
   Awaited<ReturnType<typeof adminPaymentsControllerRefund>>
 >;
+
 export type AdminPaymentsControllerRefundMutationBody = RefundRequestDto;
+
 export type AdminPaymentsControllerRefundMutationError = ErrorType<ProblemDetails>;
+
 export type AdminPaymentsControllerRefundMutationVariables = {
   contributionId: string;
   data: RefundRequestDto;
 };
 
-/**
- * @summary Refund
- */
-export const useAdminPaymentsControllerRefund = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof adminPaymentsControllerRefund>>,
-      TError,
-      AdminPaymentsControllerRefundMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof adminPaymentsControllerRefund>>,
-  TError,
-  AdminPaymentsControllerRefundMutationVariables,
-  TContext
-> => {
-  return useMutation(getAdminPaymentsControllerRefundMutationOptions(options), queryClient);
-};
 export const getAdminPaymentsControllerKycQueueUrl = (
   params?: AdminPaymentsControllerKycQueueParams,
 ) => {
@@ -425,88 +283,8 @@ export const getAdminPaymentsControllerKycQueueQueryOptions = <
 export type AdminPaymentsControllerKycQueueQueryResult = NonNullable<
   Awaited<ReturnType<typeof adminPaymentsControllerKycQueue>>
 >;
+
 export type AdminPaymentsControllerKycQueueQueryError = ErrorType<ProblemDetails>;
-
-export function useAdminPaymentsControllerKycQueue<
-  TData = Awaited<ReturnType<typeof adminPaymentsControllerKycQueue>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params: undefined | AdminPaymentsControllerKycQueueParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof adminPaymentsControllerKycQueue>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof adminPaymentsControllerKycQueue>>,
-          TError,
-          Awaited<ReturnType<typeof adminPaymentsControllerKycQueue>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useAdminPaymentsControllerKycQueue<
-  TData = Awaited<ReturnType<typeof adminPaymentsControllerKycQueue>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: AdminPaymentsControllerKycQueueParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof adminPaymentsControllerKycQueue>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof adminPaymentsControllerKycQueue>>,
-          TError,
-          Awaited<ReturnType<typeof adminPaymentsControllerKycQueue>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useAdminPaymentsControllerKycQueue<
-  TData = Awaited<ReturnType<typeof adminPaymentsControllerKycQueue>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: AdminPaymentsControllerKycQueueParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof adminPaymentsControllerKycQueue>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Kyc queue
- */
-
-export function useAdminPaymentsControllerKycQueue<
-  TData = Awaited<ReturnType<typeof adminPaymentsControllerKycQueue>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: AdminPaymentsControllerKycQueueParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof adminPaymentsControllerKycQueue>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getAdminPaymentsControllerKycQueueQueryOptions(params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getAdminPaymentsControllerKycSubmissionUrl = (kycSubmissionId: string) => {
   return `/v1/admin/payments/kyc-submissions/${kycSubmissionId}`;
@@ -578,107 +356,8 @@ export const getAdminPaymentsControllerKycSubmissionQueryOptions = <
 export type AdminPaymentsControllerKycSubmissionQueryResult = NonNullable<
   Awaited<ReturnType<typeof adminPaymentsControllerKycSubmission>>
 >;
+
 export type AdminPaymentsControllerKycSubmissionQueryError = ErrorType<ProblemDetails>;
-
-export function useAdminPaymentsControllerKycSubmission<
-  TData = Awaited<ReturnType<typeof adminPaymentsControllerKycSubmission>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  kycSubmissionId: string,
-  options: {
-    query: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof adminPaymentsControllerKycSubmission>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof adminPaymentsControllerKycSubmission>>,
-          TError,
-          Awaited<ReturnType<typeof adminPaymentsControllerKycSubmission>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useAdminPaymentsControllerKycSubmission<
-  TData = Awaited<ReturnType<typeof adminPaymentsControllerKycSubmission>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  kycSubmissionId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof adminPaymentsControllerKycSubmission>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof adminPaymentsControllerKycSubmission>>,
-          TError,
-          Awaited<ReturnType<typeof adminPaymentsControllerKycSubmission>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useAdminPaymentsControllerKycSubmission<
-  TData = Awaited<ReturnType<typeof adminPaymentsControllerKycSubmission>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  kycSubmissionId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof adminPaymentsControllerKycSubmission>>,
-        TError,
-        TData
-      >
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Kyc submission
- */
-
-export function useAdminPaymentsControllerKycSubmission<
-  TData = Awaited<ReturnType<typeof adminPaymentsControllerKycSubmission>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  kycSubmissionId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof adminPaymentsControllerKycSubmission>>,
-        TError,
-        TData
-      >
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getAdminPaymentsControllerKycSubmissionQueryOptions(
-    kycSubmissionId,
-    options,
-  );
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getAdminPaymentsControllerDecideKycUrl = (kycSubmissionId: string) => {
   return `/v1/admin/payments/kyc-submissions/${kycSubmissionId}/decision`;
@@ -766,38 +445,16 @@ export const getAdminPaymentsControllerDecideKycMutationOptions = <
 export type AdminPaymentsControllerDecideKycMutationResult = NonNullable<
   Awaited<ReturnType<typeof adminPaymentsControllerDecideKyc>>
 >;
+
 export type AdminPaymentsControllerDecideKycMutationBody = KycDecisionDto;
+
 export type AdminPaymentsControllerDecideKycMutationError = ErrorType<ProblemDetails>;
+
 export type AdminPaymentsControllerDecideKycMutationVariables = {
   kycSubmissionId: string;
   data: KycDecisionDto;
 };
 
-/**
- * @summary Decide kyc
- */
-export const useAdminPaymentsControllerDecideKyc = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof adminPaymentsControllerDecideKyc>>,
-      TError,
-      AdminPaymentsControllerDecideKycMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof adminPaymentsControllerDecideKyc>>,
-  TError,
-  AdminPaymentsControllerDecideKycMutationVariables,
-  TContext
-> => {
-  return useMutation(getAdminPaymentsControllerDecideKycMutationOptions(options), queryClient);
-};
 export const getAdminPaymentsControllerOfflineQueueUrl = (
   params?: AdminPaymentsControllerOfflineQueueParams,
 ) => {
@@ -874,104 +531,8 @@ export const getAdminPaymentsControllerOfflineQueueQueryOptions = <
 export type AdminPaymentsControllerOfflineQueueQueryResult = NonNullable<
   Awaited<ReturnType<typeof adminPaymentsControllerOfflineQueue>>
 >;
+
 export type AdminPaymentsControllerOfflineQueueQueryError = ErrorType<ProblemDetails>;
-
-export function useAdminPaymentsControllerOfflineQueue<
-  TData = Awaited<ReturnType<typeof adminPaymentsControllerOfflineQueue>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params: undefined | AdminPaymentsControllerOfflineQueueParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof adminPaymentsControllerOfflineQueue>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof adminPaymentsControllerOfflineQueue>>,
-          TError,
-          Awaited<ReturnType<typeof adminPaymentsControllerOfflineQueue>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useAdminPaymentsControllerOfflineQueue<
-  TData = Awaited<ReturnType<typeof adminPaymentsControllerOfflineQueue>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: AdminPaymentsControllerOfflineQueueParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof adminPaymentsControllerOfflineQueue>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof adminPaymentsControllerOfflineQueue>>,
-          TError,
-          Awaited<ReturnType<typeof adminPaymentsControllerOfflineQueue>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useAdminPaymentsControllerOfflineQueue<
-  TData = Awaited<ReturnType<typeof adminPaymentsControllerOfflineQueue>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: AdminPaymentsControllerOfflineQueueParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof adminPaymentsControllerOfflineQueue>>,
-        TError,
-        TData
-      >
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Offline queue
- */
-
-export function useAdminPaymentsControllerOfflineQueue<
-  TData = Awaited<ReturnType<typeof adminPaymentsControllerOfflineQueue>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: AdminPaymentsControllerOfflineQueueParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof adminPaymentsControllerOfflineQueue>>,
-        TError,
-        TData
-      >
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getAdminPaymentsControllerOfflineQueueQueryOptions(params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getAdminPaymentsControllerDecideOfflineUrl = (offlineContributionId: string) => {
   return `/v1/admin/payments/offline-contributions/${offlineContributionId}/decision`;
@@ -1062,38 +623,16 @@ export const getAdminPaymentsControllerDecideOfflineMutationOptions = <
 export type AdminPaymentsControllerDecideOfflineMutationResult = NonNullable<
   Awaited<ReturnType<typeof adminPaymentsControllerDecideOffline>>
 >;
+
 export type AdminPaymentsControllerDecideOfflineMutationBody = OfflineDecisionDto;
+
 export type AdminPaymentsControllerDecideOfflineMutationError = ErrorType<ProblemDetails>;
+
 export type AdminPaymentsControllerDecideOfflineMutationVariables = {
   offlineContributionId: string;
   data: OfflineDecisionDto;
 };
 
-/**
- * @summary Decide offline
- */
-export const useAdminPaymentsControllerDecideOffline = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof adminPaymentsControllerDecideOffline>>,
-      TError,
-      AdminPaymentsControllerDecideOfflineMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof adminPaymentsControllerDecideOffline>>,
-  TError,
-  AdminPaymentsControllerDecideOfflineMutationVariables,
-  TContext
-> => {
-  return useMutation(getAdminPaymentsControllerDecideOfflineMutationOptions(options), queryClient);
-};
 export const getAdminPaymentsControllerDiscrepanciesUrl = (
   params?: AdminPaymentsControllerDiscrepanciesParams,
 ) => {
@@ -1171,104 +710,8 @@ export const getAdminPaymentsControllerDiscrepanciesQueryOptions = <
 export type AdminPaymentsControllerDiscrepanciesQueryResult = NonNullable<
   Awaited<ReturnType<typeof adminPaymentsControllerDiscrepancies>>
 >;
+
 export type AdminPaymentsControllerDiscrepanciesQueryError = ErrorType<ProblemDetails>;
-
-export function useAdminPaymentsControllerDiscrepancies<
-  TData = Awaited<ReturnType<typeof adminPaymentsControllerDiscrepancies>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params: undefined | AdminPaymentsControllerDiscrepanciesParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof adminPaymentsControllerDiscrepancies>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof adminPaymentsControllerDiscrepancies>>,
-          TError,
-          Awaited<ReturnType<typeof adminPaymentsControllerDiscrepancies>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useAdminPaymentsControllerDiscrepancies<
-  TData = Awaited<ReturnType<typeof adminPaymentsControllerDiscrepancies>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: AdminPaymentsControllerDiscrepanciesParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof adminPaymentsControllerDiscrepancies>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof adminPaymentsControllerDiscrepancies>>,
-          TError,
-          Awaited<ReturnType<typeof adminPaymentsControllerDiscrepancies>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useAdminPaymentsControllerDiscrepancies<
-  TData = Awaited<ReturnType<typeof adminPaymentsControllerDiscrepancies>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: AdminPaymentsControllerDiscrepanciesParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof adminPaymentsControllerDiscrepancies>>,
-        TError,
-        TData
-      >
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Discrepancies
- */
-
-export function useAdminPaymentsControllerDiscrepancies<
-  TData = Awaited<ReturnType<typeof adminPaymentsControllerDiscrepancies>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: AdminPaymentsControllerDiscrepanciesParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof adminPaymentsControllerDiscrepancies>>,
-        TError,
-        TData
-      >
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getAdminPaymentsControllerDiscrepanciesQueryOptions(params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getAdminPaymentsControllerResolveUrl = (discrepancyId: string) => {
   return `/v1/admin/payments/discrepancies/${discrepancyId}/resolve`;
@@ -1356,38 +799,16 @@ export const getAdminPaymentsControllerResolveMutationOptions = <
 export type AdminPaymentsControllerResolveMutationResult = NonNullable<
   Awaited<ReturnType<typeof adminPaymentsControllerResolve>>
 >;
+
 export type AdminPaymentsControllerResolveMutationBody = ResolveDiscrepancyDto;
+
 export type AdminPaymentsControllerResolveMutationError = ErrorType<ProblemDetails>;
+
 export type AdminPaymentsControllerResolveMutationVariables = {
   discrepancyId: string;
   data: ResolveDiscrepancyDto;
 };
 
-/**
- * @summary Resolve
- */
-export const useAdminPaymentsControllerResolve = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof adminPaymentsControllerResolve>>,
-      TError,
-      AdminPaymentsControllerResolveMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof adminPaymentsControllerResolve>>,
-  TError,
-  AdminPaymentsControllerResolveMutationVariables,
-  TContext
-> => {
-  return useMutation(getAdminPaymentsControllerResolveMutationOptions(options), queryClient);
-};
 export const getAdminPaymentsControllerReconcileUrl = () => {
   return `/v1/admin/payments/reconciliation-runs`;
 };
@@ -1451,29 +872,3 @@ export type AdminPaymentsControllerReconcileMutationResult = NonNullable<
 >;
 
 export type AdminPaymentsControllerReconcileMutationError = ErrorType<ProblemDetails>;
-
-/**
- * @summary Reconcile
- */
-export const useAdminPaymentsControllerReconcile = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof adminPaymentsControllerReconcile>>,
-      TError,
-      void,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof adminPaymentsControllerReconcile>>,
-  TError,
-  void,
-  TContext
-> => {
-  return useMutation(getAdminPaymentsControllerReconcileMutationOptions(options), queryClient);
-};

@@ -5,22 +5,14 @@
  * Errors follow RFC 9457 with a stable `code`; clients translate codes.
  * OpenAPI spec version: 1
  */
-import { useMutation, useQuery } from '@tanstack/react-query';
 import type {
   DataTag,
-  DefinedInitialDataOptions,
-  DefinedUseQueryResult,
   MutationFunction,
-  QueryClient,
   QueryFunction,
   QueryKey,
-  UndefinedInitialDataOptions,
   UseMutationOptions,
-  UseMutationResult,
   UseQueryOptions,
-  UseQueryResult,
 } from '@tanstack/react-query';
-
 import type {
   ConversationDtoOutput,
   ConversationPageDtoOutput,
@@ -43,26 +35,10 @@ import type {
   StartConversationDto,
   UpdateConversationDto,
 } from '../api.schemas';
-
 import { apiFetch } from '../../http/fetcher';
 import type { ErrorType } from '../../http/fetcher';
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
-
-const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKey: K } => {
-  const result = { queryKey } as T & { queryKey: K };
-  for (const key of Object.keys(query)) {
-    // The explicit queryKey always wins, matching the previous
-    // `{ ...query, queryKey }` spread where it was set last.
-    if (key === 'queryKey') continue;
-    Object.defineProperty(result, key, {
-      enumerable: true,
-      configurable: true,
-      get: () => (query as Record<string, unknown>)[key],
-    });
-  }
-  return result;
-};
 
 export const getMessagingControllerListUrl = (params?: MessagingControllerListParams) => {
   const normalizedParams = new URLSearchParams();
@@ -130,88 +106,8 @@ export const getMessagingControllerListQueryOptions = <
 export type MessagingControllerListQueryResult = NonNullable<
   Awaited<ReturnType<typeof messagingControllerList>>
 >;
+
 export type MessagingControllerListQueryError = ErrorType<ProblemDetails>;
-
-export function useMessagingControllerList<
-  TData = Awaited<ReturnType<typeof messagingControllerList>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params: undefined | MessagingControllerListParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof messagingControllerList>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof messagingControllerList>>,
-          TError,
-          Awaited<ReturnType<typeof messagingControllerList>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useMessagingControllerList<
-  TData = Awaited<ReturnType<typeof messagingControllerList>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: MessagingControllerListParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof messagingControllerList>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof messagingControllerList>>,
-          TError,
-          Awaited<ReturnType<typeof messagingControllerList>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useMessagingControllerList<
-  TData = Awaited<ReturnType<typeof messagingControllerList>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: MessagingControllerListParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof messagingControllerList>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary List
- */
-
-export function useMessagingControllerList<
-  TData = Awaited<ReturnType<typeof messagingControllerList>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: MessagingControllerListParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof messagingControllerList>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getMessagingControllerListQueryOptions(params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getMessagingControllerStartUrl = () => {
   return `/v1/messaging/conversations`;
@@ -297,32 +193,13 @@ export const getMessagingControllerStartMutationOptions = <
 export type MessagingControllerStartMutationResult = NonNullable<
   Awaited<ReturnType<typeof messagingControllerStart>>
 >;
+
 export type MessagingControllerStartMutationBody = StartConversationDto;
+
 export type MessagingControllerStartMutationError = ErrorType<ProblemDetails>;
+
 export type MessagingControllerStartMutationVariables = { data: StartConversationDto };
 
-/**
- * @summary Start
- */
-export const useMessagingControllerStart = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof messagingControllerStart>>,
-      TError,
-      MessagingControllerStartMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof messagingControllerStart>>,
-  TError,
-  MessagingControllerStartMutationVariables,
-  TContext
-> => {
-  return useMutation(getMessagingControllerStartMutationOptions(options), queryClient);
-};
 export const getMessagingControllerWithMemberUrl = (handle: string) => {
   return `/v1/messaging/members/${handle}`;
 };
@@ -380,88 +257,8 @@ export const getMessagingControllerWithMemberQueryOptions = <
 export type MessagingControllerWithMemberQueryResult = NonNullable<
   Awaited<ReturnType<typeof messagingControllerWithMember>>
 >;
+
 export type MessagingControllerWithMemberQueryError = ErrorType<ProblemDetails>;
-
-export function useMessagingControllerWithMember<
-  TData = Awaited<ReturnType<typeof messagingControllerWithMember>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  handle: string,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof messagingControllerWithMember>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof messagingControllerWithMember>>,
-          TError,
-          Awaited<ReturnType<typeof messagingControllerWithMember>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useMessagingControllerWithMember<
-  TData = Awaited<ReturnType<typeof messagingControllerWithMember>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  handle: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof messagingControllerWithMember>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof messagingControllerWithMember>>,
-          TError,
-          Awaited<ReturnType<typeof messagingControllerWithMember>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useMessagingControllerWithMember<
-  TData = Awaited<ReturnType<typeof messagingControllerWithMember>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  handle: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof messagingControllerWithMember>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary With member
- */
-
-export function useMessagingControllerWithMember<
-  TData = Awaited<ReturnType<typeof messagingControllerWithMember>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  handle: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof messagingControllerWithMember>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getMessagingControllerWithMemberQueryOptions(handle, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getMessagingControllerGetUrl = (conversationId: string) => {
   return `/v1/messaging/conversations/${conversationId}`;
@@ -519,88 +316,8 @@ export const getMessagingControllerGetQueryOptions = <
 export type MessagingControllerGetQueryResult = NonNullable<
   Awaited<ReturnType<typeof messagingControllerGet>>
 >;
+
 export type MessagingControllerGetQueryError = ErrorType<ProblemDetails>;
-
-export function useMessagingControllerGet<
-  TData = Awaited<ReturnType<typeof messagingControllerGet>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  conversationId: string,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof messagingControllerGet>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof messagingControllerGet>>,
-          TError,
-          Awaited<ReturnType<typeof messagingControllerGet>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useMessagingControllerGet<
-  TData = Awaited<ReturnType<typeof messagingControllerGet>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  conversationId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof messagingControllerGet>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof messagingControllerGet>>,
-          TError,
-          Awaited<ReturnType<typeof messagingControllerGet>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useMessagingControllerGet<
-  TData = Awaited<ReturnType<typeof messagingControllerGet>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  conversationId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof messagingControllerGet>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Get
- */
-
-export function useMessagingControllerGet<
-  TData = Awaited<ReturnType<typeof messagingControllerGet>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  conversationId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof messagingControllerGet>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getMessagingControllerGetQueryOptions(conversationId, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getMessagingControllerUpdateUrl = (conversationId: string) => {
   return `/v1/messaging/conversations/${conversationId}`;
@@ -685,38 +402,16 @@ export const getMessagingControllerUpdateMutationOptions = <
 export type MessagingControllerUpdateMutationResult = NonNullable<
   Awaited<ReturnType<typeof messagingControllerUpdate>>
 >;
+
 export type MessagingControllerUpdateMutationBody = UpdateConversationDto;
+
 export type MessagingControllerUpdateMutationError = ErrorType<ProblemDetails>;
+
 export type MessagingControllerUpdateMutationVariables = {
   conversationId: string;
   data: UpdateConversationDto;
 };
 
-/**
- * @summary Update
- */
-export const useMessagingControllerUpdate = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof messagingControllerUpdate>>,
-      TError,
-      MessagingControllerUpdateMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof messagingControllerUpdate>>,
-  TError,
-  MessagingControllerUpdateMutationVariables,
-  TContext
-> => {
-  return useMutation(getMessagingControllerUpdateMutationOptions(options), queryClient);
-};
 export const getMessagingControllerLeaveUrl = (conversationId: string) => {
   return `/v1/messaging/conversations/${conversationId}/leave`;
 };
@@ -780,30 +475,9 @@ export type MessagingControllerLeaveMutationResult = NonNullable<
 >;
 
 export type MessagingControllerLeaveMutationError = ErrorType<ProblemDetails>;
+
 export type MessagingControllerLeaveMutationVariables = { conversationId: string };
 
-/**
- * @summary Leave
- */
-export const useMessagingControllerLeave = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof messagingControllerLeave>>,
-      TError,
-      MessagingControllerLeaveMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof messagingControllerLeave>>,
-  TError,
-  MessagingControllerLeaveMutationVariables,
-  TContext
-> => {
-  return useMutation(getMessagingControllerLeaveMutationOptions(options), queryClient);
-};
 export const getMessagingControllerMessagesUrl = (
   conversationId: string,
   params?: MessagingControllerMessagesParams,
@@ -885,92 +559,8 @@ export const getMessagingControllerMessagesQueryOptions = <
 export type MessagingControllerMessagesQueryResult = NonNullable<
   Awaited<ReturnType<typeof messagingControllerMessages>>
 >;
+
 export type MessagingControllerMessagesQueryError = ErrorType<ProblemDetails>;
-
-export function useMessagingControllerMessages<
-  TData = Awaited<ReturnType<typeof messagingControllerMessages>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  conversationId: string,
-  params: undefined | MessagingControllerMessagesParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof messagingControllerMessages>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof messagingControllerMessages>>,
-          TError,
-          Awaited<ReturnType<typeof messagingControllerMessages>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useMessagingControllerMessages<
-  TData = Awaited<ReturnType<typeof messagingControllerMessages>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  conversationId: string,
-  params?: MessagingControllerMessagesParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof messagingControllerMessages>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof messagingControllerMessages>>,
-          TError,
-          Awaited<ReturnType<typeof messagingControllerMessages>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useMessagingControllerMessages<
-  TData = Awaited<ReturnType<typeof messagingControllerMessages>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  conversationId: string,
-  params?: MessagingControllerMessagesParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof messagingControllerMessages>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Messages
- */
-
-export function useMessagingControllerMessages<
-  TData = Awaited<ReturnType<typeof messagingControllerMessages>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  conversationId: string,
-  params?: MessagingControllerMessagesParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof messagingControllerMessages>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getMessagingControllerMessagesQueryOptions(conversationId, params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getMessagingControllerSendUrl = (conversationId: string) => {
   return `/v1/messaging/conversations/${conversationId}/messages`;
@@ -1057,35 +647,16 @@ export const getMessagingControllerSendMutationOptions = <
 export type MessagingControllerSendMutationResult = NonNullable<
   Awaited<ReturnType<typeof messagingControllerSend>>
 >;
+
 export type MessagingControllerSendMutationBody = SendMessageDto;
+
 export type MessagingControllerSendMutationError = ErrorType<ProblemDetails>;
+
 export type MessagingControllerSendMutationVariables = {
   conversationId: string;
   data: SendMessageDto;
 };
 
-/**
- * @summary Send
- */
-export const useMessagingControllerSend = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof messagingControllerSend>>,
-      TError,
-      MessagingControllerSendMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof messagingControllerSend>>,
-  TError,
-  MessagingControllerSendMutationVariables,
-  TContext
-> => {
-  return useMutation(getMessagingControllerSendMutationOptions(options), queryClient);
-};
 export const getMessagingControllerReadUrl = (conversationId: string) => {
   return `/v1/messaging/conversations/${conversationId}/read`;
 };
@@ -1169,35 +740,16 @@ export const getMessagingControllerReadMutationOptions = <
 export type MessagingControllerReadMutationResult = NonNullable<
   Awaited<ReturnType<typeof messagingControllerRead>>
 >;
+
 export type MessagingControllerReadMutationBody = ReadConversationDto;
+
 export type MessagingControllerReadMutationError = ErrorType<ProblemDetails>;
+
 export type MessagingControllerReadMutationVariables = {
   conversationId: string;
   data: ReadConversationDto;
 };
 
-/**
- * @summary Read
- */
-export const useMessagingControllerRead = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof messagingControllerRead>>,
-      TError,
-      MessagingControllerReadMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof messagingControllerRead>>,
-  TError,
-  MessagingControllerReadMutationVariables,
-  TContext
-> => {
-  return useMutation(getMessagingControllerReadMutationOptions(options), queryClient);
-};
 export const getMessagingControllerEditUrl = (conversationId: string, messageId: string) => {
   return `/v1/messaging/conversations/${conversationId}/messages/${messageId}`;
 };
@@ -1282,36 +834,17 @@ export const getMessagingControllerEditMutationOptions = <
 export type MessagingControllerEditMutationResult = NonNullable<
   Awaited<ReturnType<typeof messagingControllerEdit>>
 >;
+
 export type MessagingControllerEditMutationBody = EditMessageDto;
+
 export type MessagingControllerEditMutationError = ErrorType<ProblemDetails>;
+
 export type MessagingControllerEditMutationVariables = {
   conversationId: string;
   messageId: string;
   data: EditMessageDto;
 };
 
-/**
- * @summary Edit
- */
-export const useMessagingControllerEdit = <TError = ErrorType<ProblemDetails>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof messagingControllerEdit>>,
-      TError,
-      MessagingControllerEditMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof messagingControllerEdit>>,
-  TError,
-  MessagingControllerEditMutationVariables,
-  TContext
-> => {
-  return useMutation(getMessagingControllerEditMutationOptions(options), queryClient);
-};
 export const getMessagingControllerRemoveUrl = (conversationId: string, messageId: string) => {
   return `/v1/messaging/conversations/${conversationId}/messages/${messageId}`;
 };
@@ -1376,36 +909,12 @@ export type MessagingControllerRemoveMutationResult = NonNullable<
 >;
 
 export type MessagingControllerRemoveMutationError = ErrorType<ProblemDetails>;
+
 export type MessagingControllerRemoveMutationVariables = {
   conversationId: string;
   messageId: string;
 };
 
-/**
- * @summary Remove
- */
-export const useMessagingControllerRemove = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof messagingControllerRemove>>,
-      TError,
-      MessagingControllerRemoveMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof messagingControllerRemove>>,
-  TError,
-  MessagingControllerRemoveMutationVariables,
-  TContext
-> => {
-  return useMutation(getMessagingControllerRemoveMutationOptions(options), queryClient);
-};
 export const getMessagingControllerAcceptUrl = (conversationId: string) => {
   return `/v1/messaging/conversations/${conversationId}/accept`;
 };
@@ -1469,33 +978,9 @@ export type MessagingControllerAcceptMutationResult = NonNullable<
 >;
 
 export type MessagingControllerAcceptMutationError = ErrorType<ProblemDetails>;
+
 export type MessagingControllerAcceptMutationVariables = { conversationId: string };
 
-/**
- * @summary Accept
- */
-export const useMessagingControllerAccept = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof messagingControllerAccept>>,
-      TError,
-      MessagingControllerAcceptMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof messagingControllerAccept>>,
-  TError,
-  MessagingControllerAcceptMutationVariables,
-  TContext
-> => {
-  return useMutation(getMessagingControllerAcceptMutationOptions(options), queryClient);
-};
 export const getMessagingControllerDeclineUrl = (conversationId: string) => {
   return `/v1/messaging/conversations/${conversationId}/decline`;
 };
@@ -1560,33 +1045,9 @@ export type MessagingControllerDeclineMutationResult = NonNullable<
 >;
 
 export type MessagingControllerDeclineMutationError = ErrorType<ProblemDetails>;
+
 export type MessagingControllerDeclineMutationVariables = { conversationId: string };
 
-/**
- * @summary Decline
- */
-export const useMessagingControllerDecline = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof messagingControllerDecline>>,
-      TError,
-      MessagingControllerDeclineMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof messagingControllerDecline>>,
-  TError,
-  MessagingControllerDeclineMutationVariables,
-  TContext
-> => {
-  return useMutation(getMessagingControllerDeclineMutationOptions(options), queryClient);
-};
 export const getMessagingControllerSettingsUrl = () => {
   return `/v1/me/messaging/settings`;
 };
@@ -1637,84 +1098,8 @@ export const getMessagingControllerSettingsQueryOptions = <
 export type MessagingControllerSettingsQueryResult = NonNullable<
   Awaited<ReturnType<typeof messagingControllerSettings>>
 >;
+
 export type MessagingControllerSettingsQueryError = ErrorType<ProblemDetails>;
-
-export function useMessagingControllerSettings<
-  TData = Awaited<ReturnType<typeof messagingControllerSettings>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof messagingControllerSettings>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof messagingControllerSettings>>,
-          TError,
-          Awaited<ReturnType<typeof messagingControllerSettings>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useMessagingControllerSettings<
-  TData = Awaited<ReturnType<typeof messagingControllerSettings>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof messagingControllerSettings>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof messagingControllerSettings>>,
-          TError,
-          Awaited<ReturnType<typeof messagingControllerSettings>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useMessagingControllerSettings<
-  TData = Awaited<ReturnType<typeof messagingControllerSettings>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof messagingControllerSettings>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Settings
- */
-
-export function useMessagingControllerSettings<
-  TData = Awaited<ReturnType<typeof messagingControllerSettings>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof messagingControllerSettings>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getMessagingControllerSettingsQueryOptions(options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getMessagingControllerUpdateSettingsUrl = () => {
   return `/v1/me/messaging/settings`;
@@ -1799,35 +1184,13 @@ export const getMessagingControllerUpdateSettingsMutationOptions = <
 export type MessagingControllerUpdateSettingsMutationResult = NonNullable<
   Awaited<ReturnType<typeof messagingControllerUpdateSettings>>
 >;
+
 export type MessagingControllerUpdateSettingsMutationBody = MessagingSettingsDto;
+
 export type MessagingControllerUpdateSettingsMutationError = ErrorType<ProblemDetails>;
+
 export type MessagingControllerUpdateSettingsMutationVariables = { data: MessagingSettingsDto };
 
-/**
- * @summary Update settings
- */
-export const useMessagingControllerUpdateSettings = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof messagingControllerUpdateSettings>>,
-      TError,
-      MessagingControllerUpdateSettingsMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof messagingControllerUpdateSettings>>,
-  TError,
-  MessagingControllerUpdateSettingsMutationVariables,
-  TContext
-> => {
-  return useMutation(getMessagingControllerUpdateSettingsMutationOptions(options), queryClient);
-};
 export const getMessagingControllerProposeUrl = () => {
   return `/v1/messaging/introductions`;
 };
@@ -1915,35 +1278,13 @@ export const getMessagingControllerProposeMutationOptions = <
 export type MessagingControllerProposeMutationResult = NonNullable<
   Awaited<ReturnType<typeof messagingControllerPropose>>
 >;
+
 export type MessagingControllerProposeMutationBody = ProposeIntroductionDto;
+
 export type MessagingControllerProposeMutationError = ErrorType<ProblemDetails>;
+
 export type MessagingControllerProposeMutationVariables = { data: ProposeIntroductionDto };
 
-/**
- * @summary Propose
- */
-export const useMessagingControllerPropose = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof messagingControllerPropose>>,
-      TError,
-      MessagingControllerProposeMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof messagingControllerPropose>>,
-  TError,
-  MessagingControllerProposeMutationVariables,
-  TContext
-> => {
-  return useMutation(getMessagingControllerProposeMutationOptions(options), queryClient);
-};
 export const getMessagingControllerListIntroductionsUrl = (
   params?: MessagingControllerListIntroductionsParams,
 ) => {
@@ -2019,104 +1360,8 @@ export const getMessagingControllerListIntroductionsQueryOptions = <
 export type MessagingControllerListIntroductionsQueryResult = NonNullable<
   Awaited<ReturnType<typeof messagingControllerListIntroductions>>
 >;
+
 export type MessagingControllerListIntroductionsQueryError = ErrorType<ProblemDetails>;
-
-export function useMessagingControllerListIntroductions<
-  TData = Awaited<ReturnType<typeof messagingControllerListIntroductions>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params: undefined | MessagingControllerListIntroductionsParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof messagingControllerListIntroductions>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof messagingControllerListIntroductions>>,
-          TError,
-          Awaited<ReturnType<typeof messagingControllerListIntroductions>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useMessagingControllerListIntroductions<
-  TData = Awaited<ReturnType<typeof messagingControllerListIntroductions>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: MessagingControllerListIntroductionsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof messagingControllerListIntroductions>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof messagingControllerListIntroductions>>,
-          TError,
-          Awaited<ReturnType<typeof messagingControllerListIntroductions>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useMessagingControllerListIntroductions<
-  TData = Awaited<ReturnType<typeof messagingControllerListIntroductions>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: MessagingControllerListIntroductionsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof messagingControllerListIntroductions>>,
-        TError,
-        TData
-      >
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary List introductions
- */
-
-export function useMessagingControllerListIntroductions<
-  TData = Awaited<ReturnType<typeof messagingControllerListIntroductions>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: MessagingControllerListIntroductionsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof messagingControllerListIntroductions>>,
-        TError,
-        TData
-      >
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getMessagingControllerListIntroductionsQueryOptions(params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getMessagingControllerIntroductionUrl = (introductionId: string) => {
   return `/v1/messaging/introductions/${introductionId}`;
@@ -2178,88 +1423,8 @@ export const getMessagingControllerIntroductionQueryOptions = <
 export type MessagingControllerIntroductionQueryResult = NonNullable<
   Awaited<ReturnType<typeof messagingControllerIntroduction>>
 >;
+
 export type MessagingControllerIntroductionQueryError = ErrorType<ProblemDetails>;
-
-export function useMessagingControllerIntroduction<
-  TData = Awaited<ReturnType<typeof messagingControllerIntroduction>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  introductionId: string,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof messagingControllerIntroduction>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof messagingControllerIntroduction>>,
-          TError,
-          Awaited<ReturnType<typeof messagingControllerIntroduction>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useMessagingControllerIntroduction<
-  TData = Awaited<ReturnType<typeof messagingControllerIntroduction>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  introductionId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof messagingControllerIntroduction>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof messagingControllerIntroduction>>,
-          TError,
-          Awaited<ReturnType<typeof messagingControllerIntroduction>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useMessagingControllerIntroduction<
-  TData = Awaited<ReturnType<typeof messagingControllerIntroduction>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  introductionId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof messagingControllerIntroduction>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Introduction
- */
-
-export function useMessagingControllerIntroduction<
-  TData = Awaited<ReturnType<typeof messagingControllerIntroduction>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  introductionId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof messagingControllerIntroduction>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getMessagingControllerIntroductionQueryOptions(introductionId, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getMessagingControllerAcceptIntroductionUrl = (introductionId: string) => {
   return `/v1/messaging/introductions/${introductionId}/accept`;
@@ -2328,33 +1493,9 @@ export type MessagingControllerAcceptIntroductionMutationResult = NonNullable<
 >;
 
 export type MessagingControllerAcceptIntroductionMutationError = ErrorType<ProblemDetails>;
+
 export type MessagingControllerAcceptIntroductionMutationVariables = { introductionId: string };
 
-/**
- * @summary Accept introduction
- */
-export const useMessagingControllerAcceptIntroduction = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof messagingControllerAcceptIntroduction>>,
-      TError,
-      MessagingControllerAcceptIntroductionMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof messagingControllerAcceptIntroduction>>,
-  TError,
-  MessagingControllerAcceptIntroductionMutationVariables,
-  TContext
-> => {
-  return useMutation(getMessagingControllerAcceptIntroductionMutationOptions(options), queryClient);
-};
 export const getMessagingControllerDeclineIntroductionUrl = (introductionId: string) => {
   return `/v1/messaging/introductions/${introductionId}/decline`;
 };
@@ -2422,33 +1563,5 @@ export type MessagingControllerDeclineIntroductionMutationResult = NonNullable<
 >;
 
 export type MessagingControllerDeclineIntroductionMutationError = ErrorType<ProblemDetails>;
-export type MessagingControllerDeclineIntroductionMutationVariables = { introductionId: string };
 
-/**
- * @summary Decline introduction
- */
-export const useMessagingControllerDeclineIntroduction = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof messagingControllerDeclineIntroduction>>,
-      TError,
-      MessagingControllerDeclineIntroductionMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof messagingControllerDeclineIntroduction>>,
-  TError,
-  MessagingControllerDeclineIntroductionMutationVariables,
-  TContext
-> => {
-  return useMutation(
-    getMessagingControllerDeclineIntroductionMutationOptions(options),
-    queryClient,
-  );
-};
+export type MessagingControllerDeclineIntroductionMutationVariables = { introductionId: string };

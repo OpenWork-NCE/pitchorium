@@ -5,22 +5,14 @@
  * Errors follow RFC 9457 with a stable `code`; clients translate codes.
  * OpenAPI spec version: 1
  */
-import { useMutation, useQuery } from '@tanstack/react-query';
 import type {
   DataTag,
-  DefinedInitialDataOptions,
-  DefinedUseQueryResult,
   MutationFunction,
-  QueryClient,
   QueryFunction,
   QueryKey,
-  UndefinedInitialDataOptions,
   UseMutationOptions,
-  UseMutationResult,
   UseQueryOptions,
-  UseQueryResult,
 } from '@tanstack/react-query';
-
 import type {
   DownloadDtoOutput,
   ErasureDtoOutput,
@@ -31,26 +23,10 @@ import type {
   RequestErasureDto,
   RightsPageDtoOutput,
 } from '../api.schemas';
-
 import { apiFetch } from '../../http/fetcher';
 import type { ErrorType } from '../../http/fetcher';
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
-
-const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKey: K } => {
-  const result = { queryKey } as T & { queryKey: K };
-  for (const key of Object.keys(query)) {
-    // The explicit queryKey always wins, matching the previous
-    // `{ ...query, queryKey }` spread where it was set last.
-    if (key === 'queryKey') continue;
-    Object.defineProperty(result, key, {
-      enumerable: true,
-      configurable: true,
-      get: () => (query as Record<string, unknown>)[key],
-    });
-  }
-  return result;
-};
 
 export const getPrivacyControllerOverviewUrl = () => {
   return `/v1/me/privacy`;
@@ -104,84 +80,8 @@ export const getPrivacyControllerOverviewQueryOptions = <
 export type PrivacyControllerOverviewQueryResult = NonNullable<
   Awaited<ReturnType<typeof privacyControllerOverview>>
 >;
+
 export type PrivacyControllerOverviewQueryError = ErrorType<ProblemDetails>;
-
-export function usePrivacyControllerOverview<
-  TData = Awaited<ReturnType<typeof privacyControllerOverview>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof privacyControllerOverview>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof privacyControllerOverview>>,
-          TError,
-          Awaited<ReturnType<typeof privacyControllerOverview>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function usePrivacyControllerOverview<
-  TData = Awaited<ReturnType<typeof privacyControllerOverview>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof privacyControllerOverview>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof privacyControllerOverview>>,
-          TError,
-          Awaited<ReturnType<typeof privacyControllerOverview>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function usePrivacyControllerOverview<
-  TData = Awaited<ReturnType<typeof privacyControllerOverview>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof privacyControllerOverview>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Overview
- */
-
-export function usePrivacyControllerOverview<
-  TData = Awaited<ReturnType<typeof privacyControllerOverview>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof privacyControllerOverview>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getPrivacyControllerOverviewQueryOptions(options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getPrivacyControllerRequestExportUrl = () => {
   return `/v1/me/privacy/exports`;
@@ -249,31 +149,6 @@ export type PrivacyControllerRequestExportMutationResult = NonNullable<
 
 export type PrivacyControllerRequestExportMutationError = ErrorType<ProblemDetails>;
 
-/**
- * @summary Request export
- */
-export const usePrivacyControllerRequestExport = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof privacyControllerRequestExport>>,
-      TError,
-      void,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof privacyControllerRequestExport>>,
-  TError,
-  void,
-  TContext
-> => {
-  return useMutation(getPrivacyControllerRequestExportMutationOptions(options), queryClient);
-};
 export const getPrivacyControllerDownloadUrl = (exportId: string) => {
   return `/v1/me/privacy/exports/${exportId}/download-url`;
 };
@@ -339,33 +214,9 @@ export type PrivacyControllerDownloadMutationResult = NonNullable<
 >;
 
 export type PrivacyControllerDownloadMutationError = ErrorType<ProblemDetails>;
+
 export type PrivacyControllerDownloadMutationVariables = { exportId: string };
 
-/**
- * @summary Download
- */
-export const usePrivacyControllerDownload = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof privacyControllerDownload>>,
-      TError,
-      PrivacyControllerDownloadMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof privacyControllerDownload>>,
-  TError,
-  PrivacyControllerDownloadMutationVariables,
-  TContext
-> => {
-  return useMutation(getPrivacyControllerDownloadMutationOptions(options), queryClient);
-};
 export const getPrivacyControllerRequestErasureUrl = () => {
   return `/v1/me/privacy/erasure`;
 };
@@ -455,35 +306,13 @@ export const getPrivacyControllerRequestErasureMutationOptions = <
 export type PrivacyControllerRequestErasureMutationResult = NonNullable<
   Awaited<ReturnType<typeof privacyControllerRequestErasure>>
 >;
+
 export type PrivacyControllerRequestErasureMutationBody = RequestErasureDto;
+
 export type PrivacyControllerRequestErasureMutationError = ErrorType<ProblemDetails>;
+
 export type PrivacyControllerRequestErasureMutationVariables = { data: RequestErasureDto };
 
-/**
- * @summary Request erasure
- */
-export const usePrivacyControllerRequestErasure = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof privacyControllerRequestErasure>>,
-      TError,
-      PrivacyControllerRequestErasureMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof privacyControllerRequestErasure>>,
-  TError,
-  PrivacyControllerRequestErasureMutationVariables,
-  TContext
-> => {
-  return useMutation(getPrivacyControllerRequestErasureMutationOptions(options), queryClient);
-};
 export const getPrivacyControllerCancelErasureUrl = () => {
   return `/v1/me/privacy/erasure/cancel`;
 };
@@ -550,31 +379,6 @@ export type PrivacyControllerCancelErasureMutationResult = NonNullable<
 
 export type PrivacyControllerCancelErasureMutationError = ErrorType<ProblemDetails>;
 
-/**
- * @summary Cancel erasure
- */
-export const usePrivacyControllerCancelErasure = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof privacyControllerCancelErasure>>,
-      TError,
-      void,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof privacyControllerCancelErasure>>,
-  TError,
-  void,
-  TContext
-> => {
-  return useMutation(getPrivacyControllerCancelErasureMutationOptions(options), queryClient);
-};
 export const getPrivacyControllerRightsRequestsUrl = (
   params?: PrivacyControllerRightsRequestsParams,
 ) => {
@@ -647,85 +451,5 @@ export const getPrivacyControllerRightsRequestsQueryOptions = <
 export type PrivacyControllerRightsRequestsQueryResult = NonNullable<
   Awaited<ReturnType<typeof privacyControllerRightsRequests>>
 >;
+
 export type PrivacyControllerRightsRequestsQueryError = ErrorType<ProblemDetails>;
-
-export function usePrivacyControllerRightsRequests<
-  TData = Awaited<ReturnType<typeof privacyControllerRightsRequests>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params: undefined | PrivacyControllerRightsRequestsParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof privacyControllerRightsRequests>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof privacyControllerRightsRequests>>,
-          TError,
-          Awaited<ReturnType<typeof privacyControllerRightsRequests>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function usePrivacyControllerRightsRequests<
-  TData = Awaited<ReturnType<typeof privacyControllerRightsRequests>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: PrivacyControllerRightsRequestsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof privacyControllerRightsRequests>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof privacyControllerRightsRequests>>,
-          TError,
-          Awaited<ReturnType<typeof privacyControllerRightsRequests>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function usePrivacyControllerRightsRequests<
-  TData = Awaited<ReturnType<typeof privacyControllerRightsRequests>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: PrivacyControllerRightsRequestsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof privacyControllerRightsRequests>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Rights requests
- */
-
-export function usePrivacyControllerRightsRequests<
-  TData = Awaited<ReturnType<typeof privacyControllerRightsRequests>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: PrivacyControllerRightsRequestsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof privacyControllerRightsRequests>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getPrivacyControllerRightsRequestsQueryOptions(params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}

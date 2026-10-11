@@ -5,22 +5,14 @@
  * Errors follow RFC 9457 with a stable `code`; clients translate codes.
  * OpenAPI spec version: 1
  */
-import { useMutation, useQuery } from '@tanstack/react-query';
 import type {
   DataTag,
-  DefinedInitialDataOptions,
-  DefinedUseQueryResult,
   MutationFunction,
-  QueryClient,
   QueryFunction,
   QueryKey,
-  UndefinedInitialDataOptions,
   UseMutationOptions,
-  UseMutationResult,
   UseQueryOptions,
-  UseQueryResult,
 } from '@tanstack/react-query';
-
 import type {
   AutocompleteResultDtoOutput,
   DiscoverPageDtoOutput,
@@ -40,26 +32,10 @@ import type {
   SearchResultPageDtoOutput,
   SuggestionPageDtoOutput,
 } from '../api.schemas';
-
 import { apiFetch } from '../../http/fetcher';
 import type { ErrorType } from '../../http/fetcher';
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
-
-const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKey: K } => {
-  const result = { queryKey } as T & { queryKey: K };
-  for (const key of Object.keys(query)) {
-    // The explicit queryKey always wins, matching the previous
-    // `{ ...query, queryKey }` spread where it was set last.
-    if (key === 'queryKey') continue;
-    Object.defineProperty(result, key, {
-      enumerable: true,
-      configurable: true,
-      get: () => (query as Record<string, unknown>)[key],
-    });
-  }
-  return result;
-};
 
 export const getDiscoveryControllerSearchAsMemberUrl = (
   params?: DiscoveryControllerSearchAsMemberParams,
@@ -131,88 +107,8 @@ export const getDiscoveryControllerSearchAsMemberQueryOptions = <
 export type DiscoveryControllerSearchAsMemberQueryResult = NonNullable<
   Awaited<ReturnType<typeof discoveryControllerSearchAsMember>>
 >;
+
 export type DiscoveryControllerSearchAsMemberQueryError = ErrorType<ProblemDetails>;
-
-export function useDiscoveryControllerSearchAsMember<
-  TData = Awaited<ReturnType<typeof discoveryControllerSearchAsMember>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params: undefined | DiscoveryControllerSearchAsMemberParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof discoveryControllerSearchAsMember>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof discoveryControllerSearchAsMember>>,
-          TError,
-          Awaited<ReturnType<typeof discoveryControllerSearchAsMember>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useDiscoveryControllerSearchAsMember<
-  TData = Awaited<ReturnType<typeof discoveryControllerSearchAsMember>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: DiscoveryControllerSearchAsMemberParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof discoveryControllerSearchAsMember>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof discoveryControllerSearchAsMember>>,
-          TError,
-          Awaited<ReturnType<typeof discoveryControllerSearchAsMember>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useDiscoveryControllerSearchAsMember<
-  TData = Awaited<ReturnType<typeof discoveryControllerSearchAsMember>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: DiscoveryControllerSearchAsMemberParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof discoveryControllerSearchAsMember>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Search as member
- */
-
-export function useDiscoveryControllerSearchAsMember<
-  TData = Awaited<ReturnType<typeof discoveryControllerSearchAsMember>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: DiscoveryControllerSearchAsMemberParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof discoveryControllerSearchAsMember>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getDiscoveryControllerSearchAsMemberQueryOptions(params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getDiscoveryControllerSearchAsVisitorUrl = (
   params?: DiscoveryControllerSearchAsVisitorParams,
@@ -284,88 +180,8 @@ export const getDiscoveryControllerSearchAsVisitorQueryOptions = <
 export type DiscoveryControllerSearchAsVisitorQueryResult = NonNullable<
   Awaited<ReturnType<typeof discoveryControllerSearchAsVisitor>>
 >;
+
 export type DiscoveryControllerSearchAsVisitorQueryError = ErrorType<ProblemDetails>;
-
-export function useDiscoveryControllerSearchAsVisitor<
-  TData = Awaited<ReturnType<typeof discoveryControllerSearchAsVisitor>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params: undefined | DiscoveryControllerSearchAsVisitorParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof discoveryControllerSearchAsVisitor>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof discoveryControllerSearchAsVisitor>>,
-          TError,
-          Awaited<ReturnType<typeof discoveryControllerSearchAsVisitor>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useDiscoveryControllerSearchAsVisitor<
-  TData = Awaited<ReturnType<typeof discoveryControllerSearchAsVisitor>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: DiscoveryControllerSearchAsVisitorParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof discoveryControllerSearchAsVisitor>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof discoveryControllerSearchAsVisitor>>,
-          TError,
-          Awaited<ReturnType<typeof discoveryControllerSearchAsVisitor>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useDiscoveryControllerSearchAsVisitor<
-  TData = Awaited<ReturnType<typeof discoveryControllerSearchAsVisitor>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: DiscoveryControllerSearchAsVisitorParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof discoveryControllerSearchAsVisitor>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Search as visitor
- */
-
-export function useDiscoveryControllerSearchAsVisitor<
-  TData = Awaited<ReturnType<typeof discoveryControllerSearchAsVisitor>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: DiscoveryControllerSearchAsVisitorParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof discoveryControllerSearchAsVisitor>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getDiscoveryControllerSearchAsVisitorQueryOptions(params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getDiscoveryControllerAutocompleteUrl = (
   params: DiscoveryControllerAutocompleteParams,
@@ -437,88 +253,8 @@ export const getDiscoveryControllerAutocompleteQueryOptions = <
 export type DiscoveryControllerAutocompleteQueryResult = NonNullable<
   Awaited<ReturnType<typeof discoveryControllerAutocomplete>>
 >;
+
 export type DiscoveryControllerAutocompleteQueryError = ErrorType<ProblemDetails>;
-
-export function useDiscoveryControllerAutocomplete<
-  TData = Awaited<ReturnType<typeof discoveryControllerAutocomplete>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params: DiscoveryControllerAutocompleteParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof discoveryControllerAutocomplete>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof discoveryControllerAutocomplete>>,
-          TError,
-          Awaited<ReturnType<typeof discoveryControllerAutocomplete>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useDiscoveryControllerAutocomplete<
-  TData = Awaited<ReturnType<typeof discoveryControllerAutocomplete>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params: DiscoveryControllerAutocompleteParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof discoveryControllerAutocomplete>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof discoveryControllerAutocomplete>>,
-          TError,
-          Awaited<ReturnType<typeof discoveryControllerAutocomplete>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useDiscoveryControllerAutocomplete<
-  TData = Awaited<ReturnType<typeof discoveryControllerAutocomplete>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params: DiscoveryControllerAutocompleteParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof discoveryControllerAutocomplete>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Autocomplete
- */
-
-export function useDiscoveryControllerAutocomplete<
-  TData = Awaited<ReturnType<typeof discoveryControllerAutocomplete>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params: DiscoveryControllerAutocompleteParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof discoveryControllerAutocomplete>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getDiscoveryControllerAutocompleteQueryOptions(params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getDiscoveryControllerPublicAutocompleteUrl = (
   params: DiscoveryControllerPublicAutocompleteParams,
@@ -598,104 +334,8 @@ export const getDiscoveryControllerPublicAutocompleteQueryOptions = <
 export type DiscoveryControllerPublicAutocompleteQueryResult = NonNullable<
   Awaited<ReturnType<typeof discoveryControllerPublicAutocomplete>>
 >;
+
 export type DiscoveryControllerPublicAutocompleteQueryError = ErrorType<ProblemDetails>;
-
-export function useDiscoveryControllerPublicAutocomplete<
-  TData = Awaited<ReturnType<typeof discoveryControllerPublicAutocomplete>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params: DiscoveryControllerPublicAutocompleteParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof discoveryControllerPublicAutocomplete>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof discoveryControllerPublicAutocomplete>>,
-          TError,
-          Awaited<ReturnType<typeof discoveryControllerPublicAutocomplete>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useDiscoveryControllerPublicAutocomplete<
-  TData = Awaited<ReturnType<typeof discoveryControllerPublicAutocomplete>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params: DiscoveryControllerPublicAutocompleteParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof discoveryControllerPublicAutocomplete>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof discoveryControllerPublicAutocomplete>>,
-          TError,
-          Awaited<ReturnType<typeof discoveryControllerPublicAutocomplete>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useDiscoveryControllerPublicAutocomplete<
-  TData = Awaited<ReturnType<typeof discoveryControllerPublicAutocomplete>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params: DiscoveryControllerPublicAutocompleteParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof discoveryControllerPublicAutocomplete>>,
-        TError,
-        TData
-      >
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Public autocomplete
- */
-
-export function useDiscoveryControllerPublicAutocomplete<
-  TData = Awaited<ReturnType<typeof discoveryControllerPublicAutocomplete>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params: DiscoveryControllerPublicAutocompleteParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof discoveryControllerPublicAutocomplete>>,
-        TError,
-        TData
-      >
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getDiscoveryControllerPublicAutocompleteQueryOptions(params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getDiscoveryControllerListUrl = (params: DiscoveryControllerListParams) => {
   const normalizedParams = new URLSearchParams();
@@ -763,88 +403,8 @@ export const getDiscoveryControllerListQueryOptions = <
 export type DiscoveryControllerListQueryResult = NonNullable<
   Awaited<ReturnType<typeof discoveryControllerList>>
 >;
+
 export type DiscoveryControllerListQueryError = ErrorType<ProblemDetails>;
-
-export function useDiscoveryControllerList<
-  TData = Awaited<ReturnType<typeof discoveryControllerList>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params: DiscoveryControllerListParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof discoveryControllerList>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof discoveryControllerList>>,
-          TError,
-          Awaited<ReturnType<typeof discoveryControllerList>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useDiscoveryControllerList<
-  TData = Awaited<ReturnType<typeof discoveryControllerList>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params: DiscoveryControllerListParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof discoveryControllerList>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof discoveryControllerList>>,
-          TError,
-          Awaited<ReturnType<typeof discoveryControllerList>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useDiscoveryControllerList<
-  TData = Awaited<ReturnType<typeof discoveryControllerList>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params: DiscoveryControllerListParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof discoveryControllerList>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary List
- */
-
-export function useDiscoveryControllerList<
-  TData = Awaited<ReturnType<typeof discoveryControllerList>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params: DiscoveryControllerListParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof discoveryControllerList>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getDiscoveryControllerListQueryOptions(params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getDiscoveryControllerDismissUrl = () => {
   return `/v1/discovery/dismissals`;
@@ -929,35 +489,13 @@ export const getDiscoveryControllerDismissMutationOptions = <
 export type DiscoveryControllerDismissMutationResult = NonNullable<
   Awaited<ReturnType<typeof discoveryControllerDismiss>>
 >;
+
 export type DiscoveryControllerDismissMutationBody = DismissDto;
+
 export type DiscoveryControllerDismissMutationError = ErrorType<ProblemDetails>;
+
 export type DiscoveryControllerDismissMutationVariables = { data: DismissDto };
 
-/**
- * @summary Dismiss
- */
-export const useDiscoveryControllerDismiss = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof discoveryControllerDismiss>>,
-      TError,
-      DiscoveryControllerDismissMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof discoveryControllerDismiss>>,
-  TError,
-  DiscoveryControllerDismissMutationVariables,
-  TContext
-> => {
-  return useMutation(getDiscoveryControllerDismissMutationOptions(options), queryClient);
-};
 export const getDiscoveryControllerUndoDismissalUrl = (
   kind: 'person' | 'organization' | 'project' | 'event' | 'mission',
   key: string,
@@ -1026,36 +564,12 @@ export type DiscoveryControllerUndoDismissalMutationResult = NonNullable<
 >;
 
 export type DiscoveryControllerUndoDismissalMutationError = ErrorType<ProblemDetails>;
+
 export type DiscoveryControllerUndoDismissalMutationVariables = {
   kind: 'person' | 'organization' | 'project' | 'event' | 'mission';
   key: string;
 };
 
-/**
- * @summary Undo dismissal
- */
-export const useDiscoveryControllerUndoDismissal = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof discoveryControllerUndoDismissal>>,
-      TError,
-      DiscoveryControllerUndoDismissalMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof discoveryControllerUndoDismissal>>,
-  TError,
-  DiscoveryControllerUndoDismissalMutationVariables,
-  TContext
-> => {
-  return useMutation(getDiscoveryControllerUndoDismissalMutationOptions(options), queryClient);
-};
 export const getDiscoveryControllerProjectContributorsUrl = (
   projectId: string,
   params?: DiscoveryControllerProjectContributorsParams,
@@ -1144,112 +658,8 @@ export const getDiscoveryControllerProjectContributorsQueryOptions = <
 export type DiscoveryControllerProjectContributorsQueryResult = NonNullable<
   Awaited<ReturnType<typeof discoveryControllerProjectContributors>>
 >;
+
 export type DiscoveryControllerProjectContributorsQueryError = ErrorType<ProblemDetails>;
-
-export function useDiscoveryControllerProjectContributors<
-  TData = Awaited<ReturnType<typeof discoveryControllerProjectContributors>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  params: undefined | DiscoveryControllerProjectContributorsParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof discoveryControllerProjectContributors>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof discoveryControllerProjectContributors>>,
-          TError,
-          Awaited<ReturnType<typeof discoveryControllerProjectContributors>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useDiscoveryControllerProjectContributors<
-  TData = Awaited<ReturnType<typeof discoveryControllerProjectContributors>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  params?: DiscoveryControllerProjectContributorsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof discoveryControllerProjectContributors>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof discoveryControllerProjectContributors>>,
-          TError,
-          Awaited<ReturnType<typeof discoveryControllerProjectContributors>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useDiscoveryControllerProjectContributors<
-  TData = Awaited<ReturnType<typeof discoveryControllerProjectContributors>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  params?: DiscoveryControllerProjectContributorsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof discoveryControllerProjectContributors>>,
-        TError,
-        TData
-      >
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Project contributors
- */
-
-export function useDiscoveryControllerProjectContributors<
-  TData = Awaited<ReturnType<typeof discoveryControllerProjectContributors>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  projectId: string,
-  params?: DiscoveryControllerProjectContributorsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof discoveryControllerProjectContributors>>,
-        TError,
-        TData
-      >
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getDiscoveryControllerProjectContributorsQueryOptions(
-    projectId,
-    params,
-    options,
-  );
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getDiscoveryControllerPageUrl = (params?: DiscoveryControllerPageParams) => {
   const normalizedParams = new URLSearchParams();
@@ -1317,88 +727,8 @@ export const getDiscoveryControllerPageQueryOptions = <
 export type DiscoveryControllerPageQueryResult = NonNullable<
   Awaited<ReturnType<typeof discoveryControllerPage>>
 >;
+
 export type DiscoveryControllerPageQueryError = ErrorType<ProblemDetails>;
-
-export function useDiscoveryControllerPage<
-  TData = Awaited<ReturnType<typeof discoveryControllerPage>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params: undefined | DiscoveryControllerPageParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof discoveryControllerPage>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof discoveryControllerPage>>,
-          TError,
-          Awaited<ReturnType<typeof discoveryControllerPage>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useDiscoveryControllerPage<
-  TData = Awaited<ReturnType<typeof discoveryControllerPage>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: DiscoveryControllerPageParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof discoveryControllerPage>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof discoveryControllerPage>>,
-          TError,
-          Awaited<ReturnType<typeof discoveryControllerPage>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useDiscoveryControllerPage<
-  TData = Awaited<ReturnType<typeof discoveryControllerPage>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: DiscoveryControllerPageParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof discoveryControllerPage>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Page
- */
-
-export function useDiscoveryControllerPage<
-  TData = Awaited<ReturnType<typeof discoveryControllerPage>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: DiscoveryControllerPageParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof discoveryControllerPage>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getDiscoveryControllerPageQueryOptions(params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getDiscoveryControllerSectionUrl = (
   section:
@@ -1501,116 +831,8 @@ export const getDiscoveryControllerSectionQueryOptions = <
 export type DiscoveryControllerSectionQueryResult = NonNullable<
   Awaited<ReturnType<typeof discoveryControllerSection>>
 >;
+
 export type DiscoveryControllerSectionQueryError = ErrorType<ProblemDetails>;
-
-export function useDiscoveryControllerSection<
-  TData = Awaited<ReturnType<typeof discoveryControllerSection>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  section:
-    | 'recent_projects'
-    | 'ending_soon_projects'
-    | 'suggested_profiles'
-    | 'editorial'
-    | 'upcoming_events'
-    | 'open_missions',
-  params: undefined | DiscoveryControllerSectionParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof discoveryControllerSection>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof discoveryControllerSection>>,
-          TError,
-          Awaited<ReturnType<typeof discoveryControllerSection>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useDiscoveryControllerSection<
-  TData = Awaited<ReturnType<typeof discoveryControllerSection>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  section:
-    | 'recent_projects'
-    | 'ending_soon_projects'
-    | 'suggested_profiles'
-    | 'editorial'
-    | 'upcoming_events'
-    | 'open_missions',
-  params?: DiscoveryControllerSectionParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof discoveryControllerSection>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof discoveryControllerSection>>,
-          TError,
-          Awaited<ReturnType<typeof discoveryControllerSection>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useDiscoveryControllerSection<
-  TData = Awaited<ReturnType<typeof discoveryControllerSection>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  section:
-    | 'recent_projects'
-    | 'ending_soon_projects'
-    | 'suggested_profiles'
-    | 'editorial'
-    | 'upcoming_events'
-    | 'open_missions',
-  params?: DiscoveryControllerSectionParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof discoveryControllerSection>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Section
- */
-
-export function useDiscoveryControllerSection<
-  TData = Awaited<ReturnType<typeof discoveryControllerSection>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  section:
-    | 'recent_projects'
-    | 'ending_soon_projects'
-    | 'suggested_profiles'
-    | 'editorial'
-    | 'upcoming_events'
-    | 'open_missions',
-  params?: DiscoveryControllerSectionParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof discoveryControllerSection>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getDiscoveryControllerSectionQueryOptions(section, params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getDiscoveryControllerPublicPageUrl = (
   params?: DiscoveryControllerPublicPageParams,
@@ -1682,88 +904,8 @@ export const getDiscoveryControllerPublicPageQueryOptions = <
 export type DiscoveryControllerPublicPageQueryResult = NonNullable<
   Awaited<ReturnType<typeof discoveryControllerPublicPage>>
 >;
+
 export type DiscoveryControllerPublicPageQueryError = ErrorType<ProblemDetails>;
-
-export function useDiscoveryControllerPublicPage<
-  TData = Awaited<ReturnType<typeof discoveryControllerPublicPage>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params: undefined | DiscoveryControllerPublicPageParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof discoveryControllerPublicPage>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof discoveryControllerPublicPage>>,
-          TError,
-          Awaited<ReturnType<typeof discoveryControllerPublicPage>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useDiscoveryControllerPublicPage<
-  TData = Awaited<ReturnType<typeof discoveryControllerPublicPage>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: DiscoveryControllerPublicPageParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof discoveryControllerPublicPage>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof discoveryControllerPublicPage>>,
-          TError,
-          Awaited<ReturnType<typeof discoveryControllerPublicPage>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useDiscoveryControllerPublicPage<
-  TData = Awaited<ReturnType<typeof discoveryControllerPublicPage>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: DiscoveryControllerPublicPageParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof discoveryControllerPublicPage>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Public page
- */
-
-export function useDiscoveryControllerPublicPage<
-  TData = Awaited<ReturnType<typeof discoveryControllerPublicPage>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  params?: DiscoveryControllerPublicPageParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof discoveryControllerPublicPage>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getDiscoveryControllerPublicPageQueryOptions(params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getDiscoveryControllerPublicSectionUrl = (
   section:
@@ -1872,113 +1014,5 @@ export const getDiscoveryControllerPublicSectionQueryOptions = <
 export type DiscoveryControllerPublicSectionQueryResult = NonNullable<
   Awaited<ReturnType<typeof discoveryControllerPublicSection>>
 >;
+
 export type DiscoveryControllerPublicSectionQueryError = ErrorType<ProblemDetails>;
-
-export function useDiscoveryControllerPublicSection<
-  TData = Awaited<ReturnType<typeof discoveryControllerPublicSection>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  section:
-    | 'recent_projects'
-    | 'ending_soon_projects'
-    | 'suggested_profiles'
-    | 'editorial'
-    | 'upcoming_events'
-    | 'open_missions',
-  params: undefined | DiscoveryControllerPublicSectionParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof discoveryControllerPublicSection>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof discoveryControllerPublicSection>>,
-          TError,
-          Awaited<ReturnType<typeof discoveryControllerPublicSection>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useDiscoveryControllerPublicSection<
-  TData = Awaited<ReturnType<typeof discoveryControllerPublicSection>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  section:
-    | 'recent_projects'
-    | 'ending_soon_projects'
-    | 'suggested_profiles'
-    | 'editorial'
-    | 'upcoming_events'
-    | 'open_missions',
-  params?: DiscoveryControllerPublicSectionParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof discoveryControllerPublicSection>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof discoveryControllerPublicSection>>,
-          TError,
-          Awaited<ReturnType<typeof discoveryControllerPublicSection>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useDiscoveryControllerPublicSection<
-  TData = Awaited<ReturnType<typeof discoveryControllerPublicSection>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  section:
-    | 'recent_projects'
-    | 'ending_soon_projects'
-    | 'suggested_profiles'
-    | 'editorial'
-    | 'upcoming_events'
-    | 'open_missions',
-  params?: DiscoveryControllerPublicSectionParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof discoveryControllerPublicSection>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Public section
- */
-
-export function useDiscoveryControllerPublicSection<
-  TData = Awaited<ReturnType<typeof discoveryControllerPublicSection>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  section:
-    | 'recent_projects'
-    | 'ending_soon_projects'
-    | 'suggested_profiles'
-    | 'editorial'
-    | 'upcoming_events'
-    | 'open_missions',
-  params?: DiscoveryControllerPublicSectionParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof discoveryControllerPublicSection>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getDiscoveryControllerPublicSectionQueryOptions(section, params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}

@@ -5,22 +5,14 @@
  * Errors follow RFC 9457 with a stable `code`; clients translate codes.
  * OpenAPI spec version: 1
  */
-import { useMutation, useQuery } from '@tanstack/react-query';
 import type {
   DataTag,
-  DefinedInitialDataOptions,
-  DefinedUseQueryResult,
   MutationFunction,
-  QueryClient,
   QueryFunction,
   QueryKey,
-  UndefinedInitialDataOptions,
   UseMutationOptions,
-  UseMutationResult,
   UseQueryOptions,
-  UseQueryResult,
 } from '@tanstack/react-query';
-
 import type {
   AssessmentDtoOutput,
   AssessmentHistoryDtoOutput,
@@ -31,26 +23,10 @@ import type {
   SubmitAssessmentDto,
   UpdateMethodologyDto,
 } from '../api.schemas';
-
 import { apiFetch } from '../../http/fetcher';
 import type { ErrorType } from '../../http/fetcher';
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
-
-const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKey: K } => {
-  const result = { queryKey } as T & { queryKey: K };
-  for (const key of Object.keys(query)) {
-    // The explicit queryKey always wins, matching the previous
-    // `{ ...query, queryKey }` spread where it was set last.
-    if (key === 'queryKey') continue;
-    Object.defineProperty(result, key, {
-      enumerable: true,
-      configurable: true,
-      get: () => (query as Record<string, unknown>)[key],
-    });
-  }
-  return result;
-};
 
 export const getMethodologiesControllerPublishedUrl = () => {
   return `/v1/impact/methodology`;
@@ -102,84 +78,8 @@ export const getMethodologiesControllerPublishedQueryOptions = <
 export type MethodologiesControllerPublishedQueryResult = NonNullable<
   Awaited<ReturnType<typeof methodologiesControllerPublished>>
 >;
+
 export type MethodologiesControllerPublishedQueryError = ErrorType<ProblemDetails>;
-
-export function useMethodologiesControllerPublished<
-  TData = Awaited<ReturnType<typeof methodologiesControllerPublished>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof methodologiesControllerPublished>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof methodologiesControllerPublished>>,
-          TError,
-          Awaited<ReturnType<typeof methodologiesControllerPublished>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useMethodologiesControllerPublished<
-  TData = Awaited<ReturnType<typeof methodologiesControllerPublished>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof methodologiesControllerPublished>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof methodologiesControllerPublished>>,
-          TError,
-          Awaited<ReturnType<typeof methodologiesControllerPublished>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useMethodologiesControllerPublished<
-  TData = Awaited<ReturnType<typeof methodologiesControllerPublished>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof methodologiesControllerPublished>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Published
- */
-
-export function useMethodologiesControllerPublished<
-  TData = Awaited<ReturnType<typeof methodologiesControllerPublished>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof methodologiesControllerPublished>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getMethodologiesControllerPublishedQueryOptions(options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getMethodologiesControllerListUrl = () => {
   return `/v1/admin/impact/methodologies`;
@@ -233,84 +133,8 @@ export const getMethodologiesControllerListQueryOptions = <
 export type MethodologiesControllerListQueryResult = NonNullable<
   Awaited<ReturnType<typeof methodologiesControllerList>>
 >;
+
 export type MethodologiesControllerListQueryError = ErrorType<ProblemDetails>;
-
-export function useMethodologiesControllerList<
-  TData = Awaited<ReturnType<typeof methodologiesControllerList>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof methodologiesControllerList>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof methodologiesControllerList>>,
-          TError,
-          Awaited<ReturnType<typeof methodologiesControllerList>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useMethodologiesControllerList<
-  TData = Awaited<ReturnType<typeof methodologiesControllerList>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof methodologiesControllerList>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof methodologiesControllerList>>,
-          TError,
-          Awaited<ReturnType<typeof methodologiesControllerList>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useMethodologiesControllerList<
-  TData = Awaited<ReturnType<typeof methodologiesControllerList>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof methodologiesControllerList>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary List
- */
-
-export function useMethodologiesControllerList<
-  TData = Awaited<ReturnType<typeof methodologiesControllerList>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof methodologiesControllerList>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getMethodologiesControllerListQueryOptions(options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getMethodologiesControllerCreateUrl = () => {
   return `/v1/admin/impact/methodologies`;
@@ -399,35 +223,13 @@ export const getMethodologiesControllerCreateMutationOptions = <
 export type MethodologiesControllerCreateMutationResult = NonNullable<
   Awaited<ReturnType<typeof methodologiesControllerCreate>>
 >;
+
 export type MethodologiesControllerCreateMutationBody = CreateMethodologyDto;
+
 export type MethodologiesControllerCreateMutationError = ErrorType<ProblemDetails>;
+
 export type MethodologiesControllerCreateMutationVariables = { data: CreateMethodologyDto };
 
-/**
- * @summary Create
- */
-export const useMethodologiesControllerCreate = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof methodologiesControllerCreate>>,
-      TError,
-      MethodologiesControllerCreateMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof methodologiesControllerCreate>>,
-  TError,
-  MethodologiesControllerCreateMutationVariables,
-  TContext
-> => {
-  return useMutation(getMethodologiesControllerCreateMutationOptions(options), queryClient);
-};
 export const getMethodologiesControllerGetUrl = (methodologyId: string) => {
   return `/v1/admin/impact/methodologies/${methodologyId}`;
 };
@@ -487,88 +289,8 @@ export const getMethodologiesControllerGetQueryOptions = <
 export type MethodologiesControllerGetQueryResult = NonNullable<
   Awaited<ReturnType<typeof methodologiesControllerGet>>
 >;
+
 export type MethodologiesControllerGetQueryError = ErrorType<ProblemDetails>;
-
-export function useMethodologiesControllerGet<
-  TData = Awaited<ReturnType<typeof methodologiesControllerGet>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  methodologyId: string,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof methodologiesControllerGet>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof methodologiesControllerGet>>,
-          TError,
-          Awaited<ReturnType<typeof methodologiesControllerGet>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useMethodologiesControllerGet<
-  TData = Awaited<ReturnType<typeof methodologiesControllerGet>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  methodologyId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof methodologiesControllerGet>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof methodologiesControllerGet>>,
-          TError,
-          Awaited<ReturnType<typeof methodologiesControllerGet>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useMethodologiesControllerGet<
-  TData = Awaited<ReturnType<typeof methodologiesControllerGet>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  methodologyId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof methodologiesControllerGet>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary Get
- */
-
-export function useMethodologiesControllerGet<
-  TData = Awaited<ReturnType<typeof methodologiesControllerGet>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  methodologyId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof methodologiesControllerGet>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getMethodologiesControllerGetQueryOptions(methodologyId, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getMethodologiesControllerUpdateUrl = (methodologyId: string) => {
   return `/v1/admin/impact/methodologies/${methodologyId}`;
@@ -656,38 +378,16 @@ export const getMethodologiesControllerUpdateMutationOptions = <
 export type MethodologiesControllerUpdateMutationResult = NonNullable<
   Awaited<ReturnType<typeof methodologiesControllerUpdate>>
 >;
+
 export type MethodologiesControllerUpdateMutationBody = UpdateMethodologyDto;
+
 export type MethodologiesControllerUpdateMutationError = ErrorType<ProblemDetails>;
+
 export type MethodologiesControllerUpdateMutationVariables = {
   methodologyId: string;
   data: UpdateMethodologyDto;
 };
 
-/**
- * @summary Update
- */
-export const useMethodologiesControllerUpdate = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof methodologiesControllerUpdate>>,
-      TError,
-      MethodologiesControllerUpdateMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof methodologiesControllerUpdate>>,
-  TError,
-  MethodologiesControllerUpdateMutationVariables,
-  TContext
-> => {
-  return useMutation(getMethodologiesControllerUpdateMutationOptions(options), queryClient);
-};
 export const getMethodologiesControllerDeleteUrl = (methodologyId: string) => {
   return `/v1/admin/impact/methodologies/${methodologyId}`;
 };
@@ -754,33 +454,9 @@ export type MethodologiesControllerDeleteMutationResult = NonNullable<
 >;
 
 export type MethodologiesControllerDeleteMutationError = ErrorType<ProblemDetails>;
+
 export type MethodologiesControllerDeleteMutationVariables = { methodologyId: string };
 
-/**
- * @summary Delete
- */
-export const useMethodologiesControllerDelete = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof methodologiesControllerDelete>>,
-      TError,
-      MethodologiesControllerDeleteMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof methodologiesControllerDelete>>,
-  TError,
-  MethodologiesControllerDeleteMutationVariables,
-  TContext
-> => {
-  return useMutation(getMethodologiesControllerDeleteMutationOptions(options), queryClient);
-};
 export const getMethodologiesControllerPublishUrl = (methodologyId: string) => {
   return `/v1/admin/impact/methodologies/${methodologyId}/publish`;
 };
@@ -847,33 +523,9 @@ export type MethodologiesControllerPublishMutationResult = NonNullable<
 >;
 
 export type MethodologiesControllerPublishMutationError = ErrorType<ProblemDetails>;
+
 export type MethodologiesControllerPublishMutationVariables = { methodologyId: string };
 
-/**
- * @summary Publish
- */
-export const useMethodologiesControllerPublish = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof methodologiesControllerPublish>>,
-      TError,
-      MethodologiesControllerPublishMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof methodologiesControllerPublish>>,
-  TError,
-  MethodologiesControllerPublishMutationVariables,
-  TContext
-> => {
-  return useMutation(getMethodologiesControllerPublishMutationOptions(options), queryClient);
-};
 export const getMethodologiesControllerArchiveUrl = (methodologyId: string) => {
   return `/v1/admin/impact/methodologies/${methodologyId}/archive`;
 };
@@ -940,33 +592,9 @@ export type MethodologiesControllerArchiveMutationResult = NonNullable<
 >;
 
 export type MethodologiesControllerArchiveMutationError = ErrorType<ProblemDetails>;
+
 export type MethodologiesControllerArchiveMutationVariables = { methodologyId: string };
 
-/**
- * @summary Archive
- */
-export const useMethodologiesControllerArchive = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof methodologiesControllerArchive>>,
-      TError,
-      MethodologiesControllerArchiveMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof methodologiesControllerArchive>>,
-  TError,
-  MethodologiesControllerArchiveMutationVariables,
-  TContext
-> => {
-  return useMutation(getMethodologiesControllerArchiveMutationOptions(options), queryClient);
-};
 export const getMyAssessmentsControllerHistoryUrl = () => {
   return `/v1/me/impact/assessments`;
 };
@@ -1017,84 +645,8 @@ export const getMyAssessmentsControllerHistoryQueryOptions = <
 export type MyAssessmentsControllerHistoryQueryResult = NonNullable<
   Awaited<ReturnType<typeof myAssessmentsControllerHistory>>
 >;
+
 export type MyAssessmentsControllerHistoryQueryError = ErrorType<ProblemDetails>;
-
-export function useMyAssessmentsControllerHistory<
-  TData = Awaited<ReturnType<typeof myAssessmentsControllerHistory>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof myAssessmentsControllerHistory>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof myAssessmentsControllerHistory>>,
-          TError,
-          Awaited<ReturnType<typeof myAssessmentsControllerHistory>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useMyAssessmentsControllerHistory<
-  TData = Awaited<ReturnType<typeof myAssessmentsControllerHistory>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof myAssessmentsControllerHistory>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof myAssessmentsControllerHistory>>,
-          TError,
-          Awaited<ReturnType<typeof myAssessmentsControllerHistory>>
-        >,
-        'initialData'
-      >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useMyAssessmentsControllerHistory<
-  TData = Awaited<ReturnType<typeof myAssessmentsControllerHistory>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof myAssessmentsControllerHistory>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-/**
- * @summary History
- */
-
-export function useMyAssessmentsControllerHistory<
-  TData = Awaited<ReturnType<typeof myAssessmentsControllerHistory>>,
-  TError = ErrorType<ProblemDetails>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof myAssessmentsControllerHistory>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getMyAssessmentsControllerHistoryQueryOptions(options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
 
 export const getMyAssessmentsControllerSubmitUrl = () => {
   return `/v1/me/impact/assessments`;
@@ -1183,32 +735,9 @@ export const getMyAssessmentsControllerSubmitMutationOptions = <
 export type MyAssessmentsControllerSubmitMutationResult = NonNullable<
   Awaited<ReturnType<typeof myAssessmentsControllerSubmit>>
 >;
-export type MyAssessmentsControllerSubmitMutationBody = SubmitAssessmentDto;
-export type MyAssessmentsControllerSubmitMutationError = ErrorType<ProblemDetails>;
-export type MyAssessmentsControllerSubmitMutationVariables = { data: SubmitAssessmentDto };
 
-/**
- * @summary Submit
- */
-export const useMyAssessmentsControllerSubmit = <
-  TError = ErrorType<ProblemDetails>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof myAssessmentsControllerSubmit>>,
-      TError,
-      MyAssessmentsControllerSubmitMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof myAssessmentsControllerSubmit>>,
-  TError,
-  MyAssessmentsControllerSubmitMutationVariables,
-  TContext
-> => {
-  return useMutation(getMyAssessmentsControllerSubmitMutationOptions(options), queryClient);
-};
+export type MyAssessmentsControllerSubmitMutationBody = SubmitAssessmentDto;
+
+export type MyAssessmentsControllerSubmitMutationError = ErrorType<ProblemDetails>;
+
+export type MyAssessmentsControllerSubmitMutationVariables = { data: SubmitAssessmentDto };
