@@ -4,7 +4,7 @@ export default defineConfig({
   pitchorium: {
     input: { target: '../../apps/server/openapi/openapi.json' },
     output: {
-      mode: 'split',
+      mode: 'tags-split',
       target: 'src/generated/api.ts',
       client: 'react-query',
       httpClient: 'fetch',
