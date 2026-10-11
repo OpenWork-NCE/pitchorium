@@ -126,8 +126,16 @@ test.describe('network', () => {
       const blocked = a.page.getByRole('list', { name: 'Membres bloqués' });
       await expect(blocked.getByText('Esther Mbala')).toBeVisible();
       await blocked.getByRole('button', { name: 'Débloquer' }).click();
+      // The list changes at once (optimistic): the profile is read once the api unblocked.
+      const unblocked = a.page.waitForResponse(
+        (response) =>
+          response.url().includes('/v1/network/blocks/') &&
+          response.request().method() === 'DELETE' &&
+          response.ok(),
+      );
       await a.page.getByRole('alertdialog').getByRole('button', { name: 'Débloquer' }).click();
       await expect(a.page.getByText('Vous n’avez bloqué personne.')).toBeVisible();
+      await unblocked;
       expect((await a.page.goto(`/fr/members/${e.member.handle}`))?.status()).toBe(200);
       await a.context.close();
       await e.context.close();
