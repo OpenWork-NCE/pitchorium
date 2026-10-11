@@ -2,8 +2,8 @@
 # A series of Lighthouse runs of one page, for each commit given, on the same runner (ADR 0142,
 # docs/architecture/testing.md): one worktree per commit, its packages and its .next-e2e built, then
 # RUNS runs of the page with its own lighthouserc.cjs, signed in as for the level 2. The processor
-# is calibrated once, on the first commit, and the same slowdown serves every series, so that two
-# series differ only by their code. Prints each Total Blocking Time, the median, the spread
+# is calibrated once, on the first commit (median of three samples, as scripts/lighthouse.sh), and
+# the same slowdown serves every series, so that two series differ only by their code. Prints each Total Blocking Time, the median, the spread
 # (minimum, maximum, interquartile range) and writes them to $SERIES_OUT (series.json).
 #
 #   bash scripts/ci/lighthouse-series.sh /fr/feed 10 c0a5941b bc7e7ec7
@@ -30,11 +30,14 @@ for ref in "$@"; do
     cd apps/web
     if [ -z "${LHCI_CPU_SLOWDOWN:-}" ]; then
       rm -rf .lighthouseci
-      LHCI_RUNS=1 ./node_modules/.bin/lhci collect --url=http://localhost:3201/fr >/dev/null
+      LHCI_RUNS=3 ./node_modules/.bin/lhci collect --url=http://localhost:3201/fr >/dev/null
       node -e '
         const { readdirSync, readFileSync } = require("node:fs");
-        const file = readdirSync(".lighthouseci").find((name) => /^lhr-.*\.json$/.test(name));
-        const index = JSON.parse(readFileSync(`.lighthouseci/${file}`, "utf8")).environment.benchmarkIndex;
+        const indexes = readdirSync(".lighthouseci")
+          .filter((name) => /^lhr-.*\.json$/.test(name))
+          .map((name) => JSON.parse(readFileSync(`.lighthouseci/${name}`, "utf8")).environment.benchmarkIndex)
+          .sort((a, b) => a - b);
+        const index = indexes[Math.floor(indexes.length / 2)];
         process.stdout.write(String(Math.max(1, Math.round((index / 740) * 10) / 10)));
       ' >"$out/slowdown"
     fi

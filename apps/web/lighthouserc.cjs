@@ -116,14 +116,12 @@ module.exports = {
         {
           // Shell of the member space: the same thresholds, without SEO (its pages are not
           // indexed, `noindex` by design); its initial JavaScript is budgeted by check:bundles.
-          // Total Blocking Time under 250 ms on every run, not on the median.
+          // Total Blocking Time under 250 ms on the median of three runs (ADR 0163): the same code
+          // measured ten times on one runner spread from 147 to 254 ms around a median of 179.
           matchingUrlPattern: 'localhost:3201/fr/feed$',
           assertions: {
             ...THRESHOLDS,
-            'total-blocking-time': [
-              'error',
-              { maxNumericValue: 250, aggregationMethod: 'pessimistic' },
-            ],
+            'total-blocking-time': ['error', { maxNumericValue: 250, aggregationMethod: 'median' }],
           },
         },
         {
