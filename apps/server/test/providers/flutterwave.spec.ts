@@ -188,11 +188,20 @@ describe.skipIf(!KEY)('Flutterwave sandbox', () => {
     try {
       const rate = await provider.rate('NGN', new Date());
       expect(rate.unitsPerEur).toMatch(/^\d+(\.\d+)?$/);
+      // Naira per euro, not euros per naira: the rate field goes the other way (ADR 0155).
+      expect(Number(rate.unitsPerEur)).toBeGreaterThan(1);
     } catch (error) {
-      // The sandbox answers this error for every key since 2026-10-08 (ADR 0054): reported as
-      // a skip with its reason, never as a pass.
-      if (String(error).includes('Please contact support')) {
-        context.skip(`Flutterwave sandbox outage: ${String(error)}`);
+      // Reported as a skip with its reason, never as a pass, only when the sandbox also refuses
+      // the documented example itself (ADR 0054, ADR 0155): the outage is then on its side.
+      const documented = await raw(
+        'flutterwave',
+        `${BASE}/v3/transfers/rates?amount=1000&destination_currency=USD&source_currency=NGN`,
+        { method: 'GET', headers: { authorization: `Bearer ${KEY}` } },
+      );
+      if (documented.status >= 400) {
+        context.skip(
+          `Flutterwave sandbox refuses its documented example (${documented.status} ${JSON.stringify(documented.body)}): ${String(error)}`,
+        );
       }
       throw error;
     }

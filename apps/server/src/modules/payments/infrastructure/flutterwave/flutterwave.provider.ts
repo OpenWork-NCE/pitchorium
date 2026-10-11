@@ -336,8 +336,44 @@ function refundStatus(status: string | null): ProviderRefundResult['status'] {
 }
 
 /**
- * Indicative rate of Flutterwave (`GET /v3/transfers/rates`): units of a currency for one euro,
- * locked for the payment session (ADR 0046).
+ * Euros asked for in a rate request: the documented contract takes an integer destination amount
+ * and answers the source amount with two decimals, so a thousand euros keep five significant
+ * decimals of the rate once divided back.
+ */
+export const RATE_QUOTE_EUR = 1000;
+
+/**
+ * Units of a currency for one euro from a rate answer, in exact decimal arithmetic: the source
+ * amount debited for `RATE_QUOTE_EUR` euros, shifted by three decimal places. The `rate` field
+ * is the opposite direction (euros per unit of the source) and a binary float: never read.
+ */
+export function unitsPerEurFrom(data: ExactJson | undefined): string {
+  const destination = text(field(field(data, 'destination'), 'amount'));
+  const currency = text(field(field(data, 'destination'), 'currency'));
+  const source = text(field(field(data, 'source'), 'amount'));
+  if (currency !== 'EUR' || destination === null || !/^\d+(\.0+)?$/.test(destination)) {
+    throw unavailable('flutterwave', 'unexpected rate destination');
+  }
+  if (BigInt(destination.split('.')[0]!) !== BigInt(RATE_QUOTE_EUR)) {
+    throw unavailable('flutterwave', 'unexpected rate destination');
+  }
+  const match = source ? /^(\d+)(?:\.(\d+))?$/.exec(source) : null;
+  if (!match) throw unavailable('flutterwave', 'no rate');
+  const digits = `${match[1]}${match[2] ?? ''}`.replace(/^0+(?=\d)/, '');
+  const scale = (match[2] ?? '').length + String(RATE_QUOTE_EUR).length - 1;
+  const padded = digits.padStart(scale + 1, '0');
+  const whole = padded.slice(0, padded.length - scale).replace(/^0+(?=\d)/, '');
+  const fraction = padded.slice(padded.length - scale).replace(/0+$/, '');
+  const units = fraction ? `${whole}.${fraction}` : whole;
+  if (/^0(\.0*)?$/.test(units)) throw unavailable('flutterwave', 'no rate');
+  return units;
+}
+
+/**
+ * Indicative rate of Flutterwave (`GET /v3/transfers/rates`, developer.flutterwave.com/v3.0/
+ * reference/check-transfer-rates): `amount` is the integer amount received in the destination
+ * currency, `source.amount` what the source currency pays for it. Units of a currency for one
+ * euro, locked for the payment session (ADR 0046, ADR 0155).
  */
 export class FlutterwaveFxRateProvider extends FxRateProvider {
   private readonly client: FlutterwaveClient;
@@ -348,14 +384,12 @@ export class FlutterwaveFxRateProvider extends FxRateProvider {
   }
 
   async rate(currency: string, at: Date): Promise<Rate> {
-    const data = await this.client.request(
-      `/v3/transfers/rates?amount=1&destination_currency=EUR&source_currency=${currency}`,
-      'GET',
-    );
-    const rate = text(field(data, 'rate'));
-    if (!rate || !/^(0|[1-9]\d*)(\.\d+)?$/.test(rate)) {
-      throw unavailable('flutterwave', 'no rate');
-    }
-    return { unitsPerEur: rate, source: 'provider', at };
+    const query = new URLSearchParams({
+      amount: String(RATE_QUOTE_EUR),
+      destination_currency: 'EUR',
+      source_currency: currency,
+    });
+    const data = await this.client.request(`/v3/transfers/rates?${query.toString()}`, 'GET');
+    return { unitsPerEur: unitsPerEurFrom(data), source: 'provider', at };
   }
 }

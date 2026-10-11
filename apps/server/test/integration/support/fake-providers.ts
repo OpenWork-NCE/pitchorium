@@ -295,8 +295,19 @@ export class FakeFlutterwave extends FakeServer {
       return raw(`{"id":1,"subaccount_id":"RS_${(this.sequence += 1)}"}`);
     }
     if (method === 'GET' && path === '/v3/transfers/rates') {
+      // Documented contract: `amount` is the integer amount received in the destination
+      // currency, `source.amount` what the source pays; `rate` is destination per source.
+      const amount = query.get('amount') ?? '';
+      if (!/^[1-9]\d*$/.test(amount)) {
+        return {
+          status: 400,
+          body: '{"status":"error","message":"Please specify a valid Amount","data":null}',
+        };
+      }
+      const sourceAmount = (BigInt(amount) * 16505n).toString();
+      const source = `${sourceAmount.slice(0, -1)}.${sourceAmount.slice(-1)}`;
       return raw(
-        `{"rate":1650.5,"source":{"currency":"${query.get('source_currency')}","amount":1650.5},"destination":{"currency":"EUR","amount":1}}`,
+        `{"rate":0.000605877,"source":{"currency":"${query.get('source_currency')}","amount":${source}},"destination":{"currency":"${query.get('destination_currency')}","amount":${amount}}}`,
       );
     }
     if (method === 'POST' && path === '/v3/payments') {
