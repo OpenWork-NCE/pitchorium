@@ -299,7 +299,11 @@ test.describe('projects', () => {
       page.getByRole('heading', { name: 'Aucun projet ne correspond à ces filtres' }),
     ).toBeVisible();
     await hydrated(page);
-    await page.getByRole('button', { name: 'Réinitialiser les filtres' }).click();
+    // The bar of filters offers the same reset: the one of the empty state is the action asked here.
+    await page
+      .getByRole('region', { name: 'Tous les projets' })
+      .getByRole('button', { name: 'Réinitialiser les filtres' })
+      .click();
     await page.waitForURL((url) => !url.search.includes('status='));
   });
 
