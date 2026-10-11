@@ -48,7 +48,8 @@ Pitchorium est un réseau professionnel et une plateforme de financement à impa
 - Hors ligne : seules les mutations listées dans `lib/query/persisted-mutations.ts` (message, réaction, commentaire, clé d'idempotence) survivent à la fermeture de l'onglet, effacées à la déconnexion et après 24 h ; jamais d'authentification ni de paiement (ADR 0102).
 - Code sorti du premier chargement mais utile hors ligne : préchargé à l'inactivité (`lib/preload.ts`) ; budgets par groupe (ADR 0094).
 - Tests : chaque story est un test, dans les deux thèmes (`pnpm --filter @pitchorium/web test:stories`) ; les parcours e2e ouvrent une session sur l'api simulée (`e2e/support/stub-api.mjs`, contenus dans `stub-content.mjs`, comptes de démonstration), dans Chromium, Firefox, WebKit et en iPhone (parcours `@phone`) ; tout parcours, simulé ou réel, échoue sur une erreur de console, un écart d'hydratation, une promesse rejetée ou une violation de la CSP (`e2e/support/console-guard.ts`, `allowConsole` pour une erreur provoquée exprès).
-- Captures de référence : `pnpm --filter @pitchorium/web test:e2e` dans l'image Playwright (Docker requis) ; captures de revue : `review:captures` pour les écrire, `review:check` pour les comparer (`docs/design/review` : compositions de Storybook et pages des projets sur le build `.next-e2e`).
+- Captures de référence : `pnpm --filter @pitchorium/web test:e2e` dans l'image Playwright (Docker requis) ; captures de revue : `review:captures` pour les écrire, `review:check` pour les comparer (`docs/design/review` : compositions de Storybook et pages sur le build `.next-e2e`, garde de mise en page sur chacune).
+- Chaque capture de revue d'un écran nouveau ou modifié est relue par l'agent avec la liste de contrôle de `docs/design/direction.md` avant la poussée, et ses défauts sont corrigés.
 
 ## Avant toute tâche
 

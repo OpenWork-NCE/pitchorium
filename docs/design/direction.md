@@ -101,3 +101,16 @@ Contrat visuel de l'application web : chaque composant de `apps/web/src/componen
 - Animations décoratives sans fonction : rien ne bouge en boucle, rien ne bouge sans réponse à un geste, à un défilement ou à un changement d'état (`motion.md`).
 - Texte en cuivre sur fond clair, texte sur une photographie sans cartouche, plus d'une couleur d'accent sur un écran.
 - Carrousels décoratifs, barre d'onglets basse, boutons flottants permanents, badges rouges partout : un compteur ne s'affiche que là où il y a quelque chose à faire.
+
+## Liste de contrôle d'une capture de revue
+
+Chaque capture d'un écran nouveau ou modifié (`docs/design/review`) est relue avec cette liste avant la poussée, dans les deux thèmes et les deux tailles ; un défaut se corrige avant de pousser (`AGENTS.md`). Le garde des captures (`review/README.md`) en vérifie une partie, le reste se lit à l'œil.
+
+1. Hiérarchie : un seul titre de page, les titres de section et de carte à leur rôle, un surtitre au plus par bloc ; on comprend l'écran en trois secondes.
+2. Grille : conteneur à sa largeur (`shell`, `page`, `prose`, `form`), marges de 16 px sur un téléphone, rien ne dépasse ni n'est coupé, aucun texte sur un autre, aucune barre de défilement horizontale de la page.
+3. Espacement : rythme de 4 px, blocs à 16, 24, 32 ou 48 px, marges intérieures des cartes respectées.
+4. Couleur : le violet seul pour l'action principale, la sélection et le focus ; le cuivre jamais sur un bouton ni un état ; les couleurs de statut pour leur sens seulement ; contraste lisible dans les deux thèmes.
+5. Typographie : chiffres tabulaires pour les nombres, aucun mot coupé ni titre trop long pour sa colonne, troncature voulue et dite (points de suspension).
+6. États : vide (ce qui manque, pourquoi, l'action), chargement fidèle à la mise en page, erreur avec reprise ; un compteur seulement là où il y a quelque chose à faire.
+7. Images et icônes : ratios autorisés, icônes lucide à leurs tailles, avatars décoratifs quand le nom suit.
+8. Un logo par écran, aucun décor gratuit, aucune élévation au-delà de deux niveaux.
