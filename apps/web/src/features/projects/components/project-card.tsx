@@ -12,9 +12,10 @@ interface ProjectCardProps {
   project: ProjectCardData;
   /**
    * `compact` (side columns): visual, title, amount and progress, days left, impact and the link;
-   * `full` (grids, feed): with the summary, the categories and the milestones.
+   * `full` (grids, feed): with the summary, the categories and the milestones;
+   * `feature` (a list of one, ProjectGrid): `full` across the width, its cover beside its text.
    */
-  variant?: 'compact' | 'full';
+  variant?: 'compact' | 'full' | 'feature';
   /** Milestones of the campaign (`full`), read with the project. */
   tiers?: readonly ProjectTier[];
   /** Level of the title in the outline of the page. */
@@ -43,6 +44,7 @@ export function ProjectCard({
   const reference = useTranslations('reference');
   const locale = useLocale();
   const compact = variant === 'compact';
+  const feature = variant === 'feature';
   const { goal } = project.funding;
   // Codes of the reference data, labelled by the `reference` namespace.
   const sector = project.sectorCode
@@ -83,13 +85,18 @@ export function ProjectCard({
       padding="none"
       className={cn(
         'grid min-w-0 grid-cols-[minmax(0,1fr)] grid-rows-[auto_1fr] overflow-hidden',
+        feature && 'md:grid-cols-2 md:grid-rows-1',
         className,
       )}
     >
       <div
         className={cn(
           'relative bg-cover-placeholder',
-          compact ? 'aspect-[3/1]' : 'aspect-[3/1] sm:aspect-[4/1]',
+          compact
+            ? 'aspect-[3/1]'
+            : feature
+              ? 'aspect-[3/1] sm:aspect-[4/1] md:aspect-auto md:min-h-80'
+              : 'aspect-[3/1] sm:aspect-[4/1]',
         )}
       >
         {/* The elevation pattern, brightened on the deep violet of the dark theme to stay legible. */}
@@ -106,13 +113,22 @@ export function ProjectCard({
               src: project.coverImageUrl,
               alt: '',
               fill: true,
-              sizes: compact ? '320px' : '(min-width: 1024px) 640px, 100vw',
+              sizes: compact
+                ? '320px'
+                : feature
+                  ? '(min-width: 768px) 50vw, 100vw'
+                  : '(min-width: 1024px) 640px, 100vw',
               className: 'object-cover',
             }).props}
           />
         ) : null}
       </div>
-      <div className={cn('grid min-w-0 content-start gap-4', compact ? 'p-4' : 'p-5')}>
+      <div
+        className={cn(
+          'grid min-w-0 content-start gap-4',
+          compact ? 'p-4' : feature ? 'p-5 md:content-center md:p-8' : 'p-5',
+        )}
+      >
         {compact ? null : (
           <div className="flex flex-wrap items-center gap-2">
             <Badge tone="accent">{reference(`projectStatuses.${project.status}`)}</Badge>

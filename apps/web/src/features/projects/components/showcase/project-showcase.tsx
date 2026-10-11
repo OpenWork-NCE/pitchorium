@@ -3,6 +3,7 @@ import { FolderSearch } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 import { EmptyState, Heading } from '@/components/ui';
 import { ProjectCard } from '../project-card';
+import { ProjectGrid } from '../project-grid';
 import { ResetFilters, ShowcaseBrowser } from './showcase-browser';
 import { ShowcaseMore } from './showcase-more';
 import { isFiltered, type ShowcaseFilters } from './showcase-query';
@@ -45,13 +46,7 @@ export async function ProjectShowcase({
           <Heading level={2} size="section" id="featured-title">
             {t('featured')}
           </Heading>
-          <ul className="grid gap-6 lg:grid-cols-2">
-            {featured.map((project) => (
-              <li key={project.id} className="grid">
-                <ProjectCard project={project} headingLevel={3} />
-              </li>
-            ))}
-          </ul>
+          <ProjectGrid projects={featured} />
         </section>
       ) : null}
       <section aria-labelledby="all-title" className="grid gap-6">

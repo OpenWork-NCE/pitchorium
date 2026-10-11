@@ -5,6 +5,7 @@ export {
 } from './components/lazy-project-invitations';
 export { MemberProjects } from './components/member-projects';
 export { ProjectCard } from './components/project-card';
+export { ProjectGrid } from './components/project-grid';
 export { CreateProject } from './components/editor/create-project';
 export { ProjectEditor } from './components/editor/project-editor';
 export { type ManagePayments, ProjectManage } from './components/manage/project-manage';
