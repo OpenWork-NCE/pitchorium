@@ -3,7 +3,6 @@
 import {
   getMessagingControllerGetQueryKey,
   getMessagingControllerListQueryKey,
-  getNotificationsControllerCountersQueryKey,
   messagingControllerAccept,
   messagingControllerDecline,
   messagingControllerGet,
@@ -22,6 +21,7 @@ import { useEffect, useRef, useState } from 'react';
 import { emitRealtime, REALTIME_EVENTS } from '@/lib/realtime/realtime-bus';
 import { useRealtime } from '@/lib/realtime/use-realtime';
 import { advanceRead } from '../lib/thread';
+import { COUNTERS_QUERY_KEY } from '@/lib/query/keys';
 
 /** A typing indicator fades this long after the last signal of the other participant. */
 export const TYPING_VISIBLE_MS = 5_000;
@@ -50,7 +50,7 @@ export function useConversation(conversationId: string, initial: Conversation | 
     void queryClient.invalidateQueries({ queryKey: key });
     void queryClient.invalidateQueries({ queryKey: getMessagingControllerListQueryKey() });
     void queryClient.invalidateQueries({
-      queryKey: getNotificationsControllerCountersQueryKey(),
+      queryKey: COUNTERS_QUERY_KEY,
     });
   };
 

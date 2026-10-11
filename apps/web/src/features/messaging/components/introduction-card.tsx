@@ -2,7 +2,6 @@
 
 import {
   getMessagingControllerListIntroductionsQueryKey,
-  getNotificationsControllerCountersQueryKey,
   messagingControllerAcceptIntroduction,
   messagingControllerDeclineIntroduction,
 } from '@pitchorium/api-client';
@@ -15,6 +14,7 @@ import { AvatarGroup, Badge, Button, Card, notify, RelativeTime } from '@/compon
 import * as routes from '@/config/paths';
 import { Link } from '@/i18n/navigation';
 import { useMessagingProblem } from '../hooks/use-messaging-problem';
+import { COUNTERS_QUERY_KEY } from '@/lib/query/keys';
 
 const ANSWER_ICONS = { pending: Clock, accepted: Check, declined: X } as const;
 
@@ -77,7 +77,7 @@ export function IntroductionCard({
         queryKey: getMessagingControllerListIntroductionsQueryKey(),
       });
       void queryClient.invalidateQueries({
-        queryKey: getNotificationsControllerCountersQueryKey(),
+        queryKey: COUNTERS_QUERY_KEY,
       });
     } catch (error) {
       notify.error(problem(error));
