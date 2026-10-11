@@ -142,7 +142,7 @@ export function IntroductionCard({
           </Button>
           <Button
             size="sm"
-            variant="secondary"
+            variant="outline"
             loading={busy === 'decline'}
             loadingLabel={t('declining')}
             onClick={() => void respond(false)}

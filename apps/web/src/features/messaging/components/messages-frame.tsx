@@ -53,7 +53,13 @@ export function NoConversation() {
   const t = useTranslations('web.messaging.thread');
   return (
     <div className="flex h-full items-center justify-center p-6">
-      <EmptyState icon={<MessageSquare />} title={t('choose')} description={t('chooseBody')} />
+      {/* Already inside the card of the frame: the state without a card of its own. */}
+      <EmptyState
+        icon={<MessageSquare />}
+        title={t('choose')}
+        description={t('chooseBody')}
+        className="w-full max-w-md border-0 bg-transparent"
+      />
     </div>
   );
 }
