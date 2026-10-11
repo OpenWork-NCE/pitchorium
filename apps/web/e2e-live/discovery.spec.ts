@@ -171,12 +171,16 @@ test.describe('events', () => {
       await hydrated(page);
       await expect(page.getByText('Le lien de connexion est donné aux inscrits.')).toBeVisible();
       await page.getByRole('button', { name: 'Rejoindre la liste d’attente' }).click();
-      await expect(page.getByText(/Vous êtes en liste d’attente, position/)).toBeVisible();
-      await expect(page.locator('[data-registration-state="waitlisted"]')).toContainText('1');
+      // The block itself: the announcer says the same sentence for screen readers.
+      const block = page.locator('[data-registration-state="waitlisted"]');
+      await expect(block).toContainText(/Vous êtes en liste d’attente, position\s*1/);
 
       // The first member withdraws: the seat goes to the waiting list, said in real time.
       await ok(api(first.page, 'DELETE', `/v1/events/${event.id}/registration`));
-      await expect(page.getByText('Vous êtes inscrit.')).toBeVisible({ timeout: 30_000 });
+      await expect(page.locator('[data-registration-state="registered"]')).toContainText(
+        'Vous êtes inscrit.',
+        { timeout: 30_000 },
+      );
       await expect(
         page.getByRole('link', { name: /Rejoindre l’événement en ligne/ }),
       ).toBeVisible();
