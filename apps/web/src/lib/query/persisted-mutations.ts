@@ -1,12 +1,4 @@
-import {
-  commentsControllerCreate,
-  type CreateCommentDto,
-  messagingControllerSend,
-  postsControllerReact,
-  postsControllerUnreact,
-  type SendMessageDto,
-  type SetReactionDto,
-} from '@pitchorium/api-client';
+import type { CreateCommentDto, SendMessageDto, SetReactionDto } from '@pitchorium/api-client';
 import {
   type DehydratedState,
   dehydrate,
@@ -22,6 +14,9 @@ import {
  * are kept in IndexedDB, for the member who made them; they are replayed when the member space
  * opens again online, then forgotten. Never anything of the authentication or of a payment.
  */
+
+/** The calls of the api, out of the first load of the member frame (persisted-calls.ts). */
+export const loadPersistedCalls = () => import('./persisted-calls');
 
 /** Variables of a persisted mutation: what the member did and the key of that intention. */
 export interface Intent<Input> {
@@ -59,20 +54,26 @@ const headers = (key: string) => ({ headers: { 'Idempotency-Key': key } });
 export const PERSISTED_MUTATIONS = {
   reaction: {
     mutationKey: ['content', 'reaction'],
-    mutationFn: ({ input, key }: Intent<ReactionInput>) =>
-      input.type
-        ? postsControllerReact(input.postId, { type: input.type }, headers(key))
-        : postsControllerUnreact(input.postId, headers(key)),
+    mutationFn: async ({ input, key }: Intent<ReactionInput>) => {
+      const api = await loadPersistedCalls();
+      return input.type
+        ? api.postsControllerReact(input.postId, { type: input.type }, headers(key))
+        : api.postsControllerUnreact(input.postId, headers(key));
+    },
   },
   comment: {
     mutationKey: ['content', 'comment'],
-    mutationFn: ({ input, key }: Intent<CommentInput>) =>
-      commentsControllerCreate(input.postId, input.body, headers(key)),
+    mutationFn: async ({ input, key }: Intent<CommentInput>) =>
+      (await loadPersistedCalls()).commentsControllerCreate(input.postId, input.body, headers(key)),
   },
   message: {
     mutationKey: ['messaging', 'send'],
-    mutationFn: ({ input, key }: Intent<MessageInput>) =>
-      messagingControllerSend(input.conversationId, input.body, headers(key)),
+    mutationFn: async ({ input, key }: Intent<MessageInput>) =>
+      (await loadPersistedCalls()).messagingControllerSend(
+        input.conversationId,
+        input.body,
+        headers(key),
+      ),
   },
 } as const;
 

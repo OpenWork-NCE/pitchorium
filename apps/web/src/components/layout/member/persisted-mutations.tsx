@@ -4,10 +4,12 @@ import { onlineManager, useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import {
   indexedDbStore,
+  loadPersistedCalls,
   registerPersistedMutations,
   restore,
   save,
 } from '@/lib/query/persisted-mutations';
+import { preloadWhenIdle } from '@/lib/preload';
 
 /**
  * Keeps the writes made offline across the closing of the tab (ADR 0102): restores the actions
@@ -18,6 +20,8 @@ export function PersistedMutations({ memberId }: { memberId: string }) {
   const queryClient = useQueryClient();
   useEffect(() => {
     registerPersistedMutations(queryClient);
+    // Their calls of the api, ready before a reaction or a replay offline needs them.
+    const cancelPreload = preloadWhenIdle(loadPersistedCalls);
     let cancelled = false;
     // Nothing is written before the restore: an empty save would erase what waits on the device.
     let restored = false;
@@ -31,6 +35,7 @@ export function PersistedMutations({ memberId }: { memberId: string }) {
     });
     return () => {
       cancelled = true;
+      cancelPreload();
       unsubscribe();
     };
   }, [queryClient, memberId]);
