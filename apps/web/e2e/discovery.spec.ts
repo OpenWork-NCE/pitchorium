@@ -156,6 +156,10 @@ test.describe('missions', () => {
     await expect(
       page.getByText(/Une mission est bénévole : retirez le vocabulaire/).first(),
     ).toBeVisible();
+    // The summary of the form takes the focus and links to the field.
+    await expect(
+      page.getByRole('group', { name: /Le formulaire contient 1 erreur/ }),
+    ).toBeFocused();
   });
 
   test('applies to a request with a message and follows the engagement', async ({ page }) => {
