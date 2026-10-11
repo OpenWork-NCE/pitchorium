@@ -139,6 +139,11 @@ export const paymentCoverageSchema = z.object({
   matrixVersion: z.string(),
   /** Every capability listed was checked in the provider documentation on this date or later. */
   verifiedAt: z.iso.date(),
+  /**
+   * Commission of the platform in force (section 9.3), taken at the source from each payment:
+   * basis points (500 is 5 %) and the version of its terms, read by the transparency page.
+   */
+  commission: z.object({ rateBps: z.number().int(), version: z.string() }),
   providers: z.array(providerCoverageSchema),
 });
 

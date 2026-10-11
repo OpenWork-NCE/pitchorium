@@ -7,18 +7,21 @@ import {
 } from './capability-matrix';
 import { buildCoverage } from './coverage';
 
+const COMMISSION = { rateBps: 500, version: '2026-01' };
+
 describe('public coverage', () => {
-  const live = buildCoverage(['flutterwave', 'stripe']);
+  const live = buildCoverage(['flutterwave', 'stripe'], COMMISSION);
   const [stripe, flutterwave] = live.providers;
 
   it('lists the enabled providers in the order of the matrix, with its version', () => {
     expect(live.matrixVersion).toBe(CAPABILITY_MATRIX_VERSION);
     expect(live.verifiedAt).toBe(CAPABILITY_MATRIX_VERIFIED_AT);
     expect(live.providers.map((provider) => provider.provider)).toEqual(['stripe', 'flutterwave']);
-    expect(buildCoverage(['simulated']).providers.map((provider) => provider.provider)).toEqual([
-      'simulated',
-    ]);
-    expect(buildCoverage([]).providers).toEqual([]);
+    expect(
+      buildCoverage(['simulated'], COMMISSION).providers.map((provider) => provider.provider),
+    ).toEqual(['simulated']);
+    expect(buildCoverage([], COMMISSION).providers).toEqual([]);
+    expect(live.commission).toEqual(COMMISSION);
   });
 
   it('exposes the verified payout countries only, with their currency', () => {

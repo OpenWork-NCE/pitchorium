@@ -68,12 +68,17 @@ function providerCoverage(capabilities: ProviderCapabilities): ProviderCoverage 
 /**
  * Public coverage (section 9.2): for each enabled provider, its verified payout countries,
  * currencies, payments by contributor country with their verified bounds, and what it asks of a
- * holder. A capability that is not verified, or not reachable, is absent: never offered.
+ * holder, with the commission in force. A capability that is not verified, or not reachable, is
+ * absent: never offered.
  */
-export function buildCoverage(enabled: readonly ProviderId[]): PaymentCoverage {
+export function buildCoverage(
+  enabled: readonly ProviderId[],
+  commission: PaymentCoverage['commission'],
+): PaymentCoverage {
   return {
     matrixVersion: CAPABILITY_MATRIX_VERSION,
     verifiedAt: CAPABILITY_MATRIX_VERIFIED_AT,
+    commission: { rateBps: commission.rateBps, version: commission.version },
     providers: ORDER.filter((provider) => enabled.includes(provider)).map((provider) =>
       providerCoverage(PROVIDER_CAPABILITIES[provider]),
     ),

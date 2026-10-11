@@ -227,6 +227,7 @@ describe('payout coverage', () => {
   const coverage: PaymentCoverage = {
     matrixVersion: '2026-10-10',
     verifiedAt: '2026-10-07',
+    commission: { rateBps: 500, version: '2026-10' },
     providers: [stripe, flutterwave],
   };
 
