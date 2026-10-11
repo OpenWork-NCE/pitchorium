@@ -9,4 +9,3 @@ export const EVENT_IMAGE_ALT_MAX_LENGTH = 300;
 export const EVENT_SECTORS_MAX = 5;
 export const EVENT_CAPACITY_MAX = 100_000;
 export const EVENT_FORMATS = ['online', 'in_person', 'hybrid'] as const;
-export type EventFormat = (typeof EVENT_FORMATS)[number];

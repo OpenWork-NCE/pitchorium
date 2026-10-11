@@ -1,7 +1,6 @@
 import type { DiscoveryControllerSearchAsMemberParams } from '@pitchorium/api-client';
 import {
   DISCOVERY_KINDS,
-  type DiscoveryKind,
   EVENT_FORMATS,
   MISSION_DIRECTIONS,
   MISSION_KINDS,
@@ -142,5 +141,3 @@ export function searchHref(path: string, params: Record<string, string>): string
   const query = new URLSearchParams(params).toString();
   return query ? `${path}?${query}` : path;
 }
-
-export type { DiscoveryKind };

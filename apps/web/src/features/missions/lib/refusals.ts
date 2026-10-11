@@ -17,9 +17,3 @@ export type MissionRefusal = (typeof MISSION_REFUSALS)[keyof typeof MISSION_REFU
 export function missionRefusal(code: string): MissionRefusal | null {
   return (MISSION_REFUSALS as Record<string, MissionRefusal>)[code] ?? null;
 }
-
-/** Field of the form a refusal concerns, to place its message under it. */
-export const REFUSAL_FIELDS: Readonly<Record<string, string>> = {
-  MISSIONS_JOB_POSTING_REFUSED: 'description',
-  MISSIONS_HOURS_EXCEEDED: 'estimatedHours',
-};
