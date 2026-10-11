@@ -14,6 +14,7 @@ import {
   type MediaAssetRecord,
   type MediaResourceRef,
   storageKeys,
+  kindOf,
 } from '../domain/media-asset';
 import { MediaRequested, MediaVisibilityRequested } from '../domain/media-events';
 import { initialVisibility, USAGE_RULES, visibilityFor } from '../domain/usages';
@@ -42,6 +43,8 @@ export interface AttachRequest {
  */
 export interface MediaImage {
   mediaId: string;
+  /** An image, or a PDF drawn by its first page. */
+  kind: 'image' | 'pdf';
   /** Largest WebP variant. */
   url: string;
   variants: Record<string, MediaVariant>;
@@ -187,7 +190,13 @@ export class MediaFacade {
               expiresInSeconds: PRIVATE_IMAGE_URL_TTL_SECONDS,
             });
       const largest = Object.values(variants).sort((a, b) => b.width - a.width)[0];
-      if (largest?.webp) images.set(asset.id, { mediaId: asset.id, url: largest.webp, variants });
+      if (largest?.webp)
+        images.set(asset.id, {
+          mediaId: asset.id,
+          kind: kindOf(asset.contentType ?? '') === 'pdf' ? 'pdf' : 'image',
+          url: largest.webp,
+          variants,
+        });
     }
     return images;
   }
