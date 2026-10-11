@@ -1065,7 +1065,8 @@
         "updates": "Updates",
         "interests": "Interests received",
         "team": "Team",
-        "rewards": "Rewards"
+        "rewards": "Rewards",
+        "contributors": "Potential contributors"
       },
       "overview": {
         "contributions": "Contributions",
@@ -2472,6 +2473,16 @@
         "mission": "Mission"
       },
       "mission": "{{kind}} · {{mode}}"
+    },
+    "contributors": {
+      "title": "Potential contributors",
+      "description": "Members the matching proposes for this project, with the reason: for the team only.",
+      "connect": "Connect",
+      "connecting": "Sending",
+      "requested": "Request sent",
+      "error": "The suggestions could not be loaded.",
+      "none": "No potential contributor yet",
+      "noneHint": "Complete the needs, sectors and countries of the project: suggestions are computed again."
     }
   },
   "media": {

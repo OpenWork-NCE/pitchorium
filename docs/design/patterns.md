@@ -65,6 +65,7 @@ Comment assembler les composants (`components.md`) pour les situations récurren
 
 - Palette (Ctrl K, Cmd K) : résultats de l'api regroupés par type, mots trouvés en gras, flèches et Entrée, « Rechercher « … » » vers la page de résultats, actions rapides, recherches récentes de l'appareil (effacées à la déconnexion) ; la liste garde sa hauteur pendant l'attente.
 - `/search` : champ, onglets par type (indicateur partagé), filtres de l'onglet (pays, secteur, langue ; état et impact pour les projets ; type et date pour les événements ; sens, domaine et mode pour les missions), tout dans l'adresse ; cartes `ResultCard` en grille ; sans résultat, une recherche plus large et des liens vers Découvrir.
+- Gestion d'un projet, onglet « Contributeurs potentiels » (équipe seule, projet publié) : les membres proposés par le matching avec leur phrase de raison, puis « Se connecter », « Présenter à… » et « Message ».
 - `/discover` : une section par grille large avec « Tout voir » vers sa page paginée et son propre état vide ; profils suggérés avec la phrase de raison, « Se connecter » et « Pas intéressé » (la carte quitte la grille, le toast l'annule).
 
 ## Événements (§14, ADR 0069, 0070, 0151, 0153)

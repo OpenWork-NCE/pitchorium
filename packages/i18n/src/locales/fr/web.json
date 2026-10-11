@@ -1065,7 +1065,8 @@
         "updates": "Actualités",
         "interests": "Intérêts reçus",
         "team": "Équipe",
-        "rewards": "Contreparties"
+        "rewards": "Contreparties",
+        "contributors": "Contributeurs potentiels"
       },
       "overview": {
         "contributions": "Contributions",
@@ -2472,6 +2473,16 @@
         "mission": "Mission"
       },
       "mission": "{{kind}} · {{mode}}"
+    },
+    "contributors": {
+      "title": "Contributeurs potentiels",
+      "description": "Des membres que le matching propose pour ce projet, avec la raison : réservé à l’équipe.",
+      "connect": "Se connecter",
+      "connecting": "Envoi en cours",
+      "requested": "Demande envoyée",
+      "error": "Les suggestions n’ont pas pu être chargées.",
+      "none": "Aucun contributeur potentiel pour l’instant",
+      "noneHint": "Complétez les besoins, les secteurs et les pays du projet : les suggestions se recalculent."
     }
   },
   "media": {

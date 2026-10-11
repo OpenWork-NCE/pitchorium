@@ -4,6 +4,7 @@
  */
 export { GlobalSearch, type PaletteProps } from './components/global-search';
 export { DiscoverPage, DiscoverSectionGrid } from './components/discover-page';
+export { LazyProjectContributors } from './components/lazy-project-contributors';
 export { ResultCard, ResultGrid } from './components/result-card';
 export { ResultsMore } from './components/search-more';
 export { SearchBrowser } from './components/search-browser';

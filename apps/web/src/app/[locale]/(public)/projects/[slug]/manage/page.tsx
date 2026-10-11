@@ -12,6 +12,7 @@ import {
   LazyProjectOffline,
   LazyProjectSupporters,
 } from '@/features/payments';
+import { LazyProjectContributors } from '@/features/discovery';
 import { ProjectManage } from '@/features/projects';
 import { asLocale } from '@/i18n/routing';
 import { configureServerApi } from '@/lib/api/server';
@@ -75,7 +76,14 @@ export default async function Page({ params }: PageProps<'/[locale]/projects/[sl
           </Heading>
         </div>
         <ScopedMessages scope="projectEditor">
-          <ProjectManage project={project} follow={follow} payments={payments} />
+          <ProjectManage
+            project={project}
+            follow={follow}
+            payments={payments}
+            contributors={
+              project.status === 'draft' ? null : <LazyProjectContributors projectId={project.id} />
+            }
+          />
         </ScopedMessages>
       </div>
     </SingleColumnLayout>

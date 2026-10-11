@@ -23,6 +23,7 @@ const TABS = [
   'supporters',
   'updates',
   'interests',
+  'contributors',
   'team',
   'rewards',
 ] as const;
@@ -40,21 +41,27 @@ export interface ManagePayments {
 /**
  * The management of a project by its team (§11.3): its overview, its contributions with their
  * export, the off-platform contributions to confirm, its public supporters, its updates, the
- * expressions of interest received, its team and its rewards with their stocks, a tab in the
- * address. The parts of the payments come from the route (`payments`), absent for a draft.
+ * expressions of interest received, the potential contributors the matching proposes, its team
+ * and its rewards with their stocks, a tab in the address. The parts of the payments come from the route (`payments`), absent for a draft.
  */
 function Manage({
   project,
   follow,
   payments = null,
+  contributors = null,
 }: {
   project: Project;
   follow: FollowState | null;
   payments?: ManagePayments | null;
+  /** « Contributeurs potentiels » of the discovery, composed by the route; absent for a draft. */
+  contributors?: ReactNode;
 }) {
   const t = useTranslations('web.projects.manage');
   const [tab, setTab] = useQueryState('tab', parseAsStringLiteral(TABS).withDefault('overview'));
-  const tabs = payments ? TABS : TABS.filter((value) => !PAYMENT_TABS.has(value));
+  const tabs = TABS.filter(
+    (value) =>
+      (payments || !PAYMENT_TABS.has(value)) && (contributors !== null || value !== 'contributors'),
+  );
   return (
     <ProjectEditorProvider initial={project}>
       {payments?.banner}
@@ -86,6 +93,11 @@ function Manage({
         <TabsPanel value="interests" className="pt-6">
           <InterestsPanel />
         </TabsPanel>
+        {contributors !== null ? (
+          <TabsPanel value="contributors" className="pt-6">
+            {contributors}
+          </TabsPanel>
+        ) : null}
         <TabsPanel value="team" className="pt-6">
           <TeamPanel />
         </TabsPanel>
