@@ -19,3 +19,4 @@ export { MyContributions } from './components/mine/my-contributions';
 export { MyOffline } from './components/mine/my-offline';
 export { ContributionReturn } from './components/return/contribution-return';
 export { contributionIdFromPath } from './lib/payment-url';
+export { ContributeEntry } from './components/contribute/contribute-entry';
