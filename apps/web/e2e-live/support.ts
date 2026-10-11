@@ -128,13 +128,18 @@ export async function signUpAndVerify(
 
 /**
  * Waits until the client components of the page answer (hydrated), before acting on them: React
- * has taken over the document, then the network calms down, three seconds at most, since the
- * frame of Cloudflare Turnstile never leaves it idle.
+ * has taken over the document and every field of a form (a boundary hydrates after the skip link,
+ * and React resets a controlled field typed into before: WebKit lost an email that way, nightly of
+ * 2026-10-11), then the network calms down, three seconds at most, since the frame of Cloudflare
+ * Turnstile never leaves it idle.
  */
 export async function hydrated(page: Page): Promise<void> {
   await page.waitForFunction(() => {
+    const owned = (node: Element) =>
+      Object.keys(node).some((key) => key.startsWith('__reactFiber'));
     const node = document.querySelector('a[href="#main"]') ?? document.body.firstElementChild;
-    return node !== null && Object.keys(node).some((key) => key.startsWith('__reactFiber'));
+    const fields = document.querySelectorAll('form input:not([type="hidden"]), form textarea');
+    return node !== null && owned(node) && [...fields].every(owned);
   });
   await Promise.race([
     page.waitForLoadState('networkidle').catch(() => undefined),
