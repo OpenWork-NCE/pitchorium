@@ -1,6 +1,5 @@
 import {
   getAccessControllerPrerequisitesQueryKey,
-  getNotificationsControllerCountersQueryKey,
   getPostsControllerStatsQueryKey,
 } from '@pitchorium/api-client';
 import { createEventRequestSchema, EVENT_MAX_DURATION_DAYS } from '@pitchorium/contracts';
@@ -79,6 +78,7 @@ import { RelationshipActions } from '@/features/network';
 import { OrganizationManage } from '@/features/organizations';
 import type { Organization, Relationship } from '@pitchorium/contracts';
 import { getInvitationsControllerPendingQueryKey } from '@pitchorium/api-client';
+import { COUNTERS_QUERY_KEY } from '@/lib/query/keys';
 
 const meta = {
   title: 'Compositions',
@@ -101,7 +101,7 @@ function MemberRuntime({
       defaultOptions: { queries: { staleTime: Infinity, retry: false } },
     });
     seed?.(queryClient);
-    queryClient.setQueryData(getNotificationsControllerCountersQueryKey(), counters);
+    queryClient.setQueryData(COUNTERS_QUERY_KEY, counters);
     for (const action of ['content.post.create', 'project.create'] as const) {
       queryClient.setQueryData(getAccessControllerPrerequisitesQueryKey(action), {
         action,

@@ -1,9 +1,6 @@
 import '@/lib/zod';
 
-import {
-  getMessagingControllerListQueryKey,
-  getNotificationsControllerCountersQueryKey,
-} from '@pitchorium/api-client';
+import { getMessagingControllerListQueryKey } from '@pitchorium/api-client';
 import {
   SERVER_EVENTS,
   serverConversationEventSchema,
@@ -16,6 +13,7 @@ import {
 import type { QueryClient } from '@tanstack/react-query';
 import type { z } from 'zod';
 import { dispatchRealtime } from './realtime-bus';
+import { COUNTERS_QUERY_KEY } from '@/lib/query/keys';
 
 /**
  * Wires a Socket.IO event to the cache and to the pages that listen (realtime-bus.ts). A pushed
@@ -39,7 +37,7 @@ export function realtimeHandlers(
   const refreshList = () => void queryClient.invalidateQueries({ queryKey: conversations });
   return {
     [SERVER_EVENTS.counters]: relay(SERVER_EVENTS.counters, serverCountersEventSchema, (data) =>
-      queryClient.setQueryData(getNotificationsControllerCountersQueryKey(), data.counters),
+      queryClient.setQueryData(COUNTERS_QUERY_KEY, data.counters),
     ),
     [SERVER_EVENTS.notification]: relay(SERVER_EVENTS.notification, serverNotificationEventSchema),
     [SERVER_EVENTS.message]: relay(SERVER_EVENTS.message, serverMessageEventSchema, refreshList),

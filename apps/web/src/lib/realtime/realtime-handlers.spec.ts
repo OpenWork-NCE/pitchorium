@@ -1,6 +1,5 @@
 import {
   getMessagingControllerListQueryKey,
-  getNotificationsControllerCountersQueryKey,
   getNotificationsControllerListQueryKey,
 } from '@pitchorium/api-client';
 import { SERVER_EVENTS } from '@pitchorium/contracts';
@@ -8,6 +7,7 @@ import { QueryClient } from '@tanstack/react-query';
 import { describe, expect, it, vi } from 'vitest';
 import { onRealtime } from './realtime-bus';
 import { realtimeHandlers } from './realtime-handlers';
+import { COUNTERS_QUERY_KEY } from '@/lib/query/keys';
 
 const counters = {
   notifications: 3,
@@ -21,7 +21,7 @@ describe('realtime handlers', () => {
   it('write the counters pushed by the api into the cache', () => {
     const client = new QueryClient();
     realtimeHandlers(client)[SERVER_EVENTS.counters]?.({ counters });
-    expect(client.getQueryData(getNotificationsControllerCountersQueryKey())).toEqual(counters);
+    expect(client.getQueryData(COUNTERS_QUERY_KEY)).toEqual(counters);
   });
 
   it('ignore a payload that fails its schema', () => {
@@ -29,7 +29,7 @@ describe('realtime handlers', () => {
     const heard = vi.fn();
     const stop = onRealtime(SERVER_EVENTS.counters, heard);
     realtimeHandlers(client)[SERVER_EVENTS.counters]?.({ counters: { notifications: 'many' } });
-    expect(client.getQueryData(getNotificationsControllerCountersQueryKey())).toBeUndefined();
+    expect(client.getQueryData(COUNTERS_QUERY_KEY)).toBeUndefined();
     expect(heard).not.toHaveBeenCalled();
     stop();
   });

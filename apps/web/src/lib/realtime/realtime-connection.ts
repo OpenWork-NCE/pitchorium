@@ -1,6 +1,5 @@
 import {
   getMessagingControllerListQueryKey,
-  getNotificationsControllerCountersQueryKey,
   getNotificationsControllerListQueryKey,
 } from '@pitchorium/api-client';
 import type { QueryClient } from '@tanstack/react-query';
@@ -8,6 +7,7 @@ import { io } from 'socket.io-client';
 import { preloadWhenIdle } from '@/lib/preload';
 import { publicEnv } from '@/lib/public-env';
 import { dispatchRealtime, LOCAL_EVENTS, setRealtimeSender } from './realtime-bus';
+import { COUNTERS_QUERY_KEY } from '@/lib/query/keys';
 
 /** A hidden tab keeps its channel this long, then closes it until it shows again. */
 export const HIDDEN_PAUSE_MS = 60_000;
@@ -68,7 +68,7 @@ export function connect(queryClient: QueryClient): () => void {
       return;
     }
     for (const queryKey of [
-      getNotificationsControllerCountersQueryKey(),
+      COUNTERS_QUERY_KEY,
       getMessagingControllerListQueryKey(),
       getNotificationsControllerListQueryKey(),
     ]) {
