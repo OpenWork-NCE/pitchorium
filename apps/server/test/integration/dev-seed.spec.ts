@@ -258,13 +258,16 @@ describe('development data', () => {
       });
       expect(await counts()).toEqual(withProjects);
       // Messaging and notifications through their services and facade, once.
-      expect(await seedDevMessaging(context, clock)).toEqual({
+      const messaging = await seedDevMessaging(context, clock);
+      expect(messaging).toMatchObject({
         conversations: 5,
-        messages: 10,
+        messages: 52,
         requests: 3,
-        introductions: 1,
-        notifications: 8,
+        introductions: 2,
+        notifications: 10,
       });
+      // A photo and a PDF of a message, uploaded after the services.
+      expect(messaging.attachments.map((file) => file.kind)).toEqual(['post', 'document']);
       const grouped = await query<{ actor_count: number; event_count: number }>(
         `SELECT actor_count, event_count FROM notifications.notifications WHERE type = 'reaction'`,
       );
@@ -287,6 +290,7 @@ describe('development data', () => {
         requests: 0,
         introductions: 0,
         notifications: 0,
+        attachments: [],
       });
       expect(await counts()).toEqual(withMessaging);
       // Events, missions and the search index, through the services and the facades.

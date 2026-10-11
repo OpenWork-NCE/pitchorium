@@ -5,11 +5,23 @@ import { IntroductionsService } from '../../src/modules/messaging/application/in
 import { MessagingRepository } from '../../src/modules/messaging/application/ports';
 import { directKeyOf } from '../../src/modules/messaging/domain/conversation';
 import { NotificationsFacade } from '../../src/modules/notifications';
+import { NotificationReadsService } from '../../src/modules/notifications/application/notification-reads.service';
 import type { FixedClock } from '../../src/platform/kernel/clock';
+import { slugBaseFromTitle } from '../../src/modules/projects/domain/project';
 import { DEMO_MEMBERS } from './dataset';
-import { demoId } from './seed-dev-data';
+import { DEMO_PROJECTS } from './projects-dataset';
+import { demoId, type PendingImage } from './seed-dev-data';
 
 const MINUTE_MS = 60_000;
+const DAY_MS = 24 * 60 * MINUTE_MS;
+
+/** The address of a demonstration project, as seed-dev-projects.ts gives it. */
+function projectSlug(key: string): string {
+  const project = DEMO_PROJECTS.find((candidate) => candidate.key === key);
+  return project ? slugBaseFromTitle(project.title) : key;
+}
+const projectTitle = (key: string) =>
+  DEMO_PROJECTS.find((candidate) => candidate.key === key)?.title ?? key;
 
 export interface DevMessagingResult {
   conversations: number;
@@ -17,7 +29,26 @@ export interface DevMessagingResult {
   requests: number;
   introductions: number;
   notifications: number;
+  /** Files of messages, uploaded after the services (no storage call in a transaction). */
+  attachments: (PendingImage & { ownerId: string })[];
 }
+
+/**
+ * The long conversation of Kofi and Aïssatou (PROMPT FRONT 6): several days, enough messages to
+ * read older ones by scrolling up, then a photo, a PDF and a shared publication.
+ */
+const LONG_THREAD: readonly (readonly [string, string])[] = [
+  ['kofi', 'Comment se passe la mise en service des nouvelles pompes ?'],
+  ['aissatou', 'Deux sur trois tournent, la troisième attend une pièce de Dakar.'],
+  ['kofi', 'Tu as un fournisseur de secours si la pièce tarde ?'],
+  ['aissatou', 'Oui, à Thiès, plus cher mais livré en deux jours.'],
+  ['kofi', 'Garde la différence de prix dans ton tableau de trésorerie.'],
+  ['aissatou', 'C’est noté, je l’ajoute ce soir.'],
+  ['kofi', 'As-tu pu parler à la coopérative de Mboro pour le transport ?'],
+  ['aissatou', 'Rendez-vous jeudi, ils proposent deux camions par semaine.'],
+  ['kofi', 'Bien. Pense au contrat écrit, même court.'],
+  ['aissatou', 'Je te l’envoie avant de signer.'],
+];
 
 /** Conversations between connected demo members: [from, to, text][]. */
 const CONVERSATIONS: readonly (readonly [string, string, string])[][] = [
@@ -77,7 +108,7 @@ const NOTIFICATIONS: readonly {
   type: NotificationType;
   recipient: string;
   actor: string | null;
-  target: { type: 'post' | 'member' | 'profile_views'; key: string };
+  target: { type: 'post' | 'member' | 'profile_views' | 'project'; key: string };
   data?: Record<string, string | number>;
   extraActors?: { ids: string[]; count: number };
 }[] = [
@@ -111,6 +142,23 @@ const NOTIFICATIONS: readonly {
     recipient: 'kofi',
     actor: 'aissatou',
     target: { type: 'post', key: demoId('post:sahel-harvest') },
+  },
+  // Projects and contributions: a contribution and an update of a followed project.
+  {
+    source: 'demo:contribution:thies',
+    type: 'project_contribution',
+    recipient: 'aissatou',
+    actor: 'nadia',
+    target: { type: 'project', key: projectSlug('pompes-thies') },
+    data: { title: projectTitle('pompes-thies') },
+  },
+  {
+    source: 'demo:update:soubre',
+    type: 'project_update',
+    recipient: 'aissatou',
+    actor: 'jeanbaptiste',
+    target: { type: 'project', key: projectSlug('sechoir-soubre') },
+    data: { title: projectTitle('sechoir-soubre') },
   },
   {
     source: 'demo:profile-views',
@@ -153,17 +201,26 @@ export async function seedDevMessaging(
     requests: 0,
     introductions: 0,
     notifications: 0,
+    attachments: [],
   };
   let at = now.getTime() - 3 * 24 * 60 * MINUTE_MS;
   const tick = () => {
     at += 17 * MINUTE_MS;
     clock.set(new Date(at));
   };
-  const write = async (from: string, to: string, text: string, clientMessageId: string) => {
+  const write = async (
+    from: string,
+    to: string,
+    text: string,
+    clientMessageId: string,
+    sharedPostId?: string,
+  ) => {
     tick();
     const sender = userId(from);
     const known = await repository.findByClientId(sender, clientMessageId);
-    if (!known && !(await repository.findDirect(directKeyOf(sender, userId(to))))) {
+    // Written by a previous run (its files attached since): nothing to send again.
+    if (known) return;
+    if (!(await repository.findDirect(directKeyOf(sender, userId(to))))) {
       result.conversations += 1;
     }
     await conversations.start(sender, {
@@ -172,9 +229,68 @@ export async function seedDevMessaging(
       body: text,
       attachmentIds: [],
       attachmentTexts: [],
+      ...(sharedPostId ? { sharedPostId } : {}),
     });
-    if (!known) result.messages += 1;
+    result.messages += 1;
   };
+
+  // Several days of the long conversation, from a week ago, then its files and a shared
+  // publication; every moment stays in the past.
+  at = now.getTime() - 7 * DAY_MS;
+  for (let round = 0; round < 4; round += 1) {
+    at = now.getTime() - (7 - round) * DAY_MS;
+    for (const [position, [from, text]] of LONG_THREAD.entries()) {
+      await write(
+        from,
+        from === 'kofi' ? 'aissatou' : 'kofi',
+        text,
+        `demo-long-${round}-${position}`,
+      );
+    }
+  }
+  await write(
+    'kofi',
+    'aissatou',
+    'La publication de ta récolte, à montrer au comité.',
+    'demo-long-shared',
+    demoId('post:sahel-harvest'),
+  );
+  await write(
+    'aissatou',
+    'kofi',
+    'Voici la parcelle et le contrat de transport.',
+    'demo-long-files',
+  );
+  const filesMessage = await repository.findByClientId(userId('aissatou'), 'demo-long-files');
+  if (filesMessage && filesMessage.attachmentIds.length === 0) {
+    const files = [
+      {
+        key: 'photo',
+        kind: 'post' as const,
+        text: 'Parcelle de Thiès irriguée par la pompe solaire',
+      },
+      { key: 'contract', kind: 'document' as const, text: 'Contrat de transport, Mboro' },
+    ].map((file) => ({ ...file, id: demoId(`media:message:${file.key}`) }));
+    await repository.updateMessage(filesMessage.id, {
+      attachmentIds: files.map((file) => file.id),
+      attachmentTexts: files.map((file) => file.text),
+    });
+    for (const file of files) {
+      result.attachments.push({
+        id: file.id,
+        kind: file.kind,
+        pages: 2,
+        hue: 28,
+        variant: 1,
+        usage: 'message_attachment',
+        visibility: 'private',
+        resource: { type: 'message', id: filesMessage.id },
+        ownerId: userId('aissatou'),
+      });
+    }
+  }
+
+  at = Math.max(at, now.getTime() - 3 * DAY_MS);
 
   for (const [index, thread] of CONVERSATIONS.entries()) {
     for (const [position, [from, to, text]] of thread.entries()) {
@@ -220,6 +336,37 @@ export async function seedDevMessaging(
     await introductions.respond(userId('fatou'), proposed.id, true);
     result.introductions += 1;
   }
+
+  // Kofi introduces Aïssatou to Ama: Ama accepted, Aïssatou has to answer.
+  const kofi = userId('kofi');
+  const proposedByKofi = (await repository.introductions(kofi, null, 50)).filter(
+    (introduction) => introduction.introducerId === kofi,
+  );
+  if (proposedByKofi.length === 0) {
+    tick();
+    const proposed = await introductions.propose(kofi, {
+      firstHandle: handleOf('aissatou'),
+      secondHandle: handleOf('ama'),
+      note: 'Aïssatou, Ama vend des tissages à Kumasi et cherche des panneaux solaires pour son atelier.',
+    });
+    tick();
+    await introductions.respond(userId('ama'), proposed.id, true);
+    result.introductions += 1;
+  }
+
+  // Preferences of each kind: a daily digest and the copy of unread messages for Aïssatou, a
+  // weekly digest for Kofi; Samuel writes to his connections only, Grace to any verified member.
+  const preferences = get(NotificationReadsService);
+  await preferences.updatePreferences(userId('aissatou'), {
+    emailDigest: 'daily',
+    changes: [
+      { type: 'message', channel: 'email', enabled: true },
+      { type: 'followed_post', channel: 'in_app', enabled: false },
+    ],
+  });
+  await preferences.updatePreferences(userId('kofi'), { emailDigest: 'weekly', changes: [] });
+  await conversations.updateSettings(userId('samuel'), { messagePolicy: 'connections_only' });
+  await conversations.updateSettings(userId('grace'), { messagePolicy: 'verified_members' });
 
   for (const demo of NOTIFICATIONS) {
     tick();

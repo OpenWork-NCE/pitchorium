@@ -105,20 +105,23 @@ async function waitHealthy(url: string, child: ChildProcess, name: string): Prom
 
 /**
  * The demonstration images and documents, processed by the worker like real uploads (with the
- * test adapter of the antivirus, ADR 0126): the scenarios start on a settled system, a backlog of
- * the seed never counts as work of theirs (a slow runner took more than a minute).
+ * test adapter of the antivirus, ADR 0126), and the events of the seed relayed (messages,
+ * notifications): the scenarios start on a settled system, a backlog of the seed never counts as
+ * work of theirs (a slow runner took more than a minute).
  */
 async function seedMediaProcessed(databaseUrl: string): Promise<void> {
   const { pool } = createDatabase({ url: databaseUrl, maxConnections: 1 });
   try {
     for (const started = Date.now(); Date.now() - started < 240_000;) {
-      const { rows } = await pool.query<{ busy: string }>(
-        "SELECT count(*) AS busy FROM media.assets WHERE status = 'processing'",
+      const { rows } = await pool.query<{ busy: string; pending: string }>(
+        `SELECT
+           (SELECT count(*) FROM media.assets WHERE status = 'processing') AS busy,
+           (SELECT count(*) FROM platform.outbox_events WHERE published_at IS NULL) AS pending`,
       );
-      if (Number(rows[0]?.busy) === 0) return;
+      if (Number(rows[0]?.busy) === 0 && Number(rows[0]?.pending) === 0) return;
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
-    throw new Error('The demonstration media are still processing after 4 minutes');
+    throw new Error('The demonstration media and events are still processing after 4 minutes');
   } finally {
     await pool.end();
   }

@@ -42,7 +42,8 @@ async function main(): Promise<void> {
         const projects = await seedDevProjects(context, clock, now);
         const { proofs, ...payments } = await seedDevPayments(context, clock, now);
         pendingProofs.push(...proofs);
-        const messaging = await seedDevMessaging(context, clock, now);
+        const { attachments, ...messaging } = await seedDevMessaging(context, clock, now);
+        pendingProofs.push(...attachments);
         const discovery = await seedDevDiscovery(context, clock, now);
         samples = await sampleSuggestions(context);
         const trust = await seedDevTrust(context, clock, now);
