@@ -4,6 +4,9 @@ import { Heading, Kicker, Text } from '@/components/ui';
 import { cn } from '@/lib/cn';
 import { TitleWords } from './title-words';
 
+/** A transparent pixel: what the motif loads where it is hidden (no request). */
+const EMPTY = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+
 /**
  * Header of an editorial page: kicker, title revealed word by word, lede, and its actions. With a
  * `visual` (the previews of the product on the home page, ADR 0162), two columns from `lg`, the
@@ -26,20 +29,24 @@ export function EditorialHeader({
 }) {
   return (
     <section className="relative overflow-hidden border-b border-border">
-      {visual ? null : (
-        // The brand motif, an image found with the document: behind a short title it is the
-        // largest paint, which a background of the stylesheet would delay.
-        <picture>
-          <source media="(min-width: 768px)" srcSet="/brand/overlay-desktop.svg" />
-          <img
-            src="/brand/overlay-mobile.svg"
-            alt=""
-            aria-hidden
-            fetchPriority="high"
-            className="pointer-events-none absolute inset-0 size-full object-cover object-bottom md:object-right"
-          />
-        </picture>
-      )}
+      {/* The brand motif, an image found with the document: behind a short title it is the
+          largest paint, which a background of the stylesheet would delay. With a visual, it
+          stays below `lg` only, where the visual is a band under the title; on a computer the
+          previews take its place (no request there: an empty source). */}
+      <picture>
+        {visual ? <source media="(min-width: 1024px)" srcSet={EMPTY} /> : null}
+        <source media="(min-width: 768px)" srcSet="/brand/overlay-desktop.svg" />
+        <img
+          src="/brand/overlay-mobile.svg"
+          alt=""
+          aria-hidden
+          fetchPriority="high"
+          className={cn(
+            'pointer-events-none absolute inset-0 size-full object-cover object-bottom md:object-right',
+            visual && 'lg:hidden',
+          )}
+        />
+      </picture>
       <Container
         className={cn(
           'relative grid',
