@@ -5,6 +5,7 @@ import {
 } from '@pitchorium/api-client';
 import type { QueryClient } from '@tanstack/react-query';
 import { io } from 'socket.io-client';
+import { preloadWhenIdle } from '@/lib/preload';
 import { publicEnv } from '@/lib/public-env';
 import { dispatchRealtime, LOCAL_EVENTS, setRealtimeSender } from './realtime-bus';
 
@@ -37,19 +38,26 @@ export function connect(queryClient: QueryClient): () => void {
     ...RECONNECTION,
   });
   let handlers: Promise<Record<string, (payload: unknown) => void>> | undefined;
-  // One promise for every event: they are handled in the order they arrived.
-  socket.onAny((event: string, payload: unknown) => {
+  const load = () => {
     handlers ??= import('./realtime-handlers').then((module) =>
       module.realtimeHandlers(queryClient),
     );
     const loading = handlers;
-    void loading
+    // The code of the handlers could not load (offline): the next event tries again, and what
+    // a lost event said is read again at the reconnection (`local:resumed`).
+    loading.catch(() => {
+      if (handlers === loading) handlers = undefined;
+    });
+    return loading;
+  };
+  // Fetched when the page is idle, while the network is there: an event that arrives offline
+  // finds them (they carry Zod and the schemas, kept off the start of the page, ADR 0094).
+  const cancelPreload = preloadWhenIdle(load);
+  // One promise for every event: they are handled in the order they arrived.
+  socket.onAny((event: string, payload: unknown) => {
+    void load()
       .then((byEvent) => byEvent[event]?.(payload))
-      .catch(() => {
-        // The code of the handlers could not load (offline): the next event tries again, and
-        // what this one said is read again at the reconnection (`local:resumed`).
-        if (handlers === loading) handlers = undefined;
-      });
+      .catch(() => undefined);
   });
 
   let connectedOnce = false;
@@ -89,6 +97,7 @@ export function connect(queryClient: QueryClient): () => void {
   document.addEventListener('visibilitychange', visibility);
 
   return () => {
+    cancelPreload();
     clearTimeout(pause);
     document.removeEventListener('visibilitychange', visibility);
     setRealtimeSender(null);
