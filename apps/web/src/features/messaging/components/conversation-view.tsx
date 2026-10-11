@@ -3,7 +3,7 @@
 import type { Conversation, Message, MessagePage } from '@pitchorium/contracts';
 import { ArrowLeft, BellOff, ShieldOff } from 'lucide-react';
 import { useLocale, useTimeZone, useTranslations } from 'next-intl';
-import { lazy, Suspense, useMemo } from 'react';
+import { useMemo } from 'react';
 import { Avatar, AvatarGroup, Button, EmptyState, ErrorState, IconButton } from '@/components/ui';
 import * as routes from '@/config/paths';
 import { useCurrentMember } from '@/features/identity';
@@ -17,8 +17,12 @@ import { pendingMessages } from '../lib/thread';
 import { threadRows } from '../lib/thread-rows';
 import { ConversationMenu } from './conversation-menu';
 
-/** The answer to a request, or its wait: only for a conversation that is one. */
-const RequestBanner = lazy(() => import('./request-banner'));
+/**
+ * The answer to a request, or its wait: painted by the server, so loaded with the page. Loaded on
+ * demand, a click on Accept before its code arrived went nowhere (no request sent; trace of the
+ * diagnosis, FRONT 8A).
+ */
+import RequestBanner from './request-banner';
 
 import { MessageActions } from './message-actions';
 import { LazyMessageComposer } from './lazy-composer';
@@ -163,14 +167,12 @@ export function ConversationView({
       </header>
 
       {conversation.requestState === 'none' ? null : (
-        <Suspense fallback={null}>
-          <RequestBanner
-            state={conversation.requestState}
-            names={names}
-            accept={view.accept}
-            decline={view.decline}
-          />
-        </Suspense>
+        <RequestBanner
+          state={conversation.requestState}
+          names={names}
+          accept={view.accept}
+          decline={view.decline}
+        />
       )}
 
       <ThreadScroller
