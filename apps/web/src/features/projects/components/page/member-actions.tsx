@@ -46,26 +46,46 @@ export function MemberActions({
     const rest = query.toString();
     router.replace(`${window.location.pathname}${rest ? `?${rest}` : ''}`, { scroll: false });
   }
-  return (
-    <div
-      className={
-        layout === 'bar'
-          ? 'flex w-full flex-wrap items-center justify-between gap-2'
-          : 'grid gap-2 sm:flex sm:flex-wrap'
-      }
+  const interest = (
+    <Button
+      type="button"
+      variant={layout === 'bar' ? 'primary' : 'secondary'}
+      // In the bar, the main action when « Contribuer » is not there (MobileActionBar).
+      {...(layout === 'bar' ? { 'data-bar-main': '', 'data-bar-interest': '' } : {})}
+      onClick={() => {
+        setOpened(true);
+        setOpen(true);
+      }}
     >
-      <FollowButton type="project" targetKey={project.id} name={project.title} initial={follow} />
-      <Button
-        type="button"
-        variant="secondary"
-        onClick={() => {
-          setOpened(true);
-          setOpen(true);
-        }}
-      >
-        <HandCoins aria-hidden />
-        {t('interest')}
-      </Button>
+      <HandCoins aria-hidden />
+      {t('interest')}
+    </Button>
+  );
+  return (
+    // In the bar, its actions sit in the row of the bar: one main action, then the bell.
+    <div className={layout === 'bar' ? 'contents' : 'grid gap-2 sm:flex sm:flex-wrap'}>
+      {layout === 'bar' ? (
+        <>
+          {interest}
+          <FollowButton
+            type="project"
+            targetKey={project.id}
+            name={project.title}
+            initial={follow}
+            variant="icon"
+          />
+        </>
+      ) : (
+        <>
+          <FollowButton
+            type="project"
+            targetKey={project.id}
+            name={project.title}
+            initial={follow}
+          />
+          {interest}
+        </>
+      )}
       {contact && layout === 'stack' ? (
         <MessageButton handle={contact} variant="outline" label={t('contact')} />
       ) : null}

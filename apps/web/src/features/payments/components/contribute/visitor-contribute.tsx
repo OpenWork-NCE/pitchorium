@@ -13,7 +13,7 @@ import { withRedirect } from '@/lib/auth/redirect';
 export async function VisitorContribute({ path }: { path: string }) {
   const t = await getTranslations('web.payments.entry');
   return (
-    <Button asChild className="w-full">
+    <Button asChild className="w-full" data-bar-main="">
       <Link href={withRedirect(routes.signIn, `${path}?contribute=kind`)}>
         <HandHeart aria-hidden />
         {t('signInToContribute')}

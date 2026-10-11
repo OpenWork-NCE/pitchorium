@@ -108,7 +108,9 @@ test.describe('the page of a project', () => {
     await expect(page.getByText('Objectif atteint, la campagne reste ouverte')).toBeVisible();
     await expect(page.getByText('6 jours restants').first()).toBeVisible();
     await page.goto('/fr/projects/sechoirs-mbour');
-    await expect(page.getByText('Campagne clôturée').first()).toBeVisible();
+    // Its closing date, never « 0 jour restant ».
+    await expect(page.getByText('Clôturé le 10 octobre 2026').first()).toBeVisible();
+    await expect(page.getByText('0 jour restant')).toHaveCount(0);
     // A closed campaign can still be followed (its updates go on).
     await expect(
       page.getByRole('link', { name: 'Se connecter pour suivre le projet' }).first(),
@@ -124,10 +126,17 @@ test.describe('the page of a project', () => {
       const bar = page.getByRole('region', { name: 'Actions du projet' });
       await expect(bar).toBeVisible();
       await expect(bar.getByText('62 % · 12 jours restants')).toBeVisible();
+      // One main action, following as a bell named by its label.
+      await expect(bar.getByRole('link', { name: 'Se connecter pour contribuer' })).toBeVisible();
       await expect(
         bar.getByRole('link', { name: 'Se connecter pour suivre le projet' }),
-      ).toBeVisible();
+      ).toHaveText('');
       await expect(bar.getByRole('navigation')).toHaveCount(0);
+      // At the end of the page, the bar covers nothing: the footer ends above it.
+      await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+      const footer = (await page.getByRole('contentinfo').boundingBox())!;
+      const top = (await bar.boundingBox())!.y;
+      expect(Math.round(footer.y + footer.height)).toBeLessThanOrEqual(Math.round(top));
     },
   );
 });

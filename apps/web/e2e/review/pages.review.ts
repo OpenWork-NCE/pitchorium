@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { API_ORIGIN, DEMO_PASSWORD } from '../support/fixtures';
+import { hideFixedBars } from '../support/full-page';
 import { layoutProblems } from './layout-guard';
 
 /**
@@ -93,6 +94,7 @@ for (const page of PAGES) {
             animations: 'disabled',
           });
         } else {
+          await hideFixedBars(tab);
           await expect(tab).toHaveScreenshot(name, {
             fullPage: true,
             // Animations brought to their end state: a stable capture.
@@ -102,5 +104,41 @@ for (const page of PAGES) {
         await context.close();
       });
     }
+  }
+}
+
+/**
+ * The action bar of a project page on a phone, shot apart in its real screen (it is hidden in the
+ * whole pages, e2e/support/full-page.css): the visitor's (« Contribuer » after sign-in, the bell)
+ * and the member's, the page scrolled to its milestones.
+ */
+for (const member of [false, true]) {
+  for (const theme of ['light', 'dark'] as const) {
+    const id = `project-action-bar-${member ? 'member' : 'visitor'}`;
+    test(`${id} mobile ${theme}`, async ({ browser }) => {
+      const context = await browser.newContext({
+        viewport: { width: 390, height: 844 },
+        colorScheme: theme,
+        reducedMotion: 'reduce',
+        locale: 'fr-FR',
+      });
+      const tab = await context.newPage();
+      if (member) {
+        const response = await tab.request.post(`${API_ORIGIN}/v1/auth/sign-in/email`, {
+          data: { email: MEMBER, password: DEMO_PASSWORD },
+        });
+        expect(response.ok()).toBe(true);
+      }
+      await tab.goto(`${ORIGIN}/fr/projects/ferme-solaire-thies`);
+      const bar = tab.getByRole('region', { name: 'Actions du projet' });
+      await expect(bar.locator('[data-bar-main]').first()).toBeVisible();
+      await tab.evaluate(() => document.fonts.ready);
+      await tab.waitForLoadState('networkidle');
+      await tab.locator('#tiers-title').scrollIntoViewIfNeeded();
+      await expect(tab).toHaveScreenshot(`${id}-mobile-${theme}.png`, {
+        animations: 'disabled',
+      });
+      await context.close();
+    });
   }
 }

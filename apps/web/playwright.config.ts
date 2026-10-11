@@ -24,7 +24,12 @@ export default defineConfig({
   workers: 1,
   ...ciOptions,
   snapshotPathTemplate: '{testDir}/__screenshots__/{testFilePath}/{arg}{ext}',
-  expect: { toHaveScreenshot: { maxDiffPixelRatio: 0.01, animations: 'disabled' } },
+  expect: {
+    toHaveScreenshot: {
+      maxDiffPixelRatio: 0.01,
+      animations: 'disabled',
+    },
+  },
   use: { baseURL: webOrigin, trace, video },
   projects: [
     { name: 'chromium', use: { ...devices['Desktop Chrome'] } },

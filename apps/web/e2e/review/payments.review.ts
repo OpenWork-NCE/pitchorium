@@ -1,5 +1,6 @@
 import { type BrowserContext, expect, type Locator, type Page, test } from '@playwright/test';
 import { API_ORIGIN, DEMO_PASSWORD } from '../support/fixtures';
+import { hideFixedBars } from '../support/full-page';
 import { layoutProblems } from './layout-guard';
 
 /**
@@ -222,7 +223,10 @@ for (const screen of SCREENS) {
           });
           await expect(region).toHaveScreenshot(name, options);
         } else if (region) await expect(region).toHaveScreenshot(name, options);
-        else await expect(tab).toHaveScreenshot(name, { ...options, fullPage: true });
+        else {
+          await hideFixedBars(tab);
+          await expect(tab).toHaveScreenshot(name, { ...options, fullPage: true });
+        }
         await context.close();
       });
     }

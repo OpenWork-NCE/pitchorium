@@ -1,4 +1,5 @@
 import { expect, signIn, stub, test } from './support/fixtures';
+import { hideFixedBars } from './support/full-page';
 
 /**
  * Reference screenshots of the editorial home page, compared in the official Playwright image
@@ -109,6 +110,7 @@ for (const resource of RESOURCE_PAGES) {
             ),
           );
         });
+        await hideFixedBars(page);
         await expect(page).toHaveScreenshot(
           `${resource.name}-${viewport.name}-${colorScheme}.png`,
           { fullPage: true },

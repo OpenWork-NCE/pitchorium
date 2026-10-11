@@ -11,7 +11,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Bell, BellRing } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { IconSwap, LabelSwap } from '@/components/motion';
-import { Button, Count, notify, useAnnounce } from '@/components/ui';
+import { Button, Count, IconButton, notify, useAnnounce } from '@/components/ui';
 import { usePlural } from '@/lib/i18n/plural';
 import { NETWORK_QUERY_ROOT, useProblemMessage } from './use-relationship';
 
@@ -24,12 +24,15 @@ export function FollowButton({
   targetKey,
   name,
   initial,
+  variant = 'button',
 }: {
   type: 'organization' | 'project';
   /** The key of the target for the network: its id (ADR 0027). */
   targetKey: string;
   name: string;
   initial: FollowState;
+  /** `icon`: the bell alone, named by its label (the action bar of a phone), without the count. */
+  variant?: 'button' | 'icon';
 }) {
   const t = useTranslations('web.network.follow');
   const announce = useAnnounce();
@@ -71,6 +74,26 @@ export function FollowButton({
       ]),
   });
   const step = state.following ? 'following' : 'follow';
+  const icon = (
+    <IconSwap
+      state={step}
+      icons={{ follow: <Bell aria-hidden />, following: <BellRing aria-hidden /> }}
+    />
+  );
+  if (variant === 'icon') {
+    return (
+      <IconButton
+        variant={state.following ? 'secondary' : 'outline'}
+        aria-pressed={state.following}
+        label={t(state.following ? 'unfollowName' : 'followName', { name })}
+        tooltip={t(state.following ? 'following' : 'follow')}
+        tooltipSide="top"
+        icon={icon}
+        className="shrink-0"
+        onClick={() => toggle.mutate(!state.following)}
+      />
+    );
+  }
   return (
     <div className="flex flex-wrap items-center gap-3">
       <Button
@@ -79,10 +102,7 @@ export function FollowButton({
         aria-label={t(state.following ? 'unfollowName' : 'followName', { name })}
         onClick={() => toggle.mutate(!state.following)}
       >
-        <IconSwap
-          state={step}
-          icons={{ follow: <Bell aria-hidden />, following: <BellRing aria-hidden /> }}
-        />
+        {icon}
         <LabelSwap state={step} labels={{ follow: t('follow'), following: t('following') }} />
       </Button>
       {state.followers === null ? null : (

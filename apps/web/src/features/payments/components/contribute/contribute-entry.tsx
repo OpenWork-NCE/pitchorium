@@ -122,7 +122,12 @@ function Entry({ project, layout }: { project: ContributeProject; layout: 'stack
   // phone, holds the state, the resumption and the dialogs (one instance of each).
   if (layout === 'bar') {
     return data.availability === 'open' && !resumable ? (
-      <Button type="button" onClick={() => openJourney('kind')} data-testid="contribute-bar">
+      <Button
+        type="button"
+        onClick={() => openJourney('kind')}
+        data-testid="contribute-bar"
+        data-bar-main=""
+      >
         <HandHeart aria-hidden />
         {t('contribute')}
       </Button>

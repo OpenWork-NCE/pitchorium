@@ -17,7 +17,11 @@ export default defineConfig({
   fullyParallel: true,
   ...ciOptions,
   snapshotPathTemplate: '{testDir}/../../../../docs/design/review/{arg}{ext}',
-  expect: { toHaveScreenshot: { maxDiffPixelRatio: 0.01 } },
+  expect: {
+    toHaveScreenshot: {
+      maxDiffPixelRatio: 0.01,
+    },
+  },
   use: {
     baseURL: `http://localhost:${PORT}`,
     ...devices['Desktop Chrome'],

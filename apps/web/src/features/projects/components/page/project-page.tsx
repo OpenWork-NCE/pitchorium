@@ -1,6 +1,7 @@
 import type { FollowState, Locale, Project } from '@pitchorium/contracts';
 import { getFormatter, getTranslations } from 'next-intl/server';
 import type { ReactNode } from 'react';
+import { Bell } from 'lucide-react';
 import { Alert, Button, ImpactBadge } from '@/components/ui';
 import * as routes from '@/config/paths';
 import { ActivitySection, ImageGallery } from '@/features/content';
@@ -112,6 +113,28 @@ export async function ProjectPage({
         <Link href={withRedirect(routes.signIn, path)}>{t('joinToFollow')}</Link>
       </Button>
     ) : null;
+  // In the action bar of a phone: « Contribuer » is the main action, following becomes the bell.
+  const visitorBarAction =
+    view === 'visitor' ? (
+      contribute ? (
+        // The bell named by its label: a link of the server, sized as an icon button.
+        <Button
+          asChild
+          variant="outline"
+          size="icon"
+          className="shrink-0"
+          aria-label={t('joinToFollow')}
+        >
+          <Link href={withRedirect(routes.signIn, path)}>
+            <Bell aria-hidden />
+          </Link>
+        </Button>
+      ) : (
+        <Button asChild data-bar-main="">
+          <Link href={withRedirect(routes.signIn, path)}>{t('joinToFollow')}</Link>
+        </Button>
+      )
+    ) : null;
   const percent = project.funding.progressPercent;
   const summary =
     state.time.kind === 'daysLeft'
@@ -140,7 +163,7 @@ export async function ProjectPage({
   const cover = project.gallery[0]?.url ?? null;
 
   return (
-    <div className={draft ? 'grid gap-8' : 'grid gap-8 pb-24 lg:pb-0'}>
+    <div className="grid gap-8">
       {view === 'preview' ? (
         <Alert tone="info" title={t('previewTitle')}>
           {t('previewBody')}
@@ -236,7 +259,7 @@ export async function ProjectPage({
               layout="bar"
             />
           ) : (
-            visitorAction
+            visitorBarAction
           )}
         </MobileActionBar>
       )}

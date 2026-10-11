@@ -20,6 +20,7 @@ Fichiers `<composition>-<format>-<thème>.png` : format `desktop` (1280x800) ou 
 - `showcase` : vitrine des projets, filtres (pays, secteur, statut, impact minimum), tri, grille de `ProjectCard`.
 - `project-visitor` et `project-member` : page projet en vue visiteur (indexable, mouvement D4) et en vue membre (suivre, manifester un intérêt, équivalent indicatif en FCFA) ; sur ordinateur, contenu éditorial à gauche et financement collant à droite ; sur téléphone, financement en tête et barre d'action en bas.
 - `project-funded` et `project-closed` : états finaux du bloc financement.
+- `project-action-bar-visitor` et `project-action-bar-member` (téléphone seulement) : la barre d'action de la page projet dans son écran réel, la page défilée jusqu'aux paliers ; dans les pages entières, les éléments fixes sont masqués (`hideFixedBars`, `e2e/support/full-page.ts` : le style de l’élément, jamais une feuille injectée que la CSP refuserait) pour ne jamais apparaître au milieu de l'image.
 - `wizard-<étape>` : les dix étapes de l'assistant de création sur un brouillon (`essentials`, `story`, `media`, `funding`, `rewards`, `instruments`, `impact`, `team`, `preview`, `publish`).
 - `manage-overview` et `manage-interests` : espace de gestion du projet, vue d'ensemble et manifestations d'intérêt.
 - `methodology` : méthodologie d'impact en vigueur.
