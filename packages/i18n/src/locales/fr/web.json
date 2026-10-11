@@ -1625,7 +1625,94 @@
     "someone": "Un membre",
     "generic": "Nouvelle notification",
     "unread": ", non lue",
-    "excerpt": "« {{text}} »"
+    "excerpt": "« {{text}} »",
+    "remove": "Supprimer la notification",
+    "removed": "Notification supprimée.",
+    "removeFailed": "La notification n’a pas pu être supprimée.",
+    "readAll": "Tout marquer comme lu",
+    "allRead": "Toutes les notifications sont lues.",
+    "allReadFailed": "Les notifications n’ont pas pu être marquées comme lues.",
+    "nothingUnread": "Aucune notification non lue",
+    "preferences": "Préférences",
+    "error": "Les notifications n’ont pas pu être chargées.",
+    "more": "Afficher plus",
+    "loadingMore": "Chargement",
+    "newPill": {
+      "one": "{{count}} nouvelle notification",
+      "other": "{{count}} nouvelles notifications"
+    },
+    "filters": {
+      "label": "Notifications à afficher",
+      "all": "Tout",
+      "mentions": "Mentions",
+      "network": "Réseau",
+      "posts": "Publications",
+      "projects": "Projets et contributions"
+    },
+    "empty": {
+      "all": {
+        "title": "Aucune notification",
+        "body": "Les réactions, les demandes et l’activité de vos projets arrivent ici."
+      },
+      "mentions": {
+        "title": "Aucune mention",
+        "body": "Quand un membre vous cite dans une publication ou un commentaire, vous le verrez ici."
+      },
+      "network": {
+        "title": "Rien de nouveau dans votre réseau",
+        "body": "Demandes de connexion, nouveaux abonnés et introductions arrivent ici."
+      },
+      "posts": {
+        "title": "Aucune activité sur vos publications",
+        "body": "Les réactions et les commentaires de vos publications arrivent ici."
+      },
+      "projects": {
+        "title": "Rien de nouveau sur vos projets",
+        "body": "Contributions, paliers et actualités des projets que vous portez ou suivez arrivent ici."
+      }
+    },
+    "introduction": {
+      "accept": "Accepter",
+      "acceptName": "Accepter l’introduction de {{name}}",
+      "accepting": "Acceptation",
+      "accepted": "Introduction acceptée.",
+      "decline": "Décliner",
+      "declineName": "Décliner l’introduction de {{name}}",
+      "declining": "Refus",
+      "declined": "Introduction déclinée."
+    },
+    "settings": {
+      "rhythmTitle": "Rythme des emails",
+      "rhythmHint": "Les emails des types que vous activez partent à chaque notification, ou réunis dans un résumé. Les emails indispensables partent toujours aussitôt.",
+      "immediate": "Un email dès que la notification arrive.",
+      "daily": "Un résumé chaque jour, à partir de {{time}}.",
+      "weekly": "Un résumé chaque {{day}}, à partir de {{time}}.",
+      "timeZone": "Heures de votre fuseau, {{zone}} : <link>le modifier dans les préférences</link>.",
+      "weekdays": {
+        "monday": "lundi",
+        "tuesday": "mardi",
+        "wednesday": "mercredi",
+        "thursday": "jeudi",
+        "friday": "vendredi",
+        "saturday": "samedi",
+        "sunday": "dimanche"
+      },
+      "type": "Notification",
+      "switch": "{{type}} : {{channel}}",
+      "locked": "Indispensable, toujours envoyée",
+      "lockedHint": "Les notifications de sécurité, de paiement, de vérification d’identité et de modération restent actives : elles concernent votre compte ou votre argent.",
+      "saved": "Préférence enregistrée.",
+      "sections": {
+        "network": "Réseau",
+        "posts": "Publications",
+        "messages": "Messagerie",
+        "projects": "Projets et contributions",
+        "organizations": "Organisations",
+        "events": "Événements et missions",
+        "account": "Compte, sécurité et modération",
+        "others": "Autres"
+      }
+    }
   },
   "feed": {
     "compose": "Commencer une publication",
@@ -2137,7 +2224,8 @@
       "privacy": "Confidentialité et réseau",
       "organizations": "Mes organisations",
       "payouts": "Versement et vérification",
-      "messaging": "Messagerie"
+      "messaging": "Messagerie",
+      "notifications": "Notifications"
     },
     "account": {
       "email": {
@@ -3309,5 +3397,24 @@
   "messagingEntry": {
     "message": "Message",
     "introduce": "Présenter à…"
+  },
+  "unsubscribe": {
+    "title": "Se désinscrire",
+    "working": "Désinscription en cours…",
+    "offTitle": "C’est fait",
+    "offBody": "Vous ne recevrez plus {{what}}.",
+    "backTitle": "Désinscription annulée",
+    "backBody": "Vous recevez de nouveau {{what}}.",
+    "type": "les emails « {{type}} »",
+    "digest": "le résumé de vos notifications par email",
+    "others": "Vos autres emails ne changent pas.",
+    "undo": "Annuler la désinscription",
+    "undoing": "Annulation",
+    "preferences": "Régler mes notifications",
+    "signInFirst": "Vous vous connecterez d’abord.",
+    "invalidTitle": "Ce lien n’est pas valide",
+    "invalidBody": "Il a peut-être été coupé par votre messagerie. Vos préférences restent réglables depuis votre compte.",
+    "failedTitle": "La désinscription n’a pas abouti",
+    "failedBody": "Réessayez dans un instant, ou réglez vos notifications depuis votre compte."
   }
 }

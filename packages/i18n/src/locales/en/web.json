@@ -1625,7 +1625,94 @@
     "someone": "A member",
     "generic": "New notification",
     "unread": ", unread",
-    "excerpt": "“{{text}}”"
+    "excerpt": "“{{text}}”",
+    "remove": "Delete the notification",
+    "removed": "Notification deleted.",
+    "removeFailed": "The notification could not be deleted.",
+    "readAll": "Mark all as read",
+    "allRead": "Every notification is read.",
+    "allReadFailed": "The notifications could not be marked as read.",
+    "nothingUnread": "No unread notification",
+    "preferences": "Preferences",
+    "error": "The notifications could not be loaded.",
+    "more": "Show more",
+    "loadingMore": "Loading",
+    "newPill": {
+      "one": "{{count}} new notification",
+      "other": "{{count}} new notifications"
+    },
+    "filters": {
+      "label": "Notifications to show",
+      "all": "All",
+      "mentions": "Mentions",
+      "network": "Network",
+      "posts": "Posts",
+      "projects": "Projects and contributions"
+    },
+    "empty": {
+      "all": {
+        "title": "No notification",
+        "body": "Reactions, requests and the activity of your projects arrive here."
+      },
+      "mentions": {
+        "title": "No mention",
+        "body": "When a member mentions you in a post or a comment, you will see it here."
+      },
+      "network": {
+        "title": "Nothing new in your network",
+        "body": "Connection requests, new followers and introductions arrive here."
+      },
+      "posts": {
+        "title": "No activity on your posts",
+        "body": "Reactions and comments on your posts arrive here."
+      },
+      "projects": {
+        "title": "Nothing new on your projects",
+        "body": "Contributions, tiers and updates of the projects you carry or follow arrive here."
+      }
+    },
+    "introduction": {
+      "accept": "Accept",
+      "acceptName": "Accept the introduction from {{name}}",
+      "accepting": "Accepting",
+      "accepted": "Introduction accepted.",
+      "decline": "Decline",
+      "declineName": "Decline the introduction from {{name}}",
+      "declining": "Declining",
+      "declined": "Introduction declined."
+    },
+    "settings": {
+      "rhythmTitle": "Rhythm of the emails",
+      "rhythmHint": "Emails of the types you turn on leave with each notification, or together in a digest. Essential emails always leave at once.",
+      "immediate": "An email as soon as the notification arrives.",
+      "daily": "A digest every day, from {{time}}.",
+      "weekly": "A digest every {{day}}, from {{time}}.",
+      "timeZone": "Times of your time zone, {{zone}}: <link>change it in the preferences</link>.",
+      "weekdays": {
+        "monday": "Monday",
+        "tuesday": "Tuesday",
+        "wednesday": "Wednesday",
+        "thursday": "Thursday",
+        "friday": "Friday",
+        "saturday": "Saturday",
+        "sunday": "Sunday"
+      },
+      "type": "Notification",
+      "switch": "{{type}}: {{channel}}",
+      "locked": "Essential, always sent",
+      "lockedHint": "Notifications of security, payments, identity checks and moderation stay on: they concern your account or your money.",
+      "saved": "Preference saved.",
+      "sections": {
+        "network": "Network",
+        "posts": "Posts",
+        "messages": "Messages",
+        "projects": "Projects and contributions",
+        "organizations": "Organisations",
+        "events": "Events and missions",
+        "account": "Account, security and moderation",
+        "others": "Others"
+      }
+    }
   },
   "feed": {
     "compose": "Start a post",
@@ -2137,7 +2224,8 @@
       "privacy": "Privacy and network",
       "organizations": "My organizations",
       "payouts": "Payout and verification",
-      "messaging": "Messages"
+      "messaging": "Messages",
+      "notifications": "Notifications"
     },
     "account": {
       "email": {
@@ -3309,5 +3397,24 @@
   "messagingEntry": {
     "message": "Message",
     "introduce": "Introduce to…"
+  },
+  "unsubscribe": {
+    "title": "Unsubscribe",
+    "working": "Unsubscribing…",
+    "offTitle": "Done",
+    "offBody": "You will no longer receive {{what}}.",
+    "backTitle": "Unsubscribe undone",
+    "backBody": "You receive {{what}} again.",
+    "type": "the “{{type}}” emails",
+    "digest": "the digest of your notifications by email",
+    "others": "Your other emails do not change.",
+    "undo": "Undo the unsubscribe",
+    "undoing": "Undoing",
+    "preferences": "Set my notifications",
+    "signInFirst": "You will sign in first.",
+    "invalidTitle": "This link is not valid",
+    "invalidBody": "Your mailbox may have cut it. Your preferences can still be set from your account.",
+    "failedTitle": "The unsubscribe did not go through",
+    "failedBody": "Try again in a moment, or set your notifications from your account."
   }
 }

@@ -33,7 +33,7 @@ Comment assembler les composants (`components.md`) pour les situations récurren
 - Une action impossible dit pourquoi (« C'est votre seule méthode de connexion … ») au lieu d'un bouton désactivé muet ; une action sensible redemande le mot de passe.
 - Une session se décrit par son type d'appareil (icône et libellé), son navigateur, son système et sa dernière activité, jamais par un lieu : l'adresse IP n'est pas géolocalisée (ADR 0107).
 
-- « Messagerie » : qui peut écrire (trois choix décrits), la copie par email des messages non lus. Chaque réglage s'applique dès qu'il change et revient si l'api refuse.
+- « Messagerie » : qui peut écrire (trois choix décrits), la copie par email des messages non lus. « Notifications » : le rythme des emails (un email à chaque fois, un résumé quotidien ou hebdomadaire, avec l'heure, le jour et le fuseau de l'api), puis une grille par type et par canal ; un type indispensable reste coché, verrouillé, avec la raison. Chaque réglage s'applique dès qu'il change et revient si l'api refuse.
 - « Confidentialité et réseau » : chaque réglage s'applique dès qu'il change (interrupteur, liste), s'affiche avant la réponse et revient si l'api refuse ; un déblocage dit ce qui ne revient pas (connexions et suivis retirés par le blocage).
 
 ## Profils et organisations (§10.1, §10.7, ADR 0113)
@@ -156,11 +156,12 @@ Comment assembler les composants (`components.md`) pour les situations récurren
 - « Présenter à… » sur le profil d'une connexion : une autre connexion à choisir et une note, qui ouvrira la conversation.
 - Boîte des introductions : celles à traiter d'abord, puis les autres ; chaque carte dit qui présente qui, la note, où en sont les réponses (sans jamais nommer qui a décliné), accepter ou décliner, puis la conversation ouverte.
 
-## Notifications (§10.5)
+## Notifications (§10.5, ADR 0148)
 
-- Une colonne média de largeur fixe (48 px) aligne tous les textes : un avatar, ou deux en chevauchement réduit avec un liseré ; l'icône du type en pastille dans leur coin.
-- La phrase vient du namespace `notifications` (partagé avec les emails), en gras tant qu'elle n'est pas lue ; une notification sur une publication montre son début entre guillemets (`excerpt` de l'api, deux lignes au plus).
-- Toute la ligne ouvre la cible ; une demande de connexion s'accepte ou s'ignore sur place (« Accepter », « Ignorer »), la réponse remplace les boutons et est annoncée.
+- Une colonne média de largeur fixe (48 px) aligne tous les textes : un avatar, ou deux en chevauchement réduit ; l'icône du type en pastille dans leur coin ; le point des non-lues dans la marge, à gauche.
+- La phrase vient du namespace `notifications` (partagé avec les emails), en gras tant qu'elle n'est pas lue : un groupe se dit par son dernier acteur et le nombre des autres (« Amina et 12 autres ») ; une notification sur une publication montre son début entre guillemets.
+- Toute la ligne ouvre la cible quand sa page existe et la marque lue ; une demande de connexion et une introduction se règlent sur place, la réponse remplace les boutons et est annoncée ; « Supprimer » au survol, au focus et sur un écran tactile.
+- Filtres par famille (tout, mentions, réseau, publications, projets et contributions), suite chargée en bas, « Tout marquer comme lu » ; une notification arrivée en temps réel n'insère rien : la pastille « N nouvelles notifications » glisse et montre les nouveautés à la pression.
 
 ## Chargement
 

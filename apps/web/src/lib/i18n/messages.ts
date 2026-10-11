@@ -188,6 +188,22 @@ export const CLIENT_MESSAGES = {
   member: MEMBER_MESSAGES,
   /** The messaging and the introductions (PROMPT FRONT 6), in their pages only. */
   messaging: [...MEMBER_MESSAGES, 'web.messaging'],
+  /** The notifications and their preferences (PROMPT FRONT 6), in their pages only. */
+  notifications: [
+    ...MEMBER_MESSAGES,
+    'web.notifications',
+    'notifications.types',
+    'reference.notificationTypes',
+    'reference.notificationChannels',
+    'reference.emailDigests',
+  ],
+  /** The page of the link of an email, for a visitor as for a member. */
+  unsubscribe: [
+    ...DOCUMENT_MESSAGES,
+    ...DESIGN_SYSTEM_MESSAGES,
+    'web.unsubscribe',
+    'reference.notificationTypes',
+  ],
   admin: [
     ...DOCUMENT_MESSAGES,
     ...DESIGN_SYSTEM_MESSAGES,

@@ -1,3 +1,5 @@
+'use client';
+
 import type { Notification } from '@pitchorium/contracts';
 import {
   AtSign,
@@ -19,14 +21,17 @@ import {
   Sparkles,
   UserCheck,
   UserPlus,
+  X,
 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { createElement } from 'react';
-import { Avatar, AvatarGroup, RelativeTime } from '@/components/ui';
+import { Avatar, AvatarGroup, IconButton, RelativeTime } from '@/components/ui';
 import { REACTION_ICONS } from '@/features/content';
 import { ConnectionRequestActions } from '@/features/network';
 import { Link } from '@/i18n/navigation';
 import { cn } from '@/lib/cn';
+import { targetHref } from '../lib/target';
+import { IntroductionAnswer } from './introduction-answer';
 
 /** Drawing of each family of notifications, in the corner of its avatars. */
 const FAMILIES: readonly [RegExp, LucideIcon][] = [
@@ -59,28 +64,63 @@ function iconOf(notification: Notification): LucideIcon {
   return FAMILIES.find(([pattern]) => pattern.test(notification.type))?.[1] ?? Bell;
 }
 
+/** The values a sentence of `notifications.types` reads (the actor, the others, a title). */
+function valuesOf(notification: Notification, someone: string): Record<string, string> {
+  const [first] = notification.actors;
+  const data = Object.fromEntries(
+    Object.entries(notification.data).flatMap(([key, value]) =>
+      typeof value === 'string' || typeof value === 'number' ? [[key, String(value)]] : [],
+    ),
+  );
+  // The data of the source event first (a title, a count of visits), then the actors.
+  return {
+    count: String(notification.eventCount),
+    title: '',
+    position: '',
+    ...data,
+    actor: first?.displayName ?? someone,
+    others: String(Math.max(0, notification.actorCount - 1)),
+  };
+}
+
+interface NotificationItemProps {
+  notification: Notification;
+  /** Opened: marked read (at the click on its line). */
+  onOpen?: (notification: Notification) => void;
+  /** Removed from the list (the api deletes it). */
+  onRemove?: (notification: Notification) => void;
+}
+
 /**
  * A notification (§10.5): its avatars in a column of fixed width (every text starts at the same
- * place), the drawing of its type in their corner, its sentence, the opening of its target when
- * it is a publication, and the answer of a connection request right there. The whole line opens
- * the target; the controls in it stay controls of their own.
+ * place), the drawing of its type in their corner, its sentence (« Amina et 12 autres ont réagi
+ * à votre publication » for a group), the opening of the publication it concerns, and its direct
+ * actions: a connection request answered, an introduction accepted or declined. The whole line
+ * opens the target (a delivered page only) and marks it read; the controls in it stay controls.
  */
-export function NotificationItem({ notification }: { notification: Notification }) {
+export function NotificationItem({ notification, onOpen, onRemove }: NotificationItemProps) {
   const t = useTranslations('notifications.types');
   const ui = useTranslations('web.notifications');
   const [first] = notification.actors;
   const others = Math.max(0, notification.actorCount - 1);
-  const values = { actor: first?.displayName ?? ui('someone'), others: String(others) };
   const key = `${notification.type}.${others > 0 ? 'many' : 'one'}` as Parameters<typeof t>[0];
-  const text = t.has(key) ? t(key, values) : ui('generic');
+  const text = t.has(key) ? t(key, valuesOf(notification, ui('someone'))) : ui('generic');
   const requestId = notification.data['requestId'];
+  const href = targetHref(notification.target);
+  const content = (
+    <>
+      {text}
+      {notification.read ? null : <span className="sr-only">{ui('unread')}</span>}
+    </>
+  );
 
   return (
     <li
       className={cn(
-        'relative flex items-start gap-3 rounded-lg p-3 focus-within:bg-surface-sunken hover:bg-surface-sunken',
+        'group/notification relative flex items-start gap-3 rounded-lg p-3 focus-within:bg-surface-sunken hover:bg-surface-sunken',
         !notification.read && 'bg-accent-subtle/40',
       )}
+      data-notification-type={notification.type}
     >
       <div aria-hidden className="relative flex w-12 shrink-0 justify-start">
         {notification.actors.length > 1 ? (
@@ -107,23 +147,31 @@ export function NotificationItem({ notification }: { notification: Notification 
         </span>
       </div>
       <div className="grid min-w-0 flex-1 gap-1">
-        <Link
-          href={notification.target.path}
-          className={cn(
-            'rounded-xs text-sm text-pretty outline-none after:absolute after:inset-0 after:rounded-lg focus-visible:after:outline-2 focus-visible:after:outline-focus',
-            !notification.read && 'font-medium',
-          )}
-        >
-          {text}
-          {notification.read ? null : <span className="sr-only">{ui('unread')}</span>}
-        </Link>
+        {href ? (
+          <Link
+            href={href}
+            onClick={() => {
+              if (!notification.read) onOpen?.(notification);
+            }}
+            className={cn(
+              'rounded-xs text-sm text-pretty outline-none after:absolute after:inset-0 after:rounded-lg focus-visible:after:outline-2 focus-visible:after:outline-focus',
+              !notification.read && 'font-medium',
+            )}
+          >
+            {content}
+          </Link>
+        ) : (
+          <p className={cn('text-sm text-pretty', !notification.read && 'font-medium')}>
+            {content}
+          </p>
+        )}
         {notification.excerpt ? (
           <p className="line-clamp-2 text-sm text-muted">
             {ui('excerpt', { text: notification.excerpt })}
           </p>
         ) : null}
         <RelativeTime
-          date={notification.createdAt}
+          date={notification.updatedAt}
           className="relative z-[1] w-fit text-xs text-muted"
         />
         {notification.type === 'connection_request' && typeof requestId === 'string' && first ? (
@@ -131,10 +179,30 @@ export function NotificationItem({ notification }: { notification: Notification 
             <ConnectionRequestActions requestId={requestId} name={first.displayName} />
           </div>
         ) : null}
+        {notification.type === 'introduction_proposed' &&
+        notification.target.type === 'introduction' ? (
+          <div className="relative z-[1] mt-1">
+            <IntroductionAnswer
+              introductionId={notification.target.key}
+              name={first?.displayName ?? ui('someone')}
+            />
+          </div>
+        ) : null}
       </div>
       {notification.read ? null : (
-        <span aria-hidden className="mt-1.5 size-2 shrink-0 rounded-full bg-accent" />
+        <span aria-hidden className="absolute top-4.5 left-1 size-2 rounded-full bg-accent" />
       )}
+      <div className="relative z-[1] flex shrink-0 flex-col items-center gap-2">
+        {onRemove ? (
+          <IconButton
+            size="sm"
+            label={ui('remove')}
+            icon={<X />}
+            className="opacity-0 group-focus-within/notification:opacity-100 group-hover/notification:opacity-100 pointer-coarse:opacity-100"
+            onClick={() => onRemove(notification)}
+          />
+        ) : null}
+      </div>
     </li>
   );
 }

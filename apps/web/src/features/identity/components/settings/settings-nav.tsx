@@ -7,8 +7,8 @@ import { cn } from '@/lib/cn';
 import { useCurrentMember } from '../current-member';
 
 /**
- * Sections of the settings, one address each. The sections of the next prompts (notifications,
- * personal data) appear only once delivered: no empty page. The payout and the identity check
+ * Sections of the settings, one address each. The sections of the next prompts (personal data)
+ * appear only once delivered: no empty page. The payout and the identity check
  * (`payouts`) concern the members who carry projects: shown with an entrepreneur facet.
  */
 export const SETTINGS_SECTIONS = [
@@ -16,6 +16,7 @@ export const SETTINGS_SECTIONS = [
   { id: 'security', href: routes.settingsSecurity },
   { id: 'privacy', href: routes.settingsPrivacy },
   { id: 'messaging', href: routes.settingsMessaging },
+  { id: 'notifications', href: routes.settingsNotifications },
   { id: 'organizations', href: routes.settingsOrganizations },
   { id: 'preferences', href: routes.settingsPreferences },
   { id: 'payouts', href: routes.settingsPayouts },

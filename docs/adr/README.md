@@ -149,5 +149,6 @@ Un fichier par décision, numéroté, au format Contexte / Décision / Conséque
 | [0143](0143-local-turnstile-stand-in.md)                              | Doublure locale de Turnstile au niveau 2                        |
 | [0144](0144-chart-primitives.md)                                      | Primitives de graphique                                         |
 | [0145](0145-unique-view-transition-names.md)                          | Noms uniques des transitions de vue                             |
-| [0147](0147-messaging-drafts.md)                                      | Brouillons de la messagerie                                     |
 | [0146](0146-history-anchoring-and-virtualization.md)                  | Ancrage et virtualisation de l'historique d'une conversation    |
+| [0147](0147-messaging-drafts.md)                                      | Brouillons de la messagerie                                     |
+| [0148](0148-new-notifications-pill.md)                                | Pastille des nouvelles notifications                            |
