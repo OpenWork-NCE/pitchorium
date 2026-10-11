@@ -157,3 +157,4 @@ Un fichier par décision, numéroté, au format Contexte / Décision / Conséque
 | [0157](0157-versioned-legal-pages.md)                                 | Pages juridiques versionnées, en attente de validation          |
 | [0158](0158-cookies-without-consent-banner.md)                        | Cookies et consentement : aucun bandeau                         |
 | [0159](0159-editorial-voice.md)                                       | Voix éditoriale                                                 |
+| [0160](0160-generated-demo-visuals.md)                                | Visuels de démonstration générés                                |

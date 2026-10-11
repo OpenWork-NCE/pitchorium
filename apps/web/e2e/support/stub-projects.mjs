@@ -125,8 +125,12 @@ function catalogue(origin) {
         embedUrl: 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ',
       },
       gallery: [
-        image(origin, 1, 'Les panneaux solaires de la coopérative de Keur Moussa au lever du jour'),
-        image(origin, 2, 'Une technicienne contrôle le débit d’une pompe solaire'),
+        image(origin, 1, 'Visuel de démonstration : un soleil cuivré au-dessus de champs violets'),
+        image(
+          origin,
+          2,
+          'Visuel de démonstration : un soleil cuivré levé sur des rangées violettes',
+        ),
         image(origin, 3, null),
       ],
       rewards: [
@@ -170,7 +174,9 @@ function catalogue(origin) {
           projectId: '0192f4a0-3000-7000-8000-666572736f6c',
           author: AISSATOU,
           text: 'La deuxième pompe est installée à Keur Moussa. Merci aux 86 contributrices et contributeurs : le premier palier est atteint.',
-          images: [image(origin, 4, 'La deuxième pompe, posée sur son socle en béton')],
+          images: [
+            image(origin, 4, 'Visuel de démonstration : un soleil cuivré sur des champs violets'),
+          ],
           publishedAt: iso(-3),
           editedAt: null,
         },
@@ -207,7 +213,16 @@ function catalogue(origin) {
       featured: false,
       organization: null,
       video: null,
-      gallery: [image(origin, 5, 'Des productrices trient les noix de karité')],
+      gallery: [
+        image(
+          origin,
+          5,
+          'Visuel de démonstration : des sillons violets semés de récoltes cuivrées',
+        ),
+      ],
+      description:
+        '## Pourquoi\n\nÀ Kaolack, 120 productrices pressent le karité à la main : un jour de travail pour quelques litres de beurre, vendu en vrac au plus offrant. **Une presse partagée** triple leur production, et un atelier de conditionnement leur ouvre les boutiques de Dakar et de Bamako.\n\n## Comment\n\n- une presse et son installation ;\n- un atelier de conditionnement et la certification ;\n- une formation à la gestion de la coopérative.',
+      impactArea: 'Kaolack, Sénégal, et la région de Kayes, Mali',
       rewards: [],
       updates: [],
       team: [{ member: AISSATOU, role: 'owner', function: null }],
@@ -233,7 +248,16 @@ function catalogue(origin) {
       featured: false,
       organization: null,
       video: null,
-      gallery: [],
+      gallery: [
+        image(
+          origin,
+          7,
+          'Visuel de démonstration : un soleil cuivré bas au-dessus de vagues violettes',
+        ),
+      ],
+      description:
+        '## Pourquoi\n\nSur le quai de pêche de Mbour, les transformatrices sèchent le poisson à même le sol : la pluie et le sable gâchent une partie de chaque prise. **Des claies couvertes** gardent le poisson propre et sec, et se vendent mieux.\n\n## Comment\n\n- vingt claies couvertes, à hauteur de travail ;\n- un hangar de stockage ventilé.',
+      impactArea: 'Quai de pêche de Mbour, Petite-Côte',
       rewards: [],
       updates: [],
       team: [{ member: IFEOMA, role: 'owner', function: null }],
@@ -258,7 +282,9 @@ function catalogue(origin) {
       featured: false,
       organization: null,
       video: null,
-      gallery: [image(origin, 6, 'Des mangues tranchées sur une claie de séchage')],
+      gallery: [
+        image(origin, 6, 'Visuel de démonstration : des rangées violettes et des fruits cuivrés'),
+      ],
       rewards: [
         {
           id: '0192f4a0-3600-7000-8000-000000000010',
@@ -325,13 +351,15 @@ function projectOf(slug, item, { member, team }) {
   return {
     ...cardOf(slug, item),
     description:
-      item.status === 'draft'
+      item.description ??
+      (item.status === 'draft'
         ? '## Pourquoi\n\nÀ Podor, la moitié des mangues se perd faute de séchage.'
-        : `## Pourquoi\n\nÀ Thiès, les maraîchères perdent un tiers de leurs récoltes faute d’eau et de séchage. **La location de pompes solaires** coûte moins que le gasoil, et la coopérative en garde la maintenance.\n\n## Comment\n\n- des pompes louées à la saison ;\n- un séchoir partagé ;\n- dix techniciennes formées.\n\nEn savoir plus sur [le programme de la coopérative](https://example.org/programme).`,
+        : `## Pourquoi\n\nÀ Thiès, les maraîchères perdent un tiers de leurs récoltes faute d’eau et de séchage. **La location de pompes solaires** coûte moins que le gasoil, et la coopérative en garde la maintenance.\n\n## Comment\n\n- des pompes louées à la saison ;\n- un séchoir partagé ;\n- dix techniciennes formées.\n\nEn savoir plus sur [le programme de la coopérative](https://example.org/programme).`),
     impactArea:
-      item.status === 'draft'
+      item.impactArea ??
+      (item.status === 'draft'
         ? 'Podor, vallée du fleuve Sénégal'
-        : 'Région de Thiès, 12 coopératives',
+        : 'Région de Thiès, 12 coopératives'),
     video: item.video,
     gallery: item.gallery,
     documents: member ? item.documents : [],

@@ -217,7 +217,8 @@ const ORGANIZATION = {
   foundedYear: 2016,
   logoUrl: null,
   logoMediaId: null,
-  coverUrl: null,
+  // Drawn from the shapes of the brand (scripts/demo-visuals.mjs, ADR 0160).
+  coverUrl: `http://localhost:${port}/files/organization-cover-1.png`,
   coverMediaId: null,
   verification: { status: 'verified', verified: true, verifiedAt: '2026-09-15T09:00:00.000Z' },
   members: [

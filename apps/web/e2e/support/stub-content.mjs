@@ -2,6 +2,7 @@
 // comments and who reacted, the saved ones, the activity of a member, the previews of links, the
 // suggestions of mentions, and the images of the publications, drawn here as PNG files. Every
 // write is logged (`/__test/writes`); `/__test/newer` sets the count of newer publications.
+import { existsSync, readFileSync } from 'node:fs';
 import { deflateSync } from 'node:zlib';
 
 const ID = (n) => `0192f4a0-2000-7000-8000-${String(n).padStart(12, '0')}`;
@@ -65,7 +66,13 @@ const COLORS = [
   [18, 18, 18],
 ];
 const IMAGES = new Map();
+/**
+ * An image of the stub: the visual drawn from the shapes of the brand for the demonstration data
+ * (scripts/demo-visuals.mjs, ADR 0160), or a plain gradient for a name it does not know.
+ */
 function imageFile(name) {
+  const visual = new URL(`./demo-visuals/${name}`, import.meta.url);
+  if (!IMAGES.has(name) && existsSync(visual)) IMAGES.set(name, readFileSync(visual));
   if (!IMAGES.has(name)) {
     const index = Number(/\d+/.exec(name)?.[0] ?? 0) % COLORS.length;
     const [width, height] = name.includes('portrait') ? [480, 600] : [640, 400];
@@ -85,7 +92,9 @@ function images(origin, count, withAlt = true) {
         large: { width: 640, height: 400, webp: url, avif: null },
         medium: { width: 640, height: 400, webp: url, avif: null },
       },
-      alt: withAlt ? `Parcelle maraîchère ${index + 1}, irriguée par la pompe solaire` : null,
+      alt: withAlt
+        ? `Visuel de démonstration ${index + 1} : des sillons violets et des récoltes cuivrées`
+        : null,
     };
   });
 }
