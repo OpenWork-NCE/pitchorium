@@ -20,8 +20,9 @@ export interface EventListFilter {
   sectorCode?: string | undefined;
   format?: EventFormat | undefined;
   language?: string | undefined;
-  /** Events ending after this instant. */
-  endingAfter: Date;
+  /** Upcoming: events ending after `at`, the soonest end first; past: ended before, latest first. */
+  period: 'upcoming' | 'past';
+  at: Date;
   /** Published by a member whose public events are public, or by an organization. */
   publicOnly: boolean;
   /** Organizers hidden from the reader (blocks). */

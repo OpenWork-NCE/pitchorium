@@ -84,7 +84,10 @@ export class EventReadsService {
     return { kind: 'found', view: await this.view(event, reader) };
   }
 
-  /** Upcoming and ongoing events, the soonest end first; public ones only without session. */
+  /**
+   * Upcoming and ongoing events, the soonest end first, or the past ones, the latest first;
+   * public ones only without session.
+   */
   async list(query: EventListQuery, reader: EventReader): Promise<CursorPage<EventCard>> {
     const hidden =
       reader.kind === 'member' ? await this.network.blockedUserIds(reader.viewerId) : [];
@@ -94,7 +97,8 @@ export class EventReadsService {
         sectorCode: query.sectorCode,
         format: query.format,
         language: query.language,
-        endingAfter: query.from ? new Date(query.from) : this.clock.now(),
+        period: query.period,
+        at: query.period === 'upcoming' && query.from ? new Date(query.from) : this.clock.now(),
         publicOnly: reader.kind === 'public',
         hiddenOrganizerIds: hidden,
       },

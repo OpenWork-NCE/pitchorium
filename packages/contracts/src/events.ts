@@ -189,6 +189,11 @@ export const eventListQuerySchema = cursorPageQuerySchema.extend({
   language: languageCodeSchema.optional(),
   /** Events ending after this instant (default: now, upcoming and ongoing events). */
   from: z.iso.datetime({ offset: true }).optional(),
+  /**
+   * `upcoming` (default): ongoing and coming events, the soonest end first; `past`: the events
+   * already over, the latest first (`from` does not apply).
+   */
+  period: z.enum(['upcoming', 'past']).default('upcoming'),
 });
 
 export const MY_EVENT_ROLES = ['organizer', 'attendee'] as const;

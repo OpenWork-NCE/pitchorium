@@ -200,13 +200,20 @@ export class DrizzleEventsRepository extends EventsRepository {
     after: KeysetPosition | null,
     limit: number,
   ): Promise<EventRecord[]> {
+    const past = filter.period === 'past';
     const rows = await this.db
       .select()
       .from(eventsEvents)
       .where(
         and(
-          live,
-          gt(eventsEvents.endsAt, filter.endingAfter),
+          past
+            ? and(
+                inArray(eventsEvents.status, ['published', 'completed']),
+                isNull(eventsEvents.deletedAt),
+                eq(eventsEvents.moderationStatus, 'visible'),
+                lte(eventsEvents.endsAt, filter.at),
+              )
+            : and(live, gt(eventsEvents.endsAt, filter.at)),
           filter.countryCode
             ? sql`${filter.countryCode} = any(${eventsEvents.countryCodes})`
             : undefined,
@@ -219,12 +226,19 @@ export class DrizzleEventsRepository extends EventsRepository {
           filter.hiddenOrganizerIds.length > 0
             ? notInArray(eventsEvents.organizerId, [...filter.hiddenOrganizerIds])
             : undefined,
-          after
+          after && past
+            ? sql`(${eventsEvents.endsAt}, ${eventsEvents.id}) < (${after.at}, ${after.key}::uuid)`
+            : undefined,
+          after && !past
             ? sql`(${eventsEvents.endsAt}, ${eventsEvents.id}) > (${after.at}, ${after.key}::uuid)`
             : undefined,
         ),
       )
-      .orderBy(asc(eventsEvents.endsAt), asc(eventsEvents.id))
+      .orderBy(
+        ...(past
+          ? [desc(eventsEvents.endsAt), desc(eventsEvents.id)]
+          : [asc(eventsEvents.endsAt), asc(eventsEvents.id)]),
+      )
       .limit(limit);
     return rows.map(toEvent);
   }

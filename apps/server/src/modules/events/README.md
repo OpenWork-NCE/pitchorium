@@ -34,7 +34,7 @@
 
 ## Routes
 
-- `POST /v1/events` (`event.create`, `Idempotency-Key`), `GET /v1/events` (`event.read` ; filtres `countryCode`, `sectorCode`, `format`, `language`, `from`), `GET /v1/public/events` (public, `Cache-Control: public, max-age=60`), `GET /v1/me/events?role=organizer|attendee` (`event.read`)
+- `POST /v1/events` (`event.create`, `Idempotency-Key`), `GET /v1/events` (`event.read` ; filtres `countryCode`, `sectorCode`, `format`, `language`, `from` ; `period=past` pour les événements terminés, le plus récent d'abord, FRONT 7), `GET /v1/public/events` (public, `Cache-Control: public, max-age=60`), `GET /v1/me/events?role=organizer|attendee` (`event.read`)
 - `GET /v1/events/by-slug/{slug}` (`event.read`, 301 pour un ancien slug), `GET /v1/public/events/{slug}` (public, en cache 60 s, 301), `GET /v1/public/events/{slug}/ics` (public)
 - `GET /v1/events/{eventId}`, `GET /v1/events/{eventId}/ics` (`event.read`)
 - `PATCH /v1/events/{eventId}`, `PUT /v1/events/{eventId}/slug` (`event.update`), `POST /v1/events/{eventId}/publish` (`event.publish`, email vérifié), `POST /v1/events/{eventId}/cancel` (`event.cancel`), `DELETE /v1/events/{eventId}` (`event.delete`, brouillon) : organisateurs

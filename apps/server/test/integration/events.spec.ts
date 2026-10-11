@@ -129,6 +129,36 @@ describe('events', () => {
     expect(lower.body).toMatchObject({ capacity: null, full: false });
   });
 
+  it('lists the past events apart, the latest first', async () => {
+    const titles = ['Atelier passé ancien', 'Atelier passé récent', 'Atelier à venir'];
+    for (const title of titles) {
+      const event = await createEvent(ama, { title });
+      await ama.agent.post(`/v1/events/${event.id}/publish`).expect(200);
+      if (title === 'Atelier passé ancien') {
+        await query(
+          `UPDATE events.events SET starts_at = now() - interval '3 days', ends_at = now() - interval '2 days' WHERE id = $1`,
+          [event.id],
+        );
+      } else if (title === 'Atelier passé récent') {
+        await query(
+          `UPDATE events.events SET starts_at = now() - interval '3 hours', ends_at = now() - interval '1 hour', status = 'completed' WHERE id = $1`,
+          [event.id],
+        );
+      }
+    }
+    const titlesOf = (body: unknown) =>
+      (body as { items: { title: string }[] }).items.map((item) => item.title);
+    const upcoming = await kofi.agent.get('/v1/events').expect(200);
+    expect(titlesOf(upcoming.body)).toEqual(['Atelier à venir']);
+    const first = await kofi.agent.get('/v1/events?period=past&limit=1').expect(200);
+    expect(titlesOf(first.body)).toEqual(['Atelier passé récent']);
+    const next = await kofi.agent
+      .get(`/v1/events?period=past&limit=1&cursor=${first.body.nextCursor}`)
+      .expect(200);
+    expect(titlesOf(next.body)).toEqual(['Atelier passé ancien']);
+    expect(next.body.nextCursor).toBeNull();
+  });
+
   it('exports calendars, revokes the personal feed and drops a canceled event from calendars', async () => {
     const event = await createEvent(ama, { capacity: null });
     await ama.agent.post(`/v1/events/${event.id}/publish`).expect(200);
