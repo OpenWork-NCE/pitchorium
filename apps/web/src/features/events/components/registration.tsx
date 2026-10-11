@@ -1,10 +1,6 @@
 'use client';
 
-import {
-  eventsControllerRegister,
-  eventsControllerWithdraw,
-  getNotificationsControllerCountersQueryKey,
-} from '@pitchorium/api-client';
+import { eventsControllerRegister, eventsControllerWithdraw } from '@pitchorium/api-client';
 import type { EventStatus, EventViewer } from '@pitchorium/contracts';
 import { useQueryClient } from '@tanstack/react-query';
 import { CircleCheck, Hourglass } from 'lucide-react';
@@ -17,6 +13,7 @@ import { useRouter } from '@/i18n/navigation';
 import { onRealtime, REALTIME_EVENTS } from '@/lib/realtime/realtime-bus';
 import { registrationState } from '../lib/registration';
 import { useEventProblem } from './use-event-problem';
+import { COUNTERS_QUERY_KEY } from '@/lib/query/keys';
 
 interface RegistrationProps {
   eventId: string;
@@ -102,7 +99,7 @@ export function Registration({ eventId, status, startsAt, full, viewer }: Regist
       setKept({ registration: null, waitlistPosition: null, showInAttendees: false });
       announce(t('withdrawn'));
       await queryClient.invalidateQueries({
-        queryKey: getNotificationsControllerCountersQueryKey(),
+        queryKey: COUNTERS_QUERY_KEY,
       });
       router.refresh();
     } catch (failure) {
