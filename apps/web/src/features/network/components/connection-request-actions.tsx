@@ -1,15 +1,12 @@
 'use client';
 
-import {
-  connectionsControllerAccept,
-  connectionsControllerDecline,
-  getNotificationsControllerCountersQueryKey,
-} from '@pitchorium/api-client';
+import { connectionsControllerAccept, connectionsControllerDecline } from '@pitchorium/api-client';
 import { useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Button, useAnnounce } from '@/components/ui';
 import { useIdempotentMutation } from '@/lib/query/offline';
+import { COUNTERS_QUERY_KEY } from '@/lib/query/keys';
 
 type Answer = 'accept' | 'decline';
 
@@ -39,7 +36,7 @@ export function ConnectionRequestActions({
       setAnswered(choice);
       announce(choice === 'accept' ? t('accepted', { name }) : t('declined'));
       void queryClient.invalidateQueries({
-        queryKey: getNotificationsControllerCountersQueryKey(),
+        queryKey: COUNTERS_QUERY_KEY,
       });
     },
   });

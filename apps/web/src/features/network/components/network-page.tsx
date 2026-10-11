@@ -4,7 +4,6 @@ import {
   type CountersDtoOutput,
   connectionsControllerList,
   connectionsControllerWithdraw,
-  getNotificationsControllerCountersQueryKey,
   notificationsControllerCounters,
   useDiscoveryControllerList,
 } from '@pitchorium/api-client';
@@ -33,6 +32,7 @@ import { ConnectionRequestActions } from './connection-request-actions';
 import { CursorList, useCursorList } from './cursor-list';
 import { MemberLists, MemberRow } from './member-lists';
 import { useProblemMessage } from './use-relationship';
+import { COUNTERS_QUERY_KEY } from '@/lib/query/keys';
 
 const TABS = ['invitations', 'suggestions', 'lists'] as const;
 
@@ -55,7 +55,7 @@ function NetworkPageContent({
   const t = useTranslations('web.network.page');
   // The key the realtime channel writes (lib/realtime): the count follows a request at once.
   const live = useQuery({
-    queryKey: getNotificationsControllerCountersQueryKey(),
+    queryKey: COUNTERS_QUERY_KEY,
     queryFn: ({ signal }) => notificationsControllerCounters({ signal }),
     initialData: counters ?? undefined,
   });

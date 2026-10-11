@@ -3,14 +3,15 @@
 import {
   ApiProblemError,
   getMemberNetworkControllerRelationshipQueryKey,
-  getNotificationsControllerCountersQueryKey,
-  useMemberNetworkControllerRelationship,
+  memberNetworkControllerRelationship,
 } from '@pitchorium/api-client';
 import type { Relationship } from '@pitchorium/contracts';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { useCallback } from 'react';
+import { useCachedData } from '@/lib/query/use-cached-data';
 import { afterAction, type RelationshipAction } from '../lib/relationship';
+import { COUNTERS_QUERY_KEY } from '@/lib/query/keys';
 
 /** Every query of the network feature starts with this key: lists, requests, suggestions. */
 export const NETWORK_QUERY_ROOT = ['network'] as const;
@@ -41,8 +42,11 @@ interface Change {
 export function useRelationship(handle: string, initial: Relationship) {
   const queryClient = useQueryClient();
   const key = getMemberNetworkControllerRelationshipQueryKey(handle);
-  const query = useMemberNetworkControllerRelationship(handle, {
-    query: { initialData: initial, staleTime: 60_000 },
+  // Without a query observer (ADR 0094): the relationship comes from the server's render.
+  const data = useCachedData({
+    queryKey: key,
+    queryFn: ({ signal }) => memberNetworkControllerRelationship(handle, { signal }),
+    initialData: initial,
   });
   const change = useMutation({
     mutationFn: ({ call }: Change) => call(),
@@ -67,12 +71,12 @@ export function useRelationship(handle: string, initial: Relationship) {
     onSettled: () =>
       Promise.all([
         queryClient.invalidateQueries({ queryKey: key }),
-        queryClient.invalidateQueries({ queryKey: getNotificationsControllerCountersQueryKey() }),
+        queryClient.invalidateQueries({ queryKey: COUNTERS_QUERY_KEY }),
         queryClient.invalidateQueries({ queryKey: NETWORK_QUERY_ROOT }),
       ]),
   });
   return {
-    relationship: query.data ?? initial,
+    relationship: data ?? initial,
     pending: change.isPending ? change.variables.action.kind : null,
     /** Runs a change; resolves once the api answered, rejects with its refusal. */
     run: (action: RelationshipAction, call: () => Promise<unknown>) =>
