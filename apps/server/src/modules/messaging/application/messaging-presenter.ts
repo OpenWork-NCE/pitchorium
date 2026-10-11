@@ -70,7 +70,9 @@ export class MessagingPresenter {
               const image = images.get(mediaId);
               return {
                 mediaId,
-                image: image ? { url: image.url, variants: image.variants } : null,
+                // A PDF is read by its download address, never shown as a photo.
+                image:
+                  image?.kind === 'image' ? { url: image.url, variants: image.variants } : null,
                 text: message.attachmentTexts[index] || null,
               };
             }),
