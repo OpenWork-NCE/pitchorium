@@ -41,15 +41,17 @@ export function MissionCard({
       <Text size="sm" tone="muted">
         {mission.domain}
       </Text>
-      <Text size="sm" className="flex flex-wrap items-center gap-x-3 gap-y-1">
-        <span className="inline-flex items-center gap-1.5">
-          <Clock aria-hidden className="size-4 text-muted" />
+      {/* One line of metadata, the mode after the format and a middle dot, as elsewhere: it wraps
+          between words, never with a dot at the start of a line. */}
+      <Text size="sm" className="flex items-start gap-1.5">
+        <Clock aria-hidden className="mt-0.5 size-4 shrink-0 text-muted" />
+        <span>
           {t('hours', {
             format: reference(`missionFormats.${mission.format}`),
             hours: mission.estimatedHours,
-          })}
+          })}{' '}
+          · {reference(`missionModes.${mission.mode}`)}
         </span>
-        <span>{reference(`missionModes.${mission.mode}`)}</span>
       </Text>
       <div className="flex min-w-0 items-center gap-2 pt-1">
         <Avatar
