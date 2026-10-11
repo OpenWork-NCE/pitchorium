@@ -107,9 +107,15 @@ export default function MobileMenuPanel({
                 {t('dashboard')}
               </Link>
             </Button>
-            {(['discover', 'events', 'missions'] as const).map((key) => (
+            {(
+              [
+                ['discover', routes.discover],
+                ['events', routes.events],
+                ['missions', routes.missions],
+              ] as const
+            ).map(([key, href]) => (
               <Button key={key} asChild variant="outline" size="sm">
-                <Link href={routes[key]} onClick={() => onOpenChange(false)}>
+                <Link href={href} onClick={() => onOpenChange(false)}>
                   {t(key)}
                 </Link>
               </Button>

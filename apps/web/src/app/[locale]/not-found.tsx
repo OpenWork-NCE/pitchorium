@@ -1,25 +1,28 @@
-import { useTranslations } from 'next-intl';
-import { MarketingShell } from '@/components/layout/shells/marketing-shell';
+import { useLocale, useTranslations } from 'next-intl';
+import { LightShell } from '@/components/layout/shells/light-shell';
 import { StatusView } from '@/components/layout/status-view';
-import { Button } from '@/components/ui';
-import * as routes from '@/config/paths';
-import { Link } from '@/i18n/navigation';
+import { buttonVariants } from '@/components/ui';
 
-/** Localised 404 of every page of a locale (unknown path or `notFound()`). */
+/**
+ * Localised 404 of every page of a locale (unknown path or `notFound()`). This boundary is part of
+ * the first load of every page of the locale: it adds no client code of its own (plain links, the
+ * controls of the header loaded after it, FRONT 7, A2).
+ */
 export default function LocaleNotFound() {
   const t = useTranslations('web.notFound');
+  const locale = useLocale();
   return (
-    <MarketingShell>
+    <LightShell>
       <StatusView
         code={t('code')}
         title={t('title')}
         body={t('body')}
         actions={
-          <Button asChild>
-            <Link href={routes.home}>{t('home')}</Link>
-          </Button>
+          <a href={`/${locale}`} className={buttonVariants()}>
+            {t('home')}
+          </a>
         }
       />
-    </MarketingShell>
+    </LightShell>
   );
 }
