@@ -25,7 +25,7 @@ export { DateTimeField } from './date-time-field';
 export { DeferredCombobox, DeferredSelect } from './deferred-controls';
 export { DescriptionList } from './description-list';
 export { DrawnCheck } from './drawn-check';
-export { Dialog, DialogClose, DialogContent, DialogTrigger } from './dialog';
+export { Dialog, DialogActions, DialogClose, DialogContent, DialogTrigger } from './dialog';
 export { Drawer, DrawerClose, DrawerContent, DrawerTrigger } from './drawer';
 export {
   DropdownMenu,

@@ -59,7 +59,8 @@ export function DialogContent({
           (first ?? content).focus();
         }}
         className={cn(
-          'fixed inset-x-0 bottom-0 z-(--z-modal) grid max-h-[92dvh] gap-5 overflow-y-auto rounded-t-2xl border border-border bg-surface-elevated p-6 text-foreground shadow-lg outline-none',
+          // On a phone, the sheet keeps the safe area of the screen under its last line.
+          'fixed inset-x-0 bottom-0 z-(--z-modal) grid max-h-[92dvh] gap-5 overflow-y-auto rounded-t-2xl border border-border bg-surface-elevated p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] text-foreground shadow-lg outline-none sm:pb-6',
           'sm:top-1/2 sm:bottom-auto sm:left-1/2 sm:w-[calc(100vw-2rem)] sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-2xl',
           'data-[state=open]:animate-[dialog-in_var(--duration-page)_var(--ease-enter)]',
           SIZES[size],
@@ -79,7 +80,9 @@ export function DialogContent({
         </div>
         {children}
         {footer ? (
-          <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">{footer}</div>
+          <DialogActions className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+            {footer}
+          </DialogActions>
         ) : null}
         {hideClose ? null : (
           <Primitive.Close asChild>
@@ -94,5 +97,26 @@ export function DialogContent({
         )}
       </Primitive.Content>
     </Primitive.Portal>
+  );
+}
+
+/**
+ * The actions of a dialog, kept in view at the bottom of its content while it scrolls (a sheet
+ * from the bottom on a phone): « Continuer », « Payer » never leave the screen. On a phone, a line
+ * separates them from the content they float over, and the safe area of the screen stays free
+ * under them. The last child of the content of a `DialogContent` (`footer` uses it).
+ */
+export function DialogActions({ className, ...props }: ComponentProps<'div'>) {
+  return (
+    <div
+      data-dialog-actions=""
+      className={cn(
+        // Stuck to the edge of the dialog, its padding included (a sticky box stops at the
+        // padding of its scroll container otherwise).
+        'sticky -bottom-[max(1.5rem,env(safe-area-inset-bottom))] z-[1] -mx-6 -mb-[max(1.5rem,env(safe-area-inset-bottom))] border-t border-border bg-surface-elevated px-6 pt-4 pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:-bottom-6 sm:-mb-6 sm:border-transparent sm:pb-6',
+        className,
+      )}
+      {...props}
+    />
   );
 }
