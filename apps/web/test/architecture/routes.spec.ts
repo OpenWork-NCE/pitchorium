@@ -1,4 +1,4 @@
-import { readdirSync, readFileSync } from 'node:fs';
+import { type Dirent, readdirSync, readFileSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import * as routes from '@/config/paths';
@@ -13,9 +13,15 @@ const escape = (segment: string) => segment.replace(/[.*+?^${}()|[\]\\]/g, '\\$&
  * matching one segment. The catch-all of unknown addresses (`[...rest]`) is no page: a link that
  * only reaches it leads nowhere.
  */
+/**
+ * A file the architecture tests write for a moment (`arch-test-*`, `arch-test/`, eslint.spec.ts):
+ * it may vanish between the listing and the reading of these tests, run in parallel.
+ */
+const temporary = (entry: Dirent) => /arch-test/.test(join(entry.parentPath, entry.name));
+
 function pagePatterns(): RegExp[] {
   return readdirSync(pages, { recursive: true, withFileTypes: true })
-    .filter((entry) => entry.isFile() && entry.name === 'page.tsx')
+    .filter((entry) => entry.isFile() && entry.name === 'page.tsx' && !temporary(entry))
     .map((entry) =>
       relative(pages, entry.parentPath)
         .split(sep)
@@ -46,7 +52,7 @@ const ROUTES = Object.entries(routes).map(([name, value]) => ({
 /** Source files of the app, stories and tests left out. */
 function sources(): string[] {
   return readdirSync(join(root, 'src'), { recursive: true, withFileTypes: true })
-    .filter((entry) => entry.isFile() && /\.tsx?$/.test(entry.name))
+    .filter((entry) => entry.isFile() && /\.tsx?$/.test(entry.name) && !temporary(entry))
     .filter((entry) => !/\.(spec|stories)\.tsx?$/.test(entry.name))
     .map((entry) => join(entry.parentPath, entry.name));
 }
