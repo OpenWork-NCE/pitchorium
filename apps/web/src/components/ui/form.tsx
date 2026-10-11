@@ -33,6 +33,7 @@ import {
   useController,
   useForm,
   useFormContext,
+  useFormState,
 } from 'react-hook-form';
 import type { z } from 'zod';
 import { cn } from '@/lib/cn';
@@ -273,10 +274,15 @@ function focusField(controlId: string) {
 }
 
 function FormSummary() {
+  // Never memoized by the React Compiler: the state of react-hook-form is a proxy whose reads it
+  // cannot see, and the summary of a refusal of the api stayed hidden in production (FRONT 7).
+  'use no memo';
   const t = useTranslations('web.forms');
   const plural = usePlural();
   const registry = use(FormRegistry);
-  const { formState, control } = useFormContext();
+  const { control } = useFormContext();
+  // Its own subscription to the errors and the submission of the form.
+  const formState = useFormState({ control });
   const titleId = useId();
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
