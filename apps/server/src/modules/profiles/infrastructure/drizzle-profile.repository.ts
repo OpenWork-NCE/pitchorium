@@ -12,7 +12,7 @@ import {
   structureTypeSchema,
   visibilityLevelSchema,
 } from '@pitchorium/contracts';
-import { and, asc, desc, eq, gt, inArray, isNotNull, ne } from '@pitchorium/db/orm';
+import { and, asc, desc, eq, gt, inArray, isNotNull, ne, sql } from '@pitchorium/db/orm';
 import {
   profilesContributorFacets,
   profilesEntrepreneurFacets,
@@ -192,6 +192,22 @@ export class DrizzleProfileRepository extends ProfileRepository {
       .from(profilesProfiles)
       .where(inArray(profilesProfiles.userId, [...userIds]));
     return rows.map(toBase);
+  }
+
+  async userIdsNamed(userIds: readonly string[], text: string): Promise<string[]> {
+    if (userIds.length === 0) return [];
+    // The text is a literal: the wildcards of LIKE in it are escaped.
+    const pattern = `%${text.toLowerCase().replace(/[\\%_]/g, (character) => `\\${character}`)}%`;
+    const rows = await this.db
+      .select({ userId: profilesProfiles.userId })
+      .from(profilesProfiles)
+      .where(
+        and(
+          inArray(profilesProfiles.userId, [...userIds]),
+          sql`unaccent(lower(${profilesProfiles.displayName})) like unaccent(${pattern})`,
+        ),
+      );
+    return rows.map((row) => row.userId);
   }
 
   async clearContributorOrganization(userId: string, organizationId: string): Promise<boolean> {

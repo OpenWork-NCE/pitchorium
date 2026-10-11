@@ -23,6 +23,8 @@ export interface BaseProfilePatch {
 export abstract class ProfileRepository {
   abstract findByUserId(userId: string): Promise<Profile | null>;
   abstract findBaseProfiles(userIds: readonly string[]): Promise<BaseProfile[]>;
+  /** Those of the given members whose display name contains the text, case and accents ignored. */
+  abstract userIdsNamed(userIds: readonly string[], text: string): Promise<string[]>;
   /** Base profiles and facets of the given members (search index, missions). */
   abstract findProfiles(userIds: readonly string[]): Promise<Profile[]>;
   /** Profiles with a public page, by ascending handle, after one (sitemap). */

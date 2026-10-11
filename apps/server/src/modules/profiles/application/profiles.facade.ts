@@ -82,6 +82,22 @@ export class ProfilesFacade {
     return userId;
   }
 
+  /**
+   * Those of the given members whose name contains the text (search of the conversations of a
+   * member), case and accents ignored, without the members hidden from the viewer.
+   */
+  async membersNamed(
+    userIds: readonly string[],
+    text: string,
+    viewerId: string,
+  ): Promise<string[]> {
+    const hidden = await this.access.hiddenFrom(viewerId, userIds);
+    return this.profiles.userIdsNamed(
+      userIds.filter((id) => !hidden.has(id)),
+      text,
+    );
+  }
+
   /** User ids of the given current handles (mentions), by handle, without hidden members. */
   async userIdsByHandles(
     handles: readonly string[],
