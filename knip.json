@@ -32,7 +32,9 @@
         "e2e/support/*.mjs",
         "lighthouserc.cjs",
         "playwright.review.config.ts",
+        "playwright.marketing.config.ts",
         "e2e/review/*.review.ts",
+        "e2e/marketing/*.capture.ts",
         "src/components/ui/index.ts",
         "src/features/*/index.ts"
       ],
