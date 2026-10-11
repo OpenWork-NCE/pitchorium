@@ -119,8 +119,15 @@ export async function layoutProblems(page: Page, rootSelector: string): Promise<
     // their own logotype (the discreet backgrounds).
     // A page captured whole has a logo in its header and one in its footer: two marks count
     // only when they are less than one screen apart.
+    // A mark covered by the content (the footer pinned under the page, H29, `footer-uncover`) is
+    // not on screen.
+    const covered = (element: Element) => {
+      const box = element.getBoundingClientRect();
+      const top = document.elementFromPoint(box.left + box.width / 2, box.top + box.height / 2);
+      return top !== null && top !== element && !element.contains(top);
+    };
     const marks = elements
-      .filter((element) => element.hasAttribute('data-brand-mark'))
+      .filter((element) => element.hasAttribute('data-brand-mark') && !covered(element))
       .map((element) => element.getBoundingClientRect().top)
       .sort((a, b) => a - b);
     const marksTogether = marks.some(

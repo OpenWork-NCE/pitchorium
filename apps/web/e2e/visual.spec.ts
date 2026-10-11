@@ -31,6 +31,7 @@ for (const viewport of VIEWPORTS) {
       const page = await context.newPage();
       await page.goto('/fr');
       await page.evaluate(() => document.fonts.ready);
+      await hideFixedBars(page);
       await expect(page).toHaveScreenshot(`home-${viewport.name}-${colorScheme}.png`, {
         fullPage: true,
       });

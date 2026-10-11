@@ -87,6 +87,8 @@ for (const page of PAGES) {
             ),
           );
         });
+        // The page as a whole: no element fixed to the screen, the footer at its end.
+        await hideFixedBars(tab);
         expect(await layoutProblems(tab, 'body')).toEqual([]);
         const name = `${page.id}-${viewport.name}-${theme}.png`;
         if (page.element) {
@@ -94,7 +96,6 @@ for (const page of PAGES) {
             animations: 'disabled',
           });
         } else {
-          await hideFixedBars(tab);
           await expect(tab).toHaveScreenshot(name, {
             fullPage: true,
             // Animations brought to their end state: a stable capture.
