@@ -36,6 +36,9 @@ describe('post images (ADR 0145)', () => {
         finished: new Promise<void>((resolve) => (finish = resolve)),
       };
     }) as unknown as Document['startViewTransition'];
+    // The opening waits for the viewer, loaded on demand: loaded first, the transition starts at
+    // the click whatever the load of the machine (a busy runner took more than a second).
+    await import('./image-viewer');
     renderWithProviders(
       <>
         <PostImages images={galleryPost.images} postId={galleryPost.id} />
