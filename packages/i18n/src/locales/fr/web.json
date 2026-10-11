@@ -577,6 +577,8 @@
       "lastDay": "Dernier jour de la campagne",
       "endedFunded": "Campagne clôturée, objectif atteint",
       "endedClosed": "Campagne clôturée",
+      "closedOn": "Clôturé le {{date}}",
+      "closedOnFunded": "Objectif atteint, clôturé le {{date}}",
       "equivalent": "Soit {{collected}} collectés sur {{goal}}, équivalent indicatif à la parité fixe du franc CFA.",
       "contributions": {
         "one": "{{count}} contribution",

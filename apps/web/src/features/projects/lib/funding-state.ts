@@ -62,3 +62,25 @@ export function fundingState(
     frozen,
   };
 }
+
+/**
+ * The end of a closed campaign in words: its closing date, « Clôturé le 10 octobre 2026 », with
+ * the goal when it was reached; never « 0 jour restant ». Without the date (never for a project
+ * the api closed), the outcome alone.
+ */
+export function endedLabel(
+  outcome: FundingState['outcome'],
+  endsAt: string | null,
+  messages: {
+    closedOn: (date: string) => string;
+    closedOnFunded: (date: string) => string;
+    endedClosed: () => string;
+    endedFunded: () => string;
+  },
+  formatDate: (date: Date) => string,
+): string {
+  const funded = outcome === 'closed_funded';
+  if (!endsAt) return funded ? messages.endedFunded() : messages.endedClosed();
+  const date = formatDate(new Date(endsAt));
+  return funded ? messages.closedOnFunded(date) : messages.closedOn(date);
+}

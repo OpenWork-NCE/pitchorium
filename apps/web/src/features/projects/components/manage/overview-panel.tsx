@@ -2,12 +2,12 @@
 
 import { useInterestsControllerList } from '@pitchorium/api-client';
 import type { FollowState } from '@pitchorium/contracts';
-import { useLocale, useTranslations } from 'next-intl';
+import { useFormatter, useLocale, useTranslations } from 'next-intl';
 import { Button, Card, FundingProgress, Heading, Stat } from '@/components/ui';
 import * as routes from '@/config/paths';
 import { Link } from '@/i18n/navigation';
 import { pluralOf } from '@/lib/i18n/plural-of';
-import { fundingState } from '../../lib/funding-state';
+import { endedLabel, fundingState } from '../../lib/funding-state';
 import { useProjectEditor } from '../editor/editor-context';
 
 /**
@@ -18,6 +18,7 @@ import { useProjectEditor } from '../editor/editor-context';
 export function OverviewPanel({ follow }: { follow: FollowState | null }) {
   const t = useTranslations('web.projects.manage.overview');
   const funding = useTranslations('web.projects.funding');
+  const format = useFormatter();
   const statuses = useTranslations('reference.projectStatuses');
   const locale = useLocale();
   const { project } = useProjectEditor();
@@ -77,8 +78,16 @@ export function OverviewPanel({ follow }: { follow: FollowState | null }) {
               ? { remainingLabel: funding('lastDay') }
               : state.time.kind === 'ended'
                 ? {
-                    remainingLabel: funding(
-                      state.outcome === 'closed_funded' ? 'endedFunded' : 'endedClosed',
+                    remainingLabel: endedLabel(
+                      state.outcome,
+                      project.endsAt,
+                      {
+                        closedOn: (date) => funding('closedOn', { date }),
+                        closedOnFunded: (date) => funding('closedOnFunded', { date }),
+                        endedClosed: () => funding('endedClosed'),
+                        endedFunded: () => funding('endedFunded'),
+                      },
+                      (date) => format.dateTime(date, { dateStyle: 'long' }),
                     ),
                   }
                 : state.time.kind === 'duration'

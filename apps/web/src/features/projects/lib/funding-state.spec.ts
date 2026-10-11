@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { fundingState } from './funding-state';
+import { endedLabel, fundingState } from './funding-state';
 
 const eur = (euros: number) => ({ amountMinor: String(euros * 100), currency: 'EUR' });
 const funding = (collected: number, daysLeft: number | null, goal: number | null = 20_000) => ({
@@ -61,5 +61,35 @@ describe('the funding block of a project', () => {
 
   it('never says a goal is reached without a goal', () => {
     expect(fundingState('draft', funding(0, null, null)).goalReached).toBe(false);
+  });
+});
+
+describe('the end of a closed campaign', () => {
+  const messages = {
+    closedOn: (date: string) => `Clôturé le ${date}`,
+    closedOnFunded: (date: string) => `Objectif atteint, clôturé le ${date}`,
+    endedClosed: () => 'Campagne clôturée',
+    endedFunded: () => 'Campagne clôturée, objectif atteint',
+  };
+  const long = (date: Date) =>
+    new Intl.DateTimeFormat('fr', { dateStyle: 'long', timeZone: 'UTC' }).format(date);
+
+  it('says its closing date, never « 0 jour restant »', () => {
+    const state = fundingState('closed', {
+      goal: { amountMinor: '1500000', currency: 'EUR' },
+      collected: { amountMinor: '840000', currency: 'EUR' },
+      daysLeft: 0,
+    });
+    expect(state.time).toEqual({ kind: 'ended' });
+    expect(endedLabel(state.outcome, '2026-10-10T09:00:00.000Z', messages, long)).toBe(
+      'Clôturé le 10 octobre 2026',
+    );
+  });
+
+  it('says the goal reached with the date, and the outcome alone without a date', () => {
+    expect(endedLabel('closed_funded', '2026-10-10T09:00:00.000Z', messages, long)).toBe(
+      'Objectif atteint, clôturé le 10 octobre 2026',
+    );
+    expect(endedLabel('closed', null, messages, long)).toBe('Campagne clôturée');
   });
 });

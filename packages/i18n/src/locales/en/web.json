@@ -577,6 +577,8 @@
       "lastDay": "Last day of the campaign",
       "endedFunded": "Campaign closed, goal reached",
       "endedClosed": "Campaign closed",
+      "closedOn": "Closed on {{date}}",
+      "closedOnFunded": "Goal reached, closed on {{date}}",
       "equivalent": "That is {{collected}} raised of {{goal}}, an indicative equivalent at the fixed parity of the CFA franc.",
       "contributions": {
         "one": "{{count}} contribution",

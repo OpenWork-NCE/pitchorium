@@ -1,11 +1,12 @@
 import type { ProjectCard as ProjectCardData, ProjectTier } from '@pitchorium/contracts';
 import { ArrowRight } from 'lucide-react';
 import { getImageProps } from 'next/image';
-import { useLocale, useTranslations } from 'next-intl';
+import { useFormatter, useLocale, useTranslations } from 'next-intl';
 import { Badge, Button, Card, FundingProgress, Heading, ImpactBadge, Text } from '@/components/ui';
 import * as routes from '@/config/paths';
 import { Link } from '@/i18n/navigation';
 import { cn } from '@/lib/cn';
+import { endedLabel, fundingState } from '../lib/funding-state';
 
 interface ProjectCardProps {
   project: ProjectCardData;
@@ -37,6 +38,8 @@ export function ProjectCard({
   className,
 }: ProjectCardProps) {
   const t = useTranslations('web.projects.card');
+  const funding = useTranslations('web.projects.funding');
+  const format = useFormatter();
   const reference = useTranslations('reference');
   const locale = useLocale();
   const compact = variant === 'compact';
@@ -49,6 +52,25 @@ export function ProjectCard({
   const sectorShort = project.sectorCode
     ? (`sectorsShort.${project.sectorCode}` as Parameters<typeof reference>[0])
     : null;
+  // The time of the campaign: its days left, its last day, or its closing date once closed
+  // (« Clôturé le 10 octobre 2026 », never « 0 jour restant »).
+  const state = fundingState(project.status, project.funding);
+  const remaining =
+    state.time.kind === 'ended'
+      ? endedLabel(
+          state.outcome,
+          project.endsAt,
+          {
+            closedOn: (date) => funding('closedOn', { date }),
+            closedOnFunded: (date) => funding('closedOnFunded', { date }),
+            endedClosed: () => funding('endedClosed'),
+            endedFunded: () => funding('endedFunded'),
+          },
+          (date) => format.dateTime(date, { dateStyle: 'long' }),
+        )
+      : state.time.kind === 'lastDay'
+        ? funding('lastDay')
+        : undefined;
   const country = project.countryCodes[0];
   const countryName = country
     ? new Intl.DisplayNames(locale, { type: 'region' }).of(country)
@@ -126,6 +148,7 @@ export function ProjectCard({
             raised={project.funding.collected}
             goal={goal}
             daysLeft={project.funding.daysLeft}
+            {...(remaining ? { remainingLabel: remaining } : {})}
             milestones={tiers.map((tier) => ({
               amountMinor: tier.threshold.amountMinor,
               label: tier.description,

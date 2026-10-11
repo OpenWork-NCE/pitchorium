@@ -1,10 +1,10 @@
 import type { Locale, Project } from '@pitchorium/contracts';
-import { getTranslations } from 'next-intl/server';
+import { getFormatter, getTranslations } from 'next-intl/server';
 import type { ReactNode } from 'react';
 import { Alert, Badge, Callout, FundingProgress, Heading } from '@/components/ui';
 import { formatMoney } from '@/lib/format/money';
 import { pluralOf } from '@/lib/i18n/plural-of';
-import { fundingState } from '../../lib/funding-state';
+import { endedLabel, fundingState } from '../../lib/funding-state';
 import { type FixedParity, indicativeEquivalent } from '../../lib/indicative-equivalent';
 
 /**
@@ -27,6 +27,7 @@ export async function FundingPanel({
 }) {
   const t = await getTranslations('web.projects.funding');
   const reference = await getTranslations('reference');
+  const format = await getFormatter();
   const { funding } = project;
   const state = fundingState(project.status, funding, {
     frozen: project.fundingFrozen,
@@ -41,7 +42,17 @@ export async function FundingPanel({
       : state.time.kind === 'lastDay'
         ? t('lastDay')
         : state.time.kind === 'ended'
-          ? t(state.outcome === 'closed_funded' ? 'endedFunded' : 'endedClosed')
+          ? endedLabel(
+              state.outcome,
+              project.endsAt,
+              {
+                closedOn: (date) => t('closedOn', { date }),
+                closedOnFunded: (date) => t('closedOnFunded', { date }),
+                endedClosed: () => t('endedClosed'),
+                endedFunded: () => t('endedFunded'),
+              },
+              (date) => format.dateTime(date, { dateStyle: 'long' }),
+            )
           : undefined;
   const equivalent = (amount: Project['funding']['collected'] | null) =>
     amount && parity ? indicativeEquivalent(amount, parity) : null;

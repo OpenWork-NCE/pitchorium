@@ -1,5 +1,5 @@
 import type { FollowState, Locale, Project } from '@pitchorium/contracts';
-import { getTranslations } from 'next-intl/server';
+import { getFormatter, getTranslations } from 'next-intl/server';
 import type { ReactNode } from 'react';
 import { Alert, Button, ImpactBadge } from '@/components/ui';
 import * as routes from '@/config/paths';
@@ -7,7 +7,7 @@ import { ActivitySection, ImageGallery } from '@/features/content';
 import { Link } from '@/i18n/navigation';
 import { withRedirect } from '@/lib/auth/redirect';
 import { pluralOf } from '@/lib/i18n/plural-of';
-import { fundingState } from '../../lib/funding-state';
+import { endedLabel, fundingState } from '../../lib/funding-state';
 import { resumeStep } from '../../lib/wizard-steps';
 import type { FixedParity } from '../../lib/indicative-equivalent';
 import { DocumentsSection } from './documents-section';
@@ -68,6 +68,7 @@ export async function ProjectPage({
 }: ProjectPageProps) {
   const t = await getTranslations('web.projects.page');
   const funding = await getTranslations('web.projects.funding');
+  const format = await getFormatter();
   const reference = await getTranslations('reference');
   const signedIn = view === 'member';
   const editorial = view === 'visitor';
@@ -123,7 +124,17 @@ export async function ProjectPage({
       : state.time.kind === 'ended'
         ? funding('barEnded', {
             percent,
-            outcome: funding(state.outcome === 'closed_funded' ? 'endedFunded' : 'endedClosed'),
+            outcome: endedLabel(
+              state.outcome,
+              project.endsAt,
+              {
+                closedOn: (date) => funding('closedOn', { date }),
+                closedOnFunded: (date) => funding('closedOnFunded', { date }),
+                endedClosed: () => funding('endedClosed'),
+                endedFunded: () => funding('endedFunded'),
+              },
+              (date) => format.dateTime(date, { dateStyle: 'long' }),
+            ),
           })
         : funding('barPercent', { percent });
   const cover = project.gallery[0]?.url ?? null;
