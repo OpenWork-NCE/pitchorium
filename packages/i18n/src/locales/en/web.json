@@ -260,7 +260,8 @@
       "actions": "Quick actions",
       "recent": "Recent searches",
       "clearRecent": "Clear recent searches",
-      "noResults": "No direct result: the results page searches more broadly."
+      "noResults": "No direct result: the results page searches more broadly.",
+      "list": "Results and actions"
     },
     "shortcuts": {
       "title": "Keyboard shortcuts",

@@ -260,7 +260,8 @@
       "actions": "Actions rapides",
       "recent": "Recherches récentes",
       "clearRecent": "Effacer les recherches récentes",
-      "noResults": "Aucun résultat direct : la page de résultats cherche plus largement."
+      "noResults": "Aucun résultat direct : la page de résultats cherche plus largement.",
+      "list": "Résultats et actions"
     },
     "shortcuts": {
       "title": "Raccourcis clavier",

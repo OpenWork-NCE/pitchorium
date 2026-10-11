@@ -99,6 +99,24 @@ export function CommandPalette({
   const trimmed = query.trim();
   const searching = results !== undefined;
   const shownActions = searching && trimmed ? actions.filter((a) => matches(a, trimmed)) : actions;
+  // The line selected: the first result once results arrive (Enter opens it), else the first
+  // line; then the arrows move it.
+  const firstAction = shownActions[0];
+  const first = searching
+    ? (results.find((group) => group.items.length > 0)?.items[0]?.id ??
+      (trimmed
+        ? `search ${trimmed}`
+        : firstAction
+          ? `${firstAction.label} ${firstAction.keywords?.join(' ') ?? ''}`
+          : ''))
+    : undefined;
+  const [selected, setSelected] = useState('');
+  const [seen, setSeen] = useState<string | undefined>(undefined);
+  if (first !== seen) {
+    // New lines at the top: the selection follows them (state adjusted while rendering).
+    setSeen(first);
+    if (first !== undefined) setSelected(first);
+  }
 
   function change(next: string) {
     setQuery(next);
@@ -126,7 +144,12 @@ export function CommandPalette({
           className="fixed inset-x-3 top-[12vh] z-(--z-modal) mx-auto max-w-xl overflow-hidden rounded-2xl border border-border bg-surface-elevated text-foreground shadow-lg outline-none data-[state=open]:animate-[menu-in_var(--duration-page)_var(--ease-enter)]"
         >
           <Primitive.Title className="sr-only">{t('title')}</Primitive.Title>
-          <Command loop label={t('title')} shouldFilter={!searching}>
+          <Command
+            loop
+            label={t('title')}
+            shouldFilter={!searching}
+            {...(searching ? { value: selected, onValueChange: setSelected } : {})}
+          >
             <div className="flex items-center gap-3 border-b border-border px-4">
               <Search aria-hidden className="size-5 shrink-0 text-muted" />
               <Command.Input
@@ -138,6 +161,7 @@ export function CommandPalette({
               <Kbd className="max-sm:hidden">{t('escape')}</Kbd>
             </div>
             <Command.List
+              label={t('list')}
               aria-busy={busy}
               className="h-[min(60vh,26rem)] overflow-y-auto overscroll-contain p-2"
             >
