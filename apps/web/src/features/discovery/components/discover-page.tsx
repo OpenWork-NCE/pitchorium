@@ -59,7 +59,7 @@ export async function DiscoverSectionGrid({
     );
   }
   return (
-    <ResultGrid>
+    <ResultGrid count={page.items.length}>
       {page.items.map((card, index) => {
         const sentence = page.sentences[index];
         const id = `${card.kind}:${card.key}`;
@@ -68,6 +68,7 @@ export async function DiscoverSectionGrid({
           <ResultCard
             card={card}
             headingLevel={full ? 2 : 3}
+            wide={page.items.length === 1}
             reason={sentence ? suggestionSentenceText(locale, sentence) : null}
             action={suggestion ? <SuggestedProfileActions candidate={card} /> : undefined}
           />

@@ -78,7 +78,8 @@ export async function SearchResults({
       <p className="sr-only" role="status">
         {t(`shown.${pluralOf(locale, page.items.length)}`, { count: page.items.length })}
       </p>
-      <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {/* Cards of different kinds and heights: each keeps its own height, none stretched. */}
+      <ul className="grid items-start gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {page.items.map((card) => (
           <li key={`${card.kind}:${card.key}`} className="grid">
             <ResultCard card={card} headingLevel={2} />

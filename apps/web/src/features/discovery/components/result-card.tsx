@@ -16,6 +16,8 @@ interface ResultCardProps {
   /** An action of the card (« Se connecter » of a suggested profile). */
   action?: ReactNode;
   headingLevel?: 2 | 3;
+  /** Alone in its list: across the width, its image beside its text from `md` (ResultGrid). */
+  wide?: boolean;
 }
 
 /**
@@ -23,7 +25,13 @@ interface ResultCardProps {
  * by their picture and title, a project or an event by its image, a mission by its sense. The
  * title is the link (one link per card); rendered by the server as by the browser.
  */
-export function ResultCard({ card, reason, action, headingLevel = 3 }: ResultCardProps) {
+export function ResultCard({
+  card,
+  reason,
+  action,
+  headingLevel = 3,
+  wide = false,
+}: ResultCardProps) {
   const t = useTranslations('web.discovery.cards');
   const reference = useTranslations('reference');
   const format = useFormatter();
@@ -75,7 +83,12 @@ export function ResultCard({ card, reason, action, headingLevel = 3 }: ResultCar
   return (
     <Card
       padding="none"
-      className="relative grid h-full min-w-0 content-start gap-3 overflow-hidden"
+      className={cn(
+        'relative grid h-full min-w-0 content-start gap-3 overflow-hidden',
+        wide &&
+          (card.kind === 'project' || card.kind === 'event') &&
+          'md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] md:content-stretch md:gap-0',
+      )}
       data-result-kind={card.kind}
     >
       {card.kind === 'project' || card.kind === 'event' ? (
@@ -83,6 +96,7 @@ export function ResultCard({ card, reason, action, headingLevel = 3 }: ResultCar
           className={cn(
             'relative w-full overflow-hidden bg-cover-placeholder',
             card.kind === 'event' ? 'aspect-video' : 'aspect-[4/3]',
+            wide && 'md:aspect-auto md:min-h-56',
           )}
         >
           {/* The elevation pattern, brightened on the deep violet of the dark theme. */}
@@ -103,6 +117,7 @@ export function ResultCard({ card, reason, action, headingLevel = 3 }: ResultCar
         className={cn(
           'grid min-w-0 gap-2 px-5 pb-5',
           card.kind === 'project' || card.kind === 'event' ? '' : 'pt-5',
+          wide && (card.kind === 'project' || card.kind === 'event') && 'md:content-center md:p-8',
         )}
       >
         <div className="flex items-start gap-3">
@@ -167,7 +182,20 @@ export function ResultCard({ card, reason, action, headingLevel = 3 }: ResultCar
   );
 }
 
-/** A grid of cards, wide (§10.6): three across on a computer, two on a tablet, one on a phone. */
-export function ResultGrid({ children }: { children: ReactNode }) {
-  return <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">{children}</ul>;
+/**
+ * A grid of cards (§10.6), laid out from their count (ADR 0161): three across on a computer, two
+ * on a tablet, one on a phone; two cards share the width, one card goes across it (`wide`). A row
+ * is never left with empty columns.
+ */
+export function ResultGrid({ count, children }: { count: number; children: ReactNode }) {
+  return (
+    <ul
+      className={cn(
+        'grid gap-6',
+        count >= 3 ? 'sm:grid-cols-2 lg:grid-cols-3' : count === 2 ? 'sm:grid-cols-2' : '',
+      )}
+    >
+      {children}
+    </ul>
+  );
 }
