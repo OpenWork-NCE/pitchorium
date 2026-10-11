@@ -221,7 +221,9 @@ function contribution(id, status, overrides = {}) {
     anonymous: false,
     paymentUrl:
       status === 'pending_payment' ? 'https://checkout.stripe.com/c/pay/cs_test_stub' : null,
-    expiresAt: iso(1),
+    // Far after the fixed clock of the stub: a pending payment stays resumable at every run
+    // (one day ahead, it expired on 2026-10-11 at 09:00 UTC and the payment tests failed).
+    expiresAt: iso(3650),
     createdAt: iso(-3),
     succeededAt: status === 'succeeded' || status === 'partially_refunded' ? iso(-3) : null,
     ...overrides,
