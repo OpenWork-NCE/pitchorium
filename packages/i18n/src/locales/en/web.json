@@ -1761,7 +1761,7 @@
     },
     "settings": {
       "rhythmTitle": "Rhythm of the emails",
-      "rhythmHint": "Emails of the types you turn on leave with each notification, or together in a digest. Essential emails always leave at once.",
+      "rhythmHint": "One rhythm for every email that is not essential: one per notification, or gathered in a digest. Each type keeps its email switch in the grid below. Essential emails are always sent at once.",
       "immediate": "An email as soon as the notification arrives.",
       "daily": "A digest every day, from {{time}}.",
       "weekly": "A digest every {{day}}, from {{time}}.",

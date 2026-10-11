@@ -1761,7 +1761,7 @@
     },
     "settings": {
       "rhythmTitle": "Rythme des emails",
-      "rhythmHint": "Les emails des types que vous activez partent à chaque notification, ou réunis dans un résumé. Les emails indispensables partent toujours aussitôt.",
+      "rhythmHint": "Un seul rythme pour tous les emails qui ne sont pas indispensables : à chaque notification, ou réunis dans un résumé. Chaque type garde son interrupteur email dans la grille ci-dessous. Les emails indispensables partent toujours aussitôt.",
       "immediate": "Un email dès que la notification arrive.",
       "daily": "Un résumé chaque jour, à partir de {{time}}.",
       "weekly": "Un résumé chaque {{day}}, à partir de {{time}}.",

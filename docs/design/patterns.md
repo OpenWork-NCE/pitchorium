@@ -33,7 +33,7 @@ Comment assembler les composants (`components.md`) pour les situations récurren
 - Une action impossible dit pourquoi (« C'est votre seule méthode de connexion … ») au lieu d'un bouton désactivé muet ; une action sensible redemande le mot de passe.
 - Une session se décrit par son type d'appareil (icône et libellé), son navigateur, son système et sa dernière activité, jamais par un lieu : l'adresse IP n'est pas géolocalisée (ADR 0107).
 
-- « Messagerie » : qui peut écrire (trois choix décrits), la copie par email des messages non lus. « Notifications » : le rythme des emails (un email à chaque fois, un résumé quotidien ou hebdomadaire, avec l'heure, le jour et le fuseau de l'api), puis une grille par type et par canal ; un type indispensable reste coché, verrouillé, avec la raison. Chaque réglage s'applique dès qu'il change et revient si l'api refuse.
+- « Messagerie » : qui peut écrire (trois choix décrits), la copie par email des messages non lus. « Notifications » : le rythme des emails, un seul pour tous les emails non indispensables (un email à chaque fois, un résumé quotidien ou hebdomadaire, avec l'heure, le jour et le fuseau de l'api, ADR 0152), puis une grille par type et par canal, l'interrupteur email de chaque type compris ; un type indispensable reste coché, verrouillé, avec la raison. Chaque réglage s'applique dès qu'il change et revient si l'api refuse.
 - « Confidentialité et réseau » : chaque réglage s'applique dès qu'il change (interrupteur, liste), s'affiche avant la réponse et revient si l'api refuse ; un déblocage dit ce qui ne revient pas (connexions et suivis retirés par le blocage).
 
 ## Profils et organisations (§10.1, §10.7, ADR 0113)
