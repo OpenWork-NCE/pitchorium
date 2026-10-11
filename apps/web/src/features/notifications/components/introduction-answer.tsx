@@ -1,7 +1,6 @@
 'use client';
 
 import {
-  getNotificationsControllerCountersQueryKey,
   messagingControllerAcceptIntroduction,
   messagingControllerDeclineIntroduction,
 } from '@pitchorium/api-client';
@@ -9,6 +8,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Button, useAnnounce } from '@/components/ui';
+import { COUNTERS_QUERY_KEY } from '@/lib/query/keys';
 
 /**
  * « Accepter » and « Décliner » an introduction from its notification (§10.4, §10.5): the answer
@@ -40,7 +40,7 @@ export function IntroductionAnswer({
       setAnswered(choice);
       announce(choice === 'accept' ? t('accepted') : t('declined'));
       void queryClient.invalidateQueries({
-        queryKey: getNotificationsControllerCountersQueryKey(),
+        queryKey: COUNTERS_QUERY_KEY,
       });
     } catch {
       setFailed(true);

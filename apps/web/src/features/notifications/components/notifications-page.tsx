@@ -1,7 +1,6 @@
 'use client';
 
 import {
-  getNotificationsControllerCountersQueryKey,
   getNotificationsControllerListQueryKey,
   notificationsControllerList,
   notificationsControllerRead,
@@ -32,6 +31,7 @@ import { useRealtime } from '@/lib/realtime/use-realtime';
 import { NOTIFICATION_FILTERS, type NotificationFilter } from '../lib/families';
 import { useCounters, useMarkAllNotificationsRead } from './counters';
 import { NotificationItem } from './notification-item';
+import { COUNTERS_QUERY_KEY } from '@/lib/query/keys';
 
 type Page = CursorPage<Notification>;
 const PAGE = 20;
@@ -107,7 +107,7 @@ export function NotificationsPage({ initial }: { initial: Page | null }) {
         : data,
     );
   const refreshCounters = () =>
-    void queryClient.invalidateQueries({ queryKey: getNotificationsControllerCountersQueryKey() });
+    void queryClient.invalidateQueries({ queryKey: COUNTERS_QUERY_KEY });
 
   function open(notification: Notification) {
     write((current) =>
