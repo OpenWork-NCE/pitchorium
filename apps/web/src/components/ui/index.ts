@@ -92,6 +92,7 @@ export { Timeline, type TimelineEntry } from './timeline';
 export { TimeZoneSelect } from './time-zone-select';
 export { notify, ToasterLoader } from './toast';
 export { Toaster } from './toaster';
+export { FilterButtons } from './filter-buttons';
 export { ToggleGroup } from './toggle-group';
 export { Tooltip } from './tooltip';
 export { Truncate } from './truncate';

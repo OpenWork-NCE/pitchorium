@@ -17,7 +17,16 @@ const DELAY_MS = 400;
  * hover and keyboard focus (Escape closes it, WCAG 1.4.13). The tooltip is mounted on first use
  * only: a page with many dates hydrates none of them.
  */
-export function RelativeTime({ date, className }: { date: string; className?: string }) {
+export function RelativeTime({
+  date,
+  className,
+  style = 'relative',
+}: {
+  date: string;
+  className?: string;
+  /** `time`: the short time of the instant (« 14:05 », a message of a thread). */
+  style?: 'relative' | 'time';
+}) {
   const format = useFormatter();
   const now = useNow({ updateInterval: 60_000 });
   const descriptionId = useId();
@@ -85,7 +94,9 @@ export function RelativeTime({ date, className }: { date: string; className?: st
         ref={element}
         className={cn('rounded-xs', className)}
       >
-        {format.relativeTime(instant, now)}
+        {style === 'time'
+          ? format.dateTime(instant, { timeStyle: 'short' })
+          : format.relativeTime(instant, now)}
       </time>
       <span id={descriptionId} hidden>
         {full}
