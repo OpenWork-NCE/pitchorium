@@ -120,3 +120,10 @@ Moins de mouvement veut dire `prefers-reduced-motion: reduce`, `prefers-reduced-
 - Captures de référence en mouvement réduit (1280x800 et 390x844, deux thèmes).
 - GSAP absent des bundles de l'espace membre : règle ESLint et `scripts/check-bundles.mjs`.
 - Budget §1.4 : un dialecte, aucun pin, aucun WebGL, aucun curseur, aucune marquee.
+
+## Découverte, événements et missions (PROMPT FRONT 7)
+
+- Palette : ouverture par `menu-in` (fondu et léger rapprochement) ; liste de hauteur fixe, les résultats précédents restent jusqu'aux suivants : rien ne saute.
+- Onglets de la recherche, des événements et des missions : l'indicateur partagé (`SharedIndicator`).
+- Inscription à un événement : libellé du bouton changé par `LabelSwap` (même largeur), position dans la liste d'attente comptée par `AnimatedNumber` ; état final immédiat avec moins de mouvement.
+- Vue visiteur de Découvrir et sections d'une page d'événement : révélation D4 par `Reveal` (CSS liée au défilement, repli IntersectionObserver), sans GSAP : son poids n'entre pas dans le budget de la vue visiteur. Aucun nom de transition de vue ajouté.
