@@ -132,11 +132,16 @@ test.describe('the page of a project', () => {
         bar.getByRole('link', { name: 'Se connecter pour suivre le projet' }),
       ).toHaveText('');
       await expect(bar.getByRole('navigation')).toHaveCount(0);
-      // At the end of the page, the bar covers nothing: the footer ends above it.
+      // In the middle of the page, at the bottom of the screen; at its end, the page ends with it,
+      // above the footer: it covers nothing.
+      const viewport = page.viewportSize()!;
+      await page.locator('#tiers-title').scrollIntoViewIfNeeded();
+      const middle = (await bar.boundingBox())!;
+      expect(Math.round(middle.y + middle.height)).toBe(viewport.height);
       await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
       const footer = (await page.getByRole('contentinfo').boundingBox())!;
-      const top = (await bar.boundingBox())!.y;
-      expect(Math.round(footer.y + footer.height)).toBeLessThanOrEqual(Math.round(top));
+      const end = (await bar.boundingBox())!;
+      expect(Math.round(end.y + end.height)).toBeLessThanOrEqual(Math.round(footer.y));
     },
   );
 });

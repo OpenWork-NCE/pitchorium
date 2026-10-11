@@ -29,13 +29,20 @@ describe('the action bar of a project page on a phone', () => {
     expect(bar.className).toContain('h-(--action-bar-height)');
   });
 
-  it('is cleared by the end of the document below lg: it never covers the content', () => {
+  it('sticks to the bottom of the screen in the flow of the page: it never covers the content', () => {
+    render(
+      <MobileActionBar summary="56 %" label="Actions du projet">
+        <button type="button" data-bar-main="">
+          Contribuer
+        </button>
+      </MobileActionBar>,
+    );
+    const bar = screen.getByRole('region', { name: 'Actions du projet' });
+    // Sticky, not fixed: it takes its own height in the page, which ends with it.
+    expect(bar.className).toContain('sticky');
+    expect(bar.className).not.toContain('fixed');
+    // No rule of the whole document for it (a `body:has()` costs every change of the page).
     const css = readFileSync(join(import.meta.dirname, '../../../../styles/globals.css'), 'utf8');
-    expect(css).toMatch(
-      /body:has\(\[data-action-bar\]\)\s*\{\s*padding-bottom: var\(--action-bar-height\);/,
-    );
-    expect(css).toContain(
-      '--action-bar-height: calc(5.25rem + 1px + max(0.75rem, env(safe-area-inset-bottom)));',
-    );
+    expect(css).not.toMatch(/body:has\(/);
   });
 });

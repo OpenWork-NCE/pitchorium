@@ -153,9 +153,8 @@
     line-height: 1.5;
   }
 
-  /* The action bar of the page of a project on a phone (ADR 0132): a fixed height (a line of
-     progress, a row of 44 px actions, the safe area), cleared by the end of the document so that
-     it never covers the content, the footer included. */
+  /* The action bar of the page of a project on a phone (ADR 0132): a fixed height, a line of
+     progress, a row of 44 px actions and the safe area. */
   :root {
     --action-bar-height: calc(5.25rem + 1px + max(0.75rem, env(safe-area-inset-bottom)));
   }
@@ -182,11 +181,6 @@
     }
   }
 
-  @media (width < 64rem) {
-    body:has([data-action-bar]) {
-      padding-bottom: var(--action-bar-height);
-    }
-  }
 
   h1,
   h2 {
