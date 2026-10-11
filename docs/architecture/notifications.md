@@ -73,29 +73,30 @@ sequenceDiagram
 
 ## Liens profonds
 
-Chaque notification porte `target` : un type, une clé et le chemin de l'application web (contrat avec le frontend, `pathOf`) :
+Chaque notification porte `target` : un type, une clé et le chemin de l'application web (contrat avec le frontend, `pathOf`), le même dans l'application et dans les emails. Un chemin nomme une page livrée ; les cibles dont la page reste à venir gardent leur chemin, et le web n'y fait pas de lien tant qu'elle n'existe pas (`features/notifications/lib/target.ts`).
 
-| Cible                      | Chemin                           |
-| -------------------------- | -------------------------------- |
-| `member`                   | `/members/<handle>`              |
-| `post`                     | `/posts/<id>`                    |
-| `conversation`             | `/messages/<id>`                 |
-| `message_requests`         | `/messages/requests`             |
-| `introduction`             | `/introductions/<id>`            |
-| `project`                  | `/projects/<slug>`               |
-| `project_invitations`      | `/me/project-invitations`        |
-| `organization`             | `/organizations/<slug>`          |
-| `organization_invitations` | `/me/organization-invitations`   |
-| `contribution`             | `/me/contributions/<id>`         |
-| `payout_account`           | `/me/payout-account`             |
-| `offline_contribution`     | `/me/offline-contributions/<id>` |
-| `time_entry`               | `/me/time-entries/<id>`          |
-| `profile_views`            | `/me/profile-views`              |
-| `connection_requests`      | `/network/requests`              |
-| `account_security`         | `/me/security`                   |
-| `event`                    | `/events/<slug>`                 |
-| `mission_engagement`       | `/missions/engagements/<id>`     |
-| `suggestions`              | `/discover`                      |
+| Cible                                                     | Chemin                                                    |
+| --------------------------------------------------------- | --------------------------------------------------------- |
+| `member`                                                  | `/members/<handle>`                                       |
+| `post`                                                    | `/posts/<id>`                                             |
+| `conversation`                                            | `/messages/<id>`                                          |
+| `message_requests`                                        | `/messages?filter=requests`                               |
+| `introduction`                                            | `/introductions/<id>`                                     |
+| `project`                                                 | `/projects/<slug>`                                        |
+| `project_invitations`                                     | `/projects` (invitations du membre en tête de la vitrine) |
+| `organization`                                            | `/organizations/<slug>`                                   |
+| `organization_invitations`                                | `/organizations/<slug>` (réponse par le lien de l'email)  |
+| `contribution`                                            | `/contributions/<id>`                                     |
+| `payout_account`                                          | `/settings/payouts`                                       |
+| `offline_contribution`                                    | `/dashboard`                                              |
+| `time_entry`                                              | `/dashboard/time`                                         |
+| `profile_views`                                           | `/network/profile-views`                                  |
+| `connection_requests`                                     | `/network`                                                |
+| `account_security`                                        | `/settings/security`                                      |
+| `event`                                                   | `/events/<slug>`                                          |
+| `mission_engagement`                                      | `/missions/engagements/<id>` (page à venir)               |
+| `suggestions`                                             | `/network?view=suggestions`                               |
+| `reports`, `moderation_decision`, `moderation`, `privacy` | `/me/...` (pages à venir)                                 |
 
 ## Compteurs unifiés
 

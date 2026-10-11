@@ -517,37 +517,40 @@ export function pathOf(type: NotificationTargetType, key: string): string {
     case 'conversation':
       return `/messages/${key}`;
     case 'message_requests':
-      return '/messages/requests';
+      return '/messages?filter=requests';
     case 'introduction':
       return `/introductions/${key}`;
     case 'project':
       return `/projects/${key}`;
     case 'project_invitations':
-      return '/me/project-invitations';
+      // The invitations of the member head the showcase of the projects.
+      return '/projects';
     case 'organization':
       return `/organizations/${key}`;
     case 'organization_invitations':
-      return '/me/organization-invitations';
+      // Answered by the link of its email (a token): the organization, meanwhile.
+      return `/organizations/${key}`;
     case 'contribution':
-      return `/me/contributions/${key}`;
+      return `/contributions/${key}`;
     case 'payout_account':
-      return '/me/payout-account';
+      return '/settings/payouts';
     case 'offline_contribution':
-      return `/me/offline-contributions/${key}`;
+      // Off-platform contributions of the member are on their engagement dashboard.
+      return '/dashboard';
     case 'time_entry':
-      return `/me/time-entries/${key}`;
+      return '/dashboard/time';
     case 'profile_views':
-      return '/me/profile-views';
+      return '/network/profile-views';
     case 'connection_requests':
-      return '/network/requests';
+      return '/network';
     case 'account_security':
-      return '/me/security';
+      return '/settings/security';
     case 'event':
       return `/events/${key}`;
     case 'mission_engagement':
       return `/missions/engagements/${key}`;
     case 'suggestions':
-      return '/discover';
+      return '/network?view=suggestions';
     case 'reports':
       return '/me/reports';
     case 'moderation_decision':
