@@ -61,7 +61,7 @@ export function ResultsMore({
         <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {cards.map((card) => (
             <li key={`${card.kind}:${card.key}`} className="grid">
-              <ResultCard card={card} />
+              <ResultCard card={card} headingLevel={2} />
             </li>
           ))}
         </ul>
