@@ -142,3 +142,10 @@ Moins de mouvement veut dire `prefers-reduced-motion: reduce`, `prefers-reduced-
 - Pied de page découvert (H29, `footer-uncover`) : le contenu glisse au-dessus du pied de page épinglé en bas, à partir de 768 x 640 px ; défilement natif.
 - Lavage de couleur (H22) non retenu : une seule couleur d'accent, aucun décor gratuit (`direction.md`).
 - Animations liées au défilement (`animation-timeline: view()`) seulement avec le mouvement complet ; avec moins de mouvement ou sans cette prise en charge, état final dès la première peinture. Aucun nom de transition de vue ajouté.
+
+## Révision du site public (PROMPT FRONT 8A-R, ADR 0162)
+
+- Héros de l'accueil : texte à gauche, aperçus du produit à droite sur ordinateur (page projet, son financement devant, une notification au-dessus). Entrée D4 sobre : les trois aperçus apparaissent l'un après l'autre (`editorial-reveal`, fondu, montée de 24 px et défloutage, décalés de 80 ms) ; la page projet se déplace de 8 % au plus avec le défilement (`parallax-soft`). Sur téléphone, un seul aperçu sous le titre, immobile.
+- Rangées éditoriales des trois usages : chaque scène d'aperçu est révélée par `clip-reveal` à son entrée dans l'écran ; même règle pour les parcours de la page Fonctionnement.
+- Bandeau violet de l'appel final : motif de la marque entré par `hero-scale-crop` et déplacé par `parallax-soft`, comme l'appel précédent.
+- Avec moins de mouvement ou sans `animation-timeline`, tout est dans son état final dès la première peinture ; aucun nom de transition de vue ajouté.

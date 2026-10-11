@@ -1,5 +1,6 @@
 /** Public facade of the marketing feature: the editorial pages and the legal pages (ADR 0156). */
 export { HomePage } from './components/home-page';
+export { homeProjects } from './lib/home-projects';
 export { HowItWorksPage } from './components/how-it-works-page';
 export { LegalPage } from './components/legal-page';
 export { SiteFooter } from './components/site-footer';

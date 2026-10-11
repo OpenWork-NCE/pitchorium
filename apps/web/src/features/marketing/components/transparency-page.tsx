@@ -8,6 +8,7 @@ import { countryNames } from '@/features/projects';
 import { Link } from '@/i18n/navigation';
 import { formatNames } from '@/lib/format/list';
 import { EditorialHeader } from './editorial-header';
+import { TableOfContents } from './table-of-contents';
 
 const STATEMENTS = ['fees', 'funds', 'title', 'tax'] as const;
 
@@ -34,82 +35,94 @@ export function TransparencyPage({ coverage }: { coverage: PaymentCoverage | nul
   return (
     <>
       <EditorialHeader title={t('title')} lede={t('lede')} />
-      <Container className="grid gap-12 py-16 md:py-24 [&>section]:max-w-3xl">
-        <section aria-labelledby="commission" className="grid gap-3">
-          <SplitHeading
-            id="commission"
-            className="font-display text-2xl font-extrabold text-balance"
-          >
-            {t('commissionTitle')}
-          </SplitHeading>
-          <Text data-commission-rate={coverage?.commission.rateBps}>
-            {coverage
-              ? t('commissionBody', {
-                  rate: format.number(coverage.commission.rateBps / 10_000, {
-                    style: 'percent',
-                    maximumFractionDigits: 2,
-                  }),
-                })
-              : t('commissionUnavailable')}
-          </Text>
-        </section>
-        {STATEMENTS.map((statement) => (
-          <section key={statement} aria-labelledby={statement} className="grid gap-3">
-            <Heading level={2} id={statement}>
-              {t(`${statement}Title`)}
-            </Heading>
-            <Text>{t(`${statement}Body`)}</Text>
-          </section>
-        ))}
-        <section aria-labelledby="impact" className="grid gap-3">
-          <Heading level={2} id="impact">
-            {t('impactTitle')}
-          </Heading>
-          <Text>{t('impactBody')}</Text>
-          <Link
-            href={routes.impactMethodology}
-            className="w-fit link-underline-hover text-accent underline"
-          >
-            {t('impactLink')}
-          </Link>
-        </section>
-        <section aria-labelledby="coverage" className="grid gap-6" data-coverage="">
-          <div className="grid gap-3">
+      {/* A reading column, its contents sticky beside it on a computer: no half screen empty. */}
+      <Container className="grid gap-16 py-16 md:py-24 lg:grid-cols-[minmax(0,1fr)_15rem]">
+        <div className="grid max-w-3xl gap-12">
+          <section aria-labelledby="commission" className="grid gap-3">
             <SplitHeading
-              id="coverage"
+              id="commission"
               className="font-display text-2xl font-extrabold text-balance"
             >
-              {t('coverageTitle')}
+              {t('commissionTitle')}
             </SplitHeading>
-            <Text tone="muted">
+            <Text data-commission-rate={coverage?.commission.rateBps}>
               {coverage
-                ? t('coverageBody', {
-                    date: format.dateTime(new Date(`${coverage.verifiedAt}T00:00:00Z`), {
-                      dateStyle: 'long',
-                      timeZone: 'UTC',
+                ? t('commissionBody', {
+                    rate: format.number(coverage.commission.rateBps / 10_000, {
+                      style: 'percent',
+                      maximumFractionDigits: 2,
                     }),
                   })
-                : t('coverageUnavailable')}
+                : t('commissionUnavailable')}
             </Text>
-          </div>
-          {coverage ? (
-            <dl className="grid gap-6 md:grid-cols-2">
-              <div className="grid content-start gap-2">
-                <dt className="font-semibold">{t('payoutCountries')}</dt>
-                <dd className="text-muted">{formatNames(countries, locale)}</dd>
-              </div>
-              <div className="grid content-start gap-2">
-                <dt className="font-semibold">{t('methods')}</dt>
-                <dd className="text-muted">
-                  {formatNames(
-                    paymentMethods.map((method) => methods(method)),
-                    locale,
-                  )}
-                </dd>
-              </div>
-            </dl>
-          ) : null}
-        </section>
+          </section>
+          {STATEMENTS.map((statement) => (
+            <section key={statement} aria-labelledby={statement} className="grid gap-3">
+              <Heading level={2} id={statement}>
+                {t(`${statement}Title`)}
+              </Heading>
+              <Text>{t(`${statement}Body`)}</Text>
+            </section>
+          ))}
+          <section aria-labelledby="impact" className="grid gap-3">
+            <Heading level={2} id="impact">
+              {t('impactTitle')}
+            </Heading>
+            <Text>{t('impactBody')}</Text>
+            <Link
+              href={routes.impactMethodology}
+              className="w-fit link-underline-hover text-accent underline"
+            >
+              {t('impactLink')}
+            </Link>
+          </section>
+          <section aria-labelledby="coverage" className="grid gap-6" data-coverage="">
+            <div className="grid gap-3">
+              <SplitHeading
+                id="coverage"
+                className="font-display text-2xl font-extrabold text-balance"
+              >
+                {t('coverageTitle')}
+              </SplitHeading>
+              <Text tone="muted">
+                {coverage
+                  ? t('coverageBody', {
+                      date: format.dateTime(new Date(`${coverage.verifiedAt}T00:00:00Z`), {
+                        dateStyle: 'long',
+                        timeZone: 'UTC',
+                      }),
+                    })
+                  : t('coverageUnavailable')}
+              </Text>
+            </div>
+            {coverage ? (
+              <dl className="grid gap-6 md:grid-cols-2">
+                <div className="grid content-start gap-2">
+                  <dt className="font-semibold">{t('payoutCountries')}</dt>
+                  <dd className="text-muted">{formatNames(countries, locale)}</dd>
+                </div>
+                <div className="grid content-start gap-2">
+                  <dt className="font-semibold">{t('methods')}</dt>
+                  <dd className="text-muted">
+                    {formatNames(
+                      paymentMethods.map((method) => methods(method)),
+                      locale,
+                    )}
+                  </dd>
+                </div>
+              </dl>
+            ) : null}
+          </section>
+        </div>
+        <TableOfContents
+          label={t('contents')}
+          sections={[
+            { id: 'commission', title: t('commissionTitle') },
+            ...STATEMENTS.map((statement) => ({ id: statement, title: t(`${statement}Title`) })),
+            { id: 'impact', title: t('impactTitle') },
+            { id: 'coverage', title: t('coverageTitle') },
+          ]}
+        />
       </Container>
     </>
   );

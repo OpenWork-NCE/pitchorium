@@ -9,7 +9,8 @@ export function TitleWords({ text }: { text: string }) {
   const words = text.split(/\s+/).filter(Boolean);
   return words.map((word, index) => (
     <span key={index}>
-      <span className="title-word">
+      {/* A word never breaks inside, « Afrique–Diaspora » included. */}
+      <span className="title-word whitespace-nowrap">
         <span style={{ '--word': index } as CSSProperties}>{word}</span>
       </span>
       {index < words.length - 1 ? ' ' : null}

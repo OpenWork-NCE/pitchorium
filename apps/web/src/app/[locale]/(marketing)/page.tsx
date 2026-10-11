@@ -5,7 +5,7 @@ import type { Organization, WebSite, WithContext } from 'schema-dts';
 import * as routes from '@/config/paths';
 import { alternatesFor, localizedUrl } from '@/config/seo';
 import { SITE_NAME, siteConfig } from '@/config/site';
-import { HomePage } from '@/features/marketing';
+import { HomePage, homeProjects } from '@/features/marketing';
 import { asLocale } from '@/i18n/routing';
 import { configureServerApi } from '@/lib/api/server';
 import { getActiveLocales } from '@/lib/i18n/active-locales';
@@ -23,16 +23,25 @@ export async function generateMetadata({ params }: PageProps<'/[locale]'>): Prom
   };
 }
 
-/** The projects featured by the api, or its most recent ones; none when it cannot answer. */
-async function homeProjects() {
+/**
+ * The projects of the home page: those the api features, completed by its most recent projects in
+ * funding, three at most, each once (ADR 0161); none when it cannot answer.
+ */
+async function selectedProjects() {
   configureServerApi();
-  const read = (featured: boolean) =>
+  const read = (query: { featured?: 'true'; status?: 'funding' }) =>
     projectsControllerPublicShowcase(
-      { limit: FEATURED, ...(featured ? { featured: 'true' as const } : {}) },
+      { limit: FEATURED, ...query },
       { next: { revalidate: 300 } },
-    ).then((page) => page.items);
-  const featured = await read(true).catch(() => []);
-  return featured.length > 0 ? featured : read(false).catch(() => []);
+    ).then(
+      (page) => page.items,
+      () => [],
+    );
+  const [featured, recent] = await Promise.all([
+    read({ featured: 'true' }),
+    read({ status: 'funding' }),
+  ]);
+  return homeProjects(featured, recent, FEATURED);
 }
 
 /** Editorial home page (ADR 0156), with the structured data of Pitchorium and of its site. */
@@ -40,7 +49,7 @@ export default async function Page({ params }: PageProps<'/[locale]'>) {
   const locale = asLocale((await params).locale);
   setRequestLocale(locale);
   const t = await getTranslations('web.marketing.home');
-  const projects = await homeProjects();
+  const projects = await selectedProjects();
   const home = localizedUrl(locale, '/');
   const organization: WithContext<Organization> = {
     '@context': 'https://schema.org',

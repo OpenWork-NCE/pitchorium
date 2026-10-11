@@ -4027,7 +4027,9 @@
       "howItWorks": "Fonctionnement",
       "transparency": "Transparence et frais",
       "projects": "Projets",
-      "methodology": "Méthodologie d’impact"
+      "methodology": "Méthodologie d’impact",
+      "join": "Rejoindre Pitchorium",
+      "joinShort": "Rejoindre"
     },
     "footer": {
       "label": "Pied de page",
@@ -4191,7 +4193,16 @@
       "coverageUnavailable": "La couverture des paiements n’a pas pu être lue pour le moment.",
       "payoutCountries": "Pays de versement",
       "methods": "Moyens de paiement",
-      "providerLabel": "Prestataire {{index}}"
+      "providerLabel": "Prestataire {{index}}",
+      "contents": "Sur cette page"
+    },
+    "previews": {
+      "funding": "Aperçu du financement d’un projet sur Pitchorium : montant collecté, barre de progression et paliers",
+      "project-page": "Aperçu d’une page projet sur Pitchorium",
+      "suggestion": "Aperçu de personnes suggérées sur Pitchorium, chacune avec la raison de la suggestion",
+      "conversation": "Aperçu d’une conversation dans la messagerie de Pitchorium",
+      "notification": "Aperçu d’une notification qui regroupe les réactions à une publication",
+      "dashboard": "Aperçu du tableau de bord d’engagement : sommes versées, projets soutenus et heures déclarées"
     }
   }
 }

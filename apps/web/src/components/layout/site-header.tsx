@@ -1,6 +1,7 @@
 import { useTranslations } from 'next-intl';
 import type { ReactNode } from 'react';
 import { BrandLogo, BrandSymbol } from '@/components/brand';
+import { LogIn } from 'lucide-react';
 import { Button, ThemeToggle } from '@/components/ui';
 import * as routes from '@/config/paths';
 import { LocaleSwitcher } from '@/features/localization';
@@ -9,7 +10,9 @@ import { Link } from '@/i18n/navigation';
 /**
  * Header of the editorial and public pages: horizontal logo aligned left (brand guide), the
  * symbol below 640 px, the editorial pages from 1 024 px (the footer lists them below), then the
- * slot of the shell, the language, the theme and the sign-in.
+ * slot of the shell, the language, the theme, « Se connecter » as the second action and
+ * « Rejoindre Pitchorium » as the main one. Below 640 px, both stay: « Rejoindre » in short and
+ * the sign-in as an icon named by its label.
  */
 export function SiteHeader({ children }: { children?: ReactNode }) {
   const t = useTranslations('web.a11y');
@@ -46,8 +49,25 @@ export function SiteHeader({ children }: { children?: ReactNode }) {
           {children}
           <LocaleSwitcher />
           <ThemeToggle />
-          <Button asChild variant="outline" size="sm" className="ml-2">
+          <Button asChild variant="outline" size="sm" className="ml-2 hidden sm:inline-flex">
             <Link href={routes.signIn}>{nav('signIn')}</Link>
+          </Button>
+          <Button
+            asChild
+            variant="ghost"
+            size="icon"
+            className="sm:hidden"
+            aria-label={nav('signIn')}
+          >
+            <Link href={routes.signIn}>
+              <LogIn aria-hidden />
+            </Link>
+          </Button>
+          <Button asChild size="sm" className="ml-1 sm:ml-2">
+            <Link href={routes.signUp}>
+              <span className="sm:hidden">{pages('joinShort')}</span>
+              <span className="hidden sm:inline">{pages('join')}</span>
+            </Link>
           </Button>
         </div>
       </div>

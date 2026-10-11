@@ -93,6 +93,14 @@ Contrat visuel de l'application web : chaque composant de `apps/web/src/componen
 - Deux niveaux d'élévation visibles en même temps au plus : le contenu (ombre `xs` ou aucune) et une superposition (`surface-elevated`, ombre `md`) ; l'ombre `lg` est réservée aux dialogues. Une bordure de 1 px sépare avant qu'une ombre ne le fasse.
 - Rayons : `md` (10 px) pour les champs, `lg` (14 px) pour les menus, `xl` (20 px) pour les cartes et dialogues, pilule pour les boutons et les puces.
 
+## Site public
+
+- **Montrer le produit** : les visuels sont des aperçus capturés dans l'application (`marketing-captures.md`, ADR 0162), jamais une image externe ; une scène d'aperçu pose l'aperçu à sa propre échelle sur un panneau `accent-subtle` arrondi (`rounded-2xl`), ombre `md` au plus.
+- **Rythme éditorial** : rangées alternées texte et aperçu ; titres de section en `text-5xl` sur ordinateur, titres de rangée en `text-4xl`, corps en `text-lg` : l'écart d'échelle porte la hiérarchie.
+- **Un seul moment pleine largeur** : le bandeau violet profond (`brand-panel`, texte `on-brand-panel`, motif de la marque) de l'appel final, cohérent avec le panneau de l'authentification ; son action principale en blanc de marque, texte violet.
+- **Aucune section vide, aucune grille à moitié remplie** : les listes s'adaptent à leur nombre (ADR 0161).
+- **Lecture longue** (Transparence) : colonne de lecture et sommaire collant à droite sur ordinateur, section en cours marquée ; aucune moitié d'écran vide.
+
 ## Interdits
 
 - Verre dépoli permanent (`backdrop-filter` sur une surface au repos) ; un flou d'arrière-plan n'est admis que sous un dialogue.

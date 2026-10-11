@@ -4027,7 +4027,9 @@
       "howItWorks": "How it works",
       "transparency": "Transparency and fees",
       "projects": "Projects",
-      "methodology": "Impact methodology"
+      "methodology": "Impact methodology",
+      "join": "Join Pitchorium",
+      "joinShort": "Join"
     },
     "footer": {
       "label": "Footer",
@@ -4191,7 +4193,16 @@
       "coverageUnavailable": "The payment coverage could not be read for now.",
       "payoutCountries": "Payout countries",
       "methods": "Payment methods",
-      "providerLabel": "Provider {{index}}"
+      "providerLabel": "Provider {{index}}",
+      "contents": "On this page"
+    },
+    "previews": {
+      "funding": "Preview of the funding of a project on Pitchorium: amount collected, progress bar and milestones",
+      "project-page": "Preview of a project page on Pitchorium",
+      "suggestion": "Preview of people suggested on Pitchorium, each with the reason for the suggestion",
+      "conversation": "Preview of a conversation in the messages of Pitchorium",
+      "notification": "Preview of a notification that gathers the reactions to a publication",
+      "dashboard": "Preview of the engagement dashboard: amounts paid, projects supported and hours declared"
     }
   }
 }
