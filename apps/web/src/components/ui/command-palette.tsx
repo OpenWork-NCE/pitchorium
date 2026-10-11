@@ -5,6 +5,7 @@ import { Clock, CornerDownLeft, Search } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { Dialog as Primitive } from 'radix-ui';
 import { type ReactNode, useState } from 'react';
+import { fold, highlightParts } from '@/lib/search/highlight';
 import { Kbd } from './kbd';
 import { backdrop } from './overlay-classes';
 
@@ -20,6 +21,22 @@ export interface CommandAction {
   onSelect: () => void;
 }
 
+/** A result of the search, under the heading of its kind. */
+export interface CommandResult {
+  id: string;
+  title: string;
+  subtitle?: string | null;
+  /** A lucide icon element, or an avatar. */
+  icon?: ReactNode;
+  onSelect: () => void;
+}
+
+export interface CommandResultGroup {
+  id: string;
+  heading: string;
+  items: readonly CommandResult[];
+}
+
 interface CommandPaletteProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -27,15 +44,44 @@ interface CommandPaletteProps {
   actions: readonly CommandAction[];
   /** Last searches, most recent first. */
   recent: readonly string[];
-  /** A search typed and confirmed: recorded, then run (search results arrive with the search). */
+  /** A search typed and confirmed (Enter on « Rechercher »), or a recent one chosen again. */
   onSearch: (query: string) => void;
   onClearRecent: () => void;
+  /** The text typed, for a search run by the caller (results). */
+  onQueryChange?: (query: string) => void;
+  /**
+   * Results found by the caller for the text typed, grouped by kind: the caller searches (the api
+   * tolerates typos), the palette does not filter them again.
+   */
+  results?: readonly CommandResultGroup[];
+  /** Results are on their way: the list keeps its height and says it. */
+  busy?: boolean;
+}
+
+/** Whether a quick action answers the text typed: its label or a keyword, accents ignored. */
+function matches(action: CommandAction, query: string): boolean {
+  const folded = fold(query);
+  return [action.label, ...(action.keywords ?? [])].some((text) => fold(text).includes(folded));
+}
+
+/** The words of a title that match the text typed, in bold. */
+function Highlighted({ text, query }: { text: string; query: string }) {
+  return highlightParts(text, query).map((part, index) =>
+    part.match ? (
+      <mark key={index} className="bg-transparent font-semibold text-foreground">
+        {part.text}
+      </mark>
+    ) : (
+      <span key={index}>{part.text}</span>
+    ),
+  );
 }
 
 /**
- * Shell of the global search, opened by Ctrl K or Cmd K (cmdk in a Radix Dialog): quick actions
- * and recent searches; the results of the search itself come with the search pages. Arrows move,
- * Enter runs, Escape closes and gives the focus back.
+ * The global search, opened by Ctrl K or Cmd K (cmdk in a Radix Dialog): the results the caller
+ * found for the text typed, grouped by kind with their matching words in bold, then « Rechercher »
+ * for the full page, the quick actions, and the recent searches. Arrows move, Enter runs, Escape
+ * closes and gives the focus back. The list keeps its height while results arrive (no jump).
  */
 export function CommandPalette({
   open,
@@ -44,15 +90,25 @@ export function CommandPalette({
   recent,
   onSearch,
   onClearRecent,
+  onQueryChange,
+  results,
+  busy = false,
 }: CommandPaletteProps) {
   const t = useTranslations('web.ui.command');
   const [query, setQuery] = useState('');
   const trimmed = query.trim();
+  const searching = results !== undefined;
+  const shownActions = searching && trimmed ? actions.filter((a) => matches(a, trimmed)) : actions;
+
+  function change(next: string) {
+    setQuery(next);
+    onQueryChange?.(next);
+  }
 
   function run(action: () => void) {
     action();
     onOpenChange(false);
-    setQuery('');
+    change('');
   }
 
   return (
@@ -60,7 +116,7 @@ export function CommandPalette({
       open={open}
       onOpenChange={(next) => {
         onOpenChange(next);
-        if (!next) setQuery('');
+        if (!next) change('');
       }}
     >
       <Primitive.Portal>
@@ -70,21 +126,52 @@ export function CommandPalette({
           className="fixed inset-x-3 top-[12vh] z-(--z-modal) mx-auto max-w-xl overflow-hidden rounded-2xl border border-border bg-surface-elevated text-foreground shadow-lg outline-none data-[state=open]:animate-[menu-in_var(--duration-page)_var(--ease-enter)]"
         >
           <Primitive.Title className="sr-only">{t('title')}</Primitive.Title>
-          <Command loop label={t('title')}>
+          <Command loop label={t('title')} shouldFilter={!searching}>
             <div className="flex items-center gap-3 border-b border-border px-4">
               <Search aria-hidden className="size-5 shrink-0 text-muted" />
               <Command.Input
                 value={query}
-                onValueChange={setQuery}
+                onValueChange={change}
                 placeholder={t('placeholder')}
                 className="h-14 w-full bg-transparent text-base outline-none placeholder:text-muted"
               />
               <Kbd className="max-sm:hidden">{t('escape')}</Kbd>
             </div>
-            <Command.List className="max-h-[min(60vh,26rem)] overflow-y-auto p-2">
-              <Command.Empty className="px-3 py-8 text-center text-sm text-muted">
-                {t('empty')}
-              </Command.Empty>
+            <Command.List
+              aria-busy={busy}
+              className="h-[min(60vh,26rem)] overflow-y-auto overscroll-contain p-2"
+            >
+              {searching ? null : (
+                <Command.Empty className="px-3 py-8 text-center text-sm text-muted">
+                  {t('empty')}
+                </Command.Empty>
+              )}
+              {searching && trimmed
+                ? results.map((group) => (
+                    <Command.Group key={group.id} heading={group.heading} className={GROUP}>
+                      {group.items.map((item) => (
+                        <Command.Item
+                          key={item.id}
+                          value={item.id}
+                          onSelect={() => run(item.onSelect)}
+                          className={ITEM}
+                        >
+                          <span aria-hidden className="shrink-0 text-muted [&_svg]:size-4">
+                            {item.icon}
+                          </span>
+                          <span className="grid min-w-0 flex-1">
+                            <span className="truncate">
+                              <Highlighted text={item.title} query={trimmed} />
+                            </span>
+                            {item.subtitle ? (
+                              <span className="truncate text-xs text-muted">{item.subtitle}</span>
+                            ) : null}
+                          </span>
+                        </Command.Item>
+                      ))}
+                    </Command.Group>
+                  ))
+                : null}
               {trimmed ? (
                 <Command.Group heading={t('searchGroup')} className={GROUP}>
                   <Command.Item
@@ -96,12 +183,14 @@ export function CommandPalette({
                     <span className="flex-1 truncate">{t('searchFor', { query: trimmed })}</span>
                     <CornerDownLeft aria-hidden className="size-4 text-muted" />
                   </Command.Item>
-                  <p className="px-3 pt-1 pb-2 text-xs text-muted">{t('resultsLater')}</p>
+                  {searching && !busy && results.length === 0 ? (
+                    <p className="px-3 pt-1 pb-2 text-xs text-muted">{t('noResults')}</p>
+                  ) : null}
                 </Command.Group>
               ) : null}
-              {actions.length > 0 ? (
+              {shownActions.length > 0 ? (
                 <Command.Group heading={t('actions')} className={GROUP}>
-                  {actions.map((action) => (
+                  {shownActions.map((action) => (
                     <Command.Item
                       key={action.id}
                       value={`${action.label} ${action.keywords?.join(' ') ?? ''}`}

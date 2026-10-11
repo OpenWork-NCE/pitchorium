@@ -2,38 +2,38 @@
 
 import { Search } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import dynamic from 'next/dynamic';
-import { useEffect, useState } from 'react';
-import { type CommandAction, IconButton, Kbd, useIsApple, useShortcut } from '@/components/ui';
+import { type ComponentType, useEffect, useState } from 'react';
+import { IconButton, Kbd, useIsApple, useShortcut } from '@/components/ui';
 import { preloadWhenIdle } from '@/lib/preload';
 import { displayKeys } from '@/lib/shortcuts/keys';
-import { useRecentSearches } from './recent-searches';
 
-/** The palette and cmdk stay out of the first load; they arrive when the page is idle (ADR 0094). */
-const loadPalette = () => import('@/components/ui/command-palette');
-const CommandPalette = dynamic(() => loadPalette().then((module) => module.CommandPalette), {
-  ssr: false,
-});
+export interface PaletteProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
 
 interface GlobalSearchProps {
-  /** Quick actions of the shell (publish, create a project, go to a section), built on use. */
-  actions: () => readonly CommandAction[];
+  /**
+   * The palette the shell composes (search and its quick actions), a component loaded on demand:
+   * mounted at the first opening, its code fetched when the page is idle (ADR 0094).
+   */
+  palette: ComponentType<PaletteProps>;
+  /** Fetches the code of the palette ahead of its first opening. */
+  preload: () => Promise<unknown>;
   /** `field`: the search field of a wide header; `icon`: a button on a narrow one. */
   display: 'field' | 'icon';
 }
 
 /**
  * Global search of the member space (§6.1, always visible): a field in the header, opened by
- * Ctrl K or Cmd K, that runs the command palette. The results of the search arrive with the
- * search pages (PROMPT FRONT 7); recent searches and quick actions work today.
+ * Ctrl K or Cmd K, that runs the command palette. Only this trigger is in the first load.
  */
-export function GlobalSearch({ actions, display }: GlobalSearchProps) {
+export function GlobalSearch({ palette: Palette, preload, display }: GlobalSearchProps) {
   const t = useTranslations('web.search');
   const apple = useIsApple();
   const [open, setOpen] = useState(false);
   const [used, setUsed] = useState(false);
-  const { recent, remember, clear } = useRecentSearches();
-  useEffect(() => preloadWhenIdle(loadPalette), []);
+  useEffect(() => preloadWhenIdle(preload), [preload]);
   const openPalette = () => {
     setUsed(true);
     setOpen(true);
@@ -70,16 +70,7 @@ export function GlobalSearch({ actions, display }: GlobalSearchProps) {
   return (
     <>
       {trigger}
-      {used ? (
-        <CommandPalette
-          open={open}
-          onOpenChange={setOpen}
-          actions={actions()}
-          recent={recent}
-          onSearch={remember}
-          onClearRecent={clear}
-        />
-      ) : null}
+      {used ? <Palette open={open} onOpenChange={setOpen} /> : null}
     </>
   );
 }

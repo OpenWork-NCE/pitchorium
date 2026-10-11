@@ -2,6 +2,7 @@
 
 import type { CountersDtoOutput } from '@pitchorium/api-client';
 import { useTranslations } from 'next-intl';
+import dynamic from 'next/dynamic';
 import { BrandSymbol } from '@/components/brand';
 import * as routes from '@/config/paths';
 import { GlobalSearch } from '@/features/discovery';
@@ -11,7 +12,12 @@ import { Link } from '@/i18n/navigation';
 import { ContextualAction } from './contextual-action';
 import { MemberNav, MobileSectionLinks } from './member-nav';
 import { MobileMenu } from './mobile-menu';
-import { useQuickActions } from './quick-actions';
+
+/** The palette, its search and its quick actions: fetched when the page is idle, mounted on use. */
+const loadPalette = () => import('./member-palette');
+const MemberPalette = dynamic(() => loadPalette().then((module) => module.MemberPalette), {
+  ssr: false,
+});
 
 /**
  * Header of the member space (§6.1): no bottom tab bar, even on a phone (§6.2). Wide: the logo,
@@ -23,7 +29,6 @@ export function MemberHeader({ initialCounters }: { initialCounters: CountersDto
   const t = useTranslations('web.nav');
   const a11y = useTranslations('web.a11y');
   const { data: counters } = useCounters(initialCounters);
-  const actions = useQuickActions();
 
   return (
     <header className="sticky top-0 z-(--z-header) border-b border-border bg-background">
@@ -36,10 +41,10 @@ export function MemberHeader({ initialCounters }: { initialCounters: CountersDto
           <BrandSymbol />
         </Link>
         <div className="min-w-0 flex-1 max-sm:hidden lg:max-w-56 xl:max-w-sm">
-          <GlobalSearch actions={actions} display="field" />
+          <GlobalSearch palette={MemberPalette} preload={loadPalette} display="field" />
         </div>
         <div className="ml-auto flex items-center sm:hidden">
-          <GlobalSearch actions={actions} display="icon" />
+          <GlobalSearch palette={MemberPalette} preload={loadPalette} display="icon" />
         </div>
         <MobileSectionLinks counters={counters} />
         <div className="hidden h-full items-center gap-4 lg:ml-auto lg:flex">

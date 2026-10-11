@@ -254,10 +254,10 @@
       "empty": "No action matches.",
       "searchGroup": "Search",
       "searchFor": "Search for “{{query}}”",
-      "resultsLater": "Search results are coming soon.",
       "actions": "Quick actions",
       "recent": "Recent searches",
-      "clearRecent": "Clear recent searches"
+      "clearRecent": "Clear recent searches",
+      "noResults": "No direct result: the results page searches more broadly."
     },
     "shortcuts": {
       "title": "Keyboard shortcuts",
@@ -448,7 +448,64 @@
   "search": {
     "placeholder": "Search Pitchorium",
     "shortcut": "Open the search",
-    "group": "Search"
+    "group": "Search",
+    "kinds": {
+      "person": "People",
+      "organization": "Organizations",
+      "project": "Projects",
+      "event": "Events",
+      "mission": "Missions"
+    },
+    "page": {
+      "title": "Search",
+      "titleFor": "Results for “{{query}}”",
+      "description": "Search for people, organizations, projects, events and missions on Pitchorium.",
+      "lede": "People, organizations, projects, events and missions, with typos and accents taken into account.",
+      "ledeVisitor": "You are searching what is public. Sign in to also see what members share with each other.",
+      "formLabel": "Search",
+      "query": "Search",
+      "placeholder": "A person, a project, a sector, a city…",
+      "submit": "Search",
+      "tabs": "Kinds of results",
+      "allKinds": "All",
+      "filters": "Filters",
+      "any": "Any",
+      "country": "Country",
+      "sector": "Sector",
+      "language": "Language",
+      "status": "Status",
+      "impact": "Minimum impact",
+      "impactAtLeast": "{{score}} and above",
+      "format": "Kind of event",
+      "when": "Date",
+      "whenOptions": {
+        "upcoming": "Upcoming",
+        "all": "Upcoming and past"
+      },
+      "direction": "Direction",
+      "missionKind": "Field",
+      "mode": "Mode",
+      "start": "Type a name, a word or a place, or choose a kind to browse.",
+      "shown": {
+        "one": "{{count}} result shown",
+        "other": "{{count}} results shown"
+      },
+      "empty": "No results for “{{query}}”",
+      "emptyFiltered": "No results with these filters",
+      "emptyBody": "Check the spelling, try a shorter word or remove a filter.",
+      "broader": "Search without the filters",
+      "broaderQuery": "Search “{{query}}”",
+      "elsewhere": "Or browse",
+      "links": {
+        "discover": "Discover",
+        "projects": "Projects",
+        "events": "Events",
+        "missions": "Missions"
+      },
+      "error": "The search could not be completed",
+      "errorBody": "Try again in a moment.",
+      "moreError": "The next results could not be loaded."
+    }
   },
   "actions": {
     "goTo": "Go to: {{section}}",
@@ -2389,6 +2446,16 @@
       "dismissName": "Not interested in {{name}}",
       "dismissed": "Suggestion hidden.",
       "undo": "Undo"
+    },
+    "cards": {
+      "kinds": {
+        "person": "Person",
+        "organization": "Organization",
+        "project": "Project",
+        "event": "Event",
+        "mission": "Mission"
+      },
+      "mission": "{{kind}} · {{mode}}"
     }
   },
   "media": {
@@ -3443,5 +3510,57 @@
     "invalidBody": "Your mailbox may have cut it. Your preferences can still be set from your account.",
     "failedTitle": "The unsubscribe did not go through",
     "failedBody": "Try again in a moment, or set your notifications from your account."
+  },
+  "discover": {
+    "title": "Discover",
+    "description": "Recent projects, campaigns ending soon, upcoming events and open missions on Pitchorium.",
+    "lede": "What is happening on Pitchorium and what fits you, with the reason for each suggestion.",
+    "ledeVisitor": "The public projects, events and missions of the network between Africa, the Caribbean and the diaspora.",
+    "seeAll": "See all",
+    "error": "Discover could not be loaded",
+    "errorBody": "Try again in a moment.",
+    "sections": {
+      "recent_projects": {
+        "title": "Recent projects",
+        "description": "The latest published campaigns.",
+        "empty": "No published project yet",
+        "emptyBody": "Projects appear here as soon as they are published."
+      },
+      "ending_soon_projects": {
+        "title": "Ending soon",
+        "description": "Campaigns that end soon.",
+        "empty": "No campaign ends soon",
+        "emptyBody": "Funding campaigns nearing their end appear here."
+      },
+      "suggested_profiles": {
+        "title": "Suggested profiles",
+        "description": "People relevant to you, with the reason.",
+        "empty": "No suggestion yet",
+        "emptyBody": "Complete your profile (needs, hats, sectors) to receive suggestions."
+      },
+      "editorial": {
+        "title": "Team picks",
+        "description": "Projects highlighted by the Pitchorium team.",
+        "empty": "No pick right now",
+        "emptyBody": "The team regularly highlights projects."
+      },
+      "upcoming_events": {
+        "title": "Upcoming events",
+        "description": "Online, in-person or hybrid gatherings.",
+        "empty": "No upcoming event",
+        "emptyBody": "Published events appear here until they start."
+      },
+      "open_missions": {
+        "title": "Open missions",
+        "description": "Voluntary mentoring and expertise, offered or requested.",
+        "empty": "No open mission",
+        "emptyBody": "Skills sponsorship offers and requests appear here."
+      }
+    },
+    "emptyActions": {
+      "projects": "See the showcase",
+      "events": "See the events",
+      "missions": "See the missions"
+    }
   }
 }

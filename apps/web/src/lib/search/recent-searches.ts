@@ -36,9 +36,19 @@ function write(list: readonly string[]): void {
   for (const listener of listeners) listener();
 }
 
+/** Forgets the recent searches of this browser: at the sign-out, like the other drafts. */
+export function clearRecentSearches(): void {
+  try {
+    localStorage.removeItem(KEY);
+  } catch {
+    // Nothing kept.
+  }
+  for (const listener of listeners) listener();
+}
+
 /**
  * Last searches of this browser, most recent first: a convenience kept in local storage, never
- * sent anywhere (the search itself arrives with the search pages).
+ * sent anywhere; forgotten at the sign-out.
  */
 export function useRecentSearches(): {
   recent: readonly string[];

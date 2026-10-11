@@ -254,10 +254,10 @@
       "empty": "Aucune action ne correspond.",
       "searchGroup": "Recherche",
       "searchFor": "Rechercher « {{query}} »",
-      "resultsLater": "Les résultats de la recherche arrivent bientôt.",
       "actions": "Actions rapides",
       "recent": "Recherches récentes",
-      "clearRecent": "Effacer les recherches récentes"
+      "clearRecent": "Effacer les recherches récentes",
+      "noResults": "Aucun résultat direct : la page de résultats cherche plus largement."
     },
     "shortcuts": {
       "title": "Raccourcis clavier",
@@ -448,7 +448,64 @@
   "search": {
     "placeholder": "Rechercher sur Pitchorium",
     "shortcut": "Ouvrir la recherche",
-    "group": "Recherche"
+    "group": "Recherche",
+    "kinds": {
+      "person": "Personnes",
+      "organization": "Organisations",
+      "project": "Projets",
+      "event": "Événements",
+      "mission": "Missions"
+    },
+    "page": {
+      "title": "Recherche",
+      "titleFor": "Résultats pour « {{query}} »",
+      "description": "Cherchez des personnes, des organisations, des projets, des événements et des missions sur Pitchorium.",
+      "lede": "Personnes, organisations, projets, événements et missions, avec les fautes de frappe et les accents pris en compte.",
+      "ledeVisitor": "Vous cherchez parmi ce qui est public. Connectez-vous pour voir aussi ce que les membres partagent entre eux.",
+      "formLabel": "Recherche",
+      "query": "Rechercher",
+      "placeholder": "Une personne, un projet, un secteur, une ville…",
+      "submit": "Rechercher",
+      "tabs": "Types de résultats",
+      "allKinds": "Tout",
+      "filters": "Filtres",
+      "any": "Tous",
+      "country": "Pays",
+      "sector": "Secteur",
+      "language": "Langue",
+      "status": "État",
+      "impact": "Impact minimum",
+      "impactAtLeast": "{{score}} et plus",
+      "format": "Type d’événement",
+      "when": "Date",
+      "whenOptions": {
+        "upcoming": "À venir",
+        "all": "À venir et passés"
+      },
+      "direction": "Sens",
+      "missionKind": "Domaine",
+      "mode": "Mode",
+      "start": "Saisissez un nom, un mot ou un lieu, ou choisissez un type pour parcourir.",
+      "shown": {
+        "one": "{{count}} résultat affiché",
+        "other": "{{count}} résultats affichés"
+      },
+      "empty": "Aucun résultat pour « {{query}} »",
+      "emptyFiltered": "Aucun résultat avec ces filtres",
+      "emptyBody": "Vérifiez l’orthographe, essayez un mot plus court ou retirez un filtre.",
+      "broader": "Chercher sans les filtres",
+      "broaderQuery": "Chercher « {{query}} »",
+      "elsewhere": "Ou parcourez",
+      "links": {
+        "discover": "Découvrir",
+        "projects": "Projets",
+        "events": "Événements",
+        "missions": "Missions"
+      },
+      "error": "La recherche n’a pas pu aboutir",
+      "errorBody": "Réessayez dans un instant.",
+      "moreError": "Les résultats suivants n’ont pas pu être chargés."
+    }
   },
   "actions": {
     "goTo": "Aller à : {{section}}",
@@ -2389,6 +2446,16 @@
       "dismissName": "Pas intéressé par {{name}}",
       "dismissed": "Suggestion masquée.",
       "undo": "Annuler"
+    },
+    "cards": {
+      "kinds": {
+        "person": "Personne",
+        "organization": "Organisation",
+        "project": "Projet",
+        "event": "Événement",
+        "mission": "Mission"
+      },
+      "mission": "{{kind}} · {{mode}}"
     }
   },
   "media": {
@@ -3443,5 +3510,57 @@
     "invalidBody": "Il a peut-être été coupé par votre messagerie. Vos préférences restent réglables depuis votre compte.",
     "failedTitle": "La désinscription n’a pas abouti",
     "failedBody": "Réessayez dans un instant, ou réglez vos notifications depuis votre compte."
+  },
+  "discover": {
+    "title": "Découvrir",
+    "description": "Projets récents, campagnes qui se terminent, événements à venir et missions ouvertes de Pitchorium.",
+    "lede": "Ce qui bouge sur Pitchorium et ce qui vous correspond, avec la raison de chaque suggestion.",
+    "ledeVisitor": "Les projets, événements et missions publics du réseau entre l’Afrique, les Caraïbes et la diaspora.",
+    "seeAll": "Tout voir",
+    "error": "Découvrir n’a pas pu être chargé",
+    "errorBody": "Réessayez dans un instant.",
+    "sections": {
+      "recent_projects": {
+        "title": "Projets récents",
+        "description": "Les dernières campagnes publiées.",
+        "empty": "Aucun projet publié pour l’instant",
+        "emptyBody": "Les projets apparaissent ici dès leur publication."
+      },
+      "ending_soon_projects": {
+        "title": "Fin de campagne proche",
+        "description": "Les campagnes qui se terminent bientôt.",
+        "empty": "Aucune campagne ne se termine bientôt",
+        "emptyBody": "Les campagnes en financement qui approchent de leur fin apparaissent ici."
+      },
+      "suggested_profiles": {
+        "title": "Profils suggérés",
+        "description": "Des personnes pertinentes pour vous, avec la raison.",
+        "empty": "Aucune suggestion pour l’instant",
+        "emptyBody": "Complétez votre profil (besoins, casquettes, secteurs) pour recevoir des suggestions."
+      },
+      "editorial": {
+        "title": "Sélection de l’équipe",
+        "description": "Les projets mis en avant par l’équipe de Pitchorium.",
+        "empty": "Aucune sélection en ce moment",
+        "emptyBody": "L’équipe met régulièrement des projets en avant."
+      },
+      "upcoming_events": {
+        "title": "Événements à venir",
+        "description": "Rencontres en ligne, sur place ou hybrides.",
+        "empty": "Aucun événement à venir",
+        "emptyBody": "Les événements publiés apparaissent ici jusqu’à leur début."
+      },
+      "open_missions": {
+        "title": "Missions ouvertes",
+        "description": "Mentorat et expertise bénévoles, offerts ou demandés.",
+        "empty": "Aucune mission ouverte",
+        "emptyBody": "Les offres et les demandes de mécénat de compétences apparaissent ici."
+      }
+    },
+    "emptyActions": {
+      "projects": "Voir la vitrine",
+      "events": "Voir les événements",
+      "missions": "Voir les missions"
+    }
   }
 }

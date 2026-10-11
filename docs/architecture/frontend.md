@@ -114,6 +114,11 @@ sequenceDiagram
 - Messages du navigateur : groupes `messaging`, `notifications` et `unsubscribe` de `CLIENT_MESSAGES`, posés par les pages (`ScopedMessages`) ; les entrées de la messagerie sont dans le groupe `member`.
 - Budgets (`check:bundles`, kio Brotli) : conversation 223,6, liste 209,6, premier message 212,9, notifications 212,9, introductions 201,1, paramètres 210,8 et 211,5, désinscription (groupe `(auth)`) sous son budget ; filtres en `FilterButtons` (sans Radix ToggleGroup), composeur, bannière de demande, pièces jointes, menus, visionneuse et virtualiseur hors du premier chargement. Le fil passe de 224,3 à 225,8 (constantes des adresses et client de l'api), 9,7 % de marge.
 
+## Recherche et découverte (PROMPT FRONT 7)
+
+- Pages (`(public)`, une adresse pour le visiteur et le membre) : `/search` (requête, type et filtres dans l'adresse, `noindex` dès qu'une requête est posée), `/discover` et `/discover/{section}` (sections de l'api, première page par le serveur, suite à la demande).
+- Feature `discovery` : `SearchPalette` (autocomplétion, groupes par type, surlignage `lib/search/highlight.ts`), `GlobalSearch` (déclencheur et raccourci seuls au premier chargement ; la palette composée par la coquille, `MemberPalette`, chargée à l'inactivité avec les actions rapides et leurs icônes), `SearchBrowser`, `SearchResults`, `ResultCard`, `DiscoverPage` ; règles d'adresse pures et testées (`lib/search-query.ts`) ; valeurs des contrats recopiées (`lib/kinds.ts`). Recherches récentes : `lib/search/recent-searches.ts`, effacées par `useSignOut`.
+
 ## Fournisseurs
 
 Chaque groupe ne charge que ce qu'il utilise (ADR 0094) :

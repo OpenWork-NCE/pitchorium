@@ -57,6 +57,23 @@ const PROJECT_PAGE_MESSAGES = [
   'reference.sectorsShort',
 ] as const;
 
+/**
+ * The search, « Découvrir », the events and the missions (PROMPT FRONT 7): what their client parts
+ * read for a visitor as for a member (filters, cards of the next pages, the palette).
+ */
+const DISCOVERY_PAGE_MESSAGES = [
+  'web.search',
+  'web.discovery.cards',
+  'reference.projectStatuses',
+  'reference.eventFormats',
+  'reference.missionDirections',
+  'reference.missionModes',
+  'reference.missionFormats',
+  'reference.timeEntryKinds',
+  'reference.sectors',
+  'reference.sectorsShort',
+] as const;
+
 /** The feed (publications, suggestions with their reasons, completion of the profile). */
 const FEED_MESSAGES = [
   'web.feed',
@@ -151,6 +168,8 @@ const MEMBER_MESSAGES = [
   'web.engagement',
   'reference.timeEntryKinds',
   'reference.timeEntryStatuses',
+  // The search, « Découvrir », the events and the missions (PROMPT FRONT 7).
+  ...DISCOVERY_PAGE_MESSAGES,
   // The entries of the messaging (PROMPT FRONT 6) and their dialogs.
   'web.messagingEntry',
   'web.messaging.share',
@@ -176,6 +195,7 @@ export const CLIENT_MESSAGES = {
     'errors.RATE_LIMITED',
     'errors.NETWORK_LIST_HIDDEN',
     ...PROJECT_PAGE_MESSAGES,
+    ...DISCOVERY_PAGE_MESSAGES,
   ],
   auth: [
     ...DOCUMENT_MESSAGES,

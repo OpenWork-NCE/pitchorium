@@ -12,7 +12,12 @@ export { Callout } from './callout';
 export { Card } from './card';
 export { Checkbox } from './checkbox';
 export { Combobox, type ComboboxOption } from './combobox';
-export { type CommandAction, CommandPalette } from './command-palette';
+export {
+  type CommandAction,
+  CommandPalette,
+  type CommandResult,
+  type CommandResultGroup,
+} from './command-palette';
 export { CopyButton } from './copy-button';
 export { Count } from './count';
 export { CountBadge } from './count-badge';

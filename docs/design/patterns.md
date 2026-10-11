@@ -61,6 +61,12 @@ Comment assembler les composants (`components.md`) pour les situations récurren
 - Un secteur a un libellé court (`reference.sectorsShort`, « Énergie ») dans les puces, les cartes et les phrases de suggestion, et son libellé complet (`reference.sectors`) en infobulle, pour les lecteurs d'écran et sur les pages de détail. Libellés courts provisoires (question 110).
 - Une liste au milieu d'une phrase passe par `formatList` (`lib/format/list.ts`, `Intl.ListFormat`) : conjonction de la langue, libellés en minuscules (« photo et photo de couverture »), sigles et noms à capitale intérieure gardés.
 
+## Recherche et découverte (§10.6, §11.4, ADR 0150)
+
+- Palette (Ctrl K, Cmd K) : résultats de l'api regroupés par type, mots trouvés en gras, flèches et Entrée, « Rechercher « … » » vers la page de résultats, actions rapides, recherches récentes de l'appareil (effacées à la déconnexion) ; la liste garde sa hauteur pendant l'attente.
+- `/search` : champ, onglets par type (indicateur partagé), filtres de l'onglet (pays, secteur, langue ; état et impact pour les projets ; type et date pour les événements ; sens, domaine et mode pour les missions), tout dans l'adresse ; cartes `ResultCard` en grille ; sans résultat, une recherche plus large et des liens vers Découvrir.
+- `/discover` : une section par grille large avec « Tout voir » vers sa page paginée et son propre état vide ; profils suggérés avec la phrase de raison, « Se connecter » et « Pas intéressé » (la carte quitte la grille, le toast l'annule).
+
 ## Fil d'actualité (§10.3, ADR 0032, 0117, 0121)
 
 - Pas de grand titre visible au-dessus du fil : un `h1` masqué visuellement (« Accueil ») ; la place est prise par « Commencer une publication », qui ouvre le composeur (aussi depuis « Publier » du bandeau, `/feed?compose=1`).

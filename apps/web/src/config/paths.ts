@@ -90,6 +90,26 @@ export const createOrganization = '/organizations/new';
 /** An invitation to an organisation received by email (`/invitations/<token>`). */
 export const invitation = (token: string) => `/invitations/${encodeURIComponent(token)}`;
 export const event = (slug: string) => `/events/${encodeURIComponent(slug)}`;
+/** The events, upcoming and past, public and indexable (§14). */
+export const events = '/events';
+/** Creation of an event (`new` is a reserved slug). */
+export const createEvent = '/events/new';
+/** Edition of an event by its organizers. */
+export const eventEdit = (slug: string) => `/events/${encodeURIComponent(slug)}/edit`;
+/** Expertise missions (§6.3, §14): offers and requests, voluntary skills sponsorship. */
+export const missions = '/missions';
+/** A mission, by its identifier (it has no slug). */
+export const mission = (id: string) => `/missions/${encodeURIComponent(id)}`;
+/** Creation of a mission: an offer (`?direction=offer`) or a request (`?direction=request`). */
+export const createMission = '/missions/new';
+/** The results of the global search (§10.6): query, kind and filters in the address. */
+export const search = '/search';
+/** « Découvrir » (§10.6): recent projects, ending soon, suggested profiles, events, missions. */
+export const discover = '/discover';
+/** A section of « Découvrir » on its own page, paginated. */
+export const discoverSection = (section: string) => `/discover/${encodeURIComponent(section)}`;
+/** The personal calendar feed of the member (ICS), in the settings. */
+export const settingsCalendar = '/settings/calendar';
 /** A publication (§10.3): public and indexable when it is public, a member view otherwise. */
 export const post = (id: string) => `/posts/${encodeURIComponent(id)}`;
 /** The publications the member saved. */
