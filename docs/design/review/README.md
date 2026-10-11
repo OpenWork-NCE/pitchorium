@@ -28,6 +28,10 @@ Fichiers `<composition>-<format>-<thème>.png` : format `desktop` (1280x800) ou 
 - Messagerie et notifications (PROMPT FRONT 6, `e2e/review/messaging.review.ts`, contenus de `stub-messaging.mjs`, moments fixés à des heures du jour ou à des heures avant la capture) : `messages-list` (liste, filtres, introductions), `messages-thread` (longue conversation : publication partagée, PDF, « Envoyé »), `messages-group` (conversation née d'une introduction, en sourdine), `messages-request` (demande reçue), `messages-new-request` (premier message hors réseau), `introductions`, `notifications` (regroupement, demande de connexion et introduction à régler sur place), `settings-messaging`, `settings-notifications` (rythme, grille, types verrouillés), `unsubscribe` (page du lien d'un email, sans session).
 - `settings-security` : paramètres de sécurité, mot de passe (fermeture des autres sessions annoncée), double authentification, sessions actives avec cet appareil marqué et révocation.
 
+## Avant et après le PROMPT FRONT 8A-R
+
+`before-8a-r/` garde, sous leurs noms, les captures des écrans révisés telles qu'elles étaient avant la révision (site public, vitrine, page projet, récapitulatif d'une contribution, messagerie, notifications, introductions, Découvrir, recherche, événements, missions, invitations, tableau de bord) ; les captures du dossier sont les nouvelles. Ce dossier n'est pas comparé par `review:check`.
+
 ## Régénérer et vérifier
 
 ```sh
