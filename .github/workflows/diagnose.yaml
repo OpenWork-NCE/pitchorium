@@ -2,14 +2,18 @@ name: Diagnose
 
 # A failure that only happens in CI, reproduced on the runner of the CI (docs/architecture/testing.md,
 # ADR 0142): one journey against the real api, in one engine, repeated (30 times by default), every
-# failure kept with its trace, video and the logs of the stack (the stub suite too, input suite), after a report of the environment
-# of the runner to compare with a workstation. Started by hand: gh workflow run diagnose.yaml.
+# failure kept with its trace, video and the logs of the stack (the stub suite too, input suite),
+# after a report of the environment of the runner to compare with a workstation. A whole suite runs
+# in a loop (loops, stopped at its first failure) on several runners at once (jobs), to catch a leak
+# of state between journeys. Suite lighthouse measures a series of Lighthouse runs of one page for
+# each commit given, on one runner (scripts/ci/lighthouse-series.sh). Started by hand:
+# gh workflow run diagnose.yaml.
 
 on:
   workflow_dispatch:
     inputs:
       grep:
-        description: Title (or part) of the journey, a --grep of Playwright
+        description: Title (or part) of the journey, a --grep of Playwright (. for the whole suite)
         required: true
       browser:
         description: Engine
@@ -23,10 +27,24 @@ on:
         description: Turnstile of the stack (0 none, local the local stand-in, 1 Cloudflare test keys)
         default: '0'
       suite:
-        description: Suite of the journey (live against the real api, stub against the stub api)
+        description: Suite of the journey (live against the real api, stub against the stub api, lighthouse)
         type: choice
-        options: [live, stub]
+        options: [live, stub, lighthouse]
         default: live
+      loops:
+        description: Runs of the whole command in a row, stopped at the first failure
+        default: '1'
+      jobs:
+        description: Runners repeating the same diagnosis at once (1 to 5)
+        type: choice
+        options: ['1', '2', '3', '4', '5']
+        default: '1'
+      page:
+        description: Page measured by the lighthouse suite
+        default: /fr/feed
+      refs:
+        description: Commits measured by the lighthouse suite, separated by spaces (the run commit if empty)
+        default: ''
 
 permissions:
   contents: read
@@ -36,6 +54,7 @@ env:
 
 jobs:
   build:
+    if: inputs.suite != 'lighthouse'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7.0.1
@@ -45,14 +64,22 @@ jobs:
   repeat:
     needs: build
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [1, 2, 3, 4, 5]
     steps:
-      - uses: actions/checkout@v7.0.1
-      - uses: ./.github/actions/setup
-      - uses: actions/download-artifact@v8.0.2
+      - if: matrix.runner <= fromJSON(inputs.jobs)
+        uses: actions/checkout@v7.0.1
+      - if: matrix.runner <= fromJSON(inputs.jobs)
+        uses: ./.github/actions/setup
+      - if: matrix.runner <= fromJSON(inputs.jobs)
+        uses: actions/download-artifact@v8.0.2
         with:
           name: build
       - name: Environment of the runner
+        if: matrix.runner <= fromJSON(inputs.jobs)
         run: |
           echo "CPUs: $(nproc)"
           echo "Memory: $(free -m | awk '/Mem:/ {print $2}') MB"
@@ -61,43 +88,81 @@ jobs:
           echo "Ephemeral ports: $(cat /proc/sys/net/ipv4/ip_local_port_range)"
           echo "Fonts: $(fc-list 2>/dev/null | wc -l)"
           docker run --rm mcr.microsoft.com/playwright:v1.64.0-noble sh -c 'echo "Fonts in the Playwright image: $(fc-list | wc -l)"; nproc'
-      # The inputs reach the shell as variables, never interpolated into the script.
+      # The inputs reach the shell as variables, never interpolated into the script. Without the
+      # keys of Cloudflare, the journeys of an external service are left out, as at level 3.
       - name: The journey, repeated, without retry
+        if: matrix.runner <= fromJSON(inputs.jobs)
         run: |
           case "$REPEAT" in ''|*[!0-9]*) echo "repeat must be a number" >&2; exit 2;; esac
-          if [ "$SUITE" = stub ]; then
-            pnpm --filter @pitchorium/web test:e2e --project="$BROWSER" \
-              --grep "$GREP" --repeat-each="$REPEAT" --retries=0
-          else
-            pnpm --filter @pitchorium/web test:e2e:live --project="$BROWSER" \
-              --grep "$GREP" --repeat-each="$REPEAT" --retries=0
-          fi
+          case "$LOOPS" in ''|*[!0-9]*) echo "loops must be a number" >&2; exit 2;; esac
+          invert=()
+          [ "$LIVE_TURNSTILE" = 1 ] || invert=(--grep-invert @external)
+          for loop in $(seq 1 "$LOOPS"); do
+            echo "Loop $loop of $LOOPS"
+            if [ "$SUITE" = stub ]; then
+              pnpm --filter @pitchorium/web test:e2e --project="$BROWSER" \
+                --grep "$GREP" --repeat-each="$REPEAT" --retries=0
+            else
+              pnpm --filter @pitchorium/web test:e2e:live --project="$BROWSER" \
+                --grep "$GREP" "${invert[@]}" --repeat-each="$REPEAT" --retries=0
+            fi
+            echo "Loop $loop of $LOOPS passed"
+          done
         env:
           SUITE: ${{ inputs.suite }}
           E2E_SKIP_BUILD: '1'
           GREP: ${{ inputs.grep }}
           BROWSER: ${{ inputs.browser }}
           REPEAT: ${{ inputs.repeat }}
+          LOOPS: ${{ inputs.loops }}
           LIVE_SKIP_BUILD: '1'
           LIVE_TURNSTILE: ${{ inputs.turnstile }}
           LIVE_LOGS: ${{ runner.temp }}/live-logs
           PLAYWRIGHT_TRACE: retain-on-failure
           PLAYWRIGHT_VIDEO: retain-on-failure
-      - if: always()
+      - if: always() && matrix.runner <= fromJSON(inputs.jobs)
         run: >-
           node scripts/ci/playwright-summary.mjs apps/web/test-results/results.json
-          "Diagnosis: $GREP ($BROWSER, $REPEAT runs)"
+          "Diagnosis: $GREP ($BROWSER, $REPEAT runs, runner $RUNNER)"
         env:
           GREP: ${{ inputs.grep }}
           BROWSER: ${{ inputs.browser }}
           REPEAT: ${{ inputs.repeat }}
-      - if: always()
+          RUNNER: ${{ matrix.runner }}
+      - if: always() && matrix.runner <= fromJSON(inputs.jobs)
         uses: actions/upload-artifact@v7.0.2
         with:
-          name: diagnose-${{ inputs.browser }}-${{ github.run_attempt }}
+          name: diagnose-${{ inputs.browser }}-${{ github.run_attempt }}-${{ matrix.runner }}
           path: |
             apps/web/playwright-report
             apps/web/test-results
             ${{ runner.temp }}/live-logs
           include-hidden-files: true
+          if-no-files-found: ignore
+
+  lighthouse:
+    if: inputs.suite == 'lighthouse'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: ./.github/actions/setup
+      - name: Environment of the runner
+        run: |
+          echo "CPUs: $(nproc)"
+          echo "Memory: $(free -m | awk '/Mem:/ {print $2}') MB"
+      - name: Series of Lighthouse runs, one per commit
+        run: bash scripts/ci/lighthouse-series.sh "$PAGE" "$REPEAT" ${REFS:-$GITHUB_SHA}
+        env:
+          PAGE: ${{ inputs.page }}
+          REPEAT: ${{ inputs.repeat }}
+          REFS: ${{ inputs.refs }}
+          SERIES_OUT: ${{ runner.temp }}/series
+      - if: always()
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: diagnose-lighthouse-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/series
           if-no-files-found: ignore

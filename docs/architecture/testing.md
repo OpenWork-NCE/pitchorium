@@ -132,6 +132,8 @@ gh run download <id> -n diagnose-firefox-1
 - Comparer avec le poste : nombre de processeurs, fuseau (UTC sur le runner), polices, latence, ordre des tests (`--repeat-each` garde l'ordre du fichier), parallélisme (un worker), base partagée entre parcours.
 - Le garde de la console (`e2e/support/console-guard.ts`) ajoute à une erreur le nom, le message, le code et la pile des objets `Error` reçus : Firefox n'écrit que « Error » pour `console.error(error)`.
 - Une correction est prouvée par 30 passages consécutifs sur le runner, dans le moteur en cause.
+- Fuite d'état entre parcours : la suite entière (`-f grep=. -f repeat=1`) tourne en boucle (`loops`, arrêtée au premier échec, dont la trace est gardée) sur plusieurs runners à la fois (`jobs`, 5 au plus, un artefact par runner) ; sans Turnstile, les parcours `@external` sont écartés comme au niveau 3.
+- Lighthouse (`-f suite=lighthouse -f page=/fr/feed -f repeat=10 -f refs='<commit> <commit>'`) : `scripts/ci/lighthouse-series.sh` construit chaque commit dans son arbre de travail et mesure la page `repeat` fois avec son propre `lighthouserc.cjs`, sur le même runner, le processeur calibré une seule fois pour toutes les séries ; il affiche chaque Total Blocking Time, la médiane, le minimum, le maximum et l'écart interquartile (artefact `series.json`).
 
 ## Préchargement en 404 sous `next dev`
 
