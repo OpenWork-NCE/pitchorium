@@ -172,6 +172,9 @@ test.describe('organisations', () => {
     await page.getByRole('checkbox', { name: /Je certifie/ }).check();
     await page.getByRole('button', { name: 'Envoyer la demande' }).click();
     await expect(page.getByText('En cours d’examen', { exact: true })).toBeVisible();
+    // The request refreshes the page from the server: a dialog opened during that refresh never
+    // showed (1 run in 13 on the runner, diagnosis of 2026-10-12), so the journey lets it settle.
+    await page.waitForLoadState('networkidle');
 
     await page.getByRole('tab', { name: 'Page' }).click();
     await page.getByRole('button', { name: 'Supprimer l’organisation' }).click();
