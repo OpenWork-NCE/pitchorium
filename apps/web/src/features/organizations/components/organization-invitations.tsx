@@ -2,7 +2,6 @@
 
 import {
   getInvitationsControllerReceivedQueryKey,
-  getNotificationsControllerCountersQueryKey,
   invitationsControllerAcceptReceived,
   invitationsControllerDeclineReceived,
   useInvitationsControllerReceived,
@@ -29,6 +28,7 @@ import * as routes from '@/config/paths';
 import { useWithPrerequisites } from '@/features/access';
 import { Link, useRouter } from '@/i18n/navigation';
 import { useOrganizationProblem } from './manage/use-organization-problem';
+import { COUNTERS_QUERY_KEY } from '@/lib/query/keys';
 
 /**
  * The open invitations to an organisation sent to the verified email of the member (ADR 0149):
@@ -98,7 +98,7 @@ function InvitationCard({ invitation }: { invitation: ReceivedInvitation }) {
       }
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: getInvitationsControllerReceivedQueryKey() }),
-        queryClient.invalidateQueries({ queryKey: getNotificationsControllerCountersQueryKey() }),
+        queryClient.invalidateQueries({ queryKey: COUNTERS_QUERY_KEY }),
       ]);
     } catch (failure) {
       setError(problem(failure));
