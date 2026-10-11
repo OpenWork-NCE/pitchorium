@@ -240,6 +240,19 @@ export const invitationPreviewSchema = z.object({
   expiresAt: z.iso.datetime(),
 });
 
+/**
+ * An open invitation sent to the verified email of the signed-in member (question 129): answered
+ * from the application without the token of the email.
+ */
+export const receivedInvitationSchema = invitationPreviewSchema.extend({
+  id: uuidV7Schema,
+  createdAt: z.iso.datetime(),
+});
+
+export const receivedInvitationsSchema = z.object({ items: z.array(receivedInvitationSchema) });
+
+export const receivedInvitationParamsSchema = z.object({ invitationId: uuidV7Schema });
+
 export const verificationQueueQuerySchema = z.object({
   status: z.enum(['pending', 'approved', 'rejected']).default('pending'),
 });
@@ -288,4 +301,5 @@ export type VerificationQueue = z.infer<typeof verificationQueueSchema>;
 export type OwnVerificationRequest = z.infer<typeof ownVerificationRequestSchema>;
 export type OwnVerificationRequests = z.infer<typeof ownVerificationRequestsSchema>;
 export type InvitationPreview = z.infer<typeof invitationPreviewSchema>;
+export type ReceivedInvitation = z.infer<typeof receivedInvitationSchema>;
 export type VerificationDecisionRequest = z.infer<typeof verificationDecisionRequestSchema>;

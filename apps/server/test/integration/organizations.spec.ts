@@ -295,6 +295,68 @@ describe('organizations', () => {
     expect(await eventTypes(organization.id)).not.toContain('organizations.member.joined.v1');
   });
 
+  it('lists the open invitations of the verified email and answers them without the token', async () => {
+    const awa = await createMember(app, 'awa@teranga.org', { name: 'Awa Ndiaye' });
+    const organization = await createOrganization(awa);
+    await invite(awa, organization.id, 'kofi@example.com', 'admin');
+    await invite(awa, organization.id, 'ama@example.com');
+
+    const unverified = await createMember(app, 'kofi@example.com', {
+      name: 'Kofi Mensah',
+      verified: false,
+    });
+    expect(
+      (await unverified.agent.get('/v1/me/organization-invitations').expect(200)).body,
+    ).toEqual({ items: [] });
+    await query('UPDATE identity.users SET email_verified = true WHERE email = $1', [
+      'kofi@example.com',
+    ]);
+    const kofi = unverified;
+    const listed = await kofi.agent.get('/v1/me/organization-invitations').expect(200);
+    expect(listed.body.items).toEqual([
+      expect.objectContaining({
+        organization: expect.objectContaining({ slug: organization.slug, verified: false }),
+        role: 'admin',
+      }),
+    ]);
+    expect(JSON.stringify(listed.body)).not.toContain('kofi@example.com');
+    const kofiInvitation = (listed.body.items as { id: string }[])[0]?.id ?? '';
+
+    // Another member cannot answer an invitation sent to someone else, even by its identifier.
+    const ama = await createMember(app, 'ama@example.com', { name: 'Ama Owusu' });
+    const stolen = await ama.agent
+      .post(`/v1/me/organization-invitations/${kofiInvitation}/accept`)
+      .expect(410);
+    expect(stolen.body.code).toBe('ORGANIZATIONS_INVITATION_INVALID');
+
+    const joined = await kofi.agent
+      .post(`/v1/me/organization-invitations/${kofiInvitation}/accept`)
+      .expect(200);
+    expect(joined.body).toEqual(expect.objectContaining({ id: organization.id, role: 'admin' }));
+    expect(
+      (await kofi.agent.get('/v1/me/organization-invitations').expect(200)).body.items,
+    ).toEqual([]);
+    await kofi.agent.post(`/v1/me/organization-invitations/${kofiInvitation}/accept`).expect(410);
+
+    const amaInvitation =
+      (
+        (await ama.agent.get('/v1/me/organization-invitations').expect(200)).body.items as {
+          id: string;
+        }[]
+      )[0]?.id ?? '';
+    await ama.agent.post(`/v1/me/organization-invitations/${amaInvitation}/decline`).expect(204);
+    const invitations = await query<{ email: string; status: string; responded_by: string | null }>(
+      `SELECT email, status, responded_by FROM organizations.invitations
+       WHERE organization_id = $1 ORDER BY created_at`,
+      [organization.id],
+    );
+    expect(invitations).toEqual([
+      { email: 'kofi@example.com', status: 'accepted', responded_by: kofi.userId },
+      { email: 'ama@example.com', status: 'declined', responded_by: ama.userId },
+    ]);
+    expect(await eventTypes(organization.id)).toContain('organizations.member.joined.v1');
+  });
+
   it('rejects a verification request with a reason, then accepts a new request', async () => {
     const awa = await createMember(app, 'awa@teranga.org', { name: 'Awa Ndiaye' });
     const organization = await createOrganization(awa);

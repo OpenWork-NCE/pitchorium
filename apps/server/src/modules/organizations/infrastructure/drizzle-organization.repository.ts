@@ -343,6 +343,26 @@ export class DrizzleOrganizationRepository extends OrganizationRepository {
     return row?.value ?? 0;
   }
 
+  async openInvitationsTo(email: string, now: Date): Promise<InvitationRecord[]> {
+    const rows = await this.db
+      .select({ invitation: organizationsInvitations })
+      .from(organizationsInvitations)
+      .innerJoin(
+        organizationsOrganizations,
+        eq(organizationsOrganizations.id, organizationsInvitations.organizationId),
+      )
+      .where(
+        and(
+          eq(organizationsInvitations.email, email),
+          eq(organizationsInvitations.status, 'pending'),
+          gt(organizationsInvitations.expiresAt, now),
+          isNull(organizationsOrganizations.deletedAt),
+        ),
+      )
+      .orderBy(desc(organizationsInvitations.createdAt));
+    return rows.map((row) => toInvitation(row.invitation));
+  }
+
   async revokePendingInvitations(organizationId: string, email?: string): Promise<number> {
     const conditions = [
       eq(organizationsInvitations.organizationId, organizationId),

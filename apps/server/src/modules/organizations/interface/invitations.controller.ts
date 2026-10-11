@@ -11,6 +11,9 @@ import {
   type MyOrganization,
   organizationIdParamsSchema,
   organizationInvitationParamsSchema,
+  type ReceivedInvitation,
+  receivedInvitationParamsSchema,
+  receivedInvitationsSchema,
 } from '@pitchorium/contracts';
 import { createZodDto, ZodSerializerDto } from 'nestjs-zod';
 import { z } from 'zod';
@@ -29,10 +32,13 @@ class InvitationTokenDto extends createZodDto(invitationTokenRequestSchema) {}
 class MyOrganizationDto extends createZodDto(myOrganizationSchema) {}
 class OrganizationIdParamsDto extends createZodDto(organizationIdParamsSchema) {}
 class InvitationParamsDto extends createZodDto(organizationInvitationParamsSchema) {}
+class ReceivedInvitationsDto extends createZodDto(receivedInvitationsSchema) {}
+class ReceivedInvitationParamsDto extends createZodDto(receivedInvitationParamsSchema) {}
 
 /**
- * Invitations by email. The invitee answers with the token received by email, signed in with
- * an account whose verified email is the invited address.
+ * Invitations by email. The invitee answers with the token received by email, or from the list
+ * of their open invitations, signed in with an account whose verified email is the invited
+ * address.
  */
 @ApiTags('organizations')
 @Controller()
@@ -102,5 +108,42 @@ export class InvitationsController {
     @Body() body: InvitationTokenDto,
   ): Promise<void> {
     await this.invitations.decline(principal.userId, body.token);
+  }
+
+  /**
+   * Open invitations sent to the verified email of the member (question 129), answered from the
+   * application without the token of the email; an empty list while the email is not verified.
+   */
+  @Get('me/organization-invitations')
+  @RequireAction('organization.read')
+  @ZodSerializerDto(ReceivedInvitationsDto)
+  @ApiOkResponse({ type: ReceivedInvitationsDto.Output })
+  async received(
+    @CurrentPrincipal() principal: Principal,
+  ): Promise<{ items: ReceivedInvitation[] }> {
+    return { items: await this.invitations.received(principal.userId) };
+  }
+
+  @Post('me/organization-invitations/:invitationId/accept')
+  @RequireAction('organization.invitation.respond')
+  @HttpCode(HttpStatus.OK)
+  @ZodSerializerDto(MyOrganizationDto)
+  @ApiOkResponse({ type: MyOrganizationDto.Output })
+  acceptReceived(
+    @CurrentPrincipal() principal: Principal,
+    @Param() params: ReceivedInvitationParamsDto,
+  ): Promise<MyOrganization> {
+    return this.invitations.acceptReceived(principal.userId, params.invitationId);
+  }
+
+  @Post('me/organization-invitations/:invitationId/decline')
+  @RequireAction('organization.invitation.respond')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiNoContentResponse()
+  async declineReceived(
+    @CurrentPrincipal() principal: Principal,
+    @Param() params: ReceivedInvitationParamsDto,
+  ): Promise<void> {
+    await this.invitations.declineReceived(principal.userId, params.invitationId);
   }
 }

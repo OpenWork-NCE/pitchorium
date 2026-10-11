@@ -78,6 +78,8 @@ export abstract class OrganizationRepository {
   abstract pendingInvitations(organizationId: string): Promise<InvitationRecord[]>;
   /** Pending, unexpired invitations sent to an address, in live organizations. */
   abstract countPendingInvitationsTo(email: string, now: Date): Promise<number>;
+  /** Pending, unexpired invitations sent to an address, in live organizations, newest first. */
+  abstract openInvitationsTo(email: string, now: Date): Promise<InvitationRecord[]>;
   /** Revokes the pending invitations of an address (a new one replaces them). */
   abstract revokePendingInvitations(organizationId: string, email?: string): Promise<number>;
   /** Moves a pending invitation to `status`; false when it was not pending anymore. */

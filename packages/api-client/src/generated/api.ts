@@ -269,6 +269,7 @@ import type {
   ReadAllDtoOutput,
   ReadConversationDto,
   ReadResultDtoOutput,
+  ReceivedInvitationsDtoOutput,
   ReconciliationReportDtoOutput,
   RecordPostViewsDto,
   ReferenceDataDtoOutput,
@@ -9943,6 +9944,326 @@ export const useInvitationsControllerDecline = <
   TContext
 > => {
   return useMutation(getInvitationsControllerDeclineMutationOptions(options), queryClient);
+};
+
+export const getInvitationsControllerReceivedUrl = () => {
+  return `/v1/me/organization-invitations`;
+};
+
+/**
+ * Action `organization.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Received
+ */
+export const invitationsControllerReceived = async (
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<ReceivedInvitationsDtoOutput> => {
+  return apiFetch<ReceivedInvitationsDtoOutput>(getInvitationsControllerReceivedUrl(), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getInvitationsControllerReceivedQueryKey = () => {
+  return [`/v1/me/organization-invitations`] as const;
+};
+
+export const getInvitationsControllerReceivedQueryOptions = <
+  TData = Awaited<ReturnType<typeof invitationsControllerReceived>>,
+  TError = ErrorType<ProblemDetails>,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<Awaited<ReturnType<typeof invitationsControllerReceived>>, TError, TData>
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getInvitationsControllerReceivedQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof invitationsControllerReceived>>> = ({
+    signal,
+  }) => invitationsControllerReceived({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof invitationsControllerReceived>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type InvitationsControllerReceivedQueryResult = NonNullable<
+  Awaited<ReturnType<typeof invitationsControllerReceived>>
+>;
+export type InvitationsControllerReceivedQueryError = ErrorType<ProblemDetails>;
+
+export function useInvitationsControllerReceived<
+  TData = Awaited<ReturnType<typeof invitationsControllerReceived>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof invitationsControllerReceived>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof invitationsControllerReceived>>,
+          TError,
+          Awaited<ReturnType<typeof invitationsControllerReceived>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useInvitationsControllerReceived<
+  TData = Awaited<ReturnType<typeof invitationsControllerReceived>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof invitationsControllerReceived>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof invitationsControllerReceived>>,
+          TError,
+          Awaited<ReturnType<typeof invitationsControllerReceived>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useInvitationsControllerReceived<
+  TData = Awaited<ReturnType<typeof invitationsControllerReceived>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof invitationsControllerReceived>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Received
+ */
+
+export function useInvitationsControllerReceived<
+  TData = Awaited<ReturnType<typeof invitationsControllerReceived>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof invitationsControllerReceived>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getInvitationsControllerReceivedQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export const getInvitationsControllerAcceptReceivedUrl = (invitationId: string) => {
+  return `/v1/me/organization-invitations/${invitationId}/accept`;
+};
+
+/**
+ * Action `organization.invitation.respond` (session cookie).
+ *
+ * Prerequisites: email_verified.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Accept received
+ */
+export const invitationsControllerAcceptReceived = async (
+  invitationId: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<MyOrganizationDtoOutput> => {
+  return apiFetch<MyOrganizationDtoOutput>(
+    getInvitationsControllerAcceptReceivedUrl(invitationId),
+    {
+      ...options,
+      method: 'POST',
+    },
+  );
+};
+
+export const getInvitationsControllerAcceptReceivedMutationKey = () =>
+  ['invitationsControllerAcceptReceived'] as const;
+
+export const getInvitationsControllerAcceptReceivedMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof invitationsControllerAcceptReceived>>,
+    TError,
+    InvitationsControllerAcceptReceivedMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof invitationsControllerAcceptReceived>>,
+  TError,
+  InvitationsControllerAcceptReceivedMutationVariables,
+  TContext
+> => {
+  const mutationKey = getInvitationsControllerAcceptReceivedMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof invitationsControllerAcceptReceived>>,
+    InvitationsControllerAcceptReceivedMutationVariables
+  > = (props) => {
+    const { invitationId } = props ?? {};
+
+    return invitationsControllerAcceptReceived(invitationId, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type InvitationsControllerAcceptReceivedMutationResult = NonNullable<
+  Awaited<ReturnType<typeof invitationsControllerAcceptReceived>>
+>;
+
+export type InvitationsControllerAcceptReceivedMutationError = ErrorType<ProblemDetails>;
+export type InvitationsControllerAcceptReceivedMutationVariables = { invitationId: string };
+
+/**
+ * @summary Accept received
+ */
+export const useInvitationsControllerAcceptReceived = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof invitationsControllerAcceptReceived>>,
+      TError,
+      InvitationsControllerAcceptReceivedMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof invitationsControllerAcceptReceived>>,
+  TError,
+  InvitationsControllerAcceptReceivedMutationVariables,
+  TContext
+> => {
+  return useMutation(getInvitationsControllerAcceptReceivedMutationOptions(options), queryClient);
+};
+
+export const getInvitationsControllerDeclineReceivedUrl = (invitationId: string) => {
+  return `/v1/me/organization-invitations/${invitationId}/decline`;
+};
+
+/**
+ * Action `organization.invitation.respond` (session cookie).
+ *
+ * Prerequisites: email_verified.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Decline received
+ */
+export const invitationsControllerDeclineReceived = async (
+  invitationId: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<void> => {
+  return apiFetch<void>(getInvitationsControllerDeclineReceivedUrl(invitationId), {
+    ...options,
+    method: 'POST',
+  });
+};
+
+export const getInvitationsControllerDeclineReceivedMutationKey = () =>
+  ['invitationsControllerDeclineReceived'] as const;
+
+export const getInvitationsControllerDeclineReceivedMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof invitationsControllerDeclineReceived>>,
+    TError,
+    InvitationsControllerDeclineReceivedMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof invitationsControllerDeclineReceived>>,
+  TError,
+  InvitationsControllerDeclineReceivedMutationVariables,
+  TContext
+> => {
+  const mutationKey = getInvitationsControllerDeclineReceivedMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof invitationsControllerDeclineReceived>>,
+    InvitationsControllerDeclineReceivedMutationVariables
+  > = (props) => {
+    const { invitationId } = props ?? {};
+
+    return invitationsControllerDeclineReceived(invitationId, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type InvitationsControllerDeclineReceivedMutationResult = NonNullable<
+  Awaited<ReturnType<typeof invitationsControllerDeclineReceived>>
+>;
+
+export type InvitationsControllerDeclineReceivedMutationError = ErrorType<ProblemDetails>;
+export type InvitationsControllerDeclineReceivedMutationVariables = { invitationId: string };
+
+/**
+ * @summary Decline received
+ */
+export const useInvitationsControllerDeclineReceived = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof invitationsControllerDeclineReceived>>,
+      TError,
+      InvitationsControllerDeclineReceivedMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof invitationsControllerDeclineReceived>>,
+  TError,
+  InvitationsControllerDeclineReceivedMutationVariables,
+  TContext
+> => {
+  return useMutation(getInvitationsControllerDeclineReceivedMutationOptions(options), queryClient);
 };
 
 export const getVerificationControllerRequestUrl = (organizationId: string) => {

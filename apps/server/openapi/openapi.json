@@ -6599,6 +6599,277 @@
         "x-access": "organization.invitation.respond"
       }
     },
+    "/v1/me/organization-invitations": {
+      "get": {
+        "operationId": "InvitationsController_received",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReceivedInvitationsDto_Output"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error (RFC 9457 problem details)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "UNAUTHENTICATED": {
+                    "$ref": "#/components/examples/UNAUTHENTICATED"
+                  },
+                  "FORBIDDEN": {
+                    "$ref": "#/components/examples/FORBIDDEN"
+                  },
+                  "ACCESS_ORIGIN_NOT_ALLOWED": {
+                    "$ref": "#/components/examples/ACCESS_ORIGIN_NOT_ALLOWED"
+                  },
+                  "ACCESS_PREREQUISITES_MISSING": {
+                    "$ref": "#/components/examples/ACCESS_PREREQUISITES_MISSING"
+                  },
+                  "ACCESS_ACCOUNT_SUSPENDED": {
+                    "$ref": "#/components/examples/ACCESS_ACCOUNT_SUSPENDED"
+                  },
+                  "RATE_LIMITED": {
+                    "$ref": "#/components/examples/RATE_LIMITED"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "tags": [
+          "organizations"
+        ],
+        "summary": "Received",
+        "description": "Action `organization.read` (session cookie).\n\nErrors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.",
+        "x-error-codes": [
+          "UNAUTHENTICATED",
+          "FORBIDDEN",
+          "ACCESS_ORIGIN_NOT_ALLOWED",
+          "ACCESS_PREREQUISITES_MISSING",
+          "ACCESS_ACCOUNT_SUSPENDED",
+          "RATE_LIMITED",
+          "ORGANIZATIONS_NOT_FOUND",
+          "ORGANIZATIONS_SLUG_TAKEN",
+          "ORGANIZATIONS_SLUG_RESERVED",
+          "ORGANIZATIONS_CREATION_LIMIT_REACHED",
+          "ORGANIZATIONS_MEMBER_NOT_FOUND",
+          "ORGANIZATIONS_ALREADY_MEMBER",
+          "ORGANIZATIONS_LAST_OWNER",
+          "ORGANIZATIONS_ROLE_CHANGE_FORBIDDEN",
+          "ORGANIZATIONS_INVITATION_INVALID",
+          "ORGANIZATIONS_INVITATION_EMAIL_MISMATCH",
+          "ORGANIZATIONS_VERIFICATION_INVALID_STATE",
+          "ORGANIZATIONS_VERIFICATION_REQUEST_NOT_FOUND",
+          "ORGANIZATIONS_VERIFICATION_CRITERION_UNKNOWN"
+        ],
+        "x-access": "organization.read"
+      }
+    },
+    "/v1/me/organization-invitations/{invitationId}/accept": {
+      "post": {
+        "operationId": "InvitationsController_acceptReceived",
+        "parameters": [
+          {
+            "name": "invitationId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MyOrganizationDto_Output"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error (RFC 9457 problem details)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "VALIDATION_FAILED": {
+                    "$ref": "#/components/examples/VALIDATION_FAILED"
+                  },
+                  "UNAUTHENTICATED": {
+                    "$ref": "#/components/examples/UNAUTHENTICATED"
+                  },
+                  "FORBIDDEN": {
+                    "$ref": "#/components/examples/FORBIDDEN"
+                  },
+                  "ACCESS_ORIGIN_NOT_ALLOWED": {
+                    "$ref": "#/components/examples/ACCESS_ORIGIN_NOT_ALLOWED"
+                  },
+                  "ACCESS_PREREQUISITES_MISSING": {
+                    "$ref": "#/components/examples/ACCESS_PREREQUISITES_MISSING"
+                  },
+                  "ACCESS_ACCOUNT_SUSPENDED": {
+                    "$ref": "#/components/examples/ACCESS_ACCOUNT_SUSPENDED"
+                  },
+                  "NOT_FOUND": {
+                    "$ref": "#/components/examples/NOT_FOUND"
+                  },
+                  "RATE_LIMITED": {
+                    "$ref": "#/components/examples/RATE_LIMITED"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "tags": [
+          "organizations"
+        ],
+        "summary": "Accept received",
+        "description": "Action `organization.invitation.respond` (session cookie).\n\nPrerequisites: email_verified.\n\nErrors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.",
+        "x-error-codes": [
+          "VALIDATION_FAILED",
+          "UNAUTHENTICATED",
+          "FORBIDDEN",
+          "ACCESS_ORIGIN_NOT_ALLOWED",
+          "ACCESS_PREREQUISITES_MISSING",
+          "ACCESS_ACCOUNT_SUSPENDED",
+          "NOT_FOUND",
+          "RATE_LIMITED",
+          "ORGANIZATIONS_NOT_FOUND",
+          "ORGANIZATIONS_SLUG_TAKEN",
+          "ORGANIZATIONS_SLUG_RESERVED",
+          "ORGANIZATIONS_CREATION_LIMIT_REACHED",
+          "ORGANIZATIONS_MEMBER_NOT_FOUND",
+          "ORGANIZATIONS_ALREADY_MEMBER",
+          "ORGANIZATIONS_LAST_OWNER",
+          "ORGANIZATIONS_ROLE_CHANGE_FORBIDDEN",
+          "ORGANIZATIONS_INVITATION_INVALID",
+          "ORGANIZATIONS_INVITATION_EMAIL_MISMATCH",
+          "ORGANIZATIONS_VERIFICATION_INVALID_STATE",
+          "ORGANIZATIONS_VERIFICATION_REQUEST_NOT_FOUND",
+          "ORGANIZATIONS_VERIFICATION_CRITERION_UNKNOWN"
+        ],
+        "x-access": "organization.invitation.respond"
+      }
+    },
+    "/v1/me/organization-invitations/{invitationId}/decline": {
+      "post": {
+        "operationId": "InvitationsController_declineReceived",
+        "parameters": [
+          {
+            "name": "invitationId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          },
+          "default": {
+            "description": "Error (RFC 9457 problem details)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "VALIDATION_FAILED": {
+                    "$ref": "#/components/examples/VALIDATION_FAILED"
+                  },
+                  "UNAUTHENTICATED": {
+                    "$ref": "#/components/examples/UNAUTHENTICATED"
+                  },
+                  "FORBIDDEN": {
+                    "$ref": "#/components/examples/FORBIDDEN"
+                  },
+                  "ACCESS_ORIGIN_NOT_ALLOWED": {
+                    "$ref": "#/components/examples/ACCESS_ORIGIN_NOT_ALLOWED"
+                  },
+                  "ACCESS_PREREQUISITES_MISSING": {
+                    "$ref": "#/components/examples/ACCESS_PREREQUISITES_MISSING"
+                  },
+                  "ACCESS_ACCOUNT_SUSPENDED": {
+                    "$ref": "#/components/examples/ACCESS_ACCOUNT_SUSPENDED"
+                  },
+                  "NOT_FOUND": {
+                    "$ref": "#/components/examples/NOT_FOUND"
+                  },
+                  "RATE_LIMITED": {
+                    "$ref": "#/components/examples/RATE_LIMITED"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "tags": [
+          "organizations"
+        ],
+        "summary": "Decline received",
+        "description": "Action `organization.invitation.respond` (session cookie).\n\nPrerequisites: email_verified.\n\nErrors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.",
+        "x-error-codes": [
+          "VALIDATION_FAILED",
+          "UNAUTHENTICATED",
+          "FORBIDDEN",
+          "ACCESS_ORIGIN_NOT_ALLOWED",
+          "ACCESS_PREREQUISITES_MISSING",
+          "ACCESS_ACCOUNT_SUSPENDED",
+          "NOT_FOUND",
+          "RATE_LIMITED",
+          "ORGANIZATIONS_NOT_FOUND",
+          "ORGANIZATIONS_SLUG_TAKEN",
+          "ORGANIZATIONS_SLUG_RESERVED",
+          "ORGANIZATIONS_CREATION_LIMIT_REACHED",
+          "ORGANIZATIONS_MEMBER_NOT_FOUND",
+          "ORGANIZATIONS_ALREADY_MEMBER",
+          "ORGANIZATIONS_LAST_OWNER",
+          "ORGANIZATIONS_ROLE_CHANGE_FORBIDDEN",
+          "ORGANIZATIONS_INVITATION_INVALID",
+          "ORGANIZATIONS_INVITATION_EMAIL_MISMATCH",
+          "ORGANIZATIONS_VERIFICATION_INVALID_STATE",
+          "ORGANIZATIONS_VERIFICATION_REQUEST_NOT_FOUND",
+          "ORGANIZATIONS_VERIFICATION_CRITERION_UNKNOWN"
+        ],
+        "x-access": "organization.invitation.respond"
+      }
+    },
     "/v1/organizations/{organizationId}/verification-requests": {
       "post": {
         "operationId": "VerificationController_request",
@@ -41391,6 +41662,81 @@
           "logoUrl",
           "verified",
           "role"
+        ],
+        "additionalProperties": false
+      },
+      "ReceivedInvitationsDto_Output": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "organization": {
+                  "type": "object",
+                  "properties": {
+                    "slug": {
+                      "type": "string",
+                      "pattern": "^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,59}$"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "logoUrl": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "verified": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "slug",
+                    "name",
+                    "logoUrl",
+                    "verified"
+                  ],
+                  "additionalProperties": false
+                },
+                "role": {
+                  "type": "string",
+                  "enum": [
+                    "admin",
+                    "member"
+                  ]
+                },
+                "expiresAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                },
+                "id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$"
+                },
+                "createdAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                }
+              },
+              "required": [
+                "organization",
+                "role",
+                "expiresAt",
+                "id",
+                "createdAt"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "items"
         ],
         "additionalProperties": false
       },
