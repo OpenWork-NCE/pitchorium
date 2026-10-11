@@ -64,6 +64,9 @@ const PROJECT_PAGE_MESSAGES = [
 const DISCOVERY_PAGE_MESSAGES = [
   'web.search',
   'web.discovery.cards',
+  'web.events.list',
+  'web.events.card',
+  'reference.eventStatuses',
   'reference.projectStatuses',
   'reference.eventFormats',
   'reference.missionDirections',
@@ -170,6 +173,9 @@ const MEMBER_MESSAGES = [
   'reference.timeEntryStatuses',
   // The search, « Découvrir », the events and the missions (PROMPT FRONT 7).
   ...DISCOVERY_PAGE_MESSAGES,
+  'web.events',
+  'reference.eventVisibilities',
+  'reference.eventRegistrationStatuses',
   // The entries of the messaging (PROMPT FRONT 6) and their dialogs.
   'web.messagingEntry',
   'web.messaging.share',

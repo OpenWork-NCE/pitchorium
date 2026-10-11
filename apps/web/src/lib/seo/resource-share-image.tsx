@@ -1,5 +1,6 @@
 import 'server-only';
 import {
+  eventsControllerForPublic,
   organizationsControllerForPublic,
   postsControllerGetPublic,
   profilesControllerForPublic,
@@ -79,7 +80,21 @@ const readPost = cache(async (locale: string, id: string): Promise<Shared | null
   };
 });
 
-type SharedKind = 'member' | 'organization' | 'post';
+/** A public event: its title, then its date and hour in its own zone, and its city. */
+const readEvent = cache(async (locale: string, slug: string): Promise<Shared | null> => {
+  if (!/^[a-z0-9-]{3,80}$/.test(slug)) return null;
+  configureServerApi();
+  const event = await eventsControllerForPublic(slug).catch(() => null);
+  if (!event) return null;
+  const when = new Intl.DateTimeFormat(asLocale(locale), {
+    dateStyle: 'full',
+    timeStyle: 'short',
+    timeZone: event.timeZone,
+  }).format(new Date(event.startsAt));
+  return { title: event.title, subtitle: event.city ? `${when} · ${event.city}` : when };
+});
+
+type SharedKind = 'member' | 'organization' | 'post' | 'event';
 
 async function shared(kind: SharedKind, locale: string, key: string) {
   const found =
@@ -87,7 +102,9 @@ async function shared(kind: SharedKind, locale: string, key: string) {
       ? await readMember(key)
       : kind === 'organization'
         ? await readOrganization(locale, key)
-        : await readPost(locale, key);
+        : kind === 'event'
+          ? await readEvent(locale, key)
+          : await readPost(locale, key);
   return found ?? defaultText(locale);
 }
 

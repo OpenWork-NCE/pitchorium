@@ -119,6 +119,12 @@ sequenceDiagram
 - Pages (`(public)`, une adresse pour le visiteur et le membre) : `/search` (requête, type et filtres dans l'adresse, `noindex` dès qu'une requête est posée), `/discover` et `/discover/{section}` (sections de l'api, première page par le serveur, suite à la demande).
 - Feature `discovery` : `SearchPalette` (autocomplétion, groupes par type, surlignage `lib/search/highlight.ts`), `GlobalSearch` (déclencheur et raccourci seuls au premier chargement ; la palette composée par la coquille, `MemberPalette`, chargée à l'inactivité avec les actions rapides et leurs icônes), `SearchBrowser`, `SearchResults`, `ResultCard`, `DiscoverPage` ; règles d'adresse pures et testées (`lib/search-query.ts`) ; valeurs des contrats recopiées (`lib/kinds.ts`). Recherches récentes : `lib/search/recent-searches.ts`, effacées par `useSignOut`.
 
+## Événements (PROMPT FRONT 7)
+
+- Pages (`(public)`, une adresse par ressource) : `/events` (liste publique et indexable, « Mes événements » jamais indexé), `/events/{slug}` (vue visiteur indexable avec JSON-LD `Event`, ADR 0151, et image de partage ; vue membre ; brouillon pour ses organisateurs, `noindex`), `/events/new` et `/events/{slug}/edit` (membre, organisateurs) ; `(app)` : `/settings/calendar` (ADR 0153).
+- Feature `events` : règles pures testées dans `lib/` (état de l'inscription, places restantes, lien Google Agenda et carte, JSON-LD, adresse des filtres, limites recopiées des contrats) ; page en composants serveur, inscription, participants et actions des organisateurs en îlots chargés pour un membre seulement ; formulaire chargé après la page (schéma et Zod à l'inactivité) ; image par `ImageCropDialog` au format `event_image` (16:9).
+- Fil : `EventFeedCard` (feature `content`) pour les éléments `event`.
+
 ## Fournisseurs
 
 Chaque groupe ne charge que ce qu'il utilise (ADR 0094) :

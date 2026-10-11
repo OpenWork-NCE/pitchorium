@@ -1810,7 +1810,11 @@
     "emptyAction": "Trouver des personnes",
     "suggestionsLabel": "Suggestions",
     "projectUpdate": "Actualité du projet {{project}}",
-    "projectUpdateLabel": "Actualité de projet"
+    "projectUpdateLabel": "Actualité de projet",
+    "eventLabel": "Événement",
+    "eventLabelOf": "Événement : {{title}}",
+    "eventBy": "Organisé par {{name}}",
+    "eventOnline": "En ligne"
   },
   "profile": {
     "completion": {
@@ -2303,7 +2307,8 @@
       "organizations": "Mes organisations",
       "payouts": "Versement et vérification",
       "messaging": "Messagerie",
-      "notifications": "Notifications"
+      "notifications": "Notifications",
+      "calendar": "Calendrier"
     },
     "account": {
       "email": {
@@ -3568,6 +3573,236 @@
       "projects": "Voir la vitrine",
       "events": "Voir les événements",
       "missions": "Voir les missions"
+    }
+  },
+  "events": {
+    "list": {
+      "title": "Événements",
+      "description": "Rencontres, ateliers et forums gratuits du réseau entre l’Afrique, les Caraïbes et la diaspora.",
+      "lede": "Rencontres en ligne, sur place ou hybrides, gratuites, avec leurs horaires dans le fuseau du lieu et dans le vôtre.",
+      "views": "Vues des événements",
+      "tabs": {
+        "upcoming": "À venir",
+        "past": "Passés",
+        "mine": "Mes événements"
+      },
+      "filters": "Filtres des événements",
+      "any": "Tous",
+      "format": "Type",
+      "from": "À partir du",
+      "country": "Pays",
+      "sector": "Secteur",
+      "language": "Langue",
+      "role": "Afficher",
+      "roles": {
+        "attendee": "Mes inscriptions",
+        "organizer": "Mes événements organisés"
+      },
+      "create": "Créer un événement",
+      "error": "Les événements n’ont pas pu être chargés",
+      "errorBody": "Réessayez dans un instant.",
+      "moreError": "Les événements suivants n’ont pas pu être chargés.",
+      "empty": {
+        "upcoming": {
+          "title": "Aucun événement à venir",
+          "body": "Les événements publiés apparaissent ici jusqu’à leur fin."
+        },
+        "past": {
+          "title": "Aucun événement passé",
+          "body": "Les événements terminés restent consultables ici."
+        },
+        "filtered": {
+          "title": "Aucun événement avec ces filtres",
+          "body": "Retirez un filtre ou choisissez une autre date."
+        },
+        "mine": {
+          "attendee": {
+            "title": "Aucune inscription",
+            "body": "Les événements auxquels vous vous inscrivez apparaissent ici, liste d’attente comprise."
+          },
+          "organizer": {
+            "title": "Aucun événement organisé",
+            "body": "Créez un événement en votre nom ou au nom d’une organisation que vous dirigez."
+          }
+        }
+      }
+    },
+    "card": {
+      "full": "Complet",
+      "by": "Par {{name}}"
+    },
+    "page": {
+      "organizedBy": "Organisé par",
+      "timeIn": "{{time}} à {{city}}",
+      "timeLocal": "{{time}} chez vous",
+      "canceled": "Événement annulé",
+      "canceledBody": "Cet événement n’aura pas lieu. Les inscrits ont été prévenus.",
+      "canceledReason": "Cet événement n’aura pas lieu : {{reason}}",
+      "draft": "Brouillon : seuls les organisateurs voient cette page. Publiez-le pour ouvrir les inscriptions.",
+      "signInToRegister": "Se connecter pour s’inscrire",
+      "seatsLeft": "{{left}} places restantes sur {{capacity}}",
+      "seatsFull": "Complet · {{count}} en liste d’attente",
+      "seatsUnlimited": "Places illimitées · {{count}} inscrits",
+      "about": "À propos",
+      "noDescription": "L’organisateur n’a pas encore décrit cet événement.",
+      "project": "Rattaché au projet",
+      "attendees": "Participants",
+      "practical": "Infos pratiques",
+      "place": "Lieu",
+      "map": "Voir sur une carte",
+      "newTab": "(nouvel onglet)",
+      "onlineLink": "Lien de connexion",
+      "join": "Rejoindre l’événement en ligne",
+      "linkHidden": "Le lien de connexion est donné aux inscrits.",
+      "language": "Langue",
+      "sectors": "Secteurs",
+      "capacity": "Capacité",
+      "capacityUnlimited": "Sans limite de places",
+      "capacityOf": "{{capacity}} places",
+      "calendar": "Ajouter à mon agenda",
+      "ics": "Télécharger le fichier .ics",
+      "google": "Google Agenda"
+    },
+    "registration": {
+      "register": "S’inscrire",
+      "joinWaitlist": "Rejoindre la liste d’attente",
+      "registering": "Inscription en cours",
+      "withdraw": "Se désinscrire",
+      "leaveWaitlist": "Quitter la liste d’attente",
+      "withdrawTitle": "Se désinscrire de cet événement ?",
+      "leaveWaitlistTitle": "Quitter la liste d’attente ?",
+      "withdrawBody": "Vous pourrez vous inscrire de nouveau tant que l’événement n’a pas commencé.",
+      "withdrawFullBody": "Votre place ira à la première personne de la liste d’attente : l’événement est complet, vous ne la retrouverez peut-être pas.",
+      "youAreRegistered": "Vous êtes inscrit.",
+      "position": "Vous êtes en liste d’attente, position",
+      "consent": "Apparaître dans la liste des participants",
+      "consentHint": "Les autres inscrits verront votre nom et votre titre. Les organisateurs voient toujours les inscriptions.",
+      "fullHint": "Plus de place : vous serez inscrit automatiquement si une place se libère, et prévenu.",
+      "registered": "Inscription confirmée.",
+      "waitlisted": "Vous êtes en liste d’attente, position {{position}}.",
+      "withdrawn": "Désinscription enregistrée.",
+      "promoted": "Une place s’est libérée : vous êtes inscrit.",
+      "closed": "Les inscriptions sont fermées : l’événement a commencé ou est terminé.",
+      "canceled": "Événement annulé : plus d’inscription possible."
+    },
+    "attendees": {
+      "list": "Participants",
+      "private": "La liste des participants est visible des inscrits et des organisateurs.",
+      "none": "Aucun participant à afficher",
+      "noneHint": "Les inscrits qui acceptent d’apparaître dans la liste sont affichés ici.",
+      "noneManager": "Les inscriptions apparaissent ici, liste d’attente comprise.",
+      "error": "Les participants n’ont pas pu être chargés."
+    },
+    "manage": {
+      "edit": "Modifier",
+      "publish": "Publier",
+      "publishing": "Publication en cours",
+      "published": "Événement publié : les inscriptions sont ouvertes.",
+      "delete": "Supprimer le brouillon",
+      "deleteTitle": "Supprimer le brouillon « {{title}} » ?",
+      "deleteBody": "Le brouillon et son image sont supprimés. Cette action est définitive.",
+      "deleted": "Brouillon supprimé.",
+      "cancel": "Annuler l’événement",
+      "cancelTitle": "Annuler « {{title}} » ?",
+      "cancelBody": "Les inscrits et la liste d’attente sont prévenus. L’événement reste visible avec la mention de l’annulation ; il ne pourra pas être rouvert.",
+      "reason": "Motif",
+      "reasonHint": "Il est donné aux inscrits et affiché sur la page.",
+      "confirmCancel": "Annuler l’événement",
+      "canceling": "Annulation en cours",
+      "keep": "Garder l’événement",
+      "canceled": "Événement annulé : les inscrits sont prévenus."
+    },
+    "form": {
+      "createTitle": "Créer un événement",
+      "createLede": "Un brouillon d’abord : publiez-le depuis sa page quand il est prêt. Les événements sont gratuits.",
+      "editTitle": "Modifier l’événement",
+      "organizer": "Organisé par",
+      "organizerSelf": "Moi",
+      "project": "Projet rattaché",
+      "projectNone": "Aucun",
+      "title": "Titre",
+      "description": "Description",
+      "descriptionHint": "Markdown simple : titres, listes, gras, liens https.",
+      "format": "Type",
+      "formatHints": {
+        "online": "Un lien de connexion, donné aux inscrits.",
+        "in_person": "Un lieu, avec son adresse.",
+        "hybrid": "Un lieu et un lien de connexion."
+      },
+      "startsAt": "Début",
+      "endsAt": "Fin",
+      "timeZone": "Fuseau horaire",
+      "timeZoneHint": "Les heures sont celles du lieu : chaque visiteur les voit aussi dans son propre fuseau.",
+      "place": "Lieu",
+      "placeName": "Nom du lieu",
+      "placeAddress": "Adresse",
+      "placeCity": "Ville",
+      "placeCountry": "Pays",
+      "onlineUrl": "Lien de connexion",
+      "onlineUrlHint": "Adresse https de la visioconférence, révélée aux seuls inscrits.",
+      "language": "Langue",
+      "capacity": "Nombre de places",
+      "capacityHint": "Laissez vide pour un nombre illimité.",
+      "sectors": "Secteurs",
+      "visibility": "Audience",
+      "visibilityHints": {
+        "members": "Les membres connectés de Pitchorium.",
+        "public": "Tout le monde, référencé par les moteurs de recherche ; demande une page publique ou une organisation."
+      },
+      "image": "Image",
+      "imageHint": "Au format 16:9, recadrée avant l’envoi.",
+      "imageAdd": "Ajouter une image",
+      "imageChange": "Changer l’image",
+      "imageReady": "Image prête.",
+      "imageAlt": "Texte alternatif de l’image",
+      "imageAltHint": "Décrivez l’image pour les personnes qui ne la voient pas.",
+      "imageDialog": {
+        "title": "Image de l’événement",
+        "description": "Cadrez l’image au format 16:9.",
+        "limits": "JPEG, PNG ou WebP, 10 Mo au plus, 600 pixels de large au moins.",
+        "remove": "Retirer l’image",
+        "removeTitle": "Retirer l’image de l’événement ?",
+        "removeDescription": "L’événement s’affichera avec le motif de la marque."
+      },
+      "choose": "Choisir",
+      "create": "Créer le brouillon",
+      "save": "Enregistrer",
+      "saving": "Enregistrement en cours",
+      "cancel": "Annuler"
+    },
+    "calendar": {
+      "title": "Mon calendrier Pitchorium",
+      "description": "Une adresse d’abonnement avec les événements auxquels vous êtes inscrit, mise à jour automatiquement dans votre agenda.",
+      "create": "Créer mon adresse de calendrier",
+      "creating": "Création en cours",
+      "created": "Adresse de calendrier créée.",
+      "secretTitle": "Adresse secrète",
+      "secret": "Toute personne qui la connaît voit vos inscriptions, sans se connecter. Ne la partagez pas ; elle n’est affichée qu’une fois. Régénérez-la si elle a circulé.",
+      "address": "Adresse du calendrier",
+      "copy": "Copier l’adresse",
+      "copied": "Adresse copiée",
+      "regenerate": "Régénérer l’adresse",
+      "regenerateTitle": "Régénérer l’adresse du calendrier ?",
+      "regenerateBody": "L’adresse actuelle cesse de fonctionner : abonnez de nouveau vos agendas à la nouvelle.",
+      "revoke": "Révoquer l’adresse",
+      "revokeTitle": "Révoquer l’adresse du calendrier ?",
+      "revokeBody": "Vos agendas abonnés ne recevront plus vos événements. Vous pourrez créer une nouvelle adresse.",
+      "revoked": "Adresse révoquée : elle ne fonctionne plus.",
+      "howTo": "S’abonner depuis son agenda",
+      "apps": {
+        "google": {
+          "name": "Google Agenda",
+          "steps": "Sur un ordinateur, ouvrez Google Agenda, puis « Autres agendas », « + », « À partir de l’URL », collez l’adresse et validez."
+        },
+        "apple": {
+          "name": "Apple Calendrier",
+          "steps": "Sur Mac, Fichier puis « Nouvel abonnement à un calendrier… » ; sur iPhone, Réglages, Calendrier, Comptes, « Ajouter un compte », « Autre », « Ajouter un calendrier avec abonnement », puis collez l’adresse."
+        },
+        "outlook": {
+          "name": "Outlook",
+          "steps": "Dans Outlook sur le web, « Ajouter un calendrier », « S’abonner à partir du web », collez l’adresse, nommez le calendrier et importez."
+        }
+      }
     }
   }
 }

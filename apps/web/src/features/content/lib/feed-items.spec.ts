@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { drawnItems, newItems } from './feed-items';
 
 describe('items of the feed', () => {
-  it('draws the known types, leaves the events for later and reports an unknown type', () => {
+  it('draws the known types, the events included, and reports an unknown type', () => {
     const report = vi.fn();
     const items = [
       { type: 'post', id: 'post:1' },
@@ -15,6 +15,7 @@ describe('items of the feed', () => {
     ];
     expect(drawnItems(items, report).map((item) => item.id)).toEqual([
       'post:1',
+      'event:2',
       'featured:4',
       'project_update:5',
       'suggestion:6',

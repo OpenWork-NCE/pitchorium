@@ -7,7 +7,8 @@ export interface PixelArea {
 }
 
 /**
- * The framed images (direction.md, media module): a square photo or logo, a cover of 4:1; each
+ * The framed images (direction.md, media module): a square photo or logo, a cover of 4:1, the
+ * image of an event in 16:9; each
  * sent at the size of its largest variant, never below the minimum of its media usage. A logo
  * keeps its transparency (PNG), a photo goes in JPEG.
  */
@@ -32,6 +33,13 @@ export const IMAGE_FORMATS = {
     minWidth: 1200,
     targetWidth: 1584,
     usage: 'organization_cover',
+    type: 'image/jpeg',
+  },
+  event_image: {
+    aspect: 16 / 9,
+    minWidth: 600,
+    targetWidth: 1600,
+    usage: 'event_image',
     type: 'image/jpeg',
   },
 } as const;

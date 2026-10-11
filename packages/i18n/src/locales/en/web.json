@@ -1810,7 +1810,11 @@
     "emptyAction": "Find people",
     "suggestionsLabel": "Suggestions",
     "projectUpdate": "Update of the project {{project}}",
-    "projectUpdateLabel": "Project update"
+    "projectUpdateLabel": "Project update",
+    "eventLabel": "Event",
+    "eventLabelOf": "Event: {{title}}",
+    "eventBy": "Organized by {{name}}",
+    "eventOnline": "Online"
   },
   "profile": {
     "completion": {
@@ -2303,7 +2307,8 @@
       "organizations": "My organizations",
       "payouts": "Payout and verification",
       "messaging": "Messages",
-      "notifications": "Notifications"
+      "notifications": "Notifications",
+      "calendar": "Calendar"
     },
     "account": {
       "email": {
@@ -3568,6 +3573,236 @@
       "projects": "See the showcase",
       "events": "See the events",
       "missions": "See the missions"
+    }
+  },
+  "events": {
+    "list": {
+      "title": "Events",
+      "description": "Free gatherings, workshops and forums of the network between Africa, the Caribbean and the diaspora.",
+      "lede": "Online, in-person or hybrid gatherings, free, with their hours in the place’s time zone and in yours.",
+      "views": "Views of the events",
+      "tabs": {
+        "upcoming": "Upcoming",
+        "past": "Past",
+        "mine": "My events"
+      },
+      "filters": "Filters of the events",
+      "any": "Any",
+      "format": "Kind",
+      "from": "From",
+      "country": "Country",
+      "sector": "Sector",
+      "language": "Language",
+      "role": "Show",
+      "roles": {
+        "attendee": "My registrations",
+        "organizer": "Events I organize"
+      },
+      "create": "Create an event",
+      "error": "The events could not be loaded",
+      "errorBody": "Try again in a moment.",
+      "moreError": "The next events could not be loaded.",
+      "empty": {
+        "upcoming": {
+          "title": "No upcoming event",
+          "body": "Published events appear here until they end."
+        },
+        "past": {
+          "title": "No past event",
+          "body": "Events that are over remain available here."
+        },
+        "filtered": {
+          "title": "No event with these filters",
+          "body": "Remove a filter or choose another date."
+        },
+        "mine": {
+          "attendee": {
+            "title": "No registration",
+            "body": "The events you register for appear here, waiting lists included."
+          },
+          "organizer": {
+            "title": "No event organized",
+            "body": "Create an event in your name or in the name of an organization you run."
+          }
+        }
+      }
+    },
+    "card": {
+      "full": "Full",
+      "by": "By {{name}}"
+    },
+    "page": {
+      "organizedBy": "Organized by",
+      "timeIn": "{{time}} in {{city}}",
+      "timeLocal": "{{time}} your time",
+      "canceled": "Event canceled",
+      "canceledBody": "This event will not take place. Registered members have been told.",
+      "canceledReason": "This event will not take place: {{reason}}",
+      "draft": "Draft: only the organizers see this page. Publish it to open registrations.",
+      "signInToRegister": "Sign in to register",
+      "seatsLeft": "{{left}} seats left out of {{capacity}}",
+      "seatsFull": "Full · {{count}} on the waiting list",
+      "seatsUnlimited": "Unlimited seats · {{count}} registered",
+      "about": "About",
+      "noDescription": "The organizer has not described this event yet.",
+      "project": "Attached to the project",
+      "attendees": "Participants",
+      "practical": "Practical details",
+      "place": "Place",
+      "map": "See on a map",
+      "newTab": "(new tab)",
+      "onlineLink": "Meeting link",
+      "join": "Join the event online",
+      "linkHidden": "The meeting link is given to registered members.",
+      "language": "Language",
+      "sectors": "Sectors",
+      "capacity": "Capacity",
+      "capacityUnlimited": "No seat limit",
+      "capacityOf": "{{capacity}} seats",
+      "calendar": "Add to my calendar",
+      "ics": "Download the .ics file",
+      "google": "Google Calendar"
+    },
+    "registration": {
+      "register": "Register",
+      "joinWaitlist": "Join the waiting list",
+      "registering": "Registering",
+      "withdraw": "Unregister",
+      "leaveWaitlist": "Leave the waiting list",
+      "withdrawTitle": "Unregister from this event?",
+      "leaveWaitlistTitle": "Leave the waiting list?",
+      "withdrawBody": "You can register again until the event starts.",
+      "withdrawFullBody": "Your seat will go to the first person on the waiting list: the event is full, you may not get it back.",
+      "youAreRegistered": "You are registered.",
+      "position": "You are on the waiting list, position",
+      "consent": "Appear in the list of participants",
+      "consentHint": "Other registered members will see your name and title. Organizers always see registrations.",
+      "fullHint": "No seat left: you will be registered automatically if a seat frees up, and told.",
+      "registered": "Registration confirmed.",
+      "waitlisted": "You are on the waiting list, position {{position}}.",
+      "withdrawn": "Unregistration saved.",
+      "promoted": "A seat freed up: you are registered.",
+      "closed": "Registrations are closed: the event has started or is over.",
+      "canceled": "Event canceled: registration is no longer possible."
+    },
+    "attendees": {
+      "list": "Participants",
+      "private": "The list of participants is visible to registered members and organizers.",
+      "none": "No participant to show",
+      "noneHint": "Registered members who agree to appear in the list are shown here.",
+      "noneManager": "Registrations appear here, waiting list included.",
+      "error": "The participants could not be loaded."
+    },
+    "manage": {
+      "edit": "Edit",
+      "publish": "Publish",
+      "publishing": "Publishing",
+      "published": "Event published: registrations are open.",
+      "delete": "Delete the draft",
+      "deleteTitle": "Delete the draft “{{title}}”?",
+      "deleteBody": "The draft and its image are deleted. This cannot be undone.",
+      "deleted": "Draft deleted.",
+      "cancel": "Cancel the event",
+      "cancelTitle": "Cancel “{{title}}”?",
+      "cancelBody": "Registered members and the waiting list are told. The event stays visible with the cancellation; it cannot be reopened.",
+      "reason": "Reason",
+      "reasonHint": "It is given to registered members and shown on the page.",
+      "confirmCancel": "Cancel the event",
+      "canceling": "Canceling",
+      "keep": "Keep the event",
+      "canceled": "Event canceled: registered members are told."
+    },
+    "form": {
+      "createTitle": "Create an event",
+      "createLede": "A draft first: publish it from its page when it is ready. Events are free.",
+      "editTitle": "Edit the event",
+      "organizer": "Organized by",
+      "organizerSelf": "Me",
+      "project": "Attached project",
+      "projectNone": "None",
+      "title": "Title",
+      "description": "Description",
+      "descriptionHint": "Simple Markdown: headings, lists, bold, https links.",
+      "format": "Kind",
+      "formatHints": {
+        "online": "A meeting link, given to registered members.",
+        "in_person": "A place, with its address.",
+        "hybrid": "A place and a meeting link."
+      },
+      "startsAt": "Start",
+      "endsAt": "End",
+      "timeZone": "Time zone",
+      "timeZoneHint": "Hours are those of the place: each visitor also sees them in their own time zone.",
+      "place": "Place",
+      "placeName": "Name of the place",
+      "placeAddress": "Address",
+      "placeCity": "City",
+      "placeCountry": "Country",
+      "onlineUrl": "Meeting link",
+      "onlineUrlHint": "https address of the video call, revealed to registered members only.",
+      "language": "Language",
+      "capacity": "Number of seats",
+      "capacityHint": "Leave empty for unlimited seats.",
+      "sectors": "Sectors",
+      "visibility": "Audience",
+      "visibilityHints": {
+        "members": "Signed-in members of Pitchorium.",
+        "public": "Everyone, indexed by search engines; requires a public page or an organization."
+      },
+      "image": "Image",
+      "imageHint": "In 16:9, framed before sending.",
+      "imageAdd": "Add an image",
+      "imageChange": "Change the image",
+      "imageReady": "Image ready.",
+      "imageAlt": "Text alternative of the image",
+      "imageAltHint": "Describe the image for people who cannot see it.",
+      "imageDialog": {
+        "title": "Image of the event",
+        "description": "Frame the image in 16:9.",
+        "limits": "JPEG, PNG or WebP, 10 MB at most, 600 pixels wide at least.",
+        "remove": "Remove the image",
+        "removeTitle": "Remove the image of the event?",
+        "removeDescription": "The event will show with the brand pattern."
+      },
+      "choose": "Choose",
+      "create": "Create the draft",
+      "save": "Save",
+      "saving": "Saving",
+      "cancel": "Cancel"
+    },
+    "calendar": {
+      "title": "My Pitchorium calendar",
+      "description": "A subscription address with the events you are registered for, updated automatically in your calendar.",
+      "create": "Create my calendar address",
+      "creating": "Creating",
+      "created": "Calendar address created.",
+      "secretTitle": "Secret address",
+      "secret": "Anyone who knows it sees your registrations, without signing in. Do not share it; it is shown only once. Regenerate it if it has been passed around.",
+      "address": "Calendar address",
+      "copy": "Copy the address",
+      "copied": "Address copied",
+      "regenerate": "Regenerate the address",
+      "regenerateTitle": "Regenerate the calendar address?",
+      "regenerateBody": "The current address stops working: subscribe your calendars again to the new one.",
+      "revoke": "Revoke the address",
+      "revokeTitle": "Revoke the calendar address?",
+      "revokeBody": "Your subscribed calendars will no longer receive your events. You can create a new address.",
+      "revoked": "Address revoked: it no longer works.",
+      "howTo": "Subscribe from your calendar",
+      "apps": {
+        "google": {
+          "name": "Google Calendar",
+          "steps": "On a computer, open Google Calendar, then “Other calendars”, “+”, “From URL”, paste the address and confirm."
+        },
+        "apple": {
+          "name": "Apple Calendar",
+          "steps": "On a Mac, File then “New Calendar Subscription…”; on iPhone, Settings, Calendar, Accounts, “Add Account”, “Other”, “Add Subscribed Calendar”, then paste the address."
+        },
+        "outlook": {
+          "name": "Outlook",
+          "steps": "In Outlook on the web, “Add calendar”, “Subscribe from web”, paste the address, name the calendar and import."
+        }
+      }
     }
   }
 }

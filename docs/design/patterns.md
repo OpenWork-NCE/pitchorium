@@ -67,6 +67,15 @@ Comment assembler les composants (`components.md`) pour les situations récurren
 - `/search` : champ, onglets par type (indicateur partagé), filtres de l'onglet (pays, secteur, langue ; état et impact pour les projets ; type et date pour les événements ; sens, domaine et mode pour les missions), tout dans l'adresse ; cartes `ResultCard` en grille ; sans résultat, une recherche plus large et des liens vers Découvrir.
 - `/discover` : une section par grille large avec « Tout voir » vers sa page paginée et son propre état vide ; profils suggérés avec la phrase de raison, « Se connecter » et « Pas intéressé » (la carte quitte la grille, le toast l'annule).
 
+## Événements (§14, ADR 0069, 0070, 0151, 0153)
+
+- `/events` : onglets « À venir », « Passés » (le plus récent d'abord) et, pour un membre, « Mes événements » (inscriptions ou événements organisés) ; filtres type, date de départ, pays, secteur et langue dans l'adresse ; cartes 16:9 avec le type, la date dans le fuseau du lieu, la ville ou « En ligne », l'organisateur et « Complet ».
+- `/events/{slug}` : image, titre, organisateur et badge, horaires dans le fuseau du lieu puis chez le lecteur quand il diffère ; inscription (case d'apparition dans la liste, refusée par défaut), liste d'attente avec sa position comptée, promotion annoncée dès sa notification, désinscription confirmée ; le lien de connexion aux seuls inscrits, sinon une mention ; lieu en texte et lien vers une carte OpenStreetMap ; fichier ICS et lien Google Agenda ; participants selon l'api ; annulé : bandeau et motif. Le bouton change de libellé sans changer de largeur (`LabelSwap`).
+- Organisateurs : modifier, publier un brouillon, le supprimer (confirmé), annuler un événement publié avec un motif facultatif (confirmé : les inscrits sont prévenus par l'api).
+- Création et modification : organisé par soi ou par une organisation dirigée, projet rattaché, Markdown restreint, type (lieu et lien demandés selon le type par l'api), dates sur l'horloge du lieu, capacité, audience, image recadrée en 16:9 et son texte alternatif.
+- Paramètres « Calendrier » : adresse secrète affichée une fois, à copier, avec l'avertissement ; régénérer, révoquer ; instructions pour Google Agenda, Apple Calendrier et Outlook.
+- Fil : un événement d'un membre ou d'une organisation suivis est une carte simple qui mène à sa page.
+
 ## Fil d'actualité (§10.3, ADR 0032, 0117, 0121)
 
 - Pas de grand titre visible au-dessus du fil : un `h1` masqué visuellement (« Accueil ») ; la place est prise par « Commencer une publication », qui ouvre le composeur (aussi depuis « Publier » du bandeau, `/feed?compose=1`).

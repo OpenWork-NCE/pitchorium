@@ -38,6 +38,7 @@ import { PostCard } from '../post-card';
 import { PostSkeleton } from '../post-skeleton';
 import { FeedSuggestion, SuggestionModule } from './feed-suggestion';
 import { NewerPill } from './newer-pill';
+import { EventFeedCard } from './event-feed-card';
 import { ProjectUpdateCard } from './project-update-card';
 import { useDeferredWindowVirtualizer } from './use-deferred-window-virtualizer';
 import { useViewObserver } from './use-view-observer';
@@ -653,6 +654,16 @@ function FeedEntry({
         {...position}
       >
         <ProjectUpdateCard update={item.update} />
+      </article>
+    );
+  } else if (item.type === 'event') {
+    content = (
+      <article
+        aria-label={t('eventLabelOf', { title: item.event.title })}
+        className="rounded-xl outline-none focus-visible:outline-2 focus-visible:outline-focus"
+        {...position}
+      >
+        <EventFeedCard event={item.event} />
       </article>
     );
   } else if (item.type === 'suggestion') {

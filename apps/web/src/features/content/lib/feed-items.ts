@@ -4,14 +4,14 @@ import type { FeedItem } from '@pitchorium/contracts';
 export const FEED_MODULES = { first: 3, every: 10, suggestions: 3 } as const;
 export const FEED_PAGE_SIZE = 20;
 
-/** Item types the web draws (ADR 0032): `event` waits for the events (PROMPT FRONT 7). */
-const DRAWN = new Set(['post', 'repost', 'featured', 'suggestion', 'project_update']);
+/** Item types the web draws (ADR 0032). */
+const DRAWN = new Set(['post', 'repost', 'featured', 'suggestion', 'project_update', 'event']);
 /** Known types the web leaves out for now, without reporting them. */
-const LATER = new Set(['event']);
+const LATER = new Set<string>();
 
 export type DrawnItem = Extract<
   FeedItem,
-  { type: 'post' | 'repost' | 'featured' | 'suggestion' | 'project_update' }
+  { type: 'post' | 'repost' | 'featured' | 'suggestion' | 'project_update' | 'event' }
 >;
 
 /**

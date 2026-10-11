@@ -17,6 +17,7 @@ export const SETTINGS_SECTIONS = [
   { id: 'privacy', href: routes.settingsPrivacy },
   { id: 'messaging', href: routes.settingsMessaging },
   { id: 'notifications', href: routes.settingsNotifications },
+  { id: 'calendar', href: routes.settingsCalendar },
   { id: 'organizations', href: routes.settingsOrganizations },
   { id: 'preferences', href: routes.settingsPreferences },
   { id: 'payouts', href: routes.settingsPayouts },
