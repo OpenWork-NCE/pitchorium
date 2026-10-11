@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { postSchema } from './content.js';
 import { uuidV7Schema } from './ids.js';
 import { mediaVariantSchema } from './media.js';
+import { prerequisiteElementSchema } from './access.js';
 import { cursorPageQuerySchema, cursorPageSchema } from './pagination.js';
 import { handleSchema, memberCardSchema } from './profiles.js';
 
@@ -193,6 +194,23 @@ export const updateConversationRequestSchema = z.object({
 
 export const messagingSettingsSchema = z.object({ messagePolicy: messagePolicySchema });
 
+/**
+ * How the viewer may write to a member (§10.4, §7.2): `direct` between connections, `request`
+ * when the first message out of network becomes a request, `refused` when the preference of the
+ * member does not admit the viewer.
+ */
+export const MESSAGING_MODES = ['direct', 'request', 'refused'] as const;
+export const messagingModeSchema = z.enum(MESSAGING_MODES);
+
+export const messagingWithMemberSchema = z.object({
+  /** The direct conversation of the pair, when one shows to the viewer. */
+  conversationId: uuidV7Schema.nullable(),
+  /** For a first message; with a conversation, its own state says what can be sent. */
+  mode: messagingModeSchema,
+  /** What the viewer must complete before a first message out of network. */
+  missing: z.array(prerequisiteElementSchema),
+});
+
 export const proposeIntroductionRequestSchema = z.object({
   firstHandle: handleSchema,
   secondHandle: handleSchema,
@@ -236,5 +254,7 @@ export type MessageListQuery = z.infer<typeof messageListQuerySchema>;
 export type MessagePage = z.infer<typeof messagePageSchema>;
 export type UpdateConversationRequest = z.infer<typeof updateConversationRequestSchema>;
 export type MessagingSettings = z.infer<typeof messagingSettingsSchema>;
+export type MessagingMode = z.infer<typeof messagingModeSchema>;
+export type MessagingWithMember = z.infer<typeof messagingWithMemberSchema>;
 export type ProposeIntroductionRequest = z.infer<typeof proposeIntroductionRequestSchema>;
 export type Introduction = z.infer<typeof introductionSchema>;

@@ -11001,6 +11001,35 @@ export interface ConversationPageDtoOutput {
   nextCursor: string | null;
 }
 
+export type MessagingWithMemberDtoOutputMode =
+  (typeof MessagingWithMemberDtoOutputMode)[keyof typeof MessagingWithMemberDtoOutputMode];
+
+export const MessagingWithMemberDtoOutputMode = {
+  direct: 'direct',
+  request: 'request',
+  refused: 'refused',
+} as const;
+
+export type MessagingWithMemberDtoOutputMissingItem =
+  (typeof MessagingWithMemberDtoOutputMissingItem)[keyof typeof MessagingWithMemberDtoOutputMissingItem];
+
+export const MessagingWithMemberDtoOutputMissingItem = {
+  legal_acceptance: 'legal_acceptance',
+  email_verified: 'email_verified',
+  kyc_verified: 'kyc_verified',
+  two_factor: 'two_factor',
+  profileminimum: 'profile.minimum',
+  profileentrepreneur_facet: 'profile.entrepreneur_facet',
+  profilecontributor_facet: 'profile.contributor_facet',
+  payout_account: 'payout_account',
+} as const;
+
+export interface MessagingWithMemberDtoOutput {
+  conversationId: string | null;
+  mode: MessagingWithMemberDtoOutputMode;
+  missing: MessagingWithMemberDtoOutputMissingItem[];
+}
+
 export interface StartConversationDto {
   /** @pattern ^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$ */
   recipientHandle: string;

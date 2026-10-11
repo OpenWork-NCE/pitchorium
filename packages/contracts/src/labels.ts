@@ -226,6 +226,8 @@ export const TECHNICAL_ENUMS: readonly string[] = [
   'messageKindSchema',
   'messageModerationStatusSchema',
   'introductionRoleSchema',
+  // Said by the web in its own words (a first message, its page): no reference label.
+  'messagingModeSchema',
   'notificationPrioritySchema',
   'notificationTargetTypeSchema',
   // Filters and the moment of the digests, said by the web in its own words.

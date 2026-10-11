@@ -8,6 +8,7 @@ import type {
   MessagePage,
   MessagePolicy,
   MessagingSettings,
+  MessagingWithMember,
   StartConversationRequest,
   UpdateConversationRequest,
 } from '@pitchorium/contracts';
@@ -107,6 +108,48 @@ export class ConversationsService {
   async updateSettings(userId: string, settings: MessagingSettings): Promise<MessagingSettings> {
     await this.messaging.setMessagePolicy(userId, settings.messagePolicy, this.clock.now());
     return settings;
+  }
+
+  /**
+   * How the viewer may write to a member, before writing: their direct conversation when it
+   * shows, otherwise what a first message would be, and the prerequisites it still needs.
+   */
+  async withMember(viewerId: string, handle: string): Promise<MessagingWithMember> {
+    const memberId = await this.profiles.userIdOf(handle, viewerId);
+    if (!memberId || memberId === viewerId) {
+      throw new DomainError('MESSAGING_RECIPIENT_NOT_FOUND', 'Recipient not found');
+    }
+    const existing = await this.messaging.findDirect(directKeyOf(viewerId, memberId));
+    const visible = existing ? await this.access.find(viewerId, existing.id) : null;
+    const [degree, viewer, minimumProfile, policy] = await Promise.all([
+      this.network.degreeBetween(viewerId, memberId),
+      this.identity.findUser(viewerId),
+      this.profiles.hasMinimumProfile(viewerId),
+      this.policyOf(memberId),
+    ]);
+    // The mode once the prerequisites are met; the prerequisites apart.
+    const decision = decideStart({
+      degree,
+      senderEmailVerified: true,
+      senderMinimumProfile: true,
+      recipientPolicy: policy,
+    });
+    const prerequisites = decideStart({
+      degree,
+      senderEmailVerified: viewer?.emailVerified ?? false,
+      senderMinimumProfile: minimumProfile,
+      recipientPolicy: policy,
+    });
+    return {
+      conversationId: visible ? visible.conversation.id : null,
+      mode:
+        decision.outcome === 'active'
+          ? 'direct'
+          : decision.outcome === 'request'
+            ? 'request'
+            : 'refused',
+      missing: prerequisites.outcome === 'prerequisites_missing' ? prerequisites.missing : [],
+    };
   }
 
   /** First message to a member: the direct conversation, created if needed. */

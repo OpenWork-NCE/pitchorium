@@ -194,6 +194,7 @@ import type {
   MessagingControllerMessagesParams,
   MessagingSettingsDto,
   MessagingSettingsDtoOutput,
+  MessagingWithMemberDtoOutput,
   MethodologiesDtoOutput,
   MethodologyDtoOutput,
   MissionCardPageDtoOutput,
@@ -29920,6 +29921,146 @@ export const useMessagingControllerStart = <TError = ErrorType<ProblemDetails>, 
 > => {
   return useMutation(getMessagingControllerStartMutationOptions(options), queryClient);
 };
+
+export const getMessagingControllerWithMemberUrl = (handle: string) => {
+  return `/v1/messaging/members/${handle}`;
+};
+
+/**
+ * Action `messaging.read` (session cookie).
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary With member
+ */
+export const messagingControllerWithMember = async (
+  handle: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<MessagingWithMemberDtoOutput> => {
+  return apiFetch<MessagingWithMemberDtoOutput>(getMessagingControllerWithMemberUrl(handle), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getMessagingControllerWithMemberQueryKey = (handle: string) => {
+  return [`/v1/messaging/members/${handle}`] as const;
+};
+
+export const getMessagingControllerWithMemberQueryOptions = <
+  TData = Awaited<ReturnType<typeof messagingControllerWithMember>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  handle: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof messagingControllerWithMember>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getMessagingControllerWithMemberQueryKey(handle);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof messagingControllerWithMember>>> = ({
+    signal,
+  }) => messagingControllerWithMember(handle, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: handle !== null && handle !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<Awaited<ReturnType<typeof messagingControllerWithMember>>, TError, TData> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+};
+
+export type MessagingControllerWithMemberQueryResult = NonNullable<
+  Awaited<ReturnType<typeof messagingControllerWithMember>>
+>;
+export type MessagingControllerWithMemberQueryError = ErrorType<ProblemDetails>;
+
+export function useMessagingControllerWithMember<
+  TData = Awaited<ReturnType<typeof messagingControllerWithMember>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  handle: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof messagingControllerWithMember>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof messagingControllerWithMember>>,
+          TError,
+          Awaited<ReturnType<typeof messagingControllerWithMember>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useMessagingControllerWithMember<
+  TData = Awaited<ReturnType<typeof messagingControllerWithMember>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  handle: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof messagingControllerWithMember>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof messagingControllerWithMember>>,
+          TError,
+          Awaited<ReturnType<typeof messagingControllerWithMember>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useMessagingControllerWithMember<
+  TData = Awaited<ReturnType<typeof messagingControllerWithMember>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  handle: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof messagingControllerWithMember>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary With member
+ */
+
+export function useMessagingControllerWithMember<
+  TData = Awaited<ReturnType<typeof messagingControllerWithMember>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  handle: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof messagingControllerWithMember>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getMessagingControllerWithMemberQueryOptions(handle, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
 
 export const getMessagingControllerGetUrl = (conversationId: string) => {
   return `/v1/messaging/conversations/${conversationId}`;

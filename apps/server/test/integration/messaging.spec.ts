@@ -156,7 +156,26 @@ describe('messaging', () => {
       'ACCESS_PREREQUISITES_MISSING',
     );
 
+    // Before writing, the profile says what a first message would be, and what is missing.
+    const before = async (member: Member, handle: string) =>
+      (await member.agent.get(`/v1/messaging/members/${handle}`).expect(200)).body as object;
+    // Unverified and out of the second degree: refused by the policy, the email to verify.
+    expect(await before(unverified, awaHandle)).toEqual({
+      conversationId: null,
+      mode: 'refused',
+      missing: ['email_verified'],
+    });
+    expect(await before(ama, kofiHandle)).toEqual({
+      conversationId: null,
+      mode: 'direct',
+      missing: [],
+    });
     const request = await write(ama, awaHandle, 'Bonjour Awa, je finance des projets agricoles.');
+    expect(await before(ama, awaHandle)).toEqual({
+      conversationId: request.conversationId,
+      mode: 'request',
+      missing: [],
+    });
     expect(await conversations(awa)).toHaveLength(0);
     const [received] = await conversations(awa, 'requests');
     expect(received).toMatchObject({ requestState: 'received', canSend: true });
@@ -192,6 +211,7 @@ describe('messaging', () => {
     expect((await write(stranger, awaHandle, 'Bonjour', 403)).code).toBe(
       'MESSAGING_RECIPIENT_NOT_ACCEPTING',
     );
+    expect(await before(stranger, awaHandle)).toMatchObject({ mode: 'refused' });
     await awa.agent.put('/v1/me/messaging/settings').send({ messagePolicy: 'verified_members' });
     const far = await createMember(app, 'far@example.com', { name: 'Far Away' });
     const other = await createMember(app, 'other@example.com', { name: 'Other One' });

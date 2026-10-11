@@ -31,9 +31,12 @@ import {
   messageListQuerySchema,
   type MessagePage,
   messagePageSchema,
+  memberHandleParamsSchema,
   messageSchema,
   type MessagingSettings,
   messagingSettingsSchema,
+  type MessagingWithMember,
+  messagingWithMemberSchema,
   proposeIntroductionRequestSchema,
   readConversationRequestSchema,
   sendMessageRequestSchema,
@@ -73,6 +76,8 @@ class ReadConversationDto extends createZodDto(readConversationRequestSchema) {}
 class ReadResultDto extends createZodDto(z.object({ sequence: z.number().int() })) {}
 class UpdateConversationDto extends createZodDto(updateConversationRequestSchema) {}
 class MessagingSettingsDto extends createZodDto(messagingSettingsSchema) {}
+class MessagingWithMemberDto extends createZodDto(messagingWithMemberSchema) {}
+class MemberHandleParamsDto extends createZodDto(memberHandleParamsSchema) {}
 class ProposeIntroductionDto extends createZodDto(proposeIntroductionRequestSchema) {}
 class IntroductionDto extends createZodDto(introductionSchema) {}
 class IntroductionPageDto extends createZodDto(introductionPageSchema) {}
@@ -174,6 +179,21 @@ export class MessagingController {
     @Query() query: ConversationListQueryDto,
   ): Promise<CursorPage<Conversation>> {
     return this.conversations.list(principal.userId, query);
+  }
+
+  /**
+   * How the member may write to another one: their direct conversation, or what a first message
+   * would be (direct, a request, refused by the preference of the member) and the prerequisites.
+   */
+  @Get('messaging/members/:handle')
+  @RequireAction('messaging.read')
+  @ZodSerializerDto(MessagingWithMemberDto)
+  @ApiOkResponse({ type: MessagingWithMemberDto.Output })
+  withMember(
+    @CurrentPrincipal() principal: Principal,
+    @Param() params: MemberHandleParamsDto,
+  ): Promise<MessagingWithMember> {
+    return this.conversations.withMember(principal.userId, params.handle);
   }
 
   /** First message to a member, in the direct conversation of the pair (created if needed). */

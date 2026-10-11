@@ -46,6 +46,7 @@ Persistance avant toute diffusion ; diffusion après la validation de la transac
 - `GET|PATCH /v1/messaging/conversations/{conversationId}`, `POST .../leave`, `GET .../messages?afterSequence=|beforeSequence=&limit=`, `POST .../messages` (`Idempotency-Key`), `POST .../read` (`messaging.conversation.participate`, rôle `participant` donné par `ConversationResolver`)
 - `PATCH|DELETE /v1/messaging/conversations/{conversationId}/messages/{messageId}` (`messaging.message.update`, rôle `sender`)
 - `POST /v1/messaging/conversations/{conversationId}/accept`, `POST .../decline` (`messaging.request.respond`, rôle `request_recipient`)
+- `GET /v1/messaging/members/{handle}` (`messaging.read`) : avant d'écrire, la conversation directe de la paire quand elle se voit, le mode d'un premier message (`direct`, `request` hors réseau, `refused` par la préférence du membre, calculé par `decideStart`) et les prérequis qui manquent encore (`missing`)
 - `GET /v1/me/messaging/settings` (`messaging.read`), `PUT /v1/me/messaging/settings` (`messaging.settings.update`)
 - `POST /v1/messaging/introductions` (`messaging.introduction.propose`, email vérifié, `Idempotency-Key`), `GET /v1/messaging/introductions`, `GET /v1/messaging/introductions/{introductionId}` (`messaging.read`), `POST .../accept`, `POST .../decline` (`messaging.introduction.respond`, rôle `introduced`)
 

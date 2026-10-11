@@ -24408,6 +24408,112 @@
         "x-access": "messaging.conversation.start"
       }
     },
+    "/v1/messaging/members/{handle}": {
+      "get": {
+        "operationId": "MessagingController_withMember",
+        "parameters": [
+          {
+            "name": "handle",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "pattern": "^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessagingWithMemberDto_Output"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error (RFC 9457 problem details)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "VALIDATION_FAILED": {
+                    "$ref": "#/components/examples/VALIDATION_FAILED"
+                  },
+                  "UNAUTHENTICATED": {
+                    "$ref": "#/components/examples/UNAUTHENTICATED"
+                  },
+                  "FORBIDDEN": {
+                    "$ref": "#/components/examples/FORBIDDEN"
+                  },
+                  "ACCESS_ORIGIN_NOT_ALLOWED": {
+                    "$ref": "#/components/examples/ACCESS_ORIGIN_NOT_ALLOWED"
+                  },
+                  "ACCESS_PREREQUISITES_MISSING": {
+                    "$ref": "#/components/examples/ACCESS_PREREQUISITES_MISSING"
+                  },
+                  "ACCESS_ACCOUNT_SUSPENDED": {
+                    "$ref": "#/components/examples/ACCESS_ACCOUNT_SUSPENDED"
+                  },
+                  "NOT_FOUND": {
+                    "$ref": "#/components/examples/NOT_FOUND"
+                  },
+                  "RATE_LIMITED": {
+                    "$ref": "#/components/examples/RATE_LIMITED"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "tags": [
+          "messaging"
+        ],
+        "summary": "With member",
+        "description": "Action `messaging.read` (session cookie).\n\nErrors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.",
+        "x-error-codes": [
+          "VALIDATION_FAILED",
+          "UNAUTHENTICATED",
+          "FORBIDDEN",
+          "ACCESS_ORIGIN_NOT_ALLOWED",
+          "ACCESS_PREREQUISITES_MISSING",
+          "ACCESS_ACCOUNT_SUSPENDED",
+          "NOT_FOUND",
+          "RATE_LIMITED",
+          "MESSAGING_CONVERSATION_NOT_FOUND",
+          "MESSAGING_RECIPIENT_NOT_FOUND",
+          "MESSAGING_SELF_CONVERSATION",
+          "MESSAGING_RECIPIENT_NOT_ACCEPTING",
+          "MESSAGING_REQUEST_PENDING",
+          "MESSAGING_REQUEST_LIMIT",
+          "MESSAGING_REQUEST_NOT_FOUND",
+          "MESSAGING_CANNOT_SEND",
+          "MESSAGING_MESSAGE_EMPTY",
+          "MESSAGING_MESSAGE_NOT_FOUND",
+          "MESSAGING_NOT_SENDER",
+          "MESSAGING_EDIT_WINDOW_CLOSED",
+          "MESSAGING_MESSAGE_DELETED",
+          "MESSAGING_CLIENT_ID_REUSED",
+          "MESSAGING_SHARED_POST_NOT_FOUND",
+          "MESSAGING_NOT_A_GROUP",
+          "MESSAGING_INTRODUCTION_NOT_FOUND",
+          "MESSAGING_INTRODUCTION_INVALID",
+          "MESSAGING_INTRODUCTION_NOT_CONNECTED",
+          "MESSAGING_INTRODUCTION_PENDING",
+          "MESSAGING_INTRODUCTION_ALREADY_ANSWERED"
+        ],
+        "x-access": "messaging.read"
+      }
+    },
     "/v1/messaging/conversations/{conversationId}": {
       "get": {
         "operationId": "MessagingController_get",
@@ -60937,6 +61043,53 @@
         "required": [
           "items",
           "nextCursor"
+        ],
+        "additionalProperties": false
+      },
+      "MessagingWithMemberDto_Output": {
+        "type": "object",
+        "properties": {
+          "conversationId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "direct",
+              "request",
+              "refused"
+            ]
+          },
+          "missing": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "legal_acceptance",
+                "email_verified",
+                "kyc_verified",
+                "two_factor",
+                "profile.minimum",
+                "profile.entrepreneur_facet",
+                "profile.contributor_facet",
+                "payout_account"
+              ]
+            }
+          }
+        },
+        "required": [
+          "conversationId",
+          "mode",
+          "missing"
         ],
         "additionalProperties": false
       },
