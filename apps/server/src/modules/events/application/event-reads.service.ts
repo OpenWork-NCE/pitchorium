@@ -222,6 +222,7 @@ export class EventReadsService {
           language: event.language,
           sectorCodes: event.sectorCodes,
           imageUrl: event.imageMediaId ? (images.get(event.imageMediaId)?.url ?? null) : null,
+          imageAlt: event.imageMediaId ? event.imageAlt : null,
           organizer,
           capacity: event.capacity,
           registeredCount: event.registeredCount,

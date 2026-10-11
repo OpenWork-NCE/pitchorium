@@ -4356,6 +4356,8 @@ export type FeedPageDtoOutputItemsItem =
         sectorCodes: string[];
         /** @nullable */
         imageUrl: string | null;
+        /** @nullable */
+        imageAlt: string | null;
         organizer:
           | {
               kind: 'member';
@@ -13007,6 +13009,7 @@ export interface CreateEventDto {
    */
   countryCodes?: string[];
   imageMediaId?: string | null;
+  imageAlt?: string | null;
   capacity?: number | null;
   visibility?: CreateEventDtoVisibility;
   organizationId?: string | null;
@@ -13123,6 +13126,8 @@ export interface EventDtoOutput {
   sectorCodes: string[];
   /** @nullable */
   imageUrl: string | null;
+  /** @nullable */
+  imageAlt: string | null;
   organizer: EventDtoOutputOrganizer;
   capacity: number | null;
   /**
@@ -13222,6 +13227,8 @@ export type EventCardPageDtoOutputItemsItem = {
   sectorCodes: string[];
   /** @nullable */
   imageUrl: string | null;
+  /** @nullable */
+  imageAlt: string | null;
   organizer: EventCardPageDtoOutputItemsItemOrganizer;
   capacity: number | null;
   /**
@@ -13300,6 +13307,7 @@ export interface UpdateEventDto {
    */
   countryCodes?: string[];
   imageMediaId?: string | null;
+  imageAlt?: string | null;
   capacity?: number | null;
   visibility?: UpdateEventDtoVisibility;
 }

@@ -47,6 +47,8 @@ export const eventsEvents = eventsSchema.table(
     sectorCodes: text('sector_codes').array().notNull(),
     countryCodes: text('country_codes').array().notNull(),
     imageMediaId: uuid('image_media_id'),
+    /** Text alternative of the image, written by the organizer. */
+    imageAlt: text('image_alt'),
     /** Null: unlimited. */
     capacity: integer('capacity'),
     registeredCount: integer('registered_count').notNull(),

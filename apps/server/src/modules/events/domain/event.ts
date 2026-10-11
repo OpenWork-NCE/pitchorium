@@ -35,6 +35,7 @@ export interface EventRecord {
   sectorCodes: string[];
   countryCodes: string[];
   imageMediaId: string | null;
+  imageAlt: string | null;
   capacity: number | null;
   registeredCount: number;
   waitlistCount: number;

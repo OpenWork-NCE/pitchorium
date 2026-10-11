@@ -25,6 +25,7 @@ export const EVENT_LOCATION_MAX_LENGTH = 200;
 export const EVENT_SECTORS_MAX = 5;
 export const EVENT_COUNTRIES_MAX = 10;
 export const EVENT_CAPACITY_MAX = 100_000;
+export const EVENT_IMAGE_ALT_MAX_LENGTH = 300;
 /** An event lasts at most this many days. */
 export const EVENT_MAX_DURATION_DAYS = 14;
 
@@ -72,6 +73,8 @@ const eventFields = {
   countryCodes: z.array(countryCodeSchema).max(EVENT_COUNTRIES_MAX),
   /** Ready image of the organizer (media usage `event_image`). */
   imageMediaId: uuidV7Schema.nullable(),
+  /** Text alternative of the image, written by the organizer. */
+  imageAlt: z.string().trim().min(1).max(EVENT_IMAGE_ALT_MAX_LENGTH).nullable(),
   /** Seats; null for an unlimited event. */
   capacity: z.number().int().min(1).max(EVENT_CAPACITY_MAX).nullable(),
   visibility: eventVisibilitySchema,
@@ -85,6 +88,7 @@ export const createEventRequestSchema = z.object({
   sectorCodes: eventFields.sectorCodes.default([]),
   countryCodes: eventFields.countryCodes.default([]),
   imageMediaId: eventFields.imageMediaId.default(null),
+  imageAlt: eventFields.imageAlt.default(null),
   capacity: eventFields.capacity.default(null),
   visibility: eventFields.visibility.default('members'),
   /** Organized on behalf of an organization the member is `owner` or `admin` of. */
@@ -132,6 +136,8 @@ export const eventCardSchema = z.object({
   language: z.string(),
   sectorCodes: z.array(z.string()),
   imageUrl: z.string().nullable(),
+  /** Text alternative of the image; null when the image is decorative or absent. */
+  imageAlt: z.string().nullable(),
   organizer: eventOrganizerSchema,
   capacity: z.number().int().nullable(),
   registeredCount: z.number().int(),

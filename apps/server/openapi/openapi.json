@@ -46353,6 +46353,12 @@
                             "null"
                           ]
                         },
+                        "imageAlt": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
                         "organizer": {
                           "oneOf": [
                             {
@@ -46484,6 +46490,7 @@
                         "language",
                         "sectorCodes",
                         "imageUrl",
+                        "imageAlt",
                         "organizer",
                         "capacity",
                         "registeredCount",
@@ -66011,6 +66018,19 @@
               }
             ]
           },
+          "imageAlt": {
+            "default": null,
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 300
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "capacity": {
             "default": null,
             "anyOf": [
@@ -66135,6 +66155,12 @@
             }
           },
           "imageUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "imageAlt": {
             "type": [
               "string",
               "null"
@@ -66469,6 +66495,7 @@
           "language",
           "sectorCodes",
           "imageUrl",
+          "imageAlt",
           "organizer",
           "capacity",
           "registeredCount",
@@ -66562,6 +66589,12 @@
                   }
                 },
                 "imageUrl": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "imageAlt": {
                   "type": [
                     "string",
                     "null"
@@ -66698,6 +66731,7 @@
                 "language",
                 "sectorCodes",
                 "imageUrl",
+                "imageAlt",
                 "organizer",
                 "capacity",
                 "registeredCount",
@@ -66835,6 +66869,18 @@
                 "type": "string",
                 "format": "uuid",
                 "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "imageAlt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 300
               },
               {
                 "type": "null"

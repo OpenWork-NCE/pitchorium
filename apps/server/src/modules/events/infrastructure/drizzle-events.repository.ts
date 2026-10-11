@@ -66,6 +66,7 @@ const toEvent = (row: EventRow): EventRecord => ({
   sectorCodes: row.sectorCodes,
   countryCodes: row.countryCodes,
   imageMediaId: row.imageMediaId,
+  imageAlt: row.imageAlt,
   capacity: row.capacity,
   registeredCount: row.registeredCount,
   waitlistCount: row.waitlistCount,

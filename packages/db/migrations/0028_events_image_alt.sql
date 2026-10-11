@@ -1,0 +1,1 @@
+ALTER TABLE "events"."events" ADD COLUMN "image_alt" text;
