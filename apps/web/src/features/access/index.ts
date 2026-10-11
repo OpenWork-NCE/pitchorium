@@ -6,5 +6,6 @@ export {
   type PrerequisiteFormProps,
   type PrerequisiteForms,
   PrerequisiteGateProvider,
+  useCompletePrerequisites,
   useWithPrerequisites,
 } from './components/prerequisite-gate';

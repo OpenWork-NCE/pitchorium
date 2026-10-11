@@ -117,6 +117,16 @@ export function PrerequisiteGateProvider({
  * Runs an action of the api; refused for missing elements, it opens their forms and runs again
  * once they are completed. Any other error, or a closed dialog, is thrown as it came.
  */
+/**
+ * Opens the forms of the given elements of the api (`profile.contributor_facet`) when a refusal
+ * of a module names what to complete without the code of the prerequisites (a mission offer
+ * refused for a missing hat, `MISSIONS_HAT_REQUIRED`); true once completed. Null outside the
+ * member space.
+ */
+export function useCompletePrerequisites(): Complete | null {
+  return use(GateContext);
+}
+
 export function useWithPrerequisites(): <T>(action: () => Promise<T>) => Promise<T> {
   const complete = use(GateContext);
   return useMemo(
