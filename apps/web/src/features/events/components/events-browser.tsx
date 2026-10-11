@@ -4,7 +4,15 @@ import { useTranslations } from 'next-intl';
 import { parseAsString, parseAsStringLiteral, useQueryStates } from 'nuqs';
 import { type ReactNode, useTransition } from 'react';
 import { UrlStateProvider } from '@/components/layout/url-state';
-import { DeferredSelect, Field, Input, Loading, Skeleton, Tabs, TabsPanel } from '@/components/ui';
+import {
+  DateTimeField,
+  DeferredSelect,
+  Field,
+  Loading,
+  Skeleton,
+  Tabs,
+  TabsPanel,
+} from '@/components/ui';
 import { EVENT_TABS, type EventTab, MY_ROLES } from '../lib/events-query';
 import { EVENT_FORMATS } from '../lib/limits';
 
@@ -97,10 +105,10 @@ function Browser({ signedIn, countries, sectors, languages, children }: EventsBr
             )}
             {state.tab === 'upcoming' ? (
               <Field label={t('from')}>
-                <Input
-                  type="date"
-                  value={state.from ?? ''}
-                  onChange={(change) => void setState({ from: change.target.value || null })}
+                <DateTimeField
+                  granularity="day"
+                  value={state.from ?? null}
+                  onChange={(next) => void setState({ from: next })}
                 />
               </Field>
             ) : null}

@@ -9,6 +9,7 @@ import {
   Button,
   Dialog,
   DialogContent,
+  DateTimeField,
   Field,
   Input,
   RadioGroup,
@@ -158,11 +159,11 @@ export default function DeclareTimeDialog({
             <p className="text-sm text-muted">{t('durationHint')}</p>
           </fieldset>
           <Field label={t('date')} description={t('dateHint')}>
-            <Input
-              type="date"
-              max={today()}
-              value={date}
-              onChange={(event) => setDate(event.target.value)}
+            <DateTimeField
+              granularity="day"
+              maxDate={today()}
+              value={date || null}
+              onChange={(next) => setDate(next ?? '')}
             />
           </Field>
           <Field

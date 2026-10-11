@@ -16,6 +16,7 @@ import {
   DeferredSelect,
   Form,
   FormActions,
+  DateTimeField,
   FormField,
   Input,
   RadioGroup,
@@ -352,7 +353,13 @@ export function MissionForm({ direction: initial }: { direction: MissionDirectio
             name="desiredBy"
             label={t('desiredBy')}
             optional
-            render={({ field }) => <Input {...field} value={field.value ?? ''} type="date" />}
+            render={({ field }) => (
+              <DateTimeField
+                granularity="day"
+                value={field.value || null}
+                onChange={(next) => field.onChange(next ?? '')}
+              />
+            )}
           />
         </>
       )}

@@ -16,6 +16,7 @@ import {
   Callout,
   Card,
   Checkbox,
+  DateTimeField,
   Field,
   FormActions,
   Heading,
@@ -361,10 +362,10 @@ function RewardForm({
         </Field>
       ) : null}
       <Field label={t('delivery')} optional description={t('deliveryHint')}>
-        <Input
-          type="date"
-          value={draft.estimatedDelivery}
-          onChange={(event) => set({ estimatedDelivery: event.target.value })}
+        <DateTimeField
+          granularity="day"
+          value={draft.estimatedDelivery || null}
+          onChange={(next) => set({ estimatedDelivery: next ?? '' })}
         />
       </Field>
       {problem ? (

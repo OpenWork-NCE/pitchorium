@@ -84,6 +84,13 @@ export function createWebConfig({ tsconfigRootDir, ignores = [] }) {
             message:
               'Read a value of the form with useWatch: watch does not re-render a compiled component.',
           },
+          // A native date or time field follows the browser, not the language of the page
+          // (ADR 0100, FRONT 8A): DateTimeField, with the granularity `day` for a day alone.
+          {
+            selector: "JSXAttribute[name.name='type'][value.value=/^(date|time|datetime-local)$/]",
+            message:
+              'No native date or time field: use DateTimeField (granularity "day" for a day alone).',
+          },
         ],
       },
     },

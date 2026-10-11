@@ -31,6 +31,23 @@ async function rulesFor(relativePath: string, code: string): Promise<string[]> {
 
 // The first lint starts the TypeScript project service: several seconds on a CI runner.
 describe('architecture rules of the web app', { timeout: 60_000 }, () => {
+  it('refuses a native date or time field', async () => {
+    for (const type of ['date', 'time', 'datetime-local']) {
+      expect(
+        await rulesFor(
+          'src/features/events/violation.tsx',
+          `export function X() {\n  return <input aria-label="x" type="${type}" />;\n}\n`,
+        ),
+      ).toContain('no-restricted-syntax');
+    }
+    expect(
+      await rulesFor(
+        'src/features/events/allowed.tsx',
+        'export function X() {\n  return <input aria-label="x" type="number" />;\n}\n',
+      ),
+    ).not.toContain('no-restricted-syntax');
+  });
+
   it('keeps features out of the design system', async () => {
     expect(
       await rulesFor(

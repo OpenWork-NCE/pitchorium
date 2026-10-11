@@ -20,13 +20,16 @@ import {
   dayPeriods,
   EMPTY,
   eraseDigit,
+  fromDay,
   fromWallDateTime,
+  type Granularity,
   type PartialDateTime,
   type SegmentType,
   segmentLength,
   segmentRange,
   segmentValue,
   stepSegment,
+  toDay,
   toWallDateTime,
   typeDigit,
   withSegment,
@@ -43,16 +46,24 @@ const loadCalendar = () => import('./calendar');
 const Calendar = lazy(() => loadCalendar().then((module) => ({ default: module.Calendar })));
 
 interface DateTimeFieldProps {
-  /** Instant in ISO 8601 (UTC), null while incomplete. */
+  /**
+   * Instant in ISO 8601 (UTC), or the day `YYYY-MM-DD` with the granularity `day`; null while
+   * incomplete.
+   */
   value: string | null;
-  onChange: (instant: string | null) => void;
+  onChange: (value: string | null) => void;
   /**
    * IANA zone of the wall clock typed (the place of an event): named once next to the dates of
-   * the form (TimeZoneSelect), never under each field.
+   * the form (TimeZoneSelect), never under each field. Absent for a day alone: today is then the
+   * day of the reader.
    */
-  timeZone: string;
+  timeZone?: string;
+  /** `minute` (default): a date and its time, an instant; `day`: a day alone, no time, no zone. */
+  granularity?: Granularity;
   /** Earliest day of the calendar, `YYYY-MM-DD`. */
   minDate?: string;
+  /** Latest day of the calendar, `YYYY-MM-DD`. */
+  maxDate?: string;
   disabled?: boolean | undefined;
   id?: string | undefined;
   'aria-describedby'?: string | undefined;
@@ -70,11 +81,13 @@ const PAGE_STEP: Record<SegmentType, number> = {
   dayPeriod: 1,
 };
 
-function partsOf(value: string | null, zone: string): PartialDateTime {
-  return value ? fromWallDateTime(instantToWallTime(value, zone)) : EMPTY;
+function partsOf(value: string | null, zone: string, granularity: Granularity): PartialDateTime {
+  if (!value) return EMPTY;
+  return granularity === 'day' ? fromDay(value) : fromWallDateTime(instantToWallTime(value, zone));
 }
 
-function instantOf(parts: PartialDateTime, zone: string): string | null {
+function instantOf(parts: PartialDateTime, zone: string, granularity: Granularity): string | null {
+  if (granularity === 'day') return toDay(parts);
   const wall = toWallDateTime(parts);
   return wall ? wallTimeToInstant(wall, zone) : null;
 }
@@ -85,12 +98,16 @@ function instantOf(parts: PartialDateTime, zone: string): string | null {
  * whatever the browser. Each segment is a spin button: digits, arrows (Page Up and Down for
  * larger steps), Home and End, Backspace; Left and Right move between segments. The day can
  * also be picked in a calendar. The wall clock is that of `timeZone`; the value is an instant.
+ * With the granularity `day`, the same field without the time: the value is the day `YYYY-MM-DD`
+ * (no native date field, FRONT 8A).
  */
 export function DateTimeField({
   value,
   onChange,
-  timeZone,
+  timeZone = 'UTC',
+  granularity = 'minute',
   minDate,
+  maxDate,
   ...props
 }: DateTimeFieldProps) {
   const locale = useLocale();
@@ -98,10 +115,10 @@ export function DateTimeField({
   const control = useFieldControl(props);
   const labelId = useFieldLabelId();
   const generated = useId();
-  const layout = dateTimeLayout(locale);
+  const layout = dateTimeLayout(locale, granularity);
   const periods = useMemo(() => dayPeriods(locale), [locale]);
   const segments = useRef<(HTMLSpanElement | null)[]>([]);
-  const [parts, setPartsState] = useState(() => partsOf(value, timeZone));
+  const [parts, setPartsState] = useState(() => partsOf(value, timeZone, granularity));
   const [typed, setTypedState] = useState('');
   // What the handlers read: moving the focus runs the blur of the left segment before the next
   // render, with the state of the previous one.
@@ -122,7 +139,9 @@ export function DateTimeField({
   const [seen, setSeen] = useState({ value, timeZone });
   if (seen.value !== value || seen.timeZone !== timeZone) {
     setSeen({ value, timeZone });
-    if (value !== instantOf(parts, seen.timeZone)) setPartsState(partsOf(value, timeZone));
+    if (value !== instantOf(parts, seen.timeZone, granularity)) {
+      setPartsState(partsOf(value, timeZone, granularity));
+    }
   }
 
   // The zone changes under a complete date: the same wall clock, another instant.
@@ -130,9 +149,9 @@ export function DateTimeField({
   useEffect(() => {
     if (zone.current === timeZone) return;
     zone.current = timeZone;
-    const next = instantOf(parts, timeZone);
+    const next = instantOf(parts, timeZone, granularity);
     if (next !== value) onChange(next);
-  }, [timeZone, parts, value, onChange]);
+  }, [timeZone, parts, value, onChange, granularity]);
 
   useEffect(() => preloadWhenIdle(loadCalendar), []);
 
@@ -141,7 +160,7 @@ export function DateTimeField({
 
   function commit(next: PartialDateTime) {
     setParts(next);
-    const instant = instantOf(next, timeZone);
+    const instant = instantOf(next, timeZone, granularity);
     if (instant !== value) {
       setSeen({ value: instant, timeZone });
       onChange(instant);
@@ -153,7 +172,10 @@ export function DateTimeField({
   }
 
   function reference() {
-    const current = now(timeZone);
+    // A day alone has no zone: today is the day of the reader.
+    const current = now(
+      granularity === 'day' ? Intl.DateTimeFormat().resolvedOptions().timeZone : timeZone,
+    );
     return {
       year: current.year,
       month: current.month,
@@ -308,9 +330,12 @@ export function DateTimeField({
     parts.year !== null && parts.month !== null && parts.day !== null
       ? { year: parts.year, month: parts.month, day: parts.day }
       : null;
-  const [minYear, minMonth, minDay] = (minDate ?? '').split('-').map(Number);
-  const min =
-    minYear && minMonth && minDay ? { year: minYear, month: minMonth, day: minDay } : undefined;
+  const dayOf = (text: string | undefined) => {
+    const [year, month, day] = (text ?? '').split('-').map(Number);
+    return year && month && day ? { year, month, day } : undefined;
+  };
+  const min = dayOf(minDate);
+  const max = dayOf(maxDate);
 
   return (
     <div
@@ -408,6 +433,7 @@ export function DateTimeField({
             <Calendar
               selected={selectedDay}
               min={min}
+              max={max}
               defaultMonth={selectedDay ?? reference()}
               onSelect={(day) => {
                 commit({ ...current.current.parts, ...day });

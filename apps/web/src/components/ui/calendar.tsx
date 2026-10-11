@@ -19,6 +19,8 @@ interface CalendarProps {
   onSelect: (day: CalendarDay) => void;
   /** Earliest day that can be chosen. */
   min?: CalendarDay | undefined;
+  /** Latest day that can be chosen. */
+  max?: CalendarDay | undefined;
   /** The month shown first, the selected one by default. */
   defaultMonth?: CalendarDay | undefined;
   className?: string;
@@ -37,7 +39,7 @@ const fromDate = (date: Date): CalendarDay => ({
  * labels formatted by Intl in the language of the page, the first day of the week of that
  * language, arrows, Page Up and Down, Home and End on the grid.
  */
-export function Calendar({ selected, onSelect, min, defaultMonth, className }: CalendarProps) {
+export function Calendar({ selected, onSelect, min, max, defaultMonth, className }: CalendarProps) {
   const locale = useLocale();
   const t = useTranslations('web.ui.calendar');
   const formats = useMemo(
@@ -73,7 +75,10 @@ export function Calendar({ selected, onSelect, min, defaultMonth, className }: C
           if (date) onSelect(fromDate(date));
         }}
         defaultMonth={start ? toDate(start) : undefined}
-        disabled={min ? { before: toDate(min) } : undefined}
+        disabled={[
+          ...(min ? [{ before: toDate(min) }] : []),
+          ...(max ? [{ after: toDate(max) }] : []),
+        ]}
         showOutsideDays
         fixedWeeks
         formatters={{

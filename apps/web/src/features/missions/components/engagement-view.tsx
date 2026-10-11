@@ -19,6 +19,7 @@ import {
   Card,
   Dialog,
   DialogContent,
+  DateTimeField,
   Field,
   FormActions,
   Heading,
@@ -282,11 +283,11 @@ export function EngagementView({
                       </div>
                     </fieldset>
                     <Field label={t('date')}>
-                      <Input
-                        type="date"
-                        value={day}
-                        max={today()}
-                        onChange={(change) => setDay(change.target.value)}
+                      <DateTimeField
+                        granularity="day"
+                        value={day || null}
+                        maxDate={today()}
+                        onChange={(next) => setDay(next ?? '')}
                       />
                     </Field>
                     <Field label={t('description')} description={t('descriptionHint')}>

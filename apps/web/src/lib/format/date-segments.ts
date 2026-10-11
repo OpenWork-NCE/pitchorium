@@ -40,16 +40,25 @@ export const EMPTY: PartialDateTime = {
 const SEGMENT_TYPES = new Set<string>(['day', 'month', 'year', 'hour', 'minute', 'dayPeriod']);
 const layouts = new Map<string, DateTimeLayout>();
 
-/** Order, separators and clock of the locale (`fr`: 20/11/2026 18:05, `en`: 11/20/2026, 6:05 PM). */
-export function dateTimeLayout(locale: string): DateTimeLayout {
-  const cached = layouts.get(locale);
+/** A date and its time, or a day alone. */
+export type Granularity = 'minute' | 'day';
+
+/**
+ * Order, separators and clock of the locale (`fr`: 20/11/2026 18:05, `en`: 11/20/2026, 6:05 PM),
+ * without the time for a day alone (`fr`: 20/11/2026).
+ */
+export function dateTimeLayout(
+  locale: string,
+  granularity: Granularity = 'minute',
+): DateTimeLayout {
+  const key = `${locale}:${granularity}`;
+  const cached = layouts.get(key);
   if (cached) return cached;
   const formatter = new DateFormatter(locale, {
     year: 'numeric',
     month: '2-digit',
     day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
+    ...(granularity === 'minute' ? { hour: '2-digit', minute: '2-digit' } : {}),
     timeZone: 'UTC',
   });
   const items: LayoutItem[] = formatter
@@ -61,7 +70,7 @@ export function dateTimeLayout(locale: string): DateTimeLayout {
     });
   const cycle = formatter.resolvedOptions().hourCycle ?? 'h23';
   const layout = { items, hour12: cycle === 'h11' || cycle === 'h12' };
-  layouts.set(locale, layout);
+  layouts.set(key, layout);
   return layout;
 }
 
@@ -221,4 +230,20 @@ export function toWallDateTime(parts: PartialDateTime): WallDateTime | null {
 /** Parts of a complete date and time. */
 export function fromWallDateTime(wall: WallDateTime): PartialDateTime {
   return { ...wall, pm: null };
+}
+
+const pad = (value: number, length: number) => String(value).padStart(length, '0');
+
+/** The complete day as `YYYY-MM-DD`, or null while a part is missing. */
+export function toDay(parts: PartialDateTime): string | null {
+  const { year, month, day } = parts;
+  if (year === null || month === null || day === null) return null;
+  return `${pad(year, 4)}-${pad(month, 2)}-${pad(day, 2)}`;
+}
+
+/** Parts of a day written `YYYY-MM-DD`; empty for anything else. */
+export function fromDay(value: string): PartialDateTime {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+  if (!match) return EMPTY;
+  return { ...EMPTY, year: Number(match[1]), month: Number(match[2]), day: Number(match[3]) };
 }
