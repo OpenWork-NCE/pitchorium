@@ -82,11 +82,15 @@ export class MissionsPersonalData implements OnModuleInit {
       await this.recorder.record(MissionClosed, mission.id, { by: pseudonym });
     const missionIds = [...new Set(touched.map((row) => row.missionId))];
     if (missionIds.length > 0) {
-      await db.execute(sql`
-        update missions.missions m set active_engagements = (
-          select count(*) from missions.engagements e
-          where e.mission_id = m.id and e.status = 'accepted')
-        where m.id = any(${missionIds}::uuid[])`);
+      // The ids as a list (`inArray`): a JavaScript array in a `sql` template expands into one,
+      // which `any(...::uuid[])` cannot read.
+      await db
+        .update(missionsMissions)
+        .set({
+          activeEngagements: sql`(select count(*) from missions.engagements e
+            where e.mission_id = ${missionsMissions.id} and e.status = 'accepted')`,
+        })
+        .where(inArray(missionsMissions.id, missionIds));
     }
     await replaceIdentifier(
       db,
