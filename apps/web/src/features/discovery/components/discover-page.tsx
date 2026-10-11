@@ -59,7 +59,7 @@ export async function DiscoverSectionGrid({
     );
   }
   return (
-    <ResultGrid wide>
+    <ResultGrid>
       {page.items.map((card, index) => {
         const sentence = page.sentences[index];
         const id = `${card.kind}:${card.key}`;

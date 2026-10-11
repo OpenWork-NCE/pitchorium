@@ -21,13 +21,16 @@ export function MissionCard({
   const reference = useTranslations('reference');
   const Title = `h${headingLevel}` as const;
   return (
-    <Card className="relative grid h-full content-start gap-3" data-mission-card={mission.id}>
+    <Card
+      className="relative grid h-full min-w-0 content-start gap-3"
+      data-mission-card={mission.id}
+    >
       <div className="flex flex-wrap gap-1.5">
         <Badge tone="accent">{reference(`missionDirections.${mission.direction}`)}</Badge>
         <Badge>{reference(`timeEntryKinds.${mission.kind}`)}</Badge>
         {mission.status === 'closed' ? <Badge>{reference('missionStatuses.closed')}</Badge> : null}
       </div>
-      <Title className="font-sans text-lg leading-snug font-semibold text-balance">
+      <Title className="font-sans text-lg leading-snug font-semibold text-pretty break-words">
         <Link
           href={routes.mission(mission.id)}
           className="link-underline-hover outline-none after:absolute after:inset-0 after:rounded-xl focus-visible:after:outline-2 focus-visible:after:outline-focus"
@@ -48,14 +51,14 @@ export function MissionCard({
         </span>
         <span>{reference(`missionModes.${mission.mode}`)}</span>
       </Text>
-      <div className="flex items-center gap-2 pt-1">
+      <div className="flex min-w-0 items-center gap-2 pt-1">
         <Avatar
           name={mission.author.member.displayName}
           src={mission.author.member.avatarUrl}
           size="xs"
           decorative
         />
-        <Text size="sm" tone="muted" className="truncate">
+        <Text size="sm" tone="muted" className="min-w-0 truncate">
           {mission.author.project
             ? t('byForProject', {
                 name: mission.author.member.displayName,

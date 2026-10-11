@@ -112,7 +112,7 @@ export async function EventPage({ event, view, readerTimeZone, pageUrl, icsUrl }
       ) : null}
       {event.status === 'draft' ? <Alert tone="info">{t('draft')}</Alert> : null}
       <header className="grid gap-6 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] lg:items-start">
-        <div className="relative aspect-video overflow-hidden rounded-xl bg-surface-sunken">
+        <div className="relative aspect-video overflow-hidden rounded-xl bg-cover-placeholder">
           {event.imageUrl ? (
             // The props of next/image without its client component (ADR 0094); `alt` is in them.
             // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
@@ -129,7 +129,7 @@ export async function EventPage({ event, view, readerTimeZone, pageUrl, icsUrl }
           ) : (
             <span
               aria-hidden
-              className="absolute inset-0 bg-[url(/brand/overlay-desktop.svg)] bg-cover bg-center opacity-70"
+              className="absolute inset-0 bg-[url(/brand/overlay-desktop.svg)] bg-cover bg-center dark:brightness-[2.6]"
             />
           )}
         </div>

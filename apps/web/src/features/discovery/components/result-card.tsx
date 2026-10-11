@@ -74,22 +74,23 @@ export function ResultCard({ card, reason, action, headingLevel = 3 }: ResultCar
   const Title = `h${headingLevel}` as const;
   return (
     <Card
-      className="relative grid h-full content-start gap-3 overflow-hidden p-0"
+      padding="none"
+      className="relative grid h-full min-w-0 content-start gap-3 overflow-hidden"
       data-result-kind={card.kind}
     >
       {card.kind === 'project' || card.kind === 'event' ? (
         <div
           className={cn(
-            'relative w-full overflow-hidden bg-surface-sunken',
+            'relative w-full overflow-hidden bg-cover-placeholder',
             card.kind === 'event' ? 'aspect-video' : 'aspect-[4/3]',
           )}
         >
-          {image ?? (
-            <span
-              aria-hidden
-              className="absolute inset-0 bg-[url(/brand/overlay-mobile.svg)] bg-size-[160%_auto] bg-center bg-no-repeat opacity-60"
-            />
-          )}
+          {/* The elevation pattern, brightened on the deep violet of the dark theme. */}
+          <span
+            aria-hidden
+            className="absolute inset-0 bg-[url(/brand/overlay-desktop.svg)] bg-cover bg-center dark:brightness-[2.6]"
+          />
+          {image}
           {card.kind === 'event' ? (
             <CalendarDays
               aria-hidden
@@ -100,7 +101,7 @@ export function ResultCard({ card, reason, action, headingLevel = 3 }: ResultCar
       ) : null}
       <div
         className={cn(
-          'grid gap-2 px-5 pb-5',
+          'grid min-w-0 gap-2 px-5 pb-5',
           card.kind === 'project' || card.kind === 'event' ? '' : 'pt-5',
         )}
       >
@@ -119,16 +120,16 @@ export function ResultCard({ card, reason, action, headingLevel = 3 }: ResultCar
                 <Badge>{reference(`projectStatuses.${card.status}`)}</Badge>
               ) : null}
             </div>
-            <Title className="font-sans text-lg leading-snug font-semibold text-balance">
-              <span className="inline-flex items-center gap-1.5">
-                <Link
-                  href={href}
-                  className="link-underline-hover outline-none after:absolute after:inset-0 after:rounded-xl focus-visible:after:outline-2 focus-visible:after:outline-focus"
-                >
-                  {card.title}
-                </Link>
-                {card.kind === 'organization' && card.verified ? <VerifiedBadge /> : null}
-              </span>
+            <Title className="font-sans text-lg leading-snug font-semibold text-pretty break-words">
+              <Link
+                href={href}
+                className="link-underline-hover outline-none after:absolute after:inset-0 after:rounded-xl focus-visible:after:outline-2 focus-visible:after:outline-focus"
+              >
+                {card.title}
+              </Link>
+              {card.kind === 'organization' && card.verified ? (
+                <VerifiedBadge className="ml-1.5 align-middle" />
+              ) : null}
             </Title>
             {card.subtitle ? (
               <Text size="sm" tone="muted" className="line-clamp-2">
@@ -166,16 +167,7 @@ export function ResultCard({ card, reason, action, headingLevel = 3 }: ResultCar
   );
 }
 
-/** A grid of cards, wide (§10.6): three or four across on a computer, one on a phone. */
-export function ResultGrid({ children, wide = false }: { children: ReactNode; wide?: boolean }) {
-  return (
-    <ul
-      className={cn(
-        'grid gap-6 sm:grid-cols-2',
-        wide ? 'lg:grid-cols-3 xl:grid-cols-4' : 'lg:grid-cols-3',
-      )}
-    >
-      {children}
-    </ul>
-  );
+/** A grid of cards, wide (§10.6): three across on a computer, two on a tablet, one on a phone. */
+export function ResultGrid({ children }: { children: ReactNode }) {
+  return <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">{children}</ul>;
 }

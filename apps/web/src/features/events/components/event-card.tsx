@@ -28,10 +28,16 @@ export function EventCard({
       : event.organizer.organization.name;
   return (
     <Card
-      className="relative grid h-full content-start gap-0 overflow-hidden p-0"
+      padding="none"
+      className="relative grid h-full min-w-0 content-start gap-0 overflow-hidden"
       data-event-card={event.slug}
     >
-      <div className="relative aspect-video w-full overflow-hidden bg-surface-sunken">
+      <div className="relative aspect-video w-full overflow-hidden bg-cover-placeholder">
+        {/* The elevation pattern, brightened on the deep violet of the dark theme. */}
+        <span
+          aria-hidden
+          className="absolute inset-0 bg-[url(/brand/overlay-desktop.svg)] bg-cover bg-center dark:brightness-[2.6]"
+        />
         {event.imageUrl ? (
           // The props of next/image without its client component (ADR 0094); `alt` is in them.
           // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
@@ -44,12 +50,7 @@ export function EventCard({
               className: 'object-cover',
             }).props}
           />
-        ) : (
-          <span
-            aria-hidden
-            className="absolute inset-0 bg-[url(/brand/overlay-mobile.svg)] bg-size-[160%_auto] bg-center bg-no-repeat opacity-60"
-          />
-        )}
+        ) : null}
       </div>
       <div className="grid gap-2 p-5">
         <div className="flex flex-wrap gap-1.5">
