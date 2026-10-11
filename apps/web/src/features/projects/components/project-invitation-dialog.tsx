@@ -2,7 +2,7 @@
 
 import { useTeamControllerInvitations } from '@pitchorium/api-client';
 import { useTranslations } from 'next-intl';
-import { DialogContent, Loading, Skeleton, Text } from '@/components/ui';
+import { Dialog, DialogContent, Loading, Skeleton, Text } from '@/components/ui';
 import { ProjectInvitationAnswer } from './project-invitations';
 
 /**
@@ -10,7 +10,25 @@ import { ProjectInvitationAnswer } from './project-invitations';
  * A1): the same consent to the public display as in the list, without leaving the page. An
  * invitation already answered or withdrawn says so.
  */
-export function ProjectInvitationDialogContent({
+export function ProjectInvitationDialog({
+  slug,
+  title,
+  open,
+  onOpenChange,
+}: {
+  slug: string;
+  title: string;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}) {
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <InvitationContent slug={slug} title={title} onClose={() => onOpenChange(false)} />
+    </Dialog>
+  );
+}
+
+function InvitationContent({
   slug,
   title,
   onClose,

@@ -25,10 +25,10 @@ import {
 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { createElement, useState } from 'react';
-import { Avatar, AvatarGroup, Dialog, IconButton, RelativeTime } from '@/components/ui';
+import { Avatar, AvatarGroup, IconButton, RelativeTime } from '@/components/ui';
 import { REACTION_ICONS } from '@/features/content';
 import { ConnectionRequestActions } from '@/features/network';
-import { LazyProjectInvitationDialogContent } from '@/features/projects';
+import { LazyProjectInvitationDialog } from '@/features/projects';
 import { Link } from '@/i18n/navigation';
 import { cn } from '@/lib/cn';
 import { targetHref } from '../lib/target';
@@ -112,6 +112,8 @@ export function NotificationItem({ notification, onOpen, onRemove }: Notificatio
     notification.type === 'project_team_invitation' &&
     notification.target.type === 'project_invitations';
   const [answering, setAnswering] = useState(false);
+  // Mounted at the first opening, then kept: closing gives the focus back to the line.
+  const [asked, setAsked] = useState(false);
   const href = teamInvitation ? null : targetHref(notification.target);
   const lineClass = cn(
     'rounded-xs text-sm text-pretty outline-none after:absolute after:inset-0 after:rounded-lg focus-visible:after:outline-2 focus-visible:after:outline-focus',
@@ -158,11 +160,12 @@ export function NotificationItem({ notification, onOpen, onRemove }: Notificatio
       </div>
       <div className="grid min-w-0 flex-1 gap-1">
         {teamInvitation ? (
-          <Dialog open={answering} onOpenChange={setAnswering}>
+          <>
             <button
               type="button"
               aria-haspopup="dialog"
               onClick={() => {
+                setAsked(true);
                 setAnswering(true);
                 if (!notification.read) onOpen?.(notification);
               }}
@@ -170,14 +173,15 @@ export function NotificationItem({ notification, onOpen, onRemove }: Notificatio
             >
               {content}
             </button>
-            {answering ? (
-              <LazyProjectInvitationDialogContent
+            {asked ? (
+              <LazyProjectInvitationDialog
+                open={answering}
+                onOpenChange={setAnswering}
                 slug={notification.target.key}
                 title={String(notification.data['title'] ?? '')}
-                onClose={() => setAnswering(false)}
               />
             ) : null}
-          </Dialog>
+          </>
         ) : href ? (
           <Link
             href={href}

@@ -71,14 +71,15 @@ describe('notification item', () => {
         eventCount: 1,
         excerpt: null,
         data: { title: 'Pompes solaires de Thiès', role: 'editor' },
-        target: { type: 'project_invitations', key: 'thies', path: '/projects' },
+        target: { type: 'project_invitations', key: 'thies', path: '/network/invitations' },
       }),
     );
-    expect(
-      screen.getByRole('link', {
-        name: /Kofi Mensah vous invite dans l['’]équipe de Pompes solaires/,
-      }),
-    ).toBeTruthy();
+    // An invitation to a team opens its acceptance dialog in place, not a page.
+    const line = screen.getByRole('button', {
+      name: /Kofi Mensah vous invite dans l['’]équipe de Pompes solaires/,
+    });
+    expect(line.getAttribute('aria-haspopup')).toBe('dialog');
+    expect(screen.queryByRole('link')).toBeNull();
   });
 
   it('is read when opened, removed on demand, and never links a page still to come', () => {

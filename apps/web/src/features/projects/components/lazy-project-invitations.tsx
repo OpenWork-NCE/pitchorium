@@ -9,8 +9,7 @@ export const LazyProjectInvitations = dynamic(
 );
 
 /** The answer to an invitation opened from its notification, loaded at the click. */
-export const LazyProjectInvitationDialogContent = dynamic(
-  () =>
-    import('./project-invitation-dialog').then((module) => module.ProjectInvitationDialogContent),
+export const LazyProjectInvitationDialog = dynamic(
+  () => import('./project-invitation-dialog').then((module) => module.ProjectInvitationDialog),
   { ssr: false },
 );

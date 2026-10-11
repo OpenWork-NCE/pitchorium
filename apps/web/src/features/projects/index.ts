@@ -1,6 +1,6 @@
 /** Public facade of the projects feature (§11): cards, showcase, page, creation and management. */
 export {
-  LazyProjectInvitationDialogContent,
+  LazyProjectInvitationDialog,
   LazyProjectInvitations,
 } from './components/lazy-project-invitations';
 export { MemberProjects } from './components/member-projects';
