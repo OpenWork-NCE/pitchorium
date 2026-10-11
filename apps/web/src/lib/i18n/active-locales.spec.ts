@@ -5,6 +5,15 @@ const answer = (locales: string[]) =>
     headers: { 'content-type': 'application/json' },
   });
 
+/**
+ * Each test reads a fresh module (its cache is per process). The module is imported before the
+ * clock is faked, and only `Date` is faked: an import while `setTimeout` is faked waits on the
+ * timers of the module runner, which never fire. Alone, the import came from the cache in time;
+ * beside the stories (`vitest run` of every project), it waited for its transform and the test ran
+ * out of time (FRONT 7, A3).
+ */
+const fakeClock = () => vi.useFakeTimers({ toFake: ['Date'] });
+
 describe('active locales', () => {
   beforeEach(() => vi.resetModules());
   afterEach(() => {
@@ -13,12 +22,12 @@ describe('active locales', () => {
   });
 
   it('reads them from the api once per minute', async () => {
-    vi.useFakeTimers();
     const fetchMock = vi
       .fn<typeof fetch>()
       .mockImplementation(() => Promise.resolve(answer(['fr', 'en'])));
     vi.stubGlobal('fetch', fetchMock);
     const { getActiveLocales } = await import('./active-locales');
+    fakeClock();
     expect((await getActiveLocales()).locales).toEqual(['fr', 'en']);
     await getActiveLocales();
     expect(fetchMock).toHaveBeenCalledOnce();
@@ -35,13 +44,13 @@ describe('active locales', () => {
   });
 
   it('keeps the last answer while the api is unreachable', async () => {
-    vi.useFakeTimers();
     const fetchMock = vi
       .fn<typeof fetch>()
       .mockResolvedValueOnce(answer(['fr', 'en']))
       .mockRejectedValue(new TypeError('fetch failed'));
     vi.stubGlobal('fetch', fetchMock);
     const { getActiveLocales } = await import('./active-locales');
+    fakeClock();
     await getActiveLocales();
     vi.advanceTimersByTime(61_000);
     expect((await getActiveLocales()).locales).toEqual(['fr', 'en']);

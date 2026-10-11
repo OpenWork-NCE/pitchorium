@@ -14,6 +14,8 @@ Pendant le travail, sur le poste, seulement ce qui est touché, en continu :
 
 Ni `verify:clean`, ni Lighthouse, ni captures de revue à ce niveau.
 
+Tests unitaires et stories ensemble (`vitest run` sans `--project`, FRONT 7, A3) : permis et vert. `active-locales.spec` y dépassait son délai : il relit un module neuf à chaque test (`vi.resetModules`) et faussait toutes les horloges avant de l'importer ; à côté des stories, l'import attendait la transformation par le lanceur de modules, dont les minuteries étaient fausses, et le test s'arrêtait à 5 s. Le module est désormais importé avant de fausser l'horloge, et seule `Date` est faussée. Un test qui fausse les minuteries n'importe rien ensuite.
+
 ## Niveau 2 : avant de pousser, et en CI à chaque push
 
 Bloquant. Workflow `.github/workflows/ci.yaml`, 15 minutes au plus ; le job `level-2` résume tous les autres (vert si chacun a réussi ou a été écarté par un filtre de chemins).
