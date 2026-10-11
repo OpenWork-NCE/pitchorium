@@ -9,6 +9,7 @@ import {
   ok,
   signInWithPassword,
   test,
+  twoPagePdf,
 } from './support';
 
 /**
@@ -82,33 +83,6 @@ async function heavyPhoto(page: Page, index: number) {
     name: `photo-${index}.jpg`,
     mimeType: 'image/jpeg',
     buffer: Buffer.from(data, 'base64'),
-  };
-}
-
-/** A valid PDF of two pages, with a correct cross-reference table. */
-function twoPagePdf() {
-  const objects = [
-    '<< /Type /Catalog /Pages 2 0 R >>',
-    '<< /Type /Pages /Kids [3 0 R 5 0 R] /Count 2 >>',
-    '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Contents 4 0 R /Resources << >> >>',
-    '<< /Length 27 >>\nstream\n0 0 1 rg 50 50 200 200 re f\nendstream',
-    '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Contents 6 0 R /Resources << >> >>',
-    '<< /Length 27 >>\nstream\n1 0 0 rg 50 50 200 200 re f\nendstream',
-  ];
-  let body = '%PDF-1.4\n';
-  const offsets: number[] = [];
-  objects.forEach((object, index) => {
-    offsets.push(body.length);
-    body += `${index + 1} 0 obj\n${object}\nendobj\n`;
-  });
-  const xref = body.length;
-  body += `xref\n0 ${objects.length + 1}\n0000000000 65535 f \n`;
-  body += offsets.map((offset) => `${String(offset).padStart(10, '0')} 00000 n \n`).join('');
-  body += `trailer\n<< /Size ${objects.length + 1} /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF\n`;
-  return {
-    name: 'Rapport de test.pdf',
-    mimeType: 'application/pdf',
-    buffer: Buffer.from(body, 'latin1'),
   };
 }
 

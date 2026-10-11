@@ -146,6 +146,10 @@ test.describe('contributions', () => {
           return page.getByTestId('engagement-stats').textContent();
         })
         .toMatch(/Versé ce mois-ci40\s€/);
+      // The chart says its numbers: the total of the twelve months above its bars.
+      await expect(page.getByRole('figure', { name: 'Euros versés sur douze mois' })).toContainText(
+        /40\s€ versés sur 12 mois/,
+      );
       await expect(page.getByTestId('my-contributions')).toContainText('Payée');
       await holder.context.close();
       await context.close();

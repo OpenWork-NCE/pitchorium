@@ -63,8 +63,16 @@ interface MailpitMessage {
   Subject: string;
 }
 
-/** The first link found in the last email sent to this very address (Mailpit). */
-export async function linkFromInbox(address: string, pattern: RegExp): Promise<string> {
+/**
+ * The first link found in the last email sent to this very address (Mailpit), within `timeout`
+ * (an email sent after a delay waits longer), among the emails whose subject matches `subject`.
+ */
+export async function linkFromInbox(
+  address: string,
+  pattern: RegExp,
+  timeout = 30_000,
+  subject?: RegExp,
+): Promise<string> {
   let found: string | undefined;
   await expect
     .poll(
@@ -74,8 +82,10 @@ export async function linkFromInbox(address: string, pattern: RegExp): Promise<s
         );
         const { messages } = (await search.json()) as { messages: MailpitMessage[] };
         // The search matches words: only the messages sent to this very address count.
-        const own = messages.filter((message) =>
-          message.To.some((to) => to.Address.toLowerCase() === address.toLowerCase()),
+        const own = messages.filter(
+          (message) =>
+            message.To.some((to) => to.Address.toLowerCase() === address.toLowerCase()) &&
+            (!subject || subject.test(message.Subject)),
         );
         for (const message of own) {
           const body = (await (
@@ -92,7 +102,7 @@ export async function linkFromInbox(address: string, pattern: RegExp): Promise<s
         }
         return false;
       },
-      { timeout: 30_000, intervals: [500, 1000] },
+      { timeout, intervals: [500, 1000] },
     )
     .toBe(true);
   return found!;
@@ -495,4 +505,31 @@ export async function adminPage(browser: Browser) {
   if (state.cookies.length === 0) return null;
   const context = await browser.newContext({ storageState: ADMIN_STATE });
   return { context, page: await context.newPage() };
+}
+
+/** A valid PDF of two pages, with a correct cross-reference table. */
+export function twoPagePdf() {
+  const objects = [
+    '<< /Type /Catalog /Pages 2 0 R >>',
+    '<< /Type /Pages /Kids [3 0 R 5 0 R] /Count 2 >>',
+    '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Contents 4 0 R /Resources << >> >>',
+    '<< /Length 27 >>\nstream\n0 0 1 rg 50 50 200 200 re f\nendstream',
+    '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Contents 6 0 R /Resources << >> >>',
+    '<< /Length 27 >>\nstream\n1 0 0 rg 50 50 200 200 re f\nendstream',
+  ];
+  let body = '%PDF-1.4\n';
+  const offsets: number[] = [];
+  objects.forEach((object, index) => {
+    offsets.push(body.length);
+    body += `${index + 1} 0 obj\n${object}\nendobj\n`;
+  });
+  const xref = body.length;
+  body += `xref\n0 ${objects.length + 1}\n0000000000 65535 f \n`;
+  body += offsets.map((offset) => `${String(offset).padStart(10, '0')} 00000 n \n`).join('');
+  body += `trailer\n<< /Size ${objects.length + 1} /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF\n`;
+  return {
+    name: 'Rapport de test.pdf',
+    mimeType: 'application/pdf',
+    buffer: Buffer.from(body, 'latin1'),
+  };
 }

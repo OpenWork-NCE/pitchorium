@@ -141,6 +141,7 @@ sed \
   -e "s#^TURNSTILE_SITE_KEY=.*#TURNSTILE_SITE_KEY=$turnstile_site_key#" \
   -e "s#^TURNSTILE_SECRET_KEY=.*#TURNSTILE_SECRET_KEY=$turnstile_secret_key#" \
   -e "s#^SCHEDULED_TASKS_EVERY_MS=.*#SCHEDULED_TASKS_EVERY_MS=3000#" \
+  -e "s#^NOTIFICATIONS_UNREAD_MESSAGE_EMAIL_DELAY_MINUTES=.*#NOTIFICATIONS_UNREAD_MESSAGE_EMAIL_DELAY_MINUTES=1#" \
   "$root/apps/server/.env.example" | grep -v '^#' | grep -v '^$' >"$env_file"
 {
   echo "FAKE_OAUTH_URL=http://127.0.0.1:$oauth_port"
