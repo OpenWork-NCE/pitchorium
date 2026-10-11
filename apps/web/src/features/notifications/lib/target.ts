@@ -2,8 +2,9 @@ import type { Notification } from '@pitchorium/contracts';
 
 /**
  * Pages of the web app a notification may open: the path comes from the api (`pathOf`, the same
- * in the emails); one of a page not delivered yet (missions, moderation, personal data) is never
- * a link (AGENTS.md: no link to a page not delivered).
+ * in the emails); one of a page not delivered yet (reports, moderation, personal data) is never
+ * a link (AGENTS.md: no link to a page not delivered). The events and the engagements of the
+ * missions are delivered (FRONT 7, question 132).
  */
 const DELIVERED = [
   /^\/members\/[^/?]+$/,
@@ -14,6 +15,7 @@ const DELIVERED = [
   /^\/organizations\/[^/?]+$/,
   /^\/contributions\/[^/?]+$/,
   /^\/events\/[^/?]+$/,
+  /^\/missions\/engagements\/[^/?]+$/,
   /^\/settings\/(payouts|security|privacy)$/,
   /^\/dashboard(\/time)?$/,
   /^\/network(\/profile-views|\/invitations|\?view=suggestions)?$/,

@@ -19,13 +19,16 @@ describe('target of a notification', () => {
       '/network',
       '/network?view=suggestions',
       '/network/profile-views',
+      '/network/invitations',
+      '/events/forum-agriculture-durable',
+      '/missions/engagements/0199a0b0-0000-7000-8000-000000000001',
     ]) {
       expect(targetHref(target(path))).toBe(path);
     }
   });
 
   it('never links a page still to come', () => {
-    for (const path of ['/me/moderation', '/missions/engagements/x', '/me/privacy', '/discover']) {
+    for (const path of ['/me/moderation', '/me/reports', '/me/privacy', '/discover']) {
       expect(targetHref(target(path))).toBeNull();
     }
   });
