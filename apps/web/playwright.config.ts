@@ -1,5 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
-import { ciOptions, trace } from './e2e/support/ci-options';
+import { ciOptions, trace, video } from './e2e/support/ci-options';
 
 const WEB_PORT = 3201;
 const API_PORT = 3299;
@@ -25,7 +25,7 @@ export default defineConfig({
   ...ciOptions,
   snapshotPathTemplate: '{testDir}/__screenshots__/{testFilePath}/{arg}{ext}',
   expect: { toHaveScreenshot: { maxDiffPixelRatio: 0.01, animations: 'disabled' } },
-  use: { baseURL: webOrigin, trace },
+  use: { baseURL: webOrigin, trace, video },
   projects: [
     { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
     {

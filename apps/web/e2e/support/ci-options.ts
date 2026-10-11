@@ -4,7 +4,7 @@ const CI = !!process.env.CI;
 
 /**
  * Options shared by the stub and live suites (docs/architecture/testing.md, ADR 0123). In CI, one
- * retry with a trace of that retry; a test that only passes on its retry is flaky: it is listed in
+ * retry, with the trace and the video of the first failure kept; a test that only passes on its retry is flaky: it is listed in
  * the summary of the run (scripts/ci/playwright-summary.mjs, from the JSON report), and fails the
  * run when PLAYWRIGHT_FAIL_ON_FLAKY=1 (level 3).
  */
@@ -35,11 +35,10 @@ function recording(name: string): Recording | undefined {
 }
 
 /**
- * Trace of the first retry in CI, of any failure locally (no retry there); PLAYWRIGHT_TRACE
- * overrides it (`retain-on-failure` when a journey repeats without retry).
+ * Trace of every failed attempt, the first one included and not only its retry (FRONT 8A, A2):
+ * an instability is read on the run that failed. PLAYWRIGHT_TRACE overrides it.
  */
-export const trace: Recording =
-  recording('PLAYWRIGHT_TRACE') ?? (CI ? 'on-first-retry' : 'retain-on-failure');
+export const trace: Recording = recording('PLAYWRIGHT_TRACE') ?? 'retain-on-failure';
 
-/** No video, unless PLAYWRIGHT_VIDEO asks for one (the diagnosis workflow). */
-export const video: Recording = recording('PLAYWRIGHT_VIDEO') ?? 'off';
+/** Video of every failed attempt in CI; none locally unless PLAYWRIGHT_VIDEO asks for one. */
+export const video: Recording = recording('PLAYWRIGHT_VIDEO') ?? (CI ? 'retain-on-failure' : 'off');

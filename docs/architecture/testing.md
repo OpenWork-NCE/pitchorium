@@ -38,7 +38,7 @@ Filtres de chemins (`scripts/ci/changed-areas.mjs`), prudents : la base est le d
 - Documentation seule (`docs/`, `*.md`) : formatage, caractères interdits et sécurité seulement (plus Storybook pour les captures de revue).
 - `apps/server` seul : ni suite simulée du web, ni Lighthouse, ni Storybook ; les parcours critiques s'exécutent.
 
-Stabilité : en CI, une relance avec la trace de cette relance (`retries: 1`, `trace: 'on-first-retry'`, `e2e/support/ci-options.ts`). Le résumé du run (`scripts/ci/playwright-summary.mjs`, depuis le rapport JSON) liste les tests en échec et les tests instables, ceux qui ne passent qu'à la relance. Une instabilité se corrige : le niveau 3 échoue sur elle.
+Stabilité : en CI, une relance ; la trace de chaque tentative en échec est gardée, la première comprise, avec sa vidéo (`retries: 1`, `trace` et `video` en `retain-on-failure`, `e2e/support/ci-options.ts`, FRONT 8A). Le résumé du run (`scripts/ci/playwright-summary.mjs`, depuis le rapport JSON) liste les tests en échec et les tests instables, ceux qui ne passent qu'à la relance. Une instabilité se corrige : le niveau 3 échoue sur elle.
 
 Avant de pousser, l'agent exécute le niveau 2 en entier une seule fois, sur le poste, avec les commandes des jobs :
 
@@ -122,11 +122,13 @@ Un parcours qui échoue en CI et passe sur le poste se reproduit sur le runner, 
 
 ```sh
 gh workflow run diagnose.yaml --ref main -f grep='mention' -f browser=firefox -f repeat=30
+# un parcours de la suite simulée :
+gh workflow run diagnose.yaml --ref main -f suite=stub -f grep='answers a request' -f browser=chromium
 gh run watch
 gh run download <id> -n diagnose-firefox-1
 ```
 
-- Le workflow `.github/workflows/diagnose.yaml` construit comme la CI, affiche l'environnement du runner (processeurs, mémoire, fuseau, langue, polices de l'hôte et de l'image Playwright), puis répète le parcours (`--repeat-each`, 30 par défaut, `--retries=0`) sur sa pile isolée, avec trace et vidéo de chaque échec (`PLAYWRIGHT_TRACE`, `PLAYWRIGHT_VIDEO`, `e2e/support/ci-options.ts`) et les journaux de l'api, du worker et du web en artefact.
+- Le workflow `.github/workflows/diagnose.yaml` (entrée `suite` : `live` contre la vraie api, `stub` pour la suite simulée dans l'image Playwright) construit comme la CI, affiche l'environnement du runner (processeurs, mémoire, fuseau, langue, polices de l'hôte et de l'image Playwright), puis répète le parcours (`--repeat-each`, 30 par défaut, `--retries=0`) sur sa pile isolée, avec trace et vidéo de chaque échec (`PLAYWRIGHT_TRACE`, `PLAYWRIGHT_VIDEO`, `e2e/support/ci-options.ts`) et les journaux de l'api, du worker et du web en artefact.
 - Comparer avec le poste : nombre de processeurs, fuseau (UTC sur le runner), polices, latence, ordre des tests (`--repeat-each` garde l'ordre du fichier), parallélisme (un worker), base partagée entre parcours.
 - Le garde de la console (`e2e/support/console-guard.ts`) ajoute à une erreur le nom, le message, le code et la pile des objets `Error` reçus : Firefox n'écrit que « Error » pour `console.error(error)`.
 - Une correction est prouvée par 30 passages consécutifs sur le runner, dans le moteur en cause.

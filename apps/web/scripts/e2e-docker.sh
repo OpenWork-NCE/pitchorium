@@ -12,5 +12,7 @@ root="$(git -C "$(dirname "$0")" rev-parse --show-toplevel)"
 exec docker run --rm --init --ipc=host --network host \
   --user "$(id -u):$(id -g)" -e HOME=/tmp -e CI="${CI:-}" \
   -e PLAYWRIGHT_IMAGE=1 -e E2E_SKIP_BUILD="${E2E_SKIP_BUILD:-}" \
-  -e PLAYWRIGHT_FAIL_ON_FLAKY="${PLAYWRIGHT_FAIL_ON_FLAKY:-}" -v "$root:/work" -w /work/apps/web \
+  -e PLAYWRIGHT_FAIL_ON_FLAKY="${PLAYWRIGHT_FAIL_ON_FLAKY:-}" \
+  -e PLAYWRIGHT_TRACE="${PLAYWRIGHT_TRACE:-}" -e PLAYWRIGHT_VIDEO="${PLAYWRIGHT_VIDEO:-}" \
+  -v "$root:/work" -w /work/apps/web \
   "$image" node_modules/.bin/playwright test "$@"

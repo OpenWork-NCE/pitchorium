@@ -2,7 +2,7 @@ name: Diagnose
 
 # A failure that only happens in CI, reproduced on the runner of the CI (docs/architecture/testing.md,
 # ADR 0142): one journey against the real api, in one engine, repeated (30 times by default), every
-# failure kept with its trace, video and the logs of the stack, after a report of the environment
+# failure kept with its trace, video and the logs of the stack (the stub suite too, input suite), after a report of the environment
 # of the runner to compare with a workstation. Started by hand: gh workflow run diagnose.yaml.
 
 on:
@@ -22,6 +22,11 @@ on:
       turnstile:
         description: Turnstile of the stack (0 none, local the local stand-in, 1 Cloudflare test keys)
         default: '0'
+      suite:
+        description: Suite of the journey (live against the real api, stub against the stub api)
+        type: choice
+        options: [live, stub]
+        default: live
 
 permissions:
   contents: read
@@ -60,9 +65,16 @@ jobs:
       - name: The journey, repeated, without retry
         run: |
           case "$REPEAT" in ''|*[!0-9]*) echo "repeat must be a number" >&2; exit 2;; esac
-          pnpm --filter @pitchorium/web test:e2e:live --project="$BROWSER" \
-            --grep "$GREP" --repeat-each="$REPEAT" --retries=0
+          if [ "$SUITE" = stub ]; then
+            pnpm --filter @pitchorium/web test:e2e --project="$BROWSER" \
+              --grep "$GREP" --repeat-each="$REPEAT" --retries=0
+          else
+            pnpm --filter @pitchorium/web test:e2e:live --project="$BROWSER" \
+              --grep "$GREP" --repeat-each="$REPEAT" --retries=0
+          fi
         env:
+          SUITE: ${{ inputs.suite }}
+          E2E_SKIP_BUILD: '1'
           GREP: ${{ inputs.grep }}
           BROWSER: ${{ inputs.browser }}
           REPEAT: ${{ inputs.repeat }}
