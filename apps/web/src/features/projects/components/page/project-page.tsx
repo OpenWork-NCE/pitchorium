@@ -100,9 +100,11 @@ export async function ProjectPage({
         version: `v${project.impact.methodologyVersion}`,
       })}
       criteria={(project.impactAssessment?.details ?? []).map((detail) => ({
-        label: reference.has(detail.labelKey as never)
-          ? reference(detail.labelKey as never)
-          : detail.criterionKey,
+        label:
+          detail.labels?.[locale] ??
+          (reference.has(detail.labelKey as never)
+            ? reference(detail.labelKey as never)
+            : detail.criterionKey),
         score: detail.value,
         max: detail.maxValue,
       }))}

@@ -1,18 +1,19 @@
 import type { ImpactMethodology } from '@pitchorium/contracts';
-import { getFormatter, getTranslations } from 'next-intl/server';
+import { getFormatter, getLocale, getTranslations } from 'next-intl/server';
 import { Alert, Card, Heading, Notice, Text } from '@/components/ui';
 import { labelOf, type ReferenceLabels } from '../lib/labels';
 
 /**
  * The methodology of the self-declared impact in force (§12, ADR 0036): its criteria, their scale
  * and their weight, its version, the levels, and the mention that the impact is declared by the
- * holder and never certified. Labels are translated from the keys the api gives.
+ * holder and never certified. Labels are those an administrator wrote, else translated from the keys (ADR 0173).
  */
 export async function MethodologyPage({ methodology }: { methodology: ImpactMethodology }) {
   const t = await getTranslations('web.impact.methodology');
   const levels = await getTranslations('reference.impactLevels');
   const reference = (await getTranslations('reference')) as unknown as ReferenceLabels;
   const format = await getFormatter();
+  const locale = await getLocale();
   const total = methodology.criteria.reduce((sum, criterion) => sum + criterion.weight, 0);
   return (
     <div className="grid gap-10">
@@ -42,7 +43,7 @@ export async function MethodologyPage({ methodology }: { methodology: ImpactMeth
                   <Heading level={3} size="card">
                     {t('criterion', {
                       index: index + 1,
-                      label: labelOf(reference, criterion.labelKey),
+                      label: labelOf(reference, criterion.labelKey, criterion.labels, locale),
                     })}
                   </Heading>
                   <span className="text-sm text-muted tabular-nums">
@@ -54,7 +55,9 @@ export async function MethodologyPage({ methodology }: { methodology: ImpactMeth
                     })}
                   </span>
                 </div>
-                <Text size="sm">{labelOf(reference, criterion.descriptionKey)}</Text>
+                <Text size="sm">
+                  {labelOf(reference, criterion.descriptionKey, criterion.descriptions, locale)}
+                </Text>
                 <div className="grid gap-1">
                   <p className="text-sm font-medium">{t('scale')}</p>
                   <ul className="flex flex-wrap gap-2 text-sm">
@@ -63,7 +66,7 @@ export async function MethodologyPage({ methodology }: { methodology: ImpactMeth
                         key={level.key}
                         className="rounded-full border border-border px-3 py-1 tabular-nums"
                       >
-                        {labelOf(reference, level.labelKey)}
+                        {labelOf(reference, level.labelKey, level.labels, locale)}
                       </li>
                     ))}
                   </ul>

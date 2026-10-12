@@ -1,8 +1,9 @@
 import type { Locale, Project } from '@pitchorium/contracts';
 import { CheckCircle2, Circle } from 'lucide-react';
-import { getFormatter, getTranslations } from 'next-intl/server';
+import { getFormatter, getLocale, getTranslations } from 'next-intl/server';
 import { Avatar, Badge, Card, Link, MarkdownContent, Notice, Text } from '@/components/ui';
 import * as routes from '@/config/paths';
+import { labelOf, type ReferenceLabels } from '@/features/impact';
 import { Translatable } from '@/features/localization';
 import { MemberHoverCard } from '@/features/profiles';
 import { formatMoney } from '@/lib/format/money';
@@ -226,8 +227,8 @@ export async function ImpactSection({ project, editorial }: Omit<SectionProps, '
   const assessment = project.impactAssessment;
   if (!assessment) return null;
   const t = await getTranslations('web.projects.impact');
-  const reference = await getTranslations('reference');
-  const label = (key: string) => (reference.has(key as never) ? reference(key as never) : key);
+  const reference = (await getTranslations('reference')) as unknown as ReferenceLabels;
+  const locale = await getLocale();
   return (
     <section aria-labelledby="impact-title" className="grid gap-4">
       <SectionHeading id="impact-title" editorial={editorial}>
@@ -243,9 +244,11 @@ export async function ImpactSection({ project, editorial }: Omit<SectionProps, '
         {assessment.details.map((detail) => (
           <li key={detail.criterionKey} className="grid gap-1">
             <span className="flex flex-wrap justify-between gap-x-3 text-sm">
-              <span className="font-medium">{label(detail.labelKey)}</span>
+              <span className="font-medium">
+                {labelOf(reference, detail.labelKey, detail.labels, locale)}
+              </span>
               <span className="text-muted">
-                {label(detail.answerLabelKey)}
+                {labelOf(reference, detail.answerLabelKey, detail.answerLabels, locale)}
                 <span aria-hidden> · </span>
                 <span className="tabular-nums">
                   {t('value', { value: detail.value, max: detail.maxValue })}

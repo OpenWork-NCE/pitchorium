@@ -161,7 +161,7 @@ Comment assembler les composants (`components.md`) pour les situations récurren
 
 ## Impact (§12, ADR 0036)
 
-- `/impact/methodology` : critères, échelle, pondérations et version en vigueur, mention « auto-déclaré, non certifié » ; sans méthodologie publiée, un état qui le dit.
+- `/impact/methodology` : critères, échelle, pondérations et version en vigueur, mention « auto-déclaré, non certifié » ; sans méthodologie publiée, un état qui le dit. Chaque libellé est celui qu'un administrateur a écrit pour la langue de la page, sinon celui du catalogue (`labelOf`, ADR 0173).
 - `ImpactBadge` mène partout au détail par critère et à la méthodologie ; `/profile/impact` évalue le volet entrepreneur, avec l'historique et la réévaluation proposée quand la version change.
 
 ## Messagerie (§10.4, ADR 0146, 0147)

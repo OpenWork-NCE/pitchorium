@@ -1,7 +1,7 @@
 'use client';
 
 import type { ImpactAssessment, ImpactMethodology } from '@pitchorium/contracts';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Alert, Button, Field, FormActions, Notice, RadioGroup, Text } from '@/components/ui';
 import { labelOf, type ReferenceLabels } from '../lib/labels';
@@ -33,6 +33,7 @@ export function AssessmentForm({
   const t = useTranslations('web.impact.form');
   const levels = useTranslations('reference.impactLevels');
   const reference = useTranslations('reference') as unknown as ReferenceLabels;
+  const locale = useLocale();
   const [answers, setAnswers] = useState<Record<string, string>>(initialAnswers);
   const [missing, setMissing] = useState<string[]>([]);
   const [busy, setBusy] = useState(false);
@@ -80,8 +81,13 @@ export function AssessmentForm({
         {methodology.criteria.map((criterion) => (
           <Field
             key={criterion.key}
-            label={labelOf(reference, criterion.labelKey)}
-            description={labelOf(reference, criterion.descriptionKey)}
+            label={labelOf(reference, criterion.labelKey, criterion.labels, locale)}
+            description={labelOf(
+              reference,
+              criterion.descriptionKey,
+              criterion.descriptions,
+              locale,
+            )}
             error={missing.includes(criterion.key) ? t('required') : undefined}
           >
             <RadioGroup
@@ -91,7 +97,7 @@ export function AssessmentForm({
               }
               options={criterion.scale.map((level) => ({
                 value: level.key,
-                label: labelOf(reference, level.labelKey),
+                label: labelOf(reference, level.labelKey, level.labels, locale),
               }))}
             />
           </Field>
