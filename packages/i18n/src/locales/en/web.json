@@ -1451,6 +1451,10 @@
         "due": "Legal deadline",
         "completed": "Answered on",
         "detail": "Detail"
+      },
+      "details": {
+        "PRIVACY_CAMPAIGN_IN_PROGRESS": "Blocked: a campaign of the member is in funding.",
+        "PRIVACY_SOLE_OWNER": "Blocked: sole owner of an organisation that has other members."
       }
     }
   },

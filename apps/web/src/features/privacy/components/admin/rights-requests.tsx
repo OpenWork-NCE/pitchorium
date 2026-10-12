@@ -90,14 +90,14 @@ export function RightsRequests({
       header: t('columns.due'),
       cell: (row) =>
         row.overdue ? (
-          <span className="grid gap-0.5">
+          <span className="grid justify-items-start gap-0.5">
             <Badge tone="danger">{t('overdue')}</Badge>
             <span className="font-numeric text-sm text-danger tabular-nums">{date(row.dueAt)}</span>
           </span>
         ) : row.answered ? (
           <span className="font-numeric text-muted tabular-nums">{date(row.dueAt)}</span>
         ) : (
-          <span className="grid gap-0.5">
+          <span className="grid justify-items-start gap-0.5">
             <span className="font-numeric font-medium tabular-nums">{date(row.dueAt)}</span>
             <RelativeTime date={row.dueAt} className="text-xs text-muted" />
           </span>
@@ -113,7 +113,17 @@ export function RightsRequests({
           '–'
         ),
     },
-    { key: 'detail', header: t('columns.detail'), cell: (row) => row.detail ?? '–' },
+    {
+      key: 'detail',
+      header: t('columns.detail'),
+      // A blocking rule is a code of the api, said in words; residues or a failure as given.
+      cell: (row) =>
+        row.detail === null
+          ? '–'
+          : t.has(`details.${row.detail}` as never)
+            ? t(`details.${row.detail}` as never)
+            : row.detail,
+    },
   ];
   return (
     <div className="grid gap-3">

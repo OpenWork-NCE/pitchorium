@@ -1451,6 +1451,10 @@
         "due": "Échéance légale",
         "completed": "Réponse le",
         "detail": "Détail"
+      },
+      "details": {
+        "PRIVACY_CAMPAIGN_IN_PROGRESS": "Bloquée : une campagne du membre est en financement.",
+        "PRIVACY_SOLE_OWNER": "Bloquée : seul propriétaire d’une organisation qui a d’autres membres."
       }
     }
   },
