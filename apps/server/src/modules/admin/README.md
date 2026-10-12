@@ -34,7 +34,7 @@ Une seule interface pour les publications, les projets et les profils : `GET /v1
 
 ## Tâches en échec définitif
 
-`GET /v1/admin/jobs/failed?queue=&limit=` : tâches BullMQ dont les tentatives sont épuisées (`DEFAULT_JOB_OPTIONS`, conservées 7 jours), de toutes les files trouvées dans Redis (`FailedJobsService`, plateforme). `POST /v1/admin/jobs/{queue}/{jobId}/retry` : relance auditée et idempotente (`Idempotency-Key` ; une tâche qui n'est plus en échec n'est pas relancée : `not_failed`).
+`GET /v1/admin/jobs/failed?queue=&limit=` : tâches BullMQ dont les tentatives sont épuisées (`DEFAULT_JOB_OPTIONS`, conservées 7 jours), de toutes les files trouvées dans Redis (`FailedJobsService`, plateforme), avec leur charge utile masquée (`platform/queue/masked-payload.ts` : structure, identifiants, dates, nombres et codes seulement ; toute valeur sous une clé sensible et tout texte libre deviennent `[redacted]`) et le motif de l'échec sans les adresses email ni web qu'il cite. `POST /v1/admin/jobs/{queue}/{jobId}/retry` : relance auditée et idempotente (`Idempotency-Key` ; une tâche qui n'est plus en échec n'est pas relancée : `not_failed`).
 
 ## Statistiques et journal d'audit
 

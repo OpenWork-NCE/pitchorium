@@ -3,6 +3,7 @@ import { Queue } from 'bullmq';
 import type { Redis } from 'ioredis';
 import { COMMON_CONFIG, type CommonConfig } from '../config';
 import { REDIS } from '../redis';
+import { maskFailedReason, maskJobData } from './masked-payload';
 
 export interface FailedJobView {
   queue: string;
@@ -11,6 +12,8 @@ export interface FailedJobView {
   attemptsMade: number;
   failedReason: string | null;
   failedAt: Date | null;
+  /** The payload, masked: its structure, identifiers and codes only (masked-payload.ts). */
+  data: unknown;
 }
 
 export type RetryOutcome = 'retried' | 'not_failed' | 'missing';
@@ -55,8 +58,9 @@ export class FailedJobsService implements OnModuleDestroy {
           id: job.id ?? '',
           name: job.name,
           attemptsMade: job.attemptsMade,
-          failedReason: job.failedReason || null,
+          failedReason: maskFailedReason(job.failedReason || null),
           failedAt: job.finishedOn ? new Date(job.finishedOn) : null,
+          data: maskJobData(job.data),
         });
       }
     }
