@@ -3,7 +3,7 @@
 import { messagingControllerMessages } from '@pitchorium/api-client';
 import type { Message, MessagePage, ServerMessageEvent } from '@pitchorium/contracts';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { LOCAL_EVENTS, REALTIME_EVENTS } from '@/lib/realtime/realtime-bus';
 import { useRealtime } from '@/lib/realtime/use-realtime';
 import { THREAD_PAGE_SIZE } from '../lib/limits';
@@ -97,6 +97,12 @@ export function useThread(conversationId: string, initial: MessagePage | null) {
     if (message.conversationId === conversationId) merge([message]);
   });
   useRealtime(LOCAL_EVENTS.resumed, () => void sync());
+  // Once it listens, the thread reads what follows its last message: an event pushed between
+  // the render of the server and this subscription (the first seconds of the channel, ADR 0168)
+  // is never lost.
+  useEffect(() => {
+    void sync();
+  }, [sync]);
 
   return {
     thread: query.data ?? { messages: [], hasOlder: false },

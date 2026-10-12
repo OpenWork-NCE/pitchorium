@@ -14,6 +14,7 @@ Trois solutions étaient possibles : une file des événements reçus avant le c
 - Chaque événement s'enchaîne sur la même promesse de chargement : ceux reçus pendant le chargement sont traités dans leur ordre d'arrivée, dès qu'il se termine, et les gestionnaires ne sont construits qu'une fois. C'est la file : aucune structure de plus.
 - Un événement inconnu est ignoré sans bloquer les suivants ; un chargement en échec (hors ligne) est retenté au prochain événement, et ce qui a été manqué est relu à la reconnexion (`local:resumed`, ADR 0056).
 - Les charges utiles restent validées par les schémas des contrats : aucun second validateur à tenir à jour.
+- Une page qui écoute un événement s'abonne après son hydratation, parfois après l'ouverture du canal : un événement arrivé dans cet intervalle est traité (cache, compteurs, liste des conversations) mais n'atteint pas cette page. Le fil d'une conversation relit donc, une fois abonné, ce qui suit son dernier message (`afterSequence`, comme au retour du canal) ; le parcours réel l'a montré, le message apparaissait dans la liste et pas dans le fil ouvert.
 
 C'est la solution la plus simple qui garde le gain : Zod n'est évalué au démarrage de la page que si un événement arrive à ce moment, ce qui est rare, et jamais sur la page mesurée par Lighthouse.
 
