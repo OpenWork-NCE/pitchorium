@@ -74,6 +74,19 @@ const FORBIDDEN = [
     groups: ['(marketing)', '(public)', '(auth)', '(app)', '(admin)', 'other'],
   },
   {
+    // The dialog of a report loads at its first opening, from the member shell (ADR 0165): its
+    // call of the notice about a message, not the catalogue that holds the text.
+    name: 'report dialog',
+    signature: /\("messageScope"\)/,
+    groups: ['(marketing)', '(public)', '(auth)', '(app)', '(admin)', 'other'],
+  },
+  {
+    // A translation loads when the reader asks for it (ADR 0167).
+    name: 'translation on demand',
+    signature: /\/v1\/translations/,
+    groups: ['(marketing)', '(public)', '(auth)', '(app)', '(admin)', 'other'],
+  },
+  {
     name: 'query devtools',
     signature: /ReactQueryDevtools|tsqd-/,
     groups: ['(marketing)', '(public)', '(auth)', '(app)', '(admin)', 'other'],
