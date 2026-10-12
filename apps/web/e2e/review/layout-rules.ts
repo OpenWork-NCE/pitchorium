@@ -14,6 +14,8 @@ export interface Box {
 export interface TextFragment {
   /** Index of the element that owns the text node. */
   owner: number;
+  /** Index of the flex or grid item that holds the element (a label of an axis, a cell), if any. */
+  item?: number;
   /** Overlay the element sits in (a dialog, a popover), or 0 for the page. */
   layer: number;
   text: string;
@@ -46,6 +48,31 @@ export function overlappingTexts(fragments: readonly TextFragment[]): string[] {
       const smaller = Math.min(a.box.bottom - a.box.top, b.box.bottom - b.box.top);
       if (across > 2 && down > smaller * 0.4) {
         problems.add(`overlap: « ${a.text.slice(0, 40)} » and « ${b.text.slice(0, 40)} »`);
+      }
+    }
+  }
+  return [...problems];
+}
+
+/**
+ * Texts of two items of a flex or grid container that touch on one line, less than 2 px apart
+ * (« BrouillonEn financement » under the bars of a chart on a phone): two separate labels read
+ * as one word. Words of one sentence share their item and never count.
+ */
+export function touchingTexts(fragments: readonly TextFragment[]): string[] {
+  const problems = new Set<string>();
+  for (let i = 0; i < fragments.length; i += 1) {
+    const a = fragments[i]!;
+    if (a.item === undefined) continue;
+    for (let j = i + 1; j < fragments.length; j += 1) {
+      const b = fragments[j]!;
+      if (b.item === undefined || a.item === b.item || a.layer !== b.layer) continue;
+      const down = overlap(a.box.top, a.box.bottom, b.box.top, b.box.bottom);
+      const smaller = Math.min(a.box.bottom - a.box.top, b.box.bottom - b.box.top);
+      if (down <= smaller * 0.4) continue;
+      const gap = Math.max(b.box.left - a.box.right, a.box.left - b.box.right);
+      if (gap > -2 && gap < 2) {
+        problems.add(`touching: « ${a.text.slice(0, 40)} » and « ${b.text.slice(0, 40)} »`);
       }
     }
   }

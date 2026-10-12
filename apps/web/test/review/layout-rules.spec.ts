@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { overlappingTexts, repeatedTitles, type TextFragment } from '../../e2e/review/layout-rules';
+import {
+  overlappingTexts,
+  repeatedTitles,
+  type TextFragment,
+  touchingTexts,
+} from '../../e2e/review/layout-rules';
 
 const line = (owner: number, text: string, left: number, top: number, width = 40, layer = 0) =>
   ({
@@ -32,6 +37,26 @@ describe('overlappingTexts', () => {
 
   it('leaves out an overlay drawn over the page', () => {
     expect(overlappingTexts([line(1, 'Page', 0, 0), line(2, 'Dialogue', 0, 0, 40, 1)])).toEqual([]);
+  });
+});
+
+describe('touchingTexts', () => {
+  const label = (item: number, text: string, left: number, width: number) => ({
+    ...line(item, text, left, 100, width),
+    item,
+  });
+
+  it('finds two labels of two items written as one word', () => {
+    // « Brouillon » and « En financement » under the bars of a chart on a phone.
+    expect(
+      touchingTexts([label(1, 'Brouillon', 0, 60), label(2, 'En financement', 60.5, 90)]),
+    ).toEqual(['touching: « Brouillon » and « En financement »']);
+  });
+
+  it('accepts items apart, words of one item, and texts outside any item', () => {
+    expect(touchingTexts([label(1, 'Brouillon', 0, 60), label(2, 'Financé', 66, 50)])).toEqual([]);
+    expect(touchingTexts([label(1, 'Lire', 0, 30), label(1, 'la suite', 30, 50)])).toEqual([]);
+    expect(touchingTexts([line(1, 'Lire', 0, 0, 30), line(2, 'la suite', 30, 0, 50)])).toEqual([]);
   });
 });
 

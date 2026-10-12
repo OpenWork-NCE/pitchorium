@@ -1,5 +1,5 @@
 import type { Page } from '@playwright/test';
-import { overlappingTexts, repeatedTitles } from './layout-rules';
+import { overlappingTexts, repeatedTitles, touchingTexts } from './layout-rules';
 
 /**
  * Guard of the review captures (docs/design/review/README.md), run on every capture before it is
@@ -194,8 +194,22 @@ export async function layoutProblems(page: Page, rootSelector: string): Promise<
       return false;
     };
     const owners = new Map<Element, number>();
+    // The flex or grid item an element sits in: two labels of two items must not touch.
+    const items = new Map<Element, number>();
+    const itemOf = (element: Element) => {
+      for (let node: Element | null = element; node?.parentElement; node = node.parentElement) {
+        const display = getComputedStyle(node.parentElement).display;
+        if (/(^|-)(flex|grid)$/.test(display)) {
+          if (!items.has(node)) items.set(node, items.size);
+          return items.get(node)!;
+        }
+        if (!getComputedStyle(node).display.startsWith('inline')) return undefined;
+      }
+      return undefined;
+    };
     const fragments: {
       owner: number;
+      item?: number;
       layer: number;
       text: string;
       box: { left: number; top: number; right: number; bottom: number };
@@ -206,8 +220,11 @@ export async function layoutProblems(page: Page, rootSelector: string): Promise<
       const owner = text.parentElement;
       if (!content || !owner || !visible(owner) || hiddenText(owner)) continue;
       if (!owners.has(owner)) owners.set(owner, owners.size);
+      // The ink of the text only: the spaces around it (« · » before a date) are not its box.
+      const raw = text.textContent ?? '';
       const range = document.createRange();
-      range.selectNodeContents(text);
+      range.setStart(text, raw.length - raw.trimStart().length);
+      range.setEnd(text, raw.trimEnd().length);
       // The part of a line that its boxes let show: a truncated or clamped text overflows them.
       const clips = [] as DOMRect[];
       for (
@@ -229,7 +246,14 @@ export async function layoutProblems(page: Page, rootSelector: string): Promise<
           box.bottom = Math.min(box.bottom, clip.bottom);
         }
         if (box.right - box.left < 1 || box.bottom - box.top < 1) continue;
-        fragments.push({ owner: owners.get(owner)!, layer: layerOf(owner), text: content, box });
+        const item = itemOf(owner);
+        fragments.push({
+          owner: owners.get(owner)!,
+          ...(item === undefined ? {} : { item }),
+          layer: layerOf(owner),
+          text: content,
+          box,
+        });
       }
     }
 
@@ -263,11 +287,22 @@ export async function layoutProblems(page: Page, rootSelector: string): Promise<
           ),
       )
       .map((figure) => `mute chart: ${figure.textContent?.trim().slice(0, 60) ?? ''}`);
-    return { problems: [...outside, ...cut, ...logos, ...touching, ...mute], fragments, titles };
+    // 7. The page itself never scrolls sideways (a header or a bar that pushes it counts too).
+    const scrollWidth = document.documentElement.scrollWidth;
+    const wide =
+      scrollWidth > window.innerWidth + 1
+        ? [`page: ${scrollWidth} px wide in a viewport of ${window.innerWidth} px`]
+        : [];
+    return {
+      problems: [...outside, ...cut, ...logos, ...touching, ...mute, ...wide],
+      fragments,
+      titles,
+    };
   }, rootSelector);
   return [
     ...measured.problems,
     ...overlappingTexts(measured.fragments),
+    ...touchingTexts(measured.fragments),
     ...repeatedTitles(measured.titles),
   ];
 }
