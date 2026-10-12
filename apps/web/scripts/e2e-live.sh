@@ -217,7 +217,8 @@ step 'demonstration data' pnpm --filter @pitchorium/server db:seed:dev
 step 'administrator' pnpm --filter @pitchorium/server admin:create --email claudine.pierre.louis@demo.pitchorium.test
 
 start oauth bash -c "cd apps/server && exec node -r @swc-node/register test/oauth/server.ts"
-start api bash -c "cd apps/server && exec node -r @swc-node/register -r ./test/oauth/reroute.ts dist/main.api.js"
+# A low daily limit of translations, reached by a journey on purpose (e2e-live/trust.spec.ts).
+start api bash -c "cd apps/server && LOCALIZATION_MEMBER_DAILY_CHARACTERS=1000 exec node -r @swc-node/register -r ./test/oauth/reroute.ts dist/main.api.js"
 start worker bash -c "cd apps/server && exec node -r @swc-node/register -r ./test/oauth/reroute.ts dist/main.worker.js"
 # The data cache of a previous run holds the answers of another stack (its Turnstile, its data).
 rm -rf apps/web/.next-live/cache/fetch-cache
@@ -232,6 +233,7 @@ docker run --rm --init --ipc=host --network host \
   --user "$(id -u):$(id -g)" -e HOME=/tmp -e CI="${CI:-}" \
   -e PLAYWRIGHT_FAIL_ON_FLAKY="${PLAYWRIGHT_FAIL_ON_FLAKY:-}" \
   -e LIVE_TURNSTILE="${LIVE_TURNSTILE:-1}" \
+  -e LIVE_DATABASE_URL="$DATABASE_URL" \
   -e PLAYWRIGHT_TRACE="${PLAYWRIGHT_TRACE:-}" -e PLAYWRIGHT_VIDEO="${PLAYWRIGHT_VIDEO:-}" \
   -e LIVE_WEB_URL="http://localhost:$web_port" \
   -e LIVE_API_URL="http://localhost:$api_port" \

@@ -227,6 +227,9 @@ export async function signInWithPassword(
  */
 export const ADMIN_EMAIL = 'claudine.pierre.louis@demo.pitchorium.test';
 export const ADMIN_STATE = 'node_modules/.cache/pitchorium-live/admin-state.json';
+/** A second demonstration moderator: it resolves the appeal of a decision of the administrator. */
+export const MODERATOR_EMAIL = 'koffi.agbodjan@demo.pitchorium.test';
+export const MODERATOR_STATE = 'node_modules/.cache/pitchorium-live/moderator-state.json';
 
 /** Origins of the run (scripts/e2e-live.sh). */
 export const WEB_URL = process.env.LIVE_WEB_URL ?? 'http://localhost:3200';
@@ -502,13 +505,16 @@ export async function apiProject(
   return created;
 }
 
-/** The administrator of the journeys, signed in once per run (global-setup.ts), or null. */
-export async function adminPage(browser: Browser) {
+/**
+ * The administrator of the journeys (or the second moderator), signed in once per run
+ * (global-setup.ts), or null.
+ */
+export async function adminPage(browser: Browser, statePath: string = ADMIN_STATE) {
   const { existsSync, readFileSync } = await import('node:fs');
-  if (!existsSync(ADMIN_STATE)) return null;
-  const state = JSON.parse(readFileSync(ADMIN_STATE, 'utf8')) as { cookies: unknown[] };
+  if (!existsSync(statePath)) return null;
+  const state = JSON.parse(readFileSync(statePath, 'utf8')) as { cookies: unknown[] };
   if (state.cookies.length === 0) return null;
-  const context = await browser.newContext({ storageState: ADMIN_STATE });
+  const context = await browser.newContext({ storageState: statePath });
   return { context, page: await context.newPage() };
 }
 
