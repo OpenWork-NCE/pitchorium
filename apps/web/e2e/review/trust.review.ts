@@ -54,6 +54,8 @@ const SCREENS: Screen[] = [
     act: async (page) => {
       await page.getByRole('button', { name: 'Faire appel' }).click();
       await expect(page.getByLabel('Vos arguments')).toBeVisible();
+      // A full page from its top: the sticky header stays where it belongs.
+      await page.evaluate(() => window.scrollTo(0, 0));
     },
   },
   { id: 'trust-suspended-feed', path: '/fr/feed', as: SUSPENDED },
