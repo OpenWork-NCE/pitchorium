@@ -130,10 +130,18 @@ module.exports = {
           assertions: { ...THRESHOLDS, 'categories:seo': ['error', { minScore: 1 }] },
         },
         {
-          // Public pages of resources read by a visitor (ADR 0101): indexed, SEO included.
+          // Public pages of resources read by a visitor (ADR 0101): indexed, SEO included; the
+          // largest paint on the median of their runs (three for the profile, ADR 0163).
           matchingUrlPattern:
             'localhost:3201/fr/((members|organizations|posts|projects)/[a-z0-9-]+|projects|impact/methodology)$',
-          assertions: { ...THRESHOLDS, 'categories:seo': ['error', { minScore: 1 }] },
+          assertions: {
+            ...THRESHOLDS,
+            'largest-contentful-paint': [
+              'error',
+              { maxNumericValue: 2500, aggregationMethod: 'median' },
+            ],
+            'categories:seo': ['error', { minScore: 1 }],
+          },
         },
         {
           // Authentication and first step of the onboarding (ADR 0104): not indexed either.

@@ -39,5 +39,11 @@ if [ "$runs" -lt 3 ]; then
     --numberOfRuns=$((3 - runs))
 fi
 LHCI_VISITOR=1 ./node_modules/.bin/lhci collect --additive
+# The public profile as well, its largest paint judged on the median (ADR 0163): one run measured
+# 2 521 ms, the others of the same code from 2 291 to 2 376 ms.
+if [ "$runs" -lt 3 ]; then
+  LHCI_VISITOR=1 ./node_modules/.bin/lhci collect --additive \
+    --url=http://localhost:3201/fr/members/aissatou-ba --numberOfRuns=$((3 - runs))
+fi
 ./node_modules/.bin/lhci assert
 exec ./node_modules/.bin/lhci upload
