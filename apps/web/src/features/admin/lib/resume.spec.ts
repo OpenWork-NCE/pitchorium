@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { resumeAddress, withoutResume } from './resume';
+import { parseRoleResume, resumeAddress, roleResumeKey, withoutResume } from './resume';
 
 describe('resume after a new sign-in', () => {
   it('comes back to the same page with the action to open again', () => {
@@ -13,5 +13,16 @@ describe('resume after a new sign-in', () => {
       '/fr/admin/flags?q=locale',
     );
     expect(withoutResume('/fr/admin/flags', '?resume=x')).toBe('/fr/admin/flags');
+  });
+
+  it('comes back with the very role to grant or revoke, for this member only', () => {
+    const key = roleResumeKey('u1', 'revoke', 'admin');
+    expect(parseRoleResume(key, 'u1', ['moderator', 'admin'])).toEqual({
+      intent: 'revoke',
+      role: 'admin',
+    });
+    expect(parseRoleResume(key, 'u2', ['moderator', 'admin'])).toBeNull();
+    expect(parseRoleResume('roles:u1:grant:owner', 'u1', ['moderator', 'admin'])).toBeNull();
+    expect(parseRoleResume(null, 'u1', ['moderator'])).toBeNull();
   });
 });

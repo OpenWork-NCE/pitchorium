@@ -29,6 +29,8 @@ import {
 import * as routes from '@/config/paths';
 import { type DeviceKind, describeUserAgent } from '@/features/identity';
 import { Link, useRouter } from '@/i18n/navigation';
+import { useSearchParams } from 'next/navigation';
+import { parseRoleResume, RESUME_PARAM, type RoleIntent, roleResumeKey } from '../../lib/resume';
 import { useConsoleAction } from '../console-access';
 import {
   ReauthenticationNotice,
@@ -151,18 +153,35 @@ function Roles({ file }: { file: MemberFileView }) {
   const announce = useAnnounce();
   const router = useRouter();
   const manage = useConsoleAction('access.roles.manage');
-  const sensitive = useSensitiveAction(`roles:${file.userId}`);
   const held = file.roles.filter((role): role is AssignableRole => role !== 'member');
   const free = ASSIGNABLE.filter((role) => !held.includes(role));
-  const [role, setRole] = useState<AssignableRole | undefined>(free[0]);
+  // Back from a new sign-in, the address names the role and what to do with it.
+  const resume = parseRoleResume(useSearchParams().get(RESUME_PARAM), file.userId, ASSIGNABLE);
+  const [role, setRole] = useState<AssignableRole | undefined>(
+    resume?.intent === 'grant' ? resume.role : free[0],
+  );
   const [confirming, setConfirming] = useState(false);
   const [revoking, setRevoking] = useState<AssignableRole | null>(null);
+  const [intent, setIntent] = useState<{ intent: RoleIntent; role: AssignableRole } | null>(null);
   const [error, setError] = useState<string | null>(null);
-  useResumeEffect(sensitive.resumed, () => setConfirming(true), sensitive.acknowledge);
+  const pending = intent ?? resume;
+  const resumeKey = pending
+    ? roleResumeKey(file.userId, pending.intent, pending.role)
+    : `roles:${file.userId}`;
+  const sensitive = useSensitiveAction(resumeKey);
+  useResumeEffect(
+    sensitive.resumed,
+    () => {
+      if (resume?.intent === 'revoke') setRevoking(resume.role);
+      else setConfirming(true);
+    },
+    sensitive.acknowledge,
+  );
 
   async function grant() {
     if (!role) return;
     setError(null);
+    setIntent({ intent: 'grant', role });
     try {
       const outcome = await sensitive.run(() => accessControllerGrantRole(file.userId, { role }));
       if (!outcome.done) return;
@@ -175,6 +194,7 @@ function Roles({ file }: { file: MemberFileView }) {
 
   async function revoke(target: AssignableRole) {
     setError(null);
+    setIntent({ intent: 'revoke', role: target });
     try {
       const outcome = await sensitive.run(() => accessControllerRevokeRole(file.userId, target));
       if (!outcome.done) return;
@@ -235,7 +255,7 @@ function Roles({ file }: { file: MemberFileView }) {
         </div>
       ) : null}
       {manage.visible ? <RecentSessionHint /> : null}
-      {sensitive.stale ? <ReauthenticationNotice resumeKey={`roles:${file.userId}`} /> : null}
+      {sensitive.stale ? <ReauthenticationNotice resumeKey={resumeKey} /> : null}
       {error ? (
         <p role="alert" className="text-sm text-danger">
           {error}
