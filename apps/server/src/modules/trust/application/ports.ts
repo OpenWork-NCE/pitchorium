@@ -1,6 +1,7 @@
 import type {
   ModerationCaseStatus,
   ReportOutcome,
+  ReportReason,
   ReportTargetType,
   TrustSignalKind,
 } from '@pitchorium/contracts';
@@ -26,6 +27,10 @@ export interface QueueFilter {
   /** Undefined: any; null: unassigned. */
   assignedTo?: string | null;
   targetType?: ReportTargetType | undefined;
+  /** Cases where this reason was reported. */
+  reason?: ReportReason | undefined;
+  /** Cases opened before this instant. */
+  openedBefore?: Date | undefined;
 }
 
 /** Raw counters of the transparency report over a period. */

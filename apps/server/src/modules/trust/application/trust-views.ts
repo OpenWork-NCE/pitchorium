@@ -4,6 +4,7 @@ import type {
   ModerationCase,
   ModerationDecision,
   ModerationDecisionDetail,
+  ModerationPerson,
   ModerationReport,
   Report,
   ReportedMessageContext,
@@ -47,7 +48,10 @@ export function moderationReportView(record: ReportRecord): ModerationReport {
   };
 }
 
-export function caseView(record: CaseRecord): ModerationCase {
+export function caseView(
+  record: CaseRecord,
+  subject: ModerationPerson | null = null,
+): ModerationCase {
   return {
     id: record.id,
     targetType: record.targetType,
@@ -65,6 +69,7 @@ export function caseView(record: CaseRecord): ModerationCase {
     createdAt: record.createdAt.toISOString(),
     updatedAt: record.updatedAt.toISOString(),
     resolvedAt: iso(record.resolvedAt),
+    subject,
   };
 }
 

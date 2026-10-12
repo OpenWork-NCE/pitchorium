@@ -54,6 +54,7 @@
   "TRUST_SAME_MODERATOR": "Un appel doit être examiné par une autre personne que l’auteur de la décision.",
   "TRUST_SUSPENSION_NOT_FOUND": "Cette suspension est introuvable ou déjà levée.",
   "TRUST_PROJECT_NOT_FROZEN": "Les remboursements exigent une décision de gel de ce projet.",
+  "TRUST_MEMBER_NOT_FOUND": "Ce membre n’existe plus : aucune suspension n’est possible.",
   "PRIVACY_EXPORT_RATE_LIMITED": "Un export a déjà été demandé récemment : réessayez plus tard.",
   "PRIVACY_EXPORT_NOT_FOUND": "Cet export est introuvable.",
   "PRIVACY_EXPORT_NOT_READY": "Cette archive n’est pas prête ou a expiré.",

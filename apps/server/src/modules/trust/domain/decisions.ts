@@ -1,8 +1,13 @@
-import type {
-  AppealOutcome,
-  ModerationDecisionKind,
-  ReportOutcome,
-  ReportTargetType,
+import {
+  type Action,
+  type AppealOutcome,
+  type DecisionOptions,
+  type ErrorCode,
+  MODERATION_DECISION_KINDS,
+  type ModerationDecisionKind,
+  type ReportOutcome,
+  type ReportTargetType,
+  SUSPENSION_DAYS_MAX,
 } from '@pitchorium/contracts';
 import { DomainError } from '../../../platform/kernel';
 import type { AppealRecord, CaseRecord, DecisionRecord } from './trust';
@@ -46,25 +51,69 @@ function notApplicable(message: string): DomainError {
   return new DomainError('TRUST_DECISION_NOT_APPLICABLE', message);
 }
 
-/** Checks that the decision applies to the target and that the actor may take it. */
-export function assertDecisionAllowed(request: DecisionRequest, context: DecisionContext): void {
-  switch (request.kind) {
+/** Why a kind of decision does not apply to the target, null when it does. */
+function inapplicable(kind: ModerationDecisionKind, context: DecisionContext): string | null {
+  switch (kind) {
     case 'dismiss':
-      break;
+      return null;
     case 'hide':
     case 'remove':
-      if (!CONTENT_TARGETS.has(context.targetType)) {
-        throw notApplicable('A profile or an organization is not hidden: warn or suspend');
-      }
-      break;
+      return CONTENT_TARGETS.has(context.targetType)
+        ? null
+        : 'A profile or an organization is not hidden: warn or suspend';
     case 'warn':
     case 'suspend':
-      if (!context.subjectId) throw notApplicable('No member is concerned by this target');
-      break;
+      return context.subjectId ? null : 'No member is concerned by this target';
     case 'freeze_project':
-      if (context.targetType !== 'project') throw notApplicable('Only a project is frozen');
-      break;
+      return context.targetType === 'project' ? null : 'Only a project is frozen';
   }
+}
+
+/**
+ * The second action a decision asserts on top of `trust.moderation.decide`: the freeze of a
+ * project and a permanent suspension ask an administrator for a recent session.
+ */
+export function sensitiveDecisionAction(request: DecisionRequest): Action | null {
+  if (request.kind === 'freeze_project') return 'trust.project.freeze';
+  if (request.kind === 'suspend' && request.suspensionDays === null) {
+    return 'trust.suspension.permanent';
+  }
+  return null;
+}
+
+/**
+ * What the reader may decide on a case (the console offers nothing else): each kind with the
+ * code it would fail with, and the bounds of a suspension. The same rules as a decision.
+ */
+export function decisionOptions(context: DecisionContext): DecisionOptions {
+  const kinds = MODERATION_DECISION_KINDS.map((kind) => {
+    let code: ErrorCode | null = inapplicable(kind, context)
+      ? 'TRUST_DECISION_NOT_APPLICABLE'
+      : null;
+    if (!code && kind === 'freeze_project' && !context.actorIsAdmin) code = 'TRUST_ADMIN_REQUIRED';
+    return {
+      kind,
+      allowed: code === null,
+      code,
+      recentAuthentication: kind === 'freeze_project',
+    };
+  });
+  const suspendable = kinds.find((option) => option.kind === 'suspend')?.allowed ?? false;
+  return {
+    kinds,
+    suspension: suspendable
+      ? {
+          maxDays: context.actorIsAdmin ? SUSPENSION_DAYS_MAX : context.moderatorMaxSuspensionDays,
+          permanent: context.actorIsAdmin,
+        }
+      : null,
+  };
+}
+
+/** Checks that the decision applies to the target and that the actor may take it. */
+export function assertDecisionAllowed(request: DecisionRequest, context: DecisionContext): void {
+  const refusal = inapplicable(request.kind, context);
+  if (refusal) throw notApplicable(refusal);
   if (request.kind !== 'suspend' && request.suspensionDays !== null) {
     throw notApplicable('Suspension days apply to a suspension only');
   }
@@ -113,16 +162,31 @@ export function assertAppealable(
  * An appeal is pending until a moderator other than the author of the decision upholds or
  * overturns it; an overturned decision is reverted.
  */
+/**
+ * Why the reviewer may not resolve the appeal, null when they may: resolved already, or the
+ * author of the decision (the internal complaint goes to another person, ADR 0072).
+ */
+export function appealReviewRefusal(
+  appeal: AppealRecord,
+  decision: DecisionRecord,
+  reviewerId: string,
+): 'TRUST_APPEAL_RESOLVED' | 'TRUST_SAME_MODERATOR' | null {
+  if (appeal.status !== 'pending') return 'TRUST_APPEAL_RESOLVED';
+  if (decision.decidedBy === reviewerId) return 'TRUST_SAME_MODERATOR';
+  return null;
+}
+
 export function assertAppealReview(
   appeal: AppealRecord,
   decision: DecisionRecord,
   reviewerId: string,
 ): void {
-  if (appeal.status !== 'pending') {
-    throw new DomainError('TRUST_APPEAL_RESOLVED', 'Appeal already resolved');
+  const refusal = appealReviewRefusal(appeal, decision, reviewerId);
+  if (refusal === 'TRUST_APPEAL_RESOLVED') {
+    throw new DomainError(refusal, 'Appeal already resolved');
   }
-  if (decision.decidedBy === reviewerId) {
-    throw new DomainError('TRUST_SAME_MODERATOR', 'Reviewed by the author of the decision');
+  if (refusal === 'TRUST_SAME_MODERATOR') {
+    throw new DomainError(refusal, 'Reviewed by the author of the decision');
   }
 }
 

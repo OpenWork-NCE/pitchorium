@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { errorCodeSchema } from './errors/error-code-schema.js';
 import { uuidV7Schema } from './ids.js';
 import { localeSchema } from './locale.js';
 import { cursorPageQuerySchema, cursorPageSchema } from './pagination.js';
@@ -51,7 +52,8 @@ export const reportOutcomeSchema = z.enum(REPORT_OUTCOMES);
 /** A case gathers the reports and signals about one target; one open case per target. */
 export const MODERATION_CASE_STATUSES = ['open', 'resolved'] as const;
 export const moderationCaseStatusSchema = z.enum(MODERATION_CASE_STATUSES);
-export const MODERATION_CASE_ORIGINS = ['report', 'signal'] as const;
+/** `staff`: opened by a moderator from the file of a member (a suspension decided there). */
+export const MODERATION_CASE_ORIGINS = ['report', 'signal', 'staff'] as const;
 export const moderationCaseOriginSchema = z.enum(MODERATION_CASE_ORIGINS);
 
 /** Simple automatic signals, never a sanction by themselves (no machine learning). */
@@ -175,6 +177,16 @@ export const moderationAssignmentSchema = z.object({
   assignedAt: z.iso.datetime(),
 });
 
+/**
+ * A member named in a case (subject, reporter, moderator), as the moderation reads them: the
+ * name of the account and the handle of the profile, null for a member deleted since.
+ */
+export const moderationPersonSchema = z.object({
+  userId: uuidV7Schema,
+  name: z.string(),
+  handle: z.string().nullable(),
+});
+
 export const moderationCaseSchema = z.object({
   id: uuidV7Schema,
   targetType: reportTargetTypeSchema,
@@ -194,6 +206,8 @@ export const moderationCaseSchema = z.object({
   createdAt: z.iso.datetime(),
   updatedAt: z.iso.datetime(),
   resolvedAt: z.iso.datetime().nullable(),
+  /** The member concerned, named for the queue; null when unknown or deleted. */
+  subject: moderationPersonSchema.nullable(),
 });
 export const moderationCasePageSchema = cursorPageSchema(moderationCaseSchema);
 
@@ -239,17 +253,107 @@ export const moderationDecisionDetailSchema = moderationDecisionSchema.extend({
 
 export const moderationDecisionDetailPageSchema = cursorPageSchema(moderationDecisionDetailSchema);
 
+/**
+ * What was reported, as a moderator reads it whatever its audience and its moderation status:
+ * `key` addresses its page (handle of a profile, slug of an organization, a project or an
+ * event, identifier otherwise), `parentKey` the page that holds it (the publication of a
+ * comment, the project of an update); a message is read in the context of its reports. Null
+ * when the target no longer exists.
+ */
+export const moderationTargetSchema = z.object({
+  type: reportTargetTypeSchema,
+  key: z.string(),
+  parentKey: z.string().nullable(),
+  /** Name or title. */
+  label: z.string().nullable(),
+  /** Text of a publication, a comment or an update, cut at 2 000 characters. */
+  excerpt: z.string().nullable(),
+  /** Moderation status in its module (`visible`, `hidden`, `removed`), null without one. */
+  moderationStatus: z.string().nullable(),
+});
+
+/**
+ * The decisions the reader may take on this case, decided by the api (§13): `allowed` false
+ * with the error code the decision would fail with; `recentAuthentication` when it asks for a
+ * new sign-in. `suspension` bounds a suspension for the reader, null when none applies.
+ */
+export const decisionOptionsSchema = z.object({
+  kinds: z.array(
+    z.object({
+      kind: moderationDecisionKindSchema,
+      allowed: z.boolean(),
+      code: errorCodeSchema.nullable(),
+      recentAuthentication: z.boolean(),
+    }),
+  ),
+  suspension: z
+    .object({
+      /** Longest temporary suspension the reader may decide, in days. */
+      maxDays: z.number().int().positive(),
+      /** The reader may decide a permanent suspension (with a recent session). */
+      permanent: z.boolean(),
+    })
+    .nullable(),
+});
+
 export const moderationCaseDetailSchema = moderationCaseSchema.extend({
   reports: z.array(moderationReportSchema),
   assignments: z.array(moderationAssignmentSchema),
   decisions: z.array(moderationDecisionDetailSchema),
+  target: moderationTargetSchema.nullable(),
+  /** Every member named by the case: subject, reporters, moderators. */
+  people: z.array(moderationPersonSchema),
+  decisionOptions: decisionOptionsSchema,
 });
+
+/**
+ * A pending appeal as the reader may handle it: the decision, its target, and whether the reader
+ * may resolve it (never the author of the decision, TRUST_SAME_MODERATOR).
+ */
+export const moderationAppealItemSchema = moderationDecisionDetailSchema.extend({
+  resolvable: z.boolean(),
+  refusal: errorCodeSchema.nullable(),
+  people: z.array(moderationPersonSchema),
+});
+export const moderationAppealPageSchema = cursorPageSchema(moderationAppealItemSchema);
+
+/** The moderators and administrators a case may be assigned to. */
+export const moderatorListSchema = z.object({ items: z.array(moderationPersonSchema) });
+
+/**
+ * A suspension decided from the file of a member, without a report: a case is opened for their
+ * profile (`staff`), or the open one is decided, with the same statement of reasons.
+ */
+export const staffSuspensionRequestSchema = z
+  .object({
+    reason: reportReasonSchema,
+    statement: z
+      .string()
+      .trim()
+      .min(MODERATION_STATEMENT_MIN_LENGTH)
+      .max(MODERATION_STATEMENT_MAX_LENGTH),
+    ground: moderationGroundSchema,
+    groundReference: z
+      .string()
+      .trim()
+      .min(1)
+      .max(MODERATION_GROUND_REFERENCE_MAX_LENGTH)
+      .nullable()
+      .default(null),
+    /** Null for a permanent suspension (administrators, recent session). */
+    suspensionDays: z.number().int().min(1).max(SUSPENSION_DAYS_MAX).nullable(),
+  })
+  .strict();
 
 export const moderationQueueQuerySchema = cursorPageQuerySchema.extend({
   status: moderationCaseStatusSchema.default('open'),
   /** `me`: assigned to the reader; `unassigned`; `any` by default. */
   assigned: z.enum(['me', 'unassigned', 'any']).default('any'),
   targetType: reportTargetTypeSchema.optional(),
+  /** Cases where this reason was reported. */
+  reason: reportReasonSchema.optional(),
+  /** Cases opened before this instant (their age). */
+  openedBefore: z.iso.datetime().optional(),
 });
 
 export const assignModerationCaseRequestSchema = z
@@ -391,3 +495,9 @@ export type DecideModerationCaseRequest = z.infer<typeof decideModerationCaseReq
 export type Suspension = z.infer<typeof suspensionSchema>;
 export type ModerationStanding = z.infer<typeof moderationStandingSchema>;
 export type TransparencyReport = z.infer<typeof transparencyReportSchema>;
+export type ModerationPerson = z.infer<typeof moderationPersonSchema>;
+export type ModerationTarget = z.infer<typeof moderationTargetSchema>;
+export type DecisionOptions = z.infer<typeof decisionOptionsSchema>;
+export type ModerationAppealItem = z.infer<typeof moderationAppealItemSchema>;
+export type ModeratorList = z.infer<typeof moderatorListSchema>;
+export type StaffSuspensionRequest = z.infer<typeof staffSuspensionRequestSchema>;

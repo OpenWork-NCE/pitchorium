@@ -22,12 +22,14 @@ import { TrustJobsProcessor } from './interface/trust-jobs.processor';
 import { TRUST_QUEUE } from './interface/trust-queue';
 
 import { TrustPersonalData } from './infrastructure/trust-personal-data';
+import { PeopleDirectory } from './application/people-directory';
 
 const SHARED_PROVIDERS: Provider[] = [
   TrustPersonalData,
   { provide: TrustRepository, useClass: DrizzleTrustRepository },
   TrustEventsRecorder,
   TargetDirectory,
+  PeopleDirectory,
   CaseFilingService,
   SignalsService,
   SuspensionsService,

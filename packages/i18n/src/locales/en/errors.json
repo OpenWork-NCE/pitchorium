@@ -54,6 +54,7 @@
   "TRUST_SAME_MODERATOR": "An appeal must be reviewed by someone other than the author of the decision.",
   "TRUST_SUSPENSION_NOT_FOUND": "This suspension was not found or was already lifted.",
   "TRUST_PROJECT_NOT_FROZEN": "Refunds require a decision freezing this project.",
+  "TRUST_MEMBER_NOT_FOUND": "This member no longer exists: no suspension is possible.",
   "PRIVACY_EXPORT_RATE_LIMITED": "An export was requested recently: try again later.",
   "PRIVACY_EXPORT_NOT_FOUND": "This export was not found.",
   "PRIVACY_EXPORT_NOT_READY": "This archive is not ready or has expired.",

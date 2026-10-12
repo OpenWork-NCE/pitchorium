@@ -3,6 +3,7 @@ import type { NestExpressApplication } from '@nestjs/platform-express';
 import type { TestingModule } from '@nestjs/testing';
 import type {
   ReportReasonList,
+  ModerationAppealItem,
   ModerationCase,
   ModerationCaseDetail,
   ModerationDecisionDetail,
@@ -14,7 +15,7 @@ import request from 'supertest';
 import { v7 } from 'uuid';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { createApiTestApp } from './support/api-app';
-import { truncateAllTables } from './support/database';
+import { query, truncateAllTables } from './support/database';
 import { createFullWorker, notificationOf, relayAll } from './support/full-worker';
 import { Mailpit } from './support/mailpit';
 import { createMember, grantRoleWith2fa, type Member, signIn, browser } from './support/members';
@@ -253,6 +254,110 @@ describe('trust', () => {
     expect(await notificationOf(worker, amina, 'appeal_decided')).toMatchObject({
       data: { outcome: 'overturned' },
     });
+  });
+
+  it('gives the console its queue, its case and what each reader may decide (ADR 0172)', async () => {
+    const target = await post(amina, 'Achetez nos produits, offre exceptionnelle.');
+    await report(kofi, { targetType: 'post', targetId: target.id, reason: 'spam' }).expect(201);
+    // Filters of the queue: reason, age; the member concerned is named.
+    expect((await queue(moderator, '?reason=spam')).map((item) => item.targetId)).toEqual([
+      target.id,
+    ]);
+    expect(await queue(moderator, '?reason=fraud')).toEqual([]);
+    expect(
+      await queue(moderator, `?openedBefore=${encodeURIComponent('2020-01-01T00:00:00.000Z')}`),
+    ).toEqual([]);
+    const found = await caseOf(target.id);
+    expect(found.subject).toEqual({
+      userId: amina.userId,
+      name: 'Amina Diop',
+      handle: await handleOf(amina),
+    });
+    const detail = (await moderator.agent.get(`/v1/admin/moderation/cases/${found.id}`).expect(200))
+      .body as ModerationCaseDetail;
+    expect(detail.target).toEqual({
+      type: 'post',
+      key: target.id,
+      parentKey: null,
+      label: null,
+      excerpt: 'Achetez nos produits, offre exceptionnelle.',
+      moderationStatus: 'visible',
+    });
+    expect(detail.people.map((person) => person.name).sort()).toEqual([
+      'Amina Diop',
+      'Kofi Mensah',
+    ]);
+    const allowed = (options: ModerationCaseDetail['decisionOptions']) =>
+      options.kinds.filter((option) => option.allowed).map((option) => option.kind);
+    expect(allowed(detail.decisionOptions)).toEqual([
+      'dismiss',
+      'hide',
+      'remove',
+      'warn',
+      'suspend',
+    ]);
+    expect(detail.decisionOptions.suspension).toEqual({ maxDays: 30, permanent: false });
+    const asAdmin = (await admin.agent.get(`/v1/admin/moderation/cases/${found.id}`).expect(200))
+      .body as ModerationCaseDetail;
+    expect(asAdmin.decisionOptions.suspension).toEqual({ maxDays: 365, permanent: true });
+    const moderators = (await moderator.agent.get('/v1/admin/moderation/moderators').expect(200))
+      .body as { items: { name: string }[] };
+    expect(moderators.items.map((person) => person.name)).toEqual([
+      'Admin',
+      'Modératrice',
+      'Relecteur',
+    ]);
+
+    // The author of a decision reads the appeal, and why they may not resolve it.
+    const decision = (
+      await decide(moderator, found.id, { kind: 'hide', reason: 'spam' }).expect(201)
+    ).body as ModerationDecisionDetail;
+    await amina.agent
+      .post(`/v1/me/moderation/decisions/${decision.id}/appeal`)
+      .set('Idempotency-Key', randomUUID())
+      .send({ statement: 'Ce n’était qu’une annonce.' })
+      .expect(201);
+    const appealsOf = async (member: Member) =>
+      (await member.agent.get('/v1/admin/moderation/appeals').expect(200)).body
+        .items as ModerationAppealItem[];
+    expect((await appealsOf(moderator))[0]).toMatchObject({
+      id: decision.id,
+      resolvable: false,
+      refusal: 'TRUST_SAME_MODERATOR',
+    });
+    expect((await appealsOf(reviewer))[0]).toMatchObject({ resolvable: true, refusal: null });
+
+    // A suspension from the file of a member opens a staff case; a permanent one is an
+    // administrator's, with a recent session.
+    const suspend = (member: Member, suspensionDays: number | null) =>
+      member.agent
+        .post(`/v1/admin/moderation/members/${kofi.userId}/suspensions`)
+        .set('Idempotency-Key', randomUUID())
+        .send({ reason: 'fraud', statement: STATEMENT, ground: 'terms', suspensionDays });
+    expect((await suspend(moderator, null).expect(403)).body.code).toBe('TRUST_ADMIN_REQUIRED');
+    await query(
+      `UPDATE identity.sessions SET created_at = now() - interval '1 hour' WHERE user_id = $1`,
+      [admin.userId],
+    );
+    expect((await suspend(admin, null).expect(403)).body.code).toBe(
+      'ACCESS_REAUTHENTICATION_REQUIRED',
+    );
+    const staff = (await suspend(moderator, 7).expect(201)).body as ModerationDecisionDetail;
+    expect(staff).toMatchObject({ kind: 'suspend', targetType: 'profile', subjectId: kofi.userId });
+    const [opened] = await query<{ origin: string; status: string }>(
+      'SELECT origin, status FROM trust.cases WHERE id = $1',
+      [staff.caseId],
+    );
+    expect(opened).toEqual({ origin: 'staff', status: 'resolved' });
+    expect(
+      (
+        await moderator.agent
+          .post(`/v1/admin/moderation/members/${v7()}/suspensions`)
+          .set('Idempotency-Key', randomUUID())
+          .send({ reason: 'fraud', statement: STATEMENT, ground: 'terms', suspensionDays: 7 })
+          .expect(404)
+      ).body.code,
+    ).toBe('TRUST_MEMBER_NOT_FOUND');
   });
 
   it('suspends a member: sessions revoked, only the notice and the appeal remain', async () => {

@@ -32,24 +32,29 @@ import {
   ModerationControllerLiftMutationVariables,
   ModerationControllerRefundsMutationVariables,
   ModerationControllerResolveAppealMutationVariables,
+  ModerationControllerSuspendMemberMutationVariables,
   getModerationControllerAppealsQueryOptions,
   getModerationControllerAssignMutationOptions,
   getModerationControllerDecideMutationOptions,
   getModerationControllerDetailQueryOptions,
   getModerationControllerLiftMutationOptions,
+  getModerationControllerModeratorsQueryOptions,
   getModerationControllerQueueQueryOptions,
   getModerationControllerRefundsMutationOptions,
   getModerationControllerReportQueryOptions,
   getModerationControllerResolveAppealMutationOptions,
+  getModerationControllerSuspendMemberMutationOptions,
   moderationControllerAppeals,
   moderationControllerAssign,
   moderationControllerDecide,
   moderationControllerDetail,
   moderationControllerLift,
+  moderationControllerModerators,
   moderationControllerQueue,
   moderationControllerRefunds,
   moderationControllerReport,
   moderationControllerResolveAppeal,
+  moderationControllerSuspendMember,
 } from './admin-moderation';
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
@@ -372,6 +377,112 @@ export function useModerationControllerAppeals<
 
   return withQueryKey(query, queryOptions.queryKey);
 }
+
+export function useModerationControllerModerators<
+  TData = Awaited<ReturnType<typeof moderationControllerModerators>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof moderationControllerModerators>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof moderationControllerModerators>>,
+          TError,
+          Awaited<ReturnType<typeof moderationControllerModerators>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useModerationControllerModerators<
+  TData = Awaited<ReturnType<typeof moderationControllerModerators>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof moderationControllerModerators>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof moderationControllerModerators>>,
+          TError,
+          Awaited<ReturnType<typeof moderationControllerModerators>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useModerationControllerModerators<
+  TData = Awaited<ReturnType<typeof moderationControllerModerators>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof moderationControllerModerators>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+/**
+ * @summary Moderators
+ */
+
+export function useModerationControllerModerators<
+  TData = Awaited<ReturnType<typeof moderationControllerModerators>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof moderationControllerModerators>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getModerationControllerModeratorsQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+/**
+ * @summary Suspend member
+ */
+export const useModerationControllerSuspendMember = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof moderationControllerSuspendMember>>,
+      TError,
+      ModerationControllerSuspendMemberMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof moderationControllerSuspendMember>>,
+  TError,
+  ModerationControllerSuspendMemberMutationVariables,
+  TContext
+> => {
+  return useMutation(getModerationControllerSuspendMemberMutationOptions(options), queryClient);
+};
 
 /**
  * @summary Resolve appeal

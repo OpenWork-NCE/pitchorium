@@ -33167,7 +33167,8 @@
           "TRUST_APPEAL_RESOLVED",
           "TRUST_SAME_MODERATOR",
           "TRUST_SUSPENSION_NOT_FOUND",
-          "TRUST_PROJECT_NOT_FROZEN"
+          "TRUST_PROJECT_NOT_FROZEN",
+          "TRUST_MEMBER_NOT_FOUND"
         ],
         "x-access": "public"
       }
@@ -33293,7 +33294,8 @@
           "TRUST_APPEAL_RESOLVED",
           "TRUST_SAME_MODERATOR",
           "TRUST_SUSPENSION_NOT_FOUND",
-          "TRUST_PROJECT_NOT_FROZEN"
+          "TRUST_PROJECT_NOT_FROZEN",
+          "TRUST_MEMBER_NOT_FOUND"
         ],
         "x-access": "trust.report.create"
       }
@@ -33402,7 +33404,8 @@
           "TRUST_APPEAL_RESOLVED",
           "TRUST_SAME_MODERATOR",
           "TRUST_SUSPENSION_NOT_FOUND",
-          "TRUST_PROJECT_NOT_FROZEN"
+          "TRUST_PROJECT_NOT_FROZEN",
+          "TRUST_MEMBER_NOT_FOUND"
         ],
         "x-access": "trust.report.read"
       }
@@ -33489,7 +33492,8 @@
           "TRUST_APPEAL_RESOLVED",
           "TRUST_SAME_MODERATOR",
           "TRUST_SUSPENSION_NOT_FOUND",
-          "TRUST_PROJECT_NOT_FROZEN"
+          "TRUST_PROJECT_NOT_FROZEN",
+          "TRUST_MEMBER_NOT_FOUND"
         ],
         "x-access": "public"
       }
@@ -33572,7 +33576,8 @@
           "TRUST_APPEAL_RESOLVED",
           "TRUST_SAME_MODERATOR",
           "TRUST_SUSPENSION_NOT_FOUND",
-          "TRUST_PROJECT_NOT_FROZEN"
+          "TRUST_PROJECT_NOT_FROZEN",
+          "TRUST_MEMBER_NOT_FOUND"
         ],
         "x-access": "trust.standing.read"
       }
@@ -33681,7 +33686,8 @@
           "TRUST_APPEAL_RESOLVED",
           "TRUST_SAME_MODERATOR",
           "TRUST_SUSPENSION_NOT_FOUND",
-          "TRUST_PROJECT_NOT_FROZEN"
+          "TRUST_PROJECT_NOT_FROZEN",
+          "TRUST_MEMBER_NOT_FOUND"
         ],
         "x-access": "trust.standing.read"
       }
@@ -33821,7 +33827,8 @@
           "TRUST_APPEAL_RESOLVED",
           "TRUST_SAME_MODERATOR",
           "TRUST_SUSPENSION_NOT_FOUND",
-          "TRUST_PROJECT_NOT_FROZEN"
+          "TRUST_PROJECT_NOT_FROZEN",
+          "TRUST_MEMBER_NOT_FOUND"
         ],
         "x-access": "trust.decision.appeal"
       }
@@ -33896,6 +33903,33 @@
                 "message",
                 "media"
               ]
+            }
+          },
+          {
+            "name": "reason",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "spam",
+                "harassment",
+                "fraud",
+                "illegal_content",
+                "misleading_information",
+                "intellectual_property",
+                "other"
+              ]
+            }
+          },
+          {
+            "name": "openedBefore",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "format": "date-time",
+              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+              "type": "string"
             }
           }
         ],
@@ -33977,7 +34011,8 @@
           "TRUST_APPEAL_RESOLVED",
           "TRUST_SAME_MODERATOR",
           "TRUST_SUSPENSION_NOT_FOUND",
-          "TRUST_PROJECT_NOT_FROZEN"
+          "TRUST_PROJECT_NOT_FROZEN",
+          "TRUST_MEMBER_NOT_FOUND"
         ],
         "x-access": "trust.moderation.read"
       }
@@ -34079,7 +34114,8 @@
           "TRUST_APPEAL_RESOLVED",
           "TRUST_SAME_MODERATOR",
           "TRUST_SUSPENSION_NOT_FOUND",
-          "TRUST_PROJECT_NOT_FROZEN"
+          "TRUST_PROJECT_NOT_FROZEN",
+          "TRUST_MEMBER_NOT_FOUND"
         ],
         "x-access": "trust.moderation.read"
       }
@@ -34219,7 +34255,8 @@
           "TRUST_APPEAL_RESOLVED",
           "TRUST_SAME_MODERATOR",
           "TRUST_SUSPENSION_NOT_FOUND",
-          "TRUST_PROJECT_NOT_FROZEN"
+          "TRUST_PROJECT_NOT_FROZEN",
+          "TRUST_MEMBER_NOT_FOUND"
         ],
         "x-access": "trust.moderation.assign"
       }
@@ -34359,7 +34396,8 @@
           "TRUST_APPEAL_RESOLVED",
           "TRUST_SAME_MODERATOR",
           "TRUST_SUSPENSION_NOT_FOUND",
-          "TRUST_PROJECT_NOT_FROZEN"
+          "TRUST_PROJECT_NOT_FROZEN",
+          "TRUST_MEMBER_NOT_FOUND"
         ],
         "x-access": "trust.moderation.decide"
       }
@@ -34396,7 +34434,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DecisionDetailPageDto_Output"
+                  "$ref": "#/components/schemas/AppealPageDto_Output"
                 }
               }
             }
@@ -34468,9 +34506,235 @@
           "TRUST_APPEAL_RESOLVED",
           "TRUST_SAME_MODERATOR",
           "TRUST_SUSPENSION_NOT_FOUND",
-          "TRUST_PROJECT_NOT_FROZEN"
+          "TRUST_PROJECT_NOT_FROZEN",
+          "TRUST_MEMBER_NOT_FOUND"
         ],
         "x-access": "trust.moderation.read"
+      }
+    },
+    "/v1/admin/moderation/moderators": {
+      "get": {
+        "operationId": "ModerationController_moderators",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModeratorListDto_Output"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error (RFC 9457 problem details)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "UNAUTHENTICATED": {
+                    "$ref": "#/components/examples/UNAUTHENTICATED"
+                  },
+                  "FORBIDDEN": {
+                    "$ref": "#/components/examples/FORBIDDEN"
+                  },
+                  "ACCESS_ORIGIN_NOT_ALLOWED": {
+                    "$ref": "#/components/examples/ACCESS_ORIGIN_NOT_ALLOWED"
+                  },
+                  "ACCESS_PREREQUISITES_MISSING": {
+                    "$ref": "#/components/examples/ACCESS_PREREQUISITES_MISSING"
+                  },
+                  "ACCESS_ACCOUNT_SUSPENDED": {
+                    "$ref": "#/components/examples/ACCESS_ACCOUNT_SUSPENDED"
+                  },
+                  "RATE_LIMITED": {
+                    "$ref": "#/components/examples/RATE_LIMITED"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "tags": [
+          "admin-moderation"
+        ],
+        "summary": "Moderators",
+        "description": "Action `trust.moderation.assign` (session cookie).\n\nRoles: moderator, admin, with 2FA.\n\nErrors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.",
+        "x-error-codes": [
+          "UNAUTHENTICATED",
+          "FORBIDDEN",
+          "ACCESS_ORIGIN_NOT_ALLOWED",
+          "ACCESS_PREREQUISITES_MISSING",
+          "ACCESS_ACCOUNT_SUSPENDED",
+          "RATE_LIMITED",
+          "TRUST_TARGET_NOT_FOUND",
+          "TRUST_SELF_REPORT",
+          "TRUST_REPORT_DUPLICATE",
+          "TRUST_CASE_NOT_FOUND",
+          "TRUST_CASE_RESOLVED",
+          "TRUST_DECISION_NOT_APPLICABLE",
+          "TRUST_ADMIN_REQUIRED",
+          "TRUST_ASSIGNEE_NOT_MODERATOR",
+          "TRUST_DECISION_NOT_FOUND",
+          "TRUST_NOT_APPEALABLE",
+          "TRUST_APPEAL_EXISTS",
+          "TRUST_APPEAL_NOT_FOUND",
+          "TRUST_APPEAL_RESOLVED",
+          "TRUST_SAME_MODERATOR",
+          "TRUST_SUSPENSION_NOT_FOUND",
+          "TRUST_PROJECT_NOT_FROZEN",
+          "TRUST_MEMBER_NOT_FOUND"
+        ],
+        "x-access": "trust.moderation.assign"
+      }
+    },
+    "/v1/admin/moderation/members/{userId}/suspensions": {
+      "post": {
+        "operationId": "ModerationController_suspendMember",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$",
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "Client-generated unique key (UUIDv7 recommended). Replays return the stored response.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255,
+              "pattern": "^[\\x21-\\x7E]+$"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StaffSuspensionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DecisionDetailDto_Output"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error (RFC 9457 problem details)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "VALIDATION_FAILED": {
+                    "$ref": "#/components/examples/VALIDATION_FAILED"
+                  },
+                  "PAYLOAD_TOO_LARGE": {
+                    "$ref": "#/components/examples/PAYLOAD_TOO_LARGE"
+                  },
+                  "UNAUTHENTICATED": {
+                    "$ref": "#/components/examples/UNAUTHENTICATED"
+                  },
+                  "FORBIDDEN": {
+                    "$ref": "#/components/examples/FORBIDDEN"
+                  },
+                  "ACCESS_ORIGIN_NOT_ALLOWED": {
+                    "$ref": "#/components/examples/ACCESS_ORIGIN_NOT_ALLOWED"
+                  },
+                  "ACCESS_PREREQUISITES_MISSING": {
+                    "$ref": "#/components/examples/ACCESS_PREREQUISITES_MISSING"
+                  },
+                  "ACCESS_ACCOUNT_SUSPENDED": {
+                    "$ref": "#/components/examples/ACCESS_ACCOUNT_SUSPENDED"
+                  },
+                  "NOT_FOUND": {
+                    "$ref": "#/components/examples/NOT_FOUND"
+                  },
+                  "IDEMPOTENCY_KEY_MISSING": {
+                    "$ref": "#/components/examples/IDEMPOTENCY_KEY_MISSING"
+                  },
+                  "IDEMPOTENCY_REQUEST_IN_PROGRESS": {
+                    "$ref": "#/components/examples/IDEMPOTENCY_REQUEST_IN_PROGRESS"
+                  },
+                  "IDEMPOTENCY_KEY_REUSED": {
+                    "$ref": "#/components/examples/IDEMPOTENCY_KEY_REUSED"
+                  },
+                  "RATE_LIMITED": {
+                    "$ref": "#/components/examples/RATE_LIMITED"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "tags": [
+          "admin-moderation"
+        ],
+        "summary": "Suspend member",
+        "description": "Action `trust.moderation.decide` (session cookie).\n\nRoles: moderator, admin, with 2FA.\n\nIdempotent: the `Idempotency-Key` header is required, a replay returns the stored answer.\n\nErrors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.",
+        "x-error-codes": [
+          "VALIDATION_FAILED",
+          "PAYLOAD_TOO_LARGE",
+          "UNAUTHENTICATED",
+          "FORBIDDEN",
+          "ACCESS_ORIGIN_NOT_ALLOWED",
+          "ACCESS_PREREQUISITES_MISSING",
+          "ACCESS_ACCOUNT_SUSPENDED",
+          "NOT_FOUND",
+          "IDEMPOTENCY_KEY_MISSING",
+          "IDEMPOTENCY_REQUEST_IN_PROGRESS",
+          "IDEMPOTENCY_KEY_REUSED",
+          "RATE_LIMITED",
+          "TRUST_TARGET_NOT_FOUND",
+          "TRUST_SELF_REPORT",
+          "TRUST_REPORT_DUPLICATE",
+          "TRUST_CASE_NOT_FOUND",
+          "TRUST_CASE_RESOLVED",
+          "TRUST_DECISION_NOT_APPLICABLE",
+          "TRUST_ADMIN_REQUIRED",
+          "TRUST_ASSIGNEE_NOT_MODERATOR",
+          "TRUST_DECISION_NOT_FOUND",
+          "TRUST_NOT_APPEALABLE",
+          "TRUST_APPEAL_EXISTS",
+          "TRUST_APPEAL_NOT_FOUND",
+          "TRUST_APPEAL_RESOLVED",
+          "TRUST_SAME_MODERATOR",
+          "TRUST_SUSPENSION_NOT_FOUND",
+          "TRUST_PROJECT_NOT_FROZEN",
+          "TRUST_MEMBER_NOT_FOUND"
+        ],
+        "x-access": "trust.moderation.decide"
       }
     },
     "/v1/admin/moderation/appeals/{appealId}/resolution": {
@@ -34608,7 +34872,8 @@
           "TRUST_APPEAL_RESOLVED",
           "TRUST_SAME_MODERATOR",
           "TRUST_SUSPENSION_NOT_FOUND",
-          "TRUST_PROJECT_NOT_FROZEN"
+          "TRUST_PROJECT_NOT_FROZEN",
+          "TRUST_MEMBER_NOT_FOUND"
         ],
         "x-access": "trust.appeal.resolve"
       }
@@ -34748,7 +35013,8 @@
           "TRUST_APPEAL_RESOLVED",
           "TRUST_SAME_MODERATOR",
           "TRUST_SUSPENSION_NOT_FOUND",
-          "TRUST_PROJECT_NOT_FROZEN"
+          "TRUST_PROJECT_NOT_FROZEN",
+          "TRUST_MEMBER_NOT_FOUND"
         ],
         "x-access": "trust.suspension.lift"
       }
@@ -34892,7 +35158,8 @@
           "TRUST_APPEAL_RESOLVED",
           "TRUST_SAME_MODERATOR",
           "TRUST_SUSPENSION_NOT_FOUND",
-          "TRUST_PROJECT_NOT_FROZEN"
+          "TRUST_PROJECT_NOT_FROZEN",
+          "TRUST_MEMBER_NOT_FOUND"
         ],
         "x-access": "trust.project.refund"
       }
@@ -35000,7 +35267,8 @@
           "TRUST_APPEAL_RESOLVED",
           "TRUST_SAME_MODERATOR",
           "TRUST_SUSPENSION_NOT_FOUND",
-          "TRUST_PROJECT_NOT_FROZEN"
+          "TRUST_PROJECT_NOT_FROZEN",
+          "TRUST_MEMBER_NOT_FOUND"
         ],
         "x-access": "trust.transparency.read"
       }
@@ -37745,6 +38013,7 @@
                   "TRUST_SAME_MODERATOR",
                   "TRUST_SUSPENSION_NOT_FOUND",
                   "TRUST_PROJECT_NOT_FROZEN",
+                  "TRUST_MEMBER_NOT_FOUND",
                   "PRIVACY_EXPORT_RATE_LIMITED",
                   "PRIVACY_EXPORT_NOT_FOUND",
                   "PRIVACY_EXPORT_NOT_READY",
@@ -38203,6 +38472,7 @@
                         "TRUST_SAME_MODERATOR",
                         "TRUST_SUSPENSION_NOT_FOUND",
                         "TRUST_PROJECT_NOT_FROZEN",
+                        "TRUST_MEMBER_NOT_FOUND",
                         "PRIVACY_EXPORT_RATE_LIMITED",
                         "PRIVACY_EXPORT_NOT_FOUND",
                         "PRIVACY_EXPORT_NOT_READY",
@@ -72985,7 +73255,8 @@
                   "type": "string",
                   "enum": [
                     "report",
-                    "signal"
+                    "signal",
+                    "staff"
                   ]
                 },
                 "signalKind": {
@@ -73086,6 +73357,38 @@
                       "type": "null"
                     }
                   ]
+                },
+                "subject": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "userId": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "handle": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "userId",
+                        "name",
+                        "handle"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
                 }
               },
               "required": [
@@ -73104,7 +73407,8 @@
                 "decisionId",
                 "createdAt",
                 "updatedAt",
-                "resolvedAt"
+                "resolvedAt",
+                "subject"
               ],
               "additionalProperties": false
             }
@@ -73166,7 +73470,8 @@
             "type": "string",
             "enum": [
               "report",
-              "signal"
+              "signal",
+              "staff"
             ]
           },
           "signalKind": {
@@ -73262,6 +73567,38 @@
                 "type": "string",
                 "format": "date-time",
                 "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "subject": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "userId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "handle": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  }
+                },
+                "required": [
+                  "userId",
+                  "name",
+                  "handle"
+                ],
+                "additionalProperties": false
               },
               {
                 "type": "null"
@@ -73657,6 +73994,424 @@
               ],
               "additionalProperties": false
             }
+          },
+          "target": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "profile",
+                      "organization",
+                      "post",
+                      "comment",
+                      "project",
+                      "project_update",
+                      "event",
+                      "mission",
+                      "message",
+                      "media"
+                    ]
+                  },
+                  "key": {
+                    "type": "string"
+                  },
+                  "parentKey": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "label": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "excerpt": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "moderationStatus": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  }
+                },
+                "required": [
+                  "type",
+                  "key",
+                  "parentKey",
+                  "label",
+                  "excerpt",
+                  "moderationStatus"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "people": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "userId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "handle": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              },
+              "required": [
+                "userId",
+                "name",
+                "handle"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "decisionOptions": {
+            "type": "object",
+            "properties": {
+              "kinds": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "kind": {
+                      "type": "string",
+                      "enum": [
+                        "dismiss",
+                        "hide",
+                        "remove",
+                        "warn",
+                        "suspend",
+                        "freeze_project"
+                      ]
+                    },
+                    "allowed": {
+                      "type": "boolean"
+                    },
+                    "code": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "BAD_REQUEST",
+                            "VALIDATION_FAILED",
+                            "IDEMPOTENCY_KEY_MISSING",
+                            "UNAUTHENTICATED",
+                            "FORBIDDEN",
+                            "NOT_FOUND",
+                            "CONFLICT",
+                            "IDEMPOTENCY_REQUEST_IN_PROGRESS",
+                            "PAYLOAD_TOO_LARGE",
+                            "UNSUPPORTED_MEDIA_TYPE",
+                            "IDEMPOTENCY_KEY_REUSED",
+                            "RATE_LIMITED",
+                            "CAPTCHA_REQUIRED",
+                            "CAPTCHA_FAILED",
+                            "IDENTITY_USER_NOT_FOUND",
+                            "IDENTITY_LEGAL_VERSION_OUTDATED",
+                            "IDENTITY_LOCALE_NOT_ACTIVE",
+                            "ACCESS_ORIGIN_NOT_ALLOWED",
+                            "ACCESS_PREREQUISITES_MISSING",
+                            "ACCESS_ACCOUNT_SUSPENDED",
+                            "ACCESS_LAST_ADMIN",
+                            "ACCESS_REAUTHENTICATION_REQUIRED",
+                            "PROFILES_PROFILE_NOT_FOUND",
+                            "PROFILES_FACET_NOT_FOUND",
+                            "PROFILES_FACET_ALREADY_EXISTS",
+                            "PROFILES_HANDLE_TAKEN",
+                            "PROFILES_HANDLE_RESERVED",
+                            "PROFILES_COMPANY_COUNTRY_NOT_ELIGIBLE",
+                            "PROFILES_CONTRIBUTOR_HAT_REQUIRED",
+                            "PROFILES_TICKET_RANGE_INVALID",
+                            "PROFILES_UNKNOWN_REFERENCE",
+                            "MEDIA_NOT_FOUND",
+                            "MEDIA_TYPE_NOT_ALLOWED",
+                            "MEDIA_TOO_LARGE",
+                            "MEDIA_QUOTA_EXCEEDED",
+                            "MEDIA_UPLOAD_MISSING",
+                            "MEDIA_INVALID_STATE",
+                            "MEDIA_NOT_READY",
+                            "MEDIA_USAGE_MISMATCH",
+                            "MEDIA_LIMIT_REACHED",
+                            "MEDIA_ATTACHED",
+                            "PROFILES_ORGANIZATION_NOT_ALLOWED",
+                            "ORGANIZATIONS_NOT_FOUND",
+                            "ORGANIZATIONS_SLUG_TAKEN",
+                            "ORGANIZATIONS_SLUG_RESERVED",
+                            "ORGANIZATIONS_CREATION_LIMIT_REACHED",
+                            "ORGANIZATIONS_MEMBER_NOT_FOUND",
+                            "ORGANIZATIONS_ALREADY_MEMBER",
+                            "ORGANIZATIONS_LAST_OWNER",
+                            "ORGANIZATIONS_ROLE_CHANGE_FORBIDDEN",
+                            "ORGANIZATIONS_INVITATION_INVALID",
+                            "ORGANIZATIONS_INVITATION_EMAIL_MISMATCH",
+                            "ORGANIZATIONS_VERIFICATION_INVALID_STATE",
+                            "ORGANIZATIONS_VERIFICATION_REQUEST_NOT_FOUND",
+                            "ORGANIZATIONS_VERIFICATION_CRITERION_UNKNOWN",
+                            "NETWORK_TARGET_NOT_FOUND",
+                            "NETWORK_MEMBER_NOT_FOUND",
+                            "NETWORK_SELF_RELATION",
+                            "NETWORK_ALREADY_CONNECTED",
+                            "NETWORK_REQUEST_ALREADY_PENDING",
+                            "NETWORK_REQUEST_COOLDOWN",
+                            "NETWORK_WEEKLY_REQUEST_LIMIT",
+                            "NETWORK_REQUEST_NOT_FOUND",
+                            "NETWORK_REQUEST_NOT_PENDING",
+                            "NETWORK_NOT_CONNECTED",
+                            "NETWORK_MEMBER_BLOCKED",
+                            "NETWORK_LIST_HIDDEN",
+                            "CONTENT_POST_NOT_FOUND",
+                            "CONTENT_COMMENT_NOT_FOUND",
+                            "CONTENT_LINK_PREVIEW_NOT_FOUND",
+                            "CONTENT_POST_EMPTY",
+                            "CONTENT_MEDIA_COMBINATION",
+                            "CONTENT_MEDIA_NOT_IN_POST",
+                            "CONTENT_PUBLIC_VISIBILITY_NOT_ALLOWED",
+                            "CONTENT_VISIBILITY_NOT_ALLOWED",
+                            "CONTENT_REPOST_NOT_ALLOWED",
+                            "CONTENT_PROJECT_NOT_FOUND",
+                            "CONTENT_MENTION_NOT_ALLOWED",
+                            "CONTENT_COMMENTS_DISABLED",
+                            "CONTENT_REPLY_DEPTH",
+                            "CONTENT_ORGANIZATION_ROLE_REQUIRED",
+                            "IMPACT_METHODOLOGY_UNAVAILABLE",
+                            "IMPACT_METHODOLOGY_NOT_FOUND",
+                            "IMPACT_METHODOLOGY_NOT_DRAFT",
+                            "IMPACT_METHODOLOGY_NOT_PUBLISHED",
+                            "IMPACT_METHODOLOGY_OUTDATED",
+                            "IMPACT_ANSWERS_INVALID",
+                            "IMPACT_DEMO_REFUSED",
+                            "PROJECTS_NOT_FOUND",
+                            "PROJECTS_SLUG_TAKEN",
+                            "PROJECTS_SLUG_RESERVED",
+                            "PROJECTS_NOT_DRAFT",
+                            "PROJECTS_INVALID_TRANSITION",
+                            "PROJECTS_NOT_PUBLISHABLE",
+                            "PROJECTS_PUBLIC_DISPLAY_CONSENT_REQUIRED",
+                            "PROJECTS_IMPACT_ASSESSMENT_REQUIRED",
+                            "PROJECTS_CURRENCY_NOT_SUPPORTED",
+                            "PROJECTS_TIERS_INVALID",
+                            "PROJECTS_COUNTRY_NOT_ELIGIBLE",
+                            "PROJECTS_VIDEO_URL_INVALID",
+                            "PROJECTS_DESCRIPTION_INVALID",
+                            "PROJECTS_FUNDING_LOCKED",
+                            "PROJECTS_ORGANIZATION_ROLE_REQUIRED",
+                            "PROJECTS_TEAM_MEMBER_NOT_FOUND",
+                            "PROJECTS_TEAM_MEMBER_EXISTS",
+                            "PROJECTS_INVITATION_NOT_FOUND",
+                            "PROJECTS_LAST_OWNER",
+                            "PROJECTS_REWARD_NOT_FOUND",
+                            "PROJECTS_REWARD_INVALID",
+                            "PROJECTS_REWARD_SOLD_OUT",
+                            "PROJECTS_REWARD_IN_USE",
+                            "PROJECTS_RESERVATION_NOT_FOUND",
+                            "PROJECTS_UPDATE_NOT_FOUND",
+                            "PROJECTS_NOT_OPEN",
+                            "PROJECTS_CONTRIBUTION_CONFLICT",
+                            "PROJECTS_CONTRIBUTION_NOT_FOUND",
+                            "PROJECTS_REVERSAL_INVALID",
+                            "PAYMENTS_PROJECT_NOT_OPEN",
+                            "PAYMENTS_HOLDER_NOT_READY",
+                            "PAYMENTS_HOLDER_PAYOUT_NOT_COVERED",
+                            "PAYMENTS_METHOD_NOT_AVAILABLE",
+                            "PAYMENTS_CURRENCY_NOT_AVAILABLE",
+                            "PAYMENTS_INSTRUMENT_NOT_ACCEPTED",
+                            "PAYMENTS_INSTRUMENT_NOT_COLLECTIBLE",
+                            "PAYMENTS_LICENSED_PARTNER_REQUIRED",
+                            "PAYMENTS_AMOUNT_OUT_OF_RANGE",
+                            "PAYMENTS_REWARD_NOT_ELIGIBLE",
+                            "PAYMENTS_ANONYMOUS_NOT_ALLOWED",
+                            "PAYMENTS_RATE_LIMITED",
+                            "PAYMENTS_CONTRIBUTION_NOT_FOUND",
+                            "PAYMENTS_INVALID_TRANSITION",
+                            "PAYMENTS_REFUND_INVALID",
+                            "PAYMENTS_PROVIDER_UNAVAILABLE",
+                            "PAYMENTS_PAYOUT_ACCOUNT_EXISTS",
+                            "PAYMENTS_PAYOUT_ACCOUNT_NOT_FOUND",
+                            "PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED",
+                            "PAYMENTS_PAYOUT_CHANGE_REFUSED",
+                            "PAYMENTS_PAYOUT_DETAILS_REQUIRED",
+                            "PAYMENTS_KYC_NOT_MANUAL",
+                            "PAYMENTS_KYC_PENDING",
+                            "PAYMENTS_KYC_ALREADY_VERIFIED",
+                            "PAYMENTS_KYC_NOT_FOUND",
+                            "PAYMENTS_KYC_ALREADY_DECIDED",
+                            "PAYMENTS_OFFLINE_NOT_FOUND",
+                            "PAYMENTS_OFFLINE_AMOUNT_INVALID",
+                            "PAYMENTS_OFFLINE_INVALID_TRANSITION",
+                            "PAYMENTS_OFFLINE_PROOF_REQUIRED",
+                            "PAYMENTS_DISCREPANCY_NOT_FOUND",
+                            "PAYMENTS_WEBHOOK_INVALID",
+                            "ENGAGEMENT_TIME_ENTRY_NOT_FOUND",
+                            "ENGAGEMENT_BENEFICIARY_INVALID",
+                            "ENGAGEMENT_TIME_ENTRY_ALREADY_ANSWERED",
+                            "MESSAGING_CONVERSATION_NOT_FOUND",
+                            "MESSAGING_RECIPIENT_NOT_FOUND",
+                            "MESSAGING_SELF_CONVERSATION",
+                            "MESSAGING_RECIPIENT_NOT_ACCEPTING",
+                            "MESSAGING_REQUEST_PENDING",
+                            "MESSAGING_REQUEST_LIMIT",
+                            "MESSAGING_REQUEST_NOT_FOUND",
+                            "MESSAGING_CANNOT_SEND",
+                            "MESSAGING_MESSAGE_EMPTY",
+                            "MESSAGING_MESSAGE_NOT_FOUND",
+                            "MESSAGING_NOT_SENDER",
+                            "MESSAGING_EDIT_WINDOW_CLOSED",
+                            "MESSAGING_MESSAGE_DELETED",
+                            "MESSAGING_CLIENT_ID_REUSED",
+                            "MESSAGING_SHARED_POST_NOT_FOUND",
+                            "MESSAGING_NOT_A_GROUP",
+                            "MESSAGING_INTRODUCTION_NOT_FOUND",
+                            "MESSAGING_INTRODUCTION_INVALID",
+                            "MESSAGING_INTRODUCTION_NOT_CONNECTED",
+                            "MESSAGING_INTRODUCTION_PENDING",
+                            "MESSAGING_INTRODUCTION_ALREADY_ANSWERED",
+                            "NOTIFICATIONS_NOT_FOUND",
+                            "NOTIFICATIONS_PREFERENCE_LOCKED",
+                            "NOTIFICATIONS_UNSUBSCRIBE_INVALID",
+                            "NOTIFICATIONS_WEBHOOK_INVALID",
+                            "EVENTS_NOT_FOUND",
+                            "EVENTS_SLUG_TAKEN",
+                            "EVENTS_SLUG_RESERVED",
+                            "EVENTS_INVALID_TRANSITION",
+                            "EVENTS_NOT_DRAFT",
+                            "EVENTS_SCHEDULE_INVALID",
+                            "EVENTS_LOCATION_REQUIRED",
+                            "EVENTS_ONLINE_URL_REQUIRED",
+                            "EVENTS_DESCRIPTION_INVALID",
+                            "EVENTS_PUBLIC_NOT_ALLOWED",
+                            "EVENTS_ORGANIZATION_ROLE_REQUIRED",
+                            "EVENTS_PROJECT_ROLE_REQUIRED",
+                            "EVENTS_IMAGE_INVALID",
+                            "EVENTS_REGISTRATION_CLOSED",
+                            "EVENTS_NOT_REGISTERED",
+                            "EVENTS_CAPACITY_BELOW_REGISTERED",
+                            "EVENTS_CALENDAR_NOT_FOUND",
+                            "MISSIONS_NOT_FOUND",
+                            "MISSIONS_HAT_REQUIRED",
+                            "MISSIONS_BENEFICIARY_REQUIRED",
+                            "MISSIONS_PROJECT_ROLE_REQUIRED",
+                            "MISSIONS_JOB_POSTING_REFUSED",
+                            "MISSIONS_HOURS_EXCEEDED",
+                            "MISSIONS_FIELDS_INVALID",
+                            "MISSIONS_CLOSED",
+                            "MISSIONS_OWN_MISSION",
+                            "MISSIONS_ENGAGEMENT_EXISTS",
+                            "MISSIONS_CAPACITY_REACHED",
+                            "MISSIONS_ENGAGEMENT_NOT_FOUND",
+                            "MISSIONS_INVALID_TRANSITION",
+                            "DISCOVERY_CANDIDATE_NOT_FOUND",
+                            "TRUST_TARGET_NOT_FOUND",
+                            "TRUST_SELF_REPORT",
+                            "TRUST_REPORT_DUPLICATE",
+                            "TRUST_CASE_NOT_FOUND",
+                            "TRUST_CASE_RESOLVED",
+                            "TRUST_DECISION_NOT_APPLICABLE",
+                            "TRUST_ADMIN_REQUIRED",
+                            "TRUST_ASSIGNEE_NOT_MODERATOR",
+                            "TRUST_DECISION_NOT_FOUND",
+                            "TRUST_NOT_APPEALABLE",
+                            "TRUST_APPEAL_EXISTS",
+                            "TRUST_APPEAL_NOT_FOUND",
+                            "TRUST_APPEAL_RESOLVED",
+                            "TRUST_SAME_MODERATOR",
+                            "TRUST_SUSPENSION_NOT_FOUND",
+                            "TRUST_PROJECT_NOT_FROZEN",
+                            "TRUST_MEMBER_NOT_FOUND",
+                            "PRIVACY_EXPORT_RATE_LIMITED",
+                            "PRIVACY_EXPORT_NOT_FOUND",
+                            "PRIVACY_EXPORT_NOT_READY",
+                            "PRIVACY_ERASURE_PENDING",
+                            "PRIVACY_ERASURE_NOT_FOUND",
+                            "PRIVACY_CAMPAIGN_IN_PROGRESS",
+                            "PRIVACY_SOLE_OWNER",
+                            "LOCALIZATION_SOURCE_NOT_FOUND",
+                            "LOCALIZATION_LOCALE_NOT_ACTIVE",
+                            "LOCALIZATION_ALREADY_IN_LANGUAGE",
+                            "LOCALIZATION_MEMBER_LIMIT_REACHED",
+                            "LOCALIZATION_MONTHLY_CAP_REACHED",
+                            "LOCALIZATION_UNAVAILABLE",
+                            "LOCALIZATION_LOCALE_NOT_READY",
+                            "LOCALIZATION_GLOSSARY_TERM_NOT_FOUND",
+                            "LOCALIZATION_GLOSSARY_TERM_EXISTS",
+                            "ADMIN_MEMBER_NOT_FOUND",
+                            "ADMIN_FLAG_NOT_FOUND",
+                            "ADMIN_LEGAL_REFERENCE_REQUIRED",
+                            "ADMIN_HIGHLIGHT_TARGET_NOT_FOUND",
+                            "ADMIN_QUEUE_NOT_FOUND",
+                            "INTERNAL_ERROR",
+                            "SERVICE_UNAVAILABLE"
+                          ]
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "recentAuthentication": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "allowed",
+                    "code",
+                    "recentAuthentication"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "suspension": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "maxDays": {
+                        "type": "integer",
+                        "exclusiveMinimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "permanent": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "maxDays",
+                      "permanent"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "kinds",
+              "suspension"
+            ],
+            "additionalProperties": false
           }
         },
         "required": [
@@ -73676,9 +74431,13 @@
           "createdAt",
           "updatedAt",
           "resolvedAt",
+          "subject",
           "reports",
           "assignments",
-          "decisions"
+          "decisions",
+          "target",
+          "people",
+          "decisionOptions"
         ],
         "additionalProperties": false
       },
@@ -74011,7 +74770,7 @@
         ],
         "additionalProperties": false
       },
-      "DecisionDetailPageDto_Output": {
+      "AppealPageDto_Output": {
         "type": "object",
         "properties": {
           "items": {
@@ -74221,6 +74980,297 @@
                       "type": "null"
                     }
                   ]
+                },
+                "resolvable": {
+                  "type": "boolean"
+                },
+                "refusal": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "BAD_REQUEST",
+                        "VALIDATION_FAILED",
+                        "IDEMPOTENCY_KEY_MISSING",
+                        "UNAUTHENTICATED",
+                        "FORBIDDEN",
+                        "NOT_FOUND",
+                        "CONFLICT",
+                        "IDEMPOTENCY_REQUEST_IN_PROGRESS",
+                        "PAYLOAD_TOO_LARGE",
+                        "UNSUPPORTED_MEDIA_TYPE",
+                        "IDEMPOTENCY_KEY_REUSED",
+                        "RATE_LIMITED",
+                        "CAPTCHA_REQUIRED",
+                        "CAPTCHA_FAILED",
+                        "IDENTITY_USER_NOT_FOUND",
+                        "IDENTITY_LEGAL_VERSION_OUTDATED",
+                        "IDENTITY_LOCALE_NOT_ACTIVE",
+                        "ACCESS_ORIGIN_NOT_ALLOWED",
+                        "ACCESS_PREREQUISITES_MISSING",
+                        "ACCESS_ACCOUNT_SUSPENDED",
+                        "ACCESS_LAST_ADMIN",
+                        "ACCESS_REAUTHENTICATION_REQUIRED",
+                        "PROFILES_PROFILE_NOT_FOUND",
+                        "PROFILES_FACET_NOT_FOUND",
+                        "PROFILES_FACET_ALREADY_EXISTS",
+                        "PROFILES_HANDLE_TAKEN",
+                        "PROFILES_HANDLE_RESERVED",
+                        "PROFILES_COMPANY_COUNTRY_NOT_ELIGIBLE",
+                        "PROFILES_CONTRIBUTOR_HAT_REQUIRED",
+                        "PROFILES_TICKET_RANGE_INVALID",
+                        "PROFILES_UNKNOWN_REFERENCE",
+                        "MEDIA_NOT_FOUND",
+                        "MEDIA_TYPE_NOT_ALLOWED",
+                        "MEDIA_TOO_LARGE",
+                        "MEDIA_QUOTA_EXCEEDED",
+                        "MEDIA_UPLOAD_MISSING",
+                        "MEDIA_INVALID_STATE",
+                        "MEDIA_NOT_READY",
+                        "MEDIA_USAGE_MISMATCH",
+                        "MEDIA_LIMIT_REACHED",
+                        "MEDIA_ATTACHED",
+                        "PROFILES_ORGANIZATION_NOT_ALLOWED",
+                        "ORGANIZATIONS_NOT_FOUND",
+                        "ORGANIZATIONS_SLUG_TAKEN",
+                        "ORGANIZATIONS_SLUG_RESERVED",
+                        "ORGANIZATIONS_CREATION_LIMIT_REACHED",
+                        "ORGANIZATIONS_MEMBER_NOT_FOUND",
+                        "ORGANIZATIONS_ALREADY_MEMBER",
+                        "ORGANIZATIONS_LAST_OWNER",
+                        "ORGANIZATIONS_ROLE_CHANGE_FORBIDDEN",
+                        "ORGANIZATIONS_INVITATION_INVALID",
+                        "ORGANIZATIONS_INVITATION_EMAIL_MISMATCH",
+                        "ORGANIZATIONS_VERIFICATION_INVALID_STATE",
+                        "ORGANIZATIONS_VERIFICATION_REQUEST_NOT_FOUND",
+                        "ORGANIZATIONS_VERIFICATION_CRITERION_UNKNOWN",
+                        "NETWORK_TARGET_NOT_FOUND",
+                        "NETWORK_MEMBER_NOT_FOUND",
+                        "NETWORK_SELF_RELATION",
+                        "NETWORK_ALREADY_CONNECTED",
+                        "NETWORK_REQUEST_ALREADY_PENDING",
+                        "NETWORK_REQUEST_COOLDOWN",
+                        "NETWORK_WEEKLY_REQUEST_LIMIT",
+                        "NETWORK_REQUEST_NOT_FOUND",
+                        "NETWORK_REQUEST_NOT_PENDING",
+                        "NETWORK_NOT_CONNECTED",
+                        "NETWORK_MEMBER_BLOCKED",
+                        "NETWORK_LIST_HIDDEN",
+                        "CONTENT_POST_NOT_FOUND",
+                        "CONTENT_COMMENT_NOT_FOUND",
+                        "CONTENT_LINK_PREVIEW_NOT_FOUND",
+                        "CONTENT_POST_EMPTY",
+                        "CONTENT_MEDIA_COMBINATION",
+                        "CONTENT_MEDIA_NOT_IN_POST",
+                        "CONTENT_PUBLIC_VISIBILITY_NOT_ALLOWED",
+                        "CONTENT_VISIBILITY_NOT_ALLOWED",
+                        "CONTENT_REPOST_NOT_ALLOWED",
+                        "CONTENT_PROJECT_NOT_FOUND",
+                        "CONTENT_MENTION_NOT_ALLOWED",
+                        "CONTENT_COMMENTS_DISABLED",
+                        "CONTENT_REPLY_DEPTH",
+                        "CONTENT_ORGANIZATION_ROLE_REQUIRED",
+                        "IMPACT_METHODOLOGY_UNAVAILABLE",
+                        "IMPACT_METHODOLOGY_NOT_FOUND",
+                        "IMPACT_METHODOLOGY_NOT_DRAFT",
+                        "IMPACT_METHODOLOGY_NOT_PUBLISHED",
+                        "IMPACT_METHODOLOGY_OUTDATED",
+                        "IMPACT_ANSWERS_INVALID",
+                        "IMPACT_DEMO_REFUSED",
+                        "PROJECTS_NOT_FOUND",
+                        "PROJECTS_SLUG_TAKEN",
+                        "PROJECTS_SLUG_RESERVED",
+                        "PROJECTS_NOT_DRAFT",
+                        "PROJECTS_INVALID_TRANSITION",
+                        "PROJECTS_NOT_PUBLISHABLE",
+                        "PROJECTS_PUBLIC_DISPLAY_CONSENT_REQUIRED",
+                        "PROJECTS_IMPACT_ASSESSMENT_REQUIRED",
+                        "PROJECTS_CURRENCY_NOT_SUPPORTED",
+                        "PROJECTS_TIERS_INVALID",
+                        "PROJECTS_COUNTRY_NOT_ELIGIBLE",
+                        "PROJECTS_VIDEO_URL_INVALID",
+                        "PROJECTS_DESCRIPTION_INVALID",
+                        "PROJECTS_FUNDING_LOCKED",
+                        "PROJECTS_ORGANIZATION_ROLE_REQUIRED",
+                        "PROJECTS_TEAM_MEMBER_NOT_FOUND",
+                        "PROJECTS_TEAM_MEMBER_EXISTS",
+                        "PROJECTS_INVITATION_NOT_FOUND",
+                        "PROJECTS_LAST_OWNER",
+                        "PROJECTS_REWARD_NOT_FOUND",
+                        "PROJECTS_REWARD_INVALID",
+                        "PROJECTS_REWARD_SOLD_OUT",
+                        "PROJECTS_REWARD_IN_USE",
+                        "PROJECTS_RESERVATION_NOT_FOUND",
+                        "PROJECTS_UPDATE_NOT_FOUND",
+                        "PROJECTS_NOT_OPEN",
+                        "PROJECTS_CONTRIBUTION_CONFLICT",
+                        "PROJECTS_CONTRIBUTION_NOT_FOUND",
+                        "PROJECTS_REVERSAL_INVALID",
+                        "PAYMENTS_PROJECT_NOT_OPEN",
+                        "PAYMENTS_HOLDER_NOT_READY",
+                        "PAYMENTS_HOLDER_PAYOUT_NOT_COVERED",
+                        "PAYMENTS_METHOD_NOT_AVAILABLE",
+                        "PAYMENTS_CURRENCY_NOT_AVAILABLE",
+                        "PAYMENTS_INSTRUMENT_NOT_ACCEPTED",
+                        "PAYMENTS_INSTRUMENT_NOT_COLLECTIBLE",
+                        "PAYMENTS_LICENSED_PARTNER_REQUIRED",
+                        "PAYMENTS_AMOUNT_OUT_OF_RANGE",
+                        "PAYMENTS_REWARD_NOT_ELIGIBLE",
+                        "PAYMENTS_ANONYMOUS_NOT_ALLOWED",
+                        "PAYMENTS_RATE_LIMITED",
+                        "PAYMENTS_CONTRIBUTION_NOT_FOUND",
+                        "PAYMENTS_INVALID_TRANSITION",
+                        "PAYMENTS_REFUND_INVALID",
+                        "PAYMENTS_PROVIDER_UNAVAILABLE",
+                        "PAYMENTS_PAYOUT_ACCOUNT_EXISTS",
+                        "PAYMENTS_PAYOUT_ACCOUNT_NOT_FOUND",
+                        "PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED",
+                        "PAYMENTS_PAYOUT_CHANGE_REFUSED",
+                        "PAYMENTS_PAYOUT_DETAILS_REQUIRED",
+                        "PAYMENTS_KYC_NOT_MANUAL",
+                        "PAYMENTS_KYC_PENDING",
+                        "PAYMENTS_KYC_ALREADY_VERIFIED",
+                        "PAYMENTS_KYC_NOT_FOUND",
+                        "PAYMENTS_KYC_ALREADY_DECIDED",
+                        "PAYMENTS_OFFLINE_NOT_FOUND",
+                        "PAYMENTS_OFFLINE_AMOUNT_INVALID",
+                        "PAYMENTS_OFFLINE_INVALID_TRANSITION",
+                        "PAYMENTS_OFFLINE_PROOF_REQUIRED",
+                        "PAYMENTS_DISCREPANCY_NOT_FOUND",
+                        "PAYMENTS_WEBHOOK_INVALID",
+                        "ENGAGEMENT_TIME_ENTRY_NOT_FOUND",
+                        "ENGAGEMENT_BENEFICIARY_INVALID",
+                        "ENGAGEMENT_TIME_ENTRY_ALREADY_ANSWERED",
+                        "MESSAGING_CONVERSATION_NOT_FOUND",
+                        "MESSAGING_RECIPIENT_NOT_FOUND",
+                        "MESSAGING_SELF_CONVERSATION",
+                        "MESSAGING_RECIPIENT_NOT_ACCEPTING",
+                        "MESSAGING_REQUEST_PENDING",
+                        "MESSAGING_REQUEST_LIMIT",
+                        "MESSAGING_REQUEST_NOT_FOUND",
+                        "MESSAGING_CANNOT_SEND",
+                        "MESSAGING_MESSAGE_EMPTY",
+                        "MESSAGING_MESSAGE_NOT_FOUND",
+                        "MESSAGING_NOT_SENDER",
+                        "MESSAGING_EDIT_WINDOW_CLOSED",
+                        "MESSAGING_MESSAGE_DELETED",
+                        "MESSAGING_CLIENT_ID_REUSED",
+                        "MESSAGING_SHARED_POST_NOT_FOUND",
+                        "MESSAGING_NOT_A_GROUP",
+                        "MESSAGING_INTRODUCTION_NOT_FOUND",
+                        "MESSAGING_INTRODUCTION_INVALID",
+                        "MESSAGING_INTRODUCTION_NOT_CONNECTED",
+                        "MESSAGING_INTRODUCTION_PENDING",
+                        "MESSAGING_INTRODUCTION_ALREADY_ANSWERED",
+                        "NOTIFICATIONS_NOT_FOUND",
+                        "NOTIFICATIONS_PREFERENCE_LOCKED",
+                        "NOTIFICATIONS_UNSUBSCRIBE_INVALID",
+                        "NOTIFICATIONS_WEBHOOK_INVALID",
+                        "EVENTS_NOT_FOUND",
+                        "EVENTS_SLUG_TAKEN",
+                        "EVENTS_SLUG_RESERVED",
+                        "EVENTS_INVALID_TRANSITION",
+                        "EVENTS_NOT_DRAFT",
+                        "EVENTS_SCHEDULE_INVALID",
+                        "EVENTS_LOCATION_REQUIRED",
+                        "EVENTS_ONLINE_URL_REQUIRED",
+                        "EVENTS_DESCRIPTION_INVALID",
+                        "EVENTS_PUBLIC_NOT_ALLOWED",
+                        "EVENTS_ORGANIZATION_ROLE_REQUIRED",
+                        "EVENTS_PROJECT_ROLE_REQUIRED",
+                        "EVENTS_IMAGE_INVALID",
+                        "EVENTS_REGISTRATION_CLOSED",
+                        "EVENTS_NOT_REGISTERED",
+                        "EVENTS_CAPACITY_BELOW_REGISTERED",
+                        "EVENTS_CALENDAR_NOT_FOUND",
+                        "MISSIONS_NOT_FOUND",
+                        "MISSIONS_HAT_REQUIRED",
+                        "MISSIONS_BENEFICIARY_REQUIRED",
+                        "MISSIONS_PROJECT_ROLE_REQUIRED",
+                        "MISSIONS_JOB_POSTING_REFUSED",
+                        "MISSIONS_HOURS_EXCEEDED",
+                        "MISSIONS_FIELDS_INVALID",
+                        "MISSIONS_CLOSED",
+                        "MISSIONS_OWN_MISSION",
+                        "MISSIONS_ENGAGEMENT_EXISTS",
+                        "MISSIONS_CAPACITY_REACHED",
+                        "MISSIONS_ENGAGEMENT_NOT_FOUND",
+                        "MISSIONS_INVALID_TRANSITION",
+                        "DISCOVERY_CANDIDATE_NOT_FOUND",
+                        "TRUST_TARGET_NOT_FOUND",
+                        "TRUST_SELF_REPORT",
+                        "TRUST_REPORT_DUPLICATE",
+                        "TRUST_CASE_NOT_FOUND",
+                        "TRUST_CASE_RESOLVED",
+                        "TRUST_DECISION_NOT_APPLICABLE",
+                        "TRUST_ADMIN_REQUIRED",
+                        "TRUST_ASSIGNEE_NOT_MODERATOR",
+                        "TRUST_DECISION_NOT_FOUND",
+                        "TRUST_NOT_APPEALABLE",
+                        "TRUST_APPEAL_EXISTS",
+                        "TRUST_APPEAL_NOT_FOUND",
+                        "TRUST_APPEAL_RESOLVED",
+                        "TRUST_SAME_MODERATOR",
+                        "TRUST_SUSPENSION_NOT_FOUND",
+                        "TRUST_PROJECT_NOT_FROZEN",
+                        "TRUST_MEMBER_NOT_FOUND",
+                        "PRIVACY_EXPORT_RATE_LIMITED",
+                        "PRIVACY_EXPORT_NOT_FOUND",
+                        "PRIVACY_EXPORT_NOT_READY",
+                        "PRIVACY_ERASURE_PENDING",
+                        "PRIVACY_ERASURE_NOT_FOUND",
+                        "PRIVACY_CAMPAIGN_IN_PROGRESS",
+                        "PRIVACY_SOLE_OWNER",
+                        "LOCALIZATION_SOURCE_NOT_FOUND",
+                        "LOCALIZATION_LOCALE_NOT_ACTIVE",
+                        "LOCALIZATION_ALREADY_IN_LANGUAGE",
+                        "LOCALIZATION_MEMBER_LIMIT_REACHED",
+                        "LOCALIZATION_MONTHLY_CAP_REACHED",
+                        "LOCALIZATION_UNAVAILABLE",
+                        "LOCALIZATION_LOCALE_NOT_READY",
+                        "LOCALIZATION_GLOSSARY_TERM_NOT_FOUND",
+                        "LOCALIZATION_GLOSSARY_TERM_EXISTS",
+                        "ADMIN_MEMBER_NOT_FOUND",
+                        "ADMIN_FLAG_NOT_FOUND",
+                        "ADMIN_LEGAL_REFERENCE_REQUIRED",
+                        "ADMIN_HIGHLIGHT_TARGET_NOT_FOUND",
+                        "ADMIN_QUEUE_NOT_FOUND",
+                        "INTERNAL_ERROR",
+                        "SERVICE_UNAVAILABLE"
+                      ]
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "people": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "userId": {
+                        "type": "string",
+                        "format": "uuid",
+                        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "handle": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "userId",
+                      "name",
+                      "handle"
+                    ],
+                    "additionalProperties": false
+                  }
                 }
               },
               "required": [
@@ -74240,7 +75290,10 @@
                 "appeal",
                 "subjectId",
                 "decidedBy",
-                "appealReviewerId"
+                "appealReviewerId",
+                "resolvable",
+                "refusal",
+                "people"
               ],
               "additionalProperties": false
             }
@@ -74255,6 +75308,104 @@
         "required": [
           "items",
           "nextCursor"
+        ],
+        "additionalProperties": false
+      },
+      "ModeratorListDto_Output": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "userId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "handle": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              },
+              "required": [
+                "userId",
+                "name",
+                "handle"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "additionalProperties": false
+      },
+      "StaffSuspensionDto": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "enum": [
+              "spam",
+              "harassment",
+              "fraud",
+              "illegal_content",
+              "misleading_information",
+              "intellectual_property",
+              "other"
+            ]
+          },
+          "statement": {
+            "type": "string",
+            "minLength": 20,
+            "maxLength": 5000
+          },
+          "ground": {
+            "type": "string",
+            "enum": [
+              "terms",
+              "law"
+            ]
+          },
+          "groundReference": {
+            "default": null,
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 300
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "suspensionDays": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 365
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "reason",
+          "statement",
+          "ground",
+          "suspensionDays"
         ],
         "additionalProperties": false
       },
@@ -75416,6 +76567,7 @@
               "TRUST_SAME_MODERATOR",
               "TRUST_SUSPENSION_NOT_FOUND",
               "TRUST_PROJECT_NOT_FROZEN",
+              "TRUST_MEMBER_NOT_FOUND",
               "PRIVACY_EXPORT_RATE_LIMITED",
               "PRIVACY_EXPORT_NOT_FOUND",
               "PRIVACY_EXPORT_NOT_READY",
@@ -77499,6 +78651,15 @@
           "title": "Project not frozen by this decision",
           "status": 409,
           "code": "TRUST_PROJECT_NOT_FROZEN",
+          "requestId": "0199c1f4-7d4e-7c2a-9b1e-3f5a6c7d8e9f"
+        }
+      },
+      "TRUST_MEMBER_NOT_FOUND": {
+        "value": {
+          "type": "urn:pitchorium:problem:trust-member-not-found",
+          "title": "Member to suspend not found",
+          "status": 404,
+          "code": "TRUST_MEMBER_NOT_FOUND",
           "requestId": "0199c1f4-7d4e-7c2a-9b1e-3f5a6c7d8e9f"
         }
       },

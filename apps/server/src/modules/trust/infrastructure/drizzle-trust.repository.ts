@@ -134,6 +134,8 @@ export class DrizzleTrustRepository extends TrustRepository {
       conditions.push(eq(trustCases.assignedTo, filter.assignedTo));
     }
     if (filter.targetType) conditions.push(eq(trustCases.targetType, filter.targetType));
+    if (filter.reason) conditions.push(sql`${filter.reason} = any(${trustCases.reasons})`);
+    if (filter.openedBefore) conditions.push(lt(trustCases.createdAt, filter.openedBefore));
     if (after) {
       // Priority descending, then creation and id ascending.
       conditions.push(

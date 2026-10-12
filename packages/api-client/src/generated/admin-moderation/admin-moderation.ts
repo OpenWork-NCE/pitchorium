@@ -14,20 +14,22 @@ import type {
   UseQueryOptions,
 } from '@tanstack/react-query';
 import type {
+  AppealPageDtoOutput,
   AssignDto,
   CaseDetailDtoOutput,
   CasePageDtoOutput,
   DecideDto,
   DecisionDetailDtoOutput,
-  DecisionDetailPageDtoOutput,
   LiftDto,
   ModerationControllerAppealsParams,
   ModerationControllerQueueParams,
   ModerationControllerReportParams,
+  ModeratorListDtoOutput,
   ProblemDetails,
   RefundsDto,
   RefundsResultDtoOutput,
   ResolveAppealDto,
+  StaffSuspensionDto,
   SuspensionDtoOutput,
   TransparencyDtoOutput,
 } from '../api.schemas';
@@ -386,8 +388,8 @@ export const getModerationControllerAppealsUrl = (params?: ModerationControllerA
 export const moderationControllerAppeals = async (
   params?: ModerationControllerAppealsParams,
   options?: Parameters<typeof apiFetch>[1],
-): Promise<DecisionDetailPageDtoOutput> => {
-  return apiFetch<DecisionDetailPageDtoOutput>(getModerationControllerAppealsUrl(params), {
+): Promise<AppealPageDtoOutput> => {
+  return apiFetch<AppealPageDtoOutput>(getModerationControllerAppealsUrl(params), {
     ...options,
     method: 'GET',
   });
@@ -431,6 +433,159 @@ export type ModerationControllerAppealsQueryResult = NonNullable<
 >;
 
 export type ModerationControllerAppealsQueryError = ErrorType<ProblemDetails>;
+
+export const getModerationControllerModeratorsUrl = () => {
+  return `/v1/admin/moderation/moderators`;
+};
+
+/**
+ * Action `trust.moderation.assign` (session cookie).
+ *
+ * Roles: moderator, admin, with 2FA.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Moderators
+ */
+export const moderationControllerModerators = async (
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<ModeratorListDtoOutput> => {
+  return apiFetch<ModeratorListDtoOutput>(getModerationControllerModeratorsUrl(), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getModerationControllerModeratorsQueryKey = () => {
+  return [`/v1/admin/moderation/moderators`] as const;
+};
+
+export const getModerationControllerModeratorsQueryOptions = <
+  TData = Awaited<ReturnType<typeof moderationControllerModerators>>,
+  TError = ErrorType<ProblemDetails>,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<Awaited<ReturnType<typeof moderationControllerModerators>>, TError, TData>
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getModerationControllerModeratorsQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof moderationControllerModerators>>> = ({
+    signal,
+  }) => moderationControllerModerators({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof moderationControllerModerators>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ModerationControllerModeratorsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof moderationControllerModerators>>
+>;
+
+export type ModerationControllerModeratorsQueryError = ErrorType<ProblemDetails>;
+
+export const getModerationControllerSuspendMemberUrl = (userId: string) => {
+  return `/v1/admin/moderation/members/${userId}/suspensions`;
+};
+
+/**
+ * Action `trust.moderation.decide` (session cookie).
+ *
+ * Roles: moderator, admin, with 2FA.
+ *
+ * Idempotent: the `Idempotency-Key` header is required, a replay returns the stored answer.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Suspend member
+ */
+export const moderationControllerSuspendMember = async (
+  userId: string,
+  staffSuspensionDto: StaffSuspensionDto,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<DecisionDetailDtoOutput> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit['headers']>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(
+          h as Iterable<Iterable<string>>,
+          (entry) => Array.from(entry) as [string, string],
+        ),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+  return apiFetch<DecisionDetailDtoOutput>(getModerationControllerSuspendMemberUrl(userId), {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(staffSuspensionDto),
+  });
+};
+
+export const getModerationControllerSuspendMemberMutationKey = () =>
+  ['moderationControllerSuspendMember'] as const;
+
+export const getModerationControllerSuspendMemberMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof moderationControllerSuspendMember>>,
+    TError,
+    ModerationControllerSuspendMemberMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof moderationControllerSuspendMember>>,
+  TError,
+  ModerationControllerSuspendMemberMutationVariables,
+  TContext
+> => {
+  const mutationKey = getModerationControllerSuspendMemberMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof moderationControllerSuspendMember>>,
+    ModerationControllerSuspendMemberMutationVariables
+  > = (props) => {
+    const { userId, data } = props ?? {};
+
+    return moderationControllerSuspendMember(userId, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ModerationControllerSuspendMemberMutationResult = NonNullable<
+  Awaited<ReturnType<typeof moderationControllerSuspendMember>>
+>;
+
+export type ModerationControllerSuspendMemberMutationBody = StaffSuspensionDto;
+
+export type ModerationControllerSuspendMemberMutationError = ErrorType<ProblemDetails>;
+
+export type ModerationControllerSuspendMemberMutationVariables = {
+  userId: string;
+  data: StaffSuspensionDto;
+};
 
 export const getModerationControllerResolveAppealUrl = (appealId: string) => {
   return `/v1/admin/moderation/appeals/${appealId}/resolution`;

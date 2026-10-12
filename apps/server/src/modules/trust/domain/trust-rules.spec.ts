@@ -1,11 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import {
   appealableUntil,
+  appealReviewRefusal,
   assertAppealable,
   assertAppealReview,
   assertDecisionAllowed,
+  decisionOptions,
   reportOutcomeOf,
   requiresAdmin,
+  sensitiveDecisionAction,
 } from './decisions';
 import { FUNDING_FRAUD_PRIORITY, priorityOf } from './priority';
 import { isActive, isOverAndUnannounced } from './suspension';
@@ -140,6 +143,40 @@ describe('decisions', () => {
     );
   });
 
+  it('offers the reader only the decisions the api would accept (ADR 0172)', () => {
+    const allowed = (options: ReturnType<typeof decisionOptions>) =>
+      options.kinds.filter((option) => option.allowed).map((option) => option.kind);
+    const moderator = decisionOptions({ ...context, targetType: 'project' });
+    expect(allowed(moderator)).toEqual(['dismiss', 'hide', 'remove', 'warn', 'suspend']);
+    expect(moderator.kinds.find((option) => option.kind === 'freeze_project')).toEqual({
+      kind: 'freeze_project',
+      allowed: false,
+      code: 'TRUST_ADMIN_REQUIRED',
+      recentAuthentication: true,
+    });
+    expect(moderator.suspension).toEqual({ maxDays: 30, permanent: false });
+    const admin = decisionOptions({ ...context, targetType: 'project', actorIsAdmin: true });
+    expect(allowed(admin)).toContain('freeze_project');
+    expect(admin.suspension).toEqual({ maxDays: 365, permanent: true });
+    const profile = decisionOptions({ ...context, targetType: 'profile' });
+    expect(allowed(profile)).toEqual(['dismiss', 'warn', 'suspend']);
+    expect(
+      decisionOptions({ ...context, subjectId: null }).suspension,
+      'no member concerned: no suspension',
+    ).toBeNull();
+  });
+
+  it('asks a recent session for a freeze and a permanent suspension only', () => {
+    expect(sensitiveDecisionAction({ kind: 'freeze_project', suspensionDays: null })).toBe(
+      'trust.project.freeze',
+    );
+    expect(sensitiveDecisionAction({ kind: 'suspend', suspensionDays: null })).toBe(
+      'trust.suspension.permanent',
+    );
+    expect(sensitiveDecisionAction({ kind: 'suspend', suspensionDays: 90 })).toBeNull();
+    expect(sensitiveDecisionAction({ kind: 'remove', suspensionDays: null })).toBeNull();
+  });
+
   it('tells reporters whether an action was taken', () => {
     expect(reportOutcomeOf('dismiss')).toBe('no_action');
     expect(reportOutcomeOf('remove')).toBe('action_taken');
@@ -186,6 +223,14 @@ describe('appeals', () => {
       expect.objectContaining({ code: 'TRUST_NOT_APPEALABLE' }),
     );
     expect(appealableUntil('dismiss', NOW, DAY)).toBeNull();
+  });
+
+  it('tells the console why a moderator may not resolve the appeal of their own decision', () => {
+    expect(appealReviewRefusal(appeal, decision, 'mod-1')).toBe('TRUST_SAME_MODERATOR');
+    expect(appealReviewRefusal(appeal, decision, 'mod-2')).toBeNull();
+    expect(appealReviewRefusal({ ...appeal, status: 'overturned' }, decision, 'mod-2')).toBe(
+      'TRUST_APPEAL_RESOLVED',
+    );
   });
 
   it('is reviewed once, by someone other than the author of the decision', () => {

@@ -15,7 +15,9 @@ Confiance et sécurité (cahier des charges §13) : signalements, file de modér
 ## File de modération
 
 - Priorité (`domain/priority.ts`, plus forte d'abord, puis la plus ancienne) : poids du motif le plus grave (`illegal_content` 80, `fraud` 70, `harassment` 60, `intellectual_property` et `misleading_information` 40, `spam` 20, `other` 10 ; signal automatique 30), plus 5 par signalement supplémentaire, au plus 50. Une fraude signalée sur un projet ou une actualité d'un projet en financement (`funding` ou `funded`) vaut 1 000 : elle passe avant tout. Les raisons de la priorité sont listées dans `priorityReasons`.
-- Affectation à un modérateur ou un administrateur (ou retrait), avec historique (`assignments`), auditée.
+- Filtres de la file : statut, affectation (`me`, `unassigned`, `any`), type de cible, motif signalé (`reason`) et ancienneté (`openedBefore`) ; chaque dossier nomme son membre concerné (`subject` : nom du compte et identifiant public, absent pour un membre supprimé).
+- Lecture d'un dossier (console, ADR 0172) : ce qui a été signalé, quelle que soit son audience ou son statut de modération (`target` : nom ou titre, texte coupé à 2 000 caractères, clés de sa page, statut de modération ; un message se lit dans le contexte limité de ses signalements), les membres qu'il nomme (`people`), et les décisions que le lecteur peut prendre (`decisionOptions` : chaque type avec le code d'un refus, la durée la plus longue d'une suspension temporaire et la suspension définitive, d'après les règles ci-dessous).
+- Affectation à un modérateur ou un administrateur (ou retrait), avec historique (`assignments`), auditée ; `GET /v1/admin/moderation/moderators` donne les modérateurs et administrateurs à qui l'affecter.
 - Décisions (`domain/decisions.ts`) :
   - `dismiss` : classement sans suite ;
   - `hide`, `remove` : `moderation_status` du contenu dans son module (`hidden` ou `removed` ; un fichier est `removed`) ; impossible sur un profil ou une organisation ;
@@ -28,7 +30,8 @@ Confiance et sécurité (cahier des charges §13) : signalements, file de modér
 ## Permissions
 
 - `moderator` et `admin` (double authentification) : lecture de la file, affectation, décisions sur les contenus, avertissement, suspension jusqu'à `TRUST_MODERATOR_MAX_SUSPENSION_DAYS` jours (30, provisoire), résolution des appels, levée d'une suspension.
-- `admin` seulement (`TRUST_ADMIN_REQUIRED`) : suspension définitive ou plus longue, gel d'un projet, remboursements d'un projet gelé (action `trust.project.refund`, session récente exigée), compteurs de transparence.
+- `admin` seulement (`TRUST_ADMIN_REQUIRED`) : suspension définitive ou plus longue, gel d'un projet, remboursements d'un projet gelé (action `trust.project.refund`, session récente exigée), compteurs de transparence. Le gel d'un projet et la suspension définitive exigent en plus une session récente (actions `trust.project.freeze` et `trust.suspension.permanent`, vérifiées par la route après `trust.moderation.decide`, `ACCESS_REAUTHENTICATION_REQUIRED`).
+- Suspension depuis la fiche d'un membre, sans signalement : `POST /v1/admin/moderation/members/{userId}/suspensions` décide le dossier ouvert de son profil, ou en ouvre un (`origin = staff`), avec le même exposé des motifs et les mêmes limites ; `TRUST_MEMBER_NOT_FOUND` pour un membre inconnu.
 
 ## Suspension
 
@@ -40,6 +43,7 @@ Confiance et sécurité (cahier des charges §13) : signalements, file de modér
 ## Appels
 
 - Un appel par décision, par le membre concerné, jusqu'à `TRUST_APPEAL_WINDOW_DAYS` jours (183, soit au moins six mois) ; un classement sans suite n'est pas susceptible d'appel par le membre concerné.
+- La file des appels dit au lecteur s'il peut trancher chacun (`resolvable`, `refusal` : `TRUST_SAME_MODERATOR` pour l'auteur de la décision) et nomme le membre concerné, l'auteur de la décision et l'appelant.
 - Réexamen par un autre modérateur ou administrateur que l'auteur de la décision (`TRUST_SAME_MODERATOR`), décision finale motivée : `upheld` (maintenue) ou `overturned` (annulée : le contenu redevient visible, la suspension prend fin, le projet est dégelé).
 
 ## Remboursements d'un projet gelé
@@ -64,7 +68,7 @@ L'activité comptée (table `activity`, une ligne par événement source) est pu
 
 - `GET /v1/reports/reasons` (public : motifs dans l'ordre où les proposer, avec leur clé `reference.reportReasons`), `POST /v1/reports` (`trust.report.create`), `GET /v1/me/reports` (`trust.report.read`), `POST /v1/public/reports` (public, limité).
 - `GET /v1/me/moderation`, `GET /v1/me/moderation/decisions` (`trust.standing.read`), `POST /v1/me/moderation/decisions/{decisionId}/appeal` (`trust.decision.appeal`, membre concerné).
-- `GET /v1/admin/moderation/cases`, `GET /v1/admin/moderation/cases/{caseId}`, `GET /v1/admin/moderation/appeals` (`trust.moderation.read`) ; `POST /v1/admin/moderation/cases/{caseId}/assignment` (`trust.moderation.assign`) ; `POST /v1/admin/moderation/cases/{caseId}/decisions` (`trust.moderation.decide`) ; `POST /v1/admin/moderation/appeals/{appealId}/resolution` (`trust.appeal.resolve`) ; `POST /v1/admin/moderation/suspensions/{suspensionId}/lift` (`trust.suspension.lift`) ; `POST /v1/admin/moderation/projects/{projectId}/refunds` (`trust.project.refund`) ; `GET /v1/admin/moderation/transparency` (`trust.transparency.read`).
+- `GET /v1/admin/moderation/cases`, `GET /v1/admin/moderation/cases/{caseId}`, `GET /v1/admin/moderation/appeals` (`trust.moderation.read`) ; `GET /v1/admin/moderation/moderators`, `POST /v1/admin/moderation/cases/{caseId}/assignment` (`trust.moderation.assign`) ; `POST /v1/admin/moderation/cases/{caseId}/decisions`, `POST /v1/admin/moderation/members/{userId}/suspensions` (`trust.moderation.decide`, puis `trust.project.freeze` ou `trust.suspension.permanent`) ; `POST /v1/admin/moderation/appeals/{appealId}/resolution` (`trust.appeal.resolve`) ; `POST /v1/admin/moderation/suspensions/{suspensionId}/lift` (`trust.suspension.lift`) ; `POST /v1/admin/moderation/projects/{projectId}/refunds` (`trust.project.refund`) ; `GET /v1/admin/moderation/transparency` (`trust.transparency.read`).
 
 ## Schéma `trust`
 
@@ -93,7 +97,7 @@ L'activité comptée (table `activity`, une ligne par événement source) est pu
 
 ## Dépendances
 
-identity (révocation des sessions), access (rôles, source de suspension), profiles, organizations, content, projects, events, missions, messaging, media (résolution et modération des cibles), payments (contributions remboursables, remboursement).
+identity (révocation des sessions, noms des membres d'un dossier), access (rôles, membres d'un rôle, source de suspension, seconde action d'une décision sensible), profiles, organizations, content, projects, events, missions, messaging, media (résolution et modération des cibles), payments (contributions remboursables, remboursement).
 
 ## Données personnelles (RGPD)
 

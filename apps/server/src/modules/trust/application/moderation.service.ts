@@ -3,10 +3,13 @@ import type {
   CursorPage,
   CursorPageQuery,
   DecideModerationCaseRequest,
+  ModerationAppealItem,
   ModerationCase,
   ModerationCaseDetail,
   ModerationDecisionDetail,
+  ModerationPerson,
   ModerationQueueQuery,
+  StaffSuspensionRequest,
 } from '@pitchorium/contracts';
 import { AuditService } from '../../../platform/audit';
 import { COMMON_CONFIG, type CommonConfig } from '../../../platform/config';
@@ -21,17 +24,22 @@ import {
   IdGenerator,
 } from '../../../platform/kernel';
 import { Metrics } from '../../../platform/observability';
-import { AccessFacade } from '../../access';
+import { AccessFacade, type Actor } from '../../access';
+import { IdentityFacade } from '../../identity';
 import { PaymentsFacade } from '../../payments';
 import {
   appealableUntil,
+  appealReviewRefusal,
   assertAppealReview,
   assertCaseOpen,
   assertDecisionAllowed,
+  decisionOptions,
   reportOutcomeOf,
   revertsDecision,
+  sensitiveDecisionAction,
   suspensionEndsAt,
 } from '../domain/decisions';
+import { priorityOf } from '../domain/priority';
 import {
   AppealResolved,
   DecisionTaken,
@@ -39,6 +47,7 @@ import {
   ReportResolved,
 } from '../domain/trust-events';
 import type { CaseRecord, DecisionRecord } from '../domain/trust';
+import { PeopleDirectory } from './people-directory';
 import { type QueuePosition, TrustRepository } from './ports';
 import { SuspensionsService } from './suspensions.service';
 import { TargetDirectory } from './target-directory';
@@ -46,6 +55,9 @@ import { TrustEventsRecorder } from './trust-events.recorder';
 import { assignmentView, caseView, decisionDetailView, moderationReportView } from './trust-views';
 
 const MODERATION_ROLES: readonly string[] = ['moderator', 'admin'];
+
+const personOf = (people: ReadonlyMap<string, ModerationPerson>, id: string | null) =>
+  (id ? people.get(id) : undefined) ?? null;
 
 function caseNotFound(): DomainError {
   return new DomainError('TRUST_CASE_NOT_FOUND', 'Moderation case not found');
@@ -61,8 +73,10 @@ export class ModerationService {
   constructor(
     private readonly trust: TrustRepository,
     private readonly targets: TargetDirectory,
+    private readonly people: PeopleDirectory,
     private readonly suspensions: SuspensionsService,
     private readonly access: AccessFacade,
+    private readonly identity: IdentityFacade,
     private readonly payments: PaymentsFacade,
     private readonly events: TrustEventsRecorder,
     private readonly transactions: TransactionManager,
@@ -81,14 +95,17 @@ export class ModerationService {
         ...(query.assigned === 'me' ? { assignedTo: actorId } : {}),
         ...(query.assigned === 'unassigned' ? { assignedTo: null } : {}),
         targetType: query.targetType,
+        reason: query.reason,
+        openedBefore: query.openedBefore ? new Date(query.openedBefore) : undefined,
       },
       after,
       query.limit + 1,
     );
     const page = rows.slice(0, query.limit);
     const last = page.at(-1);
+    const people = await this.people.people(page.map((row) => row.subjectId));
     return {
-      items: page.map(caseView),
+      items: page.map((row) => caseView(row, personOf(people, row.subjectId))),
       nextCursor:
         rows.length > query.limit && last
           ? encodeCursor({
@@ -109,7 +126,7 @@ export class ModerationService {
       action: 'trust.case-viewed',
       target: { type: 'moderation_case', id: caseId },
     });
-    return this.present(found);
+    return this.present(found, actorId);
   }
 
   async assign(
@@ -144,7 +161,79 @@ export class ModerationService {
       });
       return { ...found, assignedTo: moderatorId, updatedAt: now };
     });
-    return this.present(updated);
+    return this.present(updated, actorId);
+  }
+
+  /**
+   * The second action of a sensitive decision (freeze, permanent suspension, ADR 0172): an
+   * administrator needs a recent session. A moderator is refused by the decision itself
+   * (TRUST_ADMIN_REQUIRED).
+   */
+  async assertRecentForSensitive(
+    actor: Actor,
+    request: Pick<DecideModerationCaseRequest, 'kind' | 'suspensionDays'>,
+    requestId?: string,
+  ): Promise<void> {
+    const action = sensitiveDecisionAction(request);
+    if (action && actor.roles.includes('admin')) {
+      await this.access.assertAllowed(actor, action, requestId);
+    }
+  }
+
+  /**
+   * A suspension decided from the file of a member, without a report: the open case of their
+   * profile is decided, or a `staff` case is opened for it, in the same transaction.
+   */
+  async suspendMember(
+    actorId: string,
+    userId: string,
+    request: StaffSuspensionRequest,
+  ): Promise<ModerationDecisionDetail> {
+    if (!(await this.identity.findUser(userId))) {
+      throw new DomainError('TRUST_MEMBER_NOT_FOUND', 'Member to suspend not found');
+    }
+    return this.transactions.run(async () => {
+      await this.trust.lockTarget('profile', userId);
+      let found = await this.trust.openCaseFor('profile', userId);
+      if (!found) {
+        const now = this.clock.now();
+        const priority = priorityOf({
+          targetType: 'profile',
+          origin: 'staff',
+          reasons: [request.reason],
+          reportCount: 0,
+          fundingActive: false,
+        });
+        found = {
+          id: this.ids.next(),
+          targetType: 'profile',
+          targetId: userId,
+          subjectId: userId,
+          origin: 'staff',
+          signalKind: null,
+          status: 'open',
+          priority: priority.priority,
+          priorityReasons: priority.reasons,
+          reportCount: 0,
+          reasons: [request.reason],
+          fundingActive: false,
+          assignedTo: actorId,
+          decisionId: null,
+          createdAt: now,
+          updatedAt: now,
+          resolvedAt: null,
+        };
+        await this.trust.insertCase(found);
+      }
+      return this.decide(actorId, found.id, { kind: 'suspend', ...request });
+    });
+  }
+
+  /** Moderators and administrators, those a case may be assigned to. */
+  async moderators(): Promise<ModerationPerson[]> {
+    const ids = await this.access.holdersOf(['moderator', 'admin']);
+    const people = await this.people.people(ids);
+    return [...people.values()].sort((a, b) => a.name.localeCompare(b.name));
   }
 
   /**
@@ -231,16 +320,43 @@ export class ModerationService {
     return decisionDetailView(decision, null);
   }
 
-  /** Pending appeals, oldest first, with their decision. */
-  async pendingAppeals(query: CursorPageQuery): Promise<CursorPage<ModerationDecisionDetail>> {
+  /**
+   * Pending appeals, oldest first, with their decision, the members they name, and whether the
+   * reader may resolve each (never the author of the decision).
+   */
+  async pendingAppeals(
+    readerId: string,
+    query: CursorPageQuery,
+  ): Promise<CursorPage<ModerationAppealItem>> {
     const rows = await this.trust.pendingAppeals(decodeKeyset(query.cursor), query.limit + 1);
     const page = rows.slice(0, query.limit);
     const last = page.at(-1);
-    const items: ModerationDecisionDetail[] = [];
+    const pairs = [];
     for (const appeal of page) {
       const decision = await this.trust.findDecision(appeal.decisionId);
-      if (decision) items.push(decisionDetailView(decision, appeal));
+      if (decision) pairs.push({ appeal, decision });
     }
+    const people = await this.people.people(
+      pairs.flatMap(({ appeal, decision }) => [
+        decision.subjectId,
+        decision.decidedBy,
+        appeal.appellantId,
+      ]),
+    );
+    const items: ModerationAppealItem[] = pairs.map(({ appeal, decision }) => {
+      const refusal = appealReviewRefusal(appeal, decision, readerId);
+      return {
+        ...decisionDetailView(decision, appeal),
+        resolvable: refusal === null,
+        refusal,
+        people: [decision.subjectId, decision.decidedBy, appeal.appellantId]
+          .map((id) => personOf(people, id))
+          .filter((person): person is ModerationPerson => person !== null)
+          .filter(
+            (person, index, all) => all.findIndex((p) => p.userId === person.userId) === index,
+          ),
+      };
+    });
     return {
       items,
       nextCursor:
@@ -343,20 +459,42 @@ export class ModerationService {
     return { queued: contributions.length };
   }
 
-  private async present(found: CaseRecord): Promise<ModerationCaseDetail> {
-    const [reports, assignments, decisions] = await Promise.all([
+  /**
+   * The case as the reader handles it: what was reported, the members it names, and the
+   * decisions the reader may take on it (decisionOptions, the rules of a decision).
+   */
+  private async present(found: CaseRecord, readerId: string): Promise<ModerationCaseDetail> {
+    const [reports, assignments, decisions, target, roles] = await Promise.all([
       this.trust.reportsOfCase(found.id),
       this.trust.assignmentsOf(found.id),
       this.trust.decisionsOfCase(found.id),
+      this.targets.preview(found.targetType, found.targetId),
+      this.access.rolesOf(readerId),
     ]);
     const appeals = await this.trust.appealsOf(decisions.map((decision) => decision.id));
+    const people = await this.people.people([
+      found.subjectId,
+      found.assignedTo,
+      ...reports.map((report) => report.reporterId),
+      ...assignments.flatMap((assignment) => [assignment.moderatorId, assignment.assignedBy]),
+      ...decisions.map((decision) => decision.decidedBy),
+      ...[...appeals.values()].flatMap((appeal) => [appeal.appellantId, appeal.reviewerId]),
+    ]);
     return {
-      ...caseView(found),
+      ...caseView(found, personOf(people, found.subjectId)),
       reports: reports.map(moderationReportView),
       assignments: assignments.map(assignmentView),
       decisions: decisions.map((decision) =>
         decisionDetailView(decision, appeals.get(decision.id) ?? null),
       ),
+      target,
+      people: [...people.values()],
+      decisionOptions: decisionOptions({
+        targetType: found.targetType,
+        subjectId: found.subjectId,
+        actorIsAdmin: roles.includes('admin'),
+        moderatorMaxSuspensionDays: this.config.trust.moderatorMaxSuspensionDays,
+      }),
     };
   }
 }

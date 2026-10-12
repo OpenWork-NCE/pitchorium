@@ -460,6 +460,7 @@ export const errorCodes = {
   TRUST_SAME_MODERATOR: { status: 403, title: 'Appeal reviewed by the author of the decision' },
   TRUST_SUSPENSION_NOT_FOUND: { status: 404, title: 'Suspension not found' },
   TRUST_PROJECT_NOT_FROZEN: { status: 409, title: 'Project not frozen by this decision' },
+  TRUST_MEMBER_NOT_FOUND: { status: 404, title: 'Member to suspend not found' },
   PRIVACY_EXPORT_RATE_LIMITED: { status: 429, title: 'An export was requested too recently' },
   PRIVACY_EXPORT_NOT_FOUND: { status: 404, title: 'Export not found' },
   PRIVACY_EXPORT_NOT_READY: { status: 409, title: 'Export not ready or expired' },

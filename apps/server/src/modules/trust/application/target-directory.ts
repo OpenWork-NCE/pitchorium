@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import {
   type ModerationDecisionKind,
+  type ModerationTarget,
   type ReportTargetType,
   uuidV7Schema,
 } from '@pitchorium/contracts';
@@ -24,6 +25,12 @@ export interface ResolvedTarget {
 }
 
 const FUNDING_STATUSES: ReadonlySet<string> = new Set(['funding', 'funded']);
+
+/** Length of the text of a target shown to a moderator. */
+const EXCERPT_MAX = 2_000;
+
+const excerpt = (text: string | null | undefined): string | null =>
+  text ? text.slice(0, EXCERPT_MAX) : null;
 
 /**
  * Finds the reported targets through the facades of the modules that own them, and applies
@@ -109,6 +116,75 @@ export class TargetDirectory {
       case 'media': {
         const media = await this.media.describe(id);
         return media ? target(id, media.ownerId) : null;
+      }
+    }
+  }
+
+  /**
+   * What the moderators read of a target, whatever its audience and moderation status (case of
+   * the console): its name or title, its text, the keys of its page. A message is read in the
+   * context of its reports. Null when the target no longer exists.
+   */
+  async preview(type: ReportTargetType, id: string): Promise<ModerationTarget | null> {
+    const of = (
+      key: string,
+      fields: Partial<Omit<ModerationTarget, 'type' | 'key'>>,
+    ): ModerationTarget => ({
+      type,
+      key,
+      parentKey: null,
+      label: null,
+      excerpt: null,
+      moderationStatus: null,
+      ...fields,
+    });
+    switch (type) {
+      case 'profile': {
+        const card = (await this.profiles.memberCards([id])).get(id);
+        return card ? of(card.handle, { label: card.displayName, excerpt: card.headline }) : null;
+      }
+      case 'organization': {
+        const card = (await this.organizations.cards([id])).get(id);
+        return card ? of(card.slug, { label: card.name }) : null;
+      }
+      case 'post':
+      case 'comment': {
+        const found = await this.content.moderationExcerpt(type, id);
+        if (!found) return null;
+        return of(id, {
+          parentKey: type === 'comment' ? found.postId : null,
+          excerpt: excerpt(found.text),
+          moderationStatus: found.moderationStatus,
+        });
+      }
+      case 'project': {
+        const project = await this.projects.fundable(id);
+        return project ? of(project.slug, { label: project.title }) : null;
+      }
+      case 'project_update': {
+        const update = await this.projects.updateForModeration(id);
+        if (!update) return null;
+        const project = await this.projects.fundable(update.projectId);
+        return of(id, {
+          parentKey: project?.slug ?? null,
+          label: project?.title ?? null,
+          excerpt: excerpt(update.text),
+          moderationStatus: update.moderationStatus,
+        });
+      }
+      case 'event': {
+        const event = (await this.events.summaries([id])).get(id);
+        return event ? of(event.slug, { label: event.title }) : null;
+      }
+      case 'mission': {
+        const mission = (await this.missions.cards([id])).get(id);
+        return mission ? of(id, { label: mission.title }) : null;
+      }
+      case 'message':
+        return of(id, {});
+      case 'media': {
+        const media = await this.media.describe(id);
+        return media ? of(id, { label: media.usage }) : null;
       }
     }
   }

@@ -1,4 +1,14 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Post,
+  Query,
+  Req,
+} from '@nestjs/common';
 import { ApiAcceptedResponse, ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import {
   appealIdParamsSchema,
@@ -12,13 +22,17 @@ import {
   moderationCaseDetailSchema,
   moderationCaseIdParamsSchema,
   moderationCasePageSchema,
+  type ModerationAppealItem,
+  moderationAppealPageSchema,
   type ModerationDecisionDetail,
-  moderationDecisionDetailPageSchema,
   moderationDecisionDetailSchema,
+  type ModerationPerson,
   moderationQueueQuerySchema,
+  moderatorListSchema,
   projectRefundsRequestSchema,
   projectRefundsResultSchema,
   resolveAppealRequestSchema,
+  staffSuspensionRequestSchema,
   type Suspension,
   suspensionIdParamsSchema,
   suspensionSchema,
@@ -27,10 +41,12 @@ import {
   transparencyReportSchema,
   uuidV7Schema,
 } from '@pitchorium/contracts';
+import type { Request } from 'express';
 import { createZodDto, ZodSerializerDto } from 'nestjs-zod';
 import { z } from 'zod';
 import { CurrentPrincipal, type Principal, RequireAction } from '../../../platform/http';
 import { Idempotent } from '../../../platform/idempotency';
+import { type Actor, CurrentActor } from '../../access';
 import { ModerationService } from '../application/moderation.service';
 import { SuspensionsService } from '../application/suspensions.service';
 import { TransparencyService } from '../application/transparency.service';
@@ -38,7 +54,10 @@ import { TransparencyService } from '../application/transparency.service';
 class CasePageDto extends createZodDto(moderationCasePageSchema) {}
 class CaseDetailDto extends createZodDto(moderationCaseDetailSchema) {}
 class DecisionDetailDto extends createZodDto(moderationDecisionDetailSchema) {}
-class DecisionDetailPageDto extends createZodDto(moderationDecisionDetailPageSchema) {}
+class AppealPageDto extends createZodDto(moderationAppealPageSchema) {}
+class ModeratorListDto extends createZodDto(moderatorListSchema) {}
+class StaffSuspensionDto extends createZodDto(staffSuspensionRequestSchema) {}
+class MemberParamsDto extends createZodDto(z.object({ userId: uuidV7Schema })) {}
 class SuspensionDto extends createZodDto(suspensionSchema) {}
 class TransparencyDto extends createZodDto(transparencyReportSchema) {}
 class RefundsResultDto extends createZodDto(projectRefundsResultSchema) {}
@@ -54,6 +73,8 @@ class CaseIdParamsDto extends createZodDto(moderationCaseIdParamsSchema) {}
 class AppealIdParamsDto extends createZodDto(appealIdParamsSchema) {}
 class SuspensionIdParamsDto extends createZodDto(suspensionIdParamsSchema) {}
 class ReportedProjectIdParamsDto extends createZodDto(z.object({ projectId: uuidV7Schema })) {}
+
+const requestIdOf = (request: Request) => (typeof request.id === 'string' ? request.id : undefined);
 
 /**
  * Moderation tools (§13), under the administration convention `/v1/admin/<area>`: queue,
@@ -110,27 +131,67 @@ export class ModerationController {
 
   /**
    * Decision with its statement of reasons. A permanent suspension, one longer than
-   * TRUST_MODERATOR_MAX_SUSPENSION_DAYS and the freeze of a project need the admin role.
+   * TRUST_MODERATOR_MAX_SUSPENSION_DAYS and the freeze of a project need the admin role; the
+   * freeze and a permanent suspension a recent session (trust.project.freeze,
+   * trust.suspension.permanent).
    */
   @Post('cases/:caseId/decisions')
   @RequireAction('trust.moderation.decide')
   @Idempotent()
   @ZodSerializerDto(DecisionDetailDto)
   @ApiCreatedResponse({ type: DecisionDetailDto.Output })
-  decide(
-    @CurrentPrincipal() principal: Principal,
+  async decide(
+    @CurrentActor() actor: Actor,
     @Param() params: CaseIdParamsDto,
     @Body() body: DecideDto,
+    @Req() request: Request,
   ): Promise<ModerationDecisionDetail> {
-    return this.moderation.decide(principal.userId, params.caseId, body);
+    await this.moderation.assertRecentForSensitive(actor, body, requestIdOf(request));
+    return this.moderation.decide(actor.userId, params.caseId, body);
   }
 
+  /** Pending appeals with their decision, and whether the reader may resolve each. */
   @Get('appeals')
   @RequireAction('trust.moderation.read')
-  @ZodSerializerDto(DecisionDetailPageDto)
-  @ApiOkResponse({ type: DecisionDetailPageDto.Output })
-  appeals(@Query() query: PageQueryDto): Promise<CursorPage<ModerationDecisionDetail>> {
-    return this.moderation.pendingAppeals(query);
+  @ZodSerializerDto(AppealPageDto)
+  @ApiOkResponse({ type: AppealPageDto.Output })
+  appeals(
+    @CurrentPrincipal() principal: Principal,
+    @Query() query: PageQueryDto,
+  ): Promise<CursorPage<ModerationAppealItem>> {
+    return this.moderation.pendingAppeals(principal.userId, query);
+  }
+
+  /** The moderators and administrators a case may be assigned to. */
+  @Get('moderators')
+  @RequireAction('trust.moderation.assign')
+  @ZodSerializerDto(ModeratorListDto)
+  @ApiOkResponse({ type: ModeratorListDto.Output })
+  async moderators(): Promise<{ items: ModerationPerson[] }> {
+    return { items: await this.moderation.moderators() };
+  }
+
+  /**
+   * A suspension decided from the file of a member: the open case of their profile is decided,
+   * or a case is opened for it (`staff`), with the same statement of reasons and limits.
+   */
+  @Post('members/:userId/suspensions')
+  @RequireAction('trust.moderation.decide')
+  @Idempotent()
+  @ZodSerializerDto(DecisionDetailDto)
+  @ApiCreatedResponse({ type: DecisionDetailDto.Output })
+  async suspendMember(
+    @CurrentActor() actor: Actor,
+    @Param() params: MemberParamsDto,
+    @Body() body: StaffSuspensionDto,
+    @Req() request: Request,
+  ): Promise<ModerationDecisionDetail> {
+    await this.moderation.assertRecentForSensitive(
+      actor,
+      { kind: 'suspend', suspensionDays: body.suspensionDays },
+      requestIdOf(request),
+    );
+    return this.moderation.suspendMember(actor.userId, params.userId, body);
   }
 
   /** Final decision on an appeal, by someone other than the author of the decision. */
