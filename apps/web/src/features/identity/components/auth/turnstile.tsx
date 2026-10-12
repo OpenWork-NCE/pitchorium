@@ -4,7 +4,7 @@ import type { AuthConfigurationDtoOutput } from '@pitchorium/api-client';
 import { useLocale, useTranslations } from 'next-intl';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-type TurnstileSettings = NonNullable<AuthConfigurationDtoOutput['turnstile']>;
+export type TurnstileSettings = NonNullable<AuthConfigurationDtoOutput['turnstile']>;
 
 interface TurnstileApi {
   render: (container: HTMLElement, options: Record<string, unknown>) => string;
