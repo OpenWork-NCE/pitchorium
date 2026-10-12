@@ -8,10 +8,10 @@ import {
   membersControllerLeave,
   membersControllerRemove,
   membersControllerTransfer,
-  useInvitationsControllerPending,
+  getInvitationsControllerPendingQueryOptions,
 } from '@pitchorium/api-client';
 import type { InvitableRole, Organization, OrganizationRole } from '@pitchorium/contracts';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQueryClient, useQuery } from '@tanstack/react-query';
 import { useFormatter, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import {
@@ -170,7 +170,7 @@ function Invitations({ organization }: { organization: Organization }) {
   const problem = useOrganizationProblem();
   const queryClient = useQueryClient();
   const key = getInvitationsControllerPendingQueryKey(organization.id);
-  const pending = useInvitationsControllerPending(organization.id);
+  const pending = useQuery(getInvitationsControllerPendingQueryOptions(organization.id));
   const form = useZodForm(createInvitationRequest, {
     defaultValues: { email: '', role: 'member' },
   });

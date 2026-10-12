@@ -13,12 +13,11 @@ const push = vi.hoisted(() => vi.fn());
 const received = vi.hoisted(() => ({ items: [] as ReceivedInvitation[] }));
 vi.mock('@pitchorium/api-client', async (importOriginal) => ({
   ...(await importOriginal<typeof ApiClient>()),
-  // The hook of the generated client calls its own function: replaced as a whole.
-  useInvitationsControllerReceived: () => ({
-    data: received,
-    isPending: false,
-    isError: false,
-    isSuccess: true,
+  // The query of the generated client calls its own function: its options are replaced.
+  getInvitationsControllerReceivedQueryOptions: () => ({
+    queryKey: ['/v1/me/organization-invitations'],
+    queryFn: () => Promise.resolve(received),
+    initialData: received,
   }),
   invitationsControllerAcceptReceived: accept,
   invitationsControllerDeclineReceived: decline,

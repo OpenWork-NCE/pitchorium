@@ -4,10 +4,10 @@ import {
   getInvitationsControllerReceivedQueryKey,
   invitationsControllerAcceptReceived,
   invitationsControllerDeclineReceived,
-  useInvitationsControllerReceived,
+  getInvitationsControllerReceivedQueryOptions,
 } from '@pitchorium/api-client';
 import type { ReceivedInvitation } from '@pitchorium/contracts';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQueryClient, useQuery } from '@tanstack/react-query';
 import { useFormatter, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import {
@@ -37,7 +37,9 @@ import { COUNTERS_QUERY_KEY } from '@/lib/query/keys';
  */
 export function OrganizationInvitations() {
   const t = useTranslations('web.organizations.received');
-  const invitations = useInvitationsControllerReceived({ query: { staleTime: 30_000 } });
+  const invitations = useQuery(
+    getInvitationsControllerReceivedQueryOptions({ query: { staleTime: 30_000 } }),
+  );
   return (
     <section aria-labelledby="organization-invitations-title" className="grid gap-4">
       <Heading level={2} size="section" id="organization-invitations-title">

@@ -2,7 +2,7 @@
 
 import {
   getVerificationControllerHistoryQueryKey,
-  useVerificationControllerHistory,
+  getVerificationControllerHistoryQueryOptions,
   verificationControllerRequest,
 } from '@pitchorium/api-client';
 import {
@@ -10,7 +10,7 @@ import {
   type Organization,
   type OwnVerificationRequest,
 } from '@pitchorium/contracts';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQueryClient, useQuery } from '@tanstack/react-query';
 import { useFormatter, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import {
@@ -54,7 +54,7 @@ export function VerificationPanel({ organization }: { organization: Organization
   const t = useTranslations('web.organizations.manage.verification');
   const statuses = useTranslations('reference.verificationStatuses');
   const format = useFormatter();
-  const history = useVerificationControllerHistory(organization.id);
+  const history = useQuery(getVerificationControllerHistoryQueryOptions(organization.id));
   const { status, verified, verifiedAt } = organization.verification;
   const canRequest = organization.viewerRole === 'owner' && REQUESTABLE.has(status);
   return (

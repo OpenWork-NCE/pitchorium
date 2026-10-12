@@ -1,6 +1,7 @@
 'use client';
 
-import { useProfilesControllerReferenceData } from '@pitchorium/api-client';
+import { getProfilesControllerReferenceDataQueryOptions } from '@pitchorium/api-client';
+import { useQuery } from '@tanstack/react-query';
 import type { UpdateOrganizationRequest } from '@pitchorium/contracts';
 import { useLocale, useTranslations } from 'next-intl';
 import { useMemo } from 'react';
@@ -26,7 +27,9 @@ export function OrganizationFields({
   const t = useTranslations('web.organizations.fields');
   const reference = useTranslations('reference');
   const locale = useLocale();
-  const data = useProfilesControllerReferenceData({ query: { staleTime: Infinity } }).data;
+  const data = useQuery(
+    getProfilesControllerReferenceDataQueryOptions({ query: { staleTime: Infinity } }),
+  ).data;
   const options = useMemo(
     () => ({
       // The types of structure of the reference data: the contracts stay off the first load.
