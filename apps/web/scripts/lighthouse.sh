@@ -33,10 +33,14 @@ fi
 ./node_modules/.bin/lhci collect
 # The feed is judged on the median of three runs (ADR 0163): at one run per page (level 2), it gets
 # the two others.
+# The home page as well, its largest paint judged on the median: one run measured 2 002 ms
+# where every other run of the same code measured 1 945 to 1 989 ms (question 139).
 runs=${LHCI_RUNS:-3}
 if [ "$runs" -lt 3 ]; then
-  ./node_modules/.bin/lhci collect --additive --url=http://localhost:3201/fr/feed \
-    --numberOfRuns=$((3 - runs))
+  for page in feed ""; do
+    ./node_modules/.bin/lhci collect --additive --url="http://localhost:3201/fr${page:+/$page}" \
+      --numberOfRuns=$((3 - runs))
+  done
 fi
 LHCI_VISITOR=1 ./node_modules/.bin/lhci collect --additive
 # The public profile as well, its largest paint judged on the median (ADR 0163): one run measured

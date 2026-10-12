@@ -21,9 +21,9 @@ Ces dix passages étaient pourtant trop rapides : calibré sur un seul passage �
 - Le ralentissement est calibré sur la médiane de trois mesures de l'indice du processeur, et non plus sur une seule.
 - Le Total Blocking Time du fil est jugé sur la médiane de trois passages (`aggregationMethod: 'median'`). Au niveau 2, où chaque page a un passage, le fil en reçoit deux de plus (`scripts/lighthouse.sh`).
 - Le seuil reste 250 ms : il n'est pas relevé, la cause est corrigée.
-- Même règle pour le Largest Contentful Paint des pages publiques de ressources, jugé sur la médiane de leurs passages, et trois passages du profil public au niveau 2 (2026-10-12) : un passage unique a mesuré 2 521 ms sur le runner, les autres passages du même code de 2 291 à 2 376 ms, comme avant ce prompt (2 306 à 2 355 ms). Le seuil reste 2 500 ms.
+- Même règle pour le Largest Contentful Paint des pages publiques de ressources, jugé sur la médiane de leurs passages, et trois passages du profil public au niveau 2 (2026-10-12) : un passage unique a mesuré 2 521 ms sur le runner, les autres passages du même code de 2 291 à 2 376 ms, comme avant ce prompt (2 306 à 2 355 ms). Le seuil reste 2 500 ms. De même pour l'accueil, trois passages au niveau 2 et la médiane : un passage a mesuré 2 002 ms, tous les autres du même code depuis ce prompt et avant lui de 1 945 à 1 989 ms ; le seuil reste 2 000 ms (question 139).
 
 ## Conséquences
 
-- Le niveau 2 dure environ une minute et demie de plus (deux passages du fil, deux du profil et deux mesures de calibration).
+- Le niveau 2 dure environ une minute et demie de plus (deux passages du fil, de l'accueil et du profil, et deux mesures de calibration).
 - Une régression réelle déplace la médiane : la série de dix passages se rejoue par `gh workflow run diagnose.yaml -f suite=lighthouse -f page=/fr/feed -f repeat=10 -f refs='<avant> <après>'`.

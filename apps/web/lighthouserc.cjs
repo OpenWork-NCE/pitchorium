@@ -104,8 +104,12 @@ module.exports = {
             ...THRESHOLDS,
             // The home page, first impression of the site: 95 at least on the mobile profile.
             'categories:performance': ['error', { minScore: 0.95 }],
-            // Its previews of the product (ADR 0162) keep the largest paint under 2 s.
-            'largest-contentful-paint': ['error', { maxNumericValue: 2000 }],
+            // Its previews of the product (ADR 0162) keep the largest paint under 2 s, on the
+            // median of its runs (three for the French home page at level 2, ADR 0163).
+            'largest-contentful-paint': [
+              'error',
+              { maxNumericValue: 2000, aggregationMethod: 'median' },
+            ],
             'categories:seo': ['error', { minScore: 1 }],
             // Every script of the editorial page, transferred: initial chunks plus GSAP and the
             // chunks loaded on demand.
