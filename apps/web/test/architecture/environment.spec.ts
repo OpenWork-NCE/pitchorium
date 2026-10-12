@@ -29,6 +29,14 @@ describe('environment of the web app', () => {
     expect(env.NEXT_PUBLIC_UPLOAD_URL).toBe(example['NEXT_PUBLIC_UPLOAD_URL']);
   });
 
+  it('refuses the pseudo-locale of the tests for a site that is not local', async () => {
+    Object.assign(process.env, example, {
+      WEB_PSEUDO_LOCALIZATION: 'true',
+      NEXT_PUBLIC_SITE_URL: 'https://pitchorium.example',
+    });
+    await expect(import('@/lib/env')).rejects.toThrow(/WEB_PSEUDO_LOCALIZATION/);
+  });
+
   it('refuses an invalid value, as `next build` does', async () => {
     vi.spyOn(console, 'error').mockImplementation(() => undefined);
     Object.assign(process.env, example, { NEXT_PUBLIC_API_URL: 'not a url' });

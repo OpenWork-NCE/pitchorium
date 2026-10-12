@@ -1,6 +1,7 @@
 import './zod';
 import { createEnv } from '@t3-oss/env-nextjs';
 import { z } from 'zod';
+import { isLocalOrigin } from './i18n/pseudo-locale';
 
 const flag = z
   .enum(['true', 'false'])
@@ -22,6 +23,8 @@ export const env = createEnv({
     WEB_TRUST_PROXY_HOPS: z.coerce.number().int().min(0).default(0),
     /** Contact address shown in the footer of the public pages; none shown without it. */
     CONTACT_EMAIL: z.email().optional(),
+    /** Pseudo-locale of the tests (lib/i18n/pseudo-locale.ts): refused for a site not local. */
+    WEB_PSEUDO_LOCALIZATION: flag,
   },
   client: {
     /** Public origin of the web app (canonical URLs, sitemap, share images). */
@@ -54,3 +57,12 @@ export const env = createEnv({
   },
   emptyStringAsUndefined: true,
 });
+
+// The pseudo-locale exists for the tests: never on a site served to anyone else.
+if (
+  typeof window === 'undefined' &&
+  env.WEB_PSEUDO_LOCALIZATION &&
+  !isLocalOrigin(env.NEXT_PUBLIC_SITE_URL)
+) {
+  throw new Error('WEB_PSEUDO_LOCALIZATION is for the tests: NEXT_PUBLIC_SITE_URL must be local.');
+}

@@ -1,7 +1,8 @@
 import type { Locale } from '@pitchorium/contracts';
-import { type CatalogTree, catalogs, localeManifest } from '@pitchorium/i18n';
+import { type CatalogTree, catalogs, localeManifest, pseudoLocalizeTree } from '@pitchorium/i18n';
 import compile from 'icu-minify/compile';
 import type { AbstractIntlMessages } from 'next-intl';
+import { pseudoLocalization } from './pseudo-locale';
 
 /** Namespaces of `@pitchorium/i18n` the web app reads on the server. */
 export const WEB_NAMESPACES = [
@@ -386,11 +387,13 @@ export function messagesFor(locale: Locale): WebMessages {
   const cached = cache.get(locale);
   if (cached) return cached;
   const fallback = localeManifest.fallbackLocale as Locale;
+  // The pseudo-locale of the tests (lib/i18n/pseudo-locale.ts): every text longer and accented.
+  const pseudo = pseudoLocalization();
   const messages = Object.fromEntries(
-    WEB_NAMESPACES.map((namespace) => [
-      namespace,
-      convert(withFallback(catalogs[fallback][namespace], catalogs[locale][namespace])),
-    ]),
+    WEB_NAMESPACES.map((namespace) => {
+      const tree = withFallback(catalogs[fallback][namespace], catalogs[locale][namespace]);
+      return [namespace, convert(pseudo ? pseudoLocalizeTree(tree) : tree)];
+    }),
   ) as WebMessages;
   cache.set(locale, messages);
   return messages;
