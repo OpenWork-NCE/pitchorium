@@ -241,11 +241,9 @@ test.describe('console of the administration', () => {
       .getByRole('alertdialog', { name: 'Relancer refund ?' })
       .getByRole('button', { name: 'Relancer' })
       .click();
-    await expect(job.getByRole('status').filter({ hasText: 'Tâche relancée.' })).toBeVisible();
-    await expect(job.getByRole('button', { name: 'Relancer' })).toHaveAttribute(
-      'aria-disabled',
-      'true',
-    );
+    await expect(page.locator('[data-announcer="polite"]')).toHaveText('Tâche relancée.');
+    // Retried, the job leaves the failed jobs.
+    await expect(job).toHaveCount(0);
     const retries = (await stub(request).writes()).filter((write) => write.route === 'job-retry');
     expect(retries).toHaveLength(1);
   });
@@ -253,6 +251,8 @@ test.describe('console of the administration', () => {
   test('filters the audit log in the address and exports it', async ({ page, request }) => {
     await signIn(page, ADMIN);
     await page.goto('/fr/admin/audit');
+    // The filters are read once the page answers (hydrated).
+    await page.waitForLoadState('networkidle');
     await expect(page.getByText('Ces données sont personnelles', { exact: false })).toBeVisible();
     await page.getByLabel('Action').fill('payments');
     await page.getByRole('button', { name: 'Filtrer' }).click();
@@ -288,22 +288,22 @@ test.describe('console of the administration, its accessibility', () => {
     '/fr/admin/privacy',
     '/fr/admin/audit',
   ];
+  // One test per screen and theme: sixteen screens in one test outlast its time in Firefox and
+  // WebKit on the runner.
   for (const colorScheme of ['light', 'dark'] as const) {
-    test(`has no axe violation on its screens in the ${colorScheme} theme`, async ({ browser }) => {
-      const context = await browser.newContext({ colorScheme, reducedMotion: 'reduce' });
-      const page = await context.newPage();
-      await signIn(page, ADMIN);
-      for (const screen of SCREENS) {
+    for (const screen of SCREENS) {
+      test(`has no axe violation on ${screen} in the ${colorScheme} theme`, async ({ browser }) => {
+        const context = await browser.newContext({ colorScheme, reducedMotion: 'reduce' });
+        const page = await context.newPage();
+        await signIn(page, ADMIN);
         await page.goto(screen);
         await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
         const results = await new AxeBuilder({ page })
           .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'])
           .analyze();
-        expect(
-          results.violations.map(({ id, nodes }) => `${screen} ${id}: ${nodes.length}`),
-        ).toEqual([]);
-      }
-      await context.close();
-    });
+        expect(results.violations.map(({ id, nodes }) => `${id}: ${nodes.length}`)).toEqual([]);
+        await context.close();
+      });
+    }
   }
 });
