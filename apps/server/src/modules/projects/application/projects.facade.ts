@@ -318,6 +318,23 @@ export class ProjectsFacade implements OnModuleInit {
     return update ? { projectId: update.projectId, authorId: update.authorId } : null;
   }
 
+  /**
+   * What a moderator reads of a reported update, whatever its moderation status (trust module):
+   * its text, its project and its status.
+   */
+  async updateForModeration(
+    updateId: string,
+  ): Promise<{ projectId: string; text: string; moderationStatus: string } | null> {
+    const update = await this.projects.findUpdate(updateId);
+    return update
+      ? {
+          projectId: update.projectId,
+          text: update.text,
+          moderationStatus: update.moderationStatus,
+        }
+      : null;
+  }
+
   async setUpdateModerationStatus(
     updateId: string,
     status: ProjectModerationStatus,
