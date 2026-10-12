@@ -125,7 +125,7 @@ test.describe('reports and moderation', () => {
       await expect(author.page.getByText(/membres qui ne la demandaient pas/)).toBeVisible();
       await expect(
         author.page.getByText(
-          /^Conditions d.utilisation : Conditions d’utilisation, publications$/,
+          /^Conditions d.utilisation\s: Conditions d’utilisation, publications$/,
         ),
       ).toBeVisible();
       await author.page.getByRole('button', { name: 'Faire appel' }).click();
