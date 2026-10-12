@@ -24,6 +24,7 @@ import { pluralOf } from '@/lib/i18n/plural-of';
 import { languageName } from '../lib/options';
 import { EditButton, ProfileEditorProvider, ProfileStrength } from './owner-tools';
 import { ContributorSection, EntrepreneurSection } from './profile-facets';
+import { Translatable } from '@/features/localization';
 
 export interface MemberProfileProps {
   profile: ProfileView;
@@ -67,7 +68,14 @@ export async function MemberProfile({
           actions={actions}
           editable={editable}
         />
-        <AboutSection profile={profile} editable={editable} />
+        <AboutSection
+          profile={profile}
+          editable={editable}
+          // « Traduire » for another member, when the presentation is in another language (§8.3).
+          translatable={
+            view === 'member' && Boolean(profile.language) && profile.language !== locale
+          }
+        />
         <EntrepreneurSection profile={profile} locale={locale} editable={editable} />
         <ContributorSection profile={profile} locale={locale} editable={editable} />
       </div>
@@ -266,7 +274,15 @@ async function ProfileHeader({
   );
 }
 
-async function AboutSection({ profile, editable }: { profile: ProfileView; editable: boolean }) {
+async function AboutSection({
+  profile,
+  editable,
+  translatable,
+}: {
+  profile: ProfileView;
+  editable: boolean;
+  translatable: boolean;
+}) {
   const t = await getTranslations('web.profile.page');
   if (!profile.bio && !editable) return null;
   return (
@@ -277,7 +293,17 @@ async function AboutSection({ profile, editable }: { profile: ProfileView; edita
         </Heading>
         {editable ? <EditButton section="about" /> : null}
       </div>
-      {profile.bio ? (
+      {profile.bio && translatable && !editable ? (
+        <Translatable
+          source={{ type: 'profile', id: profile.handle }}
+          language={profile.language}
+          field="bio"
+        >
+          <Text prose className="whitespace-pre-line">
+            {profile.bio}
+          </Text>
+        </Translatable>
+      ) : profile.bio ? (
         <Text prose className="whitespace-pre-line">
           {profile.bio}
         </Text>
