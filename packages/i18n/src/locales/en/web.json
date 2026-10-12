@@ -357,6 +357,15 @@
       },
       "currentPassword": {
         "too_small": "Enter your current password."
+      },
+      "goodFaith": {
+        "invalid_value": "Tick this declaration to send the report."
+      },
+      "reporterEmail": {
+        "invalid_format": "Enter a complete email address, for example name@example.org."
+      },
+      "address": {
+        "invalid_format": "Paste the full address of the page, which starts with https://."
       }
     },
     "rules": {
@@ -405,8 +414,8 @@
   },
   "banners": {
     "suspended": {
-      "body": "Your account is suspended: you can read, but neither post nor write. The reasoned decision and how to appeal were sent to you by email and in your notifications.",
-      "action": "See my notifications"
+      "body": "Your account is suspended: you can read, but neither publish nor contribute. Read the decision and its reasons, and appeal if you contest it.",
+      "action": "See the decision"
     },
     "legal": {
       "body": "The terms of use or the privacy policy have changed. Accept them to keep publishing and contributing.",
@@ -626,7 +635,8 @@
     },
     "updates": {
       "title": "Updates",
-      "edited": "edited"
+      "edited": "edited",
+      "reportName": "the update of {{name}}"
     },
     "documents": {
       "title": "Documents",
@@ -2313,7 +2323,9 @@
       "payouts": "Payout and verification",
       "messaging": "Messages",
       "notifications": "Notifications",
-      "calendar": "Calendar"
+      "calendar": "Calendar",
+      "personalData": "Personal data",
+      "moderation": "Moderation"
     },
     "account": {
       "email": {
@@ -4050,7 +4062,8 @@
       "language": "Language",
       "contact": "Contact: <email>{{address}}</email>",
       "about": "Pitchorium",
-      "tagline": "Africa · Caribbean · European diaspora"
+      "tagline": "Africa · Caribbean · European diaspora",
+      "report": "Report illegal content"
     },
     "legalNames": {
       "terms": "Terms of use",
@@ -4216,6 +4229,167 @@
       "conversation": "Preview of a conversation in the messages of Pitchorium",
       "notification": "Preview of a notification that gathers the reactions to a publication",
       "dashboard": "Preview of the engagement dashboard: amounts paid, projects supported and hours declared"
+    }
+  },
+  "trust": {
+    "report": {
+      "action": "Report",
+      "actionNamed": "Report: {{name}}",
+      "titles": {
+        "profile": "Report this profile",
+        "organization": "Report this organisation",
+        "post": "Report this publication",
+        "comment": "Report this comment",
+        "project": "Report this project",
+        "project_update": "Report this update",
+        "event": "Report this event",
+        "mission": "Report this mission",
+        "message": "Report this message",
+        "media": "Report this image"
+      },
+      "description": "Tell us what is wrong. Moderation reviews every report, and the person concerned does not learn who made it.",
+      "messageScope": "Only this message and the three messages before it reach moderation, never the whole conversation.",
+      "reason": "Reason",
+      "details": "Details",
+      "detailsHint": "What helps moderation understand the situation.",
+      "submit": "Send the report",
+      "sending": "Sending",
+      "cancel": "Cancel",
+      "loading": "Loading the reasons",
+      "unreadable": "The reasons could not be loaded.",
+      "receivedTitle": "Report received",
+      "received": "Thank you. Moderation is reviewing your report; you will hear what follows in your notifications.",
+      "close": "Close"
+    },
+    "notice": {
+      "title": "Report illegal content",
+      "lede": "You do not need an account. Give the address of the content and explain why it seems illegal to you.",
+      "address": "Address of the content",
+      "addressHint": "The address of the page of a profile, an organisation, a publication, a project, an event or a mission.",
+      "addressInvalid": "This address does not point to content on Pitchorium.",
+      "addressNotFound": "This content cannot be found or is not public.",
+      "target": "Reported content: {{target}}",
+      "details": "Explanation",
+      "detailsHint": "Why this content seems illegal to you, and the rule it breaks if you know it.",
+      "name": "Your name",
+      "email": "Your email address",
+      "emailHint": "To receive the acknowledgement and the decision. Without an address, you will not hear what follows.",
+      "goodFaith": "I declare in good faith that the information in this report is accurate and complete.",
+      "submit": "Send the report",
+      "sending": "Sending",
+      "receivedTitle": "Report received",
+      "received": "Your report was received on {{date}}. Its reference: {{reference}}.",
+      "receivedEmail": "An acknowledgement is on its way to the address you gave; the decision will be sent there.",
+      "receivedNoEmail": "Without an email address, you will not hear about the decision.",
+      "another": "Report other content",
+      "member": "Are you a member? Report from the content itself instead, with the « Report » button: you will hear what follows."
+    },
+    "moderation": {
+      "title": "Moderation",
+      "lede": "The moderation decisions that concern you, their reasons, and your right to contest them.",
+      "suspendedTitle": "Your account is suspended",
+      "suspendedUntil": "Until {{date}}. You can read, appeal, export or delete your data, but neither publish nor contribute.",
+      "suspendedPermanent": "With no end date. You can read, appeal, export or delete your data, but neither publish nor contribute.",
+      "decisionsTitle": "Decisions",
+      "empty": "No decision concerns you",
+      "emptyBody": "If moderation takes a decision about one of your contents or your account, it shows here with its reasons.",
+      "decidedOn": "Decision of {{date}}",
+      "concerns": "Concerns: {{target}}",
+      "reason": "Reason",
+      "facts": "Statement of reasons",
+      "ground": "Ground",
+      "groundWithReference": "{{ground}}: {{reference}}",
+      "automated": "The case came from an automatic signal. The decision was taken by a person.",
+      "human": "The decision was taken by a person of the moderation team.",
+      "suspensionEnds": "End of the suspension: {{date}}",
+      "appealUntil": "You can appeal until {{date}}.",
+      "notAppealable": "This decision can no longer be appealed.",
+      "appealAction": "Appeal",
+      "appealTitle": "Appeal this decision",
+      "appealDescription": "Explain why the decision seems unjustified to you. Someone other than its author reviews your case.",
+      "appealStatement": "Your arguments",
+      "appealSubmit": "Send the appeal",
+      "appealSending": "Sending",
+      "appealSent": "Your appeal is sent. You will be told the final decision.",
+      "appealCancel": "Cancel",
+      "appealYours": "Your appeal, sent on {{date}}",
+      "appealOutcome": "Final decision of {{date}}",
+      "reportsTitle": "Your reports",
+      "reportsEmpty": "You have reported nothing.",
+      "reportOn": "Reported on {{date}}",
+      "more": "Show more",
+      "unreadable": "Your standing could not be loaded."
+    }
+  },
+  "privacy": {
+    "title": "Personal data",
+    "lede": "Get a copy of your data or delete your account.",
+    "export": {
+      "title": "Export your data",
+      "body": "An archive gathers what Pitchorium knows about you and your files, with one readable file per part of the service.",
+      "request": "Request an archive",
+      "requesting": "Requesting",
+      "requested": "Your request is recorded. You will be notified when the archive is ready.",
+      "nextAt": "A new archive can be requested from {{date}}.",
+      "historyTitle": "Your archives",
+      "requestedOn": "Requested on {{date}}",
+      "readyUntil": "Available until {{date}}",
+      "download": "Download",
+      "downloading": "Preparing the link",
+      "downloadReady": "The download starts. The link expires on {{date}}.",
+      "failed": "The preparation failed. You can request a new archive.",
+      "empty": "You have not requested an archive yet."
+    },
+    "erasure": {
+      "title": "Delete your account",
+      "body": "The deletion becomes final after a grace period, during which you can cancel it.",
+      "whatTitle": "What becomes of each piece of data",
+      "deleted": "Deleted: your account and profile, your publications, comments and reactions, your network, your files, your preferences, your notifications and your translations.",
+      "pseudonymized": "Kept under a pseudonym that can no longer lead to you: your contributions and their amounts, your payout accounts and identity checks, your acceptances of the terms, moderation decisions, projects funded by other members, your missions and your messages, reduced to « Message deleted ».",
+      "legal": "Financial data is kept for our legal obligations (accounting, anti-money laundering). How long it is kept is under legal review.",
+      "blockedTitle": "Your account cannot be deleted for now",
+      "blockers": {
+        "PRIVACY_CAMPAIGN_IN_PROGRESS": "The campaign « {{name}} » is collecting contributions: wait until it closes.",
+        "PRIVACY_SOLE_OWNER": "You are the only owner of the organisation « {{name}} », which has other members: hand over the ownership first."
+      },
+      "blockerActions": {
+        "PRIVACY_CAMPAIGN_IN_PROGRESS": "See the campaign",
+        "PRIVACY_SOLE_OWNER": "Manage the members"
+      },
+      "action": "Delete my account",
+      "confirmTitle": "Delete your account?",
+      "confirmDescription": "The deletion will take place after a grace period, during which you will be able to cancel it. After that, it cannot be undone.",
+      "phrase": "delete my account",
+      "confirm": "Schedule the deletion",
+      "staleTitle": "Sign in again to confirm",
+      "staleBody": "To protect your account, its deletion needs a recent sign-in.",
+      "staleAction": "Sign in again",
+      "scheduledTitle": "Deletion scheduled on {{date}}",
+      "scheduledBody": "Until then, you can cancel it and keep everything.",
+      "reminder": "A reminder will be sent to you on {{date}}.",
+      "reminderSent": "A reminder was sent to you on {{date}}.",
+      "cancel": "Cancel the deletion",
+      "canceling": "Cancelling",
+      "canceled": "The deletion of your account is cancelled.",
+      "scheduled": "The deletion of your account is scheduled.",
+      "running": "Your account is being deleted.",
+      "postponed": "The deletion was postponed: {{reason}}"
+    },
+    "deleted": {
+      "title": "Your account has been deleted",
+      "body": "Your data has been deleted, or kept under a pseudonym where the law requires it. A confirmation email has been sent to you.",
+      "home": "Back to the home page"
+    }
+  },
+  "translation": {
+    "translate": "Translate",
+    "translating": "Translating",
+    "original": "See the original",
+    "translated": "See the translation",
+    "providers": {
+      "deepl": "DeepL",
+      "google": "Google Translate",
+      "simulated": "simulated translation"
     }
   }
 }

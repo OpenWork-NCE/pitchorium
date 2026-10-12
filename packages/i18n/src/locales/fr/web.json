@@ -357,6 +357,15 @@
       },
       "currentPassword": {
         "too_small": "Saisissez votre mot de passe actuel."
+      },
+      "goodFaith": {
+        "invalid_value": "Cochez cette déclaration pour envoyer le signalement."
+      },
+      "reporterEmail": {
+        "invalid_format": "Saisissez une adresse email complète, par exemple nom@exemple.org."
+      },
+      "address": {
+        "invalid_format": "Collez l’adresse complète de la page, qui commence par https://."
       }
     },
     "rules": {
@@ -405,8 +414,8 @@
   },
   "banners": {
     "suspended": {
-      "body": "Votre compte est suspendu : vous pouvez lire, mais ni publier ni écrire. La décision motivée et la voie d’appel vous ont été envoyées par email et dans vos notifications.",
-      "action": "Voir mes notifications"
+      "body": "Votre compte est suspendu : vous pouvez lire, mais ni publier ni contribuer. Consultez la décision et ses motifs, et faites appel si vous la contestez.",
+      "action": "Voir la décision"
     },
     "legal": {
       "body": "Les conditions d’utilisation ou la politique de confidentialité ont changé. Acceptez-les pour continuer à publier et à contribuer.",
@@ -626,7 +635,8 @@
     },
     "updates": {
       "title": "Actualités",
-      "edited": "modifiée"
+      "edited": "modifiée",
+      "reportName": "l’actualité de {{name}}"
     },
     "documents": {
       "title": "Documents",
@@ -2313,7 +2323,9 @@
       "payouts": "Versement et vérification",
       "messaging": "Messagerie",
       "notifications": "Notifications",
-      "calendar": "Calendrier"
+      "calendar": "Calendrier",
+      "personalData": "Données personnelles",
+      "moderation": "Modération"
     },
     "account": {
       "email": {
@@ -4050,7 +4062,8 @@
       "language": "Langue",
       "contact": "Contact : <email>{{address}}</email>",
       "about": "Pitchorium",
-      "tagline": "Afrique · Caraïbes · Diaspora européenne"
+      "tagline": "Afrique · Caraïbes · Diaspora européenne",
+      "report": "Signaler un contenu illégal"
     },
     "legalNames": {
       "terms": "Conditions générales d’utilisation",
@@ -4216,6 +4229,167 @@
       "conversation": "Aperçu d’une conversation dans la messagerie de Pitchorium",
       "notification": "Aperçu d’une notification qui regroupe les réactions à une publication",
       "dashboard": "Aperçu du tableau de bord d’engagement : sommes versées, projets soutenus et heures déclarées"
+    }
+  },
+  "trust": {
+    "report": {
+      "action": "Signaler",
+      "actionNamed": "Signaler : {{name}}",
+      "titles": {
+        "profile": "Signaler ce profil",
+        "organization": "Signaler cette organisation",
+        "post": "Signaler cette publication",
+        "comment": "Signaler ce commentaire",
+        "project": "Signaler ce projet",
+        "project_update": "Signaler cette actualité",
+        "event": "Signaler cet événement",
+        "mission": "Signaler cette mission",
+        "message": "Signaler ce message",
+        "media": "Signaler cette image"
+      },
+      "description": "Dites-nous ce qui ne va pas. La modération examine chaque signalement, et la personne concernée ne sait pas qui l’a fait.",
+      "messageScope": "Seuls ce message et les trois messages qui le précèdent sont transmis à la modération, jamais toute la conversation.",
+      "reason": "Motif",
+      "details": "Précisions",
+      "detailsHint": "Ce qui aide la modération à comprendre la situation.",
+      "submit": "Envoyer le signalement",
+      "sending": "Envoi en cours",
+      "cancel": "Annuler",
+      "loading": "Chargement des motifs",
+      "unreadable": "Les motifs n’ont pas pu être chargés.",
+      "receivedTitle": "Signalement reçu",
+      "received": "Merci. La modération examine votre signalement ; vous serez prévenu de la suite dans vos notifications.",
+      "close": "Fermer"
+    },
+    "notice": {
+      "title": "Signaler un contenu illégal",
+      "lede": "Vous n’avez pas besoin de compte. Donnez l’adresse du contenu et expliquez pourquoi il vous paraît illégal.",
+      "address": "Adresse du contenu",
+      "addressHint": "L’adresse de la page d’un profil, d’une organisation, d’une publication, d’un projet, d’un événement ou d’une mission.",
+      "addressInvalid": "Cette adresse ne désigne pas un contenu de Pitchorium.",
+      "addressNotFound": "Ce contenu est introuvable ou n’est pas public.",
+      "target": "Contenu signalé : {{target}}",
+      "details": "Explication",
+      "detailsHint": "Pourquoi ce contenu vous paraît illégal, et la règle qu’il enfreint si vous la connaissez.",
+      "name": "Votre nom",
+      "email": "Votre adresse email",
+      "emailHint": "Pour recevoir l’accusé de réception et la décision. Sans adresse, vous ne serez pas informé de la suite.",
+      "goodFaith": "Je déclare de bonne foi que les informations de ce signalement sont exactes et complètes.",
+      "submit": "Envoyer le signalement",
+      "sending": "Envoi en cours",
+      "receivedTitle": "Signalement reçu",
+      "received": "Votre signalement a été reçu le {{date}}. Sa référence : {{reference}}.",
+      "receivedEmail": "Un accusé de réception part à l’adresse donnée ; la décision vous y sera envoyée.",
+      "receivedNoEmail": "Sans adresse email, vous ne serez pas informé de la décision.",
+      "another": "Signaler un autre contenu",
+      "member": "Vous êtes membre ? Signalez plutôt depuis le contenu lui-même, avec le bouton « Signaler » : vous serez prévenu de la suite."
+    },
+    "moderation": {
+      "title": "Modération",
+      "lede": "Les décisions de la modération qui vous concernent, leurs motifs, et votre droit de les contester.",
+      "suspendedTitle": "Votre compte est suspendu",
+      "suspendedUntil": "Jusqu’au {{date}}. Vous pouvez lire, faire appel, exporter ou supprimer vos données, mais ni publier ni contribuer.",
+      "suspendedPermanent": "Sans date de fin. Vous pouvez lire, faire appel, exporter ou supprimer vos données, mais ni publier ni contribuer.",
+      "decisionsTitle": "Décisions",
+      "empty": "Aucune décision ne vous concerne",
+      "emptyBody": "Si la modération prend une décision sur l’un de vos contenus ou sur votre compte, elle s’affiche ici avec ses motifs.",
+      "decidedOn": "Décision du {{date}}",
+      "concerns": "Concerne : {{target}}",
+      "reason": "Motif",
+      "facts": "Exposé des motifs",
+      "ground": "Fondement",
+      "groundWithReference": "{{ground}} : {{reference}}",
+      "automated": "Le dossier est né d’un signal automatique. La décision a été prise par une personne.",
+      "human": "La décision a été prise par une personne de l’équipe de modération.",
+      "suspensionEnds": "Fin de la suspension : {{date}}",
+      "appealUntil": "Vous pouvez faire appel jusqu’au {{date}}.",
+      "notAppealable": "Cette décision ne peut plus faire l’objet d’un appel.",
+      "appealAction": "Faire appel",
+      "appealTitle": "Faire appel de cette décision",
+      "appealDescription": "Expliquez pourquoi la décision vous paraît injustifiée. Une autre personne que son auteur réexamine votre dossier.",
+      "appealStatement": "Vos arguments",
+      "appealSubmit": "Envoyer l’appel",
+      "appealSending": "Envoi en cours",
+      "appealSent": "Votre appel est envoyé. Vous serez prévenu de la décision finale.",
+      "appealCancel": "Annuler",
+      "appealYours": "Votre appel, envoyé le {{date}}",
+      "appealOutcome": "Décision finale du {{date}}",
+      "reportsTitle": "Vos signalements",
+      "reportsEmpty": "Vous n’avez rien signalé.",
+      "reportOn": "Signalé le {{date}}",
+      "more": "Afficher plus",
+      "unreadable": "Votre situation n’a pas pu être chargée."
+    }
+  },
+  "privacy": {
+    "title": "Données personnelles",
+    "lede": "Récupérez une copie de vos données ou supprimez votre compte.",
+    "export": {
+      "title": "Exporter vos données",
+      "body": "Une archive rassemble ce que Pitchorium sait de vous et vos fichiers, avec un fichier lisible par partie du service.",
+      "request": "Demander une archive",
+      "requesting": "Demande en cours",
+      "requested": "Votre demande est enregistrée. Vous serez prévenu dans vos notifications quand l’archive sera prête.",
+      "nextAt": "Une nouvelle archive pourra être demandée à partir du {{date}}.",
+      "historyTitle": "Vos archives",
+      "requestedOn": "Demandée le {{date}}",
+      "readyUntil": "Disponible jusqu’au {{date}}",
+      "download": "Télécharger",
+      "downloading": "Préparation du lien",
+      "downloadReady": "Le téléchargement commence. Le lien expire le {{date}}.",
+      "failed": "La préparation a échoué. Vous pouvez demander une nouvelle archive.",
+      "empty": "Vous n’avez pas encore demandé d’archive."
+    },
+    "erasure": {
+      "title": "Supprimer votre compte",
+      "body": "La suppression devient définitive après un délai de grâce, pendant lequel vous pouvez l’annuler.",
+      "whatTitle": "Ce que devient chaque donnée",
+      "deleted": "Supprimés : votre compte et votre profil, vos publications, commentaires et réactions, votre réseau, vos fichiers, vos préférences, vos notifications et vos traductions.",
+      "pseudonymized": "Gardés sous un pseudonyme qui ne permet plus de vous retrouver : vos contributions et leurs montants, vos comptes de versement et vos vérifications d’identité, vos acceptations des conditions, les décisions de modération, les projets financés par d’autres membres, vos missions et vos messages, réduits à « Message supprimé ».",
+      "legal": "Les données financières sont conservées pour nos obligations légales (comptabilité, lutte contre le blanchiment). Leur durée de conservation est en cours de validation juridique.",
+      "blockedTitle": "Votre compte ne peut pas être supprimé pour l’instant",
+      "blockers": {
+        "PRIVACY_CAMPAIGN_IN_PROGRESS": "La campagne « {{name}} » est en financement : attendez sa clôture.",
+        "PRIVACY_SOLE_OWNER": "Vous êtes le seul propriétaire de l’organisation « {{name}} », qui a d’autres membres : transférez d’abord la propriété."
+      },
+      "blockerActions": {
+        "PRIVACY_CAMPAIGN_IN_PROGRESS": "Voir la campagne",
+        "PRIVACY_SOLE_OWNER": "Gérer les membres"
+      },
+      "action": "Supprimer mon compte",
+      "confirmTitle": "Supprimer votre compte ?",
+      "confirmDescription": "La suppression aura lieu après un délai de grâce, pendant lequel vous pourrez l’annuler. Ensuite, elle ne pourra pas être défaite.",
+      "phrase": "supprimer mon compte",
+      "confirm": "Programmer la suppression",
+      "staleTitle": "Reconnectez-vous pour confirmer",
+      "staleBody": "Pour protéger votre compte, sa suppression demande une connexion récente.",
+      "staleAction": "Se reconnecter",
+      "scheduledTitle": "Suppression programmée le {{date}}",
+      "scheduledBody": "Jusqu’à cette date, vous pouvez l’annuler et tout retrouver.",
+      "reminder": "Un rappel vous sera envoyé le {{date}}.",
+      "reminderSent": "Un rappel vous a été envoyé le {{date}}.",
+      "cancel": "Annuler la suppression",
+      "canceling": "Annulation en cours",
+      "canceled": "La suppression de votre compte est annulée.",
+      "scheduled": "La suppression de votre compte est programmée.",
+      "running": "La suppression de votre compte est en cours.",
+      "postponed": "La suppression a été reportée : {{reason}}"
+    },
+    "deleted": {
+      "title": "Votre compte a été supprimé",
+      "body": "Vos données ont été supprimées, ou gardées sous un pseudonyme quand la loi l’exige. Un email de confirmation vous a été envoyé.",
+      "home": "Revenir à l’accueil"
+    }
+  },
+  "translation": {
+    "translate": "Traduire",
+    "translating": "Traduction en cours",
+    "original": "Voir l’original",
+    "translated": "Voir la traduction",
+    "providers": {
+      "deepl": "DeepL",
+      "google": "Google Traduction",
+      "simulated": "traduction simulée"
     }
   }
 }
