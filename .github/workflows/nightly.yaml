@@ -142,6 +142,33 @@ jobs:
           include-hidden-files: true
           if-no-files-found: ignore
 
+  # Every screen (e2e/audit): axe in both themes, the layout guard in both sizes, English on a
+  # phone, then the pseudo-locale (texts 40 % longer and accented, codes of the api refused).
+  audit:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: ./.github/actions/setup
+      - uses: actions/download-artifact@v8.0.2
+        with:
+          name: build
+      - run: pnpm --filter @pitchorium/web audit:screens
+        env:
+          AUDIT_SKIP_BUILD: '1'
+          AUDIT_CAPTURES: .audit/captures
+          AUDIT_REPORT: .audit/report
+      - if: always()
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: audit
+          path: |
+            apps/web/.audit
+            apps/web/playwright-report
+          include-hidden-files: true
+          if-no-files-found: ignore
+
   storybook:
     needs: build
     runs-on: ubuntu-latest
@@ -219,6 +246,7 @@ jobs:
         build,
         live-journeys,
         live-external,
+        audit,
         lighthouse,
         storybook,
         provider-sandboxes,

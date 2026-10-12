@@ -34,6 +34,8 @@
         "lighthouserc.cjs",
         "playwright.review.config.ts",
         "playwright.marketing.config.ts",
+        "playwright.audit.config.ts",
+        "e2e/audit/*.audit.ts",
         "e2e/review/*.review.ts",
         "e2e/marketing/*.capture.ts",
         "src/components/ui/index.ts",

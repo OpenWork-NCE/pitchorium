@@ -472,6 +472,14 @@ export function projectRoutes({ origin, accounts, sessionOf, problem, state }) {
         ? problem(409, 'IMPACT_METHODOLOGY_UNAVAILABLE')
         : { status: 200, body: METHODOLOGY };
     }
+    // The self-assessments of the entrepreneur facet of the member (the page « Mon impact »).
+    if (method === 'GET' && path === '/v1/me/impact/assessments') {
+      if (!sessionOf(request)) return problem(401, 'UNAUTHENTICATED');
+      return {
+        status: 200,
+        body: { items: [{ ...assessment(72), subjectType: 'entrepreneur_facet' }] },
+      };
+    }
     // A test withdraws the methodology (no published version, ADR 0036).
     if (method === 'POST' && path === '/__test/methodology') {
       state().methodologyWithdrawn = true;

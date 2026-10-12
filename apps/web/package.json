@@ -23,6 +23,7 @@
     "test:e2e:native": "playwright test",
     "test:e2e:live": "bash scripts/e2e-live.sh",
     "test:e2e:live:run": "playwright test -c playwright.live.config.ts",
+    "audit:screens": "sh scripts/audit-screens.sh",
     "check:bundles": "node scripts/check-bundles.mjs",
     "lighthouse": "sh scripts/lighthouse.sh",
     "storybook": "storybook dev --port 6006",

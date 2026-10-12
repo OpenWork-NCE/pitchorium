@@ -2,16 +2,8 @@
 // variables as playwright.config.ts. Build first: scripts/lighthouse.sh does both. Stops only the
 // two children it started.
 import { spawn } from 'node:child_process';
+import { E2E_ENV } from './e2e-env.mjs';
 import { assertPortFree } from './ports.mjs';
-
-export const E2E_ENV = {
-  NEXT_DIST_DIR: '.next-e2e',
-  NEXT_PUBLIC_SITE_URL: 'http://localhost:3201',
-  NEXT_PUBLIC_API_URL: 'http://localhost:3299',
-  NEXT_PUBLIC_CDN_URL: 'http://localhost:3299/files',
-  NEXT_PUBLIC_VERCEL_ANALYTICS: 'false',
-  NEXT_PUBLIC_SENTRY_DSN: '',
-};
 
 try {
   await Promise.all([assertPortFree(3201), assertPortFree(3299)]);

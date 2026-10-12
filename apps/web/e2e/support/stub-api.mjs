@@ -383,6 +383,33 @@ function currentUser(email, request) {
   };
 }
 
+/** The open sessions of an account: the one of the test first, then a phone. */
+function sessionsOf(email) {
+  const userId = currentUser(email).user.id;
+  return [
+    {
+      id: '0192f4a0-1200-7000-8000-000000000001',
+      token: email,
+      userId,
+      userAgent:
+        'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36',
+      createdAt: stubIso(-3 * 86_400_000),
+      updatedAt: stubIso(-60_000),
+      expiresAt: stubIso(27 * 86_400_000),
+    },
+    {
+      id: '0192f4a0-1200-7000-8000-000000000002',
+      token: `${email}-phone`,
+      userId,
+      userAgent:
+        'Mozilla/5.0 (iPhone; CPU iPhone OS 18_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.6 Mobile/15E148 Safari/604.1',
+      createdAt: stubIso(-12 * 86_400_000),
+      updatedAt: stubIso(-2 * 86_400_000),
+      expiresAt: stubIso(18 * 86_400_000),
+    },
+  ];
+}
+
 function sessionOf(request) {
   // Lighthouse cannot set a cookie: it sends the session in a header of its own as well.
   const header = request.headers['x-stub-session'];
@@ -449,6 +476,34 @@ const routes = {
     body: { success: true },
     headers: { 'set-cookie': `${SESSION_COOKIE}=; Path=/; Max-Age=0` },
   }),
+  // The sessions and the sign-in methods of the security settings (Better Auth): this device,
+  // a phone, and a password with Google.
+  'GET /v1/auth/get-session': (request) => {
+    const email = sessionOf(request);
+    if (!email) return { status: 200, body: null };
+    return { status: 200, body: { session: sessionsOf(email)[0], user: currentUser(email).user } };
+  },
+  'GET /v1/auth/list-sessions': (request) => {
+    const email = sessionOf(request);
+    return email ? { status: 200, body: sessionsOf(email) } : problem(401, 'UNAUTHENTICATED');
+  },
+  'GET /v1/auth/list-accounts': (request) => {
+    const email = sessionOf(request);
+    if (!email) return problem(401, 'UNAUTHENTICATED');
+    const userId = currentUser(email).user.id;
+    return {
+      status: 200,
+      body: ['credential', 'google'].map((providerId, index) => ({
+        id: `0192f4a0-1100-7000-8000-00000000000${index + 1}`,
+        providerId,
+        accountId: providerId === 'credential' ? userId : '104857600123456789',
+        userId,
+        scopes: [],
+        createdAt: '2026-09-01T09:00:00.000Z',
+        updatedAt: '2026-09-01T09:00:00.000Z',
+      })),
+    };
+  },
   'POST /v1/auth/send-verification-email': (request) =>
     sessionOf(request) ? { status: 200, body: { status: true } } : problem(401, 'UNAUTHENTICATED'),
   // Lists of the forms of a profile and an organization: a few entries of each (labels: i18n).
@@ -469,6 +524,14 @@ const routes = {
           code: 'agriculture_forestry_fishing',
           labelKey: 'sectors.agriculture_forestry_fishing',
           isicSection: 'A',
+        },
+        // The other sectors the data of the stub uses (organisations, events, missions).
+        { code: 'education', labelKey: 'sectors.education', isicSection: 'P' },
+        { code: 'finance_insurance', labelKey: 'sectors.finance_insurance', isicSection: 'K' },
+        {
+          code: 'information_communication',
+          labelKey: 'sectors.information_communication',
+          isicSection: 'J',
         },
       ],
       stages: ['idea', 'prototype'].map((code) => ({ code, labelKey: `stages.${code}` })),

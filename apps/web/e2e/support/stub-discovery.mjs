@@ -502,7 +502,13 @@ export function discoveryRoutes({ origin, accounts, sessionOf, problem, readJson
     const key = handle?.split('-')[0];
     const registered = key ? registrations.includes(key) : false;
     const position = key ? waitlist.indexOf(key) : -1;
-    const manager = event.organizer.kind === 'member' && event.organizer.member.handle === handle;
+    // Its organizer manages an event, or the administrators of the organizing organisation
+    // (Aïssatou Ba for the Fondation Teranga in the stub).
+    const manager =
+      (event.organizer.kind === 'member' && event.organizer.member.handle === handle) ||
+      (event.organizer.kind === 'organization' &&
+        event.organizer.organization.slug === TERANGA.slug &&
+        handle === AISSATOU.handle);
     return {
       ...view,
       onlineUrl: registered || manager ? event.onlineUrl : null,
