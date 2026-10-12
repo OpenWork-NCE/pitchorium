@@ -7,6 +7,7 @@ import { Heading } from '@/components/ui';
 import { FeedComposer, FeedStream } from '@/features/content';
 import { SuggestionsList } from '@/features/discovery';
 import { ProfileCompletion } from '@/features/identity';
+import { SuspendedState } from '@/features/trust';
 import { asLocale } from '@/i18n/routing';
 import { configureServerApi } from '@/lib/api/server';
 import { getCurrentMember } from '@/lib/auth/session';
@@ -53,11 +54,18 @@ export default async function Page({ params }: PageProps<'/[locale]/feed'>) {
         <Heading level={1} size="page" className="sr-only">
           {t('nav.home')}
         </Heading>
-        <FeedComposer />
-        <div className="lg:hidden">
-          {member ? <ProfileCompletion member={member} variant="module" /> : null}
-        </div>
-        <FeedStream initialPage={feed} suggestions={suggestions} />
+        {member?.trust.suspended ? (
+          // The api refuses the feed to a suspended account (ADR 0166).
+          <SuspendedState />
+        ) : (
+          <>
+            <FeedComposer />
+            <div className="lg:hidden">
+              {member ? <ProfileCompletion member={member} variant="module" /> : null}
+            </div>
+            <FeedStream initialPage={feed} suggestions={suggestions} />
+          </>
+        )}
       </div>
     </ThreeColumnLayout>
   );

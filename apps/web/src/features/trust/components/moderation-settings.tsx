@@ -37,7 +37,8 @@ const appealSchema = () =>
  * « Modération » (§13): the active suspension, then each decision that concerns the member with
  * its statement of reasons (facts, ground, automated detection, end of a suspension) and the
  * redress: one appeal per decision until the date the api gives, its state, and the final
- * reasoned decision. Then the reports the member made and their outcome.
+ * reasoned decision. Then the reports the member made and their outcome, when the api lets the
+ * member read them (not while suspended).
  */
 export function ModerationSettings({
   standing,
@@ -45,7 +46,8 @@ export function ModerationSettings({
   now,
 }: {
   standing: ModerationStanding;
-  reports: CursorPage<Report>;
+  /** Null when the api refuses the list (a suspended account). */
+  reports: CursorPage<Report> | null;
   /** The time of the reading, for the decisions still open to an appeal. */
   now: string;
 }) {
@@ -89,7 +91,7 @@ export function ModerationSettings({
           </ul>
         )}
       </section>
-      <ReportsSection initial={reports} date={date} />
+      {reports ? <ReportsSection initial={reports} date={date} /> : null}
     </div>
   );
 }

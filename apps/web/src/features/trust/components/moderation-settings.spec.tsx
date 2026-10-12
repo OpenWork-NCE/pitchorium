@@ -50,6 +50,28 @@ describe('the moderation of the member', () => {
     ).toBeTruthy();
   });
 
+  it('shows the decisions of a suspended account without the reports the api does not list', () => {
+    renderWithProviders(
+      <ModerationSettings
+        standing={{
+          suspension: {
+            id: '0192f4a0-8000-7000-8000-000000000301',
+            userId: '0192f4a0-8000-7000-8000-000000000001',
+            decisionId: decision().id,
+            startsAt: '2026-10-10T10:00:00.000Z',
+            endsAt: '2026-10-17T10:00:00.000Z',
+            liftedAt: null,
+          },
+          decisions: [decision({ kind: 'suspend' })],
+        }}
+        reports={null}
+        now={NOW}
+      />,
+    );
+    expect(screen.getByText('Votre compte est suspendu')).toBeTruthy();
+    expect(screen.queryByRole('heading', { name: 'Vos signalements' })).toBeNull();
+  });
+
   it('sends one appeal per decision, then shows it in place of the form', async () => {
     appeal.mockResolvedValue({
       id: '0192f4a0-8000-7000-8000-000000000401',

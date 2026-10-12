@@ -215,6 +215,8 @@ export function trustRoutes({ origin, accounts, sessionOf, problem, readJson, st
     }
     if (method === 'GET' && path === '/v1/me/reports') {
       if (!email) return problem(401, 'UNAUTHENTICATED');
+      // As the api: reading the reports is not open to a suspended account.
+      if (standingOf(handle).suspension) return problem(403, 'ACCESS_ACCOUNT_SUSPENDED');
       const items = own()
         .reports.filter((report) => report.key.startsWith(`${email}:`))
         .map(({ key: _key, ...view }) => view);

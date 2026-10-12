@@ -414,7 +414,7 @@
   },
   "banners": {
     "suspended": {
-      "body": "Your account is suspended: you can read, but neither publish nor contribute. Read the decision and its reasons, and appeal if you contest it.",
+      "body": "Your account is suspended. Read the decision and its reasons, and appeal if you disagree.",
       "action": "See the decision"
     },
     "legal": {
@@ -4288,8 +4288,8 @@
       "title": "Moderation",
       "lede": "The moderation decisions that concern you, their reasons, and your right to contest them.",
       "suspendedTitle": "Your account is suspended",
-      "suspendedUntil": "Until {{date}}. You can read, appeal, export or delete your data, but neither publish nor contribute.",
-      "suspendedPermanent": "With no end date. You can read, appeal, export or delete your data, but neither publish nor contribute.",
+      "suspendedUntil": "Until {{date}}. Until then, only this page, your notifications, your settings and your personal data stay open.",
+      "suspendedPermanent": "With no end date. Only this page, your notifications, your settings and your personal data stay open.",
       "decisionsTitle": "Decisions",
       "empty": "No decision concerns you",
       "emptyBody": "If moderation takes a decision about one of your contents or your account, it shows here with its reasons.",
@@ -4319,6 +4319,11 @@
       "reportOn": "Reported on {{date}}",
       "more": "Show more",
       "unreadable": "Your standing could not be loaded."
+    },
+    "suspended": {
+      "title": "Your account is suspended",
+      "body": "The feed, the network and the projects are closed during the suspension. You can read the decision, appeal, export or delete your data.",
+      "action": "See the decision"
     }
   },
   "privacy": {

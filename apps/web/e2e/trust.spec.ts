@@ -6,7 +6,7 @@ import { allowConsole, API_ORIGIN, expect, signIn, stub, test } from './support/
  * The reports, the moderation, the personal data and the translation (PROMPT FRONT 8B) against the
  * stub api (e2e/support/stub-trust.mjs): a publication reported from its menu, the notice of
  * illegal content without an account, the decisions of a suspended member and their appeal, the
- * read-only member space of a suspended account, the export and its download, the deletion of the
+ * member space of a suspended account (the feed closed), the export and its download, the deletion of the
  * account with its blocker, its phrase, a sign-in that is too old and its grace period, the
  * translation in place and the way back to the original, and axe in both themes.
  */
@@ -80,7 +80,7 @@ test.describe('reports and moderation', () => {
     await page.goto('/fr/feed');
     // The page answers once hydrated.
     await page.waitForLoadState('networkidle');
-    await page.getByRole('link', { name: 'Voir la décision' }).click();
+    await page.getByRole('link', { name: 'Voir la décision' }).first().click();
     await expect(page).toHaveURL(/\/fr\/settings\/moderation$/);
     await expect(page.getByText('Votre compte est suspendu', { exact: true })).toBeVisible();
     await expect(page.getByText(/transfert direct, hors de la plateforme/)).toBeVisible();
@@ -94,17 +94,19 @@ test.describe('reports and moderation', () => {
     await expect(page.getByText(/Votre appel, envoyé le/).first()).toBeVisible();
   });
 
-  test('a suspended member reads, but neither publishes nor writes, and keeps their data', async ({
+  test('a suspended member finds the feed closed, and keeps the decision and their data', async ({
     page,
   }) => {
     await signIn(page, SUSPENDED);
     await page.goto('/fr/feed');
     // The page answers once hydrated.
     await page.waitForLoadState('networkidle');
-    await expect(page.getByText(/Votre compte est suspendu : vous pouvez lire/)).toBeVisible();
-    const opener = page.getByRole('button', { name: /Commencer une publication/ });
-    await expect(opener).toHaveAttribute('aria-disabled', 'true');
-    await expect(page.getByText('Votre compte est suspendu.').first()).toBeAttached();
+    await expect(
+      page.getByText(/^Votre compte est suspendu\. Consultez la décision/),
+    ).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Votre compte est suspendu' })).toBeVisible();
+    await expect(page.getByRole('button', { name: /Commencer une publication/ })).toHaveCount(0);
+    await expect(page.getByRole('button', { name: 'Publier', exact: true })).toBeDisabled();
     await page.goto('/fr/settings/personal-data');
     // The page answers once hydrated.
     await page.waitForLoadState('networkidle');

@@ -195,7 +195,7 @@ test.describe('member shell', () => {
 
   test('says a suspension and the second factor a moderator needs', async ({ browser }) => {
     for (const [email, text] of [
-      [MOUSSA, /Votre compte est suspendu/],
+      [MOUSSA, /^Votre compte est suspendu\. Consultez la décision/],
       [CLAUDINE, /Activez la double authentification/],
     ] as const) {
       const context = await browser.newContext();

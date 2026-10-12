@@ -414,7 +414,7 @@
   },
   "banners": {
     "suspended": {
-      "body": "Votre compte est suspendu : vous pouvez lire, mais ni publier ni contribuer. Consultez la décision et ses motifs, et faites appel si vous la contestez.",
+      "body": "Votre compte est suspendu. Consultez la décision et ses motifs, et faites appel si vous la contestez.",
       "action": "Voir la décision"
     },
     "legal": {
@@ -4288,8 +4288,8 @@
       "title": "Modération",
       "lede": "Les décisions de la modération qui vous concernent, leurs motifs, et votre droit de les contester.",
       "suspendedTitle": "Votre compte est suspendu",
-      "suspendedUntil": "Jusqu’au {{date}}. Vous pouvez lire, faire appel, exporter ou supprimer vos données, mais ni publier ni contribuer.",
-      "suspendedPermanent": "Sans date de fin. Vous pouvez lire, faire appel, exporter ou supprimer vos données, mais ni publier ni contribuer.",
+      "suspendedUntil": "Jusqu’au {{date}}. D’ici là, seules restent ouvertes cette page, vos notifications, vos paramètres et vos données personnelles.",
+      "suspendedPermanent": "Sans date de fin. Seules restent ouvertes cette page, vos notifications, vos paramètres et vos données personnelles.",
       "decisionsTitle": "Décisions",
       "empty": "Aucune décision ne vous concerne",
       "emptyBody": "Si la modération prend une décision sur l’un de vos contenus ou sur votre compte, elle s’affiche ici avec ses motifs.",
@@ -4319,6 +4319,11 @@
       "reportOn": "Signalé le {{date}}",
       "more": "Afficher plus",
       "unreadable": "Votre situation n’a pas pu être chargée."
+    },
+    "suspended": {
+      "title": "Votre compte est suspendu",
+      "body": "Le fil, le réseau et les projets sont fermés pendant la suspension. Vous pouvez lire la décision, faire appel, exporter ou supprimer vos données.",
+      "action": "Voir la décision"
     }
   },
   "privacy": {
