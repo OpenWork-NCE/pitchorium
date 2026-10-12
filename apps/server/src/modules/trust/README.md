@@ -62,7 +62,7 @@ L'activité comptée (table `activity`, une ligne par événement source) est pu
 
 ## Routes
 
-- `POST /v1/reports` (`trust.report.create`), `GET /v1/me/reports` (`trust.report.read`), `POST /v1/public/reports` (public, limité).
+- `GET /v1/reports/reasons` (public : motifs dans l'ordre où les proposer, avec leur clé `reference.reportReasons`), `POST /v1/reports` (`trust.report.create`), `GET /v1/me/reports` (`trust.report.read`), `POST /v1/public/reports` (public, limité).
 - `GET /v1/me/moderation`, `GET /v1/me/moderation/decisions` (`trust.standing.read`), `POST /v1/me/moderation/decisions/{decisionId}/appeal` (`trust.decision.appeal`, membre concerné).
 - `GET /v1/admin/moderation/cases`, `GET /v1/admin/moderation/cases/{caseId}`, `GET /v1/admin/moderation/appeals` (`trust.moderation.read`) ; `POST /v1/admin/moderation/cases/{caseId}/assignment` (`trust.moderation.assign`) ; `POST /v1/admin/moderation/cases/{caseId}/decisions` (`trust.moderation.decide`) ; `POST /v1/admin/moderation/appeals/{appealId}/resolution` (`trust.appeal.resolve`) ; `POST /v1/admin/moderation/suspensions/{suspensionId}/lift` (`trust.suspension.lift`) ; `POST /v1/admin/moderation/projects/{projectId}/refunds` (`trust.project.refund`) ; `GET /v1/admin/moderation/transparency` (`trust.transparency.read`).
 

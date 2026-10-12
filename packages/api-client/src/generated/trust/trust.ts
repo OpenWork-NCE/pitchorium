@@ -22,6 +22,7 @@ import type {
   ProblemDetails,
   ReportDtoOutput,
   ReportPageDtoOutput,
+  ReportReasonListDtoOutput,
   ReportReceiptDtoOutput,
   ReportsControllerMineParams,
   StandingControllerDecisionsParams,
@@ -31,6 +32,59 @@ import { apiFetch } from '../../http/fetcher';
 import type { ErrorType } from '../../http/fetcher';
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
+
+export const getReportsControllerReasonsUrl = () => {
+  return `/v1/reports/reasons`;
+};
+
+/**
+ * Public: no session needed.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Reasons
+ */
+export const reportsControllerReasons = async (
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<ReportReasonListDtoOutput> => {
+  return apiFetch<ReportReasonListDtoOutput>(getReportsControllerReasonsUrl(), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getReportsControllerReasonsQueryKey = () => {
+  return [`/v1/reports/reasons`] as const;
+};
+
+export const getReportsControllerReasonsQueryOptions = <
+  TData = Awaited<ReturnType<typeof reportsControllerReasons>>,
+  TError = ErrorType<ProblemDetails>,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<Awaited<ReturnType<typeof reportsControllerReasons>>, TError, TData>
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getReportsControllerReasonsQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof reportsControllerReasons>>> = ({
+    signal,
+  }) => reportsControllerReasons({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof reportsControllerReasons>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ReportsControllerReasonsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof reportsControllerReasons>>
+>;
+
+export type ReportsControllerReasonsQueryError = ErrorType<ProblemDetails>;
 
 export const getReportsControllerReportUrl = () => {
   return `/v1/reports`;

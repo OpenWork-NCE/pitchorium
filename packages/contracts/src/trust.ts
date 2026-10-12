@@ -87,6 +87,14 @@ export const appealOutcomeSchema = z.enum(APPEAL_OUTCOMES);
 
 const details = z.string().trim().min(1).max(REPORT_DETAILS_MAX_LENGTH);
 
+/**
+ * The reasons a member chooses from, in the order to offer them, each with its label key in the
+ * `reference` namespace: the interface lists what the api gives.
+ */
+export const reportReasonListSchema = z.object({
+  items: z.array(z.object({ code: reportReasonSchema, labelKey: z.string() })),
+});
+
 /** Identifier of the target; for a profile, its handle (member ids are never exposed). */
 export const reportTargetIdSchema = z.string().trim().min(1).max(64);
 
@@ -368,6 +376,7 @@ export type AppealOutcome = z.infer<typeof appealOutcomeSchema>;
 export type CreateReportRequest = z.infer<typeof createReportRequestSchema>;
 export type AnonymousReportRequest = z.infer<typeof anonymousReportRequestSchema>;
 export type Report = z.infer<typeof reportSchema>;
+export type ReportReasonList = z.infer<typeof reportReasonListSchema>;
 export type ReportReceipt = z.infer<typeof reportReceiptSchema>;
 export type ReportedMessageContext = z.infer<typeof reportedMessageContextSchema>;
 export type ModerationReport = z.infer<typeof moderationReportSchema>;

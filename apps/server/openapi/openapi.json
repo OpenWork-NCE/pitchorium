@@ -33037,6 +33037,64 @@
         "x-access": "public"
       }
     },
+    "/v1/reports/reasons": {
+      "get": {
+        "operationId": "ReportsController_reasons",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportReasonListDto_Output"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error (RFC 9457 problem details)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "RATE_LIMITED": {
+                    "$ref": "#/components/examples/RATE_LIMITED"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "trust"
+        ],
+        "summary": "Reasons",
+        "description": "Public: no session needed.\n\nErrors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.",
+        "x-error-codes": [
+          "RATE_LIMITED",
+          "TRUST_TARGET_NOT_FOUND",
+          "TRUST_SELF_REPORT",
+          "TRUST_REPORT_DUPLICATE",
+          "TRUST_CASE_NOT_FOUND",
+          "TRUST_CASE_RESOLVED",
+          "TRUST_DECISION_NOT_APPLICABLE",
+          "TRUST_ADMIN_REQUIRED",
+          "TRUST_ASSIGNEE_NOT_MODERATOR",
+          "TRUST_DECISION_NOT_FOUND",
+          "TRUST_NOT_APPEALABLE",
+          "TRUST_APPEAL_EXISTS",
+          "TRUST_APPEAL_NOT_FOUND",
+          "TRUST_APPEAL_RESOLVED",
+          "TRUST_SAME_MODERATOR",
+          "TRUST_SUSPENSION_NOT_FOUND",
+          "TRUST_PROJECT_NOT_FROZEN"
+        ],
+        "x-access": "public"
+      }
+    },
     "/v1/reports": {
       "post": {
         "operationId": "ReportsController_report",
@@ -71284,6 +71342,43 @@
             ]
           }
         }
+      },
+      "ReportReasonListDto_Output": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "enum": [
+                    "spam",
+                    "harassment",
+                    "fraud",
+                    "illegal_content",
+                    "misleading_information",
+                    "intellectual_property",
+                    "other"
+                  ]
+                },
+                "labelKey": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "labelKey"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "additionalProperties": false
       },
       "CreateReportDto": {
         "type": "object",

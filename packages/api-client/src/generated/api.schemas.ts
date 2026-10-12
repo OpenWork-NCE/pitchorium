@@ -15166,6 +15166,28 @@ export interface ResubscribeDto {
   emailDigest?: ResubscribeDtoEmailDigest;
 }
 
+export type ReportReasonListDtoOutputItemsItemCode =
+  (typeof ReportReasonListDtoOutputItemsItemCode)[keyof typeof ReportReasonListDtoOutputItemsItemCode];
+
+export const ReportReasonListDtoOutputItemsItemCode = {
+  spam: 'spam',
+  harassment: 'harassment',
+  fraud: 'fraud',
+  illegal_content: 'illegal_content',
+  misleading_information: 'misleading_information',
+  intellectual_property: 'intellectual_property',
+  other: 'other',
+} as const;
+
+export type ReportReasonListDtoOutputItemsItem = {
+  code: ReportReasonListDtoOutputItemsItemCode;
+  labelKey: string;
+};
+
+export interface ReportReasonListDtoOutput {
+  items: ReportReasonListDtoOutputItemsItem[];
+}
+
 export type CreateReportDtoTargetType =
   (typeof CreateReportDtoTargetType)[keyof typeof CreateReportDtoTargetType];
 

@@ -31,12 +31,14 @@ import {
   StandingControllerAppealMutationVariables,
   getReportsControllerMineQueryOptions,
   getReportsControllerNoticeMutationOptions,
+  getReportsControllerReasonsQueryOptions,
   getReportsControllerReportMutationOptions,
   getStandingControllerAppealMutationOptions,
   getStandingControllerDecisionsQueryOptions,
   getStandingControllerReadQueryOptions,
   reportsControllerMine,
   reportsControllerNotice,
+  reportsControllerReasons,
   reportsControllerReport,
   standingControllerAppeal,
   standingControllerDecisions,
@@ -59,6 +61,86 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   }
   return result;
 };
+
+export function useReportsControllerReasons<
+  TData = Awaited<ReturnType<typeof reportsControllerReasons>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof reportsControllerReasons>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof reportsControllerReasons>>,
+          TError,
+          Awaited<ReturnType<typeof reportsControllerReasons>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useReportsControllerReasons<
+  TData = Awaited<ReturnType<typeof reportsControllerReasons>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof reportsControllerReasons>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof reportsControllerReasons>>,
+          TError,
+          Awaited<ReturnType<typeof reportsControllerReasons>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useReportsControllerReasons<
+  TData = Awaited<ReturnType<typeof reportsControllerReasons>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof reportsControllerReasons>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+/**
+ * @summary Reasons
+ */
+
+export function useReportsControllerReasons<
+  TData = Awaited<ReturnType<typeof reportsControllerReasons>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof reportsControllerReasons>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getReportsControllerReasonsQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
 
 /**
  * @summary Report

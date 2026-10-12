@@ -69,6 +69,8 @@ const PUBLIC_ROUTES = [
   'POST /v1/notifications/resubscribe',
   // Notices of illegal content from anyone (DSA article 16), rate limited.
   'POST /v1/public/reports',
+  // The reasons of a report, the same for every reader (the dialog and the notice).
+  'GET /v1/reports/reasons',
   // What an invitation received by email invites to: a read, the token in the body rather than
   // in an address, never the invited address (organizations README).
   'POST /v1/public/organization-invitations/preview',

@@ -2,6 +2,7 @@ import { randomUUID } from 'node:crypto';
 import type { NestExpressApplication } from '@nestjs/platform-express';
 import type { TestingModule } from '@nestjs/testing';
 import type {
+  ReportReasonList,
   ModerationCase,
   ModerationCaseDetail,
   ModerationDecisionDetail,
@@ -81,6 +82,13 @@ describe('trust', () => {
     await grantRoleWith2fa(moderator, 'moderator');
     await grantRoleWith2fa(reviewer, 'moderator');
     await grantRoleWith2fa(admin, 'admin');
+  });
+
+  it('lists the reasons of a report with their labels, to anyone', async () => {
+    const { body } = await request(app.getHttpServer()).get('/v1/reports/reasons').expect(200);
+    const { items } = body as ReportReasonList;
+    expect(items).toContainEqual({ code: 'harassment', labelKey: 'reportReasons.harassment' });
+    expect(items.at(-1)).toEqual({ code: 'other', labelKey: 'reportReasons.other' });
   });
 
   it('acknowledges a notice without an account and a member report, one case per target', async () => {

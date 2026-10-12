@@ -7,6 +7,9 @@ import {
   type CursorPage,
   cursorPageQuerySchema,
   type Report,
+  type ReportReasonList,
+  reportReasonListSchema,
+  REPORT_REASONS,
   type ReportReceipt,
   reportPageSchema,
   reportReceiptSchema,
@@ -28,6 +31,7 @@ class ReportDto extends createZodDto(reportSchema) {}
 class ReportPageDto extends createZodDto(reportPageSchema) {}
 class ReportReceiptDto extends createZodDto(reportReceiptSchema) {}
 class PageQueryDto extends createZodDto(cursorPageQuerySchema) {}
+class ReportReasonListDto extends createZodDto(reportReasonListSchema) {}
 
 /** Notices without an account per client address and hour (provisional). */
 export const ANONYMOUS_REPORTS_PER_HOUR = 5;
@@ -43,6 +47,17 @@ export class ReportsController {
     private readonly reports: ReportsService,
     private readonly turnstile: TurnstileVerifier,
   ) {}
+
+  /** The reasons of a report, in the order to offer them (public: no data of anyone). */
+  @Get('reports/reasons')
+  @Public()
+  @ZodSerializerDto(ReportReasonListDto)
+  @ApiOkResponse({ type: ReportReasonListDto.Output })
+  reasons(): ReportReasonList {
+    return {
+      items: REPORT_REASONS.map((code) => ({ code, labelKey: `reportReasons.${code}` })),
+    };
+  }
 
   /** A member reports a target once while its case is open; a profile by its handle. */
   @Post('reports')
