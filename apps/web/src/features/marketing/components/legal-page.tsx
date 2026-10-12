@@ -1,5 +1,6 @@
 import { FileClock } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+import type { ReactNode } from 'react';
 import { Container } from '@/components/layout/container';
 import { Callout, Heading, Kicker, Text } from '@/components/ui';
 import type { MarkdownDocument } from '../lib/markdown';
@@ -14,9 +15,12 @@ import { MarkdownBlocks } from './markdown-blocks';
 export function LegalPage({
   document,
   versions,
+  action,
 }: {
   document: MarkdownDocument;
   versions: LegalVersions | null;
+  /** What the reader can do from this page (the notice form of « Signalement »), under its title. */
+  action?: ReactNode;
 }) {
   const t = useTranslations('web.marketing.legal');
   const version = versionShown(document.meta.version, versions);
@@ -38,6 +42,7 @@ export function LegalPage({
             <span data-legal-pending="">{t('pendingBody')}</span>
           </Callout>
         ) : null}
+        {action ? <div className="mt-8">{action}</div> : null}
         <div className="text-base/7">
           <MarkdownBlocks blocks={document.blocks} />
         </div>

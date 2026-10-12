@@ -77,6 +77,11 @@ export async function SiteFooter({
                 </Link>
               </li>
             ))}
+            <li>
+              <Link className={link} href={routes.report}>
+                {t('footer.report')}
+              </Link>
+            </li>
           </ul>
         </nav>
       </Container>
