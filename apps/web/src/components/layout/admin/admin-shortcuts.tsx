@@ -31,6 +31,12 @@ export function AdminShortcuts() {
     run: go(routes.adminModeration, stateOf('trust.moderation.read').visible),
   });
   useShortcut({
+    keys: 'g a',
+    label: t('appeals'),
+    group,
+    run: go(routes.adminAppeals, stateOf('trust.moderation.read').visible),
+  });
+  useShortcut({
     keys: 'g u',
     label: t('members'),
     group,

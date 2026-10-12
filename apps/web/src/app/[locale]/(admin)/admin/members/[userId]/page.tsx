@@ -5,6 +5,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { AdminPage } from '@/components/layout/admin/admin-page';
 import * as routes from '@/config/paths';
 import { MemberFile } from '@/features/admin';
+import { MemberModeration } from '@/features/trust';
 import { asLocale } from '@/i18n/routing';
 import { configureServerApi } from '@/lib/api/server';
 
@@ -35,7 +36,16 @@ export default async function Page({ params }: PageProps<'/[locale]/admin/member
       title={file.name}
       audited
     >
-      <MemberFile file={file} moderation={null} />
+      <MemberFile
+        file={file}
+        moderation={
+          <MemberModeration
+            userId={file.userId}
+            name={file.name}
+            suspensionId={file.suspension?.id ?? null}
+          />
+        }
+      />
     </AdminPage>
   );
 }

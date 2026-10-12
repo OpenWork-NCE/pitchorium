@@ -151,7 +151,7 @@ sequenceDiagram
 ## Console d'administration (PROMPT FRONT 9A)
 
 - Socle (ADR 0172, feature `admin`) : le layout de `(admin)` vérifie le rôle et le deuxième facteur (`GET /v1/me/prerequisites/trust.moderation.read`), puis lit les capacités du lecteur (`GET /v1/admin/capabilities`) que `ConsoleAccessProvider` donne aux écrans (`useConsoleAction`, `consoleActionState`) ; actions sensibles par `useSensitiveAction` (avis de reconnexion, `?resume=`) ; mention d'audit par `AdminPage audited` ; recherche dans l'adresse (`SearchField`, nuqs, rendu serveur à chaque requête).
-- Pages : `/admin` (files `GET /v1/admin/queues`, chiffres `GET /v1/admin/stats` pour un administrateur), `/admin/members` et `/admin/members/{userId}`.
+- Pages : `/admin` (files `GET /v1/admin/queues`, chiffres `GET /v1/admin/stats` pour un administrateur), `/admin/members` et `/admin/members/{userId}` (la suspension et sa levée viennent de `features/trust`, `MemberModeration`, composées par la page), `/admin/moderation` (file filtrée dans l'adresse), `/admin/moderation/cases/{caseId}` (dossier et décision, `CaseDetail`, `DecisionForm`), `/admin/moderation/appeals`, `/admin/moderation/transparency` (période dans l'adresse).
 
 ## Fournisseurs
 

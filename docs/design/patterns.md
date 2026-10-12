@@ -258,6 +258,13 @@ Comment assembler les composants (`components.md`) pour les situations récurren
 - Tableau de bord : les files du lecteur en cartes-liens (ce qui attend, chiffre en tabulaires, aucun compteur décoratif : « Rien en attente » à zéro), puis pour un administrateur les chiffres de la plateforme (membres, actifs sur 30 jours, collecté en équivalent euros, contributions payées) et les projets par statut en graphique en barres (`BarChart`).
 - Membres : recherche dans l'adresse (`?q=`, deux caractères au moins) ; fiche en cartes (compte, rôles, situation et décisions, sessions, contributions). Attribuer un rôle explique la double authentification qu'il exige et la fermeture des sessions ; « Déconnecter partout » se confirme.
 
+### Modération dans la console
+
+- File : filtres statut, affectation, cible, motif et ancienneté dans l'adresse ; tableau dense par priorité (le chiffre et ses raisons, lues au focus), cible, membre concerné, motifs en puces (grave en danger), nombre de signalements, ancienneté relative, personne affectée.
+- Dossier : à gauche ce qui est signalé (titre, texte en citation, statut de modération, lien vers sa page ; pour un message, le message signalé en relief et au plus les trois qui le précèdent), les signalements regroupés, l'historique des décisions avec leur appel, puis « Décider » ; à droite, l'essentiel et l'affectation (« Me l'affecter », historique en frise).
+- Décider : les décisions en cartes, celles que l'api refuse au lecteur désactivées avec leur raison ; l'exposé des motifs part du modèle du motif (ADR 0174) ; une suspension se borne au rôle du lecteur ; l'aperçu « Ce que verra la personne concernée » reprend la carte de sa page « Modération ». Une suspension définitive ou un gel demandent une phrase saisie et une connexion récente.
+- Appels : la décision, les arguments du membre, puis « Trancher l'appel » ; pour l'auteur de la décision, une phrase dit pourquoi l'appel revient à une autre personne, à la place du bouton.
+
 ## Comptes et bannières
 
 Bannières de l'espace membre, de la plus grave à la moins grave, une seule action chacune : compte suspendu (« Voir la décision », vers `/settings/moderation`, ADR 0166), conditions à accepter (vers l'étape de l'onboarding, puis retour à la page), adresse email à vérifier (renvoi sur place), double authentification exigée par un rôle, prérequis manquants, hors ligne. Elles lisent `GET /v1/me` et l'état du réseau ; aucune ne bloque la navigation.

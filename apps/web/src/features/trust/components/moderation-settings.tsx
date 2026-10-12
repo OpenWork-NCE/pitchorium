@@ -29,6 +29,7 @@ import {
   useZodForm,
 } from '@/components/ui';
 import { TRUST_LIMITS } from '../lib/limits';
+import { DecisionStatement } from './decision-statement';
 
 const appealSchema = () =>
   import('@pitchorium/contracts').then((m) => m.appealDecisionRequestSchema);
@@ -116,53 +117,18 @@ function DecisionCard({
   const titleId = `decision-${decision.id}`;
   return (
     <Card className="grid gap-4 p-5 sm:p-6" aria-labelledby={titleId}>
-      <div className="flex flex-wrap items-start justify-between gap-2">
-        <div className="grid gap-1">
-          <Heading level={4} size="card" id={titleId} className="scroll-mt-24">
-            {reference(`moderationDecisionKinds.${decision.kind}`)}
-          </Heading>
-          <Text size="sm" tone="muted">
-            {t('decidedOn', { date: date(decision.decidedAt) })} ·{' '}
-            <span className="whitespace-nowrap">
-              {t('concerns', { target: reference(`reportTargetTypes.${decision.targetType}`) })}
-            </span>
-          </Text>
-        </div>
-        {appeal ? (
-          <Badge tone={appeal.status === 'overturned' ? 'success' : 'neutral'}>
-            {reference(`appealStatuses.${appeal.status}`)}
-          </Badge>
-        ) : null}
-      </div>
-      <dl className="grid gap-3 text-sm">
-        {decision.reason ? (
-          <div className="grid gap-0.5">
-            <dt className="font-medium">{t('reason')}</dt>
-            <dd>{reference(`reportReasons.${decision.reason}`)}</dd>
-          </div>
-        ) : null}
-        <div className="grid gap-0.5">
-          <dt className="font-medium">{t('facts')}</dt>
-          <dd className="whitespace-pre-line">{decision.statement}</dd>
-        </div>
-        <div className="grid gap-0.5">
-          <dt className="font-medium">{t('ground')}</dt>
-          <dd>
-            {decision.groundReference
-              ? t('groundWithReference', {
-                  ground: reference(`moderationGrounds.${decision.ground}`),
-                  reference: decision.groundReference,
-                })
-              : reference(`moderationGrounds.${decision.ground}`)}
-          </dd>
-        </div>
-      </dl>
-      {decision.suspensionEndsAt ? (
-        <Text size="sm">{t('suspensionEnds', { date: date(decision.suspensionEndsAt) })}</Text>
-      ) : null}
-      <Text size="sm" tone="muted">
-        {decision.automatedDetection ? t('automated') : t('human')}
-      </Text>
+      <DecisionStatement
+        decision={decision}
+        date={date}
+        titleId={titleId}
+        badge={
+          appeal ? (
+            <Badge tone={appeal.status === 'overturned' ? 'success' : 'neutral'}>
+              {reference(`appealStatuses.${appeal.status}`)}
+            </Badge>
+          ) : null
+        }
+      />
       {appeal ? (
         <AppealOutcome appeal={appeal} date={date} />
       ) : appealable && decision.appealableUntil ? (

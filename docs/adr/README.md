@@ -171,3 +171,4 @@ Un fichier par décision, numéroté, au format Contexte / Décision / Conséque
 | [0171](0171-one-clock-for-the-stub-and-the-pages.md)                  | Une horloge pour l'api simulée, le serveur des pages et le navigateur |
 | [0172](0172-administration-console-foundation.md)                     | Socle de la console d'administration                                  |
 | [0173](0173-impact-labels-written-by-administrators.md)               | Libellés d'une méthodologie d'impact écrits par les administrateurs   |
+| [0174](0174-statement-of-reasons-templates.md)                        | Modèles d'exposé des motifs                                           |

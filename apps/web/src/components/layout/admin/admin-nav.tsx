@@ -1,7 +1,15 @@
 'use client';
 
 import type { Action } from '@pitchorium/contracts';
-import { Flag, LayoutDashboard, type LucideIcon, ShieldAlert, Users } from 'lucide-react';
+import {
+  Flag,
+  Gauge,
+  Gavel,
+  LayoutDashboard,
+  type LucideIcon,
+  ShieldAlert,
+  Users,
+} from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import * as routes from '@/config/paths';
 import { useConsoleStates } from '@/features/admin';
@@ -52,6 +60,13 @@ export const ADMIN_NAV: readonly { group: Group; items: readonly Item[] }[] = [
         href: routes.adminModeration,
         icon: ShieldAlert,
         action: 'trust.moderation.read',
+      },
+      { key: 'appeals', href: routes.adminAppeals, icon: Gavel, action: 'trust.moderation.read' },
+      {
+        key: 'transparency',
+        href: routes.adminTransparency,
+        icon: Gauge,
+        action: 'trust.transparency.read',
       },
       { key: 'members', href: routes.adminMembers, icon: Users, action: 'admin.members.read' },
     ],
