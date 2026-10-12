@@ -2,7 +2,7 @@
 import { ApiProblemError } from '@pitchorium/api-client';
 import { act, fireEvent, screen } from '@testing-library/react';
 import { useState } from 'react';
-import { describe, expect, it, vi } from 'vitest';
+import { beforeAll, describe, expect, it, vi } from 'vitest';
 import { renderWithProviders } from '../../../../test/support/render';
 import {
   completablePrerequisites,
@@ -66,6 +66,12 @@ function render(run: () => Promise<string>) {
 }
 
 describe('prerequisite gate (§7.2, step 4)', () => {
+  // The dialog is loaded on demand: compiled once here, not within the time of a test (a fresh
+  // clone compiled it in 5.2 s during the first test, verify:clean).
+  beforeAll(async () => {
+    await import('./prerequisite-dialog');
+  });
+
   it('reads the missing elements of a refusal only', () => {
     expect(missingPrerequisites(refused(['email_verified']))).toEqual(['email_verified']);
     expect(missingPrerequisites(new Error('network'))).toBeNull();
