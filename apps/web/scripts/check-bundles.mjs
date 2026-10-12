@@ -13,6 +13,10 @@
 // the member shell included, which is loaded on demand) is measured for each view, against its
 // own budget (VIEW_BUDGETS_KB).
 //
+// Every page and every view keeps 10 % of its budget free (MARGIN, PROMPT FRONT 9B): a page that
+// eats into it fails before it reaches the budget. No source map is among the public files of the
+// build (static/): Sentry deletes them once uploaded (next.config.ts).
+//
 // Usage: node scripts/check-bundles.mjs [build directory, default .next] [--views]
 import { spawn } from 'node:child_process';
 import { readFileSync, readdirSync, statSync } from 'node:fs';
@@ -43,6 +47,9 @@ const BUDGETS_KB = {
   '(admin)': 260,
   other: 190,
 };
+
+/** Share of each budget kept free: a page fails above 90 % of its budget. */
+const MARGIN = 0.1;
 
 /** Libraries kept out of the first load of some groups, recognised by strings of their code. */
 const FORBIDDEN = [
@@ -151,7 +158,9 @@ for (const path of manifests(appDir)) {
     `${page}: ${kilobytes.toFixed(1)} kB (budget ${budget} kB, ${files.length} files)` +
       `; Radix: ${[...radix].sort().join(', ') || 'none'}\n`,
   );
-  if (kilobytes > budget) failures.push(`${page}: ${kilobytes.toFixed(1)} kB > ${budget} kB`);
+  if (kilobytes > budget * (1 - MARGIN)) {
+    failures.push(`${page}: ${kilobytes.toFixed(1)} kB, less than 10 % under ${budget} kB`);
+  }
   for (const { name, signature, groups } of FORBIDDEN) {
     if (!groups.includes(group)) continue;
     const found = files.filter((file) => signature.test(content(file).toString('utf8')));
@@ -243,8 +252,10 @@ async function measureViews() {
       process.stdout.write(
         `${page} as a ${view}: ${kilobytes.toFixed(1)} kB (budget ${budget} kB, ${files.length} files)\n`,
       );
-      if (kilobytes > budget) {
-        failures.push(`${page} as a ${view}: ${kilobytes.toFixed(1)} kB > ${budget} kB`);
+      if (kilobytes > budget * (1 - MARGIN)) {
+        failures.push(
+          `${page} as a ${view}: ${kilobytes.toFixed(1)} kB, less than 10 % under ${budget} kB`,
+        );
       }
     }
   } finally {
@@ -252,11 +263,23 @@ async function measureViews() {
   }
 }
 
+/** Source maps among the files the build serves to everyone (`/_next/static`). */
+function publicSourceMaps(dir) {
+  return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+    const path = join(dir, entry.name);
+    if (entry.isDirectory()) return publicSourceMaps(path);
+    return entry.name.endsWith('.map') ? [relative(buildDir, path)] : [];
+  });
+}
+for (const map of publicSourceMaps(join(buildDir, 'static'))) {
+  failures.push(`${map}: a source map among the public files`);
+}
+
 if (views) await measureViews();
 
 if (failures.length > 0) {
   process.stderr.write(
-    `Bundle budgets exceeded:\n${failures.map((line) => `- ${line}`).join('\n')}\n`,
+    `Bundle checks failed:\n${failures.map((line) => `- ${line}`).join('\n')}\n`,
   );
   process.exit(1);
 }

@@ -56,6 +56,9 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   reactCompiler: true,
   poweredByHeader: false,
+  // Browser source maps exist only in a build that publishes them to Sentry, which deletes them
+  // after the upload (withSentryConfig below): never among the public files.
+  productionBrowserSourceMaps: Boolean(process.env.SENTRY_AUTH_TOKEN),
   typedRoutes: false,
   // `next dev` would write an AGENTS.md of its own when it detects a coding agent: the rules of
   // the repository live in the root AGENTS.md only.
@@ -81,11 +84,31 @@ const nextConfig: NextConfig = {
 
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
+/**
+ * Release of the build, named by the commit (docs/operations/deployment-web.md): SENTRY_RELEASE,
+ * or the commit Vercel builds. The SDK reads it from the build, the server and the browser alike.
+ */
+const sentryRelease = process.env.SENTRY_RELEASE ?? process.env.VERCEL_GIT_COMMIT_SHA;
+
 export default withSentryConfig(withNextIntl(nextConfig), {
-  // Source maps are uploaded only when the build has a token (CI of a deployment).
+  // The release and its source maps are published only when the build has a token (a deployment).
   authToken: process.env.SENTRY_AUTH_TOKEN,
   org: process.env.SENTRY_ORG,
   project: process.env.SENTRY_PROJECT,
+  release: {
+    ...(sentryRelease ? { name: sentryRelease } : {}),
+    // The commits come from the integration of the repository in Sentry, not from a clone that
+    // a deployment does not have.
+    setCommits: false,
+    deploy: process.env.SENTRY_AUTH_TOKEN
+      ? { env: env.NEXT_PUBLIC_SENTRY_ENVIRONMENT, url: env.NEXT_PUBLIC_SITE_URL }
+      : false,
+  },
+  sourcemaps: {
+    // Uploaded to Sentry, then deleted from the build: never served with the pages
+    // (scripts/check-bundles.mjs refuses a source map among the public files).
+    deleteSourcemapsAfterUpload: true,
+  },
   silent: !process.env.SENTRY_AUTH_TOKEN,
   telemetry: false,
 });
