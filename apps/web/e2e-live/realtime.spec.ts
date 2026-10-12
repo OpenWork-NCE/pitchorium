@@ -39,6 +39,7 @@ test('a message and a notification of the first two seconds show at once', async
   const opened = channelOpen(b.page);
   await b.page.goto(`/fr/messages/${first.conversationId}`);
   const connectedAt = await opened;
+  const before = await unreadNotifications(b.page);
   await Promise.all([
     sendMessage(a, first.conversationId, 'Le devis arrive ce soir.'),
     // A connection request of a third member: a notification and its counter for Bakary.
@@ -49,9 +50,8 @@ test('a message and a notification of the first two seconds show at once', async
   await expect(
     b.page.locator('[data-thread-scroller]').getByText('Le devis arrive ce soir.'),
   ).toBeVisible({ timeout: 3_000 });
-  await expect(
-    b.page.getByRole('link', { name: /Notifications.*1 notification non lue/ }).first(),
-  ).toBeVisible({ timeout: 3_000 });
+  // The request of the third member: one more unread notification, pushed by the channel.
+  await expect.poll(() => unreadNotifications(b.page), { timeout: 3_000 }).toBeGreaterThan(before);
   // Shown before the handlers would have been fetched without an event (ten seconds).
   expect(Date.now() - connectedAt).toBeLessThan(8_000);
   for (const member of [a, b, c]) await member.context.close();
@@ -64,4 +64,18 @@ async function sendMessage(from: Member, conversationId: string, body: string): 
       body,
     }),
   );
+}
+
+/** The unread notifications the header of the page counts (its accessible name). */
+async function unreadNotifications(page: Page): Promise<number> {
+  const name =
+    (await page
+      .getByRole('link', { name: /^Notifications/ })
+      .first()
+      .getAttribute('aria-label')) ??
+    (await page
+      .getByRole('link', { name: /^Notifications/ })
+      .first()
+      .innerText());
+  return Number(/(\d+) notifications? non lues?/.exec(name)?.[1] ?? 0);
 }
