@@ -288,6 +288,7 @@ export abstract class PaymentsRepository {
     collectedEurMinor: bigint;
     kycPending: number;
     offlinePending: number;
+    discrepanciesOpen: number;
   }>;
   /** Projects supported by an organization through paid contributions. */
   abstract projectsSupportedBy(organizationId: string): Promise<string[]>;

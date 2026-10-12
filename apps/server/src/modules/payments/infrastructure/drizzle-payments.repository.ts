@@ -282,6 +282,7 @@ export class DrizzlePaymentsRepository extends PaymentsRepository {
     collectedEurMinor: bigint;
     kycPending: number;
     offlinePending: number;
+    discrepanciesOpen: number;
   }> {
     const paid = ['succeeded', 'partially_refunded', 'disputed', 'dispute_won'];
     const [contributions] = await this.db
@@ -299,11 +300,16 @@ export class DrizzlePaymentsRepository extends PaymentsRepository {
       .select({ pending: sql<number>`count(*)::int` })
       .from(paymentsOfflineContributions)
       .where(eq(paymentsOfflineContributions.status, 'confirmed'));
+    const [discrepancies] = await this.db
+      .select({ open: sql<number>`count(*)::int` })
+      .from(paymentsDiscrepancies)
+      .where(eq(paymentsDiscrepancies.status, 'open'));
     return {
       succeeded: contributions?.succeeded ?? 0,
       collectedEurMinor: BigInt(contributions?.collected ?? '0'),
       kycPending: kyc?.pending ?? 0,
       offlinePending: offline?.pending ?? 0,
+      discrepanciesOpen: discrepancies?.open ?? 0,
     };
   }
 

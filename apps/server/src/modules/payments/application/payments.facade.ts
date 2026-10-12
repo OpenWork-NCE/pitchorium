@@ -1,11 +1,18 @@
 import { Injectable, type OnModuleInit } from '@nestjs/common';
-import type { ContributionKind, ContributionStatus, Refund } from '@pitchorium/contracts';
+import type {
+  ContributionKind,
+  ContributionRequestKind,
+  ContributionStatus,
+  MoneyDto,
+  Refund,
+} from '@pitchorium/contracts';
+import { DomainError, Money } from '../../../platform/kernel';
 import { AccessFacade } from '../../access';
 import { IdentityFacade } from '../../identity';
 import { MediaFacade, type MediaResourceRef } from '../../media';
 import { OrganizationsFacade } from '../../organizations';
 import { ProjectsFacade } from '../../projects';
-import { type ContributionRecord, netEurMinor } from '../domain/contribution';
+import { assertCollectible, type ContributionRecord, netEurMinor } from '../domain/contribution';
 import { OFFLINE_CONTRIBUTION_RESOURCE, OfflineService } from './offline.service';
 import { KYC_SUBMISSION_RESOURCE, PayoutService } from './payout.service';
 import { PaymentsRepository } from './ports';
@@ -24,6 +31,16 @@ export interface ContributionFacts {
   succeededAt: Date | null;
   /** The contributor accepted to be shown and did not give anonymously. */
   named: boolean;
+}
+
+/** A contribution of a member as their file in the administration lists it. */
+export interface MemberContributionSummary {
+  id: string;
+  project: { id: string; slug: string; title: string } | null;
+  kind: ContributionKind;
+  status: ContributionStatus;
+  amount: MoneyDto;
+  createdAt: Date;
 }
 
 const facts = (row: ContributionRecord): ContributionFacts => ({
@@ -126,8 +143,42 @@ export class PaymentsFacade implements OnModuleInit {
     collectedEurMinor: bigint;
     kycPending: number;
     offlinePending: number;
+    discrepanciesOpen: number;
   }> {
     return this.payments.statistics();
+  }
+
+  /** The latest contributions of a member, newest first (their file in the administration). */
+  async contributionsOf(userId: string, limit: number): Promise<MemberContributionSummary[]> {
+    const rows = await this.payments.contributions({ contributorId: userId }, null, limit);
+    const projects = await this.projects.fundables([...new Set(rows.map((row) => row.projectId))]);
+    return rows.map((row) => {
+      const project = projects.get(row.projectId);
+      return {
+        id: row.id,
+        project: project ? { id: project.id, slug: project.slug, title: project.title } : null,
+        kind: row.kind,
+        status: row.status,
+        amount: Money.of(row.amountMinor, row.currency).toJSON(),
+        createdAt: row.createdAt,
+      };
+    });
+  }
+
+  /**
+   * Whether an instrument is ever paid online: equity and loans never are without a licensed
+   * partner (ADR 0051), whatever their feature flag, as the contributions refuse them.
+   */
+  onlineCollectionAvailable(
+    instrument: Extract<ContributionRequestKind, 'equity' | 'loan'>,
+  ): boolean {
+    try {
+      assertCollectible(instrument);
+      return true;
+    } catch (error) {
+      if (error instanceof DomainError) return false;
+      throw error;
+    }
   }
 
   /** Paid contributions of a project a refund may still reach (frozen project, trust). */
