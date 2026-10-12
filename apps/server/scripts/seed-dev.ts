@@ -3,6 +3,7 @@ import { loadConfigOrExit, parseWorkerConfig } from '../src/platform/config/conf
 import { FixedClock, SystemClock } from '../src/platform/kernel/clock';
 import { S3ObjectStorage } from '../src/platform/storage/s3-object-storage';
 import { seedDevContent } from './dev-seed/seed-dev-content';
+import { requestDatedStates, shiftDatedStates } from './dev-seed/seed-dev-dates';
 import {
   DEMO_EMAIL_DOMAIN,
   DEMO_PASSWORD,
@@ -32,6 +33,8 @@ async function main(): Promise<void> {
   try {
     const now = new Date();
     const result = await seedDevData({ db, storage, legal: config.legal, now });
+    // A later run moves the dated states to its own date first (ADR 0170).
+    const dates = await shiftDatedStates(db, now, config.projects.endingSoonMs);
     // New data goes through the application services and facades (ADR 0035).
     const clock = new FixedClock(now);
     const context = await createSeedContext(clock);
@@ -49,6 +52,7 @@ async function main(): Promise<void> {
         const trust = await seedDevTrust(context, clock, now);
         const network = await seedDevNetwork(context, clock, now);
         const content = await seedDevContent(context, clock, now);
+        const requested = await requestDatedStates(db, context);
         return {
           ...projects,
           ...payments,
@@ -57,6 +61,16 @@ async function main(): Promise<void> {
           ...trust,
           ...network,
           ...content,
+          datedStates:
+            dates.suspensions +
+            dates.erasures +
+            dates.exports +
+            dates.campaigns +
+            dates.events +
+            dates.missions +
+            dates.invitations +
+            requested.erasures +
+            requested.exports,
         };
       } finally {
         await context.close();

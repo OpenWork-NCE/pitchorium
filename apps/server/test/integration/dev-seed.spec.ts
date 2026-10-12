@@ -13,6 +13,8 @@ import {
   seedDevData,
 } from '../../scripts/dev-seed/seed-dev-data';
 import { seedDevContent } from '../../scripts/dev-seed/seed-dev-content';
+import { requestDatedStates, shiftDatedStates } from '../../scripts/dev-seed/seed-dev-dates';
+import { DEMO_PENDING_REQUESTS } from '../../scripts/dev-seed/dataset';
 import { sampleSuggestions, seedDevDiscovery } from '../../scripts/dev-seed/seed-dev-discovery';
 import { seedDevMessaging } from '../../scripts/dev-seed/seed-dev-messaging';
 import { seedDevProjectFiles } from '../../scripts/dev-seed/seed-dev-project-files';
@@ -432,6 +434,77 @@ describe('development data', () => {
         impact: { selfDeclared: true },
         organization: { slug: 'reseau-femmes-entrepreneures-sahel' },
       },
+    });
+  });
+
+  it('sets the dated states again relative to a later run, and duplicates nothing', async () => {
+    // ADR 0170: forty days later, nothing of the demonstration has run out.
+    const later = new Date(Date.now() + 40 * 86_400_000);
+    const endingSoonMs = parseWorkerConfig(process.env).projects.endingSoonMs;
+    const statuses = () =>
+      query<{ status: string; count: string }>(
+        'SELECT status, count(*) FROM projects.projects GROUP BY status ORDER BY status',
+      );
+    const before = await counts();
+    const statusesBefore = await statuses();
+    const moved = await shiftDatedStates(handle.db, later, endingSoonMs);
+    expect(moved).toMatchObject({
+      suspensions: 1,
+      erasures: 1,
+      exports: 1,
+      campaigns: 6,
+      events: 5,
+      missions: 1,
+    });
+    expect(moved.invitations).toBeGreaterThanOrEqual(DEMO_PENDING_REQUESTS.length);
+    const clock = new FixedClock(later);
+    const context = await createSeedContext(clock);
+    try {
+      expect(await seedDevProjects(context, clock, later)).toMatchObject({ projects: 0 });
+      expect(await seedDevDiscovery(context, clock, later)).toMatchObject({
+        events: 0,
+        missions: 0,
+      });
+      expect(await requestDatedStates(handle.db, context)).toEqual({ erasures: 0, exports: 0 });
+    } finally {
+      await context.close();
+    }
+    const member = (key: string) => demoId(`member:${key}`);
+    const [suspension] = await query<{ active: boolean }>(
+      `SELECT ended_at IS NULL AND ends_at > $1 AS active FROM trust.suspensions WHERE user_id = $2`,
+      [later, member('rodrigue')],
+    );
+    expect(suspension?.active).toBe(true);
+    const [erasure] = await query<{ due: boolean; reminded: Date | null }>(
+      `SELECT scheduled_for > $1 AS due, reminded_at AS reminded FROM privacy.erasures
+       WHERE user_id = $2 AND status = 'scheduled'`,
+      [later, member('moussa')],
+    );
+    expect(erasure).toEqual({ due: true, reminded: null });
+    const [campaign] = await query<{ running: boolean }>(
+      `SELECT ends_at > $1 AS running FROM projects.projects
+       WHERE owner_id = $2 AND status = 'funding' ORDER BY published_at LIMIT 1`,
+      [later, member('aissatou')],
+    );
+    expect(campaign?.running).toBe(true);
+    expect(await statuses()).toEqual(statusesBefore);
+    const upcoming = await query<{ ahead: boolean }>(
+      `SELECT starts_at > $1 AS ahead FROM events.events WHERE status <> 'completed'`,
+      [later],
+    );
+    expect(upcoming.map((row) => row.ahead)).toEqual([true, true, true, true]);
+    const { 'platform.outbox_events': _outbox, ...after } = await counts();
+    const { 'platform.outbox_events': _before, ...rest } = before;
+    expect(after).toEqual(rest);
+    // The same run again: everything is already at its place.
+    expect(await shiftDatedStates(handle.db, later, endingSoonMs)).toEqual({
+      suspensions: 0,
+      erasures: 0,
+      exports: 0,
+      campaigns: 0,
+      events: 0,
+      missions: 0,
+      invitations: 0,
     });
   });
 

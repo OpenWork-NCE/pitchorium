@@ -23,6 +23,11 @@ import { demoId } from './seed-dev-data';
 const HOUR_MS = 3_600_000;
 const DAY_MS = 24 * HOUR_MS;
 
+/** The day (`YYYY-MM-DD`, UTC) a number of days after an instant. */
+export function dayAfter(now: Date, days: number): string {
+  return new Date(now.getTime() + days * DAY_MS).toISOString().slice(0, 10);
+}
+
 export interface DevDiscoveryResult {
   events: number;
   registrations: number;
@@ -49,7 +54,7 @@ interface DemoEvent {
  * A past event, an upcoming one full with a waiting list, an upcoming public webinar, a hybrid
  * forum in the zone of Port-au-Prince, and a canceled one: every state and several zones.
  */
-const EVENTS: readonly DemoEvent[] = [
+export const DEMO_EVENTS: readonly DemoEvent[] = [
   {
     organizer: 'aissatou',
     inDays: -20,
@@ -176,6 +181,8 @@ type DemoMission = Omit<CreateMissionRequest, 'direction'> & {
   key: string;
   direction: 'offer' | 'request';
   author: string;
+  /** Days from the run to the date the help is wanted by (`desiredBy`). */
+  desiredInDays?: number;
 };
 
 const MISSION_BASE = {
@@ -189,7 +196,7 @@ const MISSION_BASE = {
   projectId: null,
 };
 
-const MISSIONS: readonly DemoMission[] = [
+export const DEMO_MISSIONS: readonly DemoMission[] = [
   {
     ...MISSION_BASE,
     key: 'financial-review',
@@ -233,7 +240,7 @@ const MISSIONS: readonly DemoMission[] = [
     mode: 'on_site',
     countryCodes: ['SN'],
     skills: ['Distribution rurale', 'Location-vente'],
-    desiredBy: '2026-12-15',
+    desiredInDays: 64,
   },
 ];
 
@@ -262,7 +269,7 @@ export async function seedDevDiscovery(
   const registrations = get(RegistrationsService);
   const eventsRepository = get(EventsRepository);
 
-  for (const demo of EVENTS) {
+  for (const demo of DEMO_EVENTS) {
     if (await eventsRepository.resolveSlug(slugBaseFromTitle(demo.request.title))) continue;
     // Created and registered before its start, as real use would.
     const start = new Date(now.getTime() + demo.inDays * DAY_MS);
@@ -295,8 +302,12 @@ export async function seedDevDiscovery(
   const missionsRepository = get(MissionsRepository);
   const created = new Map<string, string>();
   clock.set(new Date(now.getTime() - 12 * DAY_MS));
-  for (const demo of MISSIONS) {
-    const { key, direction, author, ...request } = demo;
+  for (const demo of DEMO_MISSIONS) {
+    const { key, direction, author, desiredInDays, ...fields } = demo;
+    const request = {
+      ...fields,
+      desiredBy: desiredInDays === undefined ? fields.desiredBy : dayAfter(now, desiredInDays),
+    };
     const existing = (await missionsRepository.authoredBy(userId(author), null, 50)).find(
       (mission) => mission.title === request.title,
     );
