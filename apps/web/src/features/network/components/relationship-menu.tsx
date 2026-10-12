@@ -11,6 +11,7 @@ import { useRouter } from '@/i18n/navigation';
 import { preloadWhenIdle } from '@/lib/preload';
 import type { RelationshipMenuPanel } from './relationship-menu-panel';
 import { useProblemMessage } from './use-relationship';
+import { useReport } from '@/lib/actions/report';
 
 /** The menu (Radix DropdownMenu) stays out of the first load: idle, or the first use (ADR 0094). */
 const loadPanel = () => import('./relationship-menu-panel');
@@ -18,7 +19,8 @@ const loadPanel = () => import('./relationship-menu-panel');
 type Panel = ComponentType<Parameters<typeof RelationshipMenuPanel>[0]>;
 
 /**
- * « Plus d'actions » on a member: copy the link of the profile, share it, block the member. The
+ * « Plus d'actions » on a member: copy the link of the profile, share it, report it, block the
+ * member. The
  * button renders first; the menu loads when the page is idle or at the first use, then opens.
  * Blocking is confirmed with its effects, then the member disappears from the pages of the
  * reader at once (ADR 0029).
@@ -33,6 +35,7 @@ export function RelationshipMenu({
   url: string;
 }) {
   const t = useTranslations('web.network.menu');
+  const report = useReport();
   const queryClient = useQueryClient();
   const router = useRouter();
   const message = useProblemMessage();
@@ -100,6 +103,7 @@ export function RelationshipMenu({
           onCopy={() => void copy()}
           onShare={() => void share()}
           onBlock={() => setBlocking(true)}
+          onReport={report ? () => report({ type: 'profile', id: handle }) : null}
         />
       ) : (
         trigger

@@ -1,6 +1,6 @@
 'use client';
 
-import { Ban, Link2, MoreHorizontal, Share2 } from 'lucide-react';
+import { Ban, Flag, Link2, MoreHorizontal, Share2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import {
   Button,
@@ -22,6 +22,7 @@ export function RelationshipMenuPanel({
   onCopy,
   onShare,
   onBlock,
+  onReport,
 }: {
   defaultOpen: boolean;
   label: string;
@@ -29,8 +30,11 @@ export function RelationshipMenuPanel({
   onCopy: () => void;
   onShare: () => void;
   onBlock: () => void;
+  /** « Signaler » the profile (§13); none outside the member space. */
+  onReport: (() => void) | null;
 }) {
   const t = useTranslations('web.network.menu');
+  const report = useTranslations('web.trust.report');
   return (
     <DropdownMenu defaultOpen={defaultOpen}>
       <DropdownMenuTrigger asChild>
@@ -50,6 +54,12 @@ export function RelationshipMenuPanel({
           </DropdownMenuItem>
         ) : null}
         <DropdownMenuSeparator />
+        {onReport ? (
+          <DropdownMenuItem onSelect={onReport}>
+            <Flag aria-hidden />
+            {report('action')}
+          </DropdownMenuItem>
+        ) : null}
         <DropdownMenuItem tone="danger" onSelect={onBlock}>
           <Ban aria-hidden />
           {t('block')}
