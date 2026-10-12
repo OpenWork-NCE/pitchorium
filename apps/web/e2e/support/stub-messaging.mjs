@@ -5,6 +5,7 @@
 // email. Moments are fixed hours of today and the days before (UTC, the zone of the demo
 // accounts), so that the screens read the same at every run. Every write is logged.
 import { feedItems } from './stub-content.mjs';
+import { stubIso, stubNow } from './stub-clock.mjs';
 
 const CONVERSATION = (n) => `0192f4a0-6000-7000-8000-${String(n).padStart(12, '0')}`;
 const MESSAGE = (c, n) =>
@@ -26,7 +27,7 @@ const MOUSSA = card('moussa-diop', 'Moussa Diop', 'Agronome, Kaolack');
 
 /** An instant `daysAgo` days before today (UTC), at `hour`:`minute`. */
 function at(daysAgo, hour, minute) {
-  const day = new Date();
+  const day = new Date(stubNow());
   day.setUTCHours(hour, minute, 0, 0);
   day.setUTCDate(day.getUTCDate() - daysAgo);
   return day.toISOString();
@@ -161,7 +162,7 @@ function seed(origin) {
       answers: { first: 'pending', second: 'accepted' },
       status: 'pending',
       conversationId: null,
-      createdAt: new Date(Date.now() - 3 * 3_600_000).toISOString(),
+      createdAt: new Date(stubNow() - 3 * 3_600_000).toISOString(),
     },
     {
       id: INTRODUCTION(2),
@@ -198,8 +199,8 @@ function notificationsOf() {
     excerpt: null,
     read: false,
     // Hours before now: « il y a 2 heures » reads the same at every run.
-    createdAt: new Date(Date.now() - n * 3_600_000).toISOString(),
-    updatedAt: new Date(Date.now() - n * 3_600_000).toISOString(),
+    createdAt: new Date(stubNow() - n * 3_600_000).toISOString(),
+    updatedAt: new Date(stubNow() - n * 3_600_000).toISOString(),
     ...extra,
   });
   const post = '0192f4a0-2000-7000-8000-000000000001';
@@ -284,7 +285,7 @@ const PREFERENCES = [
 export function messagingRoutes({ origin, accounts, sessionOf, problem, readJson, state }) {
   const data = () => (state().messaging ??= seed(origin));
   const log = (route, email, extra = {}) =>
-    state().writes.push({ route, email, ...extra, at: new Date().toISOString() });
+    state().writes.push({ route, email, ...extra, at: stubIso() });
   const meCard = (email) =>
     card(accounts[email].handle, accounts[email].name, accounts[email].headline);
 
@@ -401,7 +402,7 @@ export function messagingRoutes({ origin, accounts, sessionOf, problem, readJson
             {
               author: 'me',
               body: body.body,
-              createdAt: new Date().toISOString(),
+              createdAt: stubIso(),
               clientMessageId: body.clientMessageId,
             },
           ],
@@ -483,7 +484,7 @@ export function messagingRoutes({ origin, accounts, sessionOf, problem, readJson
             conversation.lines.push({
               author: 'me',
               body: body.body,
-              createdAt: new Date().toISOString(),
+              createdAt: stubIso(),
               clientMessageId: body.clientMessageId,
               sharedPost: body.sharedPostId ? { postId: body.sharedPostId, post: null } : null,
               attachments: (body.attachmentIds ?? []).map((mediaId, index) => ({

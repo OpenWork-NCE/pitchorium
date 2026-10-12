@@ -2,8 +2,10 @@
 // (funding, funded, closed, a draft for its team), the methodology of the demonstration, the
 // indicative currency of a member of the CFA zone. Every value is fictitious.
 
+import { STUB_EPOCH, stubIso } from './stub-clock.mjs';
+
 const DAY = 86_400_000;
-const NOW = Date.parse('2026-10-10T09:00:00.000Z');
+const NOW = STUB_EPOCH;
 const iso = (offsetDays) => new Date(NOW + offsetDays * DAY).toISOString();
 const eur = (euros) => ({ amountMinor: String(euros * 100), currency: 'EUR' });
 
@@ -400,7 +402,7 @@ export function projectRoutes({ origin, accounts, sessionOf, problem, state }) {
   const isTeam = (email, item) =>
     Boolean(email) && item.team.some((member) => member.member.handle === accounts[email]?.handle);
   const log = (route, email, extra = {}) =>
-    state().writes.push({ route, email, ...extra, at: new Date().toISOString() });
+    state().writes.push({ route, email, ...extra, at: stubIso() });
 
   return function projectsRoute(request, path, url) {
     const method = request.method;

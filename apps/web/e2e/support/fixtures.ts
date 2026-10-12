@@ -1,13 +1,16 @@
 import { type APIRequestContext, expect, type Page } from '@playwright/test';
+import { stubClock } from './clock';
 import { guardedTest } from './console-guard';
 
 export { allowConsole } from './console-guard';
 
 /**
  * Violations of the Content Security Policy reported by the page, collected from the start; any
- * error of the browser fails the journey (console-guard.ts).
+ * error of the browser fails the journey (console-guard.ts). The browser reads the clock of the
+ * stub api (clock.ts, ADR 0171).
  */
-export const test = guardedTest.extend<{ cspViolations: string[] }>({
+export const test = guardedTest.extend<{ cspViolations: string[]; stubClock: void }>({
+  stubClock: [stubClock, { auto: true }],
   cspViolations: async ({ page }, provide) => {
     const violations: string[] = [];
     await page.exposeFunction('reportCspViolation', (entry: string) => violations.push(entry));

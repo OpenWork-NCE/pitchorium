@@ -12,6 +12,7 @@ import { messagingRoutes } from './stub-messaging.mjs';
 import { collectionMissing, paymentRoutes } from './stub-payments.mjs';
 import { projectRoutes } from './stub-projects.mjs';
 import { trustRoutes } from './stub-trust.mjs';
+import { stubIso } from './stub-clock.mjs';
 
 const port = Number(process.env.STUB_API_PORT ?? 3299);
 const origin = process.env.STUB_WEB_ORIGIN ?? 'http://localhost:3201';
@@ -250,7 +251,7 @@ function reaction(request, path) {
   if (!email) return problem(401, 'UNAUTHENTICATED');
   const key = request.headers['idempotency-key'] ?? null;
   const replay = key !== null && state.writes.some((write) => write.key === key);
-  state.writes.push({ route: 'reaction', email, key, replay, at: new Date().toISOString() });
+  state.writes.push({ route: 'reaction', email, key, replay, at: stubIso() });
   return {
     status: 200,
     body: {
@@ -485,7 +486,7 @@ const routes = {
     if (!email) return problem(401, 'UNAUTHENTICATED');
     const key = request.headers['idempotency-key'] ?? null;
     const replay = key !== null && state.writes.some((write) => write.key === key);
-    state.writes.push({ route: 'read-all', email, key, replay, at: new Date().toISOString() });
+    state.writes.push({ route: 'read-all', email, key, replay, at: stubIso() });
     const counters = countersOf(email);
     const read = counters.notifications;
     counters.notifications = 0;
@@ -522,14 +523,14 @@ const routes = {
     const email = sessionOf(request);
     if (!email) return problem(401, 'UNAUTHENTICATED');
     const { handle } = await readJson(request);
-    state.writes.push({ route: 'connection-request', email, handle, at: new Date().toISOString() });
+    state.writes.push({ route: 'connection-request', email, handle, at: stubIso() });
     return { status: 201, body: { id: `request-${handle}`, status: 'pending' } };
   },
   'POST /v1/discovery/dismissals': async (request) => {
     const email = sessionOf(request);
     if (!email) return problem(401, 'UNAUTHENTICATED');
     const { kind, key } = await readJson(request);
-    state.writes.push({ route: 'dismiss', email, kind, key, at: new Date().toISOString() });
+    state.writes.push({ route: 'dismiss', email, kind, key, at: stubIso() });
     return { status: 204, body: null };
   },
   'GET /v1/me/profile': (request) => {

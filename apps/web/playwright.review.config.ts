@@ -1,5 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
 import { ciOptions } from './e2e/support/ci-options';
+import { stubClockEnv } from './e2e/support/stub-clock.mjs';
 
 const PORT = 6106;
 
@@ -39,6 +40,8 @@ export default defineConfig({
       // The pages of the projects and of the impact (e2e/review/pages.review.ts): the build of
       // the end-to-end tests with the stub api.
       command: 'node e2e/support/serve.mjs',
+      // The stub api, the server of the pages and the browser read one clock (ADR 0171).
+      env: stubClockEnv(),
       url: 'http://localhost:3201/fr',
       reuseExistingServer: false,
       timeout: 120_000,

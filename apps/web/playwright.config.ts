@@ -1,10 +1,13 @@
 import { defineConfig, devices } from '@playwright/test';
 import { ciOptions, trace, video } from './e2e/support/ci-options';
+import { stubClockEnv } from './e2e/support/stub-clock.mjs';
 
 const WEB_PORT = 3201;
 const API_PORT = 3299;
 const webOrigin = `http://localhost:${WEB_PORT}`;
 const apiOrigin = `http://localhost:${API_PORT}`;
+/** The stub api, the server of the pages and the browser read one clock (ADR 0171). */
+const clock = stubClockEnv();
 
 /** Measures of the rendering engine of Chromium (screenshots, CPU throttling through CDP). */
 const CHROMIUM_ONLY = [/visual\.spec\.ts/, /responsiveness\.spec\.ts/];
@@ -58,7 +61,7 @@ export default defineConfig({
     {
       command: 'node e2e/support/stub-api.mjs',
       url: `${apiOrigin}/v1/locales`,
-      env: { STUB_API_PORT: String(API_PORT), STUB_WEB_ORIGIN: webOrigin },
+      env: { STUB_API_PORT: String(API_PORT), STUB_WEB_ORIGIN: webOrigin, ...clock },
       reuseExistingServer: false,
     },
     {
@@ -74,6 +77,7 @@ export default defineConfig({
         NEXT_PUBLIC_CDN_URL: `${apiOrigin}/files`,
         NEXT_PUBLIC_VERCEL_ANALYTICS: 'false',
         NEXT_PUBLIC_SENTRY_DSN: '',
+        ...clock,
       },
     },
   ],

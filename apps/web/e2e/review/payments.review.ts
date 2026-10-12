@@ -1,4 +1,5 @@
-import { type BrowserContext, expect, type Locator, type Page, test } from '@playwright/test';
+import { type BrowserContext, expect, type Locator, type Page } from '@playwright/test';
+import { test } from '../support/clock';
 import { API_ORIGIN, DEMO_PASSWORD } from '../support/fixtures';
 import { hideFixedBars } from '../support/full-page';
 import { layoutProblems } from './layout-guard';

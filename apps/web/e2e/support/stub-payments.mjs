@@ -5,8 +5,10 @@
 // (`stub_availability`, `stub_payout`), sent to the stub by every request of its context: no
 // state shared between parallel captures. Every value is fictitious.
 
+import { STUB_EPOCH, stubIso } from './stub-clock.mjs';
+
 const DAY = 86_400_000;
-const NOW = Date.parse('2026-10-10T09:00:00.000Z');
+const NOW = STUB_EPOCH;
 const iso = (offsetDays) => new Date(NOW + offsetDays * DAY).toISOString();
 const eur = (euros) => ({ amountMinor: String(Math.round(euros * 100)), currency: 'EUR' });
 const xof = (francs) => ({ amountMinor: String(francs), currency: 'XOF' });
@@ -221,9 +223,9 @@ function contribution(id, status, overrides = {}) {
     anonymous: false,
     paymentUrl:
       status === 'pending_payment' ? 'https://checkout.stripe.com/c/pay/cs_test_stub' : null,
-    // Far after the fixed clock of the stub: a pending payment stays resumable at every run
-    // (one day ahead, it expired on 2026-10-11 at 09:00 UTC and the payment tests failed).
-    expiresAt: iso(3650),
+    // A day after the fixed date of the stub: the page reads the same clock (stub-clock.mjs),
+    // so a pending payment stays resumable during the whole run.
+    expiresAt: iso(1),
     createdAt: iso(-3),
     succeededAt: status === 'succeeded' || status === 'partially_refunded' ? iso(-3) : null,
     ...overrides,
@@ -603,7 +605,7 @@ const page = (items) => ({ items, nextCursor: null });
 
 export function paymentRoutes({ sessionOf, problem, readJson, state }) {
   const log = (route, email, extra = {}) =>
-    state().writes.push({ route, email, ...extra, at: new Date().toISOString() });
+    state().writes.push({ route, email, ...extra, at: stubIso() });
 
   return async function paymentsRoute(request, path, url) {
     const method = request.method;

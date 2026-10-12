@@ -2,13 +2,15 @@
 // the states the screens draw, by account (stub-api.mjs). Fictitious data, like the rest of the
 // stub. The real rules live in the api: here only the answers the web reads.
 
+import { STUB_EPOCH, stubIso, stubNow } from './stub-clock.mjs';
+
 const ID = (n) => `0192f4a0-8000-7000-8000-${String(n).padStart(12, '0')}`;
 const DAY = 86_400_000;
-/** The fixed clock of the stub, as in stub-projects.mjs: the review captures read the same. */
-const NOW = Date.parse('2026-10-10T09:00:00.000Z');
+/** The fixed date of the stub (stub-clock.mjs): the data of the screens, read by the review captures. */
+const NOW = STUB_EPOCH;
 const at = (days) => new Date(NOW + days * DAY).toISOString();
-/** From the real time: what a journey writes during the run. */
-const fromNow = (days) => new Date(Date.now() + days * DAY).toISOString();
+/** From the current instant of the stub clock: what a journey writes during the run. */
+const fromNow = (days) => new Date(stubNow() + days * DAY).toISOString();
 
 const REASONS = [
   'spam',
@@ -47,9 +49,8 @@ function standingOf(handle) {
           automatedDetection: false,
           suspensionEndsAt: at(12),
           decidedAt: at(-2),
-          // Compared with the real time by the page: far after the fixed clock, as every date
-          // below that the web compares (the button « Faire appel », a deletion due).
-          appealableUntil: at(3650),
+          // The window of an appeal (183 days, provisional) from the decision.
+          appealableUntil: at(181),
           appeal: null,
         },
         {
@@ -66,7 +67,7 @@ function standingOf(handle) {
           automatedDetection: true,
           suspensionEndsAt: null,
           decidedAt: at(-40),
-          appealableUntil: at(3600),
+          appealableUntil: at(143),
           appeal: {
             id: ID(401),
             decisionId: ID(202),
@@ -94,11 +95,11 @@ function privacyOf(handle, state) {
             id: ID(601),
             status: 'scheduled',
             requestedAt: at(-3),
-            scheduledFor: at(3650),
+            scheduledFor: at(27),
             canceledAt: null,
             completedAt: null,
             blockedBy: null,
-            reminderAt: at(3643),
+            reminderAt: at(20),
           }
         : null;
   }
@@ -157,7 +158,7 @@ const TRANSLATIONS = {
 export function trustRoutes({ origin, accounts, sessionOf, problem, readJson, state }) {
   const own = () => (state().trust ??= { reports: [], privacy: {}, appeals: {} });
   const log = (route, email, extra = {}) =>
-    state().writes.push({ route, email, ...extra, at: new Date().toISOString() });
+    state().writes.push({ route, email, ...extra, at: stubIso() });
   const handleOf = (request) => {
     const email = sessionOf(request);
     return email ? accounts[email].handle : null;
@@ -185,7 +186,7 @@ export function trustRoutes({ origin, accounts, sessionOf, problem, readJson, st
     if (method === 'POST' && path === '/v1/public/reports') {
       const body = await readJson(request);
       log('notice', null, { target: `${body.targetType}:${body.targetId}` });
-      return { status: 201, body: { id: ID(901), receivedAt: new Date().toISOString() } };
+      return { status: 201, body: { id: ID(901), receivedAt: stubIso() } };
     }
     if (
       !path.startsWith('/v1/reports') &&
@@ -211,7 +212,7 @@ export function trustRoutes({ origin, accounts, sessionOf, problem, readJson, st
         reason: body.reason,
         status: 'received',
         outcome: null,
-        createdAt: new Date().toISOString(),
+        createdAt: stubIso(),
         resolvedAt: null,
       };
       own().reports.push(report);
@@ -253,7 +254,7 @@ export function trustRoutes({ origin, accounts, sessionOf, problem, readJson, st
         statement: body.statement,
         status: 'pending',
         outcomeStatement: null,
-        createdAt: new Date().toISOString(),
+        createdAt: stubIso(),
         resolvedAt: null,
       };
       own().appeals[appeal[1]] = created;
@@ -272,7 +273,7 @@ export function trustRoutes({ origin, accounts, sessionOf, problem, readJson, st
         const created = {
           id: ID(503),
           status: 'pending',
-          requestedAt: new Date().toISOString(),
+          requestedAt: stubIso(),
           completedAt: null,
           expiresAt: null,
           sizeBytes: null,
@@ -288,7 +289,7 @@ export function trustRoutes({ origin, accounts, sessionOf, problem, readJson, st
           status: 200,
           body: {
             url: `${origin}/files/export.zip`,
-            expiresAt: new Date(Date.now() + 300_000).toISOString(),
+            expiresAt: stubIso(300_000),
           },
         };
       }
@@ -303,7 +304,7 @@ export function trustRoutes({ origin, accounts, sessionOf, problem, readJson, st
         privacy[handle].erasure = {
           id: ID(602),
           status: 'scheduled',
-          requestedAt: new Date().toISOString(),
+          requestedAt: stubIso(),
           scheduledFor: fromNow(30),
           canceledAt: null,
           completedAt: null,

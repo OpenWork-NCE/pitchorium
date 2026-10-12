@@ -30,6 +30,7 @@
       "entry": [
         "scripts/*.mjs",
         "e2e/support/*.mjs",
+        "e2e/support/stub-clock.cjs",
         "lighthouserc.cjs",
         "playwright.review.config.ts",
         "playwright.marketing.config.ts",

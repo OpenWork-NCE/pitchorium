@@ -4,6 +4,7 @@
 // write is logged (`/__test/writes`); `/__test/newer` sets the count of newer publications.
 import { existsSync, readFileSync } from 'node:fs';
 import { deflateSync } from 'node:zlib';
+import { stubIso, stubNow } from './stub-clock.mjs';
 
 const ID = (n) => `0192f4a0-2000-7000-8000-${String(n).padStart(12, '0')}`;
 const COMMENT_ID = (n) => `0192f4a0-3000-7000-8000-${String(n).padStart(12, '0')}`;
@@ -127,7 +128,7 @@ function post(origin, n, author, fields = {}) {
     featured: false,
     moderation: 'visible',
     // Relative to now: « il y a 1 heure » whatever the day (reference screenshots).
-    createdAt: new Date(Date.now() - n * 3_600_000).toISOString(),
+    createdAt: new Date(stubNow() - n * 3_600_000).toISOString(),
     editedAt: null,
     kind: 'post',
     repostOf: null,
@@ -155,7 +156,7 @@ export function feedItems(origin, authors, viewer) {
         { token: '@kofi-mensah', type: 'member', key: 'kofi-mensah', displayName: 'Kofi Mensah' },
       ],
       images: images(origin, 1),
-      editedAt: new Date(Date.now() - 1_800_000).toISOString(),
+      editedAt: new Date(stubNow() - 1_800_000).toISOString(),
     }),
   );
   push(
@@ -224,7 +225,7 @@ export function feedItems(origin, authors, viewer) {
       author: kofi,
       text: 'Premier palier atteint : la pompe est commandée.',
       images: [],
-      publishedAt: new Date(Date.now() - 10 * 3_600_000).toISOString(),
+      publishedAt: new Date(stubNow() - 10 * 3_600_000).toISOString(),
       editedAt: null,
       project: {
         id: ID(9300),
@@ -268,7 +269,7 @@ function comment(n, author, fields = {}) {
     replyCount: 0,
     viewerIsAuthor: false,
     viewerCanDelete: false,
-    createdAt: new Date(Date.now() - (60 - n) * 60_000).toISOString(),
+    createdAt: new Date(stubNow() - (60 - n) * 60_000).toISOString(),
     editedAt: null,
     ...fields,
   };
@@ -298,7 +299,7 @@ export function contentRoutes({ origin, authors, accounts, sessionOf, problem, r
       item.post ? [item.post, ...(item.post.repostOf ? [item.post.repostOf] : [])] : [],
     );
   const log = (route, email, extra = {}) =>
-    state().writes.push({ route, email, ...extra, at: new Date().toISOString() });
+    state().writes.push({ route, email, ...extra, at: stubIso() });
 
   return async function content(request, path) {
     const method = request.method;
@@ -386,7 +387,7 @@ export function contentRoutes({ origin, authors, accounts, sessionOf, problem, r
         reactions: reactions(0),
         commentCount: 0,
         viewerIsAuthor: true,
-        createdAt: new Date().toISOString(),
+        createdAt: stubIso(),
       });
       return { status: 201, body: created };
     }
@@ -398,7 +399,7 @@ export function contentRoutes({ origin, authors, accounts, sessionOf, problem, r
         status: 200,
         body: {
           items: saved.map((item) => ({
-            savedAt: new Date().toISOString(),
+            savedAt: stubIso(),
             post: { ...item, saved: true },
           })),
           nextCursor: null,
@@ -458,7 +459,7 @@ export function contentRoutes({ origin, authors, accounts, sessionOf, problem, r
         log('post-update', email, { id, body });
         Object.assign(
           target,
-          body.text !== undefined ? { text: body.text, editedAt: new Date().toISOString() } : {},
+          body.text !== undefined ? { text: body.text, editedAt: stubIso() } : {},
           body.commentsDisabled !== undefined ? { commentsDisabled: body.commentsDisabled } : {},
         );
         return { status: 200, body: target };
@@ -490,7 +491,7 @@ export function contentRoutes({ origin, authors, accounts, sessionOf, problem, r
             viewerIsAuthor: true,
             reactions: reactions(0),
             commentCount: 0,
-            createdAt: new Date().toISOString(),
+            createdAt: stubIso(),
           }),
         };
       }
@@ -500,7 +501,7 @@ export function contentRoutes({ origin, authors, accounts, sessionOf, problem, r
           .map((author, index) => ({
             member: author,
             type: ['like', 'bravo', 'insightful'][index],
-            reactedAt: new Date().toISOString(),
+            reactedAt: stubIso(),
           }))
           .filter((item) => !type || item.type === type);
         return { status: 200, body: { items, nextCursor: null } };
@@ -534,13 +535,13 @@ export function contentRoutes({ origin, authors, accounts, sessionOf, problem, r
             parentId: body.parentId ?? null,
             viewerIsAuthor: true,
             viewerCanDelete: true,
-            createdAt: new Date().toISOString(),
+            createdAt: stubIso(),
           }),
         };
       }
       if (rest === '/stats' && method === 'GET') {
         const days = Array.from({ length: 7 }, (_, index) => ({
-          day: new Date(Date.now() - (6 - index) * 86_400_000).toISOString().slice(0, 10),
+          day: new Date(stubNow() - (6 - index) * 86_400_000).toISOString().slice(0, 10),
           uniqueViewers: [4, 9, 6, 14, 11, 18, 7][index],
         }));
         return { status: 200, body: { postId: id, days } };
@@ -574,7 +575,7 @@ export function contentRoutes({ origin, authors, accounts, sessionOf, problem, r
             text: body.text,
             viewerIsAuthor: true,
             viewerCanDelete: true,
-            editedAt: new Date().toISOString(),
+            editedAt: stubIso(),
           }),
         };
       }
