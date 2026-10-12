@@ -97,6 +97,8 @@ export const rightsRequestSchema = z.object({
   /** Legal deadline of the answer: one month (article 12). */
   dueAt: z.iso.datetime(),
   completedAt: z.iso.datetime().nullable(),
+  /** The request got its answer (export ready or expired, erasure done or canceled). */
+  answered: z.boolean(),
   overdue: z.boolean(),
   /** Blocking rule or failure (residues found), null otherwise. */
   detail: z.string().nullable(),

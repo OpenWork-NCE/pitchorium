@@ -287,6 +287,7 @@ describe('privacy', () => {
       kind: 'erasure',
       status: 'completed',
       userId: null,
+      answered: true,
       overdue: false,
     });
     // The export of Kofi went with his account.

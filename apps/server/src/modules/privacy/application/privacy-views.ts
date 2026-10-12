@@ -32,6 +32,7 @@ const DONE = new Set(['ready', 'expired', 'completed', 'canceled']);
 
 export function rightsRequestView(row: RightsRequestRow, now: Date): RightsRequest {
   const dueAt = answerDueAt(row.requestedAt);
+  const answered = DONE.has(row.status);
   return {
     id: row.id,
     kind: row.kind,
@@ -40,7 +41,8 @@ export function rightsRequestView(row: RightsRequestRow, now: Date): RightsReque
     requestedAt: row.requestedAt.toISOString(),
     dueAt: dueAt.toISOString(),
     completedAt: iso(row.completedAt),
-    overdue: !DONE.has(row.status) && dueAt < now,
+    answered,
+    overdue: !answered && dueAt < now,
     detail: row.detail,
   };
 }

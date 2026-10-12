@@ -37750,6 +37750,9 @@
                     }
                   ]
                 },
+                "answered": {
+                  "type": "boolean"
+                },
                 "overdue": {
                   "type": "boolean"
                 },
@@ -37768,6 +37771,7 @@
                 "requestedAt",
                 "dueAt",
                 "completedAt",
+                "answered",
                 "overdue",
                 "detail"
               ],

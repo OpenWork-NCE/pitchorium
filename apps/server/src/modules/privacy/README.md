@@ -34,7 +34,7 @@ identity enregistre en plus l'annuaire des comptes (`registerAccountDirectory`) 
 
 ## Administration
 
-`GET /v1/admin/privacy/requests?kind=` : exports et suppressions, état, échéance légale d'un mois (article 12), retard, blocage ou résidus.
+`GET /v1/admin/privacy/requests?kind=` : exports et suppressions, état, réponse donnée ou non (`answered`), échéance légale d'un mois (article 12), retard, blocage ou résidus.
 
 ## Routes
 
