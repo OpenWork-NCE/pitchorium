@@ -1,6 +1,7 @@
 import { type Page } from '@playwright/test';
 import {
   acceptTerms,
+  adminPage,
   allowConsole,
   choose,
   expect,
@@ -8,6 +9,7 @@ import {
   hydrated,
   linkFromInbox,
   memberPage,
+  MODERATOR_STATE,
   pngImage,
   signUpAndVerify,
   test,
@@ -186,5 +188,61 @@ test.describe('organisations', () => {
       (await page.goto(`/fr/organizations/${name.toLowerCase().replaceAll(' ', '-')}`))?.status(),
     ).toBe(404);
     await context.close();
+  });
+
+  test('a verification granted from the console, then the badge revoked', async ({ browser }) => {
+    test.setTimeout(180_000);
+    const moderator = await adminPage(browser, MODERATOR_STATE);
+    test.skip(!moderator, 'The moderators of the run (demonstration data).');
+    const { page, context } = await memberPage(browser, 'org-granted', { name: 'Ndeye Sarr' });
+    const name = `Coopérative de Podor ${Date.now()}`;
+    await createOrganization(page, name);
+    await page.getByRole('tab', { name: 'Vérification' }).click();
+    await page.locator('input[type="file"]').setInputFiles(await pngImage(page, 800, 800));
+    await expect(page.getByRole('button', { name: 'Envoyer la demande' })).not.toHaveAttribute(
+      'aria-describedby',
+      /.+/,
+      { timeout: 120_000 },
+    );
+    await page
+      .getByRole('textbox', { name: 'Déclaration' })
+      .fill('Coopérative agricole enregistrée à Podor ; j’en suis la présidente.');
+    await page.getByRole('checkbox', { name: /Je certifie/ }).check();
+    await page.getByRole('button', { name: 'Envoyer la demande' }).click();
+    await expect(page.getByText('En cours d’examen', { exact: true })).toBeVisible();
+
+    // A moderator reviews it from the console: the document by a signed address, a motivation.
+    const desk = moderator!.page;
+    await desk.goto('/fr/admin/organizations');
+    await hydrated(desk);
+    await desk.getByRole('link', { name }).click();
+    await hydrated(desk);
+    await expect(desk.getByRole('button', { name: 'Pièce 1' })).toBeVisible();
+    await desk.getByRole('radio', { name: /^Accorder le badge/ }).check();
+    await desk
+      .getByLabel('Motivation')
+      .fill('Récépissé de la coopérative conforme à la déclaration.');
+    await desk.getByRole('button', { name: 'Accorder le badge' }).click();
+    await expect(desk.getByRole('heading', { name: 'Retirer le badge' })).toBeVisible();
+
+    const card = desk.locator('[aria-labelledby="organization-title"]');
+    await expect(card.getByText('Vérifiée', { exact: true })).toBeVisible();
+    // The public page of the organisation shows the badge.
+    await page.goto((await card.getByRole('link', { name }).getAttribute('href'))!);
+    await expect(page.getByLabel(/Organisation vérifiée/).first()).toBeVisible();
+
+    // The badge is revoked with a reason and the name of the organisation typed.
+    await desk
+      .getByLabel('Motif du retrait')
+      .fill('Le récépissé produit a été annulé par la préfecture.');
+    await desk.getByRole('button', { name: 'Retirer le badge' }).click();
+    const confirm = desk.getByRole('alertdialog');
+    await confirm.getByRole('textbox').fill(name);
+    await confirm.getByRole('button', { name: 'Retirer le badge' }).click();
+    await expect(desk.locator('[data-announcer="polite"]')).toHaveText('Badge retiré.');
+    await expect(card.getByText('Retirée', { exact: true })).toBeVisible();
+    await page.reload();
+    await expect(page.getByLabel(/Organisation vérifiée/)).toHaveCount(0);
+    await Promise.all([context.close(), moderator!.context.close()]);
   });
 });
