@@ -1094,7 +1094,8 @@
         "confirmTitle": "Rembourser {{amount}} ?",
         "confirmDescription": "Le prestataire rend l’argent au contributeur : un remboursement ne s’annule pas. Il est inscrit au ledger et au journal d’audit.",
         "phrase": "REMBOURSER",
-        "done": "Remboursement demandé."
+        "done": "Remboursement demandé.",
+        "renewed": "Connexion renouvelée : indiquez de nouveau le montant et le motif, voyez l’effet, puis confirmez le remboursement."
       },
       "decision": {
         "decision": "Décision",

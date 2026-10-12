@@ -146,9 +146,18 @@ test.describe('console of the administration', () => {
     expect(back).toContain(`resume=refund%3A${ID(501)}`);
     await context.clearCookies({ name: 'stub-stale' });
     await page.goto(back ?? '');
-    const resumed = page.getByRole('alertdialog', { name: /Rembourser/ });
-    await resumed.getByRole('textbox').fill('REMBOURSER');
-    await resumed.getByRole('button', { name: 'Rembourser' }).click();
+    await page.waitForLoadState('networkidle');
+    // Nothing of the refund is kept in the browser: the panel asks for it again.
+    await expect(refund.getByText(/Connexion renouvelée/)).toBeVisible();
+    await expect(page.getByRole('alertdialog')).toHaveCount(0);
+    await refund.getByRole('button', { name: 'Une partie' }).click();
+    await refund.getByLabel('Montant à rembourser').fill('30');
+    await refund.getByLabel('Motif').fill('Demande du contributeur, doublon de paiement.');
+    await refund.getByRole('button', { name: 'Voir l’effet' }).click();
+    await submit.click();
+    const confirmAgain = page.getByRole('alertdialog', { name: /Rembourser 30,00 € \?/ });
+    await confirmAgain.getByRole('textbox').fill('REMBOURSER');
+    await confirmAgain.getByRole('button', { name: 'Rembourser' }).click();
     await expect(page.locator('[data-announcer="polite"]')).toHaveText('Remboursement demandé.');
     const refunds = (await stub(request).writes()).filter((write) => write.route === 'refund');
     expect(refunds).toHaveLength(1);

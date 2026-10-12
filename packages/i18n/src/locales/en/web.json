@@ -1094,7 +1094,8 @@
         "confirmTitle": "Refund {{amount}}?",
         "confirmDescription": "The provider gives the money back to the contributor: a refund cannot be undone. It is written to the ledger and the audit log.",
         "phrase": "REFUND",
-        "done": "Refund requested."
+        "done": "Refund requested.",
+        "renewed": "Sign-in renewed: enter the amount and the reason again, see the effect, then confirm the refund."
       },
       "decision": {
         "decision": "Decision",

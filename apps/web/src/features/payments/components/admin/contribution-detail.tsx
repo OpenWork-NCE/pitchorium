@@ -299,7 +299,10 @@ function RefundPanel({
   const [error, setError] = useState<string | null>(null);
   // One key per intention: a second click or a lost answer never refunds twice.
   const [key, setKey] = useState(() => crypto.randomUUID());
-  useResumeEffect(sensitive.resumed, () => setConfirming(true), sensitive.acknowledge);
+  // Back from the new sign-in: the amount, the reason and the effect are not kept in the browser
+  // (no state of a payment there), so the panel asks for them again rather than confirming.
+  const [renewed, setRenewed] = useState(false);
+  useResumeEffect(sensitive.resumed, () => setRenewed(true), sensitive.acknowledge);
   const requested =
     partial && amount ? { amountMinor: amount, currency: contribution.amount.currency } : undefined;
   const money = (value: { amountMinor: string; currency: string }) =>
@@ -435,7 +438,13 @@ function RefundPanel({
           </dl>
         </div>
       ) : null}
-      <RecentSessionHint />
+      {renewed ? (
+        <p role="status" className="text-sm">
+          {t('renewed')}
+        </p>
+      ) : (
+        <RecentSessionHint />
+      )}
       {sensitive.stale ? <ReauthenticationNotice resumeKey={`refund:${contribution.id}`} /> : null}
       {error ? (
         <p role="alert" className="text-sm text-danger">
