@@ -148,6 +148,8 @@ export const missionCardSchema = z.object({
 
 export const missionSchema = missionCardSchema.extend({
   description: z.string(),
+  /** Language of the description, detected (ISO 639-1), null when undetermined (§8.3). */
+  language: z.string().nullable(),
   skills: z.array(z.string()),
   desiredBy: z.string().nullable(),
   capacity: z.number().int(),

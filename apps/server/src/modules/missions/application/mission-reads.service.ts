@@ -8,7 +8,7 @@ import type {
   MissionListQuery,
   MissionView,
 } from '@pitchorium/contracts';
-import { decodeKeyset, encodeKeyset } from '../../../platform/kernel';
+import { decodeKeyset, detectLanguage, encodeKeyset } from '../../../platform/kernel';
 import { EngagementFacade } from '../../engagement';
 import { NetworkFacade } from '../../network';
 import { ProfilesFacade } from '../../profiles';
@@ -171,6 +171,7 @@ export class MissionReadsService {
     return {
       ...cardView!,
       description: mission.description,
+      language: detectLanguage(mission.description),
       skills: mission.skills,
       desiredBy: mission.desiredBy,
       capacity: mission.capacity,

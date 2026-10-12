@@ -67618,6 +67618,12 @@
           "description": {
             "type": "string"
           },
+          "language": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
           "skills": {
             "type": "array",
             "items": {
@@ -67717,6 +67723,7 @@
           "author",
           "publishedAt",
           "description",
+          "language",
           "skills",
           "desiredBy",
           "capacity",

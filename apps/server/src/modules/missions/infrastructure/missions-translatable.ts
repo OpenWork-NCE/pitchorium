@@ -2,6 +2,7 @@ import { Injectable, type OnModuleInit } from '@nestjs/common';
 import { LocalizationFacade } from '../../localization';
 import { MissionReadsService } from '../application/mission-reads.service';
 import { MissionsRepository } from '../application/ports';
+import { detectLanguage } from '../../../platform/kernel';
 
 /** Title and description of a mission the reader sees, for the translation on demand (§8.3). */
 @Injectable()
@@ -26,7 +27,7 @@ export class MissionsTranslatable implements OnModuleInit {
         return {
           key: mission.id,
           fields: { title: mission.title, description: mission.description },
-          language: null,
+          language: detectLanguage(mission.description),
         };
       },
     });
