@@ -28,7 +28,7 @@ Autorisations (cahier des charges §7.3, §13) : refus par défaut, registre cen
 
 ## Façade publique (`index.ts`)
 
-`AccessFacade` (`rolesOf`, `trustLevels`, `assertAllowed` : une seconde action vérifiée dans une route, quand le refus dépend de la requête, `registerPrerequisiteProvider`, `registerKycStatusProvider`, `registerAccountStatusSource`), `CurrentActor`, type `Actor`, interfaces `PrerequisiteProvider`, `KycStatusSource` et `AccountStatusSource`, `SessionHandshakeGuard`, `AdminBootstrapService` (commande), événements `RoleGranted` et `RoleRevoked`.
+`AccessFacade` (`rolesOf`, `holdersOf` (membres d’un rôle de plateforme), `trustLevels`, `assertAllowed` : une seconde action vérifiée dans une route, quand le refus dépend de la requête, `registerPrerequisiteProvider`, `registerKycStatusProvider`, `registerAccountStatusSource`), `CurrentActor`, type `Actor`, interfaces `PrerequisiteProvider`, `KycStatusSource` et `AccountStatusSource`, `SessionHandshakeGuard`, `AdminBootstrapService` (commande), événements `RoleGranted` et `RoleRevoked`.
 
 ## Événements émis
 

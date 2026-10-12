@@ -1,10 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import type { Action, Role, TrustLevels } from '@pitchorium/contracts';
+import type { Action, AssignableRole, Role, TrustLevels } from '@pitchorium/contracts';
 import type { Actor } from '../domain/actor';
 import { AccessService, selfResource } from './access.service';
 import { RegisteredAccountStatusProvider } from './account-status.registry';
 import { RegisteredKycStatusProvider } from './kyc-status.registry';
-import type { AccountStatusSource, KycStatusSource, PrerequisiteProvider } from './ports';
+import {
+  type AccountStatusSource,
+  type KycStatusSource,
+  type PrerequisiteProvider,
+  RoleRepository,
+} from './ports';
 import { PrerequisiteRegistry } from './prerequisite.registry';
 
 /** Public facade of the access module, for the other modules. */
@@ -15,10 +20,16 @@ export class AccessFacade {
     private readonly registry: PrerequisiteRegistry,
     private readonly kyc: RegisteredKycStatusProvider,
     private readonly accountStatus: RegisteredAccountStatusProvider,
+    private readonly roles: RoleRepository,
   ) {}
 
   rolesOf(userId: string): Promise<Role[]> {
     return this.access.rolesOf(userId);
+  }
+
+  /** Members holding any of the platform roles. */
+  holdersOf(roles: readonly AssignableRole[]): Promise<string[]> {
+    return this.roles.holders(roles);
   }
 
   trustLevels(userId: string, emailVerified: boolean): Promise<TrustLevels> {

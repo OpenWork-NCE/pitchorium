@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { type AssignableRole, assignableRoleSchema } from '@pitchorium/contracts';
-import { and, count, eq } from '@pitchorium/db/orm';
+import { and, asc, count, eq, inArray } from '@pitchorium/db/orm';
 import { accessRoleAssignments } from '@pitchorium/db/schemas/access';
 import { TransactionManager } from '../../../platform/database';
 import { RoleRepository, type StoredRoleAssignment } from '../application/ports';
@@ -49,5 +49,14 @@ export class DrizzleRoleRepository extends RoleRepository {
       .from(accessRoleAssignments)
       .where(eq(accessRoleAssignments.role, role));
     return row?.value ?? 0;
+  }
+
+  async holders(roles: readonly AssignableRole[]): Promise<string[]> {
+    const rows = await this.transactions.executor
+      .selectDistinct({ userId: accessRoleAssignments.userId })
+      .from(accessRoleAssignments)
+      .where(inArray(accessRoleAssignments.role, [...roles]))
+      .orderBy(asc(accessRoleAssignments.userId));
+    return rows.map((row) => row.userId);
   }
 }

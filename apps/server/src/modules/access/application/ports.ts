@@ -13,6 +13,8 @@ export abstract class RoleRepository {
   /** False when the role was not assigned. */
   abstract revoke(userId: string, role: AssignableRole): Promise<boolean>;
   abstract countHolders(role: AssignableRole): Promise<number>;
+  /** Members holding any of the roles (the moderators a case may be assigned to). */
+  abstract holders(roles: readonly AssignableRole[]): Promise<string[]>;
 }
 
 /**
