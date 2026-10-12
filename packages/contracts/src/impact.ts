@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { uuidV7Schema } from './ids.js';
+import { localeSchema } from './locale.js';
 
 /** Key of a criterion or of a level of its answer scale. */
 export const impactKeySchema = z.string().regex(/^[a-z][a-z0-9_]{0,47}$/);
@@ -12,6 +13,18 @@ export const impactLabelKeySchema = z
   .string()
   .max(128)
   .regex(/^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)+$/);
+
+/**
+ * Labels written by an administrator in each language of the interface, read before the key
+ * of the catalogue (ADR 0173): a methodology is authored without a deployment. A version is
+ * published only once every active language has a label for each criterion, description and
+ * level, stored here or in the `reference` catalogue (IMPACT_LABELS_MISSING).
+ */
+export const impactLabelsSchema = z.partialRecord(localeSchema, z.string().trim().min(1).max(200));
+export const impactDescriptionsSchema = z.partialRecord(
+  localeSchema,
+  z.string().trim().min(1).max(1_000),
+);
 
 /** Levels of a score (section 12): emerging below 40, moderate from 40 to 69, strong from 70. */
 export const IMPACT_LEVELS = ['emerging', 'moderate', 'strong'] as const;
@@ -38,6 +51,7 @@ const uniqueBy = <T>(values: readonly T[], key: (value: T) => unknown) =>
 export const impactScaleLevelSchema = z.object({
   key: impactKeySchema,
   labelKey: impactLabelKeySchema,
+  labels: impactLabelsSchema.optional(),
   value: z.number().int().min(0).max(100),
 });
 
@@ -45,6 +59,8 @@ export const impactCriterionSchema = z.object({
   key: impactKeySchema,
   labelKey: impactLabelKeySchema,
   descriptionKey: impactLabelKeySchema,
+  labels: impactLabelsSchema.optional(),
+  descriptions: impactDescriptionsSchema.optional(),
   /** Relative weight of the criterion in the score. */
   weight: z.number().int().min(1).max(100),
   scale: z
@@ -92,6 +108,26 @@ export const impactMethodologySchema = z.object({
 
 export const impactMethodologyIdParamsSchema = z.object({ methodologyId: uuidV7Schema });
 
+/** A label an active language still lacks: neither stored nor in the `reference` catalogue. */
+export const impactMissingLabelSchema = z.object({
+  criterionKey: impactKeySchema,
+  /** The level of the scale, null for the criterion itself. */
+  levelKey: impactKeySchema.nullable(),
+  field: z.enum(['label', 'description']),
+  locale: localeSchema,
+});
+
+/** A version as administrators manage it: its labels checked against the active languages. */
+export const adminImpactMethodologySchema = impactMethodologySchema.extend({
+  labelCoverage: z.object({
+    locales: z.array(localeSchema),
+    missing: z.array(impactMissingLabelSchema),
+  }),
+});
+export const adminImpactMethodologyListSchema = z.object({
+  items: z.array(adminImpactMethodologySchema),
+});
+
 export const submitImpactAssessmentRequestSchema = z.object({
   /** Version the answers were given for: it must still be the published one. */
   methodologyId: uuidV7Schema,
@@ -110,9 +146,12 @@ export const impactCriterionDetailSchema = z.object({
   criterionKey: impactKeySchema,
   labelKey: impactLabelKeySchema,
   descriptionKey: impactLabelKeySchema,
+  labels: impactLabelsSchema.optional(),
+  descriptions: impactDescriptionsSchema.optional(),
   weight: z.number().int(),
   answerKey: impactKeySchema,
   answerLabelKey: impactLabelKeySchema,
+  answerLabels: impactLabelsSchema.optional(),
   value: z.number().int(),
   maxValue: z.number().int(),
 });
@@ -137,6 +176,16 @@ export const impactAssessmentSchema = z.object({
 
 export const impactAssessmentHistorySchema = z.object({ items: z.array(impactAssessmentSchema) });
 
+/** The score some answers would give with a version, by the rules of an assessment. */
+export const impactScorePreviewRequestSchema = z.object({
+  answers: z.record(impactKeySchema, impactKeySchema),
+});
+export const impactScorePreviewSchema = z.object({
+  score: z.number().int().min(0).max(100),
+  level: impactLevelSchema,
+  details: z.array(impactCriterionDetailSchema),
+});
+
 export type ImpactLevel = z.infer<typeof impactLevelSchema>;
 export type ImpactMethodologyStatus = z.infer<typeof impactMethodologyStatusSchema>;
 export type ImpactSubjectType = z.infer<typeof impactSubjectTypeSchema>;
@@ -149,3 +198,8 @@ export type ImpactMethodologyRef = z.infer<typeof impactMethodologyRefSchema>;
 export type SubmitImpactAssessmentRequest = z.infer<typeof submitImpactAssessmentRequestSchema>;
 export type ImpactCriterionDetail = z.infer<typeof impactCriterionDetailSchema>;
 export type ImpactAssessment = z.infer<typeof impactAssessmentSchema>;
+export type ImpactLabels = z.infer<typeof impactLabelsSchema>;
+export type ImpactMissingLabel = z.infer<typeof impactMissingLabelSchema>;
+export type AdminImpactMethodology = z.infer<typeof adminImpactMethodologySchema>;
+export type ImpactScorePreviewRequest = z.infer<typeof impactScorePreviewRequestSchema>;
+export type ImpactScorePreview = z.infer<typeof impactScorePreviewSchema>;

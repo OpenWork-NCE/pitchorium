@@ -25,6 +25,7 @@ import {
   MethodologiesControllerArchiveMutationVariables,
   MethodologiesControllerCreateMutationVariables,
   MethodologiesControllerDeleteMutationVariables,
+  MethodologiesControllerPreviewMutationVariables,
   MethodologiesControllerPublishMutationVariables,
   MethodologiesControllerUpdateMutationVariables,
   MyAssessmentsControllerSubmitMutationVariables,
@@ -33,6 +34,7 @@ import {
   getMethodologiesControllerDeleteMutationOptions,
   getMethodologiesControllerGetQueryOptions,
   getMethodologiesControllerListQueryOptions,
+  getMethodologiesControllerPreviewMutationOptions,
   getMethodologiesControllerPublishMutationOptions,
   getMethodologiesControllerPublishedQueryOptions,
   getMethodologiesControllerUpdateMutationOptions,
@@ -43,6 +45,7 @@ import {
   methodologiesControllerDelete,
   methodologiesControllerGet,
   methodologiesControllerList,
+  methodologiesControllerPreview,
   methodologiesControllerPublish,
   methodologiesControllerPublished,
   methodologiesControllerUpdate,
@@ -439,6 +442,32 @@ export const useMethodologiesControllerArchive = <
   TContext
 > => {
   return useMutation(getMethodologiesControllerArchiveMutationOptions(options), queryClient);
+};
+
+/**
+ * @summary Preview
+ */
+export const useMethodologiesControllerPreview = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof methodologiesControllerPreview>>,
+      TError,
+      MethodologiesControllerPreviewMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof methodologiesControllerPreview>>,
+  TError,
+  MethodologiesControllerPreviewMutationVariables,
+  TContext
+> => {
+  return useMutation(getMethodologiesControllerPreviewMutationOptions(options), queryClient);
 };
 
 export function useMyAssessmentsControllerHistory<

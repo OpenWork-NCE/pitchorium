@@ -147,6 +147,7 @@
   "CONTENT_ORGANIZATION_ROLE_REQUIRED": "Only owners and admins publish on behalf of the organization.",
   "IMPACT_METHODOLOGY_UNAVAILABLE": "No impact methodology is published yet.",
   "IMPACT_METHODOLOGY_NOT_FOUND": "Methodology version not found.",
+  "IMPACT_LABELS_MISSING": "Every criterion, its description and every level need a label in every active language before the publication.",
   "IMPACT_METHODOLOGY_NOT_DRAFT": "A published or archived version can no longer change.",
   "IMPACT_METHODOLOGY_NOT_PUBLISHED": "Only the published version can be archived.",
   "IMPACT_METHODOLOGY_OUTDATED": "The methodology changed since the questionnaire was opened: start the assessment again.",

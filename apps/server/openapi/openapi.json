@@ -13361,6 +13361,7 @@
           "RATE_LIMITED",
           "IMPACT_METHODOLOGY_UNAVAILABLE",
           "IMPACT_METHODOLOGY_NOT_FOUND",
+          "IMPACT_LABELS_MISSING",
           "IMPACT_METHODOLOGY_NOT_DRAFT",
           "IMPACT_METHODOLOGY_NOT_PUBLISHED",
           "IMPACT_METHODOLOGY_OUTDATED",
@@ -13380,7 +13381,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/MethodologiesDto_Output"
+                  "$ref": "#/components/schemas/AdminMethodologiesDto_Output"
                 }
               }
             }
@@ -13435,6 +13436,7 @@
           "RATE_LIMITED",
           "IMPACT_METHODOLOGY_UNAVAILABLE",
           "IMPACT_METHODOLOGY_NOT_FOUND",
+          "IMPACT_LABELS_MISSING",
           "IMPACT_METHODOLOGY_NOT_DRAFT",
           "IMPACT_METHODOLOGY_NOT_PUBLISHED",
           "IMPACT_METHODOLOGY_OUTDATED",
@@ -13475,7 +13477,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/MethodologyDto_Output"
+                  "$ref": "#/components/schemas/AdminMethodologyDto_Output"
                 }
               }
             }
@@ -13550,6 +13552,7 @@
           "RATE_LIMITED",
           "IMPACT_METHODOLOGY_UNAVAILABLE",
           "IMPACT_METHODOLOGY_NOT_FOUND",
+          "IMPACT_LABELS_MISSING",
           "IMPACT_METHODOLOGY_NOT_DRAFT",
           "IMPACT_METHODOLOGY_NOT_PUBLISHED",
           "IMPACT_METHODOLOGY_OUTDATED",
@@ -13580,7 +13583,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/MethodologyDto_Output"
+                  "$ref": "#/components/schemas/AdminMethodologyDto_Output"
                 }
               }
             }
@@ -13643,6 +13646,7 @@
           "RATE_LIMITED",
           "IMPACT_METHODOLOGY_UNAVAILABLE",
           "IMPACT_METHODOLOGY_NOT_FOUND",
+          "IMPACT_LABELS_MISSING",
           "IMPACT_METHODOLOGY_NOT_DRAFT",
           "IMPACT_METHODOLOGY_NOT_PUBLISHED",
           "IMPACT_METHODOLOGY_OUTDATED",
@@ -13681,7 +13685,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/MethodologyDto_Output"
+                  "$ref": "#/components/schemas/AdminMethodologyDto_Output"
                 }
               }
             }
@@ -13748,6 +13752,7 @@
           "RATE_LIMITED",
           "IMPACT_METHODOLOGY_UNAVAILABLE",
           "IMPACT_METHODOLOGY_NOT_FOUND",
+          "IMPACT_LABELS_MISSING",
           "IMPACT_METHODOLOGY_NOT_DRAFT",
           "IMPACT_METHODOLOGY_NOT_PUBLISHED",
           "IMPACT_METHODOLOGY_OUTDATED",
@@ -13832,6 +13837,7 @@
           "RATE_LIMITED",
           "IMPACT_METHODOLOGY_UNAVAILABLE",
           "IMPACT_METHODOLOGY_NOT_FOUND",
+          "IMPACT_LABELS_MISSING",
           "IMPACT_METHODOLOGY_NOT_DRAFT",
           "IMPACT_METHODOLOGY_NOT_PUBLISHED",
           "IMPACT_METHODOLOGY_OUTDATED",
@@ -13862,7 +13868,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/MethodologyDto_Output"
+                  "$ref": "#/components/schemas/AdminMethodologyDto_Output"
                 }
               }
             }
@@ -13925,6 +13931,7 @@
           "RATE_LIMITED",
           "IMPACT_METHODOLOGY_UNAVAILABLE",
           "IMPACT_METHODOLOGY_NOT_FOUND",
+          "IMPACT_LABELS_MISSING",
           "IMPACT_METHODOLOGY_NOT_DRAFT",
           "IMPACT_METHODOLOGY_NOT_PUBLISHED",
           "IMPACT_METHODOLOGY_OUTDATED",
@@ -13955,7 +13962,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/MethodologyDto_Output"
+                  "$ref": "#/components/schemas/AdminMethodologyDto_Output"
                 }
               }
             }
@@ -14018,6 +14025,115 @@
           "RATE_LIMITED",
           "IMPACT_METHODOLOGY_UNAVAILABLE",
           "IMPACT_METHODOLOGY_NOT_FOUND",
+          "IMPACT_LABELS_MISSING",
+          "IMPACT_METHODOLOGY_NOT_DRAFT",
+          "IMPACT_METHODOLOGY_NOT_PUBLISHED",
+          "IMPACT_METHODOLOGY_OUTDATED",
+          "IMPACT_ANSWERS_INVALID",
+          "IMPACT_DEMO_REFUSED"
+        ],
+        "x-access": "impact.methodology.manage"
+      }
+    },
+    "/v1/admin/impact/methodologies/{methodologyId}/preview": {
+      "post": {
+        "operationId": "MethodologiesController_preview",
+        "parameters": [
+          {
+            "name": "methodologyId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScorePreviewRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScorePreviewDto_Output"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error (RFC 9457 problem details)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "VALIDATION_FAILED": {
+                    "$ref": "#/components/examples/VALIDATION_FAILED"
+                  },
+                  "PAYLOAD_TOO_LARGE": {
+                    "$ref": "#/components/examples/PAYLOAD_TOO_LARGE"
+                  },
+                  "UNAUTHENTICATED": {
+                    "$ref": "#/components/examples/UNAUTHENTICATED"
+                  },
+                  "FORBIDDEN": {
+                    "$ref": "#/components/examples/FORBIDDEN"
+                  },
+                  "ACCESS_ORIGIN_NOT_ALLOWED": {
+                    "$ref": "#/components/examples/ACCESS_ORIGIN_NOT_ALLOWED"
+                  },
+                  "ACCESS_PREREQUISITES_MISSING": {
+                    "$ref": "#/components/examples/ACCESS_PREREQUISITES_MISSING"
+                  },
+                  "ACCESS_ACCOUNT_SUSPENDED": {
+                    "$ref": "#/components/examples/ACCESS_ACCOUNT_SUSPENDED"
+                  },
+                  "NOT_FOUND": {
+                    "$ref": "#/components/examples/NOT_FOUND"
+                  },
+                  "RATE_LIMITED": {
+                    "$ref": "#/components/examples/RATE_LIMITED"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "tags": [
+          "impact"
+        ],
+        "summary": "Preview",
+        "description": "Action `impact.methodology.manage` (session cookie).\n\nRoles: admin, with 2FA.\n\nErrors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.",
+        "x-error-codes": [
+          "VALIDATION_FAILED",
+          "PAYLOAD_TOO_LARGE",
+          "UNAUTHENTICATED",
+          "FORBIDDEN",
+          "ACCESS_ORIGIN_NOT_ALLOWED",
+          "ACCESS_PREREQUISITES_MISSING",
+          "ACCESS_ACCOUNT_SUSPENDED",
+          "NOT_FOUND",
+          "RATE_LIMITED",
+          "IMPACT_METHODOLOGY_UNAVAILABLE",
+          "IMPACT_METHODOLOGY_NOT_FOUND",
+          "IMPACT_LABELS_MISSING",
           "IMPACT_METHODOLOGY_NOT_DRAFT",
           "IMPACT_METHODOLOGY_NOT_PUBLISHED",
           "IMPACT_METHODOLOGY_OUTDATED",
@@ -14092,6 +14208,7 @@
           "RATE_LIMITED",
           "IMPACT_METHODOLOGY_UNAVAILABLE",
           "IMPACT_METHODOLOGY_NOT_FOUND",
+          "IMPACT_LABELS_MISSING",
           "IMPACT_METHODOLOGY_NOT_DRAFT",
           "IMPACT_METHODOLOGY_NOT_PUBLISHED",
           "IMPACT_METHODOLOGY_OUTDATED",
@@ -14207,6 +14324,7 @@
           "RATE_LIMITED",
           "IMPACT_METHODOLOGY_UNAVAILABLE",
           "IMPACT_METHODOLOGY_NOT_FOUND",
+          "IMPACT_LABELS_MISSING",
           "IMPACT_METHODOLOGY_NOT_DRAFT",
           "IMPACT_METHODOLOGY_NOT_PUBLISHED",
           "IMPACT_METHODOLOGY_OUTDATED",
@@ -38157,6 +38275,7 @@
                   "CONTENT_ORGANIZATION_ROLE_REQUIRED",
                   "IMPACT_METHODOLOGY_UNAVAILABLE",
                   "IMPACT_METHODOLOGY_NOT_FOUND",
+                  "IMPACT_LABELS_MISSING",
                   "IMPACT_METHODOLOGY_NOT_DRAFT",
                   "IMPACT_METHODOLOGY_NOT_PUBLISHED",
                   "IMPACT_METHODOLOGY_OUTDATED",
@@ -38617,6 +38736,7 @@
                         "CONTENT_ORGANIZATION_ROLE_REQUIRED",
                         "IMPACT_METHODOLOGY_UNAVAILABLE",
                         "IMPACT_METHODOLOGY_NOT_FOUND",
+                        "IMPACT_LABELS_MISSING",
                         "IMPACT_METHODOLOGY_NOT_DRAFT",
                         "IMPACT_METHODOLOGY_NOT_PUBLISHED",
                         "IMPACT_METHODOLOGY_OUTDATED",
@@ -39530,6 +39650,42 @@
                           "maxLength": 128,
                           "pattern": "^[a-zA-Z][a-zA-Z0-9_]*(\\.[a-zA-Z0-9_]+)+$"
                         },
+                        "labels": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string",
+                            "enum": [
+                              "fr",
+                              "en",
+                              "sw",
+                              "wo",
+                              "ln"
+                            ]
+                          },
+                          "additionalProperties": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 200
+                          }
+                        },
+                        "descriptions": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string",
+                            "enum": [
+                              "fr",
+                              "en",
+                              "sw",
+                              "wo",
+                              "ln"
+                            ]
+                          },
+                          "additionalProperties": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 1000
+                          }
+                        },
                         "weight": {
                           "type": "integer",
                           "minimum": -9007199254740991,
@@ -39543,6 +39699,24 @@
                           "type": "string",
                           "maxLength": 128,
                           "pattern": "^[a-zA-Z][a-zA-Z0-9_]*(\\.[a-zA-Z0-9_]+)+$"
+                        },
+                        "answerLabels": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string",
+                            "enum": [
+                              "fr",
+                              "en",
+                              "sw",
+                              "wo",
+                              "ln"
+                            ]
+                          },
+                          "additionalProperties": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 200
+                          }
                         },
                         "value": {
                           "type": "integer",
@@ -40965,6 +41139,42 @@
                           "maxLength": 128,
                           "pattern": "^[a-zA-Z][a-zA-Z0-9_]*(\\.[a-zA-Z0-9_]+)+$"
                         },
+                        "labels": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string",
+                            "enum": [
+                              "fr",
+                              "en",
+                              "sw",
+                              "wo",
+                              "ln"
+                            ]
+                          },
+                          "additionalProperties": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 200
+                          }
+                        },
+                        "descriptions": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string",
+                            "enum": [
+                              "fr",
+                              "en",
+                              "sw",
+                              "wo",
+                              "ln"
+                            ]
+                          },
+                          "additionalProperties": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 1000
+                          }
+                        },
                         "weight": {
                           "type": "integer",
                           "minimum": -9007199254740991,
@@ -40978,6 +41188,24 @@
                           "type": "string",
                           "maxLength": 128,
                           "pattern": "^[a-zA-Z][a-zA-Z0-9_]*(\\.[a-zA-Z0-9_]+)+$"
+                        },
+                        "answerLabels": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string",
+                            "enum": [
+                              "fr",
+                              "en",
+                              "sw",
+                              "wo",
+                              "ln"
+                            ]
+                          },
+                          "additionalProperties": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 200
+                          }
                         },
                         "value": {
                           "type": "integer",
@@ -52221,6 +52449,42 @@
                   "maxLength": 128,
                   "pattern": "^[a-zA-Z][a-zA-Z0-9_]*(\\.[a-zA-Z0-9_]+)+$"
                 },
+                "labels": {
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string",
+                    "enum": [
+                      "fr",
+                      "en",
+                      "sw",
+                      "wo",
+                      "ln"
+                    ]
+                  },
+                  "additionalProperties": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200
+                  }
+                },
+                "descriptions": {
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string",
+                    "enum": [
+                      "fr",
+                      "en",
+                      "sw",
+                      "wo",
+                      "ln"
+                    ]
+                  },
+                  "additionalProperties": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 1000
+                  }
+                },
                 "weight": {
                   "type": "integer",
                   "minimum": 1,
@@ -52241,6 +52505,24 @@
                         "type": "string",
                         "maxLength": 128,
                         "pattern": "^[a-zA-Z][a-zA-Z0-9_]*(\\.[a-zA-Z0-9_]+)+$"
+                      },
+                      "labels": {
+                        "type": "object",
+                        "propertyNames": {
+                          "type": "string",
+                          "enum": [
+                            "fr",
+                            "en",
+                            "sw",
+                            "wo",
+                            "ln"
+                          ]
+                        },
+                        "additionalProperties": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 200
+                        }
                       },
                       "value": {
                         "type": "integer",
@@ -52310,7 +52592,7 @@
         ],
         "additionalProperties": false
       },
-      "MethodologiesDto_Output": {
+      "AdminMethodologiesDto_Output": {
         "type": "object",
         "properties": {
           "items": {
@@ -52361,6 +52643,42 @@
                         "maxLength": 128,
                         "pattern": "^[a-zA-Z][a-zA-Z0-9_]*(\\.[a-zA-Z0-9_]+)+$"
                       },
+                      "labels": {
+                        "type": "object",
+                        "propertyNames": {
+                          "type": "string",
+                          "enum": [
+                            "fr",
+                            "en",
+                            "sw",
+                            "wo",
+                            "ln"
+                          ]
+                        },
+                        "additionalProperties": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 200
+                        }
+                      },
+                      "descriptions": {
+                        "type": "object",
+                        "propertyNames": {
+                          "type": "string",
+                          "enum": [
+                            "fr",
+                            "en",
+                            "sw",
+                            "wo",
+                            "ln"
+                          ]
+                        },
+                        "additionalProperties": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 1000
+                        }
+                      },
                       "weight": {
                         "type": "integer",
                         "minimum": 1,
@@ -52381,6 +52699,24 @@
                               "type": "string",
                               "maxLength": 128,
                               "pattern": "^[a-zA-Z][a-zA-Z0-9_]*(\\.[a-zA-Z0-9_]+)+$"
+                            },
+                            "labels": {
+                              "type": "object",
+                              "propertyNames": {
+                                "type": "string",
+                                "enum": [
+                                  "fr",
+                                  "en",
+                                  "sw",
+                                  "wo",
+                                  "ln"
+                                ]
+                              },
+                              "additionalProperties": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 200
+                              }
                             },
                             "value": {
                               "type": "integer",
@@ -52435,6 +52771,76 @@
                       "type": "null"
                     }
                   ]
+                },
+                "labelCoverage": {
+                  "type": "object",
+                  "properties": {
+                    "locales": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "enum": [
+                          "fr",
+                          "en",
+                          "sw",
+                          "wo",
+                          "ln"
+                        ]
+                      }
+                    },
+                    "missing": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "criterionKey": {
+                            "type": "string",
+                            "pattern": "^[a-z][a-z0-9_]{0,47}$"
+                          },
+                          "levelKey": {
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "pattern": "^[a-z][a-z0-9_]{0,47}$"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "field": {
+                            "type": "string",
+                            "enum": [
+                              "label",
+                              "description"
+                            ]
+                          },
+                          "locale": {
+                            "type": "string",
+                            "enum": [
+                              "fr",
+                              "en",
+                              "sw",
+                              "wo",
+                              "ln"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "criterionKey",
+                          "levelKey",
+                          "field",
+                          "locale"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "locales",
+                    "missing"
+                  ],
+                  "additionalProperties": false
                 }
               },
               "required": [
@@ -52446,7 +52852,8 @@
                 "criteria",
                 "createdAt",
                 "publishedAt",
-                "archivedAt"
+                "archivedAt",
+                "labelCoverage"
               ],
               "additionalProperties": false
             }
@@ -52486,6 +52893,42 @@
                   "maxLength": 128,
                   "pattern": "^[a-zA-Z][a-zA-Z0-9_]*(\\.[a-zA-Z0-9_]+)+$"
                 },
+                "labels": {
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string",
+                    "enum": [
+                      "fr",
+                      "en",
+                      "sw",
+                      "wo",
+                      "ln"
+                    ]
+                  },
+                  "additionalProperties": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200
+                  }
+                },
+                "descriptions": {
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string",
+                    "enum": [
+                      "fr",
+                      "en",
+                      "sw",
+                      "wo",
+                      "ln"
+                    ]
+                  },
+                  "additionalProperties": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 1000
+                  }
+                },
                 "weight": {
                   "type": "integer",
                   "minimum": 1,
@@ -52506,6 +52949,24 @@
                         "type": "string",
                         "maxLength": 128,
                         "pattern": "^[a-zA-Z][a-zA-Z0-9_]*(\\.[a-zA-Z0-9_]+)+$"
+                      },
+                      "labels": {
+                        "type": "object",
+                        "propertyNames": {
+                          "type": "string",
+                          "enum": [
+                            "fr",
+                            "en",
+                            "sw",
+                            "wo",
+                            "ln"
+                          ]
+                        },
+                        "additionalProperties": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 200
+                        }
                       },
                       "value": {
                         "type": "integer",
@@ -52536,6 +52997,266 @@
           "criteria"
         ]
       },
+      "AdminMethodologyDto_Output": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$"
+          },
+          "version": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "name": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "published",
+              "archived"
+            ]
+          },
+          "demo": {
+            "type": "boolean"
+          },
+          "criteria": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "key": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9_]{0,47}$"
+                },
+                "labelKey": {
+                  "type": "string",
+                  "maxLength": 128,
+                  "pattern": "^[a-zA-Z][a-zA-Z0-9_]*(\\.[a-zA-Z0-9_]+)+$"
+                },
+                "descriptionKey": {
+                  "type": "string",
+                  "maxLength": 128,
+                  "pattern": "^[a-zA-Z][a-zA-Z0-9_]*(\\.[a-zA-Z0-9_]+)+$"
+                },
+                "labels": {
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string",
+                    "enum": [
+                      "fr",
+                      "en",
+                      "sw",
+                      "wo",
+                      "ln"
+                    ]
+                  },
+                  "additionalProperties": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200
+                  }
+                },
+                "descriptions": {
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string",
+                    "enum": [
+                      "fr",
+                      "en",
+                      "sw",
+                      "wo",
+                      "ln"
+                    ]
+                  },
+                  "additionalProperties": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 1000
+                  }
+                },
+                "weight": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 100
+                },
+                "scale": {
+                  "minItems": 2,
+                  "maxItems": 10,
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "key": {
+                        "type": "string",
+                        "pattern": "^[a-z][a-z0-9_]{0,47}$"
+                      },
+                      "labelKey": {
+                        "type": "string",
+                        "maxLength": 128,
+                        "pattern": "^[a-zA-Z][a-zA-Z0-9_]*(\\.[a-zA-Z0-9_]+)+$"
+                      },
+                      "labels": {
+                        "type": "object",
+                        "propertyNames": {
+                          "type": "string",
+                          "enum": [
+                            "fr",
+                            "en",
+                            "sw",
+                            "wo",
+                            "ln"
+                          ]
+                        },
+                        "additionalProperties": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 200
+                        }
+                      },
+                      "value": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 100
+                      }
+                    },
+                    "required": [
+                      "key",
+                      "labelKey",
+                      "value"
+                    ],
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "required": [
+                "key",
+                "labelKey",
+                "descriptionKey",
+                "weight",
+                "scale"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+          },
+          "publishedAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time",
+                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "archivedAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time",
+                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "labelCoverage": {
+            "type": "object",
+            "properties": {
+              "locales": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "fr",
+                    "en",
+                    "sw",
+                    "wo",
+                    "ln"
+                  ]
+                }
+              },
+              "missing": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "criterionKey": {
+                      "type": "string",
+                      "pattern": "^[a-z][a-z0-9_]{0,47}$"
+                    },
+                    "levelKey": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^[a-z][a-z0-9_]{0,47}$"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "field": {
+                      "type": "string",
+                      "enum": [
+                        "label",
+                        "description"
+                      ]
+                    },
+                    "locale": {
+                      "type": "string",
+                      "enum": [
+                        "fr",
+                        "en",
+                        "sw",
+                        "wo",
+                        "ln"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "criterionKey",
+                    "levelKey",
+                    "field",
+                    "locale"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "locales",
+              "missing"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "id",
+          "version",
+          "name",
+          "status",
+          "demo",
+          "criteria",
+          "createdAt",
+          "publishedAt",
+          "archivedAt",
+          "labelCoverage"
+        ],
+        "additionalProperties": false
+      },
       "UpdateMethodologyDto": {
         "type": "object",
         "properties": {
@@ -52565,6 +53286,42 @@
                   "maxLength": 128,
                   "pattern": "^[a-zA-Z][a-zA-Z0-9_]*(\\.[a-zA-Z0-9_]+)+$"
                 },
+                "labels": {
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string",
+                    "enum": [
+                      "fr",
+                      "en",
+                      "sw",
+                      "wo",
+                      "ln"
+                    ]
+                  },
+                  "additionalProperties": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200
+                  }
+                },
+                "descriptions": {
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string",
+                    "enum": [
+                      "fr",
+                      "en",
+                      "sw",
+                      "wo",
+                      "ln"
+                    ]
+                  },
+                  "additionalProperties": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 1000
+                  }
+                },
                 "weight": {
                   "type": "integer",
                   "minimum": 1,
@@ -52585,6 +53342,24 @@
                         "type": "string",
                         "maxLength": 128,
                         "pattern": "^[a-zA-Z][a-zA-Z0-9_]*(\\.[a-zA-Z0-9_]+)+$"
+                      },
+                      "labels": {
+                        "type": "object",
+                        "propertyNames": {
+                          "type": "string",
+                          "enum": [
+                            "fr",
+                            "en",
+                            "sw",
+                            "wo",
+                            "ln"
+                          ]
+                        },
+                        "additionalProperties": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 200
+                        }
                       },
                       "value": {
                         "type": "integer",
@@ -52614,6 +53389,160 @@
           "name",
           "criteria"
         ]
+      },
+      "ScorePreviewRequestDto": {
+        "type": "object",
+        "properties": {
+          "answers": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_]{0,47}$"
+            },
+            "additionalProperties": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_]{0,47}$"
+            }
+          }
+        },
+        "required": [
+          "answers"
+        ]
+      },
+      "ScorePreviewDto_Output": {
+        "type": "object",
+        "properties": {
+          "score": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "level": {
+            "type": "string",
+            "enum": [
+              "emerging",
+              "moderate",
+              "strong"
+            ]
+          },
+          "details": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "criterionKey": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9_]{0,47}$"
+                },
+                "labelKey": {
+                  "type": "string",
+                  "maxLength": 128,
+                  "pattern": "^[a-zA-Z][a-zA-Z0-9_]*(\\.[a-zA-Z0-9_]+)+$"
+                },
+                "descriptionKey": {
+                  "type": "string",
+                  "maxLength": 128,
+                  "pattern": "^[a-zA-Z][a-zA-Z0-9_]*(\\.[a-zA-Z0-9_]+)+$"
+                },
+                "labels": {
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string",
+                    "enum": [
+                      "fr",
+                      "en",
+                      "sw",
+                      "wo",
+                      "ln"
+                    ]
+                  },
+                  "additionalProperties": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200
+                  }
+                },
+                "descriptions": {
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string",
+                    "enum": [
+                      "fr",
+                      "en",
+                      "sw",
+                      "wo",
+                      "ln"
+                    ]
+                  },
+                  "additionalProperties": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 1000
+                  }
+                },
+                "weight": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "answerKey": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9_]{0,47}$"
+                },
+                "answerLabelKey": {
+                  "type": "string",
+                  "maxLength": 128,
+                  "pattern": "^[a-zA-Z][a-zA-Z0-9_]*(\\.[a-zA-Z0-9_]+)+$"
+                },
+                "answerLabels": {
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string",
+                    "enum": [
+                      "fr",
+                      "en",
+                      "sw",
+                      "wo",
+                      "ln"
+                    ]
+                  },
+                  "additionalProperties": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200
+                  }
+                },
+                "value": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "maxValue": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                }
+              },
+              "required": [
+                "criterionKey",
+                "labelKey",
+                "descriptionKey",
+                "weight",
+                "answerKey",
+                "answerLabelKey",
+                "value",
+                "maxValue"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "score",
+          "level",
+          "details"
+        ],
+        "additionalProperties": false
       },
       "AssessmentHistoryDto_Output": {
         "type": "object",
@@ -52699,6 +53628,42 @@
                         "maxLength": 128,
                         "pattern": "^[a-zA-Z][a-zA-Z0-9_]*(\\.[a-zA-Z0-9_]+)+$"
                       },
+                      "labels": {
+                        "type": "object",
+                        "propertyNames": {
+                          "type": "string",
+                          "enum": [
+                            "fr",
+                            "en",
+                            "sw",
+                            "wo",
+                            "ln"
+                          ]
+                        },
+                        "additionalProperties": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 200
+                        }
+                      },
+                      "descriptions": {
+                        "type": "object",
+                        "propertyNames": {
+                          "type": "string",
+                          "enum": [
+                            "fr",
+                            "en",
+                            "sw",
+                            "wo",
+                            "ln"
+                          ]
+                        },
+                        "additionalProperties": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 1000
+                        }
+                      },
                       "weight": {
                         "type": "integer",
                         "minimum": -9007199254740991,
@@ -52712,6 +53677,24 @@
                         "type": "string",
                         "maxLength": 128,
                         "pattern": "^[a-zA-Z][a-zA-Z0-9_]*(\\.[a-zA-Z0-9_]+)+$"
+                      },
+                      "answerLabels": {
+                        "type": "object",
+                        "propertyNames": {
+                          "type": "string",
+                          "enum": [
+                            "fr",
+                            "en",
+                            "sw",
+                            "wo",
+                            "ln"
+                          ]
+                        },
+                        "additionalProperties": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 200
+                        }
                       },
                       "value": {
                         "type": "integer",
@@ -52878,6 +53861,42 @@
                   "maxLength": 128,
                   "pattern": "^[a-zA-Z][a-zA-Z0-9_]*(\\.[a-zA-Z0-9_]+)+$"
                 },
+                "labels": {
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string",
+                    "enum": [
+                      "fr",
+                      "en",
+                      "sw",
+                      "wo",
+                      "ln"
+                    ]
+                  },
+                  "additionalProperties": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200
+                  }
+                },
+                "descriptions": {
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string",
+                    "enum": [
+                      "fr",
+                      "en",
+                      "sw",
+                      "wo",
+                      "ln"
+                    ]
+                  },
+                  "additionalProperties": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 1000
+                  }
+                },
                 "weight": {
                   "type": "integer",
                   "minimum": -9007199254740991,
@@ -52891,6 +53910,24 @@
                   "type": "string",
                   "maxLength": 128,
                   "pattern": "^[a-zA-Z][a-zA-Z0-9_]*(\\.[a-zA-Z0-9_]+)+$"
+                },
+                "answerLabels": {
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string",
+                    "enum": [
+                      "fr",
+                      "en",
+                      "sw",
+                      "wo",
+                      "ln"
+                    ]
+                  },
+                  "additionalProperties": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200
+                  }
                 },
                 "value": {
                   "type": "integer",
@@ -53941,6 +54978,42 @@
                           "maxLength": 128,
                           "pattern": "^[a-zA-Z][a-zA-Z0-9_]*(\\.[a-zA-Z0-9_]+)+$"
                         },
+                        "labels": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string",
+                            "enum": [
+                              "fr",
+                              "en",
+                              "sw",
+                              "wo",
+                              "ln"
+                            ]
+                          },
+                          "additionalProperties": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 200
+                          }
+                        },
+                        "descriptions": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string",
+                            "enum": [
+                              "fr",
+                              "en",
+                              "sw",
+                              "wo",
+                              "ln"
+                            ]
+                          },
+                          "additionalProperties": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 1000
+                          }
+                        },
                         "weight": {
                           "type": "integer",
                           "minimum": -9007199254740991,
@@ -53954,6 +55027,24 @@
                           "type": "string",
                           "maxLength": 128,
                           "pattern": "^[a-zA-Z][a-zA-Z0-9_]*(\\.[a-zA-Z0-9_]+)+$"
+                        },
+                        "answerLabels": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string",
+                            "enum": [
+                              "fr",
+                              "en",
+                              "sw",
+                              "wo",
+                              "ln"
+                            ]
+                          },
+                          "additionalProperties": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 200
+                          }
                         },
                         "value": {
                           "type": "integer",
@@ -75108,6 +76199,7 @@
                             "CONTENT_ORGANIZATION_ROLE_REQUIRED",
                             "IMPACT_METHODOLOGY_UNAVAILABLE",
                             "IMPACT_METHODOLOGY_NOT_FOUND",
+                            "IMPACT_LABELS_MISSING",
                             "IMPACT_METHODOLOGY_NOT_DRAFT",
                             "IMPACT_METHODOLOGY_NOT_PUBLISHED",
                             "IMPACT_METHODOLOGY_OUTDATED",
@@ -75984,6 +77076,7 @@
                         "CONTENT_ORGANIZATION_ROLE_REQUIRED",
                         "IMPACT_METHODOLOGY_UNAVAILABLE",
                         "IMPACT_METHODOLOGY_NOT_FOUND",
+                        "IMPACT_LABELS_MISSING",
                         "IMPACT_METHODOLOGY_NOT_DRAFT",
                         "IMPACT_METHODOLOGY_NOT_PUBLISHED",
                         "IMPACT_METHODOLOGY_OUTDATED",
@@ -77338,6 +78431,7 @@
               "CONTENT_ORGANIZATION_ROLE_REQUIRED",
               "IMPACT_METHODOLOGY_UNAVAILABLE",
               "IMPACT_METHODOLOGY_NOT_FOUND",
+              "IMPACT_LABELS_MISSING",
               "IMPACT_METHODOLOGY_NOT_DRAFT",
               "IMPACT_METHODOLOGY_NOT_PUBLISHED",
               "IMPACT_METHODOLOGY_OUTDATED",
@@ -78294,6 +79388,15 @@
           "title": "Impact methodology version not found",
           "status": 404,
           "code": "IMPACT_METHODOLOGY_NOT_FOUND",
+          "requestId": "0199c1f4-7d4e-7c2a-9b1e-3f5a6c7d8e9f"
+        }
+      },
+      "IMPACT_LABELS_MISSING": {
+        "value": {
+          "type": "urn:pitchorium:problem:impact-labels-missing",
+          "title": "Labels missing in an active language",
+          "status": 422,
+          "code": "IMPACT_LABELS_MISSING",
           "requestId": "0199c1f4-7d4e-7c2a-9b1e-3f5a6c7d8e9f"
         }
       },

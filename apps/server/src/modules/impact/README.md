@@ -5,6 +5,8 @@ Score d'impact auto-déclaré (cahier des charges §2.1, §12) : méthodologie v
 ## Méthodologie (ADR 0036)
 
 - Version numérotée : nom, critères (clé, `labelKey` et `descriptionKey` dans le namespace i18n `reference`, échelle de 2 à 10 niveaux avec une valeur entière de 0 à 100, pondération de 1 à 100), 30 critères au plus.
+- Libellés par langue (ADR 0173) : un administrateur écrit le libellé et la description de chaque critère et le libellé de chaque niveau dans chaque langue de l'interface (`labels`, `descriptions`), lus avant la clé du catalogue ; une méthodologie s'écrit sans déploiement. Les vues d'administration portent la couverture des langues actives (`labelCoverage` : langues, libellés manquants par critère, niveau et champ) ; la publication est refusée tant qu'une langue active n'a pas tous ses libellés, stockés ou dans le catalogue `reference` (`IMPACT_LABELS_MISSING`, `missing` : les langues). Les détails d'une évaluation reprennent les libellés stockés (`labels`, `descriptions`, `answerLabels`).
+- Aperçu du calcul : `POST /v1/admin/impact/methodologies/{id}/preview` donne le score, le niveau et le détail que des réponses donneraient avec une version, par les règles d'une évaluation (`IMPACT_ANSWERS_INVALID` pour une réponse manquante).
 - Cycle de vie par les `admin` (double authentification) : brouillon (modifiable, supprimable), publication (la version publiée précédente est archivée), archivage. Une version publiée ou archivée est immuable. Chaque étape est auditée (`impact.methodology-drafted`, `-updated`, `-deleted`, `-published`, `-archived`).
 - Méthodologie de démonstration (`demo: true`, « DEMO, non contractuelle ») : créée et publiée seulement par `pnpm db:seed:dev` (`MethodologiesService.ensureDemo`), refusée en production ; ses libellés sont dans `reference.impactDemo`.
 
@@ -20,7 +22,7 @@ Score d'impact auto-déclaré (cahier des charges §2.1, §12) : méthodologie v
 ## Routes
 
 - `GET /v1/impact/methodology` (public, `Cache-Control: public, max-age=60`) : version publiée et ses critères.
-- `GET|POST /v1/admin/impact/methodologies`, `GET|PUT|DELETE /v1/admin/impact/methodologies/{methodologyId}`, `POST /v1/admin/impact/methodologies/{methodologyId}/publish`, `POST /v1/admin/impact/methodologies/{methodologyId}/archive` (`impact.methodology.manage` ; `Idempotency-Key` sur `POST` de création).
+- `GET|POST /v1/admin/impact/methodologies`, `GET|PUT|DELETE /v1/admin/impact/methodologies/{methodologyId}`, `POST /v1/admin/impact/methodologies/{methodologyId}/publish`, `POST /v1/admin/impact/methodologies/{methodologyId}/archive`, `POST /v1/admin/impact/methodologies/{methodologyId}/preview` (`impact.methodology.manage` ; `Idempotency-Key` sur `POST` de création).
 - `GET /v1/me/impact/assessments` (`impact.assessment.read`) : historique du volet entrepreneur, le plus récent d'abord.
 - `POST /v1/me/impact/assessments` (`impact.assessment.submit`, volet entrepreneur exigé, `Idempotency-Key`).
 - Les évaluations d'un projet passent par les routes du module projects.
@@ -47,7 +49,7 @@ Aucun.
 
 ## Dépendances
 
-Aucun module métier. Le prérequis `profile.entrepreneur_facet` des routes `/v1/me/impact` est appliqué par le module access. La façade sert les modules projects (évaluation d'un projet) et profiles (évaluation courante du volet entrepreneur, dans les vues d'un profil).
+identity (langues actives, pour la couverture des libellés). Le prérequis `profile.entrepreneur_facet` des routes `/v1/me/impact` est appliqué par le module access. La façade sert les modules projects (évaluation d'un projet) et profiles (évaluation courante du volet entrepreneur, dans les vues d'un profil).
 
 ## Données personnelles (RGPD)
 

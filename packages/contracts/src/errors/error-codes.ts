@@ -160,6 +160,7 @@ export const errorCodes = {
   },
   IMPACT_METHODOLOGY_UNAVAILABLE: { status: 409, title: 'No impact methodology is published' },
   IMPACT_METHODOLOGY_NOT_FOUND: { status: 404, title: 'Impact methodology version not found' },
+  IMPACT_LABELS_MISSING: { status: 422, title: 'Labels missing in an active language' },
   IMPACT_METHODOLOGY_NOT_DRAFT: {
     status: 409,
     title: 'A published or archived methodology version cannot change',

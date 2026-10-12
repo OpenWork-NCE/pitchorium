@@ -7,19 +7,25 @@ export const ENTREPRENEUR_FACET = {
   companyCountryCode: 'SN',
 };
 
-/** A methodology of the tests: its labels are translation keys, not business content. */
+/**
+ * A methodology of the tests: keys absent from the catalogue, and labels stored for French
+ * and English, the active languages of the tests (ADR 0173); not business content.
+ */
 export function testMethodology(name = 'Test V1'): ImpactMethodologyDraft {
-  const levels = [
-    { key: 'none', labelKey: 'test.levels.none', value: 0 },
-    { key: 'partial', labelKey: 'test.levels.partial', value: 1 },
-    { key: 'full', labelKey: 'test.levels.full', value: 2 },
-  ];
+  const levels = ['none', 'partial', 'full'].map((key, value) => ({
+    key,
+    labelKey: `test.levels.${key}`,
+    labels: { fr: `Niveau ${key}`, en: `Level ${key}` },
+    value,
+  }));
   return {
     name,
     criteria: ['jobs', 'climate'].map((key, index) => ({
       key,
       labelKey: `test.${key}.label`,
       descriptionKey: `test.${key}.description`,
+      labels: { fr: `Critère ${key}`, en: `Criterion ${key}` },
+      descriptions: { fr: `Description ${key}`, en: `Description ${key}` },
       weight: index + 1,
       scale: levels,
     })),

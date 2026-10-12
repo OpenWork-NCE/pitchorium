@@ -1,5 +1,9 @@
 import type { NestExpressApplication } from '@nestjs/platform-express';
-import type { ImpactAssessment, ImpactMethodologyDraft } from '@pitchorium/contracts';
+import type {
+  AdminImpactMethodology,
+  ImpactAssessment,
+  ImpactMethodologyDraft,
+} from '@pitchorium/contracts';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { createApiTestApp } from './support/api-app';
 import { query, truncateAllTables } from './support/database';
@@ -159,5 +163,52 @@ describe('impact', () => {
     expect(refused.body.missing).toEqual(['profile.entrepreneur_facet']);
     await admin.agent.post(`/v1/admin/impact/methodologies/${v1}/archive`).expect(200);
     await ama.agent.get('/v1/impact/methodology').expect(409);
+  });
+
+  it('publishes a version only once every active language reads it, and previews a score', async () => {
+    const methodology = testMethodology('Labels');
+    const unlabelled: ImpactMethodologyDraft = {
+      ...methodology,
+      criteria: methodology.criteria.map((criterion, index) =>
+        index === 0 ? { ...criterion, labels: { fr: criterion.labels!.fr! } } : criterion,
+      ),
+    };
+    const id = await draft(unlabelled);
+    const read = (await admin.agent.get(`/v1/admin/impact/methodologies/${id}`).expect(200))
+      .body as AdminImpactMethodology;
+    expect(read.labelCoverage).toEqual({
+      locales: ['fr', 'en'],
+      missing: [{ criterionKey: 'jobs', levelKey: null, field: 'label', locale: 'en' }],
+    });
+    const refused = await admin.agent
+      .post(`/v1/admin/impact/methodologies/${id}/publish`)
+      .expect(422);
+    expect(refused.body).toMatchObject({ code: 'IMPACT_LABELS_MISSING', missing: ['en'] });
+
+    const preview = await admin.agent
+      .post(`/v1/admin/impact/methodologies/${id}/preview`)
+      .send({ answers: { jobs: 'full', climate: 'partial' } })
+      .expect(200);
+    expect(preview.body).toMatchObject({
+      score: 67,
+      level: 'moderate',
+      details: [
+        {
+          criterionKey: 'jobs',
+          labels: { fr: 'Critère jobs' },
+          answerLabels: { en: 'Level full' },
+        },
+        { criterionKey: 'climate', answerKey: 'partial' },
+      ],
+    });
+    await admin.agent
+      .post(`/v1/admin/impact/methodologies/${id}/preview`)
+      .send({ answers: { jobs: 'full' } })
+      .expect(422);
+
+    await admin.agent.put(`/v1/admin/impact/methodologies/${id}`).send(methodology).expect(200);
+    await admin.agent.post(`/v1/admin/impact/methodologies/${id}/publish`).expect(200);
+    const published = await ama.agent.get('/v1/impact/methodology').expect(200);
+    expect(published.body.criteria[0].labels).toEqual({ fr: 'Critère jobs', en: 'Criterion jobs' });
   });
 });

@@ -147,6 +147,7 @@
   "CONTENT_ORGANIZATION_ROLE_REQUIRED": "Seuls les propriétaires et administrateurs publient au nom de l’organisation.",
   "IMPACT_METHODOLOGY_UNAVAILABLE": "Aucune méthodologie d’impact n’est publiée pour le moment.",
   "IMPACT_METHODOLOGY_NOT_FOUND": "Version de méthodologie introuvable.",
+  "IMPACT_LABELS_MISSING": "Chaque critère, sa description et chaque niveau doivent avoir un libellé dans toutes les langues actives avant la publication.",
   "IMPACT_METHODOLOGY_NOT_DRAFT": "Une version publiée ou archivée ne peut plus être modifiée.",
   "IMPACT_METHODOLOGY_NOT_PUBLISHED": "Seule la version publiée peut être archivée.",
   "IMPACT_METHODOLOGY_OUTDATED": "La méthodologie a changé depuis l’ouverture du questionnaire : recommencez l’évaluation.",

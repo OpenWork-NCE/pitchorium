@@ -3,6 +3,7 @@ import type { AuditService } from '../../../platform/audit';
 import type { CommonConfig } from '../../../platform/config';
 import type { TransactionManager } from '../../../platform/database';
 import { FixedClock, UuidV7Generator } from '../../../platform/kernel';
+import type { IdentityFacade } from '../../identity';
 import type { ImpactEventsRecorder } from './impact-events.recorder';
 import { MethodologiesService } from './methodologies.service';
 import type { ImpactRepository } from './ports';
@@ -25,6 +26,7 @@ describe('demonstration methodology', () => {
       untouched as TransactionManager,
       new UuidV7Generator(),
       new FixedClock(new Date()),
+      untouched as IdentityFacade,
     );
     await expect(service.ensureDemo({ name: 'DEMO', criteria: [] })).rejects.toMatchObject({
       code: 'IMPACT_DEMO_REFUSED',

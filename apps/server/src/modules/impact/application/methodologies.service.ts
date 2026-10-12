@@ -1,13 +1,38 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { ImpactMethodologyDraft } from '@pitchorium/contracts';
+import type {
+  AdminImpactMethodology,
+  ImpactMethodologyDraft,
+  ImpactScorePreview,
+  Locale,
+} from '@pitchorium/contracts';
+import { catalogs, type CatalogTree } from '@pitchorium/i18n';
 import { AuditService } from '../../../platform/audit';
 import { COMMON_CONFIG, type CommonConfig } from '../../../platform/config';
 import { TransactionManager } from '../../../platform/database';
 import { Clock, DomainError, IdGenerator } from '../../../platform/kernel';
 import { MethodologyPublished } from '../domain/impact-events';
-import { assertDraft, assertPublished, type MethodologyRecord } from '../domain/methodology';
+import { IdentityFacade } from '../../identity';
+import {
+  assertDraft,
+  assertLabelled,
+  assertPublished,
+  type MethodologyRecord,
+  methodologyView,
+  missingLabels,
+} from '../domain/methodology';
+import { scoreOf } from '../domain/scoring';
 import { ImpactEventsRecorder } from './impact-events.recorder';
 import { ImpactRepository } from './ports';
+
+/** Whether the `reference` catalogue of a language holds a key, as a label of a methodology. */
+function inCatalog(locale: Locale, key: string): boolean {
+  let node: CatalogTree | string | undefined = catalogs[locale].reference;
+  for (const part of key.split('.')) {
+    if (typeof node !== 'object') return false;
+    node = node[part];
+  }
+  return typeof node === 'string' && node.length > 0;
+}
 
 const notFound = () =>
   new DomainError('IMPACT_METHODOLOGY_NOT_FOUND', 'Impact methodology version not found');
@@ -26,6 +51,7 @@ export class MethodologiesService {
     private readonly transactions: TransactionManager,
     private readonly ids: IdGenerator,
     private readonly clock: Clock,
+    private readonly identity: IdentityFacade,
   ) {}
 
   list(): Promise<MethodologyRecord[]> {
@@ -36,6 +62,27 @@ export class MethodologiesService {
     const methodology = await this.impact.findMethodology(id);
     if (!methodology) throw notFound();
     return methodology;
+  }
+
+  /** A version as administrators manage it, its labels checked against the active languages. */
+  async adminView(methodology: MethodologyRecord): Promise<AdminImpactMethodology> {
+    const locales = await this.identity.activeLocales();
+    return {
+      ...methodologyView(methodology),
+      labelCoverage: {
+        locales,
+        missing: missingLabels(methodology.criteria, locales, inCatalog),
+      },
+    };
+  }
+
+  /** The score some answers would give with this version, by the rules of an assessment. */
+  async preview(
+    id: string,
+    answers: Readonly<Record<string, string>>,
+  ): Promise<ImpactScorePreview> {
+    const methodology = await this.require(id);
+    return scoreOf(methodology.criteria, answers);
   }
 
   /** Null while no version is published. */
@@ -84,6 +131,10 @@ export class MethodologiesService {
       const methodology = await this.require(id);
       assertDraft(methodology);
       if (methodology.demo && this.config.env === 'production') throw demoRefused();
+      // Every active language reads each criterion, its description and its levels (ADR 0173).
+      assertLabelled(
+        missingLabels(methodology.criteria, await this.identity.activeLocales(), inCatalog),
+      );
       const now = this.clock.now();
       const previous = await this.impact.publishedMethodology();
       if (previous) await this.impact.setStatus(previous.id, 'archived', now);

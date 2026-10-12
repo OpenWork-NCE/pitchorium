@@ -14,12 +14,15 @@ import type {
   UseQueryOptions,
 } from '@tanstack/react-query';
 import type {
+  AdminMethodologiesDtoOutput,
+  AdminMethodologyDtoOutput,
   AssessmentDtoOutput,
   AssessmentHistoryDtoOutput,
   CreateMethodologyDto,
-  MethodologiesDtoOutput,
   MethodologyDtoOutput,
   ProblemDetails,
+  ScorePreviewDtoOutput,
+  ScorePreviewRequestDto,
   SubmitAssessmentDto,
   UpdateMethodologyDto,
 } from '../api.schemas';
@@ -95,8 +98,8 @@ export const getMethodologiesControllerListUrl = () => {
  */
 export const methodologiesControllerList = async (
   options?: Parameters<typeof apiFetch>[1],
-): Promise<MethodologiesDtoOutput> => {
-  return apiFetch<MethodologiesDtoOutput>(getMethodologiesControllerListUrl(), {
+): Promise<AdminMethodologiesDtoOutput> => {
+  return apiFetch<AdminMethodologiesDtoOutput>(getMethodologiesControllerListUrl(), {
     ...options,
     method: 'GET',
   });
@@ -153,7 +156,7 @@ export const getMethodologiesControllerCreateUrl = () => {
 export const methodologiesControllerCreate = async (
   createMethodologyDto: CreateMethodologyDto,
   options?: Parameters<typeof apiFetch>[1],
-): Promise<MethodologyDtoOutput> => {
+): Promise<AdminMethodologyDtoOutput> => {
   const getHeaders = (
     h?: NonNullable<RequestInit['headers']>,
   ): Record<string, string | readonly string[]> => {
@@ -173,7 +176,7 @@ export const methodologiesControllerCreate = async (
     }
     return headers;
   };
-  return apiFetch<MethodologyDtoOutput>(getMethodologiesControllerCreateUrl(), {
+  return apiFetch<AdminMethodologyDtoOutput>(getMethodologiesControllerCreateUrl(), {
     ...options,
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
@@ -245,8 +248,8 @@ export const getMethodologiesControllerGetUrl = (methodologyId: string) => {
 export const methodologiesControllerGet = async (
   methodologyId: string,
   options?: Parameters<typeof apiFetch>[1],
-): Promise<MethodologyDtoOutput> => {
-  return apiFetch<MethodologyDtoOutput>(getMethodologiesControllerGetUrl(methodologyId), {
+): Promise<AdminMethodologyDtoOutput> => {
+  return apiFetch<AdminMethodologyDtoOutput>(getMethodologiesControllerGetUrl(methodologyId), {
     ...options,
     method: 'GET',
   });
@@ -308,7 +311,7 @@ export const methodologiesControllerUpdate = async (
   methodologyId: string,
   updateMethodologyDto: UpdateMethodologyDto,
   options?: Parameters<typeof apiFetch>[1],
-): Promise<MethodologyDtoOutput> => {
+): Promise<AdminMethodologyDtoOutput> => {
   const getHeaders = (
     h?: NonNullable<RequestInit['headers']>,
   ): Record<string, string | readonly string[]> => {
@@ -328,7 +331,7 @@ export const methodologiesControllerUpdate = async (
     }
     return headers;
   };
-  return apiFetch<MethodologyDtoOutput>(getMethodologiesControllerUpdateUrl(methodologyId), {
+  return apiFetch<AdminMethodologyDtoOutput>(getMethodologiesControllerUpdateUrl(methodologyId), {
     ...options,
     method: 'PUT',
     headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
@@ -472,8 +475,8 @@ export const getMethodologiesControllerPublishUrl = (methodologyId: string) => {
 export const methodologiesControllerPublish = async (
   methodologyId: string,
   options?: Parameters<typeof apiFetch>[1],
-): Promise<MethodologyDtoOutput> => {
-  return apiFetch<MethodologyDtoOutput>(getMethodologiesControllerPublishUrl(methodologyId), {
+): Promise<AdminMethodologyDtoOutput> => {
+  return apiFetch<AdminMethodologyDtoOutput>(getMethodologiesControllerPublishUrl(methodologyId), {
     ...options,
     method: 'POST',
   });
@@ -541,8 +544,8 @@ export const getMethodologiesControllerArchiveUrl = (methodologyId: string) => {
 export const methodologiesControllerArchive = async (
   methodologyId: string,
   options?: Parameters<typeof apiFetch>[1],
-): Promise<MethodologyDtoOutput> => {
-  return apiFetch<MethodologyDtoOutput>(getMethodologiesControllerArchiveUrl(methodologyId), {
+): Promise<AdminMethodologyDtoOutput> => {
+  return apiFetch<AdminMethodologyDtoOutput>(getMethodologiesControllerArchiveUrl(methodologyId), {
     ...options,
     method: 'POST',
   });
@@ -594,6 +597,102 @@ export type MethodologiesControllerArchiveMutationResult = NonNullable<
 export type MethodologiesControllerArchiveMutationError = ErrorType<ProblemDetails>;
 
 export type MethodologiesControllerArchiveMutationVariables = { methodologyId: string };
+
+export const getMethodologiesControllerPreviewUrl = (methodologyId: string) => {
+  return `/v1/admin/impact/methodologies/${methodologyId}/preview`;
+};
+
+/**
+ * Action `impact.methodology.manage` (session cookie).
+ *
+ * Roles: admin, with 2FA.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Preview
+ */
+export const methodologiesControllerPreview = async (
+  methodologyId: string,
+  scorePreviewRequestDto: ScorePreviewRequestDto,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<ScorePreviewDtoOutput> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit['headers']>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(
+          h as Iterable<Iterable<string>>,
+          (entry) => Array.from(entry) as [string, string],
+        ),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+  return apiFetch<ScorePreviewDtoOutput>(getMethodologiesControllerPreviewUrl(methodologyId), {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(scorePreviewRequestDto),
+  });
+};
+
+export const getMethodologiesControllerPreviewMutationKey = () =>
+  ['methodologiesControllerPreview'] as const;
+
+export const getMethodologiesControllerPreviewMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof methodologiesControllerPreview>>,
+    TError,
+    MethodologiesControllerPreviewMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof methodologiesControllerPreview>>,
+  TError,
+  MethodologiesControllerPreviewMutationVariables,
+  TContext
+> => {
+  const mutationKey = getMethodologiesControllerPreviewMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof methodologiesControllerPreview>>,
+    MethodologiesControllerPreviewMutationVariables
+  > = (props) => {
+    const { methodologyId, data } = props ?? {};
+
+    return methodologiesControllerPreview(methodologyId, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type MethodologiesControllerPreviewMutationResult = NonNullable<
+  Awaited<ReturnType<typeof methodologiesControllerPreview>>
+>;
+
+export type MethodologiesControllerPreviewMutationBody = ScorePreviewRequestDto;
+
+export type MethodologiesControllerPreviewMutationError = ErrorType<ProblemDetails>;
+
+export type MethodologiesControllerPreviewMutationVariables = {
+  methodologyId: string;
+  data: ScorePreviewRequestDto;
+};
 
 export const getMyAssessmentsControllerHistoryUrl = () => {
   return `/v1/me/impact/assessments`;

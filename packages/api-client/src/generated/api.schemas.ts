@@ -794,6 +794,7 @@ export const ActionPrerequisitesDtoOutputCode = {
   CONTENT_ORGANIZATION_ROLE_REQUIRED: 'CONTENT_ORGANIZATION_ROLE_REQUIRED',
   IMPACT_METHODOLOGY_UNAVAILABLE: 'IMPACT_METHODOLOGY_UNAVAILABLE',
   IMPACT_METHODOLOGY_NOT_FOUND: 'IMPACT_METHODOLOGY_NOT_FOUND',
+  IMPACT_LABELS_MISSING: 'IMPACT_LABELS_MISSING',
   IMPACT_METHODOLOGY_NOT_DRAFT: 'IMPACT_METHODOLOGY_NOT_DRAFT',
   IMPACT_METHODOLOGY_NOT_PUBLISHED: 'IMPACT_METHODOLOGY_NOT_PUBLISHED',
   IMPACT_METHODOLOGY_OUTDATED: 'IMPACT_METHODOLOGY_OUTDATED',
@@ -1233,6 +1234,7 @@ export const ConsoleCapabilitiesDtoOutputActionsItemCode = {
   CONTENT_ORGANIZATION_ROLE_REQUIRED: 'CONTENT_ORGANIZATION_ROLE_REQUIRED',
   IMPACT_METHODOLOGY_UNAVAILABLE: 'IMPACT_METHODOLOGY_UNAVAILABLE',
   IMPACT_METHODOLOGY_NOT_FOUND: 'IMPACT_METHODOLOGY_NOT_FOUND',
+  IMPACT_LABELS_MISSING: 'IMPACT_LABELS_MISSING',
   IMPACT_METHODOLOGY_NOT_DRAFT: 'IMPACT_METHODOLOGY_NOT_DRAFT',
   IMPACT_METHODOLOGY_NOT_PUBLISHED: 'IMPACT_METHODOLOGY_NOT_PUBLISHED',
   IMPACT_METHODOLOGY_OUTDATED: 'IMPACT_METHODOLOGY_OUTDATED',
@@ -1700,6 +1702,8 @@ export type OwnProfileDtoOutputEntrepreneurImpactDetailsItem = {
    * @pattern ^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)+$
    */
   descriptionKey: string;
+  labels?: Partial<Record<'fr' | 'en' | 'sw' | 'wo' | 'ln', string>>;
+  descriptions?: Partial<Record<'fr' | 'en' | 'sw' | 'wo' | 'ln', string>>;
   /**
    * @minimum -9007199254740991
    * @maximum 9007199254740991
@@ -1712,6 +1716,7 @@ export type OwnProfileDtoOutputEntrepreneurImpactDetailsItem = {
    * @pattern ^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)+$
    */
   answerLabelKey: string;
+  answerLabels?: Partial<Record<'fr' | 'en' | 'sw' | 'wo' | 'ln', string>>;
   /**
    * @minimum -9007199254740991
    * @maximum 9007199254740991
@@ -2388,6 +2393,8 @@ export type ProfileViewDtoOutputEntrepreneurImpactDetailsItem = {
    * @pattern ^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)+$
    */
   descriptionKey: string;
+  labels?: Partial<Record<'fr' | 'en' | 'sw' | 'wo' | 'ln', string>>;
+  descriptions?: Partial<Record<'fr' | 'en' | 'sw' | 'wo' | 'ln', string>>;
   /**
    * @minimum -9007199254740991
    * @maximum 9007199254740991
@@ -2400,6 +2407,7 @@ export type ProfileViewDtoOutputEntrepreneurImpactDetailsItem = {
    * @pattern ^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)+$
    */
   answerLabelKey: string;
+  answerLabels?: Partial<Record<'fr' | 'en' | 'sw' | 'wo' | 'ln', string>>;
   /**
    * @minimum -9007199254740991
    * @maximum 9007199254740991
@@ -6730,6 +6738,7 @@ export type MethodologyDtoOutputCriteriaItemScaleItem = {
    * @pattern ^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)+$
    */
   labelKey: string;
+  labels?: Partial<Record<'fr' | 'en' | 'sw' | 'wo' | 'ln', string>>;
   /**
    * @minimum 0
    * @maximum 100
@@ -6750,6 +6759,8 @@ export type MethodologyDtoOutputCriteriaItem = {
    * @pattern ^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)+$
    */
   descriptionKey: string;
+  labels?: Partial<Record<'fr' | 'en' | 'sw' | 'wo' | 'ln', string>>;
+  descriptions?: Partial<Record<'fr' | 'en' | 'sw' | 'wo' | 'ln', string>>;
   /**
    * @minimum 1
    * @maximum 100
@@ -6780,16 +6791,16 @@ export interface MethodologyDtoOutput {
   archivedAt: string | null;
 }
 
-export type MethodologiesDtoOutputItemsItemStatus =
-  (typeof MethodologiesDtoOutputItemsItemStatus)[keyof typeof MethodologiesDtoOutputItemsItemStatus];
+export type AdminMethodologiesDtoOutputItemsItemStatus =
+  (typeof AdminMethodologiesDtoOutputItemsItemStatus)[keyof typeof AdminMethodologiesDtoOutputItemsItemStatus];
 
-export const MethodologiesDtoOutputItemsItemStatus = {
+export const AdminMethodologiesDtoOutputItemsItemStatus = {
   draft: 'draft',
   published: 'published',
   archived: 'archived',
 } as const;
 
-export type MethodologiesDtoOutputItemsItemCriteriaItemScaleItem = {
+export type AdminMethodologiesDtoOutputItemsItemCriteriaItemScaleItem = {
   /** @pattern ^[a-z][a-z0-9_]{0,47}$ */
   key: string;
   /**
@@ -6797,6 +6808,7 @@ export type MethodologiesDtoOutputItemsItemCriteriaItemScaleItem = {
    * @pattern ^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)+$
    */
   labelKey: string;
+  labels?: Partial<Record<'fr' | 'en' | 'sw' | 'wo' | 'ln', string>>;
   /**
    * @minimum 0
    * @maximum 100
@@ -6804,7 +6816,7 @@ export type MethodologiesDtoOutputItemsItemCriteriaItemScaleItem = {
   value: number;
 };
 
-export type MethodologiesDtoOutputItemsItemCriteriaItem = {
+export type AdminMethodologiesDtoOutputItemsItemCriteriaItem = {
   /** @pattern ^[a-z][a-z0-9_]{0,47}$ */
   key: string;
   /**
@@ -6817,6 +6829,8 @@ export type MethodologiesDtoOutputItemsItemCriteriaItem = {
    * @pattern ^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)+$
    */
   descriptionKey: string;
+  labels?: Partial<Record<'fr' | 'en' | 'sw' | 'wo' | 'ln', string>>;
+  descriptions?: Partial<Record<'fr' | 'en' | 'sw' | 'wo' | 'ln', string>>;
   /**
    * @minimum 1
    * @maximum 100
@@ -6826,10 +6840,53 @@ export type MethodologiesDtoOutputItemsItemCriteriaItem = {
    * @minItems 2
    * @maxItems 10
    */
-  scale: MethodologiesDtoOutputItemsItemCriteriaItemScaleItem[];
+  scale: AdminMethodologiesDtoOutputItemsItemCriteriaItemScaleItem[];
 };
 
-export type MethodologiesDtoOutputItemsItem = {
+export type AdminMethodologiesDtoOutputItemsItemLabelCoverageLocalesItem =
+  (typeof AdminMethodologiesDtoOutputItemsItemLabelCoverageLocalesItem)[keyof typeof AdminMethodologiesDtoOutputItemsItemLabelCoverageLocalesItem];
+
+export const AdminMethodologiesDtoOutputItemsItemLabelCoverageLocalesItem = {
+  fr: 'fr',
+  en: 'en',
+  sw: 'sw',
+  wo: 'wo',
+  ln: 'ln',
+} as const;
+
+export type AdminMethodologiesDtoOutputItemsItemLabelCoverageMissingItemField =
+  (typeof AdminMethodologiesDtoOutputItemsItemLabelCoverageMissingItemField)[keyof typeof AdminMethodologiesDtoOutputItemsItemLabelCoverageMissingItemField];
+
+export const AdminMethodologiesDtoOutputItemsItemLabelCoverageMissingItemField = {
+  label: 'label',
+  description: 'description',
+} as const;
+
+export type AdminMethodologiesDtoOutputItemsItemLabelCoverageMissingItemLocale =
+  (typeof AdminMethodologiesDtoOutputItemsItemLabelCoverageMissingItemLocale)[keyof typeof AdminMethodologiesDtoOutputItemsItemLabelCoverageMissingItemLocale];
+
+export const AdminMethodologiesDtoOutputItemsItemLabelCoverageMissingItemLocale = {
+  fr: 'fr',
+  en: 'en',
+  sw: 'sw',
+  wo: 'wo',
+  ln: 'ln',
+} as const;
+
+export type AdminMethodologiesDtoOutputItemsItemLabelCoverageMissingItem = {
+  /** @pattern ^[a-z][a-z0-9_]{0,47}$ */
+  criterionKey: string;
+  levelKey: string | null;
+  field: AdminMethodologiesDtoOutputItemsItemLabelCoverageMissingItemField;
+  locale: AdminMethodologiesDtoOutputItemsItemLabelCoverageMissingItemLocale;
+};
+
+export type AdminMethodologiesDtoOutputItemsItemLabelCoverage = {
+  locales: AdminMethodologiesDtoOutputItemsItemLabelCoverageLocalesItem[];
+  missing: AdminMethodologiesDtoOutputItemsItemLabelCoverageMissingItem[];
+};
+
+export type AdminMethodologiesDtoOutputItemsItem = {
   /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
   id: string;
   /**
@@ -6838,17 +6895,18 @@ export type MethodologiesDtoOutputItemsItem = {
    */
   version: number;
   name: string;
-  status: MethodologiesDtoOutputItemsItemStatus;
+  status: AdminMethodologiesDtoOutputItemsItemStatus;
   demo: boolean;
-  criteria: MethodologiesDtoOutputItemsItemCriteriaItem[];
+  criteria: AdminMethodologiesDtoOutputItemsItemCriteriaItem[];
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
   createdAt: string;
   publishedAt: string | null;
   archivedAt: string | null;
+  labelCoverage: AdminMethodologiesDtoOutputItemsItemLabelCoverage;
 };
 
-export interface MethodologiesDtoOutput {
-  items: MethodologiesDtoOutputItemsItem[];
+export interface AdminMethodologiesDtoOutput {
+  items: AdminMethodologiesDtoOutputItemsItem[];
 }
 
 export type CreateMethodologyDtoCriteriaItemScaleItem = {
@@ -6859,6 +6917,7 @@ export type CreateMethodologyDtoCriteriaItemScaleItem = {
    * @pattern ^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)+$
    */
   labelKey: string;
+  labels?: Partial<Record<'fr' | 'en' | 'sw' | 'wo' | 'ln', string>>;
   /**
    * @minimum 0
    * @maximum 100
@@ -6879,6 +6938,8 @@ export type CreateMethodologyDtoCriteriaItem = {
    * @pattern ^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)+$
    */
   descriptionKey: string;
+  labels?: Partial<Record<'fr' | 'en' | 'sw' | 'wo' | 'ln', string>>;
+  descriptions?: Partial<Record<'fr' | 'en' | 'sw' | 'wo' | 'ln', string>>;
   /**
    * @minimum 1
    * @maximum 100
@@ -6904,6 +6965,120 @@ export interface CreateMethodologyDto {
   criteria: CreateMethodologyDtoCriteriaItem[];
 }
 
+export type AdminMethodologyDtoOutputStatus =
+  (typeof AdminMethodologyDtoOutputStatus)[keyof typeof AdminMethodologyDtoOutputStatus];
+
+export const AdminMethodologyDtoOutputStatus = {
+  draft: 'draft',
+  published: 'published',
+  archived: 'archived',
+} as const;
+
+export type AdminMethodologyDtoOutputCriteriaItemScaleItem = {
+  /** @pattern ^[a-z][a-z0-9_]{0,47}$ */
+  key: string;
+  /**
+   * @maxLength 128
+   * @pattern ^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)+$
+   */
+  labelKey: string;
+  labels?: Partial<Record<'fr' | 'en' | 'sw' | 'wo' | 'ln', string>>;
+  /**
+   * @minimum 0
+   * @maximum 100
+   */
+  value: number;
+};
+
+export type AdminMethodologyDtoOutputCriteriaItem = {
+  /** @pattern ^[a-z][a-z0-9_]{0,47}$ */
+  key: string;
+  /**
+   * @maxLength 128
+   * @pattern ^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)+$
+   */
+  labelKey: string;
+  /**
+   * @maxLength 128
+   * @pattern ^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)+$
+   */
+  descriptionKey: string;
+  labels?: Partial<Record<'fr' | 'en' | 'sw' | 'wo' | 'ln', string>>;
+  descriptions?: Partial<Record<'fr' | 'en' | 'sw' | 'wo' | 'ln', string>>;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  weight: number;
+  /**
+   * @minItems 2
+   * @maxItems 10
+   */
+  scale: AdminMethodologyDtoOutputCriteriaItemScaleItem[];
+};
+
+export type AdminMethodologyDtoOutputLabelCoverageLocalesItem =
+  (typeof AdminMethodologyDtoOutputLabelCoverageLocalesItem)[keyof typeof AdminMethodologyDtoOutputLabelCoverageLocalesItem];
+
+export const AdminMethodologyDtoOutputLabelCoverageLocalesItem = {
+  fr: 'fr',
+  en: 'en',
+  sw: 'sw',
+  wo: 'wo',
+  ln: 'ln',
+} as const;
+
+export type AdminMethodologyDtoOutputLabelCoverageMissingItemField =
+  (typeof AdminMethodologyDtoOutputLabelCoverageMissingItemField)[keyof typeof AdminMethodologyDtoOutputLabelCoverageMissingItemField];
+
+export const AdminMethodologyDtoOutputLabelCoverageMissingItemField = {
+  label: 'label',
+  description: 'description',
+} as const;
+
+export type AdminMethodologyDtoOutputLabelCoverageMissingItemLocale =
+  (typeof AdminMethodologyDtoOutputLabelCoverageMissingItemLocale)[keyof typeof AdminMethodologyDtoOutputLabelCoverageMissingItemLocale];
+
+export const AdminMethodologyDtoOutputLabelCoverageMissingItemLocale = {
+  fr: 'fr',
+  en: 'en',
+  sw: 'sw',
+  wo: 'wo',
+  ln: 'ln',
+} as const;
+
+export type AdminMethodologyDtoOutputLabelCoverageMissingItem = {
+  /** @pattern ^[a-z][a-z0-9_]{0,47}$ */
+  criterionKey: string;
+  levelKey: string | null;
+  field: AdminMethodologyDtoOutputLabelCoverageMissingItemField;
+  locale: AdminMethodologyDtoOutputLabelCoverageMissingItemLocale;
+};
+
+export type AdminMethodologyDtoOutputLabelCoverage = {
+  locales: AdminMethodologyDtoOutputLabelCoverageLocalesItem[];
+  missing: AdminMethodologyDtoOutputLabelCoverageMissingItem[];
+};
+
+export interface AdminMethodologyDtoOutput {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  /**
+   * @maximum 9007199254740991
+   * @exclusiveMinimum 0
+   */
+  version: number;
+  name: string;
+  status: AdminMethodologyDtoOutputStatus;
+  demo: boolean;
+  criteria: AdminMethodologyDtoOutputCriteriaItem[];
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+  publishedAt: string | null;
+  archivedAt: string | null;
+  labelCoverage: AdminMethodologyDtoOutputLabelCoverage;
+}
+
 export type UpdateMethodologyDtoCriteriaItemScaleItem = {
   /** @pattern ^[a-z][a-z0-9_]{0,47}$ */
   key: string;
@@ -6912,6 +7087,7 @@ export type UpdateMethodologyDtoCriteriaItemScaleItem = {
    * @pattern ^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)+$
    */
   labelKey: string;
+  labels?: Partial<Record<'fr' | 'en' | 'sw' | 'wo' | 'ln', string>>;
   /**
    * @minimum 0
    * @maximum 100
@@ -6932,6 +7108,8 @@ export type UpdateMethodologyDtoCriteriaItem = {
    * @pattern ^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)+$
    */
   descriptionKey: string;
+  labels?: Partial<Record<'fr' | 'en' | 'sw' | 'wo' | 'ln', string>>;
+  descriptions?: Partial<Record<'fr' | 'en' | 'sw' | 'wo' | 'ln', string>>;
   /**
    * @minimum 1
    * @maximum 100
@@ -6955,6 +7133,71 @@ export interface UpdateMethodologyDto {
    * @maxItems 30
    */
   criteria: UpdateMethodologyDtoCriteriaItem[];
+}
+
+export type ScorePreviewRequestDtoAnswers = { [key: string]: string };
+
+export interface ScorePreviewRequestDto {
+  answers: ScorePreviewRequestDtoAnswers;
+}
+
+export type ScorePreviewDtoOutputLevel =
+  (typeof ScorePreviewDtoOutputLevel)[keyof typeof ScorePreviewDtoOutputLevel];
+
+export const ScorePreviewDtoOutputLevel = {
+  emerging: 'emerging',
+  moderate: 'moderate',
+  strong: 'strong',
+} as const;
+
+export type ScorePreviewDtoOutputDetailsItem = {
+  /** @pattern ^[a-z][a-z0-9_]{0,47}$ */
+  criterionKey: string;
+  /**
+   * @maxLength 128
+   * @pattern ^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)+$
+   */
+  labelKey: string;
+  /**
+   * @maxLength 128
+   * @pattern ^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)+$
+   */
+  descriptionKey: string;
+  labels?: Partial<Record<'fr' | 'en' | 'sw' | 'wo' | 'ln', string>>;
+  descriptions?: Partial<Record<'fr' | 'en' | 'sw' | 'wo' | 'ln', string>>;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  weight: number;
+  /** @pattern ^[a-z][a-z0-9_]{0,47}$ */
+  answerKey: string;
+  /**
+   * @maxLength 128
+   * @pattern ^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)+$
+   */
+  answerLabelKey: string;
+  answerLabels?: Partial<Record<'fr' | 'en' | 'sw' | 'wo' | 'ln', string>>;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  value: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  maxValue: number;
+};
+
+export interface ScorePreviewDtoOutput {
+  /**
+   * @minimum 0
+   * @maximum 100
+   */
+  score: number;
+  level: ScorePreviewDtoOutputLevel;
+  details: ScorePreviewDtoOutputDetailsItem[];
 }
 
 export type AssessmentHistoryDtoOutputItemsItemSubjectType =
@@ -6999,6 +7242,8 @@ export type AssessmentHistoryDtoOutputItemsItemDetailsItem = {
    * @pattern ^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)+$
    */
   descriptionKey: string;
+  labels?: Partial<Record<'fr' | 'en' | 'sw' | 'wo' | 'ln', string>>;
+  descriptions?: Partial<Record<'fr' | 'en' | 'sw' | 'wo' | 'ln', string>>;
   /**
    * @minimum -9007199254740991
    * @maximum 9007199254740991
@@ -7011,6 +7256,7 @@ export type AssessmentHistoryDtoOutputItemsItemDetailsItem = {
    * @pattern ^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)+$
    */
   answerLabelKey: string;
+  answerLabels?: Partial<Record<'fr' | 'en' | 'sw' | 'wo' | 'ln', string>>;
   /**
    * @minimum -9007199254740991
    * @maximum 9007199254740991
@@ -7104,6 +7350,8 @@ export type AssessmentDtoOutputDetailsItem = {
    * @pattern ^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)+$
    */
   descriptionKey: string;
+  labels?: Partial<Record<'fr' | 'en' | 'sw' | 'wo' | 'ln', string>>;
+  descriptions?: Partial<Record<'fr' | 'en' | 'sw' | 'wo' | 'ln', string>>;
   /**
    * @minimum -9007199254740991
    * @maximum 9007199254740991
@@ -7116,6 +7364,7 @@ export type AssessmentDtoOutputDetailsItem = {
    * @pattern ^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)+$
    */
   answerLabelKey: string;
+  answerLabels?: Partial<Record<'fr' | 'en' | 'sw' | 'wo' | 'ln', string>>;
   /**
    * @minimum -9007199254740991
    * @maximum 9007199254740991
@@ -7540,6 +7789,8 @@ export type ProjectDtoOutputImpactAssessmentDetailsItem = {
    * @pattern ^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)+$
    */
   descriptionKey: string;
+  labels?: Partial<Record<'fr' | 'en' | 'sw' | 'wo' | 'ln', string>>;
+  descriptions?: Partial<Record<'fr' | 'en' | 'sw' | 'wo' | 'ln', string>>;
   /**
    * @minimum -9007199254740991
    * @maximum 9007199254740991
@@ -7552,6 +7803,7 @@ export type ProjectDtoOutputImpactAssessmentDetailsItem = {
    * @pattern ^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)+$
    */
   answerLabelKey: string;
+  answerLabels?: Partial<Record<'fr' | 'en' | 'sw' | 'wo' | 'ln', string>>;
   /**
    * @minimum -9007199254740991
    * @maximum 9007199254740991
@@ -16836,6 +17088,7 @@ export const CaseDetailDtoOutputDecisionOptionsKindsItemCode = {
   CONTENT_ORGANIZATION_ROLE_REQUIRED: 'CONTENT_ORGANIZATION_ROLE_REQUIRED',
   IMPACT_METHODOLOGY_UNAVAILABLE: 'IMPACT_METHODOLOGY_UNAVAILABLE',
   IMPACT_METHODOLOGY_NOT_FOUND: 'IMPACT_METHODOLOGY_NOT_FOUND',
+  IMPACT_LABELS_MISSING: 'IMPACT_LABELS_MISSING',
   IMPACT_METHODOLOGY_NOT_DRAFT: 'IMPACT_METHODOLOGY_NOT_DRAFT',
   IMPACT_METHODOLOGY_NOT_PUBLISHED: 'IMPACT_METHODOLOGY_NOT_PUBLISHED',
   IMPACT_METHODOLOGY_OUTDATED: 'IMPACT_METHODOLOGY_OUTDATED',
@@ -17368,6 +17621,7 @@ export const AppealPageDtoOutputItemsItemRefusal = {
   CONTENT_ORGANIZATION_ROLE_REQUIRED: 'CONTENT_ORGANIZATION_ROLE_REQUIRED',
   IMPACT_METHODOLOGY_UNAVAILABLE: 'IMPACT_METHODOLOGY_UNAVAILABLE',
   IMPACT_METHODOLOGY_NOT_FOUND: 'IMPACT_METHODOLOGY_NOT_FOUND',
+  IMPACT_LABELS_MISSING: 'IMPACT_LABELS_MISSING',
   IMPACT_METHODOLOGY_NOT_DRAFT: 'IMPACT_METHODOLOGY_NOT_DRAFT',
   IMPACT_METHODOLOGY_NOT_PUBLISHED: 'IMPACT_METHODOLOGY_NOT_PUBLISHED',
   IMPACT_METHODOLOGY_OUTDATED: 'IMPACT_METHODOLOGY_OUTDATED',
@@ -18108,6 +18362,7 @@ export const ProblemDetailsCode = {
   CONTENT_ORGANIZATION_ROLE_REQUIRED: 'CONTENT_ORGANIZATION_ROLE_REQUIRED',
   IMPACT_METHODOLOGY_UNAVAILABLE: 'IMPACT_METHODOLOGY_UNAVAILABLE',
   IMPACT_METHODOLOGY_NOT_FOUND: 'IMPACT_METHODOLOGY_NOT_FOUND',
+  IMPACT_LABELS_MISSING: 'IMPACT_LABELS_MISSING',
   IMPACT_METHODOLOGY_NOT_DRAFT: 'IMPACT_METHODOLOGY_NOT_DRAFT',
   IMPACT_METHODOLOGY_NOT_PUBLISHED: 'IMPACT_METHODOLOGY_NOT_PUBLISHED',
   IMPACT_METHODOLOGY_OUTDATED: 'IMPACT_METHODOLOGY_OUTDATED',

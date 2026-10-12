@@ -169,3 +169,4 @@ Un fichier par décision, numéroté, au format Contexte / Décision / Conséque
 | [0169](0169-language-detection-with-full-franc.md)                    | Détection de la langue par franc complet                              |
 | [0170](0170-dated-demo-states-relative-to-the-run.md)                 | États datés des données de démonstration relatifs à l'exécution       |
 | [0171](0171-one-clock-for-the-stub-and-the-pages.md)                  | Une horloge pour l'api simulée, le serveur des pages et le navigateur |
+| [0173](0173-impact-labels-written-by-administrators.md)               | Libellés d'une méthodologie d'impact écrits par les administrateurs   |

@@ -56,9 +56,12 @@ export function scoreOf(
       criterionKey: criterion.key,
       labelKey: criterion.labelKey,
       descriptionKey: criterion.descriptionKey,
+      ...(criterion.labels ? { labels: criterion.labels } : {}),
+      ...(criterion.descriptions ? { descriptions: criterion.descriptions } : {}),
       weight: criterion.weight,
       answerKey: answer.key,
       answerLabelKey: answer.labelKey,
+      ...(answer.labels ? { answerLabels: answer.labels } : {}),
       value: answer.value,
       maxValue: maxValueOf(criterion),
     };
