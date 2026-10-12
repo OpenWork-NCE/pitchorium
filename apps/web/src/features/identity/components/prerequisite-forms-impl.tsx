@@ -6,11 +6,11 @@ import {
   type LegalVersionsDtoOutput,
   meControllerMe,
   meControllerUpdateProfile,
-  useMeControllerProfile,
-  useProfilesControllerReferenceData,
+  getMeControllerProfileQueryOptions,
+  getProfilesControllerReferenceDataQueryOptions,
 } from '@pitchorium/api-client';
 import { type MinimumProfile, minimumProfileSchema } from '@pitchorium/contracts';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQueryClient, useQuery } from '@tanstack/react-query';
 import { useLocale, useTranslations } from 'next-intl';
 import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
 import {
@@ -114,7 +114,7 @@ const Combobox = lazy(() =>
  * a connection request or a first message out of network. Saved at once, then the action resumes.
  */
 function MinimumProfileForm({ onDone }: PrerequisiteFormProps) {
-  const own = useMeControllerProfile({ query: { staleTime: 0 } });
+  const own = useQuery(getMeControllerProfileQueryOptions({ query: { staleTime: 0 } }));
   if (!own.data) return <Spinner size="sm" />;
   return (
     <MinimumProfileFields
@@ -139,7 +139,9 @@ function MinimumProfileFields({
   const locale = useLocale();
   const router = useRouter();
   const queryClient = useQueryClient();
-  const reference = useProfilesControllerReferenceData({ query: { staleTime: Infinity } });
+  const reference = useQuery(
+    getProfilesControllerReferenceDataQueryOptions({ query: { staleTime: Infinity } }),
+  );
   const countries = useMemo(
     () => countryOptions(reference.data?.countries.map(({ code }) => code) ?? [], locale),
     [reference.data, locale],
