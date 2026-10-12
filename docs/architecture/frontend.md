@@ -185,7 +185,7 @@ Chaque groupe ne charge que ce qu'il utilise (ADR 0094) :
 - Authentification : carte centrée sur les fonds discrets de la marque ; pages éditoriales : en-tête du site.
 - Pages de ressources (`(public)`, ADR 0101) : une adresse par ressource ; la mise en page suit la session (cadre membre pour un membre, cadre public indexable pour un visiteur) ; `lib/resources/view.ts` lit la vue membre ou la vue publique, et une ressource absente pour le lecteur répond 404.
 - Chaque groupe a son `loading.tsx`, `error.tsx` et `not-found.tsx` (`components/layout/states`) ; le focus passe au contenu après une navigation (`RouteFocus`).
-- Du code reste hors du premier chargement mais doit servir hors ligne (aide des raccourcis, palette, infobulles) : il est préchargé quand la page est inactive (`lib/preload.ts`).
+- Du code reste hors du premier chargement mais doit servir hors ligne (aide des raccourcis, palette, infobulles) : il est préchargé quand la page est inactive (`lib/preload.ts`), une seule fois par module quel que soit le nombre de ses composants : un rappel d'inactivité par instance (quelque 250 sur une longue conversation) occupait WebKit une demi-seconde après le chargement et retardait les minuteries de la page (le brouillon d'un message écrit trop tard).
 
 Les pages éditoriales n'ont ni données du navigateur, ni temps réel, ni client d'authentification, ni fonctions de Motion, ni toasts. Motion n'est chargé que par l'indicateur partagé, à l'inactivité de la page.
 

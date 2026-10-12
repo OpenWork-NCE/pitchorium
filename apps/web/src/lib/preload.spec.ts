@@ -43,6 +43,57 @@ describe('preload once the page is idle', () => {
   });
 });
 
+describe('one preload per module, whatever the number of its components', () => {
+  it('schedules one idle callback for the instances of a module, and loads it once', () => {
+    vi.useFakeTimers();
+    offline(false);
+    const timers = vi.spyOn(window, 'setTimeout');
+    const load = vi.fn(() => Promise.resolve());
+    for (let index = 0; index < 50; index += 1) preloadWhenIdle(load);
+    expect(timers).toHaveBeenCalledOnce();
+    vi.runAllTimers();
+    expect(load).toHaveBeenCalledOnce();
+    // Mounted later, the module already there: nothing more.
+    preloadWhenIdle(load);
+    vi.runAllTimers();
+    expect(load).toHaveBeenCalledOnce();
+  });
+
+  it('keeps the preload while one of its components stays, cancels it with the last one', () => {
+    vi.useFakeTimers();
+    offline(false);
+    const load = vi.fn(() => Promise.resolve());
+    const first = preloadWhenIdle(load);
+    const second = preloadWhenIdle(load);
+    first();
+    first();
+    vi.runAllTimers();
+    expect(load).toHaveBeenCalledOnce();
+
+    const other = vi.fn(() => Promise.resolve());
+    const one = preloadWhenIdle(other);
+    const two = preloadWhenIdle(other);
+    one();
+    two();
+    vi.runAllTimers();
+    expect(other).not.toHaveBeenCalled();
+    second();
+  });
+
+  it('preloads again after a failure', async () => {
+    vi.useFakeTimers();
+    offline(false);
+    const load = vi.fn(() => Promise.reject(new Error('network')));
+    preloadWhenIdle(load);
+    vi.runAllTimers();
+    await Promise.resolve();
+    await Promise.resolve();
+    preloadWhenIdle(load);
+    vi.runAllTimers();
+    expect(load).toHaveBeenCalledTimes(2);
+  });
+});
+
 describe('the network before a fetch of code', () => {
   it('resolves at once online, at the return of the network offline', async () => {
     const { whenOnline } = await import('./preload');
