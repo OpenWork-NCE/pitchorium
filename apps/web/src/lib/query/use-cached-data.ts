@@ -20,11 +20,14 @@ export function useCachedData<Data>({
   queryKey,
   queryFn,
   initialData,
+  staleTime = Infinity,
 }: {
   queryKey: QueryKey;
   queryFn: (context: { signal: AbortSignal }) => Promise<Data>;
   /** What the server read; null when it could not. */
   initialData: Data | null;
+  /** Read again when a reader mounts and the entry is older, as `useQuery` does. */
+  staleTime?: number;
 }): Data | undefined {
   const queryClient = useQueryClient();
   const hash = hashKey(queryKey);
@@ -55,7 +58,8 @@ export function useCachedData<Data>({
     () => initialData ?? undefined,
   );
   useEffect(() => {
-    if (queryClient.getQueryData(queryKey) === undefined) read();
+    const state = queryClient.getQueryState(queryKey);
+    if (state?.data === undefined || Date.now() - state.dataUpdatedAt > staleTime) read();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [queryClient, hash, read]);
   return data;
