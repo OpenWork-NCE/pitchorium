@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { io, type Socket } from 'socket.io-client';
 import { inject, vi } from 'vitest';
+import { DEMO_STAFF_TOTP_BASE32 } from '../../../scripts/dev-seed/seed-dev-console';
 import { totp } from '../../integration/support/totp';
 
 export const DEMO_PASSWORD = 'pitchorium-demo-2026';
@@ -46,22 +47,23 @@ export class Browser {
   get = <T = any>(path: string) => this.call<T>('GET', path);
   post = <T = any>(path: string, body?: unknown) => this.call<T>('POST', path, body ?? {});
 
+  /**
+   * Signs in; the demonstration staff (moderators and administrators) have their second factor
+   * on (db:seed:dev), and finish with a code of the demonstration secret.
+   */
   async signIn(email: string, password = DEMO_PASSWORD): Promise<this> {
-    const signed = await this.post('/v1/auth/sign-in/email', { email, password });
-    if (signed.status !== 200) throw new Error(`Sign-in of ${email}: ${signed.status}`);
-    return this;
-  }
-
-  /** Enables TOTP two-factor authentication, required of moderators and administrators. */
-  async enableTwoFactor(password = DEMO_PASSWORD): Promise<void> {
-    const enabled = await this.post<{ totpURI: string }>('/v1/auth/two-factor/enable', {
+    const signed = await this.post<{ twoFactorRedirect?: boolean }>('/v1/auth/sign-in/email', {
+      email,
       password,
     });
-    if (enabled.status !== 200) throw new Error(`2FA enable: ${enabled.status}`);
-    const verified = await this.post('/v1/auth/two-factor/verify-totp', {
-      code: totp(enabled.body.totpURI),
-    });
-    if (verified.status !== 200) throw new Error(`2FA verify: ${verified.status}`);
+    if (signed.status !== 200) throw new Error(`Sign-in of ${email}: ${signed.status}`);
+    if (signed.body.twoFactorRedirect) {
+      const verified = await this.post('/v1/auth/two-factor/verify-totp', {
+        code: totp(`otpauth://totp/pitchorium?secret=${DEMO_STAFF_TOTP_BASE32}`),
+      });
+      if (verified.status !== 200) throw new Error(`2FA verify of ${email}: ${verified.status}`);
+    }
+    return this;
   }
 
   /** A Socket.IO connection with the session, as the web application opens it. */

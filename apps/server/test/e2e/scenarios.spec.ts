@@ -207,8 +207,8 @@ describe('moderation', () => {
     });
     expect(notice.status, JSON.stringify(notice.body)).toBe(201);
 
+    // The administrator of the demonstration data, with her second factor (db:seed:dev).
     const moderator = await demo('claudine-pierre-louis');
-    await moderator.enableTwoFactor();
     const queue = await eventually(
       () => moderator.get('/v1/admin/moderation/cases'),
       (reply) => reply.body.items?.some((item: { targetId: string }) => item.targetId === post!.id),
