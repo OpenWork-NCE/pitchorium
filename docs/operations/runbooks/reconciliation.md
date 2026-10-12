@@ -7,3 +7,5 @@ Le rapprochement quotidien compare les transactions des prestataires au ledger e
 3. Corriger par le flux normal (rejeu du webhook, remboursement depuis `/v1/admin/payments/contributions/{id}/refunds`) ; jamais d'écriture manuelle en base.
 4. Clore l'écart : `POST /v1/admin/payments/discrepancies/{id}/resolve` avec la résolution (auditée).
 5. Un écart non expliqué est un incident (`incident.md`).
+
+Dans la console : `/admin/payments/discrepancies` (écarts, note de résolution, lancement d'un rapprochement) et `/admin/payments/contributions` (remboursement) ; guide : `console.md`.

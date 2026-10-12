@@ -7,3 +7,5 @@
 5. Appels : `GET /v1/admin/moderation/appeals` ; un autre modérateur que l'auteur tranche, avec une motivation.
 6. Contenu manifestement illégal (pédocriminalité, terrorisme) : retrait immédiat et signalement aux autorités selon la procédure validée par le juridique (question 81).
 7. Transparence : `GET /v1/admin/moderation/transparency` pour le rapport périodique.
+
+Dans la console : `/admin/moderation` (file, dossier, décision), `/admin/moderation/appeals`, `/admin/moderation/transparency` ; guide : `console.md`.

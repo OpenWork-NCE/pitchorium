@@ -9,3 +9,5 @@ Délai légal de réponse : un mois (article 12), prolongeable de deux mois avec
    `update privacy.erasures set status = 'running' where id = '<id>';` (seule écriture manuelle admise, tracée dans le fil d'incident).
 5. Demande reçue hors application (email, courrier) : vérifier l'identité, puis la créer depuis le compte du membre ou, à défaut, documenter l'action manuelle.
 6. Les copies hors base (sauvegardes, CDN, prestataires) suivent `docs/compliance/retention.md`.
+
+Dans la console : `/admin/privacy` (échéance légale mise en avant, retard en danger) ; guide : `console.md`.
