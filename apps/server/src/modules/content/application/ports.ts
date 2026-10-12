@@ -52,6 +52,14 @@ export abstract class ContentRepository {
   abstract findPost(id: string): Promise<PostRecord | null>;
   abstract findPosts(ids: readonly string[]): Promise<PostRecord[]>;
   abstract updatePost(id: string, patch: PostPatch): Promise<void>;
+  /**
+   * Live publications with a text whose language was not declared by their author, after the
+   * given id, in id order: the language detection runs on them again.
+   */
+  abstract postsWithUndeclaredLanguage(
+    afterId: string | null,
+    limit: number,
+  ): Promise<{ id: string; authorId: string; text: string; language: string | null }[]>;
   abstract replaceCommentMentions(
     commentId: string,
     mentions: readonly ResolvedMention[],

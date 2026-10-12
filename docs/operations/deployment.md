@@ -26,6 +26,7 @@ release-please (`.github/workflows/release-please.yaml`, `release-please-config.
 2. Lancer la tâche de release `dist/main.migrate.js` avec l'environnement de production, une seule fois, et attendre sa réussite.
 3. Déployer le worker, puis l'api (ou les deux), en remplaçant les instances une à une ; l'arrêt propre (SIGTERM) termine les requêtes et les tâches en cours.
 4. Vérifier `/v1/health/ready`, les métriques et les journaux.
+5. Après une version qui change la détection des langues des contenus (ADR 0169) : `node dist/main.content-redetect-languages.js` une fois (`pnpm content:redetect-languages` hors de l'image), idempotent.
 
 ## Migrations sans interruption (expand et contract)
 

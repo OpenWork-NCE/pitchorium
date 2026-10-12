@@ -4,6 +4,7 @@ import { CommentsService } from './application/comments.service';
 import { ContentEventsRecorder } from './application/content-events.recorder';
 import { ContentFacade } from './application/content.facade';
 import { ContentMaintenanceService } from './application/content-maintenance.service';
+import { LanguageRedetectionService } from './application/language-redetection.service';
 import { FeedService } from './application/feed.service';
 import {
   ContentRepository,
@@ -74,8 +75,9 @@ export class ContentModule {
         LinkPreviewsService,
         PostResolver,
         CommentResolver,
+        LanguageRedetectionService,
       ],
-      exports: [ContentFacade],
+      exports: [ContentFacade, LanguageRedetectionService],
     };
   }
 

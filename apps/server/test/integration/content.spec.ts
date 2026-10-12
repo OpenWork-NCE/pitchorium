@@ -6,7 +6,11 @@ import type { FeedItem, FeedPage, Post } from '@pitchorium/contracts';
 import request from 'supertest';
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AccessModule } from '../../src/modules/access';
-import { ContentFacade, ContentModule } from '../../src/modules/content';
+import {
+  ContentFacade,
+  ContentModule,
+  LanguageRedetectionService,
+} from '../../src/modules/content';
 import { ContentMaintenanceService } from '../../src/modules/content/application/content-maintenance.service';
 import { IdentityModule } from '../../src/modules/identity';
 import { ImpactModule } from '../../src/modules/impact';
@@ -740,5 +744,35 @@ describe('content', () => {
       },
       { timeout: 20_000, interval: 200 },
     );
+  });
+
+  it('detects again the language of the publications not declared, once (ADR 0169)', async () => {
+    const wolof = await publish(ama, {
+      text: 'Sunu mbootaay di jàppale jigéen ñi ci liggéeyu mbay ak jaay ci Tiwaawon.',
+    });
+    expect(wolof).toMatchObject({ language: 'wo', languageSource: 'detected' });
+    const declared = await publish(ama, {
+      text: 'Sunu mbootaay di jàppale jigéen ñi ci liggéeyu mbay ak jaay ci Cees.',
+      language: 'fr',
+    });
+    // Detected before Wolof was known, as franc-min left it.
+    await query(
+      `UPDATE content.posts SET language = NULL, language_source = 'undetermined' WHERE id = $1`,
+      [wolof.id],
+    );
+    const redetection = app.get(LanguageRedetectionService, { strict: false });
+    const first = await redetection.run();
+    expect(first.changed).toBe(1);
+    const rows = await query<{ id: string; language: string; language_source: string }>(
+      'SELECT id, language, language_source FROM content.posts WHERE id = ANY($1)',
+      [[wolof.id, declared.id]],
+    );
+    expect(
+      Object.fromEntries(rows.map((row) => [row.id, [row.language, row.language_source]])),
+    ).toEqual({ [wolof.id]: ['wo', 'detected'], [declared.id]: ['fr', 'declared'] });
+    const read = (await ama.agent.get(`/v1/posts/${wolof.id}`).expect(200)).body as Post;
+    // A detection is not an edition of the publication.
+    expect(read.editedAt).toBeNull();
+    expect(await redetection.run()).toEqual({ checked: first.checked, changed: 0 });
   });
 });

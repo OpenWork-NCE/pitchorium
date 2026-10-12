@@ -1,5 +1,6 @@
 /** Public facade of the content module: the only file other modules may import. */
 export { ContentFacade } from './application/content.facade';
+export { LanguageRedetectionService } from './application/language-redetection.service';
 export type { EventsFeedSource, FeedSuggestionSource } from './application/feed-sources.registry';
 export type {
   FeedEntry,

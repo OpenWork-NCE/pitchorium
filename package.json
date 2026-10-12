@@ -31,6 +31,7 @@
     "admin:create": "pnpm --filter @pitchorium/server admin:create",
     "payments:reconcile": "pnpm --filter @pitchorium/server payments:reconcile",
     "discovery:reindex": "pnpm --filter @pitchorium/server discovery:reindex",
+    "content:redetect-languages": "pnpm --filter @pitchorium/server content:redetect-languages",
     "i18n:check": "turbo run check:keys",
     "openapi:generate": "turbo run openapi:generate",
     "api-client:generate": "turbo run api-client:generate",

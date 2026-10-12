@@ -205,6 +205,31 @@ export class DrizzleContentRepository extends ContentRepository {
     await this.db.update(contentPosts).set(patch).where(eq(contentPosts.id, id));
   }
 
+  async postsWithUndeclaredLanguage(
+    afterId: string | null,
+    limit: number,
+  ): Promise<{ id: string; authorId: string; text: string; language: string | null }[]> {
+    const rows = await this.db
+      .select({
+        id: contentPosts.id,
+        authorId: contentPosts.authorId,
+        text: contentPosts.text,
+        language: contentPosts.language,
+      })
+      .from(contentPosts)
+      .where(
+        and(
+          isNull(contentPosts.deletedAt),
+          isNotNull(contentPosts.text),
+          sql`${contentPosts.languageSource} <> 'declared'`,
+          afterId ? sql`${contentPosts.id} > ${afterId}` : undefined,
+        ),
+      )
+      .orderBy(asc(contentPosts.id))
+      .limit(limit);
+    return rows.map((row) => ({ ...row, text: row.text ?? '' }));
+  }
+
   async replaceMentions(postId: string, mentions: readonly ResolvedMention[]): Promise<void> {
     await this.db.delete(contentPostMentions).where(eq(contentPostMentions.postId, postId));
     if (mentions.length === 0) return;

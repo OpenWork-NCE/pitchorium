@@ -23,6 +23,7 @@
     "admin:create": "node --env-file-if-exists=.env -r @swc-node/register src/main.create-admin.ts",
     "payments:reconcile": "node --env-file-if-exists=.env -r @swc-node/register src/main.reconcile.ts",
     "discovery:reindex": "node --env-file-if-exists=.env -r @swc-node/register src/main.discovery-reindex.ts",
+    "content:redetect-languages": "node --env-file-if-exists=.env -r @swc-node/register src/main.content-redetect-languages.ts",
     "db:seed:dev": "node --env-file-if-exists=.env -r @swc-node/register scripts/seed-dev.ts"
   },
   "dependencies": {
