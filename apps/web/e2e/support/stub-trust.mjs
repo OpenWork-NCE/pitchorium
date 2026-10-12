@@ -4,7 +4,11 @@
 
 const ID = (n) => `0192f4a0-8000-7000-8000-${String(n).padStart(12, '0')}`;
 const DAY = 86_400_000;
-const at = (days) => new Date(Date.now() + days * DAY).toISOString();
+/** The fixed clock of the stub, as in stub-projects.mjs: the review captures read the same. */
+const NOW = Date.parse('2026-10-10T09:00:00.000Z');
+const at = (days) => new Date(NOW + days * DAY).toISOString();
+/** From the real time: what a journey writes during the run. */
+const fromNow = (days) => new Date(Date.now() + days * DAY).toISOString();
 
 const REASONS = [
   'spam',
@@ -43,7 +47,9 @@ function standingOf(handle) {
           automatedDetection: false,
           suspensionEndsAt: at(12),
           decidedAt: at(-2),
-          appealableUntil: at(181),
+          // Compared with the real time by the page: far after the fixed clock, as every date
+          // below that the web compares (the button « Faire appel », a deletion due).
+          appealableUntil: at(3650),
           appeal: null,
         },
         {
@@ -60,7 +66,7 @@ function standingOf(handle) {
           automatedDetection: true,
           suspensionEndsAt: null,
           decidedAt: at(-40),
-          appealableUntil: at(143),
+          appealableUntil: at(3600),
           appeal: {
             id: ID(401),
             decisionId: ID(202),
@@ -88,11 +94,11 @@ function privacyOf(handle, state) {
             id: ID(601),
             status: 'scheduled',
             requestedAt: at(-3),
-            scheduledFor: at(27),
+            scheduledFor: at(3650),
             canceledAt: null,
             completedAt: null,
             blockedBy: null,
-            reminderAt: at(20),
+            reminderAt: at(3643),
           }
         : null;
   }
@@ -121,7 +127,7 @@ function privacyOf(handle, state) {
   return {
     exports: own.exports,
     nextExportAt:
-      latest && latest.status !== 'failed' && Date.parse(latest.requestedAt) > Date.now() - DAY
+      latest && latest.status !== 'failed' && Date.parse(latest.requestedAt) > NOW - DAY
         ? new Date(Date.parse(latest.requestedAt) + DAY).toISOString()
         : null,
     erasure: own.erasure,
@@ -298,11 +304,11 @@ export function trustRoutes({ origin, accounts, sessionOf, problem, readJson, st
           id: ID(602),
           status: 'scheduled',
           requestedAt: new Date().toISOString(),
-          scheduledFor: at(30),
+          scheduledFor: fromNow(30),
           canceledAt: null,
           completedAt: null,
           blockedBy: null,
-          reminderAt: at(23),
+          reminderAt: fromNow(23),
         };
         log('erasure', email);
         return { status: 201, body: privacy[handle].erasure };
