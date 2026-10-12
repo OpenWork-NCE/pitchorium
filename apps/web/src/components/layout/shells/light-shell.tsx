@@ -6,7 +6,7 @@ import * as routes from '@/config/paths';
 import { cn } from '@/lib/cn';
 import { LazyHeaderControls } from '../lazy-header-controls';
 import { Main } from '../page-layouts';
-import { Footer } from './parts';
+import { BELOW_FIRST_SCREEN, Footer } from './parts';
 
 /**
  * The shell of the localised 404 page: the editorial header and footer, with plain links and the
@@ -37,7 +37,7 @@ export function LightShell({ children }: { children: ReactNode }) {
           </div>
         </div>
       </header>
-      <Main className="flex-1">{children}</Main>
+      <Main className={cn('flex-1', BELOW_FIRST_SCREEN)}>{children}</Main>
       <Footer />
     </div>
   );

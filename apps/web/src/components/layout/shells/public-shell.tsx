@@ -3,6 +3,7 @@ import { SiteFooter } from '@/features/marketing';
 import { env } from '@/lib/env';
 import { InteractiveRuntime } from '../interactive-runtime';
 import { SiteHeader } from '../site-header';
+import { BELOW_FIRST_SCREEN } from './parts';
 
 /**
  * Indexable public pages of a visitor: profile, organisation, project, event, showcase (ADR 0101).
@@ -15,7 +16,7 @@ export function PublicShell({ children }: { children: ReactNode }) {
     <InteractiveRuntime scope="public">
       <div className="flex min-h-dvh flex-col">
         <SiteHeader />
-        <div className="flex-1">{children}</div>
+        <div className={`flex-1 ${BELOW_FIRST_SCREEN}`}>{children}</div>
         <SiteFooter contactEmail={env.CONTACT_EMAIL} />
       </div>
     </InteractiveRuntime>

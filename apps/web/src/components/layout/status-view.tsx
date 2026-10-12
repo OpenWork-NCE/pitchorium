@@ -10,18 +10,28 @@ interface StatusViewProps {
   /** Technical reference to quote to the support (error digest, request id). */
   reference?: ReactNode;
   actions: ReactNode;
+  /**
+   * The symbol of the brand above the text: for a page without the header that already holds the
+   * logo (the 404 outside any locale, the last-resort error), one logo per screen (direction.md).
+   */
+  mark?: boolean;
 }
 
 /** Shared page of the not-found and error states, on the brand motif. */
-export function StatusView({ code, title, body, reference, actions }: StatusViewProps) {
+export function StatusView({
+  code,
+  title,
+  body,
+  reference,
+  actions,
+  mark = false,
+}: StatusViewProps) {
   return (
     <div className={cn('flex min-h-[70dvh] items-center', MOTIF)}>
       <div className="mx-auto w-full max-w-7xl px-4 py-16 sm:px-6">
         <div className="max-w-xl">
-          <BrandSymbol animated />
-          {code ? (
-            <p className="mt-8 font-display text-5xl font-extrabold text-accent">{code}</p>
-          ) : null}
+          {mark ? <BrandSymbol animated className="mb-8" /> : null}
+          {code ? <p className="font-display text-5xl font-extrabold text-accent">{code}</p> : null}
           <h1 className="mt-4 text-3xl">{title}</h1>
           <p className="mt-4 text-lg text-muted">{body}</p>
           {reference ? <p className="mt-4 font-mono text-xs text-muted">{reference}</p> : null}

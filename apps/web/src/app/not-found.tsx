@@ -17,6 +17,7 @@ export default async function GlobalNotFound() {
       <body>
         <main id="main">
           <StatusView
+            mark
             code={t('code')}
             title={t('title')}
             body={t('body')}

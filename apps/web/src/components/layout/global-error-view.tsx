@@ -22,6 +22,7 @@ export default function GlobalErrorView({
   const texts = (english ? en : fr).error;
   return (
     <StatusView
+      mark
       title={texts.title}
       body={texts.body}
       reference={digest ? texts.reference.replace('{{reference}}', digest) : undefined}
