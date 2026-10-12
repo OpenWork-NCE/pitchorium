@@ -2,9 +2,10 @@ import type { FollowState, Locale, Project } from '@pitchorium/contracts';
 import { getFormatter, getTranslations } from 'next-intl/server';
 import type { ComponentType, ReactNode } from 'react';
 import { Bell } from 'lucide-react';
-import { Alert, Button, ImpactBadge } from '@/components/ui';
+import { Alert, Button, ImpactBadge, Notice } from '@/components/ui';
 import * as routes from '@/config/paths';
 import { ActivitySection, ImageGallery, type MemberActivityProps } from '@/features/content';
+import { ReportButton } from '@/features/trust';
 import { Link } from '@/i18n/navigation';
 import { withRedirect } from '@/lib/auth/redirect';
 import { pluralOf } from '@/lib/i18n/plural-of';
@@ -184,6 +185,11 @@ export async function ProjectPage({
           {t('draftBody')}
         </Alert>
       ) : null}
+      {team && team.moderationStatus !== 'visible' ? (
+        // The team alone still reads a project the moderation hid; the decision is in its
+        // settings, with its reasons and the appeal (§13).
+        <Notice kind="moderated" />
+      ) : null}
       {team && view !== 'preview' ? (
         <nav aria-label={t('teamNav')} className="flex flex-wrap gap-2">
           <Button asChild variant="secondary" size="sm">
@@ -220,14 +226,23 @@ export async function ProjectPage({
                   {contribute?.block}
                   {/* On a phone, the action bar holds them. */}
                   <div className="hidden lg:grid">{memberActions ?? visitorAction}</div>
-                  <ShareActions url={url} title={project.title} />
+                  <div className="flex flex-wrap items-center gap-2">
+                    <ShareActions url={url} title={project.title} />
+                    {signedIn && !project.viewer?.teamRole ? (
+                      <ReportButton
+                        variant="icon"
+                        target={{ type: 'project', id: project.id }}
+                        name={project.title}
+                      />
+                    ) : null}
+                  </div>
                 </div>
               )
             }
           />
         </aside>
         <div className="grid min-w-0 gap-10">
-          <StorySection project={project} editorial={editorial} />
+          <StorySection project={project} editorial={editorial} signedIn={signedIn} />
           {project.video ? (
             <section aria-labelledby="video-title" className="grid gap-4">
               <SectionHeading id="video-title" editorial={editorial}>
@@ -247,7 +262,7 @@ export async function ProjectPage({
           <TiersSection project={project} locale={locale} editorial={editorial} />
           <RewardsSection project={project} locale={locale} editorial={editorial} />
           {signedIn ? <DocumentsSection project={project} /> : null}
-          <UpdatesSection project={project} editorial={editorial} />
+          <UpdatesSection project={project} editorial={editorial} signedIn={signedIn} />
           <TeamSection project={project} editorial={editorial} signedIn={signedIn} />
           {draft ? null : (
             <ActivitySection

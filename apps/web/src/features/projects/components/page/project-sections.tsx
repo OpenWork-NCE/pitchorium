@@ -3,6 +3,7 @@ import { CheckCircle2, Circle } from 'lucide-react';
 import { getFormatter, getTranslations } from 'next-intl/server';
 import { Avatar, Badge, Card, Link, MarkdownContent, Notice, Text } from '@/components/ui';
 import * as routes from '@/config/paths';
+import { Translatable } from '@/features/localization';
 import { MemberHoverCard } from '@/features/profiles';
 import { formatMoney } from '@/lib/format/money';
 import { pluralOf } from '@/lib/i18n/plural-of';
@@ -15,8 +16,15 @@ interface SectionProps {
   editorial: boolean;
 }
 
-/** « Histoire » (§11.2): the restricted Markdown of the api, under its h2. */
-export async function StorySection({ project, editorial }: Omit<SectionProps, 'locale'>) {
+/**
+ * « Histoire » (§11.2): the restricted Markdown of the api, under its h2; « Traduire » for a member
+ * when it is written in another language than the interface (§8.3).
+ */
+export async function StorySection({
+  project,
+  editorial,
+  signedIn = false,
+}: Omit<SectionProps, 'locale'> & { signedIn?: boolean }) {
   if (!project.description) return null;
   const t = await getTranslations('web.projects.page');
   return (
@@ -24,7 +32,18 @@ export async function StorySection({ project, editorial }: Omit<SectionProps, 'l
       <SectionHeading id="story-title" editorial={editorial}>
         {t('story')}
       </SectionHeading>
-      <MarkdownContent source={project.description} sectionLevel={2} />
+      {signedIn ? (
+        <Translatable
+          source={{ type: 'project', id: project.id }}
+          language={project.language}
+          field="description"
+          format="markdown"
+        >
+          <MarkdownContent source={project.description} sectionLevel={2} />
+        </Translatable>
+      ) : (
+        <MarkdownContent source={project.description} sectionLevel={2} />
+      )}
       {project.impactArea ? (
         <Text size="sm" tone="muted">
           {t('impactArea', { area: project.impactArea })}
