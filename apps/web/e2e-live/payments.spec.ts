@@ -1,8 +1,11 @@
 import AxeBuilder from '@axe-core/playwright';
 import { readFileSync } from 'node:fs';
 import type { Locator, Page } from '@playwright/test';
+import { ageSession, DATABASE_URL } from './database';
 import {
+  ADMIN_EMAIL,
   adminPage,
+  allowConsole,
   api,
   apiProject,
   choose,
@@ -10,11 +13,13 @@ import {
   entrepreneur,
   eur,
   expect,
+  freshStaffPage,
   hydrated,
   linkFromInbox,
   memberPage,
   ok,
   pngImage,
+  reauthenticate,
   test,
 } from './support';
 
@@ -211,18 +216,19 @@ test.describe('contributions', () => {
         'Les contributions en ligne ouvriront dès que le porteur aura finalisé sa vérification.',
       );
 
-      const queue = (await (
-        await ok(
-          api(admin!.page, 'GET', '/v1/admin/payments/kyc-submissions?status=pending&limit=100'),
-        )
-      ).json()) as { items: { id: string; holder: { handle: string } | null }[] };
-      const submission = queue.items.find((item) => item.holder?.handle === holder.member.handle);
-      await ok(
-        api(admin!.page, 'POST', `/v1/admin/payments/kyc-submissions/${submission!.id}/decision`, {
-          decision: 'approved',
-          reason: 'Pièce d’identité lisible et conforme.',
-        }),
-      );
+      // The administrator approves it from the console, over the private document.
+      const desk = admin!.page;
+      await desk.goto('/fr/admin/payments/kyc');
+      await hydrated(desk);
+      await desk.getByRole('link', { name: 'Mariama Faye' }).first().click();
+      await hydrated(desk);
+      await expect(desk.getByRole('button', { name: 'Pièce 1' })).toBeVisible();
+      await desk.getByRole('radio', { name: /^Approuver/ }).check();
+      await desk
+        .getByRole('textbox', { name: 'Motif' })
+        .fill('Pièce d’identité lisible et conforme.');
+      await desk.getByRole('button', { name: 'Approuver' }).click();
+      await expect(desk.locator('[data-announcer="polite"]')).toHaveText('Vérification approuvée.');
       await visitor.page.reload();
       await expect(
         visitor.page.getByTestId('contribute-entry').getByRole('button', { name: 'Contribuer' }),
@@ -451,9 +457,101 @@ test.describe('contributions', () => {
     await expect(mine.getByTestId('offline-item').filter({ hasText: 'Espèces' })).toContainText(
       'Confirmée',
     );
+
+    // The administrator validates it from the console, over its proof: it counts in the project.
+    const admin = await adminPage(browser);
+    if (admin) {
+      await admin.page.goto('/fr/admin/payments/offline');
+      await hydrated(admin.page);
+      const item = admin.page
+        .getByRole('main')
+        .getByRole('listitem')
+        .filter({ has: admin.page.locator(`a[href$="/projects/${project.slug}"]`) });
+      await expect(item.getByRole('button', { name: 'Pièce 1' })).toBeVisible();
+      await item.getByRole('radio', { name: /^Valider/ }).check();
+      await item
+        .getByRole('textbox', { name: 'Motif' })
+        .fill('Reçu de la caisse de la coopérative, signé.');
+      await item.getByRole('button', { name: 'Valider' }).click();
+      await expect(admin.page.locator('[data-announcer="polite"]')).toHaveText(
+        'Contribution validée.',
+      );
+      await page.reload();
+      await expect(
+        page.getByTestId('my-offline').getByTestId('offline-item').filter({ hasText: 'Espèces' }),
+      ).toContainText('Validée');
+      await admin.context.close();
+    }
     await holder.context.close();
     await context.close();
   });
+
+  test(
+    'an administrator refunds part of a contribution from the console, after a new sign-in',
+    { tag: '@critical' },
+    async ({ browser }) => {
+      test.slow();
+      test.skip(!DATABASE_URL, 'The session is aged in the database of the run.');
+      // The api refuses the old session on purpose.
+      allowConsole(/status of 403 \(Forbidden\) \(\S+\/refunds/);
+      const admin = await freshStaffPage(browser, ADMIN_EMAIL, 'admin');
+      test.skip(!admin, 'The administrator of the run (demonstration data).');
+      const holder = await demoPage(browser, HOLDER);
+      const project = await holderProject(holder.page, 'Puits de Louga', [30, 1_000]);
+      const { page, context } = await memberPage(browser, 'refunded', {
+        name: 'Inès Diouf',
+        profile: { headline: 'Architecte', countryCode: 'FR' },
+      });
+      const dialog = await toQuote(page, `/fr/projects/${project.slug}`, {
+        kind: /^Don/,
+        amount: '100',
+      });
+      await payAtProvider(page, dialog, 'succeed');
+      await expect(page.getByTestId('paid-amount')).toHaveText('100,00 €');
+      const contributionId = /\/contributions\/([\w-]+)\/return$/.exec(page.url())![1]!;
+
+      await ageSession(admin!.context);
+      const desk = admin!.page;
+      await desk.goto(`/fr/admin/payments/contributions/${contributionId}`);
+      await hydrated(desk);
+      await expect(desk.getByText('Paiement reçu', { exact: true }).first()).toBeVisible();
+      const refund = desk.locator('[aria-labelledby="refund-title"]');
+      await expect(refund.getByText('Encore remboursable : 100,00 €.')).toBeVisible();
+      await refund.getByRole('button', { name: 'Une partie' }).click();
+      await refund.getByLabel('Montant à rembourser').fill('30');
+      await refund
+        .getByRole('textbox', { name: 'Motif' })
+        .fill('Doublon de paiement signalé par la contributrice.');
+      await refund.getByRole('button', { name: 'Voir l’effet' }).click();
+      // The effect computed by the api: 5 % of the commission given back in proportion.
+      await expect(refund.getByText('1,50 €')).toBeVisible();
+      const submit = async () => {
+        await refund.getByRole('button', { name: 'Rembourser' }).click();
+        const confirm = desk.getByRole('alertdialog', { name: /Rembourser 30,00/ });
+        await confirm.getByRole('textbox').fill('REMBOURSER');
+        await confirm.getByRole('button', { name: 'Rembourser' }).click();
+      };
+      await submit();
+      await expect(desk.getByText('Reconnectez-vous pour continuer')).toBeVisible();
+      await reauthenticate(desk, ADMIN_EMAIL, 'admin');
+      await hydrated(desk);
+      // Back with a recent session: the panel asks for the amount, the reason and the effect again.
+      await expect(refund.getByText(/Connexion renouvelée/)).toBeVisible();
+      await refund.getByRole('button', { name: 'Une partie' }).click();
+      await refund.getByLabel('Montant à rembourser').fill('30');
+      await refund
+        .getByRole('textbox', { name: 'Motif' })
+        .fill('Doublon de paiement signalé par la contributrice.');
+      await refund.getByRole('button', { name: 'Voir l’effet' }).click();
+      await submit();
+      await expect(desk.locator('[data-announcer="polite"]')).toHaveText('Remboursement demandé.');
+      await expect(refund.getByText('Encore remboursable : 70,00 €.')).toBeVisible();
+
+      await page.goto('/fr/dashboard');
+      await expect(page.getByTestId('my-contributions')).toContainText('Remboursée en partie');
+      await Promise.all([admin!.context.close(), holder.context.close(), context.close()]);
+    },
+  );
 
   test('the team exports the contributions of its project as CSV', async ({ browser }) => {
     const holder = await demoPage(browser, HOLDER);
