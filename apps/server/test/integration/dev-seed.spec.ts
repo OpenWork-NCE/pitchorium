@@ -330,14 +330,17 @@ describe('development data', () => {
         missionEngagements: 0,
       });
       expect(await counts()).toEqual(withDiscovery);
-      // Reports, an appealed decision, an export and translations, once.
+      // Reports, decisions and their appeals, a suspension, an export, an erasure in its grace
+      // period and translations, once.
       expect(await seedDevTrust(context, clock)).toEqual({
         moderators: 2,
-        reports: 2,
-        decisions: 1,
-        appeals: 1,
+        reports: 5,
+        decisions: 3,
+        appeals: 2,
+        suspensions: 1,
         exports: 1,
-        translations: 1,
+        erasures: 1,
+        translations: 3,
       });
       expect(await seedDevTrust(context, clock)).toMatchObject({ reports: 0, exports: 0 });
       // The discussion, saved publications, a week of views and a hidden publication, once.

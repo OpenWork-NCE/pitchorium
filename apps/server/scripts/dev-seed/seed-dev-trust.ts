@@ -15,7 +15,9 @@ export interface DevTrustResult {
   reports: number;
   decisions: number;
   appeals: number;
+  suspensions: number;
   exports: number;
+  erasures: number;
   translations: number;
 }
 
@@ -23,9 +25,10 @@ export interface DevTrustResult {
 export const DEMO_MODERATORS = ['claudine', 'koffi'] as const;
 
 /**
- * Reports, a decision with its statement of reasons and its appeal, an export request and
- * cached translations, through the services of trust, privacy and localization (ADR 0035).
- * Skipped when the demonstration reports exist.
+ * Reports, decisions with their statement of reasons, an appeal waiting and one decided by
+ * another moderator, a suspended account (Rodrigue Mbemba), an export request, an erasure in its
+ * grace period (Moussa Diarra) and cached translations both ways, through the services of trust,
+ * privacy and localization (ADR 0035). Skipped when the demonstration reports exist.
  */
 export async function seedDevTrust(
   context: INestApplicationContext,
@@ -40,7 +43,9 @@ export async function seedDevTrust(
     reports: 0,
     decisions: 0,
     appeals: 0,
+    suspensions: 0,
     exports: 0,
+    erasures: 0,
     translations: 0,
   };
   const reports = get(ReportsService);
@@ -102,18 +107,96 @@ export async function seedDevTrust(
     result.appeals = 1;
   }
 
+  // A warning appealed, then upheld by another moderator; a suspension of fourteen days.
+  clock.set(new Date(now.getTime() - 40 * HOUR_MS));
+  await reports.report(userId('grace'), {
+    targetType: 'profile',
+    targetId: 'thierry-lacroix',
+    reason: 'spam',
+    details: 'Il m’envoie chaque jour la même offre commerciale.',
+  });
+  for (const reporter of ['nadia', 'fatou'] as const) {
+    await reports.report(userId(reporter), {
+      targetType: 'profile',
+      targetId: 'rodrigue-mbemba',
+      reason: 'fraud',
+      details: 'Il demande des paiements par transfert direct, hors de la plateforme.',
+    });
+  }
+  result.reports += 3;
+  const profileCase = async (subject: string) =>
+    (
+      await moderation.queue(userId('claudine'), {
+        status: 'open',
+        assigned: 'any',
+        targetType: 'profile',
+        limit: 20,
+      })
+    ).items.find((item) => item.subjectId === userId(subject));
+  clock.set(new Date(now.getTime() - 36 * HOUR_MS));
+  const spam = await profileCase('thierry');
+  if (spam) {
+    await moderation.assign(userId('claudine'), spam.id, userId('claudine'));
+    const warning = await moderation.decide(userId('claudine'), spam.id, {
+      kind: 'warn',
+      reason: 'spam',
+      statement:
+        'Vous avez envoyé la même offre commerciale à des membres hors de votre réseau, plusieurs jours de suite.',
+      ground: 'terms',
+      groundReference: 'Conditions d’utilisation, sollicitations non désirées',
+      suspensionDays: null,
+    });
+    result.decisions += 1;
+    clock.set(new Date(now.getTime() - 30 * HOUR_MS));
+    const appeal = await get(StandingService).appeal(
+      userId('thierry'),
+      warning.id,
+      'Ces membres avaient demandé des informations sur nos services lors d’un salon.',
+    );
+    clock.set(new Date(now.getTime() - 20 * HOUR_MS));
+    await moderation.resolveAppeal(
+      userId('koffi'),
+      appeal.id,
+      'upheld',
+      'Les messages ont été envoyés à des membres qui ne vous avaient pas contacté sur Pitchorium ; l’avertissement est maintenu.',
+    );
+    result.appeals += 1;
+  }
+  const fraud = await profileCase('rodrigue');
+  if (fraud) {
+    clock.set(new Date(now.getTime() - 6 * HOUR_MS));
+    await moderation.assign(userId('claudine'), fraud.id, userId('claudine'));
+    await moderation.decide(userId('claudine'), fraud.id, {
+      kind: 'suspend',
+      reason: 'fraud',
+      statement:
+        'Plusieurs membres rapportent des demandes de paiement par transfert direct, hors de la plateforme et de ses protections.',
+      ground: 'terms',
+      groundReference: 'Conditions d’utilisation, paiements',
+      suspensionDays: 14,
+    });
+    result.decisions += 1;
+    result.suspensions = 1;
+  }
+
   clock.set(now);
-  await get(PrivacyRequestsService).requestExport(userId('aissatou'));
+  const privacy = get(PrivacyRequestsService);
+  await privacy.requestExport(userId('aissatou'));
   result.exports = 1;
+  await privacy.requestErasure(userId('moussa'));
+  result.erasures = 1;
   const translations = get(TranslationService);
-  for (const [reader, post] of [
-    ['kofi', 'sahel-harvest'],
-    ['samuel', 'sahel-harvest'],
+  for (const [reader, sourceType, sourceId, targetLocale] of [
+    ['kofi', 'post', demoId('post:sahel-harvest'), 'en'],
+    ['samuel', 'post', demoId('post:sahel-harvest'), 'en'],
+    // English contents read in French.
+    ['aissatou', 'post', demoId('post:kente-launch'), 'fr'],
+    ['aissatou', 'profile', 'ama-owusu', 'fr'],
   ] as const) {
     const translated = await translations.translate(userId(reader), {
-      sourceType: 'post',
-      sourceId: demoId(`post:${post}`),
-      targetLocale: 'en',
+      sourceType,
+      sourceId,
+      targetLocale,
     });
     if (!translated.cached) result.translations += 1;
   }
