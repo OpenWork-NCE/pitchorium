@@ -1,7 +1,9 @@
 /**
  * Content Security Policy of every page (ADR 0088), built per request by the proxy with a fresh
  * nonce. Scripts run only with the nonce (`strict-dynamic` lets them load their chunks); the
- * origins below are the exact list the app needs.
+ * origins below are the exact list the app needs. Vercel Analytics and Speed Insights need none:
+ * on a Vercel deployment their scripts and their beacons are served from the site itself
+ * (`/_vercel/insights`, `/_vercel/speed-insights`).
  */
 export interface CspOptions {
   nonce: string;
@@ -9,10 +11,12 @@ export interface CspOptions {
   development: boolean;
   apiUrl: string;
   cdnUrl?: string | undefined;
-  /** Endpoint of the object storage the browser sends a file to (presigned URLs, ADR 0111). */
+  /**
+   * Endpoint of the object storage: the browser sends a file to it and reads the private images
+   * from it, both by presigned URLs (ADR 0111, ADR 0026).
+   */
   uploadUrl?: string | undefined;
   sentryDsn?: string | undefined;
-  vercelAnalytics: boolean;
   /** Only an HTTPS site upgrades its subresource requests. */
   https: boolean;
 }
@@ -34,9 +38,6 @@ export const VAUL_STYLE_HASHES = ["'sha256-YIjArHm2rkb5J7hX9lUM1bnQ3Kp61MTfluMGk
 
 /** Embedded videos, in their privacy-respecting variants (ADR 0042). */
 const VIDEO_FRAMES = ['https://www.youtube-nocookie.com', 'https://player.vimeo.com'];
-
-const VERCEL_SCRIPTS = 'https://va.vercel-scripts.com';
-const VERCEL_VITALS = 'https://vitals.vercel-insights.com';
 
 function origin(url: string): string {
   return new URL(url).origin;
@@ -72,7 +73,6 @@ export function buildCsp(options: CspOptions): string {
   const cdn = options.cdnUrl ? [origin(options.cdnUrl)] : [];
   const upload = options.uploadUrl ? [origin(options.uploadUrl)] : [];
   const sentry = options.sentryDsn ? sentryTarget(options.sentryDsn) : undefined;
-  const vercel = options.vercelAnalytics;
 
   const directives: Record<string, string[]> = {
     'default-src': ["'self'"],
@@ -81,7 +81,6 @@ export function buildCsp(options: CspOptions): string {
       nonce,
       "'strict-dynamic'",
       ...(options.development ? ["'unsafe-eval'"] : []),
-      ...(vercel ? [VERCEL_SCRIPTS] : []),
     ],
     // A nonce disables 'unsafe-inline': the development server keeps it for its HMR styles.
     'style-src': options.development
@@ -89,7 +88,11 @@ export function buildCsp(options: CspOptions): string {
       : ["'self'", nonce, ...SONNER_STYLE_HASHES, ...VAUL_STYLE_HASHES],
     // Inline style attributes (React, Radix, next/image) cannot carry a nonce.
     'style-src-attr': ["'unsafe-inline'"],
-    'img-src': ["'self'", 'data:', 'blob:', api, ...cdn],
+    // The public files come from the CDN; the object storage serves the private images by
+    // presigned addresses (a private publication, the thumbnail of a document, a draft, an
+    // attachment, a link preview, ADR 0026), from an origin other than the CDN in production
+    // (R2). The api itself serves no image.
+    'img-src': ["'self'", 'data:', 'blob:', ...cdn, ...upload],
     'font-src': ["'self'"],
     'connect-src': [
       "'self'",
@@ -97,7 +100,6 @@ export function buildCsp(options: CspOptions): string {
       socketOrigin(options.apiUrl),
       ...upload,
       ...(sentry ? [sentry.ingest] : []),
-      ...(vercel ? [VERCEL_VITALS] : []),
     ],
     'media-src': ["'self'", ...cdn],
     // Cloudflare Turnstile draws its challenge in a frame (ADR 0103); its script is loaded by

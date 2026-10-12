@@ -48,7 +48,6 @@ export async function proxy(request: NextRequest): Promise<NextResponse> {
     cdnUrl: env.NEXT_PUBLIC_CDN_URL,
     uploadUrl: env.NEXT_PUBLIC_UPLOAD_URL,
     sentryDsn: env.NEXT_PUBLIC_SENTRY_DSN,
-    vercelAnalytics: env.NEXT_PUBLIC_VERCEL_ANALYTICS,
     https: env.NEXT_PUBLIC_SITE_URL.startsWith('https://'),
   });
 

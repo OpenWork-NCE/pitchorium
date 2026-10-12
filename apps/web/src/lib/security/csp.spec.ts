@@ -10,7 +10,6 @@ const base = {
   apiUrl: 'https://api.pitchorium.example',
   cdnUrl: 'https://cdn.pitchorium.example/public',
   uploadUrl: 'https://account.r2.cloudflarestorage.com',
-  vercelAnalytics: false,
   https: true,
 };
 
@@ -26,25 +25,23 @@ describe('content security policy', () => {
     expect(directive(csp, 'upgrade-insecure-requests')).toBeDefined();
   });
 
-  it('lists the exact origins of the api, the files, the uploads and the embedded videos', () => {
+  it('lists the exact origins of the api, the files, the object storage and the embedded videos', () => {
     const csp = buildCsp(base);
     expect(directive(csp, 'connect-src')).toBe(
       "connect-src 'self' https://api.pitchorium.example wss://api.pitchorium.example https://account.r2.cloudflarestorage.com",
     );
-    expect(directive(csp, 'img-src')).toContain('https://cdn.pitchorium.example');
+    expect(directive(csp, 'img-src')).toBe(
+      "img-src 'self' data: blob: https://cdn.pitchorium.example https://account.r2.cloudflarestorage.com",
+    );
     expect(directive(csp, 'frame-src')).toBe(
       'frame-src https://www.youtube-nocookie.com https://player.vimeo.com https://challenges.cloudflare.com',
     );
   });
 
-  it('adds Sentry and Vercel only when they are configured', () => {
-    const csp = buildCsp({
-      ...base,
-      sentryDsn: 'https://key@o1.ingest.sentry.io/42',
-      vercelAnalytics: true,
-    });
+  it('adds Sentry only when it is configured, and no origin for Vercel', () => {
+    const csp = buildCsp({ ...base, sentryDsn: 'https://key@o1.ingest.sentry.io/42' });
     expect(directive(csp, 'connect-src')).toContain('https://o1.ingest.sentry.io');
-    expect(directive(csp, 'connect-src')).toContain('https://vitals.vercel-insights.com');
+    expect(csp).not.toMatch(/vercel/);
     expect(directive(csp, 'report-uri')).toBe(
       `report-uri ${sentryTarget('https://key@o1.ingest.sentry.io/42').report}`,
     );
