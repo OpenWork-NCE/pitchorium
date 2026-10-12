@@ -24,3 +24,4 @@ export { Dashboard } from './components/dashboard';
 export { MemberFile } from './components/members/member-file';
 export { MemberResults } from './components/members/member-results';
 export { SearchField } from './components/search-field';
+export { type UrlFilter, UrlFilters } from './components/url-filters';
