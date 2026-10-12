@@ -5,10 +5,10 @@ import {
   getMyAssessmentsControllerHistoryQueryKey,
   methodologiesControllerPublished,
   myAssessmentsControllerSubmit,
-  useMyAssessmentsControllerHistory,
+  getMyAssessmentsControllerHistoryQueryOptions,
 } from '@pitchorium/api-client';
 import type { ImpactAssessment, ImpactMethodology } from '@pitchorium/contracts';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQueryClient, useQuery } from '@tanstack/react-query';
 import { useFormatter, useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { Badge, Card, ErrorState, Heading, Loading, Skeleton, useAnnounce } from '@/components/ui';
@@ -43,7 +43,9 @@ export function EntrepreneurAssessment() {
   const announce = useAnnounce();
   const queryClient = useQueryClient();
   const withPrerequisites = useWithPrerequisites();
-  const history = useMyAssessmentsControllerHistory({ query: { retry: false } });
+  const history = useQuery(
+    getMyAssessmentsControllerHistoryQueryOptions({ query: { retry: false } }),
+  );
   const [loaded, setLoaded] = useState<Methodology>({ state: 'loading' });
   const [problem, setProblem] = useState<string | null>(null);
   const [attempt, setAttempt] = useState(0);
