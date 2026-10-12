@@ -38,7 +38,7 @@ describe('reaction to a publication', () => {
     let answer: (summary: ReactionSummary) => void = () => undefined;
     const send = vi.fn(() => new Promise<ReactionSummary>((resolve) => (answer = resolve)));
     renderWithProviders(<Harness send={send} />);
-    const like = screen.getByRole('button', { name: "J'aime" });
+    const like = screen.getByRole('button', { name: 'J’aime' });
     fireEvent.click(like);
     // Before the api answers.
     expect(like.getAttribute('aria-pressed')).toBe('true');
@@ -59,7 +59,7 @@ describe('reaction to a publication', () => {
   it('comes back with the reason when the api refuses', async () => {
     const send = vi.fn(() => Promise.reject(new Error('refused')));
     renderWithProviders(<Harness send={send} />);
-    const like = screen.getByRole('button', { name: "J'aime" });
+    const like = screen.getByRole('button', { name: 'J’aime' });
     await act(async () => {
       fireEvent.click(like);
       await Promise.resolve();

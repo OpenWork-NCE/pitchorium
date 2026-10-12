@@ -1,6 +1,7 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import * as contracts from '@pitchorium/contracts';
+import { straightApostrophes } from './typography.js';
 
 const { AUTH_ERROR_CODES, errorCodes, LABELLED_ENUMS, NOTIFICATION_TYPES, TECHNICAL_ENUMS } =
   contracts;
@@ -86,6 +87,22 @@ const missingTexts = NOTIFICATION_TYPES.flatMap((type) =>
 ).filter((key) => !notificationTexts.has(key));
 if (missingTexts.length > 0) {
   failures.push(`${manifest.sourceLocale}/notifications: missing ${missingTexts.join(', ')}`);
+}
+
+// French takes the typographic apostrophe (docs/design/voice.md).
+if (manifest.sourceLocale === 'fr') {
+  const dir = join(localesDir, 'fr');
+  const straight = readdirSync(dir)
+    .filter((file) => file.endsWith('.json'))
+    .flatMap((file) =>
+      straightApostrophes(
+        JSON.parse(readFileSync(join(dir, file), 'utf8')) as Tree,
+        `${file.replace(/\.json$/, '')}.`,
+      ),
+    );
+  if (straight.length > 0) {
+    failures.push(`fr: straight apostrophes (use ’) in ${straight.join(', ')}`);
+  }
 }
 
 for (const [locale, { status }] of Object.entries(manifest.locales)) {

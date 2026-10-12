@@ -24,7 +24,7 @@ test.describe('profiles', () => {
       await page.getByRole('button', { name: 'Ajouter le volet entrepreneur' }).first().click();
       const facet = page.getByRole('dialog', { name: 'Ajouter le volet entrepreneur' });
       await facet.getByRole('textbox', { name: 'Entreprise' }).fill('Maji Safi');
-      await choose(facet, 'Secteur', /^Production et distribution d'électricité/, 'électricité');
+      await choose(facet, 'Secteur', /^Production et distribution d’électricité/, 'électricité');
       await choose(facet, 'Stade', 'Idée');
       await choose(facet, 'Pays de l’entreprise', 'Kenya', 'Kenya');
       await facet.getByRole('button', { name: 'Ajouter le volet' }).click();

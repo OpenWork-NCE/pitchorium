@@ -283,7 +283,7 @@ describe('notifications', () => {
       data: { title: project.title, role: 'editor' },
       target: { type: 'project_invitations' },
     });
-    await emailTo(kofi.email, `vous invite dans l'équipe de ${project.title}`);
+    await emailTo(kofi.email, `vous invite dans l’équipe de ${project.title}`);
     await awa.agent
       .post(`/v1/projects/${project.id}/offline-contributions`)
       .set('Idempotency-Key', randomUUID())

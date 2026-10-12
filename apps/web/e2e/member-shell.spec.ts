@@ -280,7 +280,7 @@ test.describe('member shell', () => {
       const like = first
         .getByRole('article')
         .first()
-        .getByRole('button', { name: "J'aime", exact: true });
+        .getByRole('button', { name: 'J’aime', exact: true });
       await like.click();
       await expect(like).toHaveAttribute('aria-pressed', 'true');
       await expect(first.getByText('1 action en attente.')).toBeVisible();

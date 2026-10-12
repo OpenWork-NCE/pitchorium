@@ -5,9 +5,9 @@
   },
   "technicalTest": {
     "subject": "Email de test Pitchorium",
-    "preview": "La chaîne d'envoi d'emails fonctionne.",
+    "preview": "La chaîne d’envoi d’emails fonctionne.",
     "heading": "Email de test",
-    "body": "Cet email a été envoyé le {{sentAt}} pour vérifier la chaîne d'envoi."
+    "body": "Cet email a été envoyé le {{sentAt}} pour vérifier la chaîne d’envoi."
   },
   "providers": {
     "credential": "le mot de passe",
@@ -22,32 +22,32 @@
     "body": "Confirmez votre adresse email pour pouvoir publier un projet, contribuer et écrire aux membres hors de votre réseau.",
     "action": "Confirmer mon adresse email",
     "expiry": "Ce lien expire dans {{hours}} heures.",
-    "ignore": "Si vous n'avez pas créé de compte Pitchorium, ignorez cet email."
+    "ignore": "Si vous n’avez pas créé de compte Pitchorium, ignorez cet email."
   },
   "magicLink": {
     "subject": "Votre lien de connexion Pitchorium",
     "preview": "Connectez-vous à Pitchorium en un clic.",
     "heading": "Connexion à Pitchorium",
-    "body": "Cliquez sur le bouton ci-dessous pour vous connecter. Ce lien ne fonctionne qu'une seule fois.",
+    "body": "Cliquez sur le bouton ci-dessous pour vous connecter. Ce lien ne fonctionne qu’une seule fois.",
     "action": "Me connecter",
     "expiry": "Ce lien expire dans {{minutes}} minutes.",
-    "ignore": "Si vous n'avez pas demandé ce lien, ignorez cet email : votre compte reste protégé."
+    "ignore": "Si vous n’avez pas demandé ce lien, ignorez cet email : votre compte reste protégé."
   },
   "passwordReset": {
     "subject": "Réinitialisation de votre mot de passe",
     "preview": "Choisissez un nouveau mot de passe pour votre compte Pitchorium.",
     "heading": "Bonjour {{name}},",
-    "body": "Une réinitialisation du mot de passe de votre compte a été demandée. Le lien ci-dessous ne fonctionne qu'une seule fois. Toutes vos sessions seront fermées après le changement.",
+    "body": "Une réinitialisation du mot de passe de votre compte a été demandée. Le lien ci-dessous ne fonctionne qu’une seule fois. Toutes vos sessions seront fermées après le changement.",
     "action": "Choisir un nouveau mot de passe",
     "expiry": "Ce lien expire dans {{minutes}} minutes.",
-    "ignore": "Si vous n'êtes pas à l'origine de cette demande, ignorez cet email : votre mot de passe reste inchangé."
+    "ignore": "Si vous n’êtes pas à l’origine de cette demande, ignorez cet email : votre mot de passe reste inchangé."
   },
   "newSignIn": {
     "subject": "Nouvelle connexion à votre compte",
     "preview": "Une nouvelle connexion à votre compte Pitchorium a eu lieu.",
     "heading": "Bonjour {{name}},",
-    "body": "Une connexion à votre compte a eu lieu le {{signedInAt}} (UTC) depuis l'appareil suivant : {{device}}.",
-    "notYou": "Si ce n'était pas vous, fermez vos sessions et changez votre mot de passe sans attendre.",
+    "body": "Une connexion à votre compte a eu lieu le {{signedInAt}} (UTC) depuis l’appareil suivant : {{device}}.",
+    "notYou": "Si ce n’était pas vous, fermez vos sessions et changez votre mot de passe sans attendre.",
     "action": "Vérifier la sécurité de mon compte",
     "reason": "Vous recevez cet email à chaque connexion depuis un nouvel appareil."
   },
@@ -61,7 +61,7 @@
       "password_changed": "Votre mot de passe a été modifié le {{changedAt}} (UTC).",
       "password_reset": "Votre mot de passe a été réinitialisé le {{changedAt}} (UTC). Toutes vos sessions ont été fermées."
     },
-    "notYou": "Si vous n'êtes pas à l'origine de ce changement, sécurisez votre compte sans attendre.",
+    "notYou": "Si vous n’êtes pas à l’origine de ce changement, sécurisez votre compte sans attendre.",
     "action": "Vérifier la sécurité de mon compte",
     "reason": "Vous recevez cet email à chaque changement de méthode de connexion."
   },
@@ -77,46 +77,46 @@
     "invitation": {
       "subject": "Invitation à rejoindre {{organization}} sur Pitchorium",
       "preview": "{{member}} vous invite à rejoindre {{organization}}.",
-      "body": "{{member}} vous invite à rejoindre {{organization}} sur Pitchorium en tant que {{role}}. Créez votre compte ou connectez-vous avec cette adresse email, puis acceptez l'invitation.",
-      "action": "Voir l'invitation",
-      "note": "Cette invitation ne fonctionne qu'une fois et expire le {{expiresAt}} (UTC). Si vous ne connaissez pas cette organisation, ignorez cet email."
+      "body": "{{member}} vous invite à rejoindre {{organization}} sur Pitchorium en tant que {{role}}. Créez votre compte ou connectez-vous avec cette adresse email, puis acceptez l’invitation.",
+      "action": "Voir l’invitation",
+      "note": "Cette invitation ne fonctionne qu’une fois et expire le {{expiresAt}} (UTC). Si vous ne connaissez pas cette organisation, ignorez cet email."
     },
     "role_changed": {
       "subject": "Votre rôle dans {{organization}} a changé",
       "preview": "Vous êtes désormais {{role}} de {{organization}}.",
       "body": "Vous êtes désormais {{role}} de {{organization}}.",
-      "action": "Voir l'organisation"
+      "action": "Voir l’organisation"
     },
     "ownership_transferred": {
       "subject": "La propriété de {{organization}} a été transférée",
       "preview": "{{member}} est désormais propriétaire de {{organization}}.",
-      "body": "La propriété de {{organization}} a été transférée à {{member}}. L'ancien propriétaire en reste administrateur.",
-      "action": "Voir l'organisation"
+      "body": "La propriété de {{organization}} a été transférée à {{member}}. L’ancien propriétaire en reste administrateur.",
+      "action": "Voir l’organisation"
     },
     "verification_requested": {
       "subject": "Demande de vérification reçue pour {{organization}}",
       "preview": "Votre demande de vérification sera examinée par un modérateur.",
-      "body": "Nous avons bien reçu la demande de vérification de {{organization}}. Un modérateur va l'examiner ; vous serez prévenu de sa décision par email.",
-      "action": "Voir l'organisation"
+      "body": "Nous avons bien reçu la demande de vérification de {{organization}}. Un modérateur va l’examiner ; vous serez prévenu de sa décision par email.",
+      "action": "Voir l’organisation"
     },
     "verification_approved": {
       "subject": "{{organization}} est vérifiée",
       "preview": "Le badge de vérification est affiché sur la page de {{organization}}.",
       "body": "La vérification de {{organization}} est acceptée : le badge de vérification est désormais affiché sur sa page.",
-      "action": "Voir l'organisation"
+      "action": "Voir l’organisation"
     },
     "verification_rejected": {
       "subject": "Vérification de {{organization}} refusée",
-      "preview": "La demande de vérification de {{organization}} n'a pas été acceptée.",
-      "body": "La demande de vérification de {{organization}} n'a pas été acceptée.",
-      "action": "Voir l'organisation",
+      "preview": "La demande de vérification de {{organization}} n’a pas été acceptée.",
+      "body": "La demande de vérification de {{organization}} n’a pas été acceptée.",
+      "action": "Voir l’organisation",
       "note": "Vous pouvez déposer une nouvelle demande avec des pièces complémentaires."
     },
     "verification_revoked": {
       "subject": "Vérification de {{organization}} retirée",
       "preview": "Le badge de vérification de {{organization}} a été retiré.",
-      "body": "Le badge de vérification de {{organization}} a été retiré par l'équipe de modération.",
-      "action": "Voir l'organisation"
+      "body": "Le badge de vérification de {{organization}} a été retiré par l’équipe de modération.",
+      "action": "Voir l’organisation"
     }
   },
   "contributionConfirmation": {
@@ -125,15 +125,15 @@
     "heading": "Bonjour {{name}},",
     "body": "Votre contribution de {{amount}} au projet {{project}} a bien été payée le {{paidAt}} (UTC).",
     "kinds": {
-      "donation": "Il s'agit d'un don.",
-      "reward_crowdfunding": "Il s'agit d'une contribution avec contrepartie.",
-      "love_money": "Il s'agit d'une contribution love money."
+      "donation": "Il s’agit d’un don.",
+      "reward_crowdfunding": "Il s’agit d’une contribution avec contrepartie.",
+      "love_money": "Il s’agit d’une contribution love money."
     },
     "commission": "Pitchorium prélève une commission de {{commission}}. Le reste est versé au porteur par notre prestataire de paiement agréé, déduction faite de ses frais : Pitchorium ne détient jamais votre argent.",
     "reward": "Contrepartie choisie : {{reward}}.",
     "action": "Voir le projet",
-    "notTaxReceipt": "Cet email confirme votre paiement. Ce n'est pas un reçu fiscal.",
-    "mentions": "L'impact du projet est auto-déclaré par son porteur. Un don n'est pas un titre financier, et un palier débloqué n'est pas une garantie de succès.",
+    "notTaxReceipt": "Cet email confirme votre paiement. Ce n’est pas un reçu fiscal.",
+    "mentions": "L’impact du projet est auto-déclaré par son porteur. Un don n’est pas un titre financier, et un palier débloqué n’est pas une garantie de succès.",
     "reference": "Référence de la contribution : {{reference}}"
   },
   "notification": {
@@ -146,8 +146,8 @@
       "weekly": "Votre résumé de la semaine : {{count}} notifications"
     },
     "intro": {
-      "daily": "Voici ce qui s'est passé aujourd'hui sur Pitchorium.",
-      "weekly": "Voici ce qui s'est passé cette semaine sur Pitchorium."
+      "daily": "Voici ce qui s’est passé aujourd’hui sur Pitchorium.",
+      "weekly": "Voici ce qui s’est passé cette semaine sur Pitchorium."
     },
     "action": "Voir toutes mes notifications"
   },
@@ -158,7 +158,7 @@
     },
     "attachments": "{{count}} pièce(s) jointe(s)",
     "action": "Répondre sur Pitchorium",
-    "note": "Vous recevez la copie de vos messages non lus car vous l'avez activée dans vos préférences de notifications sur Pitchorium."
+    "note": "Vous recevez la copie de vos messages non lus car vous l’avez activée dans vos préférences de notifications sur Pitchorium."
   },
   "platformNotice": {
     "greeting": "Bonjour {{name}},",
@@ -166,26 +166,26 @@
     "report_received": {
       "subject": "Votre signalement a bien été reçu",
       "preview": "Signalement {{reference}} reçu.",
-      "body": "Nous avons bien reçu votre signalement de contenu illégal (référence {{reference}}). L'équipe de modération l'examine et vous informera de sa décision à cette adresse.",
+      "body": "Nous avons bien reçu votre signalement de contenu illégal (référence {{reference}}). L’équipe de modération l’examine et vous informera de sa décision à cette adresse.",
       "note": "Conservez cette référence. Un signalement abusif ou de mauvaise foi peut entraîner des mesures."
     },
     "report_action_taken": {
       "subject": "Votre signalement a été traité",
       "preview": "Une mesure a été prise.",
-      "body": "Votre signalement (référence {{reference}}) a été examiné : une mesure a été prise à l'égard du contenu signalé.",
-      "note": "Merci d'avoir contribué à la sécurité de Pitchorium."
+      "body": "Votre signalement (référence {{reference}}) a été examiné : une mesure a été prise à l’égard du contenu signalé.",
+      "note": "Merci d’avoir contribué à la sécurité de Pitchorium."
     },
     "report_no_action": {
       "subject": "Votre signalement a été traité",
-      "preview": "Aucune mesure n'a été prise.",
-      "body": "Votre signalement (référence {{reference}}) a été examiné : après analyse, aucune mesure n'a été prise à l'égard du contenu signalé.",
+      "preview": "Aucune mesure n’a été prise.",
+      "body": "Votre signalement (référence {{reference}}) a été examiné : après analyse, aucune mesure n’a été prise à l’égard du contenu signalé.",
       "note": "Si vous estimez que ce contenu est illégal, vous pouvez aussi saisir les autorités compétentes."
     },
     "account_erased": {
       "subject": "Votre compte Pitchorium a été supprimé",
       "preview": "Suppression effectuée le {{reference}}.",
-      "body": "Comme vous l'avez demandé, votre compte Pitchorium et vos données ont été supprimés le {{reference}} (UTC).",
-      "note": "Certaines données sont conservées sous une forme pseudonymisée pour nos obligations légales : paiements, preuves d'acceptation des conditions et décisions de modération."
+      "body": "Comme vous l’avez demandé, votre compte Pitchorium et vos données ont été supprimés le {{reference}} (UTC).",
+      "note": "Certaines données sont conservées sous une forme pseudonymisée pour nos obligations légales : paiements, preuves d’acceptation des conditions et décisions de modération."
     }
   }
 }

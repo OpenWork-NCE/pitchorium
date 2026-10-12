@@ -284,7 +284,7 @@ test.describe('reactions, comments and actions', () => {
       await hydrated(a.page);
       const post = postWith(a.page, 'Une publication à laquelle réagir.');
 
-      const like = post.getByRole('button', { name: "J'aime", exact: true });
+      const like = post.getByRole('button', { name: 'J’aime', exact: true });
       await like.click();
       await expect(like).toHaveAttribute('aria-pressed', 'true');
       await expect(post.getByText('1 réaction')).toBeVisible();

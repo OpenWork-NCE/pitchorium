@@ -83,7 +83,7 @@ test.describe('Cloudflare Turnstile', { tag: '@external' }, () => {
     await fillSignUp(page, freshEmail('turnstile-fail'));
     await expect(
       page.getByText(
-        "La vérification anti-spam n'a pas pu se faire. Rechargez la page et réessayez.",
+        'La vérification anti-spam n’a pas pu se faire. Rechargez la page et réessayez.',
       ),
     ).toBeVisible();
     await expect(page).toHaveURL(/\/fr\/sign-up$/);

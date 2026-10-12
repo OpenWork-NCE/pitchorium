@@ -74,7 +74,7 @@ export const Impact: Story = {
         level="strong"
         levelLabel="Fort"
         score={78}
-        mention="Score auto-déclaré par le porteur, selon la méthodologie v1. Ce n'est pas une certification."
+        mention="Score auto-déclaré par le porteur, selon la méthodologie v1. Ce n’est pas une certification."
         criteria={[
           { label: 'Emploi local', score: 4, max: 5 },
           { label: 'Accès à l’énergie', score: 5, max: 5 },

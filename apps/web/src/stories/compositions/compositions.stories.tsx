@@ -1068,7 +1068,7 @@ export const PostPage: Story = {
   },
 };
 
-/** The reactions, offered after the pointer rests on « J'aime ». */
+/** The reactions, offered after the pointer rests on « J’aime ». */
 export const ReactionPicker: Story = {
   name: 'Reaction picker',
   render: () => (
@@ -1080,7 +1080,7 @@ export const ReactionPicker: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await userEvent.hover(await canvas.findByRole('button', { name: "J'aime" }));
+    await userEvent.hover(await canvas.findByRole('button', { name: 'J’aime' }));
     const bar = await canvas.findByRole('toolbar', { name: 'Réactions' }, { timeout: 3000 });
     await expect(within(bar).getAllByRole('button')).toHaveLength(4);
   },

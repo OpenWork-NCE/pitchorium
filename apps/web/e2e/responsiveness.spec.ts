@@ -52,7 +52,7 @@ test('reacts to a publication and opens the composer within 200 ms', async ({ pa
   const like = page
     .getByRole('article')
     .first()
-    .getByRole('button', { name: "J'aime", exact: true });
+    .getByRole('button', { name: 'J’aime', exact: true });
   await like.click();
   await expect(like).toHaveAttribute('aria-pressed', 'true');
   await page.getByRole('button', { name: 'Commencer une publication' }).click();

@@ -254,23 +254,23 @@
     "agriculture_forestry_fishing": "Agriculture, sylviculture et pêche",
     "mining_quarrying": "Activités extractives",
     "manufacturing": "Activités de fabrication",
-    "energy": "Production et distribution d'électricité, de gaz, de vapeur et climatisation",
-    "water_waste": "Distribution d'eau ; assainissement, gestion des déchets et dépollution",
+    "energy": "Production et distribution d’électricité, de gaz, de vapeur et climatisation",
+    "water_waste": "Distribution d’eau ; assainissement, gestion des déchets et dépollution",
     "construction": "Construction",
     "trade": "Commerce de gros et de détail ; réparation de véhicules automobiles et de motocycles",
     "transport_storage": "Transport et entreposage",
     "accommodation_food": "Hébergement et restauration",
     "information_communication": "Information et communication",
-    "finance_insurance": "Activités financières et d'assurance",
+    "finance_insurance": "Activités financières et d’assurance",
     "real_estate": "Activités immobilières",
     "professional_scientific_technical": "Activités professionnelles, scientifiques et techniques",
-    "administrative_support": "Activités de services administratifs et d'appui",
+    "administrative_support": "Activités de services administratifs et d’appui",
     "public_administration": "Administration publique et défense ; sécurité sociale obligatoire",
     "education": "Enseignement",
     "health_social_work": "Santé humaine et action sociale",
     "arts_entertainment_recreation": "Arts, spectacles et activités récréatives",
     "other_services": "Autres activités de services",
-    "households": "Activités des ménages en tant qu'employeurs et pour usage propre",
+    "households": "Activités des ménages en tant qu’employeurs et pour usage propre",
     "extraterritorial_organizations": "Activités des organisations et organismes extraterritoriaux"
   },
   "sectorsShort": {
@@ -301,7 +301,7 @@
     "prototype": "Prototype",
     "early_revenue": "Premiers revenus",
     "growth": "Croissance",
-    "scale": "Changement d'échelle"
+    "scale": "Changement d’échelle"
   },
   "intentions": {
     "carry_project": "Je porte un projet / une entreprise",
@@ -330,7 +330,7 @@
     "reward_crowdfunding": "Crowdfunding avec contrepartie",
     "love_money": "Love money",
     "grant": "Subvention",
-    "honor_loan": "Prêt d'honneur",
+    "honor_loan": "Prêt d’honneur",
     "equity": "Prise de participation",
     "convertible_bonds": "Obligations convertibles"
   },
@@ -348,7 +348,7 @@
     "recruitment": "Recrutement"
   },
   "reactionTypes": {
-    "like": "J'aime",
+    "like": "J’aime",
     "bravo": "Bravo",
     "insightful": "Pertinent",
     "support": "Soutien"
@@ -370,7 +370,7 @@
   },
   "projectInterestKinds": {
     "grant": "Subvention",
-    "honor_loan": "Prêt d'honneur",
+    "honor_loan": "Prêt d’honneur",
     "equity": "Prise de participation",
     "general": "Contact général"
   },
@@ -380,7 +380,7 @@
     "strong": "Fort"
   },
   "impactMentions": {
-    "selfDeclared": "Score auto-déclaré par le porteur, selon la méthodologie {{version}}. Ce n'est pas une certification.",
+    "selfDeclared": "Score auto-déclaré par le porteur, selon la méthodologie {{version}}. Ce n’est pas une certification.",
     "demo": "Méthodologie de démonstration, non contractuelle"
   },
   "impactDemo": {
@@ -447,9 +447,9 @@
     "admin": "Administrateur"
   },
   "legalDocuments": {
-    "terms_of_service": "Conditions générales d'utilisation",
+    "terms_of_service": "Conditions générales d’utilisation",
     "privacy_policy": "Politique de confidentialité",
-    "age_declaration": "Déclaration d'âge"
+    "age_declaration": "Déclaration d’âge"
   },
   "signInProviders": {
     "credential": "Email et mot de passe",
@@ -526,7 +526,7 @@
     "reward_crowdfunding": "Crowdfunding avec contrepartie",
     "love_money": "Love money",
     "grant": "Subvention",
-    "honor_loan": "Prêt d'honneur",
+    "honor_loan": "Prêt d’honneur",
     "equity": "Prise de participation",
     "convertible_bonds": "Obligations convertibles",
     "loan": "Prêt"
@@ -556,8 +556,8 @@
   },
   "projectPaymentAvailabilities": {
     "open": "Contributions ouvertes",
-    "holder_not_verified": "Le porteur n'a pas encore terminé la vérification de son identité ou de son compte de versement",
-    "holder_without_covered_payout_account": "Le porteur n'a pas encore de compte de versement dans un pays couvert",
+    "holder_not_verified": "Le porteur n’a pas encore terminé la vérification de son identité ou de son compte de versement",
+    "holder_without_covered_payout_account": "Le porteur n’a pas encore de compte de versement dans un pays couvert",
     "campaign_closed": "La campagne est clôturée",
     "funding_frozen": "Les contributions sont suspendues par la modération"
   },
@@ -601,19 +601,19 @@
     "company_registered_in_payout_country": "Une société immatriculée dans le pays du compte",
     "bank_account_in_payout_country": "Un compte bancaire dans le pays du compte",
     "phone_number": "Un numéro de téléphone",
-    "tax_id": "Un numéro d'identification fiscale",
-    "business_website": "Un site ou une page qui présente l'activité",
-    "business_name": "Le nom de l'activité",
-    "provider_terms_acceptance": "L'acceptation du contrat du prestataire"
+    "tax_id": "Un numéro d’identification fiscale",
+    "business_website": "Un site ou une page qui présente l’activité",
+    "business_name": "Le nom de l’activité",
+    "provider_terms_acceptance": "L’acceptation du contrat du prestataire"
   },
   "payoutDocuments": {
-    "identity_document": "Une pièce d'identité officielle",
+    "identity_document": "Une pièce d’identité officielle",
     "passport_if_resident_elsewhere": "Un passeport si vous résidez hors du pays du compte",
-    "company_registration_document": "Un justificatif d'immatriculation de la société"
+    "company_registration_document": "Un justificatif d’immatriculation de la société"
   },
   "payoutRequirementScopes": {
     "all": "Tous les porteurs",
-    "company": "Compte ouvert au nom d'une société"
+    "company": "Compte ouvert au nom d’une société"
   },
   "rewardReservationStates": {
     "none": "Aucune contrepartie",
@@ -652,7 +652,7 @@
   "payoutChangeRefusalReasons": {
     "campaign_in_progress": "Une de vos campagnes est en cours de financement : changez de compte de versement après sa clôture.",
     "payments_pending": "Des paiements sont encore en attente sur votre compte de versement actuel : réessayez quand ils sont terminés.",
-    "same_option": "C'est déjà votre compte de versement."
+    "same_option": "C’est déjà votre compte de versement."
   },
   "kycStatuses": {
     "not_submitted": "Non transmis",
@@ -691,7 +691,7 @@
   "messagePolicies": {
     "connections_only": "Mes connexions uniquement",
     "connections_and_second_degree": "Mes connexions et leurs connexions (2e degré)",
-    "verified_members": "Tout membre à l'email vérifié"
+    "verified_members": "Tout membre à l’email vérifié"
   },
   "conversationKinds": {
     "direct": "Conversation",
@@ -738,16 +738,16 @@
     "project_ending_soon": "Fins de campagne proches",
     "project_funded": "Projets financés",
     "project_closed": "Projets clôturés",
-    "project_interest": "Manifestations d'intérêt",
+    "project_interest": "Manifestations d’intérêt",
     "project_team_invitation": "Invitations dans une équipe de projet",
-    "project_team_joined": "Arrivées dans l'équipe de projet",
-    "project_team_invitation_declined": "Invitations d'équipe déclinées",
-    "organization_invitation": "Invitations d'organisation",
+    "project_team_joined": "Arrivées dans l’équipe de projet",
+    "project_team_invitation_declined": "Invitations d’équipe déclinées",
+    "organization_invitation": "Invitations d’organisation",
     "organization_member_joined": "Arrivées dans une organisation",
     "organization_role_changed": "Changements de rôle",
     "organization_ownership_transferred": "Transferts de propriété",
     "organization_verification_decided": "Vérification des organisations",
-    "kyc_decided": "Vérification d'identité (KYC)",
+    "kyc_decided": "Vérification d’identité (KYC)",
     "contribution_refunded": "Remboursements",
     "offline_contribution_declared": "Contributions hors plateforme déclarées",
     "offline_contribution_decided": "Contributions hors plateforme confirmées ou rejetées",
@@ -755,8 +755,8 @@
     "time_entry_answered": "Temps partagé confirmé ou contesté",
     "security_alert": "Sécurité du compte",
     "event_registration_confirmed": "Inscription à un événement confirmée",
-    "event_waitlist_promoted": "Place libérée sur liste d'attente",
-    "event_reminder": "Rappel d'événement",
+    "event_waitlist_promoted": "Place libérée sur liste d’attente",
+    "event_reminder": "Rappel d’événement",
     "event_canceled": "Événement annulé",
     "mission_engagement_requested": "Candidature ou sollicitation de mission reçue",
     "mission_engagement_answered": "Réponse à une mission",
@@ -774,7 +774,7 @@
     "erasure_reminder": "Rappel avant suppression"
   },
   "notificationChannels": {
-    "in_app": "Dans l'application",
+    "in_app": "Dans l’application",
     "email": "Email"
   },
   "emailDigests": {
@@ -799,7 +799,7 @@
   },
   "eventRegistrationStatuses": {
     "registered": "Inscrit",
-    "waitlisted": "En liste d'attente"
+    "waitlisted": "En liste d’attente"
   },
   "missionDirections": {
     "offer": "Offre",
@@ -892,7 +892,7 @@
     "law": "Loi applicable"
   },
   "appealStatuses": {
-    "pending": "En cours d'examen",
+    "pending": "En cours d’examen",
     "upheld": "Décision maintenue",
     "overturned": "Décision annulée"
   },

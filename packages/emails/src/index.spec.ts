@@ -292,7 +292,7 @@ describe('email templates', () => {
     const fr = await renderContributionConfirmationEmail({ ...props, locale: 'fr' });
     const en = await renderContributionConfirmationEmail({ ...props, locale: 'en' });
 
-    expect(fr.text).toContain("Ce n'est pas un reçu fiscal.");
+    expect(fr.text).toContain('Ce n’est pas un reçu fiscal.');
     expect(en.text).toContain('It is not a tax receipt.');
   });
 });
