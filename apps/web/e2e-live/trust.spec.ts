@@ -23,7 +23,7 @@ import {
  * The reports, the moderation, the personal data and the translation against the real api
  * (PROMPT FRONT 8B): a publication reported from its menu, decided with its statement of reasons
  * by the administrator of the run, appealed by its author and resolved by another moderator
- * (through the api of the moderation tools, not delivered to the web); the notice without an
+ * (from the screens of the console, which refuse it to the author of the decision); the notice without an
  * account through Turnstile; a message reported with its limited context; a suspended account
  * (the feed closed, the decision and the data open); the export to its download; the deletion blocked by a campaign, then scheduled,
  * cancelled, scheduled again and executed by the worker; the translation of a publication and of a
@@ -95,20 +95,29 @@ test.describe('reports and moderation', () => {
       await hydrated(reporter.page);
       await expect(reporter.page.getByText(/Signalé le/)).toBeVisible();
 
-      // The decision of the administrator of the run, with its statement of reasons.
+      // The decision of the administrator of the run, from the console, with its statement of
+      // reasons started from the template of the reason and its ground.
       const caseId = await caseOf(admin!.page, 'post', postId);
-      const decision = (await (
-        await ok(
-          api(admin!.page, 'POST', `/v1/admin/moderation/cases/${caseId}/decisions`, {
-            kind: 'hide',
-            reason: 'spam',
-            statement:
-              'La même offre commerciale a été publiée à des membres qui ne la demandaient pas.',
-            ground: 'terms',
-            groundReference: 'Conditions d’utilisation, publications',
-          }),
-        )
-      ).json()) as { id: string };
+      const desk = admin!.page;
+      await desk.goto(`/fr/admin/moderation/cases/${caseId}`);
+      await hydrated(desk);
+      await expect(
+        desk.getByText('Offre exceptionnelle : écrivez-moi pour un prix.'),
+      ).toBeVisible();
+      await desk.getByRole('radio', { name: /^Masquage/ }).check();
+      await desk
+        .getByLabel('Exposé des motifs')
+        .fill('La même offre commerciale a été publiée à des membres qui ne la demandaient pas.');
+      await desk
+        .getByLabel(/Référence du fondement/)
+        .fill('Conditions d’utilisation, publications');
+      await expect(desk.getByText('Ce que verra la personne concernée')).toBeVisible();
+      await desk.getByRole('button', { name: 'Décider' }).click();
+      await desk
+        .getByRole('alertdialog')
+        .getByRole('button', { name: 'Confirmer : Masquage' })
+        .click();
+      await expect(desk.locator('[data-announcer="polite"]')).toHaveText('Décision enregistrée.');
 
       // The author reads the decision and its reasons, then appeals.
       await author.page.goto('/fr/settings/moderation');
@@ -126,21 +135,30 @@ test.describe('reports and moderation', () => {
       await author.page.getByRole('button', { name: 'Envoyer l’appel' }).click();
       await expect(author.page.getByText(/Votre appel, envoyé le/)).toBeVisible();
 
-      // Another moderator than the author of the decision resolves the appeal.
-      let appealId: string | undefined;
+      // The author of the decision may not resolve its appeal: the console says so.
+      const appealOf = (page: typeof desk) =>
+        page
+          .getByRole('main')
+          .getByRole('listitem')
+          .filter({ hasText: 'membres qui ne la demandaient pas' });
       await expect(async () => {
-        const appeals = (await (
-          await ok(api(moderator!.page, 'GET', '/v1/admin/moderation/appeals?limit=100'))
-        ).json()) as { items: { id: string; appeal: { id: string } | null }[] };
-        appealId = appeals.items.find((item) => item.id === decision.id)?.appeal?.id;
-        expect(appealId).toBeDefined();
+        await desk.goto('/fr/admin/moderation/appeals');
+        await expect(appealOf(desk)).toBeVisible({ timeout: 2_000 });
       }).toPass({ timeout: 15_000 });
-      await ok(
-        api(moderator!.page, 'POST', `/v1/admin/moderation/appeals/${appealId}/resolution`, {
-          outcome: 'overturned',
-          statement: 'Les destinataires avaient demandé ces tarifs : la publication est rétablie.',
-        }),
-      );
+      await expect(appealOf(desk).getByText(/Vous avez pris cette décision/)).toBeVisible();
+      await expect(appealOf(desk).getByRole('button', { name: 'Trancher l’appel' })).toHaveCount(0);
+      // Another moderator resolves it, with a statement the member reads.
+      const other = moderator!.page;
+      await other.goto('/fr/admin/moderation/appeals');
+      await hydrated(other);
+      await appealOf(other).getByRole('button', { name: 'Trancher l’appel' }).click();
+      const resolve = other.getByRole('dialog', { name: 'Trancher l’appel' });
+      await resolve.getByRole('radio', { name: /Annuler la décision/ }).check();
+      await resolve
+        .getByLabel('Motivation')
+        .fill('Les destinataires avaient demandé ces tarifs : la publication est rétablie.');
+      await resolve.getByRole('button', { name: 'Enregistrer la décision finale' }).click();
+      await expect(other.locator('[data-announcer="polite"]')).toHaveText('Appel tranché.');
 
       await author.page.reload();
       await hydrated(author.page);
