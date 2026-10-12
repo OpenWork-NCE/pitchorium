@@ -2,6 +2,7 @@ import { Injectable, type OnModuleInit } from '@nestjs/common';
 import { LocalizationFacade } from '../../localization';
 import { ContentRepository } from '../application/ports';
 import { PostPresenter } from '../application/post-presenter';
+import { detectLanguage } from '../../../platform/kernel';
 
 const filled = (fields: Record<string, string | null>): Record<string, string> =>
   Object.fromEntries(
@@ -40,7 +41,11 @@ export class ContentTranslatable implements OnModuleInit {
         if (!post || post.deletedAt) return null;
         if (!(await this.presenter.canRead(await this.presenter.reader(readerId), post)))
           return null;
-        return { key: comment.id, fields: filled({ text: comment.text }), language: null };
+        return {
+          key: comment.id,
+          fields: filled({ text: comment.text }),
+          language: detectLanguage(comment.text),
+        };
       },
     });
   }

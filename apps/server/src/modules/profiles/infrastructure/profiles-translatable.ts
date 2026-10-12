@@ -2,6 +2,7 @@ import { Injectable, type OnModuleInit } from '@nestjs/common';
 import { LocalizationFacade } from '../../localization';
 import { ProfilesFacade } from '../application/profiles.facade';
 import { ProfileRepository } from '../application/ports';
+import { detectLanguage } from '../../../platform/kernel';
 
 /**
  * The headline and the presentation of a profile, by its handle, offered to the translation on
@@ -28,7 +29,7 @@ export class ProfilesTranslatable implements OnModuleInit {
             (entry): entry is [string, string] => Boolean(entry[1]?.trim()),
           ),
         );
-        return { key: userId, fields, language: null };
+        return { key: userId, fields, language: detectLanguage(profile.bio ?? profile.headline) };
       },
     });
   }

@@ -2,6 +2,7 @@ import { Injectable, type OnModuleInit } from '@nestjs/common';
 import { LocalizationFacade } from '../../localization';
 import { ProjectReadsService } from '../application/project-reads.service';
 import { ProjectRepository } from '../application/ports';
+import { detectLanguage } from '../../../platform/kernel';
 
 const filled = (fields: Record<string, string | null>): Record<string, string> =>
   Object.fromEntries(
@@ -38,7 +39,8 @@ export class ProjectsTranslatable implements OnModuleInit {
             summary: project.summary,
             description: project.description,
           }),
-          language: null,
+          // As the page of the project names it (projectSchema.language).
+          language: detectLanguage(project.description ?? project.summary),
         };
       },
     });
@@ -54,7 +56,11 @@ export class ProjectsTranslatable implements OnModuleInit {
         ) {
           return null;
         }
-        return { key: update.id, fields: filled({ text: update.text }), language: null };
+        return {
+          key: update.id,
+          fields: filled({ text: update.text }),
+          language: detectLanguage(update.text),
+        };
       },
     });
   }

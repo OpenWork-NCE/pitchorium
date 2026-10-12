@@ -2,6 +2,7 @@ import { Injectable, type OnModuleInit } from '@nestjs/common';
 import { LocalizationFacade } from '../../localization';
 import { ConversationAccess } from '../application/conversation-access';
 import { MessagingRepository } from '../application/ports';
+import { detectLanguage } from '../../../platform/kernel';
 
 /**
  * A message offered to the translation on demand (§8.3) only on the explicit action of a
@@ -24,7 +25,7 @@ export class MessagingTranslatable implements OnModuleInit {
         if (!(await this.access.find(readerId, message.conversationId))) return null;
         const fields: Record<string, string> = {};
         if (message.body.trim()) fields['text'] = message.body;
-        return { key: message.id, fields, language: null };
+        return { key: message.id, fields, language: detectLanguage(message.body) };
       },
     });
   }
