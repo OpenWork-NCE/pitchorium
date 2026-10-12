@@ -606,6 +606,8 @@ export const ledgerEntrySchema = z.object({
 });
 
 export const adminContributionSchema = projectContributionSchema.extend({
+  /** What a refund may still give back (refunds pending deducted), null when none is possible. */
+  refundable: moneySchema.nullable(),
   refunds: z.array(refundSchema),
   /** Entries of the ledger written for the contribution, its refunds and disputes. */
   ledger: z.array(ledgerEntrySchema),

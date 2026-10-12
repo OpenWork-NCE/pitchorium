@@ -61995,6 +61995,31 @@
               }
             ]
           },
+          "refundable": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "amountMinor": {
+                    "type": "string",
+                    "pattern": "^-?(0|[1-9]\\d*)$"
+                  },
+                  "currency": {
+                    "type": "string",
+                    "pattern": "^[A-Z]{3}$"
+                  }
+                },
+                "required": [
+                  "amountMinor",
+                  "currency"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "refunds": {
             "type": "array",
             "items": {
@@ -62162,6 +62187,7 @@
           "succeededAt",
           "contributor",
           "organization",
+          "refundable",
           "refunds",
           "ledger"
         ],

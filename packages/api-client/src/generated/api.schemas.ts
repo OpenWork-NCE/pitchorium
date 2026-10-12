@@ -10795,6 +10795,13 @@ export type AdminContributionDtoOutputOrganization = {
   id: string;
 } | null;
 
+export type AdminContributionDtoOutputRefundable = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+} | null;
+
 export type AdminContributionDtoOutputRefundsItemAmount = {
   /** @pattern ^-?(0|[1-9]\d*)$ */
   amountMinor: string;
@@ -10884,6 +10891,7 @@ export interface AdminContributionDtoOutput {
   succeededAt: string | null;
   contributor: AdminContributionDtoOutputContributor;
   organization: AdminContributionDtoOutputOrganization;
+  refundable: AdminContributionDtoOutputRefundable;
   refunds: AdminContributionDtoOutputRefundsItem[];
   ledger: AdminContributionDtoOutputLedgerItem[];
 }

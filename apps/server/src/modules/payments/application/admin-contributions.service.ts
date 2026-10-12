@@ -98,7 +98,15 @@ export class AdminContributionsService {
       action: 'payments.contribution-viewed',
       target: { type: 'contribution', id: row.id },
     });
-    return { ...view, refunds: refunds.map(refundView), ledger: ledger.map(ledgerView) };
+    const refundable = isRefundable(row.status)
+      ? Money.of(remainingMinor(row) - pendingRefundsMinor(refunds), row.currency).toJSON()
+      : null;
+    return {
+      ...view,
+      refundable,
+      refunds: refunds.map(refundView),
+      ledger: ledger.map(ledgerView),
+    };
   }
 
   /**

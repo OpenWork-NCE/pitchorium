@@ -731,6 +731,10 @@ describe('payments', () => {
     });
     expect(await statusOf(contribution.id)).toBe('partially_refunded');
     expect(await collected(project.id)).toBe(before + 7_000n);
+    const afterPartial = await admin.agent
+      .get(`/v1/admin/payments/contributions/${contribution.id}`)
+      .expect(200);
+    expect((afterPartial.body as AdminContribution).refundable).toEqual(eur(70));
 
     const tooMuch = await admin.agent
       .post(`/v1/admin/payments/contributions/${contribution.id}/refunds`)
@@ -751,6 +755,7 @@ describe('payments', () => {
       .expect(200);
     expect(details.body.refunds).toHaveLength(2);
     expect(details.body.commission).toEqual(eur(0));
+    expect((details.body as AdminContribution).refundable).toBeNull();
     expect((details.body as AdminContribution).ledger.map((entry) => entry.kind)).toEqual([
       'payment_succeeded',
       'refund',
