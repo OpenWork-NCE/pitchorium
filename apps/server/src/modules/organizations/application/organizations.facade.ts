@@ -204,6 +204,11 @@ export class OrganizationsFacade implements OnModuleInit {
   }
 
   /** Extension point for the projects and payments modules (carried and supported projects). */
+  /** Verification requests waiting for a review (queues of the administration). */
+  pendingVerifications(): Promise<number> {
+    return this.organizations.countVerificationRequests('pending');
+  }
+
   registerProjectsProvider(provider: OrganizationProjectsProvider): void {
     this.projects.register(provider);
   }

@@ -429,6 +429,14 @@ export class DrizzleOrganizationRepository extends OrganizationRepository {
     return rows.map(toRequest);
   }
 
+  async countVerificationRequests(status: VerificationRequestStatus): Promise<number> {
+    const [row] = await this.db
+      .select({ value: sql<number>`count(*)::int` })
+      .from(organizationsVerificationRequests)
+      .where(eq(organizationsVerificationRequests.status, status));
+    return row?.value ?? 0;
+  }
+
   async verificationRequestsOf(
     organizationId: string,
     limit: number,

@@ -98,6 +98,7 @@ export abstract class OrganizationRepository {
     status: VerificationRequestStatus,
     limit: number,
   ): Promise<VerificationRequestRecord[]>;
+  abstract countVerificationRequests(status: VerificationRequestStatus): Promise<number>;
   /** Requests of one organization, the most recent first. */
   abstract verificationRequestsOf(
     organizationId: string,

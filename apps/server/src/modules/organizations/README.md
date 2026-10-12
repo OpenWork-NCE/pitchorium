@@ -48,7 +48,7 @@ Les routes `{organizationId}` passent par `OrganizationResolver`, qui donne au m
 
 ## Façade publique (`index.ts`)
 
-`OrganizationsFacade` : `roleOf`, `summaries`, `cards` (nom, slug, type de structure, logo public, badge), `idsBySlugs` (slugs actuels, pour les mentions), `memberIds` (membres par rôle), `invitation` (adresse invitée), `pendingInvitationsTo` (invitations en attente d'une adresse), `registerProjectsProvider` ; interface `OrganizationProjectsProvider` ; classes d'événements.
+`OrganizationsFacade` : `roleOf`, `pendingVerifications` (demandes de vérification en attente, pour les files de l’administration), `summaries`, `cards` (nom, slug, type de structure, logo public, badge), `idsBySlugs` (slugs actuels, pour les mentions), `memberIds` (membres par rôle), `invitation` (adresse invitée), `pendingInvitationsTo` (invitations en attente d'une adresse), `registerProjectsProvider` ; interface `OrganizationProjectsProvider` ; classes d'événements.
 
 ## Événements émis
 
