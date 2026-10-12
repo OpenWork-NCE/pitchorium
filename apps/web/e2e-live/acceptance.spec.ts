@@ -30,15 +30,31 @@ import {
  * focused, then pressed (`press`). Level 3 only (`@acceptance`, docs/architecture/testing.md).
  */
 
-/** Tab from where the focus is until `target` (or a control inside it) holds it, then stop. */
+/**
+ * Tab from where the focus is until `target` (or a control inside it) holds it, then stop. Past
+ * the last control of the page, a person tabs through the toolbar of the browser and comes back
+ * to its first one: Chromium and WebKit do so in the tests, Firefox keeps the focus on the last
+ * control, so the journey goes on from the skip link, the first control of every page.
+ */
 async function tabTo(page: Page, target: Locator, limit = 400): Promise<void> {
   await expect(target).toBeVisible();
+  const marker = 'data-tab-before';
   for (let step = 0; step < limit; step += 1) {
+    await page.evaluate((name) => document.activeElement?.setAttribute(name, ''), marker);
     await page.keyboard.press('Tab');
-    const reached = await target.evaluate(
-      (element) => element === document.activeElement || element.contains(document.activeElement),
+    const [reached, stayed] = await target.evaluate(
+      (element, name) => [
+        element === document.activeElement || element.contains(document.activeElement),
+        document.activeElement?.hasAttribute(name) === true &&
+          document.activeElement !== document.body,
+      ],
+      marker,
     );
+    await page.evaluate((name) => {
+      for (const element of document.querySelectorAll(`[${name}]`)) element.removeAttribute(name);
+    }, marker);
     if (reached) return;
+    if (stayed) await page.locator('a[href="#main"]').first().focus();
   }
   throw new Error(`Not reachable with Tab in ${limit} steps: ${String(target)}`);
 }
