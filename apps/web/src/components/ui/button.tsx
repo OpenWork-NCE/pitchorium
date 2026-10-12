@@ -15,7 +15,7 @@ import { ReasonTooltip } from './reason-tooltip';
 import { Spinner } from './spinner';
 
 export const buttonVariants = cva(
-  'relative isolate inline-flex shrink-0 press cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-full font-medium whitespace-nowrap select-none disabled:pointer-events-none disabled:opacity-50 aria-disabled:cursor-not-allowed aria-disabled:opacity-50 [&_svg]:shrink-0',
+  'relative isolate inline-flex max-w-full shrink-0 press cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-full text-center font-medium text-balance select-none disabled:pointer-events-none disabled:opacity-50 aria-disabled:cursor-not-allowed aria-disabled:opacity-50 [&_svg]:shrink-0',
   {
     variants: {
       variant: {
@@ -33,9 +33,9 @@ export const buttonVariants = cva(
         link: 'h-auto rounded-xs link-underline-hover px-0 text-link',
       },
       size: {
-        sm: 'h-9 px-4 text-sm max-sm:h-11 [&_svg]:size-4',
-        md: 'h-11 px-5 text-sm [&_svg]:size-4',
-        lg: 'h-12 px-6 text-base [&_svg]:size-5',
+        sm: 'min-h-9 px-4 py-1.5 text-sm max-sm:min-h-11 [&_svg]:size-4',
+        md: 'min-h-11 px-5 py-2 text-sm [&_svg]:size-4',
+        lg: 'min-h-12 px-6 py-2.5 text-base [&_svg]:size-5',
         icon: 'size-11 [&_svg]:size-5',
         'icon-sm': 'size-9 max-sm:size-11 [&_svg]:size-4',
       },
