@@ -49,8 +49,9 @@ Sans réponse, la plateforme ne peut pas ouvrir au public : chaque point conditi
 ### Hébergeur et outils d'exploitation
 
 - **24.** Le choix de l'hébergeur (conteneurs api et worker, PostgreSQL et Redis managés) et la région.
-- **96.** L'hébergement de l'application web (`apps/web`) : Vercel (Vercel Analytics et Speed Insights, `NEXT_PUBLIC_VERCEL_ANALYTICS=true`) ou le même hébergeur que l'api (un conteneur Node.js `next start`), et son domaine (`NEXT_PUBLIC_SITE_URL`, voir la question 25).
+- **96.** L'hébergement de l'application web (`apps/web`) : Vercel est préparé par défaut (ADR 0176, `docs/operations/deployment-web.md`, Vercel Analytics et Speed Insights, `NEXT_PUBLIC_VERCEL_ANALYTICS=true`) ; le même hébergeur que l'api (un conteneur Node.js `next start`) reste possible. À confirmer par le client, avec son domaine (`NEXT_PUBLIC_SITE_URL`, voir la question 25) et le compte Vercel.
 - **26.** Le fournisseur de traces OpenTelemetry et le projet Sentry.
+- **146.** La région d'exécution du web sur Vercel : `cdg1` (Paris) provisoire (`apps/web/vercel.json`), à placer près de l'api (question 24) ; et le domaine fixe de la préproduction (`VERCEL_STAGING_DOMAIN`, voir la question 25).
 
 ### Domaines
 
@@ -218,3 +219,4 @@ Valeurs provisoires livrées et documentées : la plateforme fonctionne avec ell
 - **144.** La relecture des libellés d'une méthodologie d'impact écrits dans la console (ADR 0173) : ils ne passent pas par la relecture humaine des catalogues ; faut-il une relecture native avant la publication, comme pour une langue d'interface ?
 - **145.** Les modèles d'exposé des motifs de la console (`web.admin.moderation.templates`, ADR 0174) : un par motif et un pour le classement sans suite, sans article cité ; à valider par le conseil de Pitchorium avec les conditions d'utilisation (question 135).
 - **147.** Les valeurs comparées d'un écart de rapprochement (`expected`, `actual` du contrat `discrepancySchema`) sont des chaînes techniques (montants en unités mineures, statuts en anglais) : la console les affiche telles quelles avec leur unité. Faut-il un contrat structuré (montant et devise, statut codé) pour les dire en clair ?
+- **148.** Les en-têtes du site public et de la console ne replient pas leur navigation quand les libellés sont 40 % plus longs que le français (pseudo-localisation, ADR 0175, rapport `layout.jsonl` de l'audit) : le français et l'anglais tiennent sur ordinateur et sur téléphone. Avant d'activer une langue aux libellés plus longs (swahili, wolof, lingala, question 21), faut-il un menu replié dès que la navigation ne tient plus ?

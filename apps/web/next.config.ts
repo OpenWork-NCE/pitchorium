@@ -50,6 +50,11 @@ const SECURITY_HEADERS = [
     : []),
 ];
 
+/** Cache of the files of public/, renamed by no build (docs/operations/deployment-web.md). */
+const PUBLIC_FILE_CACHE = [
+  { key: 'Cache-Control', value: 'public, max-age=86400, stale-while-revalidate=604800' },
+];
+
 const nextConfig: NextConfig = {
   // The end-to-end tests build into their own directory (playwright.config.ts).
   distDir: process.env.NEXT_DIST_DIR ?? '.next',
@@ -79,7 +84,16 @@ const nextConfig: NextConfig = {
     dangerouslyAllowLocalIP: localCdn,
   },
   redirects: () => Promise.resolve(redirects),
-  headers: () => Promise.resolve([{ source: '/:path*', headers: SECURITY_HEADERS }]),
+  headers: () =>
+    Promise.resolve([
+      { source: '/:path*', headers: SECURITY_HEADERS },
+      // Files of public/ keep their names from one version to the next (pnpm brand:sync,
+      // marketing:captures): a day in the caches, then revalidated in the background. The pages
+      // are never cached (a nonce per request, ADR 0088); /_next/static is immutable (Next.js).
+      ...['/brand/:path*', '/fonts/:path*', '/marketing/:path*', '/providers/:path*'].map(
+        (source) => ({ source, headers: PUBLIC_FILE_CACHE }),
+      ),
+    ]),
 };
 
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');

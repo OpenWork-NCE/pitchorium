@@ -51,7 +51,7 @@ Tous au nom du client (question 90), accès partagés par le gestionnaire de sec
 
 Application web (`apps/web`, `docs/architecture/frontend.md`) : build par `pnpm --filter @pitchorium/web build` avec les variables de production (section « Web » de `docs/operations/environments.md`, `NEXT_PUBLIC_SITE_URL` en HTTPS pour HSTS et `upgrade-insecure-requests`), puis `next start` derrière le proxy, ou déploiement Vercel. Vérifier : en-têtes de sécurité et CSP (aucune violation dans la console, rapports Sentry), `robots.txt` et `sitemap.xml` sur le domaine définitif, images de partage, langues actives. Les origines de la CSP (`apps/web/src/lib/security/csp.ts`) suivent les domaines retenus.
 
-1. Construire l'image de la version (`v0.1.0` une fois la pull request de release-please fusionnée) et la pousser.
+1. Construire l'image de la version (`v1.0.0-rc.1`, puis `v1.0.0`, une fois la pull request de release-please fusionnée) et la pousser.
 2. Tâche de release : `dist/main.migrate.js`, puis `dist/main.seed.js` (flags et données de référence, idempotent).
 3. État initial des feature flags (seed) : `locale.fr` et `locale.en` actifs ; `locale.sw`, `locale.wo`, `locale.ln` inactifs (activation refusée sans catalogue complet et relecture humaine native approuvée, ADR 0077) ; `funding.equity` et `funding.loans` inactifs (activation refusée sans référence de validation juridique, et le paiement reste refusé, ADR 0051). Ne rien changer au lancement.
 4. Premier administrateur : `node dist/main.create-admin.js --email <email>` (dans l'image), qui active ensuite sa double authentification ; modérateurs nommés par lui (`POST /v1/admin/members/{userId}/roles`), double authentification exigée.
@@ -59,7 +59,22 @@ Application web (`apps/web`, `docs/architecture/frontend.md`) : build par `pnpm 
 6. Démarrer worker puis api ; vérifier `/v1/health/ready`, une inscription complète (email reçu, lien), une contribution réelle de faible montant puis son remboursement, la réception d'un rebond Resend de test.
 7. Alertes branchées (`docs/operations/slo-and-alerts.md`), sauvegardes actives et un exercice de restauration sur la copie de production (`docs/operations/backup-and-restore.md`).
 
-## 6. Validations en attente (juridique)
+## 6. Application web (client, puis développeur)
+
+Procédure complète : `docs/operations/deployment-web.md` (ADR 0176).
+
+1. **Client** : décider l'hébergement du web (Vercel par défaut, question 96) et la région (question 146) ; ouvrir le compte et l'équipe Vercel au nom du client (question 90).
+2. **Client, puis développeur** : domaines et DNS du site et de la préproduction (question 25) : le domaine de production et un sous-domaine fixe de préproduction ajoutés au projet Vercel, enregistrements A ou CNAME donnés par Vercel ; domaine parent commun avec l'api pour les cookies (`AUTH_COOKIE_DOMAIN`).
+3. **Développeur** : URI de redirection OAuth : elles visent l'api (`<API_PUBLIC_URL>/v1/auth/callback/<fournisseur>`, section 3.1) ; l'origine du site s'ajoute aux origines autorisées de chaque application OAuth qui en demande (Google : « Origines JavaScript autorisées ») et à `WEB_APP_URL`, `CORS_ORIGINS`, `AUTH_TRUSTED_ORIGINS` de l'api, pour la production et pour la préproduction.
+4. **Client, puis développeur** : clé de site Turnstile de production (question 105) : un site Cloudflare dont les noms d'hôte sont le domaine du web et celui de la préproduction ; la clé publique est servie par l'api (`TURNSTILE_SITE_KEY`), le web n'a aucune variable à poser.
+5. **Client, puis développeur** : projet Sentry du web (question 26) : `NEXT_PUBLIC_SENTRY_DSN` et `NEXT_PUBLIC_SENTRY_ENVIRONMENT` par environnement, `SENTRY_AUTH_TOKEN`, `SENTRY_ORG`, `SENTRY_PROJECT` pour le build (versions et cartes de sources privées).
+6. **Développeur** : origines de la CSP, déduites des variables : api (`NEXT_PUBLIC_API_URL`, et son WebSocket), CDN des fichiers publics (`NEXT_PUBLIC_CDN_URL`), stockage (`NEXT_PUBLIC_UPLOAD_URL` : envois et images privées présignées), Sentry (DSN), vidéos (YouTube sans cookie, Vimeo), Turnstile. Aucune autre ; vérifier l'absence de violation sur la préproduction (console, rapports Sentry).
+7. **Développeur** : Vercel Analytics et Speed Insights activés dans le projet et `NEXT_PUBLIC_VERCEL_ANALYTICS=true` ; aucun cookie, aucun bandeau (`docs/compliance/cookies.md`).
+8. **Développeur** : variables du web dans Vercel, Preview et Production séparées, et variables `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID`, `VERCEL_STAGING_DOMAIN` et environnements `preview` et `production` (jeton `VERCEL_TOKEN`, relecteurs) dans GitHub.
+9. **Client, puis développeur** : aperçus du site public (`pnpm marketing:captures`, `docs/design/marketing-captures.md`) à régénérer avec des données réelles de production, autorisées par leurs auteurs, à la place des données de démonstration ; adresse de contact (`CONTACT_EMAIL`, question 134).
+10. **Développeur** : première mise en production du web après l'api, puis les vérifications de la procédure (en-têtes, `robots.txt` et `sitemap.xml` sur le domaine définitif, images de partage, connexion, langues, événement Sentry lisible).
+
+## 7. Validations en attente (juridique)
 
 - Paiements, KYC, anti-blanchiment : questions 13, 14, 51 à 58, 60.
 - Equity et prêts : licence ECSP ou partenaire habilité (question 14) ; les flags restent inactifs jusque-là.

@@ -1,0 +1,108 @@
+name: Deploy web
+
+# Deployments of the web app on Vercel (docs/operations/deployment-web.md). The preview
+# (préproduction) follows the CI: once the CI of a commit of main or of a pull request is green, the
+# commit is built with the variables of the Preview environment of Vercel and deployed at its own
+# address; it never reads a production secret (the `preview` environment of GitHub holds only the
+# token of Vercel). Production is deployed by hand (workflow_dispatch), from a commit the CI
+# approved, behind the `production` environment of GitHub (required reviewers). Without the
+# project of Vercel (vars.VERCEL_PROJECT_ID, question 96), every job is skipped.
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Commit or tag to deploy in production (a commit whose CI is green)
+        required: true
+
+permissions:
+  contents: read
+
+env:
+  VERCEL_CLI: vercel@60.1.3
+  VERCEL_ORG_ID: ${{ vars.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ vars.VERCEL_PROJECT_ID }}
+  TURBO_TELEMETRY_DISABLED: '1'
+
+jobs:
+  preview:
+    if: >-
+      vars.VERCEL_PROJECT_ID != '' && github.event_name == 'workflow_run' &&
+      github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    environment: preview
+    concurrency:
+      group: deploy-web-preview-${{ github.event.workflow_run.head_branch }}
+      cancel-in-progress: true
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+      - uses: ./.github/actions/setup
+      # The values of a deployment come from Vercel only, never from the local example.
+      - run: rm -f apps/web/.env
+      - name: Variables of the Preview environment
+        run: pnpm dlx "$VERCEL_CLI" pull --yes --environment=preview --token="$VERCEL_TOKEN"
+        working-directory: apps/web
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      - name: Build (release and source maps of Sentry named by the commit)
+        run: pnpm dlx "$VERCEL_CLI" build --token="$VERCEL_TOKEN"
+        working-directory: apps/web
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          SENTRY_RELEASE: ${{ github.event.workflow_run.head_sha }}
+      - name: Deploy, and give main the fixed address of the preproduction
+        run: |
+          url="$(pnpm dlx "$VERCEL_CLI" deploy --prebuilt --token="$VERCEL_TOKEN")"
+          echo "Preview: $url" >> "$GITHUB_STEP_SUMMARY"
+          if [ "$BRANCH" = main ] && [ -n "$STAGING_DOMAIN" ]; then
+            pnpm dlx "$VERCEL_CLI" alias set "$url" "$STAGING_DOMAIN" --token="$VERCEL_TOKEN"
+            echo "Preproduction: https://$STAGING_DOMAIN" >> "$GITHUB_STEP_SUMMARY"
+          fi
+        working-directory: apps/web
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          BRANCH: ${{ github.event.workflow_run.head_branch }}
+          STAGING_DOMAIN: ${{ vars.VERCEL_STAGING_DOMAIN }}
+
+  production:
+    if: vars.VERCEL_PROJECT_ID != '' && github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    environment: production
+    concurrency:
+      group: deploy-web-production
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ inputs.ref }}
+      - name: The CI of this commit is green
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          sha="$(git rev-parse HEAD)"
+          conclusion="$(gh run list --workflow ci.yaml --commit "$sha" --json conclusion --jq '.[0].conclusion')"
+          test "$conclusion" = success || { echo "CI of $sha: ${conclusion:-none}" >&2; exit 1; }
+      - uses: ./.github/actions/setup
+      - run: rm -f apps/web/.env
+      - name: Variables of the Production environment
+        run: pnpm dlx "$VERCEL_CLI" pull --yes --environment=production --token="$VERCEL_TOKEN"
+        working-directory: apps/web
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      - name: Build (release and source maps of Sentry named by the commit)
+        run: SENTRY_RELEASE="$(git rev-parse HEAD)" pnpm dlx "$VERCEL_CLI" build --prod --token="$VERCEL_TOKEN"
+        working-directory: apps/web
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      - name: Deploy
+        run: |
+          url="$(pnpm dlx "$VERCEL_CLI" deploy --prebuilt --prod --token="$VERCEL_TOKEN")"
+          echo "Production: $url" >> "$GITHUB_STEP_SUMMARY"
+        working-directory: apps/web
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}

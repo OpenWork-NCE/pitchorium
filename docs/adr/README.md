@@ -173,3 +173,4 @@ Un fichier par décision, numéroté, au format Contexte / Décision / Conséque
 | [0173](0173-impact-labels-written-by-administrators.md)               | Libellés d'une méthodologie d'impact écrits par les administrateurs   |
 | [0174](0174-statement-of-reasons-templates.md)                        | Modèles d'exposé des motifs                                           |
 | [0175](0175-audit-of-every-screen-and-pseudo-locale.md)               | Audit de chaque écran et pseudo-localisation                          |
+| [0176](0176-web-deployment-on-vercel.md)                              | Déploiement du web sur Vercel                                         |

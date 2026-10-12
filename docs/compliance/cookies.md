@@ -10,10 +10,11 @@ Inventaire de ce que l'application web dépose ou lit sur l'appareil, et décisi
 - Thème (`localStorage`, next-themes) : choix clair ou sombre. Demandé par la personne.
 - Brouillons de publication et de message, mutations en attente (IndexedDB) : effacés à la publication, à l'envoi, à la déconnexion et après 24 h pour les mutations (ADR 0102, 0147).
 - Recherches récentes (`localStorage`) : effacées à la déconnexion (ADR 0150).
+- Position de lecture du fil (`sessionStorage`, onglet en cours) : la publication et son décalage, pour revenir au même endroit après une page ouverte depuis le fil ; effacée à la fermeture de l'onglet.
 
 ## Services tiers
 
-- Vercel Analytics et Speed Insights (`NEXT_PUBLIC_VERCEL_ANALYTICS`) : sans cookie ni identifiant persistant.
+- Vercel Analytics et Speed Insights (`NEXT_PUBLIC_VERCEL_ANALYTICS`, production et préproduction sur Vercel) : sans cookie ni identifiant persistant ; scripts et envois servis par le site lui-même (`/_vercel/insights`, `/_vercel/speed-insights`), aucun appel à un domaine tiers.
 - Sentry (`NEXT_PUBLIC_SENTRY_DSN`) : `dataCollection` sans cookies, en-têtes, corps, paramètres d'adresse ni données de l'utilisateur ; pas d'enregistrement de session.
 - Cloudflare Turnstile (connexion, inscription) : protection contre les robots, nécessaire à la sécurité.
 - Vidéos de projet : iframe au clic seulement, `youtube-nocookie.com` et Vimeo avec `dnt=1` (ADR 0129).
