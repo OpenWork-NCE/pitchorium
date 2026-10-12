@@ -83,10 +83,10 @@ export const Money: Story = {
     const canvas = within(canvasElement);
     // One keyboard stop, the arrows move from bar to bar and the tooltip says the value.
     await userEvent.tab();
-    const first = canvas.getByRole('button', { name: /^novembre 2025 : 0/ });
+    const first = canvas.getByRole('button', { name: /^novembre 2025\u00a0: 0/ });
     await expect(first).toHaveFocus();
     await userEvent.keyboard('{End}');
-    await expect(canvas.getByRole('button', { name: /^octobre 2026 : 120/ })).toHaveFocus();
+    await expect(canvas.getByRole('button', { name: /^octobre 2026\u00a0: 120/ })).toHaveFocus();
     await userEvent.keyboard('{ArrowLeft}{ArrowLeft}');
     await expect(canvas.getByRole('tooltip')).toHaveTextContent(/août 2026\s*2\s400/);
     // The values are in a table for screen readers; the graduations are round amounts.
@@ -118,7 +118,7 @@ export const Counts: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await userEvent.hover(canvas.getByRole('button', { name: '6 octobre : 312 membres' }));
+    await userEvent.hover(canvas.getByRole('button', { name: '6 octobre\u00a0: 312 membres' }));
     await expect(canvas.getByRole('tooltip')).toHaveTextContent('312 membres');
   },
 };

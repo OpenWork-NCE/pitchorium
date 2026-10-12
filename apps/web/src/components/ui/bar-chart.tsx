@@ -9,6 +9,7 @@ import {
   useState,
   useSyncExternalStore,
 } from 'react';
+import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/cn';
 import { useMotionPreference } from '@/components/motion';
 import { barHeights, chartTicks, isEmptySeries } from './chart-scale';
@@ -112,6 +113,7 @@ export function BarChart({
   headingLevel = 3,
   className,
 }: BarChartProps) {
+  const t = useTranslations('web.ui.chart');
   const id = useId();
   const reduced = useMotionPreference() === 'reduced';
   const { entry, ref } = useEntry(reduced);
@@ -254,7 +256,7 @@ export function BarChart({
                 }}
                 type="button"
                 tabIndex={index === focusIndex ? 0 : -1}
-                aria-label={`${datum.description} : ${datum.formatted}`}
+                aria-label={t('value', { label: datum.description, value: datum.formatted })}
                 aria-describedby={active === index ? tooltipId : undefined}
                 className="h-full min-w-0 flex-1 cursor-default rounded-sm outline-none focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-focus"
                 onPointerEnter={() => setActive(index)}

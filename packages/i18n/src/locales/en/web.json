@@ -252,6 +252,9 @@
       "description": "They do not apply while you type a text, except the ones with Ctrl or ⌘.",
       "help": "Show the shortcuts",
       "general": "General"
+    },
+    "chart": {
+      "value": "{{label}}: {{value}}"
     }
   },
   "notices": {

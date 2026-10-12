@@ -252,6 +252,9 @@
       "description": "Ils ne s’appliquent pas pendant la saisie d’un texte, sauf ceux avec Ctrl ou ⌘.",
       "help": "Afficher les raccourcis",
       "general": "Général"
+    },
+    "chart": {
+      "value": "{{label}} : {{value}}"
     }
   },
   "notices": {
