@@ -3,10 +3,11 @@
 import {
   eventsControllerCreate,
   eventsControllerUpdate,
-  useOrganizationsControllerMine,
-  useProfilesControllerReferenceData,
-  useProjectsControllerMine,
+  getOrganizationsControllerMineQueryOptions,
+  getProfilesControllerReferenceDataQueryOptions,
+  getProjectsControllerMineQueryOptions,
 } from '@pitchorium/api-client';
+import { useQuery } from '@tanstack/react-query';
 import type { EventView } from '@pitchorium/contracts';
 import { ImagePlus } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
@@ -115,9 +116,15 @@ export function EventForm({ event }: { event: EventView | null }) {
     name: ['format', 'timeZone', 'startsAt', 'imageMediaId'],
   });
   const [framing, setFraming] = useState(false);
-  const reference_data = useProfilesControllerReferenceData({ query: { staleTime: Infinity } });
-  const organizations = useOrganizationsControllerMine({ query: { enabled: !editing } });
-  const projects = useProjectsControllerMine({ query: { enabled: !editing } });
+  const reference_data = useQuery(
+    getProfilesControllerReferenceDataQueryOptions({ query: { staleTime: Infinity } }),
+  );
+  const organizations = useQuery(
+    getOrganizationsControllerMineQueryOptions({ query: { enabled: !editing } }),
+  );
+  const projects = useQuery(
+    getProjectsControllerMineQueryOptions({ query: { enabled: !editing } }),
+  );
   const options = useMemo(
     () => ({
       sectors: (reference_data.data?.sectors ?? []).map(({ code }) => ({
