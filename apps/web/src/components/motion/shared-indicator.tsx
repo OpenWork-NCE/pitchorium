@@ -2,7 +2,7 @@
 
 import { type ComponentType, createElement, useEffect, useSyncExternalStore } from 'react';
 import { cn } from '@/lib/cn';
-import { whenIdle } from '@/lib/preload';
+import { preloadWhenIdle } from '@/lib/preload';
 import type { IndicatorProps } from './shared-indicator-motion';
 import { useMotionPreference } from './use-motion-preference';
 
@@ -47,7 +47,7 @@ export function SharedIndicator({ layoutId, className }: SharedIndicatorProps) {
     () => Loaded,
     () => null,
   );
-  useEffect(() => whenIdle(() => void load()), []);
+  useEffect(() => preloadWhenIdle(load), []);
   const classes = cn('pointer-events-none absolute', className);
   // The loaded module is a stable component, created once for the page.
   return Indicator ? (

@@ -4,10 +4,21 @@ const AFTER_LOAD_MS = 200;
 /**
  * Loads a module once the page is idle: code kept out of the first load (ADR 0094) is then
  * already in memory when it is needed, offline included (ADR 0097). Safari has no idle callback:
- * shortly after the load of the page instead. A failed preload is retried at first use.
+ * shortly after the load of the page instead. Offline at that moment, the load waits for the
+ * network rather than fail. A failed preload is retried at first use.
  */
 export function preloadWhenIdle(load: () => Promise<unknown>): () => void {
-  return whenIdle(() => void load().catch(() => undefined));
+  let online: (() => void) | undefined;
+  const cancelIdle = whenIdle(() => {
+    const run = () => void load().catch(() => undefined);
+    if (navigator.onLine) return run();
+    online = run;
+    window.addEventListener('online', run, { once: true });
+  });
+  return () => {
+    cancelIdle();
+    if (online) window.removeEventListener('online', online);
+  };
 }
 
 /**
@@ -32,6 +43,17 @@ export function whenIdle(run: () => void): () => void {
     page.removeEventListener('load', schedule);
     clearTimeout(handle);
   };
+}
+
+/**
+ * Resolves at once with the network, else at its return: code is never fetched offline, where
+ * the request fails and the browser reports it.
+ */
+export function whenOnline(): Promise<void> {
+  if (typeof navigator === 'undefined' || navigator.onLine) return Promise.resolve();
+  return new Promise((resolve) => {
+    window.addEventListener('online', () => resolve(), { once: true });
+  });
 }
 
 /** A promise of the next idle moment of the page. */

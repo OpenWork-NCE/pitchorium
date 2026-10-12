@@ -4,7 +4,7 @@ import {
 } from '@pitchorium/api-client';
 import type { QueryClient } from '@tanstack/react-query';
 import { io } from 'socket.io-client';
-import { preloadWhenIdle } from '@/lib/preload';
+import { preloadWhenIdle, whenOnline } from '@/lib/preload';
 import { publicEnv } from '@/lib/public-env';
 import { dispatchRealtime, LOCAL_EVENTS, setRealtimeSender } from './realtime-bus';
 import { COUNTERS_QUERY_KEY } from '@/lib/query/keys';
@@ -42,9 +42,10 @@ export function connect(queryClient: QueryClient): () => void {
   });
   let handlers: Promise<Record<string, (payload: unknown) => void>> | undefined;
   const load = () => {
-    handlers ??= import('./realtime-handlers').then((module) =>
-      module.realtimeHandlers(queryClient),
-    );
+    // An event can arrive offline on a socket still open: its code waits for the network.
+    handlers ??= whenOnline()
+      .then(() => import('./realtime-handlers'))
+      .then((module) => module.realtimeHandlers(queryClient));
     const loading = handlers;
     // The code of the handlers could not load (offline): the next event tries again, and what
     // a lost event said is read again at the reconnection (`local:resumed`).
@@ -113,6 +114,17 @@ export function connect(queryClient: QueryClient): () => void {
     clearTimeout(pause);
     document.removeEventListener('visibilitychange', visibility);
     setRealtimeSender(null);
-    socket.disconnect();
+    socket.offAny();
+    socket.off('connect');
+    socket.off('disconnect');
+    if (socket.connected || !socket.active) {
+      socket.disconnect();
+      return;
+    }
+    // Still connecting (the shell remounts on a navigation between groups of pages): closed
+    // once its attempt ends, as WebKit reports a socket closed before it is established.
+    const close = () => socket.disconnect();
+    socket.once('connect', close);
+    socket.once('connect_error', close);
   };
 }

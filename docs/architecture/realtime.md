@@ -82,8 +82,8 @@ sequenceDiagram
 
 ## Côté web (`apps/web/src/lib/realtime`)
 
-- Connexion ouverte à l'inactivité de la page par la coquille membre, reprise progressive (`reconnectionDelay` 1 s, maximum 30 s, part aléatoire de moitié), fermée après une minute d'onglet masqué et rouverte quand il se montre.
-- Chaque événement passe son schéma des contrats (chargés au premier événement), puis va au cache (compteurs écrits, listes de conversations relues) et aux pages qui l'écoutent (`useRealtime`) ; une notification ne relit jamais sa liste (ADR 0148).
+- Connexion ouverte à l'inactivité de la page par la coquille membre, reprise progressive (`reconnectionDelay` 1 s, maximum 30 s, part aléatoire de moitié), fermée après une minute d'onglet masqué et rouverte quand il se montre ; une connexion encore en cours d'établissement (coquille remontée par une navigation entre groupes de pages) n'est fermée qu'à la fin de sa tentative.
+- Chaque événement passe son schéma des contrats (chargés au premier événement, ou au retour du réseau s'il arrive hors ligne sur un canal encore ouvert), puis va au cache (compteurs écrits, listes de conversations relues) et aux pages qui l'écoutent (`useRealtime`) ; une notification ne relit jamais sa liste (ADR 0148).
 - Au retour du canal, `local:resumed` : les compteurs, les listes et la conversation ouverte sont relus, cette dernière par `afterSequence` jusqu'à la fin ; un message dont la séquence saute la suivante déclenche le même rattrapage.
 - L'envoi passe par HTTP (mutation gardée hors ligne, ADR 0102) ; l'indicateur de saisie par `messaging:typing`, au plus toutes les 3 s, jamais en file.
 
