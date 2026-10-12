@@ -15,6 +15,7 @@ import { withRedirect } from '@/lib/auth/redirect';
 import { resourceMetadata } from '@/lib/resources/metadata';
 import { jsonLd } from '@/lib/seo/json-ld';
 import { readOrganization } from './read-organization';
+import { ReportButton } from '@/features/trust';
 import { FollowButtonIsland, MemberActivityIsland } from './islands';
 
 export async function generateMetadata({
@@ -61,14 +62,25 @@ export default async function Page({ params }: PageProps<'/[locale]/organization
       <Button asChild>
         <Link href={withRedirect(routes.signIn, path)}>{t('joinToFollow')}</Link>
       </Button>
-    ) : follow ? (
-      <FollowButtonIsland
-        type="organization"
-        targetKey={organization.id}
-        name={organization.name}
-        initial={follow}
-      />
-    ) : undefined;
+    ) : (
+      <div className="flex flex-wrap items-center gap-2">
+        {follow ? (
+          <FollowButtonIsland
+            type="organization"
+            targetKey={organization.id}
+            name={organization.name}
+            initial={follow}
+          />
+        ) : null}
+        {organization.viewerRole ? null : (
+          <ReportButton
+            variant="icon"
+            target={{ type: 'organization', id: organization.id }}
+            name={organization.name}
+          />
+        )}
+      </div>
+    );
   return (
     <SingleColumnLayout>
       <OrganizationProfile
