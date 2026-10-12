@@ -305,7 +305,10 @@ export function BarChart({
             <span
               key={datum.key}
               className={cn(
-                'flex min-w-0 justify-center whitespace-nowrap',
+                'flex min-w-0 justify-center',
+                // A few categories (statuses): a long label wraps under its bar, never on its
+                // neighbour; many periods keep one line, one label out of two on a phone.
+                thin ? 'whitespace-nowrap' : 'text-center text-balance',
                 thin && (count - 1 - index) % 2 === 1 && 'max-sm:invisible',
               )}
             >

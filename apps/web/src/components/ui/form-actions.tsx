@@ -9,7 +9,9 @@ export function FormActions({ children, className }: { children: ReactNode; clas
   return (
     <div
       className={cn(
-        'flex flex-col gap-2 *:w-full sm:flex-row-reverse sm:flex-wrap sm:justify-start sm:*:w-auto',
+        // A visually hidden description (the reason of a disabled button) keeps its 1 px: at
+        // full width it would stretch the page sideways on a phone.
+        'flex flex-col gap-2 *:not-[.sr-only]:w-full sm:flex-row-reverse sm:flex-wrap sm:justify-start sm:*:not-[.sr-only]:w-auto',
         className,
       )}
     >
