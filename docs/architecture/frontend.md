@@ -127,7 +127,7 @@ sequenceDiagram
 
 ## Missions (PROMPT FRONT 7)
 
-- Pages (`(public)`) : `/missions` (offres et demandes, « Mes missions » et « Mes engagements » jamais indexés), `/missions/{id}` (vue publique quand l'auteur l'a choisie, sans `JobPosting`, ADR 0154), `/missions/new?direction=offer|request` et `/missions/engagements/{id}` (membre ; cible des notifications des missions). Question 132 fermée : les notifications des événements et des missions mènent à leurs pages ; celles des signalements, de la modération et des données personnelles restent sans lien jusqu'à leurs pages (PROMPT FRONT 8, `features/notifications/lib/target.ts`).
+- Pages (`(public)`) : `/missions` (offres et demandes, « Mes missions » et « Mes engagements » jamais indexés), `/missions/{id}` (vue publique quand l'auteur l'a choisie, sans `JobPosting`, ADR 0154), `/missions/new?direction=offer|request` et `/missions/engagements/{id}` (membre ; cible des notifications des missions). Question 132 fermée : les notifications des événements et des missions mènent à leurs pages ; celles des signalements, de la modération et des données personnelles mènent à `/settings/moderation` et `/settings/personal-data` (PROMPT FRONT 8B, `features/notifications/lib/target.ts`).
 - Feature `missions` : règles pures testées (actions d'un engagement selon son état et le rôle du lecteur, refus liés au bénévolat, adresse des filtres, limites recopiées) ; page en composants serveur, engagement et panneau de l'auteur en îlots d'un membre ; formulaire chargé après la page ; `useCompletePrerequisites` (feature `access`) ouvre le volet contributeur quand une offre est refusée faute de casquette.
 
 ## Site public et pages juridiques (PROMPT FRONT 8A)
@@ -138,6 +138,15 @@ sequenceDiagram
 - SEO : sitemap avec les pages éditoriales et juridiques, JSON-LD `Organization` et `WebSite` sur l'accueil, image de partage par page (`lib/seo/editorial-share-image.tsx`).
 - Cookies : aucun bandeau (ADR 0158, `docs/compliance/cookies.md`).
 - Messages du groupe : `web.a11y`, `web.theme`, `web.locale`, `web.error`, les mentions et `web.ui.funding`, `web.ui.impact`, `web.ui.money` (cartes de projet) ; les textes de `web.marketing` restent sur le serveur.
+
+## Signalement, modération, données personnelles et traduction (PROMPT FRONT 8B)
+
+- Pages : `/settings/moderation` et `/settings/personal-data` (membre, `(app)`), `/report` (sans compte, Turnstile, `(auth)`), `/account-deleted` (neutre, sans session).
+- Feature `trust` (ADR 0165, 0166) : `ReportDialog` monté par `ReportHost` dans la coquille membre et chargé à la première ouverture ; les surfaces appellent `useReport()` (`lib/actions/report.ts`) ; motifs de `GET /v1/reports/reasons` ; `NoticeForm` résout l'adresse d'une page publique en cible (`lib/report-address.ts`) ; limites recopiées dans `lib/limits.ts`, vérifiées contre les contrats.
+- Feature `privacy` (ADR 0164) : aperçu `GET /v1/me/privacy` (`nextExportAt`, `erasureBlockers` avec leur ressource, `reminderAt`), relu à chaque notification et à intervalle court quand la suppression est due ; un 401 déconnecte l'appareil vers `/account-deleted`.
+- Feature `localization` (ADR 0167) : `Translatable` (bouton, aucune requête avant la pression), `Translated` chargé à la demande ; langue du contenu lue dans l'api (`language`), jamais devinée.
+- Compte suspendu (ADR 0166) : `SuspendedState` à la place du fil (`trust.suspended` de `GET /v1/me`), liste des signalements absente de « Modération » (refusée par l'api), `useAccess` sur chaque point d'écriture, raison `ACCESS_ACCOUNT_SUSPENDED`.
+- Parcours : `e2e/trust.spec.ts` (api simulée, `stub-trust.mjs`, horloge fixe), `e2e-live/trust.spec.ts` (vraie api ; la base avance la fin d'une campagne et d'un délai de grâce, `e2e-live/database.ts`) ; captures de revue `e2e/review/trust.review.ts`.
 
 ## Fournisseurs
 

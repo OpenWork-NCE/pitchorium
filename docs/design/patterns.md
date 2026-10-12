@@ -189,6 +189,24 @@ Comment assembler les composants (`components.md`) pour les situations récurren
 - Toute la ligne ouvre la cible quand sa page existe et la marque lue ; une demande de connexion et une introduction se règlent sur place, la réponse remplace les boutons et est annoncée ; « Supprimer » au survol, au focus et sur un écran tactile.
 - Filtres par famille (tout, mentions, réseau, publications, projets et contributions), suite chargée en bas, « Tout marquer comme lu » ; une notification arrivée en temps réel n'insère rien : la pastille « N nouvelles notifications » glisse et montre les nouveautés à la pression.
 
+## Signalement et modération (§13, ADR 0165, 0166)
+
+- « Signaler » est une entrée du menu de l'objet (publication, commentaire, message, relation, image) ou un bouton discret de la page (organisation, projet, événement, mission) ; jamais un bouton principal. Toutes ouvrent le même dialogue : motifs lus dans l'api, précisions facultatives, puis l'accusé « Signalement reçu » à la place du formulaire.
+- Un message signalé transmet ce message et les trois précédents seulement : le dialogue le dit avant l'envoi.
+- Sans compte, `/report` demande l'adresse de la page, l'explication, un contact facultatif (sans lui, aucune suite) et la déclaration de bonne foi ; l'accusé donne la date et la référence.
+- `/settings/moderation` : une carte par décision avec l'exposé des motifs (motif, faits, fondement et sa référence, détection automatique ou décision humaine), la date limite de l'appel, puis l'appel envoyé et la décision finale ; les signalements du membre et leur issue en dessous.
+- Compte suspendu (ADR 0166) : bannière, `SuspendedState` à la place du fil, écritures désactivées avec leur raison (`useAccess`) ; seuls la modération et l'appel, les notifications, les paramètres et les données personnelles restent ouverts, comme l'api le décide.
+
+## Données personnelles (§13, ADR 0164)
+
+- Export : une demande, l'historique des archives avec leur échéance, « Télécharger » par un lien court de l'api, la date de la prochaine demande possible quand l'api la donne.
+- Suppression : ce que devient chaque donnée avant tout bouton ; un bloqueur se dit avec la ressource en cause et le lien vers l'action qui le lève, et retire le bouton ; confirmation par phrase tapée (Confirmation destructrice) ; une connexion trop ancienne mène à la reconnexion puis rouvre la confirmation ; pendant le délai de grâce, date, rappel et « Annuler la suppression » ; après l'exécution, `/account-deleted`, page neutre sans session.
+
+## Traduction à la demande (§8.3, ADR 0167)
+
+- « Traduire » en lien discret sous le texte, seulement dans une autre langue que celle de la page et pour un membre connecté ; un message, par son menu seulement.
+- La traduction prend la place du texte (fondu enchaîné), suivie de la mention `Notice` « Traduction automatique (prestataire) » et de « Voir l'original » ; le refus (limite atteinte) s'affiche à la place du lien.
+
 ## Chargement
 
 - Un champ dont le contrôle se charge à la demande (recherche, liste) garde la forme d'un champ pendant ce temps (`FieldSkeleton` : bordure, hauteur, texte indicatif) ; les captures de revue attendent la fin des chargements différés (`aria-busy`, `data-loading`).
@@ -233,4 +251,4 @@ Comment assembler les composants (`components.md`) pour les situations récurren
 
 ## Comptes et bannières
 
-Bannières de l'espace membre, de la plus grave à la moins grave, une seule action chacune : compte suspendu (vers la notification de la décision ; le lien vers la page de l'appel n'apparaîtra qu'avec elle, PROMPT FRONT 8), conditions à accepter (vers l'étape de l'onboarding, puis retour à la page), adresse email à vérifier (renvoi sur place), double authentification exigée par un rôle, prérequis manquants, hors ligne. Elles lisent `GET /v1/me` et l'état du réseau ; aucune ne bloque la navigation.
+Bannières de l'espace membre, de la plus grave à la moins grave, une seule action chacune : compte suspendu (« Voir la décision », vers `/settings/moderation`, ADR 0166), conditions à accepter (vers l'étape de l'onboarding, puis retour à la page), adresse email à vérifier (renvoi sur place), double authentification exigée par un rôle, prérequis manquants, hors ligne. Elles lisent `GET /v1/me` et l'état du réseau ; aucune ne bloque la navigation.

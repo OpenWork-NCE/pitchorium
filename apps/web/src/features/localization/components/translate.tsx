@@ -31,7 +31,7 @@ export function useTranslationOffered(language: string | null | undefined): bool
 /**
  * « Traduire » under a content written in another language than the interface, then its machine
  * translation in place. Only the button is in the first load of a page: the request, the mention
- * and the cross fade load at the press (ADR 0094, ADR 0164).
+ * and the cross fade load at the press (ADR 0094, ADR 0167).
  */
 export function Translatable({
   source,

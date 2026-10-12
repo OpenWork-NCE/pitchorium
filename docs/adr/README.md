@@ -161,3 +161,7 @@ Un fichier par décision, numéroté, au format Contexte / Décision / Conséque
 | [0161](0161-content-adaptive-layouts.md)                              | Mises en page qui s'adaptent au contenu                         |
 | [0162](0162-product-previews-captured-in-the-app.md)                  | Aperçus du produit capturés dans l'application                  |
 | [0163](0163-blocking-time-of-the-feed-on-the-runner.md)               | Total Blocking Time du fil mesuré sur le runner                 |
+| [0164](0164-account-erasure-journey.md)                               | Parcours de suppression du compte                               |
+| [0165](0165-report-and-appeal-journey.md)                             | Signalement et appel                                            |
+| [0166](0166-suspended-account-experience.md)                          | Expérience d'un compte suspendu                                 |
+| [0167](0167-translation-on-demand-interface.md)                       | Interface de la traduction à la demande                         |
