@@ -4,10 +4,10 @@ import {
   followsControllerFollow,
   followsControllerUnfollow,
   getFollowsControllerStateQueryKey,
-  useFollowsControllerState,
+  getFollowsControllerStateQueryOptions,
 } from '@pitchorium/api-client';
 import type { FollowState } from '@pitchorium/contracts';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { Bell, BellRing } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { IconSwap, LabelSwap } from '@/components/motion';
@@ -40,9 +40,11 @@ export function FollowButton({
   const plural = usePlural();
   const queryClient = useQueryClient();
   const key = getFollowsControllerStateQueryKey(type, targetKey);
-  const query = useFollowsControllerState(type, targetKey, {
-    query: { initialData: initial, staleTime: 60_000 },
-  });
+  const query = useQuery(
+    getFollowsControllerStateQueryOptions(type, targetKey, {
+      query: { initialData: initial, staleTime: 60_000 },
+    }),
+  );
   const state = query.data ?? initial;
   const toggle = useMutation({
     mutationFn: async (follow: boolean) => {

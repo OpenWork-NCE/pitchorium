@@ -5,7 +5,7 @@ import {
   connectionsControllerList,
   connectionsControllerWithdraw,
   notificationsControllerCounters,
-  useDiscoveryControllerList,
+  getDiscoveryControllerListQueryOptions,
 } from '@pitchorium/api-client';
 import type { ConnectionRequest } from '@pitchorium/contracts';
 import { useQuery } from '@tanstack/react-query';
@@ -223,13 +223,17 @@ function Invitations() {
 /** The two lists of the matching for the member, each said with its reasons (ADR 0067). */
 function Suggestions() {
   const t = useTranslations('web.network.page');
-  const people = useDiscoveryControllerList(
-    { list: 'people', limit: 10 },
-    { query: { staleTime: 60_000 } },
+  const people = useQuery(
+    getDiscoveryControllerListQueryOptions(
+      { list: 'people', limit: 10 },
+      { query: { staleTime: 60_000 } },
+    ),
   );
-  const complementary = useDiscoveryControllerList(
-    { list: 'complementary_entrepreneurs', limit: 10 },
-    { query: { staleTime: 60_000 } },
+  const complementary = useQuery(
+    getDiscoveryControllerListQueryOptions(
+      { list: 'complementary_entrepreneurs', limit: 10 },
+      { query: { staleTime: 60_000 } },
+    ),
   );
   const lists = [
     { key: 'people', title: t('people'), query: people },
