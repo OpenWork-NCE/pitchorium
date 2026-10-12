@@ -119,6 +119,8 @@ export default function ReportDialog({
               label={t('reason')}
               render={({ field }) => (
                 <RadioGroup
+                  // Two columns from a tablet on: the actions stay in view on a laptop.
+                  className="gap-y-0 sm:grid-cols-2 sm:gap-x-6"
                   value={field.value}
                   onValueChange={field.onChange}
                   options={reasons.map((reason) => ({

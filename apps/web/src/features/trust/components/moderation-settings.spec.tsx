@@ -46,7 +46,7 @@ describe('the moderation of the member', () => {
     expect(screen.getByRole('heading', { name: 'Masquage' })).toBeTruthy();
     expect(screen.getByText(/aucune source/)).toBeTruthy();
     expect(
-      screen.getByText("Conditions d'utilisation : Conditions d’utilisation, informations exactes"),
+      screen.getByText('Conditions d’utilisation : Conditions d’utilisation, informations exactes'),
     ).toBeTruthy();
   });
 
