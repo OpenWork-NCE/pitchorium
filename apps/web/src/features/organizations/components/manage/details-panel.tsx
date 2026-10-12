@@ -36,6 +36,7 @@ import { changeOrganizationSlugRequest, updateOrganizationRequest } from '../../
 import { orNull } from '../../lib/values';
 import { OrganizationFields, type OrganizationValues } from '../organization-fields';
 import { useOrganizationProblem } from './use-organization-problem';
+import { publicEnv } from '@/lib/public-env';
 
 /** The framing of an image loads when it opens (react-easy-crop, ADR 0094). */
 const ImageCropDialog = lazy(() =>
@@ -191,8 +192,8 @@ function SlugCard({ organization }: PanelProps) {
   });
   // Read by subscription: the compiled component renders again as it is typed.
   const slug = useWatch({ control: form.control, name: 'slug' });
-  const origin = typeof window === 'undefined' ? '' : window.location.origin;
-  const address = (value: string) => `${origin}/${locale}${routes.organization(value)}`;
+  // The public address of the site, rendered alike by the server and the browser.
+  const address = (value: string) => `${publicEnv.siteUrl}/${locale}${routes.organization(value)}`;
 
   async function submit({ slug: next }: { slug: string }) {
     if (next === organization.slug) return;

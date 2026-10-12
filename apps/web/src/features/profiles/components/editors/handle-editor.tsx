@@ -18,6 +18,7 @@ import * as routes from '@/config/paths';
 import { useRouter } from '@/i18n/navigation';
 import type { EditorProps } from '../profile-editor';
 import { EditorDialog } from './editor-dialog';
+import { publicEnv } from '@/lib/public-env';
 
 /**
  * The public handle of the profile, its address (§10.1): the new address is shown as it is
@@ -32,8 +33,8 @@ export function HandleEditor({ own, locale, onClose }: EditorProps) {
   const applyProblem = useApplyProblem(form);
   // Read by subscription: the compiled component renders again as it is typed.
   const handle = useWatch({ control: form.control, name: 'handle' });
-  const origin = typeof window === 'undefined' ? '' : window.location.origin;
-  const address = (value: string) => `${origin}/${locale}${routes.member(value)}`;
+  // The public address of the site, rendered alike by the server and the browser.
+  const address = (value: string) => `${publicEnv.siteUrl}/${locale}${routes.member(value)}`;
 
   async function submit({ handle: next }: { handle: string }) {
     if (next === own.handle) {
