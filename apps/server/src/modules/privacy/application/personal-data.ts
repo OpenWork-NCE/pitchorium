@@ -24,6 +24,8 @@ export interface PersonalDataExporter {
 export interface ErasureBlocker {
   code: 'PRIVACY_CAMPAIGN_IN_PROGRESS' | 'PRIVACY_SOLE_OWNER';
   resourceId: string;
+  /** What the member acts on, shown with the rule: its page by its slug, and its name. */
+  resource: { type: 'project' | 'organization'; slug: string; name: string };
 }
 
 export interface ErasureContext {

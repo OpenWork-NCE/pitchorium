@@ -7,6 +7,8 @@ import {
   type ErasureRecord,
   exportAllowed,
   type ExportRecord,
+  nextExportAt,
+  reminderAt,
   reminderDue,
 } from './privacy';
 
@@ -70,5 +72,34 @@ describe('privacy rules', () => {
     expect(cancelable(erasure({ status: 'blocked' }))).toBe(true);
     expect(cancelable(erasure({ status: 'running' }))).toBe(false);
     expect(answerDueAt(NOW).toISOString()).toBe('2026-11-07T12:00:00.000Z');
+  });
+});
+
+describe('the dates told to the member', () => {
+  const exported = (patch: Partial<ExportRecord> = {}): ExportRecord => ({
+    id: 'x-1',
+    userId: 'user-1',
+    status: 'ready',
+    storageKey: 'k',
+    sizeBytes: 1,
+    error: null,
+    requestedAt: new Date(NOW.getTime() - 2 * 3_600_000),
+    completedAt: NOW,
+    expiresAt: null,
+    ...patch,
+  });
+
+  it('tells when a new export is possible, null when it is now', () => {
+    expect(nextExportAt(exported(), NOW, DAY)).toEqual(new Date(NOW.getTime() + 22 * 3_600_000));
+    expect(nextExportAt(exported({ status: 'failed' }), NOW, DAY)).toBeNull();
+    expect(nextExportAt(null, NOW, DAY)).toBeNull();
+  });
+
+  it('tells when the reminder goes before the erasure, or went', () => {
+    expect(reminderAt(erasure(), 7 * DAY)).toEqual(new Date(NOW.getTime() + 23 * DAY));
+    const sent = new Date(NOW.getTime() + 24 * DAY);
+    expect(reminderAt(erasure({ remindedAt: sent }), 7 * DAY)).toEqual(sent);
+    // A grace period shorter than the reminder: none.
+    expect(reminderAt(erasure({ scheduledFor: erasureDate(NOW, 5) }), 7 * DAY)).toBeNull();
   });
 });

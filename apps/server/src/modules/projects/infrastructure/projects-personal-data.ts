@@ -75,7 +75,11 @@ export class ProjectsPersonalData implements OnModuleInit {
 
   private async blockers(userId: string): Promise<ErasureBlocker[]> {
     const open = await this.db
-      .select({ id: projectsProjects.id })
+      .select({
+        id: projectsProjects.id,
+        slug: projectsProjects.slug,
+        title: projectsProjects.title,
+      })
       .from(projectsProjects)
       .where(
         and(
@@ -87,6 +91,7 @@ export class ProjectsPersonalData implements OnModuleInit {
     return open.map((project) => ({
       code: 'PRIVACY_CAMPAIGN_IN_PROGRESS',
       resourceId: project.id,
+      resource: { type: 'project', slug: project.slug, name: project.title },
     }));
   }
 

@@ -36199,6 +36199,18 @@
               "additionalProperties": false
             }
           },
+          "nextExportAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time",
+                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "erasure": {
             "anyOf": [
               {
@@ -36259,6 +36271,18 @@
                       "string",
                       "null"
                     ]
+                  },
+                  "reminderAt": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "format": "date-time",
+                        "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
                   }
                 },
                 "required": [
@@ -36268,7 +36292,8 @@
                   "scheduledFor",
                   "canceledAt",
                   "completedAt",
-                  "blockedBy"
+                  "blockedBy",
+                  "reminderAt"
                 ],
                 "additionalProperties": false
               },
@@ -36276,11 +36301,57 @@
                 "type": "null"
               }
             ]
+          },
+          "erasureBlockers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "enum": [
+                    "PRIVACY_CAMPAIGN_IN_PROGRESS",
+                    "PRIVACY_SOLE_OWNER"
+                  ]
+                },
+                "resource": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "project",
+                        "organization"
+                      ]
+                    },
+                    "slug": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "slug",
+                    "name"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "code",
+                "resource"
+              ],
+              "additionalProperties": false
+            }
           }
         },
         "required": [
           "exports",
-          "erasure"
+          "nextExportAt",
+          "erasure",
+          "erasureBlockers"
         ],
         "additionalProperties": false
       },
@@ -36442,6 +36513,18 @@
               "string",
               "null"
             ]
+          },
+          "reminderAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time",
+                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "required": [
@@ -36451,7 +36534,8 @@
           "scheduledFor",
           "canceledAt",
           "completedAt",
-          "blockedBy"
+          "blockedBy",
+          "reminderAt"
         ],
         "additionalProperties": false
       },

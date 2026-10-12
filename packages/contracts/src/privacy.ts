@@ -52,6 +52,26 @@ export const erasureRequestSchema = z.object({
   completedAt: z.iso.datetime().nullable(),
   /** Stable code of the rule that blocks the erasure, null otherwise. */
   blockedBy: z.string().nullable(),
+  /** When the reminder goes (or went) before the erasure; null when the grace period is shorter. */
+  reminderAt: z.iso.datetime().nullable(),
+});
+
+export const ERASURE_BLOCKER_CODES = [
+  'PRIVACY_CAMPAIGN_IN_PROGRESS',
+  'PRIVACY_SOLE_OWNER',
+] as const;
+
+/**
+ * A rule that prevents the erasure for now, with the resource to act on: a campaign to let close
+ * (`project`), an organization whose ownership to transfer (`organization`).
+ */
+export const erasureBlockerSchema = z.object({
+  code: z.enum(ERASURE_BLOCKER_CODES),
+  resource: z.object({
+    type: z.enum(['project', 'organization']),
+    slug: z.string(),
+    name: z.string(),
+  }),
 });
 
 /** Explicit confirmation: the account and the data will be erased after the grace period. */
@@ -59,7 +79,11 @@ export const requestErasureRequestSchema = z.object({ confirm: z.literal(true) }
 
 export const privacyOverviewSchema = z.object({
   exports: z.array(dataExportSchema),
+  /** When a new export may be requested; null when it may be now. */
+  nextExportAt: z.iso.datetime().nullable(),
   erasure: erasureRequestSchema.nullable(),
+  /** What prevents an erasure now; checked again when the erasure runs. */
+  erasureBlockers: z.array(erasureBlockerSchema),
 });
 
 /** A rights request as administrators follow it, without the content of the data. */
@@ -91,5 +115,6 @@ export type DataExport = z.infer<typeof dataExportSchema>;
 export type DataExportDownload = z.infer<typeof dataExportDownloadSchema>;
 export type ErasureRequest = z.infer<typeof erasureRequestSchema>;
 export type PrivacyOverview = z.infer<typeof privacyOverviewSchema>;
+export type ErasureBlockerView = z.infer<typeof erasureBlockerSchema>;
 export type RightsRequest = z.infer<typeof rightsRequestSchema>;
 export type RightsRequestQuery = z.infer<typeof rightsRequestQuerySchema>;

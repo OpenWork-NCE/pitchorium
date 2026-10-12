@@ -118,6 +118,9 @@ describe('privacy', () => {
           .expect(429)
       ).body.code,
     ).toBe('PRIVACY_EXPORT_RATE_LIMITED');
+    // The next possible export is told, not computed by the interface.
+    const limited = (await kofi.agent.get('/v1/me/privacy').expect(200)).body as PrivacyOverview;
+    expect(Date.parse(limited.nextExportAt ?? '')).toBeGreaterThan(Date.now());
     await vi.waitFor(
       async () => {
         await relayAll(worker);
@@ -174,8 +177,19 @@ describe('privacy', () => {
     expect((await requestErasure(samuel).expect(409)).body.code).toBe(
       'PRIVACY_CAMPAIGN_IN_PROGRESS',
     );
+    // The blockers are told before any request, with what to act on.
+    const campaign = (await samuel.agent.get('/v1/me/privacy').expect(200)).body as PrivacyOverview;
+    expect(campaign.erasureBlockers).toContainEqual({
+      code: 'PRIVACY_CAMPAIGN_IN_PROGRESS',
+      resource: { type: 'project', slug: expect.any(String), name: expect.any(String) },
+    });
     const thierry = await demo('thierry-lacroix');
     expect((await requestErasure(thierry).expect(409)).body.code).toBe('PRIVACY_SOLE_OWNER');
+    const owner = (await thierry.agent.get('/v1/me/privacy').expect(200)).body as PrivacyOverview;
+    expect(owner.erasureBlockers).toContainEqual({
+      code: 'PRIVACY_SOLE_OWNER',
+      resource: { type: 'organization', slug: expect.any(String), name: expect.any(String) },
+    });
   });
 
   it('erases a rich member after the grace period, then finds no residue', async () => {

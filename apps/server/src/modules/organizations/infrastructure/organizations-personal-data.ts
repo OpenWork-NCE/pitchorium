@@ -103,7 +103,13 @@ export class OrganizationsPersonalData implements OnModuleInit {
       const otherOwners = members.some((m) => m.role === 'owner' && m.userId !== userId);
       const others = members.some((m) => m.userId !== userId);
       if (others && !otherOwners) {
-        blockers.push({ code: 'PRIVACY_SOLE_OWNER', resourceId: membership.organizationId });
+        const organization = await this.organizations.findById(membership.organizationId);
+        if (!organization) continue;
+        blockers.push({
+          code: 'PRIVACY_SOLE_OWNER',
+          resourceId: organization.id,
+          resource: { type: 'organization', slug: organization.slug, name: organization.name },
+        });
       }
     }
     return blockers;

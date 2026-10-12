@@ -43,6 +43,23 @@ export function exportAllowed(
   return now.getTime() - latest.requestedAt.getTime() >= minIntervalMs;
 }
 
+/** When a new export may be requested; null when it may be now. */
+export function nextExportAt(
+  latest: ExportRecord | null,
+  now: Date,
+  minIntervalMs: number,
+): Date | null {
+  if (exportAllowed(latest, now, minIntervalMs) || !latest) return null;
+  return new Date(latest.requestedAt.getTime() + minIntervalMs);
+}
+
+/** When the reminder goes (or went): `reminderMs` before the erasure, never before the request. */
+export function reminderAt(erasure: ErasureRecord, reminderMs: number): Date | null {
+  if (erasure.remindedAt) return erasure.remindedAt;
+  const at = new Date(erasure.scheduledFor.getTime() - reminderMs);
+  return at.getTime() > erasure.requestedAt.getTime() ? at : null;
+}
+
 export function erasureDate(requestedAt: Date, graceDays: number): Date {
   return new Date(requestedAt.getTime() + graceDays * DAY_MS);
 }

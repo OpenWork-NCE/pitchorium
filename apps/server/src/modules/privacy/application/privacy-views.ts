@@ -1,5 +1,5 @@
 import type { DataExport, ErasureRequest, RightsRequest } from '@pitchorium/contracts';
-import { answerDueAt, type ErasureRecord, type ExportRecord } from '../domain/privacy';
+import { answerDueAt, type ErasureRecord, type ExportRecord, reminderAt } from '../domain/privacy';
 import type { RightsRequestRow } from './ports';
 
 const iso = (date: Date | null): string | null => date?.toISOString() ?? null;
@@ -15,7 +15,7 @@ export function exportView(record: ExportRecord): DataExport {
   };
 }
 
-export function erasureView(record: ErasureRecord): ErasureRequest {
+export function erasureView(record: ErasureRecord, reminderMs: number): ErasureRequest {
   return {
     id: record.id,
     status: record.status,
@@ -24,6 +24,7 @@ export function erasureView(record: ErasureRecord): ErasureRequest {
     canceledAt: iso(record.canceledAt),
     completedAt: iso(record.completedAt),
     blockedBy: record.blockedBy,
+    reminderAt: iso(reminderAt(record, reminderMs)),
   };
 }
 

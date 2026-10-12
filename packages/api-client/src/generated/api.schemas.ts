@@ -82,11 +82,41 @@ export type OverviewDtoOutputErasure = {
   completedAt: string | null;
   /** @nullable */
   blockedBy: string | null;
+  reminderAt: string | null;
 } | null;
+
+export type OverviewDtoOutputErasureBlockersItemCode =
+  (typeof OverviewDtoOutputErasureBlockersItemCode)[keyof typeof OverviewDtoOutputErasureBlockersItemCode];
+
+export const OverviewDtoOutputErasureBlockersItemCode = {
+  PRIVACY_CAMPAIGN_IN_PROGRESS: 'PRIVACY_CAMPAIGN_IN_PROGRESS',
+  PRIVACY_SOLE_OWNER: 'PRIVACY_SOLE_OWNER',
+} as const;
+
+export type OverviewDtoOutputErasureBlockersItemResourceType =
+  (typeof OverviewDtoOutputErasureBlockersItemResourceType)[keyof typeof OverviewDtoOutputErasureBlockersItemResourceType];
+
+export const OverviewDtoOutputErasureBlockersItemResourceType = {
+  project: 'project',
+  organization: 'organization',
+} as const;
+
+export type OverviewDtoOutputErasureBlockersItemResource = {
+  type: OverviewDtoOutputErasureBlockersItemResourceType;
+  slug: string;
+  name: string;
+};
+
+export type OverviewDtoOutputErasureBlockersItem = {
+  code: OverviewDtoOutputErasureBlockersItemCode;
+  resource: OverviewDtoOutputErasureBlockersItemResource;
+};
 
 export interface OverviewDtoOutput {
   exports: OverviewDtoOutputExportsItem[];
+  nextExportAt: string | null;
   erasure: OverviewDtoOutputErasure;
+  erasureBlockers: OverviewDtoOutputErasureBlockersItem[];
 }
 
 export type ExportDtoOutputStatus =
@@ -145,6 +175,7 @@ export interface ErasureDtoOutput {
   completedAt: string | null;
   /** @nullable */
   blockedBy: string | null;
+  reminderAt: string | null;
 }
 
 export type RightsPageDtoOutputItemsItemKind =

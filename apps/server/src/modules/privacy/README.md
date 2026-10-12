@@ -20,6 +20,7 @@ identity enregistre en plus l'annuaire des comptes (`registerAccountDirectory`) 
 
 ## Suppression
 
+- `GET /v1/me/privacy` : exports récents, date du prochain export possible (`nextExportAt`), suppression en cours avec la date de son rappel (`reminderAt`), et blocages actuels avec la ressource sur laquelle agir (`erasureBlockers` : projet en financement, organisation à transmettre, par son slug et son nom, que donne le module propriétaire dans `ErasureBlocker.resource`).
 - `POST /v1/me/privacy/erasure` (`{ "confirm": true }`, session récente exigée) : refusée par le premier blocage (`PRIVACY_CAMPAIGN_IN_PROGRESS`, `PRIVACY_SOLE_OWNER`), sinon programmée après `PRIVACY_ERASURE_GRACE_DAYS` (30 jours, provisoire) ; notification `erasure_scheduled`. `POST /v1/me/privacy/erasure/cancel` l'annule pendant le délai de grâce.
 - Rappel `erasure_reminder` `PRIVACY_ERASURE_REMINDER_DAYS` (7) jours avant (tâche quotidienne, 07:10 UTC).
 - Exécution par le worker (toutes les 15 minutes) : les blocages sont vérifiés à nouveau (`blocked`, réessayée ensuite) ; la demande passe `running` avec un pseudonyme aléatoire (UUID v4, jamais dérivé de l'identifiant : la pseudonymisation est irréversible) et l'adresse de confirmation ; chaque effaceur s'exécute dans sa transaction et s'inscrit dans `progress` (une exécution interrompue reprend où elle s'était arrêtée) ; le journal d'audit est pseudonymisé.
