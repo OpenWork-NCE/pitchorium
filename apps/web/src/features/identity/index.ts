@@ -26,3 +26,4 @@ export { PreferencesSettings } from './components/settings/preferences-settings'
 export { SecuritySettings } from './components/settings/security-settings';
 export { SettingsNav } from './components/settings/settings-nav';
 export { type TurnstileSettings, useTurnstile } from './components/auth/turnstile';
+export { type DeviceKind, describeUserAgent } from './lib/user-agent';
