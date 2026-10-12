@@ -389,10 +389,10 @@ function freshContributions() {
     contribution(502, {
       kind: 'reward_crowdfunding',
       method: 'mobile_money',
-      amount: { amountMinor: '32798500', currency: 'XOF' },
+      amount: { amountMinor: '327979', currency: 'XOF' },
       eurEquivalent: eur(50_000),
       rate: { unitsPerEur: '655.957', source: 'fixed_parity', at: at(-20) },
-      commission: { amountMinor: '1639925', currency: 'XOF' },
+      commission: { amountMinor: '16399', currency: 'XOF' },
       providerFee: null,
       refunded: { amountMinor: '0', currency: 'XOF' },
       rewardState: 'confirmed',
@@ -686,7 +686,7 @@ function freshRights() {
       completedAt: null,
       answered: false,
       overdue: true,
-      detail: 'PRIVACY_SOLE_OWNER_OF_ORGANIZATION',
+      detail: 'PRIVACY_SOLE_OWNER',
     },
   ];
 }
@@ -872,7 +872,7 @@ export function adminRoutes({ accounts, twoFactorOf, sessionOf, problem, readJso
         status: 200,
         body: {
           members: { total: 64, active30Days: 41 },
-          projects: { draft: 2, in_review: 1, published: 3, funding: 4, funded: 2, closed: 1 },
+          projects: { draft: 3, funding: 4, funded: 2, closed: 1 },
           contributions: { succeeded: 38, collectedEurMinor: '1834500' },
           pending: {
             moderationCases: data.cases.filter((item) => item.status === 'open').length,
