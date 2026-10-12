@@ -11,11 +11,36 @@ import { api, expect, memberPage, ok, test } from './support';
 
 type Member = Awaited<ReturnType<typeof memberPage>>;
 
-/** The instant the Socket.IO channel of the page confirms its connection (packet `40`). */
-async function channelOpen(page: Page): Promise<number> {
+interface Counters {
+  notifications: number;
+  invitations: { connections: number };
+}
+
+/**
+ * The instant the Socket.IO channel of the page confirms its connection (packet `40`), and the
+ * `counters` events it receives from then on, with the instant each arrived.
+ */
+async function channelOpen(
+  page: Page,
+): Promise<{ at: number; counters: { at: number; value: Counters }[] }> {
   const socket = await page.waitForEvent('websocket', (ws) => ws.url().includes('/socket.io/'));
+  const counters: { at: number; value: Counters }[] = [];
+  socket.on('framereceived', (frame) => {
+    const text = String(frame.payload);
+    if (!text.startsWith('42')) return;
+    let event: string;
+    let payload: { counters?: Counters };
+    try {
+      [event, payload] = JSON.parse(text.slice(2)) as [string, { counters?: Counters }];
+    } catch {
+      return;
+    }
+    if (event === 'counters' && payload.counters) {
+      counters.push({ at: Date.now(), value: payload.counters });
+    }
+  });
   await socket.waitForEvent('framereceived', (frame) => String(frame.payload).startsWith('40'));
-  return Date.now();
+  return { at: Date.now(), counters };
 }
 
 test('a message and a notification of the first two seconds show at once', async ({ browser }) => {
@@ -38,8 +63,7 @@ test('a message and a notification of the first two seconds show at once', async
 
   const opened = channelOpen(b.page);
   await b.page.goto(`/fr/messages/${first.conversationId}`);
-  const connectedAt = await opened;
-  const before = await unreadNotifications(b.page);
+  const { at: connectedAt, counters } = await opened;
   await Promise.all([
     sendMessage(a, first.conversationId, 'Le devis arrive ce soir.'),
     // A connection request of a third member: a notification and its counter for Bakary.
@@ -50,10 +74,22 @@ test('a message and a notification of the first two seconds show at once', async
   await expect(
     b.page.locator('[data-thread-scroller]').getByText('Le devis arrive ce soir.'),
   ).toBeVisible({ timeout: 3_000 });
-  // The request of the third member: one more unread notification, pushed by the channel.
-  await expect.poll(() => unreadNotifications(b.page), { timeout: 3_000 }).toBeGreaterThan(before);
-  // Shown before the handlers would have been fetched without an event (ten seconds).
-  expect(Date.now() - connectedAt).toBeLessThan(8_000);
+  const messageShownAt = Date.now();
+  // The request of the third member: once the worker has written it (its delay grows with the
+  // backlog of the worker, not with the page), the channel pushes the counters with one pending
+  // invitation, and the page shows their notifications at once.
+  await expect
+    .poll(() => counters.some((event) => event.value.invitations.connections === 1), {
+      timeout: 30_000,
+    })
+    .toBe(true);
+  const pushed = counters.find((event) => event.value.invitations.connections === 1)!;
+  await expect
+    .poll(() => unreadNotifications(b.page), { timeout: 3_000 })
+    .toBe(pushed.value.notifications);
+  // The message, carried by the channel alone, before the handlers would have been fetched
+  // without an event (ten seconds).
+  expect(messageShownAt - connectedAt).toBeLessThan(8_000);
   for (const member of [a, b, c]) await member.context.close();
 });
 
