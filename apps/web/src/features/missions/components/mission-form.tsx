@@ -4,9 +4,10 @@ import {
   ApiProblemError,
   missionsControllerOffer,
   missionsControllerRequest,
-  useProfilesControllerReferenceData,
-  useProjectsControllerMine,
+  getProfilesControllerReferenceDataQueryOptions,
+  getProjectsControllerMineQueryOptions,
 } from '@pitchorium/api-client';
+import { useQuery } from '@tanstack/react-query';
 import { useLocale, useTranslations } from 'next-intl';
 import { useMemo } from 'react';
 import { useWatch } from 'react-hook-form';
@@ -91,8 +92,12 @@ export function MissionForm({ direction: initial }: { direction: MissionDirectio
     },
   });
   const [direction, format] = useWatch({ control: form.control, name: ['direction', 'format'] });
-  const data = useProfilesControllerReferenceData({ query: { staleTime: Infinity } }).data;
-  const projects = useProjectsControllerMine({ query: { enabled: direction === 'request' } });
+  const data = useQuery(
+    getProfilesControllerReferenceDataQueryOptions({ query: { staleTime: Infinity } }),
+  ).data;
+  const projects = useQuery(
+    getProjectsControllerMineQueryOptions({ query: { enabled: direction === 'request' } }),
+  );
   const options = useMemo(
     () => ({
       sectors: (data?.sectors ?? []).map(({ code }) => ({

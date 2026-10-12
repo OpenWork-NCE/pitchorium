@@ -1,6 +1,10 @@
 'use client';
 
-import { missionsControllerClose, useMissionsControllerEngagements } from '@pitchorium/api-client';
+import {
+  missionsControllerClose,
+  getMissionsControllerEngagementsQueryOptions,
+} from '@pitchorium/api-client';
+import { useQuery } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { AlertDialog, Button, Loading, Skeleton, Text, useAnnounce } from '@/components/ui';
@@ -20,7 +24,9 @@ export function AuthorPanel({ missionId, open }: { missionId: string; open: bool
   const announce = useAnnounce();
   const problem = useMissionProblem();
   const [error, setError] = useState<string | null>(null);
-  const engagements = useMissionsControllerEngagements(missionId, { limit: 50 });
+  const engagements = useQuery(
+    getMissionsControllerEngagementsQueryOptions(missionId, { limit: 50 }),
+  );
   return (
     <div className="grid gap-4">
       {engagements.isPending ? (

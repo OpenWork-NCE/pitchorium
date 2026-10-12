@@ -1,6 +1,10 @@
 'use client';
 
-import { missionsControllerEngage, useProjectsControllerMine } from '@pitchorium/api-client';
+import {
+  missionsControllerEngage,
+  getProjectsControllerMineQueryOptions,
+} from '@pitchorium/api-client';
+import { useQuery } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import {
@@ -48,7 +52,9 @@ export function Engage({
   const [project, setProject] = useState(NONE);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const projects = useProjectsControllerMine({ query: { enabled: open && verb === 'solicit' } });
+  const projects = useQuery(
+    getProjectsControllerMineQueryOptions({ query: { enabled: open && verb === 'solicit' } }),
+  );
 
   async function send() {
     if (!message.trim()) {

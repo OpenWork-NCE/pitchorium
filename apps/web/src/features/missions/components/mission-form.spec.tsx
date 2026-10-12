@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import { ApiProblemError } from '@pitchorium/api-client';
 import type * as ApiClient from '@pitchorium/api-client';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { renderWithProviders } from '../../../../test/support/render';
@@ -10,8 +11,16 @@ const offer = vi.hoisted(() => vi.fn());
 vi.mock('@pitchorium/api-client', async (importOriginal) => ({
   ...(await importOriginal<typeof ApiClient>()),
   missionsControllerOffer: offer,
-  useProfilesControllerReferenceData: () => ({ data: { sectors: [], countries: [] } }),
-  useProjectsControllerMine: () => ({ data: { items: [] } }),
+  getProfilesControllerReferenceDataQueryOptions: () => ({
+    queryKey: ['/v1/reference-data'],
+    queryFn: () => Promise.resolve({ sectors: [], countries: [] }),
+    initialData: { sectors: [], countries: [] },
+  }),
+  getProjectsControllerMineQueryOptions: () => ({
+    queryKey: ['/v1/me/projects'],
+    queryFn: () => Promise.resolve({ items: [] }),
+    initialData: { items: [] },
+  }),
 }));
 vi.mock('@/features/access', () => ({
   useWithPrerequisites: () => (action: () => Promise<unknown>) => action(),
@@ -36,7 +45,11 @@ describe('form of a mission', () => {
         code: 'MISSIONS_JOB_POSTING_REFUSED',
       }),
     );
-    renderWithProviders(<MissionForm direction="offer" />);
+    renderWithProviders(
+      <QueryClientProvider client={new QueryClient()}>
+        <MissionForm direction="offer" />
+      </QueryClientProvider>,
+    );
     fireEvent.change(screen.getByRole('textbox', { name: 'Titre' }), {
       target: { value: 'Mentorat marketing' },
     });
