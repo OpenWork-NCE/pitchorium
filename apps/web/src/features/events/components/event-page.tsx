@@ -32,6 +32,8 @@ import { countryName } from '@/lib/format/countries';
 import { googleCalendarUrl, mapUrl, placeText } from '../lib/calendar-links';
 import { seatsLeft } from '../lib/registration';
 import { LazyAttendees, LazyEventManage, LazyRegistration } from './lazy-islands';
+import { Translatable } from '@/features/localization';
+import { ReportButton } from '@/features/trust';
 
 interface EventPageProps {
   event: EventView;
@@ -195,6 +197,8 @@ export async function EventPage({ event, view, readerTimeZone, pageUrl, icsUrl }
               status={event.status}
               title={event.title}
             />
+          ) : view === 'member' ? (
+            <ReportButton target={{ type: 'event', id: event.id }} name={event.title} />
           ) : null}
         </div>
       </header>
@@ -205,7 +209,17 @@ export async function EventPage({ event, view, readerTimeZone, pageUrl, icsUrl }
             <Heading level={2} size="section" id="event-about">
               {t('about')}
             </Heading>
-            {event.description ? (
+            {event.description && view === 'member' ? (
+              // « Traduire » in another language than the interface (§8.3).
+              <Translatable
+                source={{ type: 'event', id: event.id }}
+                language={event.language}
+                field="description"
+                format="markdown"
+              >
+                <MarkdownContent source={event.description} />
+              </Translatable>
+            ) : event.description ? (
               <MarkdownContent source={event.description} />
             ) : (
               <Text tone="muted">{t('noDescription')}</Text>
