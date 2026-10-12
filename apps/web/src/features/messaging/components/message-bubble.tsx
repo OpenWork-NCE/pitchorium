@@ -11,6 +11,7 @@ import * as routes from '@/config/paths';
 import { cn } from '@/lib/cn';
 import type { PendingMessage, Receipt } from '../lib/thread';
 import type { ThreadItem } from '../lib/thread-rows';
+import { Translated } from '@/features/localization';
 
 /** The viewer and the document of the publications load with a message that has files. */
 const Attachments = lazy(() => import('./message-attachments'));
@@ -97,8 +98,13 @@ interface MessageBubbleProps {
   last: boolean;
   /** The time, the receipt or the state of a send, under the last message of a group. */
   meta: ReactNode;
-  /** Actions of a message of the reader (edit, delete), shown on hover and focus. */
+  /**
+   * Actions of a message, shown on hover and focus: of the reader (edit, delete), or of another
+   * participant (translate, report).
+   */
   actions?: ReactNode;
+  /** Translated at the reader's request: the translation in place of the text (§8.3). */
+  translated?: boolean;
   /** Retry and remove a refused send. */
   onRetry?: (pending: PendingMessage) => void;
   onDiscard?: (pending: PendingMessage) => void;
@@ -119,6 +125,7 @@ export function MessageBubble({
   last,
   meta,
   actions,
+  translated = false,
   onRetry,
   onDiscard,
   fresh,
@@ -205,7 +212,13 @@ export function MessageBubble({
         <Notice kind="moderated" className="max-w-sm" />
       ) : (
         <>
-          {message.body ? (
+          {message.body && translated && !mine ? (
+            <div className={bubble}>
+              <Translated source={{ type: 'message', id: message.id }} language={message.language}>
+                <p>{message.body}</p>
+              </Translated>
+            </div>
+          ) : message.body ? (
             <p className={bubble}>
               {message.body}
               {message.edited ? (

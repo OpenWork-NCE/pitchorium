@@ -3,7 +3,7 @@
 import type { Conversation, Message, MessagePage } from '@pitchorium/contracts';
 import { ArrowLeft, BellOff, ShieldOff } from 'lucide-react';
 import { useLocale, useTimeZone, useTranslations } from 'next-intl';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { Avatar, AvatarGroup, Button, EmptyState, ErrorState, IconButton } from '@/components/ui';
 import * as routes from '@/config/paths';
 import { useCurrentMember } from '@/features/identity';
@@ -28,6 +28,7 @@ import { MessageActions } from './message-actions';
 import { LazyMessageComposer } from './lazy-composer';
 import { ThreadScroller } from './thread-scroller';
 import { TypingIndicator } from './typing-indicator';
+import { useAccess } from '@/features/access';
 
 interface ConversationViewProps {
   conversationId: string;
@@ -64,6 +65,10 @@ export function ConversationView({
     initialMessages,
   );
   const sending = useSendMessage(conversationId, merge);
+  // A suspended account reads its conversations but writes no more: the api says why.
+  const participate = useAccess('messaging.conversation.participate');
+  // Messages of the others translated at the reader's request, by their id (§8.3).
+  const [translated, setTranslated] = useState<ReadonlySet<string>>(new Set());
 
   const pending = pendingMessages(sending.sends, conversationId, thread.messages);
   // Compared by their state: the queue of sends gives new objects at each render.
@@ -106,8 +111,9 @@ export function ConversationView({
   const names = namesOf(conversation, locale, t('someone'));
   const direct = conversation.kind === 'direct' ? others[0]?.member : undefined;
   const group = conversation.kind === 'group';
-  const disabledReason =
-    conversation.requestState === 'sent'
+  const disabledReason = !participate.allowed
+    ? participate.reason
+    : conversation.requestState === 'sent'
       ? t('request.sentShort')
       : conversation.canSend
         ? undefined
@@ -184,8 +190,13 @@ export function ConversationView({
           dayHeadingLevel: 3,
           renderActions: (message: Message) =>
             message.deleted ? null : (
-              <MessageActions message={message} onChange={(changed) => merge([changed])} />
+              <MessageActions
+                message={message}
+                onChange={(changed) => merge([changed])}
+                onTranslate={() => setTranslated((current) => new Set(current).add(message.id))}
+              />
             ),
+          translated,
           onRetry: sending.retry,
           onDiscard: sending.discard,
         }}

@@ -20,6 +20,8 @@ export interface ThreadContext {
   dayHeadingLevel: 2 | 3;
   /** Actions of a message of the reader (edit, delete). */
   renderActions?: (message: Message) => ReactNode;
+  /** Messages of the others the reader asked to translate (§8.3, an explicit action only). */
+  translated?: ReadonlySet<string>;
   onRetry?: (pending: PendingMessage) => void;
   onDiscard?: (pending: PendingMessage) => void;
   /** Keys of the rows that arrived after the opening (they fade in). */
@@ -117,7 +119,8 @@ export function ThreadRowView({ row, context }: { row: ThreadRow; context: Threa
           last={row.last}
           meta={meta}
           fresh={context.fresh?.has(row.key) ?? false}
-          actions={stored && mine ? context.renderActions?.(stored) : undefined}
+          actions={stored && !stored.deleted ? context.renderActions?.(stored) : undefined}
+          translated={stored ? (context.translated?.has(stored.id) ?? false) : false}
           {...(context.onRetry ? { onRetry: context.onRetry } : {})}
           {...(context.onDiscard ? { onDiscard: context.onDiscard } : {})}
         />

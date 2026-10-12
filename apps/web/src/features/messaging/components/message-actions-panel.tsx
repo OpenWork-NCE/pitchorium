@@ -2,7 +2,7 @@
 
 import { messagingControllerEdit, messagingControllerRemove } from '@pitchorium/api-client';
 import type { Message } from '@pitchorium/contracts';
-import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
+import { Flag, Languages, MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
 import { useNow, useTranslations } from 'next-intl';
 import { useEffect, useRef, useState } from 'react';
 import {
@@ -20,27 +20,36 @@ import {
 } from '@/components/ui';
 import { useMessagingProblem } from '../hooks/use-messaging-problem';
 import { MESSAGING_LIMITS } from '../lib/limits';
+import { useTranslationOffered } from '@/features/localization';
+import { useReport } from '@/lib/actions/report';
 
 export interface MessageActionsProps {
   message: Message;
   /** The message as the api gives it back (edited, or a tombstone). */
   onChange: (message: Message) => void;
+  /** Shows the translation of a message of another participant, asked for here only (§8.3). */
+  onTranslate?: () => void;
   defaultOpen?: boolean;
   focusTrigger?: boolean;
 }
 
 /**
- * Actions of a message of the reader (§10.4): edit it while the window the api gives lasts
+ * Actions of a message (§10.4): of the reader, edit it while the window the api gives lasts
  * (`editableUntil`, never computed here), or delete it after a confirmation, which leaves a
- * tombstone in the thread of everyone.
+ * tombstone in the thread of everyone; of another participant, translate it (an explicit action,
+ * §8.3) or report it with the few messages before it (§13).
  */
 export function MessageActionsPanel({
   message,
   onChange,
+  onTranslate,
   defaultOpen = false,
   focusTrigger = false,
 }: MessageActionsProps) {
   const t = useTranslations('web.messaging');
+  const texts = useTranslations();
+  const report = useReport();
+  const translatable = useTranslationOffered(message.language) && message.body !== null;
   const problem = useMessagingProblem();
   const now = useNow({ updateInterval: 30_000 });
   const trigger = useRef<HTMLButtonElement>(null);
@@ -81,7 +90,19 @@ export function MessageActionsPanel({
           />
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          {editable ? (
+          {!message.mine && translatable && onTranslate ? (
+            <DropdownMenuItem onSelect={onTranslate}>
+              <Languages aria-hidden />
+              {texts('web.translation.translate')}
+            </DropdownMenuItem>
+          ) : null}
+          {!message.mine && report ? (
+            <DropdownMenuItem onSelect={() => report({ type: 'message', id: message.id })}>
+              <Flag aria-hidden />
+              {texts('web.trust.report.action')}
+            </DropdownMenuItem>
+          ) : null}
+          {message.mine && editable ? (
             <DropdownMenuItem
               onSelect={() => {
                 setText(message.body ?? '');
@@ -92,10 +113,12 @@ export function MessageActionsPanel({
               {t('edit')}
             </DropdownMenuItem>
           ) : null}
-          <DropdownMenuItem tone="danger" onSelect={() => setDialog('delete')}>
-            <Trash2 aria-hidden />
-            {t('delete')}
-          </DropdownMenuItem>
+          {message.mine ? (
+            <DropdownMenuItem tone="danger" onSelect={() => setDialog('delete')}>
+              <Trash2 aria-hidden />
+              {t('delete')}
+            </DropdownMenuItem>
+          ) : null}
         </DropdownMenuContent>
       </DropdownMenu>
       <Dialog open={dialog === 'edit'} onOpenChange={(open) => setDialog(open ? 'edit' : null)}>
