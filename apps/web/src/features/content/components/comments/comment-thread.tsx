@@ -41,6 +41,8 @@ import { useProblemText } from '../actions/use-problem-text';
 import { PostText } from '../post/post-text';
 import { ReactionSummary as Summary } from '../reaction-summary';
 import { CommentComposer } from './comment-composer';
+import { Translatable } from '@/features/localization';
+import { useReport } from '@/lib/actions/report';
 
 const PAGE = 10;
 type Page = { items: Comment[]; nextCursor: string | null };
@@ -225,6 +227,8 @@ function CommentItem({
   onDeleted: () => void;
 }) {
   const t = useTranslations('web.content.commentsThread');
+  const reportTexts = useTranslations('web.trust.report');
+  const report = useReport();
   const plural = usePlural();
   const queryClient = useQueryClient();
   const problem = useProblemText();
@@ -284,7 +288,12 @@ function CommentItem({
               />
             ) : (
               <div className="text-sm">
-                <PostText text={comment.text} mentions={comment.mentions} />
+                <Translatable
+                  source={{ type: 'comment', id: comment.id }}
+                  language={comment.language}
+                >
+                  <PostText text={comment.text} mentions={comment.mentions} />
+                </Translatable>
               </div>
             )}
           </div>
@@ -318,6 +327,16 @@ function CommentItem({
                 onClick={() => setEditing(true)}
               >
                 {t('edit')}
+              </Button>
+            ) : null}
+            {report && !comment.viewerIsAuthor ? (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 px-2 text-xs"
+                onClick={() => report({ type: 'comment', id: comment.id })}
+              >
+                {reportTexts('action')}
               </Button>
             ) : null}
             {comment.viewerCanDelete ? (

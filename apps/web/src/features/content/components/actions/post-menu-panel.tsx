@@ -14,6 +14,7 @@ import {
   Bookmark,
   BookmarkMinus,
   EyeOff,
+  Flag,
   Link2,
   MessageSquareOff,
   MessageSquareText,
@@ -36,6 +37,7 @@ import {
   notify,
 } from '@/components/ui';
 import * as routes from '@/config/paths';
+import { useReport } from '@/lib/actions/report';
 import { useSendAsMessage } from '@/lib/actions/send-as-message';
 import { useProblemText } from './use-problem-text';
 
@@ -82,6 +84,8 @@ export function PostMenuPanel({
     new URL(`/${locale}${routes.post(post.id)}`, window.location.origin).toString();
   const canShare = typeof navigator !== 'undefined' && 'share' in navigator;
   const sendAsMessage = useSendAsMessage();
+  const report = useReport();
+  const reportTexts = useTranslations('web.trust.report');
 
   async function save() {
     const saved = !post.saved;
@@ -167,6 +171,15 @@ export function PostMenuPanel({
               <Share2 aria-hidden />
               {t('share')}
             </DropdownMenuItem>
+          ) : null}
+          {report && !post.viewerIsAuthor ? (
+            <>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onSelect={() => report({ type: 'post', id: post.id })}>
+                <Flag aria-hidden />
+                {reportTexts('action')}
+              </DropdownMenuItem>
+            </>
           ) : null}
           {post.viewerIsAuthor ? (
             <>

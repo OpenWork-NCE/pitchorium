@@ -14,6 +14,7 @@ import { PostLink } from './post/post-link';
 import { LazyPostProject } from './post/lazy-post-project';
 import { PostText } from './post/post-text';
 import { ReactionSummary } from './reaction-summary';
+import { Translatable } from '@/features/localization';
 
 interface PostCardProps extends Omit<ComponentProps<'article'>, 'children'> {
   post: Post;
@@ -118,6 +119,7 @@ function PostBody({
   full: boolean;
   priority?: boolean;
 }) {
+  const locale = useLocale();
   return (
     <div
       className={cn(
@@ -125,9 +127,24 @@ function PostBody({
         !post.text && !post.images.length && !post.document && !post.link && 'hidden',
       )}
     >
-      {post.text ? <PostText text={post.text} mentions={post.mentions} full={full} /> : null}
+      {post.text ? (
+        signedIn && post.language && post.language !== locale ? (
+          // « Traduire » for a member, in another language than the interface (§8.3): the
+          // button is not even sent with a publication in the language of the page.
+          <Translatable source={{ type: 'post', id: post.id }} language={post.language}>
+            <PostText text={post.text} mentions={post.mentions} full={full} />
+          </Translatable>
+        ) : (
+          <PostText text={post.text} mentions={post.mentions} full={full} />
+        )
+      ) : null}
       {post.images.length > 0 ? (
-        <PostImages images={post.images} postId={post.id} priority={priority} />
+        <PostImages
+          images={post.images}
+          postId={post.id}
+          priority={priority}
+          reportable={signedIn && !post.viewerIsAuthor}
+        />
       ) : null}
       {post.document ? <PostDocument document={post.document} signedIn={signedIn} /> : null}
       {post.link ? <PostLink link={post.link} /> : null}

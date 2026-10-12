@@ -50,9 +50,12 @@ export function PostImages({
   images,
   postId,
   priority = false,
+  reportable = false,
 }: {
   images: readonly PostImage[];
   postId: string;
+  /** « Signaler » each image in the viewer: a member who is not its author (§13). */
+  reportable?: boolean;
   /** The first image is the largest paint of the page: loaded at once, first. */
   priority?: boolean;
 }) {
@@ -144,6 +147,7 @@ export function PostImages({
             images={images}
             startIndex={open}
             transitionName={sharing}
+            reportable={reportable}
             onClose={() => {
               // The focus goes back to the thumbnail that opened the viewer (WebKit never
               // focuses a button on a click, and the viewer leaves with its focus scope).

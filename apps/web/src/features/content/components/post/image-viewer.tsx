@@ -2,12 +2,13 @@
 
 import type { PostImage } from '@pitchorium/contracts';
 import useEmblaCarousel from 'embla-carousel-react';
-import { ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Flag, X } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { Dialog as Primitive } from 'radix-ui';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { IconButton } from '@/components/ui';
 import { imageSource } from './post-images';
+import { useReport } from '@/lib/actions/report';
 
 /**
  * The images of a publication in full (Embla): swipe, arrows of the keyboard and buttons, the
@@ -18,15 +19,20 @@ export default function ImageViewer({
   images,
   startIndex,
   transitionName,
+  reportable = false,
   onClose,
 }: {
   images: readonly PostImage[];
   startIndex: number;
   /** Name of the shared transition with the thumbnail opened, while it runs only (ADR 0145). */
   transitionName: string | null;
+  /** « Signaler » the image shown (§13): the viewer closes, then the report opens. */
+  reportable?: boolean;
   onClose: () => void;
 }) {
   const t = useTranslations('web.content.viewer');
+  const reportTexts = useTranslations('web.trust.report');
+  const report = useReport();
   const close = useTranslations('web.ui');
   const noAlt = useTranslations('web.content.images');
   const [viewport, embla] = useEmblaCarousel({ startIndex, loop: false, duration: 20 });
@@ -86,14 +92,27 @@ export default function ImageViewer({
               <span className="sr-only">{t('title')} : </span>
               {t('counter', { index: index + 1, count: images.length })}
             </Primitive.Title>
-            <Primitive.Close asChild>
-              <IconButton
-                label={close('close')}
-                icon={<X />}
-                variant="secondary"
-                data-dialog-close=""
-              />
-            </Primitive.Close>
+            <div className="flex items-center gap-2">
+              {reportable && report && current ? (
+                <IconButton
+                  label={reportTexts('titles.media')}
+                  icon={<Flag />}
+                  variant="secondary"
+                  onClick={() => {
+                    onClose();
+                    report({ type: 'media', id: current.mediaId });
+                  }}
+                />
+              ) : null}
+              <Primitive.Close asChild>
+                <IconButton
+                  label={close('close')}
+                  icon={<X />}
+                  variant="secondary"
+                  data-dialog-close=""
+                />
+              </Primitive.Close>
+            </div>
           </div>
           <div className="relative min-h-0">
             <div ref={viewport} className="h-full overflow-hidden">

@@ -7,10 +7,11 @@ import { PenLine } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
 import { lazy, Suspense, useState } from 'react';
-import { Avatar, Card } from '@/components/ui';
+import { Avatar, Button, Card } from '@/components/ui';
 import { useCurrentMember } from '@/features/identity';
 import { usePathname, useRouter } from '@/i18n/navigation';
 import { FEED_PAGE_SIZE } from '../lib/feed-items';
+import { useAccess } from '@/features/access';
 
 /**
  * The editor, its extensions and the image tray load when the composer is about to open (hover,
@@ -47,6 +48,8 @@ function prepend(queryClient: ReturnType<typeof useQueryClient>, post: Post) {
 export function FeedComposer() {
   const t = useTranslations('web.feed');
   const member = useCurrentMember();
+  // A suspended account reads but publishes no more: the opener says why (§13).
+  const access = useAccess('content.post.create');
   const queryClient = useQueryClient();
   const params = useSearchParams();
   const router = useRouter();
@@ -65,17 +68,27 @@ export function FeedComposer() {
     <>
       <Card padding="sm" className="flex items-center gap-3">
         <Avatar name={member.profile.displayName} src={member.profile.avatarUrl} decorative />
-        <button
-          type="button"
-          aria-haspopup="dialog"
-          onClick={() => setOpen(true)}
-          onPointerEnter={() => void loadComposer()}
-          onFocus={() => void loadComposer()}
-          className="flex h-11 min-w-0 flex-1 items-center justify-between gap-2 rounded-full border border-border-strong bg-surface px-4 text-sm text-muted outline-none hover:bg-surface-sunken focus-visible:outline-2 focus-visible:outline-focus"
-        >
-          <span className="truncate">{t('compose')}</span>
-          <PenLine aria-hidden className="size-4 shrink-0" />
-        </button>
+        {!access.allowed && access.reason ? (
+          <Button
+            variant="outline"
+            className="h-11 min-w-0 flex-1 justify-start"
+            disabledReason={access.reason}
+          >
+            <span className="truncate">{t('compose')}</span>
+          </Button>
+        ) : (
+          <button
+            type="button"
+            aria-haspopup="dialog"
+            onClick={() => setOpen(true)}
+            onPointerEnter={() => void loadComposer()}
+            onFocus={() => void loadComposer()}
+            className="flex h-11 min-w-0 flex-1 items-center justify-between gap-2 rounded-full border border-border-strong bg-surface px-4 text-sm text-muted outline-none hover:bg-surface-sunken focus-visible:outline-2 focus-visible:outline-focus"
+          >
+            <span className="truncate">{t('compose')}</span>
+            <PenLine aria-hidden className="size-4 shrink-0" />
+          </button>
+        )}
       </Card>
       {open ? (
         <Suspense fallback={null}>

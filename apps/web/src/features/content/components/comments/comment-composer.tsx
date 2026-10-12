@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Button, Field } from '@/components/ui';
 import { LIMITS } from '../../lib/limits';
 import { MentionTextarea } from '../mentions/mention-textarea';
+import { useAccess } from '@/features/access';
 
 /**
  * Writing a comment or a reply (§10.3): a text area with the mentions, its counter near the
@@ -28,6 +29,7 @@ export function CommentComposer({
   onCancel?: () => void;
 }) {
   const t = useTranslations('web.content.commentsThread');
+  const access = useAccess('content.comment.create');
   const [text, setText] = useState(initial);
   const form = useRef<HTMLFormElement>(null);
   useEffect(() => {
@@ -50,6 +52,10 @@ export function CommentComposer({
       setSending(false);
     }
   };
+  if (!access.allowed && access.reason) {
+    // A suspended account reads but writes no more: the reason the api gives (§13).
+    return <p className="text-sm text-muted">{access.reason}</p>;
+  }
   return (
     <form
       ref={form}
