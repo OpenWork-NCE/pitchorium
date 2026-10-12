@@ -234,7 +234,10 @@ function contribution(id, status, overrides = {}) {
 
 /** The contributions of the demonstration member, one per state the screens show. */
 const MINE = [
-  contribution('0192f4a0-5000-7000-8000-000000000001', 'pending_payment', { createdAt: iso(0) }),
+  // Six hours before the fixed date: its relative time reads the same however long the run.
+  contribution('0192f4a0-5000-7000-8000-000000000001', 'pending_payment', {
+    createdAt: iso(-0.25),
+  }),
   contribution('0192f4a0-5000-7000-8000-000000000002', 'succeeded'),
   contribution('0192f4a0-5000-7000-8000-000000000003', 'failed', { createdAt: iso(-1) }),
   contribution('0192f4a0-5000-7000-8000-000000000004', 'pending_payment', {
