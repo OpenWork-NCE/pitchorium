@@ -17,6 +17,8 @@ import { Link } from '@/i18n/navigation';
 import { withRedirect } from '@/lib/auth/redirect';
 import { countryName } from '@/lib/format/countries';
 import { LazyAuthorPanel, LazyEngage } from './lazy-islands';
+import { Translatable } from '@/features/localization';
+import { ReportButton } from '@/features/trust';
 
 /**
  * The page of a mission (§6.3, ADR 0071): its content, its author with the preview of their
@@ -146,7 +148,23 @@ export async function MissionPage({
           <Heading level={2} size="section" id="mission-description">
             {t('description')}
           </Heading>
-          <Text className="whitespace-pre-line">{mission.description}</Text>
+          {signedIn ? (
+            // « Traduire » in another language than the interface (§8.3).
+            <Translatable
+              source={{ type: 'mission', id: mission.id }}
+              language={mission.language}
+              field="description"
+            >
+              <Text className="whitespace-pre-line">{mission.description}</Text>
+            </Translatable>
+          ) : (
+            <Text className="whitespace-pre-line">{mission.description}</Text>
+          )}
+          {signedIn && !mission.viewer?.isAuthor ? (
+            <div>
+              <ReportButton target={{ type: 'mission', id: mission.id }} name={mission.title} />
+            </div>
+          ) : null}
         </section>
         <div className="grid content-start gap-4">
           <Card className="grid gap-4" aria-labelledby="mission-details">
