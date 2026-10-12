@@ -4,3 +4,5 @@ export { MethodologyUnavailable } from './components/methodology-unavailable';
 export { labelOf, type ReferenceLabels } from './lib/labels';
 export { MethodologyPage } from './components/methodology-page';
 export { EntrepreneurAssessment } from './components/entrepreneur-assessment';
+export { MethodologyList } from './components/admin/methodology-list';
+export { MethodologyDetail } from './components/admin/methodology-detail';

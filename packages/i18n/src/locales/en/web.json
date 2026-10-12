@@ -1181,6 +1181,113 @@
         "resolving": "Saving",
         "resolvedDone": "Discrepancy marked as handled."
       }
+    },
+    "impact": {
+      "title": "Impact methodologies",
+      "description": "The versions of the self-declared impact methodology: one published, drafts to prepare the next, archives the scores cite.",
+      "version": "Methodology version",
+      "versionName": "v{{version}}: {{name}}",
+      "copyName": "{{name}} (new version)",
+      "newName": "New methodology",
+      "caption": "Methodology versions",
+      "empty": "No version.",
+      "emptyHint": "Create a draft, complete its criteria in each active language, then publish it.",
+      "create": "Create a draft",
+      "createFromPublished": "New draft from v{{version}}",
+      "creating": "Creating the draft",
+      "demo": "Demonstration",
+      "labelsComplete": "Complete",
+      "labelsMissing": "Missing: {{count}}",
+      "archivedAt": "Archived on",
+      "weightValue": "Weight {{weight}}",
+      "columns": {
+        "version": "Version",
+        "status": "Status",
+        "criteria": "Criteria",
+        "labels": "Labels",
+        "created": "Created on",
+        "published": "Published on"
+      },
+      "statusDescription": {
+        "draft": "Draft: editable until it is published.",
+        "published": "Published version: it no longer changes, the scores cite it.",
+        "archived": "Archived version: read only, cited by the scores already given."
+      },
+      "save": "Save the draft",
+      "saving": "Saving the draft",
+      "saved": "Draft saved.",
+      "unsaved": "Unsaved changes.",
+      "nothingToSave": "No change to save.",
+      "saveFirst": "Save the draft first.",
+      "published": "Version published.",
+      "archived": "Version archived.",
+      "deleted": "Draft deleted.",
+      "editor": {
+        "name": "Name of the version",
+        "nameHint": "Shown with each score, next to the version number.",
+        "locale": "Language of the labels",
+        "localeHint": "The labels and descriptions below are those in {{language}}. An empty field takes the text of the catalogue, shown in grey when there is one.",
+        "criterion": "Criterion {{index}}: {{label}}",
+        "moveUp": "Move the criterion up",
+        "moveDown": "Move the criterion down",
+        "removeCriterion": "Remove the criterion",
+        "key": "Key",
+        "keyHint": "Lowercase letters, digits and underscores; it identifies the answers.",
+        "weight": "Weight",
+        "weightHint": "From 1 to 100, relative to the other criteria.",
+        "label": "Label ({{language}})",
+        "description": "Description ({{language}})",
+        "scale": "Answer scale",
+        "levelKey": "Key",
+        "levelValue": "Value",
+        "levelLabel": "Label ({{language}})",
+        "removeLevel": "Remove the level",
+        "addLevel": "Add a level",
+        "levelsMax": "A scale has at most {{max}} levels.",
+        "addCriterion": "Add a criterion",
+        "criteriaMax": "A methodology has at most {{max}} criteria."
+      },
+      "coverage": {
+        "title": "Labels by language",
+        "complete": "Every criterion, description and level has its label in the active languages: {{list}}.",
+        "missing": "Missing labels: {{count}}. The version cannot be published before.",
+        "labelItem": "{{criterion}}: label in {{language}}",
+        "descriptionItem": "{{criterion}}: description in {{language}}",
+        "levelItem": "{{criterion}}, level {{level}}: label in {{language}}",
+        "afterSave": "The list updates when you save."
+      },
+      "preview": {
+        "title": "Score preview",
+        "hint": "Choose one answer per criterion: the api computes the score of the saved version, by the rules of an assessment.",
+        "answer": "{{label}} ({{value}})",
+        "compute": "Compute the score",
+        "computing": "Computing the score",
+        "outOf": "out of 100",
+        "detail": "{{value}} out of {{max}}, weight {{weight}}"
+      },
+      "publish": {
+        "title": "Publish",
+        "hint": "The published version replaces the version in force, which is archived; holders already assessed are offered a reassessment.",
+        "action": "Publish the version",
+        "labelsMissing": "Complete the labels of each active language first.",
+        "confirmTitle": "Publish v{{version}}?",
+        "confirmDescription": "A published version never changes again: the scores cite it. To change a criterion afterwards, a new version is needed.",
+        "phrase": "PUBLISH"
+      },
+      "delete": {
+        "action": "Delete the draft",
+        "confirmTitle": "Delete the draft {{name}}?",
+        "confirmDescription": "The draft and its labels are deleted; no assessment cites it.",
+        "phrase": "DELETE"
+      },
+      "archive": {
+        "title": "Archive",
+        "hint": "Withdrawing the version in force makes assessments unavailable until another version is published.",
+        "action": "Archive the version",
+        "confirmTitle": "Archive v{{version}}?",
+        "confirmDescription": "No assessment is possible until another version is published. Scores already given stay shown with their version.",
+        "phrase": "ARCHIVE"
+      }
     }
   },
   "projects": {

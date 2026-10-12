@@ -13,6 +13,7 @@ import {
   type LucideIcon,
   Scale,
   ShieldAlert,
+  Sprout,
   Users,
 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
@@ -103,6 +104,17 @@ export const ADMIN_NAV: readonly { group: Group; items: readonly Item[] }[] = [
         href: routes.adminDiscrepancies,
         icon: Scale,
         action: 'payment.reconciliation.manage',
+      },
+    ],
+  },
+  {
+    group: 'content',
+    items: [
+      {
+        key: 'methodologies',
+        href: routes.adminMethodologies,
+        icon: Sprout,
+        action: 'impact.methodology.manage',
       },
     ],
   },

@@ -1181,6 +1181,113 @@
         "resolving": "Enregistrement",
         "resolvedDone": "Écart noté comme traité."
       }
+    },
+    "impact": {
+      "title": "Méthodologies d’impact",
+      "description": "Les versions de la méthodologie de l’impact autodéclaré : une seule publiée, des brouillons pour préparer la suivante, des archives que citent les scores.",
+      "version": "Version de la méthodologie",
+      "versionName": "v{{version}} : {{name}}",
+      "copyName": "{{name}} (nouvelle version)",
+      "newName": "Nouvelle méthodologie",
+      "caption": "Versions de la méthodologie",
+      "empty": "Aucune version.",
+      "emptyHint": "Créez un brouillon, complétez ses critères dans chaque langue active, puis publiez-le.",
+      "create": "Créer un brouillon",
+      "createFromPublished": "Nouveau brouillon à partir de la v{{version}}",
+      "creating": "Création du brouillon",
+      "demo": "Démonstration",
+      "labelsComplete": "Complets",
+      "labelsMissing": "Manquants : {{count}}",
+      "archivedAt": "Archivée le",
+      "weightValue": "Poids {{weight}}",
+      "columns": {
+        "version": "Version",
+        "status": "Statut",
+        "criteria": "Critères",
+        "labels": "Libellés",
+        "created": "Créée le",
+        "published": "Publiée le"
+      },
+      "statusDescription": {
+        "draft": "Brouillon : modifiable jusqu’à sa publication.",
+        "published": "Version publiée : elle ne change plus, les scores la citent.",
+        "archived": "Version archivée : lecture seule, citée par les scores déjà donnés."
+      },
+      "save": "Enregistrer le brouillon",
+      "saving": "Enregistrement du brouillon",
+      "saved": "Brouillon enregistré.",
+      "unsaved": "Modifications non enregistrées.",
+      "nothingToSave": "Aucune modification à enregistrer.",
+      "saveFirst": "Enregistrez d’abord le brouillon.",
+      "published": "Version publiée.",
+      "archived": "Version archivée.",
+      "deleted": "Brouillon supprimé.",
+      "editor": {
+        "name": "Nom de la version",
+        "nameHint": "Affiché avec chaque score, à côté du numéro de version.",
+        "locale": "Langue des libellés",
+        "localeHint": "Les libellés et descriptions ci-dessous sont ceux en {{language}}. Un champ vide reprend le texte du catalogue, affiché en gris quand il existe.",
+        "criterion": "Critère {{index}} : {{label}}",
+        "moveUp": "Monter le critère",
+        "moveDown": "Descendre le critère",
+        "removeCriterion": "Retirer le critère",
+        "key": "Clé",
+        "keyHint": "Lettres minuscules, chiffres et tirets bas ; elle identifie les réponses.",
+        "weight": "Poids",
+        "weightHint": "De 1 à 100, relatif aux autres critères.",
+        "label": "Libellé ({{language}})",
+        "description": "Description ({{language}})",
+        "scale": "Échelle de réponse",
+        "levelKey": "Clé",
+        "levelValue": "Valeur",
+        "levelLabel": "Libellé ({{language}})",
+        "removeLevel": "Retirer le niveau",
+        "addLevel": "Ajouter un niveau",
+        "levelsMax": "Une échelle compte au plus {{max}} niveaux.",
+        "addCriterion": "Ajouter un critère",
+        "criteriaMax": "Une méthodologie compte au plus {{max}} critères."
+      },
+      "coverage": {
+        "title": "Libellés par langue",
+        "complete": "Chaque critère, description et niveau a son libellé dans les langues actives : {{list}}.",
+        "missing": "Libellés manquants : {{count}}. La version ne peut pas être publiée avant.",
+        "labelItem": "{{criterion}} : libellé en {{language}}",
+        "descriptionItem": "{{criterion}} : description en {{language}}",
+        "levelItem": "{{criterion}}, niveau {{level}} : libellé en {{language}}",
+        "afterSave": "La liste se met à jour à l’enregistrement."
+      },
+      "preview": {
+        "title": "Aperçu du score",
+        "hint": "Choisissez une réponse par critère : l’api calcule le score de la version enregistrée, par les règles d’une évaluation.",
+        "answer": "{{label}} ({{value}})",
+        "compute": "Calculer le score",
+        "computing": "Calcul du score",
+        "outOf": "sur 100",
+        "detail": "{{value}} sur {{max}}, poids {{weight}}"
+      },
+      "publish": {
+        "title": "Publier",
+        "hint": "La version publiée remplace la version en vigueur, qui est archivée ; les porteurs déjà évalués se voient proposer une réévaluation.",
+        "action": "Publier la version",
+        "labelsMissing": "Complétez d’abord les libellés de chaque langue active.",
+        "confirmTitle": "Publier la v{{version}} ?",
+        "confirmDescription": "Une version publiée ne se modifie plus jamais : les scores la citent. Pour changer un critère ensuite, il faudra créer une nouvelle version.",
+        "phrase": "PUBLIER"
+      },
+      "delete": {
+        "action": "Supprimer le brouillon",
+        "confirmTitle": "Supprimer le brouillon {{name}} ?",
+        "confirmDescription": "Le brouillon et ses libellés sont supprimés ; aucune évaluation ne le cite.",
+        "phrase": "SUPPRIMER"
+      },
+      "archive": {
+        "title": "Archiver",
+        "hint": "Retirer la version en vigueur rend les évaluations indisponibles jusqu’à la publication d’une autre version.",
+        "action": "Archiver la version",
+        "confirmTitle": "Archiver la v{{version}} ?",
+        "confirmDescription": "Plus aucune évaluation n’est possible tant qu’aucune autre version n’est publiée. Les scores déjà donnés restent affichés avec leur version.",
+        "phrase": "ARCHIVER"
+      }
     }
   },
   "projects": {

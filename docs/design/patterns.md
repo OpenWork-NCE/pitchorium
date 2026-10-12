@@ -277,6 +277,14 @@ Comment assembler les composants (`components.md`) pour les situations récurren
 - Hors plateforme, KYC : une décision motivée (valider ou refuser, approuver ou refuser) avec ses conséquences dites sous chaque choix ; preuves et pièces par `PrivateDocuments`. Le refus d'une règle (preuve manquante) vient de l'api et s'affiche par son code.
 - Rapprochement : écarts par statut, attendu et constaté côte à côte, lien vers la contribution ; « Noter comme traité » demande une note (rien n'est corrigé automatiquement) ; un rapprochement se lance sur place et son résultat s'annonce.
 
+### Méthodologies d'impact dans la console
+
+- Liste des versions (numéro, nom, statut, critères, libellés manquants) ; un nouveau brouillon part de la version publiée.
+- Brouillon : un onglet par langue active (compteur de libellés manquants), chaque critère avec clé, poids, libellé, description et échelle (clé, valeur de 0 à 100, libellé) ; un champ vide montre en gris le texte du catalogue ; un critère se déplace, s'ajoute ou se retire dans les limites des contrats (`features/impact/lib/limits.ts`) ; barre d'enregistrement collée en bas, « Modifications non enregistrées ».
+- La couverture des libellés vient de l'api (`labelCoverage`) : chaque manque ouvre l'onglet de sa langue ; la publication reste désactivée tant qu'il en reste ou que le brouillon n'est pas enregistré.
+- Aperçu du score : une réponse par critère, score et niveau calculés par l'api sur la version enregistrée.
+- Publier, supprimer un brouillon et archiver se confirment par une phrase saisie ; la publication dit qu'une version publiée ne change plus.
+
 ## Comptes et bannières
 
 Bannières de l'espace membre, de la plus grave à la moins grave, une seule action chacune : compte suspendu (« Voir la décision », vers `/settings/moderation`, ADR 0166), conditions à accepter (vers l'étape de l'onboarding, puis retour à la page), adresse email à vérifier (renvoi sur place), double authentification exigée par un rôle, prérequis manquants, hors ligne. Elles lisent `GET /v1/me` et l'état du réseau ; aucune ne bloque la navigation.
