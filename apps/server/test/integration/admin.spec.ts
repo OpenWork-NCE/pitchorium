@@ -1,13 +1,20 @@
 import { randomUUID } from 'node:crypto';
 import type { NestExpressApplication } from '@nestjs/platform-express';
 import type { TestingModule } from '@nestjs/testing';
-import type { AuditEntry, FailedJob, Post } from '@pitchorium/contracts';
+import type {
+  AuditEntry,
+  ConsoleQueues,
+  FailedJob,
+  FeatureFlagView,
+  MemberFile,
+  Post,
+} from '@pitchorium/contracts';
 import { Queue } from 'bullmq';
 import { v7 } from 'uuid';
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import { createApiTestApp } from './support/api-app';
 import { createFullWorker } from './support/full-worker';
-import { createMember, grantRoleWith2fa, type Member } from './support/members';
+import { browser, createMember, grantRoleWith2fa, type Member, signIn } from './support/members';
 import { handleOf } from './support/messaging';
 
 /** Back office (ADR 0078): audited reads, guarded flags, highlights, failed jobs. */
@@ -41,7 +48,22 @@ describe('admin', () => {
       expect.objectContaining({ userId: amina.userId, email: amina.email, roles: ['member'] }),
     ]);
     const file = await admin.agent.get(`/v1/admin/members/${amina.userId}`).expect(200);
-    expect(file.body).toMatchObject({ userId: amina.userId, suspension: null, kycVerified: false });
+    expect(file.body).toMatchObject({
+      userId: amina.userId,
+      suspension: null,
+      kycVerified: false,
+      decisions: [],
+      contributions: [],
+    });
+    const sessions = (file.body as MemberFile).sessions;
+    expect(sessions.length).toBeGreaterThan(0);
+    expect(Object.keys(sessions[0]!).sort()).toEqual([
+      'createdAt',
+      'expiresAt',
+      'id',
+      'lastActiveAt',
+      'userAgent',
+    ]);
     await moderator.agent.get(`/v1/admin/members/${amina.userId}`).expect(403);
 
     const log = await admin.agent
@@ -82,6 +104,30 @@ describe('admin', () => {
       enabled: boolean;
     }[];
     expect(flags.find((item) => item.key === 'locale.sw')).toMatchObject({ enabled: false });
+    // The guardrails the console shows: the state of a locale, the legal reference.
+    const views = flags as FeatureFlagView[];
+    expect(views.find((item) => item.key === 'locale.sw')?.guard).toMatchObject({
+      kind: 'locale',
+      status: { locale: 'sw', activatable: false },
+    });
+    expect(views.find((item) => item.key === 'funding.equity')?.guard).toEqual({
+      kind: 'legal',
+      legalReferenceRequired: true,
+      onlinePaymentAvailable: false,
+    });
+    const history = await admin.agent
+      .get('/v1/admin/feature-flags/funding.equity/history')
+      .expect(200);
+    expect(history.body.items).toEqual([
+      expect.objectContaining({
+        enabled: false,
+        changedBy: { userId: admin.userId, name: 'Admin' },
+      }),
+      expect.objectContaining({
+        enabled: true,
+        legalReference: 'Avis juridique de test, 2026-10-08',
+      }),
+    ]);
   });
 
   it('features publications, projects and profiles through one interface', async () => {
@@ -115,7 +161,12 @@ describe('admin', () => {
     ).toBe('ADMIN_HIGHLIGHT_TARGET_NOT_FOUND');
     const listed = await moderator.agent.get('/v1/admin/highlights').expect(200);
     expect(listed.body.items).toEqual([
-      expect.objectContaining({ targetType: 'post', targetId: post.id }),
+      expect.objectContaining({
+        targetType: 'post',
+        targetId: post.id,
+        label: 'Appel à projets agriculture',
+        position: 1,
+      }),
     ]);
     await moderator.agent.delete(`/v1/admin/highlights/post/${post.id}`).expect(204);
     expect(
@@ -146,6 +197,11 @@ describe('admin', () => {
         { timeout: 30_000, interval: 300 },
       );
       expect(failed).toMatchObject({ name: 'refund', attemptsMade: 1 });
+      // The payload as the console reads it: the identifier, never the free text.
+      expect(failed.data).toEqual({
+        contributionId: expect.any(String),
+        reason: '[redacted]',
+      });
       const key = randomUUID();
       const retry = () =>
         admin.agent
@@ -169,12 +225,69 @@ describe('admin', () => {
     }
   });
 
+  it('gives each reader the queues their rights open, revokes sessions and exports the log', async () => {
+    const queuesOf = async (member: Member) =>
+      ((await member.agent.get('/v1/admin/queues').expect(200)).body as ConsoleQueues).items.map(
+        (item) => item.queue,
+      );
+    expect(await queuesOf(moderator)).toEqual([
+      'moderation_cases',
+      'appeals',
+      'organization_verifications',
+    ]);
+    expect(await queuesOf(admin)).toEqual([
+      'moderation_cases',
+      'appeals',
+      'organization_verifications',
+      'kyc_reviews',
+      'offline_contributions',
+      'discrepancies',
+      'failed_jobs',
+      'rights_requests',
+    ]);
+    await amina.agent.get('/v1/admin/queues').expect(403);
+
+    const laptop = browser(app);
+    await signIn(laptop, amina.email);
+    await laptop.get('/v1/me').expect(200);
+    await moderator.agent
+      .post(`/v1/admin/members/${amina.userId}/sessions/revocation`)
+      .set('Idempotency-Key', randomUUID())
+      .expect(403);
+    await admin.agent
+      .post(`/v1/admin/members/${amina.userId}/sessions/revocation`)
+      .set('Idempotency-Key', randomUUID())
+      .expect(204);
+    await laptop.get('/v1/me').expect(401);
+
+    const exported = await admin.agent
+      .get('/v1/admin/audit-log/export?action=admin.sessions-revoked')
+      .expect(200);
+    expect(exported.headers['content-type']).toBe('text/csv; charset=utf-8');
+    const lines = exported.text.trim().split('\r\n');
+    expect(lines[0]).toBe(
+      'occurred_at,actor_type,actor_id,action,target_type,target_id,request_id,metadata,id',
+    );
+    expect(lines).toHaveLength(2);
+    expect(lines[1]).toContain(`admin.sessions-revoked,user,${amina.userId}`);
+    await moderator.agent.get('/v1/admin/audit-log/export').expect(403);
+    const audited = await admin.agent
+      .get('/v1/admin/audit-log?action=admin.audit-exported')
+      .expect(200);
+    expect(audited.body.items).toHaveLength(1);
+  });
+
   it('gives the statistics of the platform', async () => {
     const stats = await admin.agent.get('/v1/admin/stats').expect(200);
     expect(stats.body).toMatchObject({
       members: { total: 3 },
       contributions: { succeeded: 0, collectedEurMinor: '0' },
-      pending: { moderationCases: 0, rightsRequests: 0 },
+      pending: {
+        moderationCases: 0,
+        rightsRequests: 0,
+        organizationVerifications: 0,
+        discrepancies: 0,
+      },
     });
   });
 });

@@ -18097,6 +18097,167 @@ export type MemberFileDtoOutputSuspension = {
   endsAt: string | null;
 } | null;
 
+export type MemberFileDtoOutputSessionsItem = {
+  id: string;
+  /** @nullable */
+  userAgent: string | null;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  lastActiveAt: string;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  expiresAt: string;
+};
+
+export type MemberFileDtoOutputDecisionsItemTargetType =
+  (typeof MemberFileDtoOutputDecisionsItemTargetType)[keyof typeof MemberFileDtoOutputDecisionsItemTargetType];
+
+export const MemberFileDtoOutputDecisionsItemTargetType = {
+  profile: 'profile',
+  organization: 'organization',
+  post: 'post',
+  comment: 'comment',
+  project: 'project',
+  project_update: 'project_update',
+  event: 'event',
+  mission: 'mission',
+  message: 'message',
+  media: 'media',
+} as const;
+
+export type MemberFileDtoOutputDecisionsItemKind =
+  (typeof MemberFileDtoOutputDecisionsItemKind)[keyof typeof MemberFileDtoOutputDecisionsItemKind];
+
+export const MemberFileDtoOutputDecisionsItemKind = {
+  dismiss: 'dismiss',
+  hide: 'hide',
+  remove: 'remove',
+  warn: 'warn',
+  suspend: 'suspend',
+  freeze_project: 'freeze_project',
+} as const;
+
+export type MemberFileDtoOutputDecisionsItemReason =
+  | (typeof MemberFileDtoOutputDecisionsItemReason)[keyof typeof MemberFileDtoOutputDecisionsItemReason]
+  | null;
+
+export const MemberFileDtoOutputDecisionsItemReason = {
+  spam: 'spam',
+  harassment: 'harassment',
+  fraud: 'fraud',
+  illegal_content: 'illegal_content',
+  misleading_information: 'misleading_information',
+  intellectual_property: 'intellectual_property',
+  other: 'other',
+} as const;
+
+export type MemberFileDtoOutputDecisionsItemGround =
+  (typeof MemberFileDtoOutputDecisionsItemGround)[keyof typeof MemberFileDtoOutputDecisionsItemGround];
+
+export const MemberFileDtoOutputDecisionsItemGround = {
+  terms: 'terms',
+  law: 'law',
+} as const;
+
+export type MemberFileDtoOutputDecisionsItemAppealStatus =
+  (typeof MemberFileDtoOutputDecisionsItemAppealStatus)[keyof typeof MemberFileDtoOutputDecisionsItemAppealStatus];
+
+export const MemberFileDtoOutputDecisionsItemAppealStatus = {
+  pending: 'pending',
+  upheld: 'upheld',
+  overturned: 'overturned',
+} as const;
+
+export type MemberFileDtoOutputDecisionsItemAppeal = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  decisionId: string;
+  statement: string;
+  status: MemberFileDtoOutputDecisionsItemAppealStatus;
+  /** @nullable */
+  outcomeStatement: string | null;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+  resolvedAt: string | null;
+} | null;
+
+export type MemberFileDtoOutputDecisionsItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  caseId: string;
+  targetType: MemberFileDtoOutputDecisionsItemTargetType;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  targetId: string;
+  kind: MemberFileDtoOutputDecisionsItemKind;
+  reason: MemberFileDtoOutputDecisionsItemReason;
+  statement: string;
+  ground: MemberFileDtoOutputDecisionsItemGround;
+  /** @nullable */
+  groundReference: string | null;
+  automatedDetection: boolean;
+  suspensionEndsAt: string | null;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  decidedAt: string;
+  appealableUntil: string | null;
+  appeal: MemberFileDtoOutputDecisionsItemAppeal;
+  subjectId: string | null;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  decidedBy: string;
+  appealReviewerId: string | null;
+};
+
+export type MemberFileDtoOutputContributionsItemProject = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  slug: string;
+  title: string;
+} | null;
+
+export type MemberFileDtoOutputContributionsItemKind =
+  (typeof MemberFileDtoOutputContributionsItemKind)[keyof typeof MemberFileDtoOutputContributionsItemKind];
+
+export const MemberFileDtoOutputContributionsItemKind = {
+  donation: 'donation',
+  reward_crowdfunding: 'reward_crowdfunding',
+  love_money: 'love_money',
+} as const;
+
+export type MemberFileDtoOutputContributionsItemStatus =
+  (typeof MemberFileDtoOutputContributionsItemStatus)[keyof typeof MemberFileDtoOutputContributionsItemStatus];
+
+export const MemberFileDtoOutputContributionsItemStatus = {
+  pending_payment: 'pending_payment',
+  succeeded: 'succeeded',
+  failed: 'failed',
+  expired: 'expired',
+  canceled: 'canceled',
+  partially_refunded: 'partially_refunded',
+  refunded: 'refunded',
+  disputed: 'disputed',
+  dispute_won: 'dispute_won',
+  dispute_lost: 'dispute_lost',
+} as const;
+
+export type MemberFileDtoOutputContributionsItemAmount = {
+  /** @pattern ^-?(0|[1-9]\d*)$ */
+  amountMinor: string;
+  /** @pattern ^[A-Z]{3}$ */
+  currency: string;
+};
+
+export type MemberFileDtoOutputContributionsItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  id: string;
+  project: MemberFileDtoOutputContributionsItemProject;
+  kind: MemberFileDtoOutputContributionsItemKind;
+  status: MemberFileDtoOutputContributionsItemStatus;
+  amount: MemberFileDtoOutputContributionsItemAmount;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  createdAt: string;
+};
+
 export interface MemberFileDtoOutput {
   /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
   userId: string;
@@ -18114,7 +18275,73 @@ export interface MemberFileDtoOutput {
   legal: MemberFileDtoOutputLegal;
   suspension: MemberFileDtoOutputSuspension;
   kycVerified: boolean;
+  sessions: MemberFileDtoOutputSessionsItem[];
+  decisions: MemberFileDtoOutputDecisionsItem[];
+  contributions: MemberFileDtoOutputContributionsItem[];
 }
+
+export type QueuesDtoOutputItemsItemQueue =
+  (typeof QueuesDtoOutputItemsItemQueue)[keyof typeof QueuesDtoOutputItemsItemQueue];
+
+export const QueuesDtoOutputItemsItemQueue = {
+  moderation_cases: 'moderation_cases',
+  appeals: 'appeals',
+  organization_verifications: 'organization_verifications',
+  kyc_reviews: 'kyc_reviews',
+  offline_contributions: 'offline_contributions',
+  discrepancies: 'discrepancies',
+  failed_jobs: 'failed_jobs',
+  rights_requests: 'rights_requests',
+} as const;
+
+export type QueuesDtoOutputItemsItem = {
+  queue: QueuesDtoOutputItemsItemQueue;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  count: number;
+};
+
+export interface QueuesDtoOutput {
+  items: QueuesDtoOutputItemsItem[];
+}
+
+export type FlagListDtoOutputItemsItemGuard =
+  | {
+      kind: 'locale';
+      status: {
+        locale: 'fr' | 'en' | 'sw' | 'wo' | 'ln';
+        enabled: boolean;
+        catalog: {
+          /**
+           * @minimum -9007199254740991
+           * @maximum 9007199254740991
+           */
+          total: number;
+          /**
+           * @minimum -9007199254740991
+           * @maximum 9007199254740991
+           */
+          missing: number;
+          complete: boolean;
+        };
+        review: {
+          status: string;
+          /** @nullable */
+          reviewedBy: string | null;
+          /** @nullable */
+          reviewedAt: string | null;
+        };
+        activatable: boolean;
+      };
+    }
+  | {
+      kind: 'legal';
+      legalReferenceRequired: true;
+      onlinePaymentAvailable: boolean;
+    }
+  | null;
 
 export type FlagListDtoOutputItemsItem = {
   key: string;
@@ -18124,6 +18351,7 @@ export type FlagListDtoOutputItemsItem = {
   updatedAt: string;
   /** @nullable */
   legalReference: string | null;
+  guard: FlagListDtoOutputItemsItemGuard;
 };
 
 export interface FlagListDtoOutput {
@@ -18135,6 +18363,42 @@ export interface UpdateFlagDto {
   legalReference?: string | null;
 }
 
+export type FlagDtoOutputGuard =
+  | {
+      kind: 'locale';
+      status: {
+        locale: 'fr' | 'en' | 'sw' | 'wo' | 'ln';
+        enabled: boolean;
+        catalog: {
+          /**
+           * @minimum -9007199254740991
+           * @maximum 9007199254740991
+           */
+          total: number;
+          /**
+           * @minimum -9007199254740991
+           * @maximum 9007199254740991
+           */
+          missing: number;
+          complete: boolean;
+        };
+        review: {
+          status: string;
+          /** @nullable */
+          reviewedBy: string | null;
+          /** @nullable */
+          reviewedAt: string | null;
+        };
+        activatable: boolean;
+      };
+    }
+  | {
+      kind: 'legal';
+      legalReferenceRequired: true;
+      onlinePaymentAvailable: boolean;
+    }
+  | null;
+
 export interface FlagDtoOutput {
   key: string;
   enabled: boolean;
@@ -18143,6 +18407,26 @@ export interface FlagDtoOutput {
   updatedAt: string;
   /** @nullable */
   legalReference: string | null;
+  guard: FlagDtoOutputGuard;
+}
+
+export type FlagHistoryDtoOutputItemsItemChangedBy = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
+  userId: string;
+  name: string;
+} | null;
+
+export type FlagHistoryDtoOutputItemsItem = {
+  enabled: boolean;
+  /** @nullable */
+  legalReference: string | null;
+  changedBy: FlagHistoryDtoOutputItemsItemChangedBy;
+  /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
+  changedAt: string;
+};
+
+export interface FlagHistoryDtoOutput {
+  items: FlagHistoryDtoOutputItemsItem[];
 }
 
 export type HighlightListDtoOutputItemsItemTargetType =
@@ -18159,6 +18443,13 @@ export type HighlightListDtoOutputItemsItem = {
   targetId: string;
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
   featuredAt: string;
+  /** @nullable */
+  label: string | null;
+  /**
+   * @maximum 9007199254740991
+   * @exclusiveMinimum 0
+   */
+  position: number;
 };
 
 export interface HighlightListDtoOutput {
@@ -18177,6 +18468,7 @@ export type FailedJobListDtoOutputItemsItem = {
   /** @nullable */
   failedReason: string | null;
   failedAt: string | null;
+  data: unknown;
 };
 
 export interface FailedJobListDtoOutput {
@@ -18253,6 +18545,16 @@ export type StatsDtoOutputPending = {
    * @maximum 9007199254740991
    */
   failedJobs: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  organizationVerifications: number;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  discrepancies: number;
 };
 
 export interface StatsDtoOutput {
@@ -20394,6 +20696,33 @@ export type AdminControllerAuditLogParams = {
    * @maximum 100
    */
   limit?: number;
+  /**
+   * @maxLength 64
+   */
+  actorId?: string;
+  /**
+   * @maxLength 80
+   */
+  action?: string;
+  /**
+   * @maxLength 64
+   */
+  targetType?: string;
+  /**
+   * @maxLength 64
+   */
+  targetId?: string;
+  /**
+   * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$
+   */
+  from?: string;
+  /**
+   * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$
+   */
+  to?: string;
+};
+
+export type AdminControllerAuditExportParams = {
   /**
    * @maxLength 64
    */

@@ -12,4 +12,6 @@ export abstract class AdminRepository {
   /** Latest legal reference recorded for each flag. */
   abstract legalReferences(): Promise<Map<string, string>>;
   abstract flagChangesBy(userId: string): Promise<FlagChangeRecord[]>;
+  /** Changes of a flag, latest first. */
+  abstract flagChanges(key: string, limit: number): Promise<FlagChangeRecord[]>;
 }

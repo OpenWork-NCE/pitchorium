@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { assertLegalReference, localeOfFlag } from './flags';
+import { assertLegalReference, fundingInstrumentOfFlag, localeOfFlag } from './flags';
 
 describe('feature flag guardrails', () => {
   it('needs a legal reference to enable equity or loans, never to disable them', () => {
@@ -17,5 +17,11 @@ describe('feature flag guardrails', () => {
     expect(localeOfFlag('locale.sw')).toBe('sw');
     expect(localeOfFlag('locale.xx')).toBeNull();
     expect(localeOfFlag('funding.equity')).toBeNull();
+  });
+
+  it('names the instrument of the funding flags, whose online payment payments decides', () => {
+    expect(fundingInstrumentOfFlag('funding.equity')).toBe('equity');
+    expect(fundingInstrumentOfFlag('funding.loans')).toBe('loan');
+    expect(fundingInstrumentOfFlag('locale.sw')).toBeNull();
   });
 });

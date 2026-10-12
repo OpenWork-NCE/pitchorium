@@ -14,6 +14,7 @@ import type {
   UseQueryOptions,
 } from '@tanstack/react-query';
 import type {
+  AdminControllerAuditExportParams,
   AdminControllerAuditLogParams,
   AdminControllerFailedJobsParams,
   AdminControllerHighlightsParams,
@@ -21,12 +22,14 @@ import type {
   AuditPageDtoOutput,
   FailedJobListDtoOutput,
   FlagDtoOutput,
+  FlagHistoryDtoOutput,
   FlagListDtoOutput,
   HighlightListDtoOutput,
   JobRetryDtoOutput,
   MemberFileDtoOutput,
   MemberSummaryPageDtoOutput,
   ProblemDetails,
+  QueuesDtoOutput,
   StatsDtoOutput,
   UpdateFlagDto,
 } from '../api.schemas';
@@ -165,6 +168,131 @@ export type AdminControllerMemberQueryResult = NonNullable<
 >;
 
 export type AdminControllerMemberQueryError = ErrorType<ProblemDetails>;
+
+export const getAdminControllerRevokeSessionsUrl = (userId: string) => {
+  return `/v1/admin/members/${userId}/sessions/revocation`;
+};
+
+/**
+ * Action `admin.sessions.revoke` (session cookie).
+ *
+ * Roles: admin, with 2FA.
+ *
+ * Idempotent: the `Idempotency-Key` header is required, a replay returns the stored answer.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Revoke sessions
+ */
+export const adminControllerRevokeSessions = async (
+  userId: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<void> => {
+  return apiFetch<void>(getAdminControllerRevokeSessionsUrl(userId), {
+    ...options,
+    method: 'POST',
+  });
+};
+
+export const getAdminControllerRevokeSessionsMutationKey = () =>
+  ['adminControllerRevokeSessions'] as const;
+
+export const getAdminControllerRevokeSessionsMutationOptions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof adminControllerRevokeSessions>>,
+    TError,
+    AdminControllerRevokeSessionsMutationVariables,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof adminControllerRevokeSessions>>,
+  TError,
+  AdminControllerRevokeSessionsMutationVariables,
+  TContext
+> => {
+  const mutationKey = getAdminControllerRevokeSessionsMutationKey();
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof adminControllerRevokeSessions>>,
+    AdminControllerRevokeSessionsMutationVariables
+  > = (props) => {
+    const { userId } = props ?? {};
+
+    return adminControllerRevokeSessions(userId, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type AdminControllerRevokeSessionsMutationResult = NonNullable<
+  Awaited<ReturnType<typeof adminControllerRevokeSessions>>
+>;
+
+export type AdminControllerRevokeSessionsMutationError = ErrorType<ProblemDetails>;
+
+export type AdminControllerRevokeSessionsMutationVariables = { userId: string };
+
+export const getAdminControllerQueuesUrl = () => {
+  return `/v1/admin/queues`;
+};
+
+/**
+ * Action `admin.console.read` (session cookie).
+ *
+ * Roles: moderator, admin, with 2FA.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Queues
+ */
+export const adminControllerQueues = async (
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<QueuesDtoOutput> => {
+  return apiFetch<QueuesDtoOutput>(getAdminControllerQueuesUrl(), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getAdminControllerQueuesQueryKey = () => {
+  return [`/v1/admin/queues`] as const;
+};
+
+export const getAdminControllerQueuesQueryOptions = <
+  TData = Awaited<ReturnType<typeof adminControllerQueues>>,
+  TError = ErrorType<ProblemDetails>,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<Awaited<ReturnType<typeof adminControllerQueues>>, TError, TData>
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getAdminControllerQueuesQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof adminControllerQueues>>> = ({ signal }) =>
+    adminControllerQueues({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof adminControllerQueues>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type AdminControllerQueuesQueryResult = NonNullable<
+  Awaited<ReturnType<typeof adminControllerQueues>>
+>;
+
+export type AdminControllerQueuesQueryError = ErrorType<ProblemDetails>;
 
 export const getAdminControllerFlagsUrl = () => {
   return `/v1/admin/feature-flags`;
@@ -313,6 +441,68 @@ export type AdminControllerUpdateFlagMutationBody = UpdateFlagDto;
 export type AdminControllerUpdateFlagMutationError = ErrorType<ProblemDetails>;
 
 export type AdminControllerUpdateFlagMutationVariables = { key: string; data: UpdateFlagDto };
+
+export const getAdminControllerFlagHistoryUrl = (key: string) => {
+  return `/v1/admin/feature-flags/${key}/history`;
+};
+
+/**
+ * Action `admin.flags.read` (session cookie).
+ *
+ * Roles: admin, with 2FA.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Flag history
+ */
+export const adminControllerFlagHistory = async (
+  key: string,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<FlagHistoryDtoOutput> => {
+  return apiFetch<FlagHistoryDtoOutput>(getAdminControllerFlagHistoryUrl(key), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getAdminControllerFlagHistoryQueryKey = (key: string) => {
+  return [`/v1/admin/feature-flags/${key}/history`] as const;
+};
+
+export const getAdminControllerFlagHistoryQueryOptions = <
+  TData = Awaited<ReturnType<typeof adminControllerFlagHistory>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  key: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof adminControllerFlagHistory>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getAdminControllerFlagHistoryQueryKey(key);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof adminControllerFlagHistory>>> = ({
+    signal,
+  }) => adminControllerFlagHistory(key, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: key !== null && key !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<Awaited<ReturnType<typeof adminControllerFlagHistory>>, TError, TData> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+};
+
+export type AdminControllerFlagHistoryQueryResult = NonNullable<
+  Awaited<ReturnType<typeof adminControllerFlagHistory>>
+>;
+
+export type AdminControllerFlagHistoryQueryError = ErrorType<ProblemDetails>;
 
 export const getAdminControllerHighlightsUrl = (params?: AdminControllerHighlightsParams) => {
   const normalizedParams = new URLSearchParams();
@@ -801,3 +991,76 @@ export type AdminControllerAuditLogQueryResult = NonNullable<
 >;
 
 export type AdminControllerAuditLogQueryError = ErrorType<ProblemDetails>;
+
+export const getAdminControllerAuditExportUrl = (params?: AdminControllerAuditExportParams) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/v1/admin/audit-log/export?${stringifiedParams}`
+    : `/v1/admin/audit-log/export`;
+};
+
+/**
+ * Action `admin.audit.export` (session cookie).
+ *
+ * Roles: admin, with 2FA.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Audit export
+ */
+export const adminControllerAuditExport = async (
+  params?: AdminControllerAuditExportParams,
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<string> => {
+  return apiFetch<string>(getAdminControllerAuditExportUrl(params), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getAdminControllerAuditExportQueryKey = (
+  params?: AdminControllerAuditExportParams,
+) => {
+  return [`/v1/admin/audit-log/export`, ...(params ? [params] : [])] as const;
+};
+
+export const getAdminControllerAuditExportQueryOptions = <
+  TData = Awaited<ReturnType<typeof adminControllerAuditExport>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: AdminControllerAuditExportParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof adminControllerAuditExport>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getAdminControllerAuditExportQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof adminControllerAuditExport>>> = ({
+    signal,
+  }) => adminControllerAuditExport(params, { signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof adminControllerAuditExport>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type AdminControllerAuditExportQueryResult = NonNullable<
+  Awaited<ReturnType<typeof adminControllerAuditExport>>
+>;
+
+export type AdminControllerAuditExportQueryError = ErrorType<ProblemDetails>;

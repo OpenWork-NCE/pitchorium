@@ -7,6 +7,13 @@ import { DomainError } from '../../../platform/kernel';
  */
 export const LEGALLY_GUARDED_FLAGS: readonly string[] = ['funding.equity', 'funding.loans'];
 
+/** The instrument a funding flag opens, null for any other flag. */
+export function fundingInstrumentOfFlag(key: string): 'equity' | 'loan' | null {
+  if (key === 'funding.equity') return 'equity';
+  if (key === 'funding.loans') return 'loan';
+  return null;
+}
+
 /** The locale of a `locale.<code>` flag, null for any other flag. */
 export function localeOfFlag(key: string): Locale | null {
   const code = key.startsWith('locale.') ? key.slice('locale.'.length) : null;

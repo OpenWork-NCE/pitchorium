@@ -19,6 +19,7 @@ import type {
   UseQueryResult,
 } from '@tanstack/react-query';
 import type {
+  AdminControllerAuditExportParams,
   AdminControllerAuditLogParams,
   AdminControllerFailedJobsParams,
   AdminControllerHighlightsParams,
@@ -30,27 +31,36 @@ import type { ErrorType } from '../../http/fetcher';
 import {
   AdminControllerFeatureMutationVariables,
   AdminControllerRetryMutationVariables,
+  AdminControllerRevokeSessionsMutationVariables,
   AdminControllerUnfeatureMutationVariables,
   AdminControllerUpdateFlagMutationVariables,
+  adminControllerAuditExport,
   adminControllerAuditLog,
   adminControllerFailedJobs,
   adminControllerFeature,
+  adminControllerFlagHistory,
   adminControllerFlags,
   adminControllerHighlights,
   adminControllerMember,
   adminControllerMembers,
+  adminControllerQueues,
   adminControllerRetry,
+  adminControllerRevokeSessions,
   adminControllerStats,
   adminControllerUnfeature,
   adminControllerUpdateFlag,
+  getAdminControllerAuditExportQueryOptions,
   getAdminControllerAuditLogQueryOptions,
   getAdminControllerFailedJobsQueryOptions,
   getAdminControllerFeatureMutationOptions,
+  getAdminControllerFlagHistoryQueryOptions,
   getAdminControllerFlagsQueryOptions,
   getAdminControllerHighlightsQueryOptions,
   getAdminControllerMemberQueryOptions,
   getAdminControllerMembersQueryOptions,
+  getAdminControllerQueuesQueryOptions,
   getAdminControllerRetryMutationOptions,
+  getAdminControllerRevokeSessionsMutationOptions,
   getAdminControllerStatsQueryOptions,
   getAdminControllerUnfeatureMutationOptions,
   getAdminControllerUpdateFlagMutationOptions,
@@ -241,6 +251,112 @@ export function useAdminControllerMember<
   return withQueryKey(query, queryOptions.queryKey);
 }
 
+/**
+ * @summary Revoke sessions
+ */
+export const useAdminControllerRevokeSessions = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof adminControllerRevokeSessions>>,
+      TError,
+      AdminControllerRevokeSessionsMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof adminControllerRevokeSessions>>,
+  TError,
+  AdminControllerRevokeSessionsMutationVariables,
+  TContext
+> => {
+  return useMutation(getAdminControllerRevokeSessionsMutationOptions(options), queryClient);
+};
+
+export function useAdminControllerQueues<
+  TData = Awaited<ReturnType<typeof adminControllerQueues>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof adminControllerQueues>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof adminControllerQueues>>,
+          TError,
+          Awaited<ReturnType<typeof adminControllerQueues>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useAdminControllerQueues<
+  TData = Awaited<ReturnType<typeof adminControllerQueues>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof adminControllerQueues>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof adminControllerQueues>>,
+          TError,
+          Awaited<ReturnType<typeof adminControllerQueues>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useAdminControllerQueues<
+  TData = Awaited<ReturnType<typeof adminControllerQueues>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof adminControllerQueues>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+/**
+ * @summary Queues
+ */
+
+export function useAdminControllerQueues<
+  TData = Awaited<ReturnType<typeof adminControllerQueues>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof adminControllerQueues>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getAdminControllerQueuesQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
 export function useAdminControllerFlags<
   TData = Awaited<ReturnType<typeof adminControllerFlags>>,
   TError = ErrorType<ProblemDetails>,
@@ -346,6 +462,90 @@ export const useAdminControllerUpdateFlag = <
 > => {
   return useMutation(getAdminControllerUpdateFlagMutationOptions(options), queryClient);
 };
+
+export function useAdminControllerFlagHistory<
+  TData = Awaited<ReturnType<typeof adminControllerFlagHistory>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  key: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof adminControllerFlagHistory>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof adminControllerFlagHistory>>,
+          TError,
+          Awaited<ReturnType<typeof adminControllerFlagHistory>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useAdminControllerFlagHistory<
+  TData = Awaited<ReturnType<typeof adminControllerFlagHistory>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  key: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof adminControllerFlagHistory>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof adminControllerFlagHistory>>,
+          TError,
+          Awaited<ReturnType<typeof adminControllerFlagHistory>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useAdminControllerFlagHistory<
+  TData = Awaited<ReturnType<typeof adminControllerFlagHistory>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  key: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof adminControllerFlagHistory>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+/**
+ * @summary Flag history
+ */
+
+export function useAdminControllerFlagHistory<
+  TData = Awaited<ReturnType<typeof adminControllerFlagHistory>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  key: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof adminControllerFlagHistory>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getAdminControllerFlagHistoryQueryOptions(key, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
 
 export function useAdminControllerHighlights<
   TData = Awaited<ReturnType<typeof adminControllerHighlights>>,
@@ -740,6 +940,90 @@ export function useAdminControllerAuditLog<
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
   const queryOptions = getAdminControllerAuditLogQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export function useAdminControllerAuditExport<
+  TData = Awaited<ReturnType<typeof adminControllerAuditExport>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params: undefined | AdminControllerAuditExportParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof adminControllerAuditExport>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof adminControllerAuditExport>>,
+          TError,
+          Awaited<ReturnType<typeof adminControllerAuditExport>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useAdminControllerAuditExport<
+  TData = Awaited<ReturnType<typeof adminControllerAuditExport>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: AdminControllerAuditExportParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof adminControllerAuditExport>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof adminControllerAuditExport>>,
+          TError,
+          Awaited<ReturnType<typeof adminControllerAuditExport>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useAdminControllerAuditExport<
+  TData = Awaited<ReturnType<typeof adminControllerAuditExport>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: AdminControllerAuditExportParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof adminControllerAuditExport>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+/**
+ * @summary Audit export
+ */
+
+export function useAdminControllerAuditExport<
+  TData = Awaited<ReturnType<typeof adminControllerAuditExport>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: AdminControllerAuditExportParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof adminControllerAuditExport>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getAdminControllerAuditExportQueryOptions(params, options);
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>;

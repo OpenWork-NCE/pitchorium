@@ -205,6 +205,8 @@ export const LABELLED_ENUMS: Readonly<Record<string, readonly AnyEnum[]>> = {
  */
 export const TECHNICAL_ENUMS: readonly string[] = [
   'actionSchema',
+  // Queues of the console, labelled by the web namespace (web.admin.queues).
+  'consoleQueueSchema',
   'errorCodeSchema',
   'localeSchema',
   'connectionRequestDirectionSchema',

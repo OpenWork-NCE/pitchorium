@@ -34,4 +34,13 @@ export class DrizzleAdminRepository extends AdminRepository {
       .where(eq(adminFlagChanges.changedBy, userId))
       .orderBy(desc(adminFlagChanges.changedAt));
   }
+
+  flagChanges(key: string, limit: number): Promise<FlagChangeRecord[]> {
+    return this.db
+      .select()
+      .from(adminFlagChanges)
+      .where(eq(adminFlagChanges.key, key))
+      .orderBy(desc(adminFlagChanges.changedAt))
+      .limit(limit);
+  }
 }

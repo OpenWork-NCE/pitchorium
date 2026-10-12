@@ -10,16 +10,22 @@ import {
   Post,
   Put,
   Query,
+  Res,
 } from '@nestjs/common';
-import { ApiNoContentResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiNoContentResponse, ApiOkResponse, ApiProduces, ApiTags } from '@nestjs/swagger';
 import {
   type AuditEntry,
+  auditExportQuerySchema,
   auditPageSchema,
   auditQuerySchema,
+  type ConsoleQueues,
+  consoleQueuesSchema,
   type CursorPage,
   type FailedJob,
   failedJobListSchema,
   failedJobsQuerySchema,
+  type FeatureFlagChange,
+  featureFlagHistorySchema,
   featureFlagKeyParamsSchema,
   featureFlagListSchema,
   featureFlagSchema,
@@ -41,9 +47,11 @@ import {
   platformStatsSchema,
   updateFeatureFlagRequestSchema,
 } from '@pitchorium/contracts';
+import type { Response } from 'express';
 import { createZodDto, ZodSerializerDto } from 'nestjs-zod';
 import { CurrentPrincipal, type Principal, RequireAction } from '../../../platform/http';
 import { Idempotent } from '../../../platform/idempotency';
+import { type Actor, CurrentActor } from '../../access';
 import { BackOfficeService } from '../application/back-office.service';
 
 class MemberSearchQueryDto extends createZodDto(memberSearchQuerySchema) {}
@@ -64,6 +72,9 @@ class JobRetryDto extends createZodDto(jobRetryResultSchema) {}
 class StatsDto extends createZodDto(platformStatsSchema) {}
 class AuditQueryDto extends createZodDto(auditQuerySchema) {}
 class AuditPageDto extends createZodDto(auditPageSchema) {}
+class AuditExportQueryDto extends createZodDto(auditExportQuerySchema) {}
+class FlagHistoryDto extends createZodDto(featureFlagHistorySchema) {}
+class QueuesDto extends createZodDto(consoleQueuesSchema) {}
 
 /**
  * Back office under `/v1/admin` (§13, §14): members, feature flags, editorial highlights,
@@ -99,6 +110,28 @@ export class AdminController {
     return this.backOffice.memberFile(principal.userId, params.userId);
   }
 
+  /** Signs the member out on every device; audited. */
+  @Post('members/:userId/sessions/revocation')
+  @RequireAction('admin.sessions.revoke')
+  @Idempotent()
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiNoContentResponse()
+  revokeSessions(
+    @CurrentPrincipal() principal: Principal,
+    @Param() params: MemberIdParamsDto,
+  ): Promise<void> {
+    return this.backOffice.revokeSessions(principal.userId, params.userId);
+  }
+
+  /** The queues the reader may work in, with what waits in each (ADR 0172). */
+  @Get('queues')
+  @RequireAction('admin.console.read')
+  @ZodSerializerDto(QueuesDto)
+  @ApiOkResponse({ type: QueuesDto.Output })
+  queues(@CurrentActor() actor: Actor): Promise<ConsoleQueues> {
+    return this.backOffice.queues(actor);
+  }
+
   @Get('feature-flags')
   @RequireAction('admin.flags.read')
   @ZodSerializerDto(FlagListDto)
@@ -123,6 +156,15 @@ export class AdminController {
     @Body() body: UpdateFlagDto,
   ): Promise<FeatureFlagView> {
     return this.backOffice.updateFlag(principal.userId, params.key, body);
+  }
+
+  /** The changes of a flag, latest first, with their author and legal reference. */
+  @Get('feature-flags/:key/history')
+  @RequireAction('admin.flags.read')
+  @ZodSerializerDto(FlagHistoryDto)
+  @ApiOkResponse({ type: FlagHistoryDto.Output })
+  async flagHistory(@Param() params: FlagKeyParamsDto): Promise<{ items: FeatureFlagChange[] }> {
+    return { items: await this.backOffice.flagHistory(params.key) };
   }
 
   @Get('highlights')
@@ -200,5 +242,24 @@ export class AdminController {
     @Query() query: AuditQueryDto,
   ): Promise<CursorPage<AuditEntry>> {
     return this.backOffice.auditLog(principal.userId, query);
+  }
+
+  /** The audit log filtered as on its screen, in CSV (RFC 4180, UTF-8); the export is audited. */
+  @Get('audit-log/export')
+  @RequireAction('admin.audit.export')
+  @ApiProduces('text/csv')
+  @ApiOkResponse({ description: 'CSV file', schema: { type: 'string' } })
+  async auditExport(
+    @CurrentPrincipal() principal: Principal,
+    @Query() query: AuditExportQueryDto,
+    @Res() response: Response,
+  ): Promise<void> {
+    const csv = await this.backOffice.auditExport(principal.userId, query);
+    response
+      .status(HttpStatus.OK)
+      .setHeader('Content-Type', 'text/csv; charset=utf-8')
+      .setHeader('Content-Disposition', 'attachment; filename="audit-log.csv"')
+      .setHeader('Cache-Control', 'private, no-store')
+      .send(csv);
   }
 }
