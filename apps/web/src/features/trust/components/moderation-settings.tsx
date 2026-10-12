@@ -123,7 +123,9 @@ function DecisionCard({
           </Heading>
           <Text size="sm" tone="muted">
             {t('decidedOn', { date: date(decision.decidedAt) })} ·{' '}
-            {t('concerns', { target: reference(`reportTargetTypes.${decision.targetType}`) })}
+            <span className="whitespace-nowrap">
+              {t('concerns', { target: reference(`reportTargetTypes.${decision.targetType}`) })}
+            </span>
           </Text>
         </div>
         {appeal ? (
