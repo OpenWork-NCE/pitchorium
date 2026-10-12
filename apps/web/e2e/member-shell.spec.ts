@@ -199,6 +199,8 @@ test.describe('member shell', () => {
       [CLAUDINE, /Activez la double authentification/],
     ] as const) {
       const context = await browser.newContext();
+      // The administrator of the stub, with her second factor off.
+      await context.addCookies([{ name: 'stub-two-factor-off', value: '1', url: API_ORIGIN }]);
       const page = await context.newPage();
       await signIn(page, email);
       await page.goto('/fr/feed');
@@ -404,6 +406,7 @@ test.describe('member shell, its accessibility', () => {
 
 test.describe('administration shell', () => {
   test('guides a moderator without a second factor to turn it on first', async ({ page }) => {
+    await page.context().addCookies([{ name: 'stub-two-factor-off', value: '1', url: API_ORIGIN }]);
     await signIn(page, CLAUDINE);
     await page.goto('/fr/admin/moderation');
     await expect(page).toHaveURL(/\/fr\/settings\/security\?required=two-factor$/);

@@ -6,6 +6,7 @@
 // Test routes (`/__test/*`): emit a realtime event, read the log of the writes, reset the state.
 import { createServer } from 'node:http';
 import { Server } from 'socket.io';
+import { adminRoutes } from './stub-admin.mjs';
 import { contentRoutes } from './stub-content.mjs';
 import { discoveryRoutes } from './stub-discovery.mjs';
 import { messagingRoutes } from './stub-messaging.mjs';
@@ -46,12 +47,14 @@ const ACCOUNTS = {
   'claudine.pierre.louis@demo.pitchorium.test': {
     name: 'Claudine Pierre-Louis',
     handle: 'claudine-pierre-louis',
-    headline: 'Modératrice',
-    roles: ['member', 'moderator'],
+    headline: 'Administratrice',
+    // The administrator of the console, as the seed (ADR 0172); the `stub-two-factor-off=1`
+    // cookie shows a privileged role without its second factor.
+    roles: ['member', 'moderator', 'admin'],
     emailVerified: true,
     legalUpToDate: true,
     suspended: false,
-    twoFactorEnabled: false,
+    twoFactorEnabled: true,
   },
   'koffi.agbodjan@demo.pitchorium.test': {
     name: 'Koffi Agbodjan',
@@ -333,7 +336,14 @@ function countersOf(email) {
   return state.counters.get(email);
 }
 
-function currentUser(email) {
+/** The second factor of an account, off with the `stub-two-factor-off=1` cookie. */
+function twoFactorOf(email, request) {
+  return (
+    ACCOUNTS[email].twoFactorEnabled && !request?.headers.cookie?.includes('stub-two-factor-off=1')
+  );
+}
+
+function currentUser(email, request) {
   const account = ACCOUNTS[email];
   return {
     user: {
@@ -342,7 +352,7 @@ function currentUser(email) {
       emailVerified: account.emailVerified,
       name: account.name,
       image: null,
-      twoFactorEnabled: account.twoFactorEnabled,
+      twoFactorEnabled: twoFactorOf(email, request),
       createdAt: '2026-09-01T09:00:00.000Z',
     },
     preferences: { locale: 'fr', timeZone: 'Africa/Dakar' },
@@ -475,7 +485,9 @@ const routes = {
   }),
   'GET /v1/me': (request) => {
     const email = sessionOf(request);
-    return email ? { status: 200, body: currentUser(email) } : problem(401, 'UNAUTHENTICATED');
+    return email
+      ? { status: 200, body: currentUser(email, request) }
+      : problem(401, 'UNAUTHENTICATED');
   },
   'GET /v1/me/counters': (request) => {
     const email = sessionOf(request);
@@ -596,7 +608,7 @@ function prerequisites(request, action) {
   if (!account.emailVerified && ['content.post.create', 'project.create'].includes(action)) {
     missing.push('email_verified');
   }
-  if (CONSOLE_ACTIONS.includes(action) && !account.twoFactorEnabled) missing.push('two_factor');
+  if (CONSOLE_ACTIONS.includes(action) && !twoFactorOf(email, request)) missing.push('two_factor');
   if (action === 'payment.collection.open') missing.push(...collectionMissing(request));
   return {
     status: 200,
@@ -643,6 +655,7 @@ const server = createServer(async (request, response) => {
   const handler = routes[`${request.method} ${path}`];
   const url = new URL(request.url ?? '/', `http://localhost:${port}`);
   const project =
+    (await admin(request, path, url)) ??
     (await trust(request, path)) ??
     (await discovery(request, path, url)) ??
     (await messaging(request, path, url)) ??
@@ -686,6 +699,15 @@ const messaging = messagingRoutes({
 const trust = trustRoutes({
   origin: `http://localhost:${port}`,
   accounts: ACCOUNTS,
+  sessionOf,
+  problem,
+  readJson,
+  state: () => state,
+});
+
+const admin = adminRoutes({
+  accounts: ACCOUNTS,
+  twoFactorOf,
   sessionOf,
   problem,
   readJson,
