@@ -263,14 +263,21 @@ export const CLIENT_MESSAGES = {
     'web.unsubscribe',
     'reference.notificationTypes',
   ],
+  /**
+   * The console (ADR 0172): its texts, the codes of the api in words (statuses, reasons, kinds),
+   * and the decision card of a member for the preview of a statement of reasons.
+   */
   admin: [
     ...DOCUMENT_MESSAGES,
     ...DESIGN_SYSTEM_MESSAGES,
+    ...MENTIONS,
     'web.nav',
     'web.admin',
     'web.access',
+    'web.shortcuts',
+    'web.trust.moderation',
     'errors',
-    'reference.prerequisiteElements',
+    'reference',
   ],
   dev: [...DOCUMENT_MESSAGES, 'web.health'],
   /**

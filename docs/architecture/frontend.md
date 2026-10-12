@@ -148,6 +148,11 @@ sequenceDiagram
 - Compte suspendu (ADR 0166) : `SuspendedState` à la place du fil (`trust.suspended` de `GET /v1/me`), liste des signalements absente de « Modération » (refusée par l'api), `useAccess` sur chaque point d'écriture, raison `ACCESS_ACCOUNT_SUSPENDED`.
 - Parcours : `e2e/trust.spec.ts` (api simulée, `stub-trust.mjs`, horloge commune, ADR 0171), `e2e-live/trust.spec.ts` (vraie api ; la base avance la fin d'une campagne et d'un délai de grâce, `e2e-live/database.ts`) ; captures de revue `e2e/review/trust.review.ts`.
 
+## Console d'administration (PROMPT FRONT 9A)
+
+- Socle (ADR 0172, feature `admin`) : le layout de `(admin)` vérifie le rôle et le deuxième facteur (`GET /v1/me/prerequisites/trust.moderation.read`), puis lit les capacités du lecteur (`GET /v1/admin/capabilities`) que `ConsoleAccessProvider` donne aux écrans (`useConsoleAction`, `consoleActionState`) ; actions sensibles par `useSensitiveAction` (avis de reconnexion, `?resume=`) ; mention d'audit par `AdminPage audited` ; recherche dans l'adresse (`SearchField`, nuqs, rendu serveur à chaque requête).
+- Pages : `/admin` (files `GET /v1/admin/queues`, chiffres `GET /v1/admin/stats` pour un administrateur), `/admin/members` et `/admin/members/{userId}`.
+
 ## Fournisseurs
 
 Chaque groupe ne charge que ce qu'il utilise (ADR 0094) :

@@ -1,4 +1,7 @@
-import { accessControllerPrerequisites } from '@pitchorium/api-client';
+import {
+  accessControllerCapabilities,
+  accessControllerPrerequisites,
+} from '@pitchorium/api-client';
 import { notFound, redirect } from 'next/navigation';
 import { AdminShell } from '@/components/layout/admin/admin-shell';
 import * as routes from '@/config/paths';
@@ -22,5 +25,7 @@ export default async function AdminLayout({ children, params }: LayoutProps<'/[l
   if (access.missing.includes('two_factor')) {
     redirect(`/${locale}${routes.settingsSecurity}?required=two-factor`);
   }
-  return <AdminShell>{children}</AdminShell>;
+  // What the reader may do: every screen hides or disables its actions from it (ADR 0172).
+  const capabilities = await accessControllerCapabilities({ cache: 'no-store' });
+  return <AdminShell capabilities={capabilities}>{children}</AdminShell>;
 }

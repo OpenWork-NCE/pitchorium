@@ -144,8 +144,27 @@ export const dashboard = '/dashboard';
 export const timeLog = '/dashboard/time';
 // Contextual actions of the header, opened by their section (PROMPT FRONT 3 and 4).
 export const compose = '/feed?compose=1';
-// Administration (ADR 0078): `/admin/<domain>`.
+// Administration (ADR 0078, ADR 0172): `/admin/<domain>`, the screens of the console.
 export const admin = '/admin';
 export const adminModeration = '/admin/moderation';
+export const adminCase = (id: string) => `/admin/moderation/cases/${encodeURIComponent(id)}`;
+export const adminAppeals = '/admin/moderation/appeals';
+export const adminTransparency = '/admin/moderation/transparency';
 export const adminMembers = '/admin/members';
+export const adminMember = (userId: string) => `/admin/members/${encodeURIComponent(userId)}`;
+export const adminOrganizations = '/admin/organizations';
+export const adminVerification = (id: string) => `/admin/organizations/${encodeURIComponent(id)}`;
+export const adminContributions = '/admin/payments/contributions';
+export const adminContribution = (id: string) =>
+  `/admin/payments/contributions/${encodeURIComponent(id)}`;
+export const adminOffline = '/admin/payments/offline';
+export const adminKyc = '/admin/payments/kyc';
+export const adminKycSubmission = (id: string) => `/admin/payments/kyc/${encodeURIComponent(id)}`;
+export const adminDiscrepancies = '/admin/payments/discrepancies';
+export const adminMethodologies = '/admin/impact';
+export const adminMethodology = (id: string) => `/admin/impact/${encodeURIComponent(id)}`;
 export const adminFlags = '/admin/flags';
+export const adminHighlights = '/admin/highlights';
+export const adminJobs = '/admin/jobs';
+export const adminRights = '/admin/privacy';
+export const adminAudit = '/admin/audit';

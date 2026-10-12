@@ -249,6 +249,15 @@ Comment assembler les composants (`components.md`) pour les situations récurren
 - Pendant la lecture des prérequis, une action en `disable` reste active (l'api tranchera), une action en `hide` reste cachée.
 - Un refus de l'api malgré une indication favorable s'affiche comme toute erreur : son code traduit, et le lien vers ce qu'il faut compléter.
 
+## Console d'administration (§13, ADR 0078, ADR 0172)
+
+- Coquille dense (`data-density="compact"`) : navigation latérale par groupes (pilotage, confiance, paiements, contenus, plateforme, conformité), une feuille sur un téléphone, fil d'Ariane, rôle du lecteur au bandeau. Seuls les écrans que les capacités de l'api ouvrent au lecteur paraissent, dans la navigation comme dans les raccourcis (`g d`, `g m`, `g u`... ; `/` pour la recherche d'une liste ; `?` les liste).
+- Une action que le rôle ne donne jamais est masquée ; une action que le lecteur peut débloquer est désactivée avec sa raison ; une action sensible dit avant l'envoi qu'une connexion récente est demandée, puis, si l'api la demande, l'avis « Reconnectez-vous pour continuer » mène à la connexion, qui revient sur la page avec l'action rouverte.
+- Une action destructrice passe par une confirmation ; une action irréversible demande de saisir une phrase (Confirmation destructrice).
+- Une page qui montre des données personnelles porte, sous son titre, la mention permanente « votre consultation est inscrite au journal d'audit ».
+- Tableau de bord : les files du lecteur en cartes-liens (ce qui attend, chiffre en tabulaires, aucun compteur décoratif : « Rien en attente » à zéro), puis pour un administrateur les chiffres de la plateforme (membres, actifs sur 30 jours, collecté en équivalent euros, contributions payées) et les projets par statut en graphique en barres (`BarChart`).
+- Membres : recherche dans l'adresse (`?q=`, deux caractères au moins) ; fiche en cartes (compte, rôles, situation et décisions, sessions, contributions). Attribuer un rôle explique la double authentification qu'il exige et la fermeture des sessions ; « Déconnecter partout » se confirme.
+
 ## Comptes et bannières
 
 Bannières de l'espace membre, de la plus grave à la moins grave, une seule action chacune : compte suspendu (« Voir la décision », vers `/settings/moderation`, ADR 0166), conditions à accepter (vers l'étape de l'onboarding, puis retour à la page), adresse email à vérifier (renvoi sur place), double authentification exigée par un rôle, prérequis manquants, hors ligne. Elles lisent `GET /v1/me` et l'état du réseau ; aucune ne bloque la navigation.
