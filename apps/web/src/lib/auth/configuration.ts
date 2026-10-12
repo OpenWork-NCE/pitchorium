@@ -4,7 +4,7 @@ import {
   accountControllerAuthConfiguration,
 } from '@pitchorium/api-client';
 import { cache } from 'react';
-import { configureServerApi } from '@/lib/api/server';
+import { configureServerApi, sharedRead } from '@/lib/api/server';
 
 /**
  * What the sign-in screens show before any session (`GET /v1/auth-configuration`, ADR 0103):
@@ -13,5 +13,5 @@ import { configureServerApi } from '@/lib/api/server';
  */
 export const getAuthConfiguration = cache(async (): Promise<AuthConfigurationDtoOutput> => {
   configureServerApi();
-  return accountControllerAuthConfiguration({ next: { revalidate: 60 } });
+  return accountControllerAuthConfiguration(sharedRead(60));
 });

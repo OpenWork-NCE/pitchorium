@@ -5,7 +5,7 @@ import * as routes from '@/config/paths';
 import { alternatesFor } from '@/config/seo';
 import { TransparencyPage } from '@/features/marketing';
 import { asLocale } from '@/i18n/routing';
-import { configureServerApi } from '@/lib/api/server';
+import { configureServerApi, sharedRead } from '@/lib/api/server';
 import { getActiveLocales } from '@/lib/i18n/active-locales';
 
 export async function generateMetadata({
@@ -28,6 +28,6 @@ export async function generateMetadata({
 export default async function Page({ params }: PageProps<'/[locale]/transparency'>) {
   setRequestLocale(asLocale((await params).locale));
   configureServerApi();
-  const coverage = await coverageControllerRead({ next: { revalidate: 3600 } }).catch(() => null);
+  const coverage = await coverageControllerRead(sharedRead(3600)).catch(() => null);
   return <TransparencyPage coverage={coverage} />;
 }

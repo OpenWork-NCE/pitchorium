@@ -9,7 +9,7 @@ import { alternatesFor } from '@/config/seo';
 import { isLegalDocument, LegalPage, loadLegalDocument } from '@/features/marketing';
 import { Link } from '@/i18n/navigation';
 import { asLocale } from '@/i18n/routing';
-import { configureServerApi } from '@/lib/api/server';
+import { configureServerApi, sharedRead } from '@/lib/api/server';
 import { getActiveLocales } from '@/lib/i18n/active-locales';
 
 type Props = PageProps<'/[locale]/legal/[document]'>;
@@ -39,7 +39,7 @@ export default async function Page({ params }: Props) {
   configureServerApi();
   const [markdown, versions, t] = await Promise.all([
     loadLegalDocument(document, locale),
-    accountControllerCurrent({ next: { revalidate: 300 } }).catch(() => null),
+    accountControllerCurrent(sharedRead(300)).catch(() => null),
     getTranslations('web.trust.notice'),
   ]);
   // « Signalement et point de contact »: the notice of illegal content without an account (§13).

@@ -7,7 +7,7 @@ import { alternatesFor, localizedUrl } from '@/config/seo';
 import { SITE_NAME, siteConfig } from '@/config/site';
 import { HomePage, homeProjects } from '@/features/marketing';
 import { asLocale } from '@/i18n/routing';
-import { configureServerApi } from '@/lib/api/server';
+import { configureServerApi, sharedRead } from '@/lib/api/server';
 import { getActiveLocales } from '@/lib/i18n/active-locales';
 import { jsonLd } from '@/lib/seo/json-ld';
 
@@ -30,10 +30,7 @@ export async function generateMetadata({ params }: PageProps<'/[locale]'>): Prom
 async function selectedProjects() {
   configureServerApi();
   const read = (query: { featured?: 'true'; status?: 'funding' }) =>
-    projectsControllerPublicShowcase(
-      { limit: FEATURED, ...query },
-      { next: { revalidate: 300 } },
-    ).then(
+    projectsControllerPublicShowcase({ limit: FEATURED, ...query }, sharedRead(300)).then(
       (page) => page.items,
       () => [],
     );

@@ -6,10 +6,13 @@ import {
   projectsControllerPublicShowcase,
 } from '@pitchorium/api-client';
 import * as routes from '@/config/paths';
-import { configureServerApi } from '@/lib/api/server';
+import { configureServerApi, sharedRead } from '@/lib/api/server';
 
 /** Pages read per source: 100 items each, 2 000 addresses at most per kind. */
 const MAX_PAGES = 20;
+
+/** A crawler reads the sitemap often: each page of a public list is kept an hour (sharedRead). */
+const LIST = sharedRead(3600);
 
 /** Every item of a paginated public list, page after page; what could be read on a failure. */
 async function every<T>(
@@ -39,28 +42,28 @@ export const PUBLIC_SITEMAP_SOURCES: (() => Promise<string[]>)[] = [
   async () => {
     configureServerApi();
     const projects = await every((cursor) =>
-      projectsControllerPublicShowcase({ limit: 100, ...(cursor ? { cursor } : {}) }),
+      projectsControllerPublicShowcase({ limit: 100, ...(cursor ? { cursor } : {}) }, LIST),
     );
     return projects.map((project) => routes.project(project.slug));
   },
   async () => {
     configureServerApi();
     const events = await every((cursor) =>
-      eventsControllerPublicList({ limit: 100, ...(cursor ? { cursor } : {}) }),
+      eventsControllerPublicList({ limit: 100, ...(cursor ? { cursor } : {}) }, LIST),
     );
     return events.map((event) => routes.event(event.slug));
   },
   async () => {
     configureServerApi();
     const profiles = await every((cursor) =>
-      profilesControllerPublicPages({ limit: 100, ...(cursor ? { cursor } : {}) }),
+      profilesControllerPublicPages({ limit: 100, ...(cursor ? { cursor } : {}) }, LIST),
     );
     return profiles.map((profile) => routes.member(profile.handle));
   },
   async () => {
     configureServerApi();
     const organizations = await every((cursor) =>
-      organizationsControllerPublicPages({ limit: 100, ...(cursor ? { cursor } : {}) }),
+      organizationsControllerPublicPages({ limit: 100, ...(cursor ? { cursor } : {}) }, LIST),
     );
     return organizations.map((organization) => routes.organization(organization.slug));
   },

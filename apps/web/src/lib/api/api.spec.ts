@@ -119,4 +119,17 @@ describe('server calls', () => {
     expect(headers.get('accept-language')).toBe('fr-FR,fr;q=0.9');
     expect(headers.get('user-agent')).toBeNull();
   });
+
+  it('forward nothing of the reader for a shared read, cached by Next.js', async () => {
+    const { configureServerApi, sharedRead } = await import('./server');
+    const fetchMock = respond(200, { defaultLocale: 'fr', locales: ['fr'] });
+    vi.stubGlobal('fetch', fetchMock);
+    configureServerApi();
+    await accountControllerActiveLocales(sharedRead(300));
+    const [, init] = fetchMock.mock.calls[0] ?? [];
+    const headers = new Headers(init?.headers);
+    expect(headers.get('cookie')).toBeNull();
+    expect(headers.get('accept-language')).toBeNull();
+    expect((init as { next?: { revalidate?: number } }).next?.revalidate).toBe(300);
+  });
 });

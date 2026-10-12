@@ -5,7 +5,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import * as routes from '@/config/paths';
 import { ProfileOnboardingStep } from '@/features/identity';
 import { asLocale } from '@/i18n/routing';
-import { configureServerApi } from '@/lib/api/server';
+import { configureServerApi, sharedRead } from '@/lib/api/server';
 import { getCurrentMember } from '@/lib/auth/session';
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -21,7 +21,7 @@ export default async function Page({ params }: PageProps<'/[locale]/onboarding/p
   if (!member?.legal.upToDate) redirect(`/${locale}${routes.onboardingTerms}`);
   configureServerApi();
   const [reference, own, t] = await Promise.all([
-    profilesControllerReferenceData({ next: { revalidate: 3600 } }),
+    profilesControllerReferenceData(sharedRead(3600)),
     meControllerProfile({ cache: 'no-store' }),
     getTranslations('reference'),
   ]);
