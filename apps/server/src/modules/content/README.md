@@ -65,7 +65,7 @@ Chaque publication vue par un autre membre ajoute le lecteur à un HyperLogLog R
 
 ## Façade publique (`index.ts`)
 
-`ContentFacade` : `setPostModerationStatus`, `setCommentModerationStatus`, `registerProjectLinkValidator`, `registerProjectUpdatesFeedSource`, `registerEventsFeedSource`, `registerFeedSuggestionSource`, `projectPosts`, `visiblePosts` (publications telles qu'un lecteur les voit, pour une publication partagée en message), `postAuthorId`, `commentAuthorId`, `commentPostId` ; interfaces `ProjectLinkValidator`, `ProjectUpdatesFeedSource`, `EventsFeedSource`, `FeedSuggestionSource`, type `FeedEntry` ; `LanguageRedetectionService` (commande `content:redetect-languages`) ; classes d'événements.
+`ContentFacade` : `setPostModerationStatus`, `setCommentModerationStatus`, `registerProjectLinkValidator`, `registerProjectUpdatesFeedSource`, `registerEventsFeedSource`, `registerFeedSuggestionSource`, `projectPosts`, `visiblePosts` (publications telles qu'un lecteur les voit, pour une publication partagée en message), `postAuthorId`, `commentAuthorId`, `commentPostId`, `moderationExcerpt` (texte, publication et statut de modération d'une publication ou d'un commentaire signalés, quelle que soit leur audience, pour la modération) ; interfaces `ProjectLinkValidator`, `ProjectUpdatesFeedSource`, `EventsFeedSource`, `FeedSuggestionSource`, type `FeedEntry` ; `LanguageRedetectionService` (commande `content:redetect-languages`) ; classes d'événements.
 
 ## Événements émis
 

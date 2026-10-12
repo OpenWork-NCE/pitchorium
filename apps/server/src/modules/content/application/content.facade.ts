@@ -98,6 +98,26 @@ export class ContentFacade implements OnModuleInit {
     return comment && !comment.deletedAt ? comment.authorId : null;
   }
 
+  /**
+   * What a moderator reads of a reported publication or comment, whatever its audience and its
+   * moderation status (trust module): its text, its publication for a comment, its status.
+   */
+  async moderationExcerpt(
+    type: 'post' | 'comment',
+    id: string,
+  ): Promise<{ text: string | null; postId: string; moderationStatus: string } | null> {
+    if (type === 'post') {
+      const post = await this.content.findPost(id);
+      return post && !post.deletedAt
+        ? { text: post.text, postId: post.id, moderationStatus: post.moderationStatus }
+        : null;
+    }
+    const comment = await this.content.findComment(id);
+    return comment && !comment.deletedAt
+      ? { text: comment.text, postId: comment.postId, moderationStatus: comment.moderationStatus }
+      : null;
+  }
+
   /** Publication of a live comment, null when unknown or deleted (reactions to a comment). */
   async commentPostId(commentId: string): Promise<string | null> {
     const comment = await this.content.findComment(commentId);
