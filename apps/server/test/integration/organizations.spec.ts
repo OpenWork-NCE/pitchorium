@@ -392,6 +392,13 @@ describe('organizations', () => {
       .post(`/v1/admin/organizations/verification-requests/${first.id}/decision`)
       .send({ decision: 'rejected', reason: 'Récépissé illisible.', criteriaMet: [] })
       .expect(200);
+    await reviewer.agent
+      .get(`/v1/admin/organizations/verification-requests/${first.id}`)
+      .expect(200);
+    const [viewed] = await query<{ actor_id: string }>(
+      `SELECT actor_id FROM platform.audit_log WHERE action = 'organizations.verification-viewed'`,
+    );
+    expect(viewed?.actor_id).toBe(reviewer.userId);
     expect(decided.body).toMatchObject({
       status: 'rejected',
       decisionReason: 'Récépissé illisible.',

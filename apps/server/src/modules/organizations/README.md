@@ -24,7 +24,7 @@ Pages organisation (cahier des charges §5, §10.7, §13) : fondations, entrepri
 - Signal automatique non décisif : un membre a un email vérifié sur le domaine du site web (`memberEmailOnWebsiteDomain`).
 - Revue par un `moderator` ou un `admin` avec double authentification : file (chaque demande nomme son demandeur, `requester`, par le nom de son compte), décision motivée (`approved` ou `rejected`) avec les critères cochés parmi `ORGANIZATIONS_VERIFICATION_CRITERIA` (liste vide par défaut, critères non définis par le cahier des charges), révocation motivée.
 - Pièces justificatives lisibles (URL présignée du module media) par les `owner` et `admin` de l'organisation et par les modérateurs et administrateurs avec double authentification.
-- Journal d'audit : `organizations.verification-requested`, `-approved`, `-rejected`, `-revoked` (acteur, motif, critères).
+- Journal d'audit : `organizations.verification-requested`, `-approved`, `-rejected`, `-revoked` (acteur, motif, critères), et la lecture d'une demande par un relecteur (`organizations.verification-viewed`) : elle montre la déclaration, les pièces et le demandeur.
 
 ## Visibilité
 

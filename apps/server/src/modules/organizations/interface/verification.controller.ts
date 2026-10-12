@@ -74,8 +74,11 @@ export class VerificationController {
   @RequireAction('organization.verification.review')
   @ZodSerializerDto(VerificationRequestDto)
   @ApiOkResponse({ type: VerificationRequestDto.Output })
-  get(@Param() params: VerificationRequestParamsDto): Promise<VerificationRequest> {
-    return this.verification.get(params.requestId);
+  get(
+    @CurrentPrincipal() principal: Principal,
+    @Param() params: VerificationRequestParamsDto,
+  ): Promise<VerificationRequest> {
+    return this.verification.review(principal.userId, params.requestId);
   }
 
   @Post('admin/organizations/verification-requests/:requestId/decision')

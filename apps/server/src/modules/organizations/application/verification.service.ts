@@ -145,6 +145,21 @@ export class VerificationService {
     };
   }
 
+  /**
+   * A request as a reviewer reads it, its documents and its owner: the reading of personal
+   * data by a moderator is audited (`organizations.verification-viewed`).
+   */
+  async review(actorId: string, requestId: string): Promise<VerificationRequest> {
+    const request = await this.get(requestId);
+    await this.audit.record({
+      actor: { type: 'user', id: actorId },
+      action: 'organizations.verification-viewed',
+      target: { type: 'organization', id: request.organization.id },
+      metadata: { requestId },
+    });
+    return request;
+  }
+
   async get(requestId: string): Promise<VerificationRequest> {
     const request = await this.organizations.findVerificationRequest(requestId);
     if (!request) throw requestNotFound();
