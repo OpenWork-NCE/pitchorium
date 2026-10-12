@@ -455,6 +455,30 @@
   }
 }
 
+/*
+ * Cross fade of a text and its machine translation (Translatable): both share one cell, the height
+ * of the longer, and the hidden one leaves the reading order once faded. Immediate with less motion
+ * (the global rule below).
+ */
+@layer components {
+  .cross-fade {
+    display: grid;
+  }
+
+  .cross-fade > * {
+    grid-area: 1 / 1;
+    transition: opacity var(--duration-micro) var(--ease-enter);
+  }
+
+  .cross-fade > :not([data-active]) {
+    visibility: hidden;
+    opacity: 0;
+    transition:
+      opacity var(--duration-micro) var(--ease-enter),
+      visibility 0s linear var(--duration-micro);
+  }
+}
+
 /* Counter of a navigation item: the new value rolls in from below (CountBadge). */
 @media (prefers-reduced-motion: no-preference) {
   .count-roll {
