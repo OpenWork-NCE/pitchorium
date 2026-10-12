@@ -30,6 +30,67 @@ const COMPOSITIONS = [
 /** Compositions that show a loading state on purpose. */
 const LOADING_STATES = new Set(['member-shell-loading']);
 
+/** How a story ended, read by the review (`window.__reviewStory`). */
+type StoryOutcome = { error?: string; accessibility: string[] };
+
+/**
+ * Records how the story ended in `window.__reviewStory`, from the channel of the preview listened
+ * to from its creation. A render or a play function that throws still ends in the phase
+ * `finished`, and its status stays `success`: only its own event tells it. The violations of the
+ * accessibility checks are set apart: those of the stories are gated by `test:stories` (at
+ * 1280x800), the review reports the ones of its other sizes.
+ */
+function listenToStoryFinished() {
+  type Payload = {
+    status?: string;
+    message?: string;
+    title?: string;
+    reporters?: { type: string; status: string; result: unknown }[];
+  };
+  type Channel = { on: (event: string, listener: (payload?: Payload) => void) => void };
+  const target = window as unknown as { __reviewStory?: StoryOutcome };
+  let error: string | undefined;
+  let channel: Channel | undefined;
+  Object.defineProperty(window, '__STORYBOOK_ADDONS_CHANNEL__', {
+    configurable: true,
+    get: () => channel,
+    set: (value: Channel) => {
+      channel = value;
+      for (const event of ['playFunctionThrewException', 'storyThrewException', 'storyErrored']) {
+        value.on(event, (payload) => {
+          error ??= `${event}: ${(payload?.message ?? payload?.title ?? '').split('\n')[0]}`;
+        });
+      }
+      value.on('storyFinished', (payload) => {
+        const failed = (payload?.reporters ?? []).filter((report) => report.status === 'failed');
+        const accessibility = failed
+          .filter((report) => report.type === 'a11y')
+          .flatMap(
+            (report) =>
+              (
+                report.result as {
+                  violations?: { id: string; nodes: { target: unknown[] }[] }[];
+                }
+              ).violations ?? [],
+          )
+          .map(
+            (violation) =>
+              `${violation.id}: ${JSON.stringify(violation.nodes.map((node) => node.target))}`,
+          );
+        const other = failed.find((report) => report.type !== 'a11y');
+        // An unhandled error of the story: the status says so, no report does.
+        const unhandled = payload?.status === 'error' && failed.length === 0;
+        error ??= other
+          ? `${other.type}: ${JSON.stringify(other.result).slice(0, 500)}`
+          : unhandled
+            ? 'an unhandled error'
+            : undefined;
+        target.__reviewStory = { ...(error ? { error } : {}), accessibility };
+      });
+    },
+  });
+}
+
 const VIEWPORTS = [
   { name: 'desktop', width: 1280, height: 800 },
   { name: 'mobile', width: 390, height: 844 },
@@ -46,16 +107,21 @@ for (const id of COMPOSITIONS) {
           locale: 'fr-FR',
         });
         const page = await context.newPage();
+        await page.addInitScript(listenToStoryFinished);
         await page.goto(
           `/iframe.html?id=compositions--${id}&viewMode=story&globals=theme:${theme}`,
         );
         // The story renders, then its play function (the form fills itself and gets the errors).
-        await page.waitForFunction(() => {
-          const preview = (
-            window as unknown as { __STORYBOOK_PREVIEW__?: { currentRender?: { phase?: string } } }
-          ).__STORYBOOK_PREVIEW__;
-          return ['completed', 'finished', 'played'].includes(preview?.currentRender?.phase ?? '');
-        });
+        // A page half played is never a reference.
+        const outcome = (await (
+          await page.waitForFunction(
+            () => (window as unknown as { __reviewStory?: StoryOutcome }).__reviewStory,
+          )
+        ).jsonValue()) as StoryOutcome;
+        expect(outcome.error, 'the story and its play function succeed').toBeUndefined();
+        for (const violation of outcome.accessibility) {
+          test.info().annotations.push({ type: 'accessibility', description: violation });
+        }
         await page.evaluate(() => document.fonts.ready);
         await expect(page.locator('#storybook-root')).not.toBeEmpty();
         // The deferred parts (lazy components, their placeholders) are loaded first.
