@@ -18,7 +18,7 @@ Le `HEALTHCHECK` de l'image interroge `GET /v1/health/live` de l'api ; le worker
 
 ## Versions
 
-release-please (`.github/workflows/release-please.yaml`, `release-please-config.json`) tient une pull request de version à partir des Conventional Commits : version sémantique (avant 1.0, une fonctionnalité incrémente la version mineure), `CHANGELOG.md`. Rien n'est publié tant qu'un mainteneur ne la fusionne pas ; la fusion crée l'étiquette `v<version>` et la release GitHub. La version candidate `v1.0.0-rc.1` est préparée (`release-as` et `prerelease` de `release-please-config.json`) et non publiée ; après sa validation, `release-as` passe à `1.0.0`. Le web suit la même version, déployé par `docs/operations/deployment-web.md`.
+release-please (`.github/workflows/release-please.yaml`, `release-please-config.json`) tient une pull request de version à partir des Conventional Commits : version sémantique (avant 1.0, une fonctionnalité incrémente la version mineure), `CHANGELOG.md` (écrit par release-please, hors de Prettier). Rien n'est publié tant qu'un mainteneur ne la fusionne pas ; la fusion crée l'étiquette `v<version>` et la release GitHub. La version candidate `v1.0.0-rc.1` est préparée (`release-as` et `prerelease` de `release-please-config.json`) et non publiée ; après sa validation, `release-as` passe à `1.0.0`. Le web suit la même version, déployé par `docs/operations/deployment-web.md`.
 
 ## Ordre d'une mise en production
 

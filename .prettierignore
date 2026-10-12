@@ -16,3 +16,5 @@ apps/web/test-results
 apps/web/.lighthouseci
 apps/web/src/components/brand/marks.generated.tsx
 apps/web/public/brand
+# Written by release-please from the Conventional Commits.
+CHANGELOG.md
