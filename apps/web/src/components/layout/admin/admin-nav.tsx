@@ -3,11 +3,15 @@
 import type { Action } from '@pitchorium/contracts';
 import {
   BadgeCheck,
+  CreditCard,
   Flag,
   Gauge,
   Gavel,
+  HandCoins,
+  IdCard,
   LayoutDashboard,
   type LucideIcon,
+  Scale,
   ShieldAlert,
   Users,
 } from 'lucide-react';
@@ -76,6 +80,30 @@ export const ADMIN_NAV: readonly { group: Group; items: readonly Item[] }[] = [
         action: 'organization.verification.review',
       },
       { key: 'members', href: routes.adminMembers, icon: Users, action: 'admin.members.read' },
+    ],
+  },
+  {
+    group: 'payments',
+    items: [
+      {
+        key: 'contributions',
+        href: routes.adminContributions,
+        icon: CreditCard,
+        action: 'payment.contributions.read',
+      },
+      {
+        key: 'offline',
+        href: routes.adminOffline,
+        icon: HandCoins,
+        action: 'payment.offline.validate',
+      },
+      { key: 'kyc', href: routes.adminKyc, icon: IdCard, action: 'payment.kyc.review' },
+      {
+        key: 'discrepancies',
+        href: routes.adminDiscrepancies,
+        icon: Scale,
+        action: 'payment.reconciliation.manage',
+      },
     ],
   },
   {

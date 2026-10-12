@@ -270,6 +270,13 @@ Comment assembler les composants (`components.md`) pour les situations récurren
 - File par statut (en attente d'abord) : organisation, demandeur, nombre de pièces, domaine du site et le signal « email du domaine », date, statut.
 - Demande : la déclaration, les pièces privées (un bouton par pièce, ouverte par une adresse signée), à droite l'organisation et le signal, dit « un signal, jamais une preuve » ; les critères configurés à cocher (aucun configuré : la phrase le dit), accorder ou refuser avec une motivation partagée ; une organisation vérifiée se retire avec un motif et son nom saisi.
 
+### Paiements dans la console
+
+- Contributions : recherche dans l'adresse (identifiant, `@identifiant` du contributeur ou référence du paiement) et état en liste ; la fiche montre le devis appliqué (montant, équivalent en euros et son taux, commission, frais), les écritures du ledger compte par compte (montants signés, chiffres tabulaires) et les remboursements.
+- Remboursement : total ou partiel, motif obligatoire ; « Voir l'effet » demande à l'api ce qu'il ferait (rendu, commission rendue, euros retirés du collecté, état qui suit, contrepartie libérée) et le bouton reste désactivé tant que l'effet n'est pas affiché ; confirmation par la phrase saisie, session récente, une clé d'idempotence par intention. Le montant encore remboursable vient de l'api, le panneau n'existe pas quand elle n'en donne aucun.
+- Hors plateforme, KYC : une décision motivée (valider ou refuser, approuver ou refuser) avec ses conséquences dites sous chaque choix ; preuves et pièces par `PrivateDocuments`. Le refus d'une règle (preuve manquante) vient de l'api et s'affiche par son code.
+- Rapprochement : écarts par statut, attendu et constaté côte à côte, lien vers la contribution ; « Noter comme traité » demande une note (rien n'est corrigé automatiquement) ; un rapprochement se lance sur place et son résultat s'annonce.
+
 ## Comptes et bannières
 
 Bannières de l'espace membre, de la plus grave à la moins grave, une seule action chacune : compte suspendu (« Voir la décision », vers `/settings/moderation`, ADR 0166), conditions à accepter (vers l'étape de l'onboarding, puis retour à la page), adresse email à vérifier (renvoi sur place), double authentification exigée par un rôle, prérequis manquants, hors ligne. Elles lisent `GET /v1/me` et l'état du réseau ; aucune ne bloque la navigation.
