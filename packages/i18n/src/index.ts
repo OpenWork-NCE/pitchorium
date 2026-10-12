@@ -2,6 +2,7 @@ import manifest from './locales/manifest.json' with { type: 'json' };
 
 export { catalogs, NAMESPACES, type CatalogTree, type Namespace } from './catalogs.js';
 export { catalogCompleteness, type CatalogCompleteness } from './completeness.js';
+export { pseudoLocalize, pseudoLocalizeTree, PSEUDO_CLOSE, PSEUDO_OPEN } from './pseudo.js';
 export { translate, type TranslationParams } from './translate.js';
 
 export type ReviewStatus = 'source' | 'reviewed' | 'pending-review' | 'empty';
