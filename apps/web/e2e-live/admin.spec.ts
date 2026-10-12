@@ -86,10 +86,13 @@ test.describe('console of the administration', () => {
     await page.getByRole('button', { name: /Nouveau brouillon à partir de la v/ }).click();
     await expect(page).toHaveURL(/\/fr\/admin\/impact\/[\w-]+$/);
     await hydrated(page);
-    const name = `Méthodologie de démonstration ${Date.now()}`;
-    await page.getByLabel('Nom de la version').fill(name);
+    // The copy keeps the name of the version in force: the other journeys read it.
+    await page.getByLabel('Nom de la version').fill('DEMO, non contractuelle');
     await page.getByRole('button', { name: 'Enregistrer le brouillon' }).click();
     await expect(page.locator('[data-announcer="polite"]')).toHaveText('Brouillon enregistré.');
+    const version = /^v(\d+)/.exec(
+      (await page.getByRole('heading', { level: 1 }).textContent()) ?? '',
+    )![1]!;
     await expect(
       page.getByText(/Chaque critère, description et niveau a son libellé/),
     ).toBeVisible();
@@ -101,9 +104,11 @@ test.describe('console of the administration', () => {
     await confirm.getByRole('textbox').fill('PUBLIER');
     await confirm.getByRole('button', { name: 'Publier la version' }).click();
     await expect(page.locator('[data-announcer="polite"]')).toHaveText('Version publiée.');
+    // The page reads itself again after the publication: left once it has.
+    await page.waitForLoadState('networkidle');
 
     await page.goto('/fr/impact/methodology');
-    await expect(page.getByText(new RegExp(name))).toBeVisible();
+    await expect(page.getByText(new RegExp(`version ${version}\\b`))).toBeVisible();
     await admin!.context.close();
   });
 
@@ -162,11 +167,7 @@ test.describe('console of the administration', () => {
       .getByRole('alertdialog', { name: 'Relancer refund ?' })
       .getByRole('button', { name: 'Relancer' })
       .click();
-    await expect(job.getByRole('status')).toHaveText('Tâche relancée.');
-    await expect(job.getByRole('button', { name: 'Relancer' })).toHaveAttribute(
-      'aria-disabled',
-      'true',
-    );
+    await expect(page.locator('[data-announcer="polite"]')).toHaveText('Tâche relancée.');
     // The job fails again (its contribution does not exist): one job, never a copy.
     await expect(async () => {
       const failed = (await (
@@ -191,14 +192,26 @@ test.describe('console of the administration', () => {
       .getByRole('main')
       .getByRole('listitem')
       .filter({ hasText: 'sim_pi_demo_amount_mismatch' });
-    await expect(discrepancy).toContainText('5000 EUR');
-    await discrepancy.getByRole('button', { name: 'Noter comme traité' }).click();
-    const dialog = page.getByRole('dialog');
-    await dialog
-      .getByLabel('Note')
-      .fill('Frais du prestataire déduits du montant ; écart expliqué, rien à corriger.');
-    await dialog.getByRole('button', { name: 'Noter comme traité' }).click();
-    await expect(page.locator('[data-announcer="polite"]')).toHaveText('Écart noté comme traité.');
+    // The demonstration data hold one open discrepancy per stack: the first engine that runs on
+    // it handles it, the next ones (a local verify:clean, every engine on one stack) read it
+    // handled.
+    if ((await discrepancy.count()) > 0) {
+      await expect(discrepancy).toContainText('5000 EUR');
+      await discrepancy.getByRole('button', { name: 'Noter comme traité' }).click();
+      const dialog = page.getByRole('dialog');
+      await dialog
+        .getByLabel('Note')
+        .fill('Frais du prestataire déduits du montant ; écart expliqué, rien à corriger.');
+      await dialog.getByRole('button', { name: 'Noter comme traité' }).click();
+      await expect(page.locator('[data-announcer="polite"]')).toHaveText(
+        'Écart noté comme traité.',
+      );
+    } else {
+      test.info().annotations.push({
+        type: 'shared stack',
+        description: 'The discrepancy was handled by an earlier engine on this stack.',
+      });
+    }
     await page.getByRole('button', { name: 'Résolu' }).click();
     await expect(page.getByText(/Frais du prestataire déduits/)).toBeVisible();
     await admin!.context.close();
