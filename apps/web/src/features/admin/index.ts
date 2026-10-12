@@ -26,3 +26,8 @@ export { MemberResults } from './components/members/member-results';
 export { SearchField } from './components/search-field';
 export { type UrlFilter, UrlFilters } from './components/url-filters';
 export { PrivateDocuments } from './components/private-documents';
+export { FeatureFlags } from './components/feature-flags';
+export { Highlights } from './components/highlights';
+export { FailedJobs } from './components/failed-jobs';
+export { AuditLog } from './components/audit-log';
+export { auditFiltersOf, auditQueryOf } from './lib/audit-query';

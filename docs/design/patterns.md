@@ -285,6 +285,13 @@ Comment assembler les composants (`components.md`) pour les situations récurren
 - Aperçu du score : une réponse par critère, score et niveau calculés par l'api sur la version enregistrée.
 - Publier, supprimer un brouillon et archiver se confirment par une phrase saisie ; la publication dit qu'une version publiée ne change plus.
 
+### Plateforme dans la console
+
+- Fonctionnalités : par groupe (langues, financement, autres), chaque drapeau avec son état, son garde-fou lu dans l'api (catalogue et relecture d'une langue, `activatable` ; référence juridique et absence de paiement en ligne sans adaptateur agréé pour l'equity et les prêts) et son historique chargé à la demande ; un changement passe par un dialogue (référence juridique quand l'api l'exige), la clé saisie et une session récente. Une langue que l'api ne peut pas activer garde son bouton désactivé avec la raison (`lib/flag-guard.ts`).
+- Mises en avant : une seule table pour les publications, les projets et les profils (`?type=`), rang d'affichage, « Remonter en tête » (mettre en avant de nouveau), retrait confirmé ; ajout par identifiant.
+- Tâches en échec : par file, données masquées par l'api dans un bloc à chasse fixe, relance confirmée, session récente, clé d'idempotence par tâche ; le résultat (relancée, déjà relancée, disparue) s'annonce.
+- Journal d'audit : filtres dans l'adresse (auteur, action, cible, période en jours UTC, `lib/audit-query.ts`), détail d'une entrée dans un dialogue, export CSV des mêmes filtres ; la lecture est elle-même auditée (mention permanente).
+
 ## Comptes et bannières
 
 Bannières de l'espace membre, de la plus grave à la moins grave, une seule action chacune : compte suspendu (« Voir la décision », vers `/settings/moderation`, ADR 0166), conditions à accepter (vers l'étape de l'onboarding, puis retour à la page), adresse email à vérifier (renvoi sur place), double authentification exigée par un rôle, prérequis manquants, hors ligne. Elles lisent `GET /v1/me` et l'état du réseau ; aucune ne bloque la navigation.

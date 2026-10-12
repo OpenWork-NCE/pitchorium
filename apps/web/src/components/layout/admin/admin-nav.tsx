@@ -12,8 +12,11 @@ import {
   LayoutDashboard,
   type LucideIcon,
   Scale,
+  ScrollText,
   ShieldAlert,
   Sprout,
+  Star,
+  TriangleAlert,
   Users,
 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
@@ -116,11 +119,26 @@ export const ADMIN_NAV: readonly { group: Group; items: readonly Item[] }[] = [
         icon: Sprout,
         action: 'impact.methodology.manage',
       },
+      {
+        key: 'highlights',
+        href: routes.adminHighlights,
+        icon: Star,
+        action: 'admin.highlights.manage',
+      },
     ],
   },
   {
     group: 'platform',
-    items: [{ key: 'flags', href: routes.adminFlags, icon: Flag, action: 'admin.flags.read' }],
+    items: [
+      { key: 'flags', href: routes.adminFlags, icon: Flag, action: 'admin.flags.read' },
+      { key: 'jobs', href: routes.adminJobs, icon: TriangleAlert, action: 'admin.jobs.read' },
+    ],
+  },
+  {
+    group: 'compliance',
+    items: [
+      { key: 'audit', href: routes.adminAudit, icon: ScrollText, action: 'admin.audit.read' },
+    ],
   },
 ];
 

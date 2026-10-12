@@ -576,7 +576,8 @@
       "members": "Aller aux membres",
       "payments": "Aller aux contributions",
       "audit": "Aller au journal d’audit",
-      "search": "Aller à la recherche de la page"
+      "search": "Aller à la recherche de la page",
+      "jobs": "Aller aux tâches en échec"
     },
     "common": {
       "audited": "Ces données sont personnelles : votre consultation est inscrite au journal d’audit.",
@@ -1287,6 +1288,148 @@
         "confirmTitle": "Archiver la v{{version}} ?",
         "confirmDescription": "Plus aucune évaluation n’est possible tant qu’aucune autre version n’est publiée. Les scores déjà donnés restent affichés avec leur version.",
         "phrase": "ARCHIVER"
+      }
+    },
+    "flags": {
+      "title": "Fonctionnalités",
+      "description": "Les drapeaux de la plateforme, leur garde-fou tel que l’api l’applique et leur historique.",
+      "sections": {
+        "locales": "Langues",
+        "funding": "Financement",
+        "other": "Autres"
+      },
+      "on": "Activée",
+      "off": "Désactivée",
+      "locale": {
+        "catalog": "Catalogue : {{done}} textes traduits sur {{total}}.",
+        "reviewed": "Relu par {{by}} le {{date}}.",
+        "notReviewed": "Relecture humaine native non enregistrée."
+      },
+      "blocked": {
+        "catalog_incomplete": "Le catalogue de cette langue est incomplet : elle ne peut pas être activée.",
+        "review_missing": "La relecture humaine native de cette langue n’est pas enregistrée : elle ne peut pas être activée."
+      },
+      "legal": {
+        "reference": "Validation juridique : {{reference}}",
+        "field": "Référence de la validation juridique",
+        "fieldHint": "Avis, licence ou contrat de partenaire qui autorise cet instrument.",
+        "reminder": "Aucun paiement en ligne n’est ouvert pour cet instrument sans adaptateur agréé : l’activer n’ouvre que ce que l’api permet.",
+        "offlineOnly": "Aucun adaptateur agréé : cet instrument n’accepte aucun paiement en ligne.",
+        "missing": "Indiquez la référence de la validation juridique ({{min}} caractères au moins)."
+      },
+      "updatedAt": "Modifié le {{date}}",
+      "enable": "Activer",
+      "disable": "Désactiver",
+      "enableTitle": "Activer {{key}} ?",
+      "disableTitle": "Désactiver {{key}} ?",
+      "confirmEnable": "Le changement s’applique aussitôt à tous les membres et s’inscrit au journal d’audit. Saisissez la clé pour confirmer.",
+      "confirmDisable": "Le changement s’applique aussitôt à tous les membres et s’inscrit au journal d’audit. Saisissez la clé pour confirmer.",
+      "enabledDone": "{{key}} activée.",
+      "disabledDone": "{{key}} désactivée.",
+      "history": "Historique",
+      "historyHide": "Masquer l’historique",
+      "historyLoading": "Chargement de l’historique",
+      "historyEmpty": "Aucun changement enregistré.",
+      "historyEnabled": "Activée par {{name}}",
+      "historyDisabled": "Désactivée par {{name}}",
+      "commandLine": "la ligne de commande"
+    },
+    "highlights": {
+      "title": "Mises en avant",
+      "description": "Publications, projets et profils mis en avant, dans leur ordre d’affichage : le dernier mis en avant d’abord.",
+      "filter": "Type",
+      "caption": "Mises en avant",
+      "empty": "Rien n’est mis en avant.",
+      "emptyHint": "Ajoutez une publication, un projet ou un profil par son identifiant.",
+      "types": {
+        "post": "Publication",
+        "project": "Projet",
+        "profile": "Profil"
+      },
+      "columns": {
+        "position": "Rang",
+        "label": "Contenu",
+        "type": "Type",
+        "featured": "Mis en avant le",
+        "actions": "Actions"
+      },
+      "moveTop": "Remonter en tête : {{label}}",
+      "remove": "Retirer : {{label}}",
+      "removeTitle": "Retirer {{label}} des mises en avant ?",
+      "removeDescription": "Le contenu reste publié ; il n’est plus mis en avant.",
+      "removeAction": "Retirer",
+      "movedDone": "Remonté en tête.",
+      "removedDone": "Retiré des mises en avant.",
+      "add": "Mettre en avant",
+      "target": {
+        "post": "Identifiant de la publication",
+        "project": "Identifiant du projet",
+        "profile": "Identifiant public du profil"
+      },
+      "targetHint": {
+        "post": "L’identifiant à la fin de l’adresse de la publication.",
+        "project": "L’identifiant du projet (pas son adresse).",
+        "profile": "Le @identifiant du membre."
+      },
+      "targetMissing": "Indiquez l’identifiant du contenu.",
+      "addAction": "Mettre en avant",
+      "adding": "Mise en avant",
+      "addedDone": "Contenu mis en avant."
+    },
+    "jobs": {
+      "title": "Tâches en échec",
+      "description": "Les tâches dont les tentatives sont épuisées, gardées 7 jours, par file.",
+      "empty": "Aucune tâche en échec.",
+      "emptyHint": "Une tâche arrive ici quand toutes ses tentatives ont échoué.",
+      "failed": "Échec",
+      "id": "Identifiant",
+      "attempts": "Tentatives",
+      "failedAt": "Échouée le",
+      "reason": "Raison",
+      "payload": "Données de la tâche",
+      "masked": "Masquées par l’api : structure, identifiants, dates, nombres et codes seulement.",
+      "retry": "Relancer",
+      "retryTitle": "Relancer {{name}} ?",
+      "retryDescription": "La tâche repart avec ses données ; une tâche déjà relancée ou disparue n’est pas relancée deux fois. La relance s’inscrit au journal d’audit.",
+      "outcomes": {
+        "retried": "Tâche relancée.",
+        "not_failed": "Cette tâche n’est plus en échec : elle a déjà été relancée.",
+        "missing": "Cette tâche n’existe plus."
+      }
+    },
+    "audit": {
+      "title": "Journal d’audit",
+      "description": "Les actions sensibles et les lectures de données personnelles, la plus récente d’abord.",
+      "caption": "Entrées du journal d’audit",
+      "empty": "Aucune entrée pour ces filtres.",
+      "emptyHint": "Élargissez la période ou retirez un filtre.",
+      "utc": "Heures en UTC, celles du journal.",
+      "columns": {
+        "occurred": "Date (UTC)",
+        "actor": "Auteur",
+        "action": "Action",
+        "target": "Cible",
+        "detail": "Détail"
+      },
+      "filters": {
+        "actorId": "Identifiant de l’auteur",
+        "action": "Action",
+        "targetType": "Type de cible",
+        "targetId": "Identifiant de la cible",
+        "from": "Du",
+        "to": "Au"
+      },
+      "apply": "Filtrer",
+      "reset": "Effacer les filtres",
+      "export": "Exporter en CSV",
+      "exporting": "Export en cours",
+      "open": "Ouvrir",
+      "detail": {
+        "actor": "Auteur",
+        "target": "Cible",
+        "request": "Requête",
+        "id": "Entrée",
+        "metadata": "Données de l’entrée"
       }
     }
   },

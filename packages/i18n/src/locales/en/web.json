@@ -576,7 +576,8 @@
       "members": "Go to the members",
       "payments": "Go to the contributions",
       "audit": "Go to the audit log",
-      "search": "Go to the search of the page"
+      "search": "Go to the search of the page",
+      "jobs": "Go to the failed jobs"
     },
     "common": {
       "audited": "This data is personal: your reading is written to the audit log.",
@@ -1287,6 +1288,148 @@
         "confirmTitle": "Archive v{{version}}?",
         "confirmDescription": "No assessment is possible until another version is published. Scores already given stay shown with their version.",
         "phrase": "ARCHIVE"
+      }
+    },
+    "flags": {
+      "title": "Features",
+      "description": "The flags of the platform, their guardrail as the api applies it, and their history.",
+      "sections": {
+        "locales": "Languages",
+        "funding": "Funding",
+        "other": "Others"
+      },
+      "on": "On",
+      "off": "Off",
+      "locale": {
+        "catalog": "Catalogue: {{done}} texts translated out of {{total}}.",
+        "reviewed": "Reviewed by {{by}} on {{date}}.",
+        "notReviewed": "No native human review recorded."
+      },
+      "blocked": {
+        "catalog_incomplete": "The catalogue of this language is incomplete: it cannot be enabled.",
+        "review_missing": "No native human review is recorded for this language: it cannot be enabled."
+      },
+      "legal": {
+        "reference": "Legal validation: {{reference}}",
+        "field": "Reference of the legal validation",
+        "fieldHint": "Opinion, licence or partner contract that allows this instrument.",
+        "reminder": "No online payment opens for this instrument without a licensed adapter: enabling it opens only what the api allows.",
+        "offlineOnly": "No licensed adapter: this instrument accepts no online payment.",
+        "missing": "Enter the reference of the legal validation (at least {{min}} characters)."
+      },
+      "updatedAt": "Changed on {{date}}",
+      "enable": "Enable",
+      "disable": "Disable",
+      "enableTitle": "Enable {{key}}?",
+      "disableTitle": "Disable {{key}}?",
+      "confirmEnable": "The change applies at once to every member and is written to the audit log. Type the key to confirm.",
+      "confirmDisable": "The change applies at once to every member and is written to the audit log. Type the key to confirm.",
+      "enabledDone": "{{key}} enabled.",
+      "disabledDone": "{{key}} disabled.",
+      "history": "History",
+      "historyHide": "Hide the history",
+      "historyLoading": "Loading the history",
+      "historyEmpty": "No change recorded.",
+      "historyEnabled": "Enabled by {{name}}",
+      "historyDisabled": "Disabled by {{name}}",
+      "commandLine": "the command line"
+    },
+    "highlights": {
+      "title": "Highlights",
+      "description": "Publications, projects and profiles featured, in their order of display: the latest featured first.",
+      "filter": "Type",
+      "caption": "Highlights",
+      "empty": "Nothing is featured.",
+      "emptyHint": "Add a publication, a project or a profile by its identifier.",
+      "types": {
+        "post": "Publication",
+        "project": "Project",
+        "profile": "Profile"
+      },
+      "columns": {
+        "position": "Rank",
+        "label": "Content",
+        "type": "Type",
+        "featured": "Featured on",
+        "actions": "Actions"
+      },
+      "moveTop": "Move to the top: {{label}}",
+      "remove": "Remove: {{label}}",
+      "removeTitle": "Remove {{label}} from the highlights?",
+      "removeDescription": "The content stays published; it is no longer featured.",
+      "removeAction": "Remove",
+      "movedDone": "Moved to the top.",
+      "removedDone": "Removed from the highlights.",
+      "add": "Feature",
+      "target": {
+        "post": "Identifier of the publication",
+        "project": "Identifier of the project",
+        "profile": "Public handle of the profile"
+      },
+      "targetHint": {
+        "post": "The identifier at the end of the address of the publication.",
+        "project": "The identifier of the project (not its address).",
+        "profile": "The @handle of the member."
+      },
+      "targetMissing": "Enter the identifier of the content.",
+      "addAction": "Feature",
+      "adding": "Featuring",
+      "addedDone": "Content featured."
+    },
+    "jobs": {
+      "title": "Failed jobs",
+      "description": "The jobs whose attempts are exhausted, kept 7 days, by queue.",
+      "empty": "No failed job.",
+      "emptyHint": "A job arrives here once all its attempts have failed.",
+      "failed": "Failed",
+      "id": "Identifier",
+      "attempts": "Attempts",
+      "failedAt": "Failed on",
+      "reason": "Reason",
+      "payload": "Data of the job",
+      "masked": "Masked by the api: structure, identifiers, dates, numbers and codes only.",
+      "retry": "Retry",
+      "retryTitle": "Retry {{name}}?",
+      "retryDescription": "The job runs again with its data; a job already retried or gone is not retried twice. The retry is written to the audit log.",
+      "outcomes": {
+        "retried": "Job retried.",
+        "not_failed": "This job is no longer failed: it was already retried.",
+        "missing": "This job no longer exists."
+      }
+    },
+    "audit": {
+      "title": "Audit log",
+      "description": "The sensitive actions and the readings of personal data, newest first.",
+      "caption": "Entries of the audit log",
+      "empty": "No entry for these filters.",
+      "emptyHint": "Widen the period or remove a filter.",
+      "utc": "Times in UTC, those of the log.",
+      "columns": {
+        "occurred": "Date (UTC)",
+        "actor": "Actor",
+        "action": "Action",
+        "target": "Target",
+        "detail": "Detail"
+      },
+      "filters": {
+        "actorId": "Identifier of the actor",
+        "action": "Action",
+        "targetType": "Type of target",
+        "targetId": "Identifier of the target",
+        "from": "From",
+        "to": "To"
+      },
+      "apply": "Filter",
+      "reset": "Clear the filters",
+      "export": "Export as CSV",
+      "exporting": "Exporting",
+      "open": "Open",
+      "detail": {
+        "actor": "Actor",
+        "target": "Target",
+        "request": "Request",
+        "id": "Entry",
+        "metadata": "Data of the entry"
       }
     }
   },

@@ -48,5 +48,17 @@ export function AdminShortcuts() {
     group,
     run: go(routes.adminContributions, stateOf('payment.contributions.read').visible),
   });
+  useShortcut({
+    keys: 'g j',
+    label: t('jobs'),
+    group,
+    run: go(routes.adminJobs, stateOf('admin.jobs.read').visible),
+  });
+  useShortcut({
+    keys: 'g l',
+    label: t('audit'),
+    group,
+    run: go(routes.adminAudit, stateOf('admin.audit.read').visible),
+  });
   return null;
 }
