@@ -1184,7 +1184,8 @@
         "noteHint": "For instance: refund retried at the provider, entry corrected.",
         "noteMissing": "Enter how the discrepancy was handled.",
         "resolving": "Saving",
-        "resolvedDone": "Discrepancy marked as handled."
+        "resolvedDone": "Discrepancy marked as handled.",
+        "valuesHint": "Expected and found are the technical values of the reconciliation: amounts in minor units, cents for the euro."
       }
     },
     "impact": {

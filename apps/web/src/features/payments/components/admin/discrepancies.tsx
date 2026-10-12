@@ -90,6 +90,9 @@ export function Discrepancies({
   }
   return (
     <div className="grid gap-4">
+      <Text size="sm" tone="muted" prose>
+        {t('valuesHint')}
+      </Text>
       {manage.visible ? (
         <div className="flex flex-wrap items-center justify-between gap-3">
           <Text size="sm" tone="muted" prose>
@@ -182,7 +185,16 @@ function DiscrepancyCard({
             term: t('reference'),
             description: <code className="font-mono text-sm">{item.reference}</code>,
           },
-          { key: 'provider', term: t('provider'), description: item.provider ?? common('none') },
+          {
+            key: 'provider',
+            term: t('provider'),
+            // A provider the api names by a known code is said in words (reference).
+            description: item.provider
+              ? reference.has(`paymentProviders.${item.provider}` as never)
+                ? reference(`paymentProviders.${item.provider}` as never)
+                : item.provider
+              : common('none'),
+          },
           {
             key: 'expected',
             term: t('expected'),

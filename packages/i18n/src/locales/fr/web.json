@@ -1184,7 +1184,8 @@
         "noteHint": "Par exemple : remboursement relancé chez le prestataire, écriture corrigée.",
         "noteMissing": "Indiquez comment l’écart a été traité.",
         "resolving": "Enregistrement",
-        "resolvedDone": "Écart noté comme traité."
+        "resolvedDone": "Écart noté comme traité.",
+        "valuesHint": "Attendu et constaté sont les valeurs techniques du rapprochement : montants en unités mineures, centimes pour l’euro."
       }
     },
     "impact": {
