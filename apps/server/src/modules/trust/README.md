@@ -76,7 +76,7 @@ L'activité comptée (table `activity`, une ligne par événement source) est pu
 
 ## Façade publique (`index.ts`)
 
-`TrustFacade` : `decisionNotice` (exposé d'une décision pour les notifications), `appealOutcome`, `activeSuspension` ; type `DecisionNotice` ; classes d'événements. Au démarrage, la façade enregistre la source de suspension auprès de access.
+`TrustFacade` : `decisionNotice` (exposé d'une décision pour les notifications), `appealOutcome`, `activeSuspension`, `decisionsAbout` (dernières décisions concernant un membre et leur appel, pour sa fiche dans l'administration) ; type `DecisionNotice` ; classes d'événements. Au démarrage, la façade enregistre la source de suspension auprès de access.
 
 ## Événements émis
 

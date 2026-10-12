@@ -1,8 +1,13 @@
 import { Injectable, type OnModuleInit } from '@nestjs/common';
-import type { ModerationDecisionKind, ReportReason } from '@pitchorium/contracts';
+import type {
+  ModerationDecisionDetail,
+  ModerationDecisionKind,
+  ReportReason,
+} from '@pitchorium/contracts';
 import { AccessFacade } from '../../access';
 import { TrustRepository } from './ports';
 import { SuspensionsService } from './suspensions.service';
+import { decisionDetailView } from './trust-views';
 
 /** What the notifications need to tell the member concerned about a decision. */
 export interface DecisionNotice {
@@ -59,5 +64,17 @@ export class TrustFacade implements OnModuleInit {
   async activeSuspension(userId: string): Promise<{ id: string; endsAt: Date | null } | null> {
     const active = await this.suspensions.active(userId);
     return active ? { id: active.id, endsAt: active.endsAt } : null;
+  }
+
+  /**
+   * The latest decisions concerning a member, with their appeal (file of a member in the
+   * administration, whose reading the admin module audits).
+   */
+  async decisionsAbout(userId: string, limit: number): Promise<ModerationDecisionDetail[]> {
+    const decisions = await this.trust.decisionsOfSubject(userId, null, limit);
+    const appeals = await this.trust.appealsOf(decisions.map((decision) => decision.id));
+    return decisions.map((decision) =>
+      decisionDetailView(decision, appeals.get(decision.id) ?? null),
+    );
   }
 }
