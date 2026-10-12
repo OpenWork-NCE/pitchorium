@@ -166,3 +166,4 @@ Un fichier par décision, numéroté, au format Contexte / Décision / Conséque
 | [0166](0166-suspended-account-experience.md)                          | Expérience d'un compte suspendu                                 |
 | [0167](0167-translation-on-demand-interface.md)                       | Interface de la traduction à la demande                         |
 | [0168](0168-realtime-events-before-their-handlers.md)                 | Événements du temps réel reçus avant leurs gestionnaires        |
+| [0169](0169-language-detection-with-full-franc.md)                    | Détection de la langue par franc complet                        |
