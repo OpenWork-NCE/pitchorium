@@ -119,7 +119,9 @@ test.describe('console of the administration', () => {
   test('an incomplete language and equity without a legal reference stay off', async ({
     browser,
   }) => {
-    const admin = await adminPage(browser);
+    // A flag is a sensitive action (a session of less than 15 minutes): the session of the run,
+    // opened by its setup, is older once the three engines run one after the other.
+    const admin = await freshStaffPage(browser, ADMIN_EMAIL, 'admin');
     test.skip(!admin, 'The administrator of the run (demonstration data).');
     const page = admin!.page;
     await page.goto('/fr/admin/flags');

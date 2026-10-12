@@ -581,7 +581,10 @@ test.describe('contributions', () => {
   test('shared time confirmed by its beneficiary shows on the dashboard of the mentor', async ({
     browser,
   }) => {
-    const { page, context } = await memberPage(browser, 'time-log', { name: 'Omar Sy' });
+    const { page, context, member } = await memberPage(browser, 'time-log', { name: 'Omar Sy' });
+    // The holder of the demonstration receives the hours of every run (a fresh « Omar Sy » each
+    // time, verify:clean runs the three engines on one database): its entry is found by its text.
+    const done = `Revue du plan de trésorerie de la coopérative (${member.handle}).`;
     await page.goto('/fr/dashboard/time');
     await hydrated(page);
     await page.getByRole('button', { name: 'Déclarer des heures' }).click();
@@ -590,9 +593,7 @@ test.describe('contributions', () => {
     await declare.getByLabel('Identifiant de l’entrepreneur').fill('aissatou-ba');
     await declare.getByLabel('Heures').fill('1');
     await declare.getByLabel('Minutes').fill('30');
-    await declare
-      .getByLabel('Ce que vous avez fait')
-      .fill('Revue du plan de trésorerie de la coopérative.');
+    await declare.getByLabel('Ce que vous avez fait').fill(done);
     await declare.getByRole('button', { name: 'Déclarer' }).click();
     await expect(page.getByTestId('time-entry').filter({ hasText: 'Aïssatou Ba' })).toContainText(
       'Déclaré',
@@ -600,7 +601,7 @@ test.describe('contributions', () => {
 
     const holder = await demoPage(browser, HOLDER);
     await holder.page.goto('/fr/dashboard/time');
-    const received = holder.page.getByTestId('time-entry').filter({ hasText: 'Omar Sy' });
+    const received = holder.page.getByTestId('time-entry').filter({ hasText: done });
     await received.getByRole('button', { name: 'Confirmer' }).click();
     await expect(received).toContainText('Confirmé');
 
