@@ -5,8 +5,9 @@ import {
   linkPreviewsControllerRequest,
   postsControllerCreate,
   postsControllerUpdate,
-  useProjectsControllerMine,
+  getProjectsControllerMineQueryOptions,
 } from '@pitchorium/api-client';
+import { useQuery } from '@tanstack/react-query';
 import type { LinkPreviewDraft, Post, PostVisibility } from '@pitchorium/contracts';
 import { FileText, ImagePlus, X } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
@@ -124,9 +125,11 @@ export default function ComposerDialog({
   const [restored, setRestored] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [sending, setSending] = useState(false);
-  const projects = useProjectsControllerMine({
-    query: { enabled: open && !editing, staleTime: 300_000 },
-  });
+  const projects = useQuery(
+    getProjectsControllerMineQueryOptions({
+      query: { enabled: open && !editing, staleTime: 300_000 },
+    }),
+  );
   const attachable = (projects.data?.items ?? []).filter((item) => item.project.status !== 'draft');
   const selectedProject = attachable.find((item) => item.project.id === projectId)?.project ?? null;
 

@@ -1,6 +1,7 @@
 'use client';
 
-import { usePostsControllerStats } from '@pitchorium/api-client';
+import { getPostsControllerStatsQueryOptions } from '@pitchorium/api-client';
+import { useQuery } from '@tanstack/react-query';
 import { useFormatter, useTranslations } from 'next-intl';
 import { BarChart, CopyButton, Dialog, DialogContent } from '@/components/ui';
 import { peakIndex } from '@/components/ui/chart-scale';
@@ -25,7 +26,9 @@ export default function PostStats({
   const t = useTranslations('web.content.stats');
   const format = useFormatter();
   const plural = usePlural();
-  const stats = usePostsControllerStats(postId, { query: { staleTime: 60_000 } });
+  const stats = useQuery(
+    getPostsControllerStatsQueryOptions(postId, { query: { staleTime: 60_000 } }),
+  );
   const day = (date: string, style: 'short' | 'long') =>
     format.dateTime(
       new Date(`${date}T12:00:00Z`),
