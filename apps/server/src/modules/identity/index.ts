@@ -1,5 +1,5 @@
 /** Public facade of the identity module: the only file other modules may import. */
-export type { IdentityUser } from './application/identity-user.repository';
+export type { IdentitySession, IdentityUser } from './application/identity-user.repository';
 export { IdentityFacade } from './application/identity.facade';
 export {
   type AuthenticatedSession,

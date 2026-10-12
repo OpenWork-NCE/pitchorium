@@ -21,6 +21,15 @@ export interface LegalAcceptanceRow {
 }
 
 /** Port: identity data outside of what Better Auth manages through its own adapter. */
+/** A session as the administration sees it: its device and its activity, never its token. */
+export interface IdentitySession {
+  id: string;
+  userAgent: string | null;
+  createdAt: Date;
+  lastActiveAt: Date;
+  expiresAt: Date;
+}
+
 export abstract class IdentityUserRepository {
   abstract findById(id: string): Promise<IdentityUser | null>;
   abstract findByIds(ids: readonly string[]): Promise<IdentityUser[]>;
@@ -47,5 +56,7 @@ export abstract class IdentityUserRepository {
   /** User agents of the user's sessions other than `exceptSessionId`. */
   abstract otherSessionUserAgents(userId: string, exceptSessionId: string): Promise<string[]>;
   abstract countSessions(userId: string): Promise<number>;
+  /** Sessions still valid, the most recently used first (administration). */
+  abstract sessionsOf(userId: string, now: Date): Promise<IdentitySession[]>;
   abstract deleteSessions(userId: string): Promise<number>;
 }

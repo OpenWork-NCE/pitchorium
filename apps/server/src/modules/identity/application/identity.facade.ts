@@ -1,10 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import type { LegalStatus, Locale } from '@pitchorium/contracts';
 import { TransactionManager } from '../../../platform/database';
+import { Clock } from '../../../platform/kernel';
 import type { SessionRevocationReason } from '../domain/identity-events';
 import { ActiveLocalesService } from './active-locales.service';
 import { IdentityEventsRecorder } from './identity-events.recorder';
-import { type IdentityUser, IdentityUserRepository } from './identity-user.repository';
+import {
+  type IdentitySession,
+  type IdentityUser,
+  IdentityUserRepository,
+} from './identity-user.repository';
 import { LegalService } from './legal.service';
 
 /** Public facade of the identity module, for the other modules. */
@@ -16,6 +21,7 @@ export class IdentityFacade {
     private readonly legal: LegalService,
     private readonly events: IdentityEventsRecorder,
     private readonly transactions: TransactionManager,
+    private readonly clock: Clock,
   ) {}
 
   findUser(userId: string): Promise<IdentityUser | null> {
@@ -52,6 +58,11 @@ export class IdentityFacade {
 
   legalStatus(user: IdentityUser): LegalStatus {
     return this.legal.status(user);
+  }
+
+  /** The sessions still valid of a member, for the administration (never their token). */
+  sessionsOf(userId: string): Promise<IdentitySession[]> {
+    return this.users.sessionsOf(userId, this.clock.now());
   }
 
   /** Signs the user out everywhere, for example after a privilege change. */

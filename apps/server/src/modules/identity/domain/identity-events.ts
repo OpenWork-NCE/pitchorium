@@ -8,7 +8,7 @@ export type PasswordChangeReason = 'changed' | 'reset';
 export type SessionRevocationScope = 'one' | 'others' | 'all';
 
 export type SessionRevocationReason =
-  'user_request' | 'password_reset' | 'privilege_change' | 'suspension';
+  'user_request' | 'password_reset' | 'privilege_change' | 'suspension' | 'administration';
 
 export class UserRegistered extends DomainEvent<{
   method: RegistrationMethod;

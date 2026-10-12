@@ -5,7 +5,9 @@ import {
   asc,
   count,
   countDistinct,
+  desc,
   eq,
+  gt,
   gte,
   ilike,
   inArray,
@@ -20,6 +22,7 @@ import {
 } from '@pitchorium/db/schemas/identity';
 import { TransactionManager } from '../../../platform/database';
 import {
+  type IdentitySession,
   type IdentityUser,
   type LegalAcceptanceRow,
   IdentityUserRepository,
@@ -142,6 +145,21 @@ export class DrizzleIdentityUserRepository extends IdentityUserRepository {
       .from(identitySessions)
       .where(and(eq(identitySessions.userId, userId), ne(identitySessions.id, exceptSessionId)));
     return rows.map((row) => row.userAgent ?? '');
+  }
+
+  async sessionsOf(userId: string, now: Date): Promise<IdentitySession[]> {
+    const rows = await this.db
+      .select({
+        id: identitySessions.id,
+        userAgent: identitySessions.userAgent,
+        createdAt: identitySessions.createdAt,
+        lastActiveAt: identitySessions.updatedAt,
+        expiresAt: identitySessions.expiresAt,
+      })
+      .from(identitySessions)
+      .where(and(eq(identitySessions.userId, userId), gt(identitySessions.expiresAt, now)))
+      .orderBy(desc(identitySessions.updatedAt));
+    return rows;
   }
 
   async countSessions(userId: string): Promise<number> {
