@@ -3,8 +3,9 @@
 import {
   payoutControllerChange,
   payoutControllerCreate,
-  useProfilesControllerReferenceData,
+  getProfilesControllerReferenceDataQueryOptions,
 } from '@pitchorium/api-client';
+import { useQuery } from '@tanstack/react-query';
 import type {
   CreatePayoutAccountRequest,
   PaymentCoverage,
@@ -140,7 +141,9 @@ export function PayoutChoice({
   const providers = useTranslations('reference.paymentProviders');
   const locale = useLocale();
   const problem = usePaymentProblem();
-  const reference = useProfilesControllerReferenceData({ query: { staleTime: Infinity } });
+  const reference = useQuery(
+    getProfilesControllerReferenceDataQueryOptions({ query: { staleTime: Infinity } }),
+  );
   const countries = useMemo(
     () => countryOptions(reference.data?.countries.map(({ code }) => code) ?? [], locale),
     [reference.data, locale],

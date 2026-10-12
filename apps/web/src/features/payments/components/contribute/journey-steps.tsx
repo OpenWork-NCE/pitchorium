@@ -1,6 +1,7 @@
 'use client';
 
-import { useProfilesControllerReferenceData } from '@pitchorium/api-client';
+import { getProfilesControllerReferenceDataQueryOptions } from '@pitchorium/api-client';
+import { useQuery } from '@tanstack/react-query';
 import type {
   ContributionKind,
   ContributionQuote,
@@ -105,7 +106,9 @@ export function KindStep({
 export function CountryStep({ choices, update }: StepProps) {
   const t = useTranslations('web.payments.journey.country');
   const locale = useLocale();
-  const reference = useProfilesControllerReferenceData({ query: { staleTime: Infinity } });
+  const reference = useQuery(
+    getProfilesControllerReferenceDataQueryOptions({ query: { staleTime: Infinity } }),
+  );
   const countries = useMemo(
     () => countryOptions(reference.data?.countries.map(({ code }) => code) ?? [], locale),
     [reference.data, locale],

@@ -1,6 +1,7 @@
 'use client';
 
-import { useAccessControllerPrerequisites } from '@pitchorium/api-client';
+import { getAccessControllerPrerequisitesQueryOptions } from '@pitchorium/api-client';
+import { useQuery } from '@tanstack/react-query';
 import { useLocale, useTranslations } from 'next-intl';
 import { Alert, Button } from '@/components/ui';
 import * as routes from '@/config/paths';
@@ -19,9 +20,11 @@ export function CollectionBanner({ projectId, holder }: { projectId: string; hol
   const elements = useTranslations('reference.prerequisiteElements');
   const locale = useLocale();
   const options = usePaymentOptions(projectId);
-  const prerequisites = useAccessControllerPrerequisites('payment.collection.open', {
-    query: { enabled: holder, staleTime: 30_000 },
-  });
+  const prerequisites = useQuery(
+    getAccessControllerPrerequisitesQueryOptions('payment.collection.open', {
+      query: { enabled: holder, staleTime: 30_000 },
+    }),
+  );
   const availability = options.data?.availability;
   if (
     availability !== 'holder_not_verified' &&
