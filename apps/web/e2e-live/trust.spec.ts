@@ -199,7 +199,9 @@ test.describe('reports and moderation', () => {
     await page.getByLabel(/Votre adresse email/).fill('lectrice@example.test');
     await page.getByRole('checkbox', { name: /Je déclare de bonne foi/ }).check();
     await page.getByRole('button', { name: 'Envoyer le signalement' }).click();
-    await expect(page.getByText(/Votre signalement a été reçu le .*Sa référence : /)).toBeVisible();
+    await expect(
+      page.getByText(/Votre signalement a été reçu le .*Sa référence\s: /),
+    ).toBeVisible();
     if (LOCAL_TURNSTILE) expect(await verifications()).toBeGreaterThan(before);
     await author.context.close();
   });

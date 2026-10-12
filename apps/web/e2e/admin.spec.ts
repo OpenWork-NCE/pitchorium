@@ -198,7 +198,7 @@ test.describe('console of the administration', () => {
     await signIn(page, ADMIN);
     await page.goto(`/fr/admin/impact/${ID(401)}`);
     await page.waitForLoadState('networkidle');
-    await expect(page.getByText(/Libellés manquants : 5/)).toBeVisible();
+    await expect(page.getByText(/Libellés manquants\s: 5/)).toBeVisible();
     const publish = page.getByRole('button', { name: 'Publier la version' });
     await expect(publish).toHaveAttribute('aria-disabled', 'true');
     await page.getByRole('tab', { name: /English/ }).click();

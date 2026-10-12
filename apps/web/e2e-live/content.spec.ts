@@ -156,7 +156,7 @@ test.describe('publications', () => {
     await expect(
       dialog.getByRole('list', { name: 'Images de la publication' }).getByRole('listitem'),
     ).toHaveCount(5);
-    await expect(dialog.getByText(/Allègement|Envoi :|Vérification|n’a pas abouti/)).toHaveCount(
+    await expect(dialog.getByText(/Allègement|Envoi\s:|Vérification|n’a pas abouti/)).toHaveCount(
       0,
       { timeout: 90_000 },
     );

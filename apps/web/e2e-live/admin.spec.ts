@@ -105,7 +105,7 @@ test.describe('console of the administration', () => {
     await confirm.getByRole('button', { name: 'Publier la version' }).click();
     await expect(page.locator('[data-announcer="polite"]')).toHaveText('Version publiée.');
     // The page has read itself again (its description is the one of a published version).
-    await expect(page.getByText(/^Version publiée : elle ne change plus/)).toBeVisible();
+    await expect(page.getByText(/^Version publiée\s: elle ne change plus/)).toBeVisible();
     // A visitor reads it on the public page (another context: the console tab is left alone,
     // its refresh after the publication never aborted).
     const visitor = await browser.newContext();

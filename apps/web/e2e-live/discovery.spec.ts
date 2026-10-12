@@ -318,7 +318,7 @@ test.describe('missions', () => {
     await helper.page.getByRole('textbox', { name: 'Heures estimées' }).fill('4');
     await helper.page.getByRole('button', { name: 'Publier la mission' }).click();
     await expect(
-      helper.page.getByText(/Une mission est bénévole : retirez le vocabulaire/).first(),
+      helper.page.getByText(/Une mission est bénévole\s: retirez le vocabulaire/).first(),
     ).toBeVisible();
     await expect(helper.page).toHaveURL(/\/fr\/missions\/new/);
     await helper.context.close();

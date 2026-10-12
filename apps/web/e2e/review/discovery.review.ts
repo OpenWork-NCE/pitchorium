@@ -70,7 +70,7 @@ const SCREENS: Screen[] = [
       await page.getByRole('textbox', { name: 'Heures estimées' }).fill('4');
       await page.getByRole('button', { name: 'Publier la mission' }).click();
       await expect(
-        page.getByText(/Une mission est bénévole : retirez le vocabulaire/).first(),
+        page.getByText(/Une mission est bénévole\s: retirez le vocabulaire/).first(),
       ).toBeVisible();
     },
   },
