@@ -2,6 +2,12 @@ import { createDatabase } from '@pitchorium/db';
 import { loadConfigOrExit, parseWorkerConfig } from '../src/platform/config/config';
 import { FixedClock, SystemClock } from '../src/platform/kernel/clock';
 import { S3ObjectStorage } from '../src/platform/storage/s3-object-storage';
+import {
+  DEMO_ADMIN,
+  DEMO_MODERATOR,
+  DEMO_STAFF_TOTP_BASE32,
+  seedDevConsole,
+} from './dev-seed/seed-dev-console';
 import { seedDevContent } from './dev-seed/seed-dev-content';
 import { requestDatedStates, shiftDatedStates } from './dev-seed/seed-dev-dates';
 import {
@@ -52,6 +58,15 @@ async function main(): Promise<void> {
         const trust = await seedDevTrust(context, clock, now);
         const network = await seedDevNetwork(context, clock, now);
         const content = await seedDevContent(context, clock, now);
+        const authSecret = process.env['AUTH_SECRET'];
+        if (!authSecret)
+          throw new Error('db:seed:dev needs AUTH_SECRET (second factor of the staff)');
+        const consoleData = await seedDevConsole(db, context, clock, {
+          authSecret,
+          redisUrl: config.redis.url,
+          queuePrefix: config.queue.prefix,
+          now,
+        });
         const requested = await requestDatedStates(db, context);
         return {
           ...projects,
@@ -61,6 +76,7 @@ async function main(): Promise<void> {
           ...trust,
           ...network,
           ...content,
+          ...consoleData,
           datedStates:
             dates.suspensions +
             dates.erasures +
@@ -87,7 +103,7 @@ async function main(): Promise<void> {
         `Demo accounts: <handle with dots>@${DEMO_EMAIL_DOMAIN} (for example ` +
         `aissatou.ba@${DEMO_EMAIL_DOMAIN}), password ${DEMO_PASSWORD}.\n` +
         'Images are processed by the worker (pnpm dev). Impact methodology: DEMO, not contractual.\n' +
-        `Demo moderators (enable two-factor authentication first): ${DEMO_MODERATORS.join(', ')}.\n` +
+        `Demo moderators: ${DEMO_MODERATORS.join(', ')}; console: ${DEMO_ADMIN} (administrator) and ${DEMO_MODERATOR} (moderator), second factor on, authenticator secret ${DEMO_STAFF_TOTP_BASE32}.\n` +
         `Organisation invitation without an account: ${DEMO_EXTERNAL_INVITEE} (link in Mailpit).\n` +
         `Explained suggestions:\n${samples.map((line) => `- ${line}`).join('\n')}\n`,
     );

@@ -12,6 +12,7 @@ import {
   type DevSeedResult,
   seedDevData,
 } from '../../scripts/dev-seed/seed-dev-data';
+import { DEMO_STAFF_TOTP_BASE32, seedDevConsole } from '../../scripts/dev-seed/seed-dev-console';
 import { seedDevContent } from '../../scripts/dev-seed/seed-dev-content';
 import { requestDatedStates, shiftDatedStates } from '../../scripts/dev-seed/seed-dev-dates';
 import { DEMO_PENDING_REQUESTS } from '../../scripts/dev-seed/dataset';
@@ -28,7 +29,8 @@ import { FixedClock } from '../../src/platform/kernel';
 import { createApiTestApp } from './support/api-app';
 import { query, truncateAllTables } from './support/database';
 import { TEST_LEGAL_VERSION } from './support/environment';
-import { browser, signIn } from './support/members';
+import { browser, signIn, twoFactorRequest } from './support/members';
+import { totp } from './support/totp';
 
 const COUNTED_TABLES = [
   'identity.users',
@@ -362,6 +364,28 @@ describe('development data', () => {
       );
       expect(Number(mention?.count)).toBe(1);
       expect(await seedDevContent(context, clock)).toMatchObject({ discussionComments: 0 });
+      // The console: an administrator and a moderator with their second factor, a failed job,
+      // a discrepancy and a draft methodology, once.
+      const consoleOptions = {
+        authSecret: process.env['AUTH_SECRET'] ?? '',
+        redisUrl: process.env['REDIS_URL'] ?? '',
+        queuePrefix: process.env['QUEUE_PREFIX'] ?? 'pitchorium',
+        now: new Date(),
+      };
+      expect(await seedDevConsole(handle.db, context, clock, consoleOptions)).toEqual({
+        staffSecondFactors: 2,
+        administrators: 1,
+        failedJobs: 1,
+        discrepancies: 1,
+        draftMethodologies: 1,
+      });
+      expect(await seedDevConsole(handle.db, context, clock, consoleOptions)).toEqual({
+        staffSecondFactors: 0,
+        administrators: 0,
+        failedJobs: 0,
+        discrepancies: 0,
+        draftMethodologies: 0,
+      });
       // ensureDemo is idempotent: it returns the existing DEMO version.
       await expect(
         context.get(MethodologiesService, { strict: false }).ensureDemo({
@@ -506,6 +530,24 @@ describe('development data', () => {
       missions: 0,
       invitations: 0,
     });
+  });
+
+  it('signs the demonstration administrator in with the documented second factor', async () => {
+    const agent = browser(app);
+    const first = await agent
+      .post('/v1/auth/sign-in/email')
+      .send({ email: `claudine.pierre.louis@${DEMO_EMAIL_DOMAIN}`, password: DEMO_PASSWORD })
+      .expect(200);
+    expect(first.body).toMatchObject({ twoFactorRedirect: true });
+    const verified = await twoFactorRequest(() =>
+      agent
+        .post('/v1/auth/two-factor/verify-totp')
+        .send({ code: totp(`otpauth://totp/demo?secret=${DEMO_STAFF_TOTP_BASE32}`) }),
+    );
+    expect(verified.status, JSON.stringify(verified.body)).toBe(200);
+    const me = await agent.get('/v1/me').expect(200);
+    expect(me.body.roles).toEqual(expect.arrayContaining(['admin', 'moderator']));
+    await agent.get('/v1/admin/capabilities').expect(200);
   });
 
   it('refuses to run in production', () => {
