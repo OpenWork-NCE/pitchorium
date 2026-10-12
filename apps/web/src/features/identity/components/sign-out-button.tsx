@@ -51,7 +51,8 @@ export function SignOutButton() {
       onClick={() => startTransition(signOut)}
     >
       <LogOut aria-hidden />
-      {t('signOut')}
+      {/* On a phone the icon alone, the name kept for assistive technologies. */}
+      <span className="max-sm:sr-only">{t('signOut')}</span>
     </Button>
   );
 }
