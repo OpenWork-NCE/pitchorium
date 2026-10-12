@@ -14,7 +14,11 @@ vi.mock('@pitchorium/api-client', async (importOriginal) => ({
   ...(await importOriginal<typeof ApiClient>()),
   teamControllerAccept: accept,
   // The hook of the generated client calls its own function: replaced as a whole.
-  useTeamControllerInvitations: () => ({ data: invitations, isPending: false, isSuccess: true }),
+  getTeamControllerInvitationsQueryOptions: () => ({
+    queryKey: ['/v1/me/team-invitations'],
+    queryFn: () => Promise.resolve(invitations),
+    initialData: invitations,
+  }),
 }));
 vi.mock('@/i18n/navigation', () => ({ useRouter: () => ({ push, replace: vi.fn() }) }));
 

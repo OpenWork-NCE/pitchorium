@@ -4,10 +4,10 @@ import {
   getTeamControllerInvitationsQueryKey,
   teamControllerAccept,
   teamControllerDecline,
-  useTeamControllerInvitations,
+  getTeamControllerInvitationsQueryOptions,
 } from '@pitchorium/api-client';
 import type { ProjectInvitation } from '@pitchorium/contracts';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQueryClient, useQuery } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Button, Card, Checkbox, EmptyState, Heading, Text, useAnnounce } from '@/components/ui';
@@ -24,7 +24,9 @@ import { COUNTERS_QUERY_KEY } from '@/lib/query/keys';
  */
 export function ProjectInvitations({ showEmpty = false }: { showEmpty?: boolean }) {
   const t = useTranslations('web.projects.invitations');
-  const invitations = useTeamControllerInvitations({ query: { staleTime: 30_000 } });
+  const invitations = useQuery(
+    getTeamControllerInvitationsQueryOptions({ query: { staleTime: 30_000 } }),
+  );
   const items = invitations.data?.items ?? [];
   if (items.length === 0 && !(showEmpty && invitations.isSuccess)) return null;
   return (

@@ -6,10 +6,10 @@ import {
   teamControllerLeave,
   teamControllerRemove,
   teamControllerUpdate,
-  useProjectsControllerPreview,
+  getProjectsControllerPreviewQueryOptions,
 } from '@pitchorium/api-client';
 import type { ProjectTeamMember, ProjectTeamRole } from '@pitchorium/contracts';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQueryClient, useQuery } from '@tanstack/react-query';
 import { UserPlus } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
@@ -51,7 +51,9 @@ export function TeamPanel() {
   const me = useCurrentMember().profile.handle;
   const queryClient = useQueryClient();
   // The preview lists every active member, consent or not; the page, those who consented.
-  const preview = useProjectsControllerPreview(project.id, { query: { staleTime: 0 } });
+  const preview = useQuery(
+    getProjectsControllerPreviewQueryOptions(project.id, { query: { staleTime: 0 } }),
+  );
   const owner = project.management?.viewerRole === 'owner';
   const members = preview.data?.team ?? [];
   const owners = members.filter((member) => member.role === 'owner').length;

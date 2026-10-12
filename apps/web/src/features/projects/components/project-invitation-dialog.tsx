@@ -1,6 +1,7 @@
 'use client';
 
-import { useTeamControllerInvitations } from '@pitchorium/api-client';
+import { getTeamControllerInvitationsQueryOptions } from '@pitchorium/api-client';
+import { useQuery } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { Dialog, DialogContent, Loading, Skeleton, Text } from '@/components/ui';
 import { ProjectInvitationAnswer } from './project-invitations';
@@ -38,7 +39,9 @@ function InvitationContent({
   onClose: () => void;
 }) {
   const t = useTranslations('web.projects.invitations');
-  const invitations = useTeamControllerInvitations({ query: { staleTime: 30_000 } });
+  const invitations = useQuery(
+    getTeamControllerInvitationsQueryOptions({ query: { staleTime: 30_000 } }),
+  );
   const invitation = invitations.data?.items.find((item) => item.project.slug === slug);
   return (
     <DialogContent title={t('dialogTitle', { title })} size="md">

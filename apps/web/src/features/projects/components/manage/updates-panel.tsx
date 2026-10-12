@@ -5,10 +5,10 @@ import {
   updatesControllerDelete,
   updatesControllerEdit,
   updatesControllerPublish,
-  useUpdatesControllerList,
+  getUpdatesControllerListQueryOptions,
 } from '@pitchorium/api-client';
 import type { ProjectUpdate } from '@pitchorium/contracts';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQueryClient, useQuery } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import {
@@ -44,10 +44,12 @@ const IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'] as const;
 export function UpdatesPanel() {
   const t = useTranslations('web.projects.manage.updates');
   const { project } = useProjectEditor();
-  const list = useUpdatesControllerList(
-    project.id,
-    { limit: 20 },
-    { query: { staleTime: 30_000 } },
+  const list = useQuery(
+    getUpdatesControllerListQueryOptions(
+      project.id,
+      { limit: 20 },
+      { query: { staleTime: 30_000 } },
+    ),
   );
   if (project.status === 'draft')
     return <Callout title={t('draftTitle')}>{t('draftBody')}</Callout>;

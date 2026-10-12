@@ -1,6 +1,7 @@
 'use client';
 
-import { useInterestsControllerList } from '@pitchorium/api-client';
+import { getInterestsControllerListQueryOptions } from '@pitchorium/api-client';
+import { useQuery } from '@tanstack/react-query';
 import type { FollowState } from '@pitchorium/contracts';
 import { useFormatter, useLocale, useTranslations } from 'next-intl';
 import { Button, Card, FundingProgress, Heading, Stat } from '@/components/ui';
@@ -22,10 +23,12 @@ export function OverviewPanel({ follow }: { follow: FollowState | null }) {
   const statuses = useTranslations('reference.projectStatuses');
   const locale = useLocale();
   const { project } = useProjectEditor();
-  const interests = useInterestsControllerList(
-    project.id,
-    { limit: 100 },
-    { query: { staleTime: 60_000 } },
+  const interests = useQuery(
+    getInterestsControllerListQueryOptions(
+      project.id,
+      { limit: 100 },
+      { query: { staleTime: 60_000 } },
+    ),
   );
   const state = fundingState(project.status, project.funding, {
     frozen: project.fundingFrozen,

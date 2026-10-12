@@ -1,9 +1,10 @@
 'use client';
 
 import {
-  useOrganizationsControllerMine,
-  useProfilesControllerReferenceData,
+  getOrganizationsControllerMineQueryOptions,
+  getProfilesControllerReferenceDataQueryOptions,
 } from '@pitchorium/api-client';
+import { useQuery } from '@tanstack/react-query';
 import { useLocale, useTranslations } from 'next-intl';
 import { useMemo } from 'react';
 import type { Control } from 'react-hook-form';
@@ -35,8 +36,12 @@ export function EssentialsFields({ control }: { control: Control<EssentialsValue
     has: (key: string) => boolean;
   };
   const locale = useLocale();
-  const data = useProfilesControllerReferenceData({ query: { staleTime: Infinity } }).data;
-  const mine = useOrganizationsControllerMine({ query: { staleTime: 60_000 } }).data;
+  const data = useQuery(
+    getProfilesControllerReferenceDataQueryOptions({ query: { staleTime: Infinity } }),
+  ).data;
+  const mine = useQuery(
+    getOrganizationsControllerMineQueryOptions({ query: { staleTime: 60_000 } }),
+  ).data;
   const options = useMemo(
     () => ({
       sectors: (data?.sectors ?? []).map(({ code }) => ({

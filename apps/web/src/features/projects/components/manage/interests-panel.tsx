@@ -1,6 +1,10 @@
 'use client';
 
-import { mediaControllerDownload, useInterestsControllerList } from '@pitchorium/api-client';
+import {
+  mediaControllerDownload,
+  getInterestsControllerListQueryOptions,
+} from '@pitchorium/api-client';
+import { useQuery } from '@tanstack/react-query';
 import type { ProjectInterest, ProjectInterestKind } from '@pitchorium/contracts';
 import { FileText } from 'lucide-react';
 import { useFormatter, useLocale, useTranslations } from 'next-intl';
@@ -32,10 +36,12 @@ export function InterestsPanel() {
   const t = useTranslations('web.projects.manage.interests');
   const kinds = useTranslations('reference.projectInterestKinds');
   const { project } = useProjectEditor();
-  const list = useInterestsControllerList(
-    project.id,
-    { limit: 100 },
-    { query: { staleTime: 30_000 } },
+  const list = useQuery(
+    getInterestsControllerListQueryOptions(
+      project.id,
+      { limit: 100 },
+      { query: { staleTime: 30_000 } },
+    ),
   );
   const [kind, setKind] = useState<ProjectInterestKind | typeof ALL>(ALL);
   const items = (list.data?.items ?? []).filter((item) => kind === ALL || item.kind === kind);
