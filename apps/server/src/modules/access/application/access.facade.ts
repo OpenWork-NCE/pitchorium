@@ -36,6 +36,11 @@ export class AccessFacade {
     return this.access.trustLevels(userId, emailVerified);
   }
 
+  /** Whether the actor may perform the action now, as a call would decide (queues). */
+  allows(actor: Actor, action: Action): Promise<boolean> {
+    return this.access.can(actor, action, selfResource(actor));
+  }
+
   /**
    * Asserts a second action within a route, for a refusal that depends on the request (the kind
    * of a moderation decision): the same policy, audit and error codes as a route.
