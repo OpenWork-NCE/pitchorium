@@ -15,6 +15,13 @@ describe('detectLanguage', () => {
     ).toBe('en');
   });
 
+  it('leaves another language, or a misread identifier, undetermined', () => {
+    expect(
+      detectLanguage('Estamos a instalar bombas solares para as hortelãs de Thiès nesta estação.'),
+    ).toBeNull();
+    expect(detectLanguage('Parcours manuel bf6026b3-df93-4607-8687-4102b4559c4f')).toBeNull();
+  });
+
   it('leaves a short or empty text undetermined', () => {
     expect(detectLanguage('Merci')).toBeNull();
     expect(detectLanguage(null)).toBeNull();
