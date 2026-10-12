@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import * as contracts from '@pitchorium/contracts';
-import { straightApostrophes } from './typography.js';
+import { breakableSpaces, straightApostrophes } from './typography.js';
 
 const { AUTH_ERROR_CODES, errorCodes, LABELLED_ENUMS, NOTIFICATION_TYPES, TECHNICAL_ENUMS } =
   contracts;
@@ -89,7 +89,7 @@ if (missingTexts.length > 0) {
   failures.push(`${manifest.sourceLocale}/notifications: missing ${missingTexts.join(', ')}`);
 }
 
-// French takes the typographic apostrophe (docs/design/voice.md).
+// French takes the typographic apostrophe and its non-breaking spaces (docs/design/voice.md).
 if (manifest.sourceLocale === 'fr') {
   const dir = join(localesDir, 'fr');
   const straight = readdirSync(dir)
@@ -102,6 +102,20 @@ if (manifest.sourceLocale === 'fr') {
     );
   if (straight.length > 0) {
     failures.push(`fr: straight apostrophes (use ’) in ${straight.join(', ')}`);
+  }
+  // A non-breaking space before « : ; ! ? » and inside guillemets (docs/design/voice.md).
+  const breakable = readdirSync(dir)
+    .filter((file) => file.endsWith('.json'))
+    .flatMap((file) =>
+      breakableSpaces(
+        JSON.parse(readFileSync(join(dir, file), 'utf8')) as Tree,
+        `${file.replace(/\.json$/, '')}.`,
+      ),
+    );
+  if (breakable.length > 0) {
+    failures.push(
+      `fr: breakable spaces (use U+00A0) before : ; ! ? » or after « in ${breakable.join(', ')}`,
+    );
   }
 }
 

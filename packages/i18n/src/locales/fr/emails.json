@@ -31,7 +31,7 @@
     "body": "Cliquez sur le bouton ci-dessous pour vous connecter. Ce lien ne fonctionne qu’une seule fois.",
     "action": "Me connecter",
     "expiry": "Ce lien expire dans {{minutes}} minutes.",
-    "ignore": "Si vous n’avez pas demandé ce lien, ignorez cet email : votre compte reste protégé."
+    "ignore": "Si vous n’avez pas demandé ce lien, ignorez cet email : votre compte reste protégé."
   },
   "passwordReset": {
     "subject": "Réinitialisation de votre mot de passe",
@@ -40,13 +40,13 @@
     "body": "Une réinitialisation du mot de passe de votre compte a été demandée. Le lien ci-dessous ne fonctionne qu’une seule fois. Toutes vos sessions seront fermées après le changement.",
     "action": "Choisir un nouveau mot de passe",
     "expiry": "Ce lien expire dans {{minutes}} minutes.",
-    "ignore": "Si vous n’êtes pas à l’origine de cette demande, ignorez cet email : votre mot de passe reste inchangé."
+    "ignore": "Si vous n’êtes pas à l’origine de cette demande, ignorez cet email : votre mot de passe reste inchangé."
   },
   "newSignIn": {
     "subject": "Nouvelle connexion à votre compte",
     "preview": "Une nouvelle connexion à votre compte Pitchorium a eu lieu.",
     "heading": "Bonjour {{name}},",
-    "body": "Une connexion à votre compte a eu lieu le {{signedInAt}} (UTC) depuis l’appareil suivant : {{device}}.",
+    "body": "Une connexion à votre compte a eu lieu le {{signedInAt}} (UTC) depuis l’appareil suivant : {{device}}.",
     "notYou": "Si ce n’était pas vous, fermez vos sessions et changez votre mot de passe sans attendre.",
     "action": "Vérifier la sécurité de mon compte",
     "reason": "Vous recevez cet email à chaque connexion depuis un nouvel appareil."
@@ -68,7 +68,7 @@
   "organizationNotice": {
     "greeting": "Bonjour {{name}},",
     "greetingAnonymous": "Bonjour,",
-    "reason": "Motif : {{reason}}",
+    "reason": "Motif : {{reason}}",
     "roles": {
       "owner": "propriétaire",
       "admin": "administrateur",
@@ -96,13 +96,13 @@
     "verification_requested": {
       "subject": "Demande de vérification reçue pour {{organization}}",
       "preview": "Votre demande de vérification sera examinée par un modérateur.",
-      "body": "Nous avons bien reçu la demande de vérification de {{organization}}. Un modérateur va l’examiner ; vous serez prévenu de sa décision par email.",
+      "body": "Nous avons bien reçu la demande de vérification de {{organization}}. Un modérateur va l’examiner ; vous serez prévenu de sa décision par email.",
       "action": "Voir l’organisation"
     },
     "verification_approved": {
       "subject": "{{organization}} est vérifiée",
       "preview": "Le badge de vérification est affiché sur la page de {{organization}}.",
-      "body": "La vérification de {{organization}} est acceptée : le badge de vérification est désormais affiché sur sa page.",
+      "body": "La vérification de {{organization}} est acceptée : le badge de vérification est désormais affiché sur sa page.",
       "action": "Voir l’organisation"
     },
     "verification_rejected": {
@@ -129,12 +129,12 @@
       "reward_crowdfunding": "Il s’agit d’une contribution avec contrepartie.",
       "love_money": "Il s’agit d’une contribution love money."
     },
-    "commission": "Pitchorium prélève une commission de {{commission}}. Le reste est versé au porteur par notre prestataire de paiement agréé, déduction faite de ses frais : Pitchorium ne détient jamais votre argent.",
-    "reward": "Contrepartie choisie : {{reward}}.",
+    "commission": "Pitchorium prélève une commission de {{commission}}. Le reste est versé au porteur par notre prestataire de paiement agréé, déduction faite de ses frais : Pitchorium ne détient jamais votre argent.",
+    "reward": "Contrepartie choisie : {{reward}}.",
     "action": "Voir le projet",
     "notTaxReceipt": "Cet email confirme votre paiement. Ce n’est pas un reçu fiscal.",
     "mentions": "L’impact du projet est auto-déclaré par son porteur. Un don n’est pas un titre financier, et un palier débloqué n’est pas une garantie de succès.",
-    "reference": "Référence de la contribution : {{reference}}"
+    "reference": "Référence de la contribution : {{reference}}"
   },
   "notification": {
     "greeting": "Bonjour {{name}},",
@@ -142,8 +142,8 @@
   },
   "notificationDigest": {
     "subject": {
-      "daily": "Votre résumé du jour : {{count}} notifications",
-      "weekly": "Votre résumé de la semaine : {{count}} notifications"
+      "daily": "Votre résumé du jour : {{count}} notifications",
+      "weekly": "Votre résumé de la semaine : {{count}} notifications"
     },
     "intro": {
       "daily": "Voici ce qui s’est passé aujourd’hui sur Pitchorium.",
@@ -172,20 +172,20 @@
     "report_action_taken": {
       "subject": "Votre signalement a été traité",
       "preview": "Une mesure a été prise.",
-      "body": "Votre signalement (référence {{reference}}) a été examiné : une mesure a été prise à l’égard du contenu signalé.",
+      "body": "Votre signalement (référence {{reference}}) a été examiné : une mesure a été prise à l’égard du contenu signalé.",
       "note": "Merci d’avoir contribué à la sécurité de Pitchorium."
     },
     "report_no_action": {
       "subject": "Votre signalement a été traité",
       "preview": "Aucune mesure n’a été prise.",
-      "body": "Votre signalement (référence {{reference}}) a été examiné : après analyse, aucune mesure n’a été prise à l’égard du contenu signalé.",
+      "body": "Votre signalement (référence {{reference}}) a été examiné : après analyse, aucune mesure n’a été prise à l’égard du contenu signalé.",
       "note": "Si vous estimez que ce contenu est illégal, vous pouvez aussi saisir les autorités compétentes."
     },
     "account_erased": {
       "subject": "Votre compte Pitchorium a été supprimé",
       "preview": "Suppression effectuée le {{reference}}.",
       "body": "Comme vous l’avez demandé, votre compte Pitchorium et vos données ont été supprimés le {{reference}} (UTC).",
-      "note": "Certaines données sont conservées sous une forme pseudonymisée pour nos obligations légales : paiements, preuves d’acceptation des conditions et décisions de modération."
+      "note": "Certaines données sont conservées sous une forme pseudonymisée pour nos obligations légales : paiements, preuves d’acceptation des conditions et décisions de modération."
     }
   }
 }

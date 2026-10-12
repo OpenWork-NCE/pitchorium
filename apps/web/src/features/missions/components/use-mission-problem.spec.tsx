@@ -24,7 +24,7 @@ describe('refusals of a mission', () => {
   it('explains the volunteer nature when the vocabulary of a job offer is refused', () => {
     const { result } = renderHook(() => useMissionProblem(), { wrapper: wrapper('fr') });
     expect(result.current(problem('MISSIONS_JOB_POSTING_REFUSED'))).toBe(
-      'Une mission est bénévole : retirez le vocabulaire d’une offre d’emploi (salaire, rémunération, contrat, CDI, recrutement, temps plein…).',
+      'Une mission est bénévole\u00a0: retirez le vocabulaire d’une offre d’emploi (salaire, rémunération, contrat, CDI, recrutement, temps plein…).',
     );
     const english = renderHook(() => useMissionProblem(), { wrapper: wrapper('en') });
     expect(english.result.current(problem('MISSIONS_JOB_POSTING_REFUSED'))).toMatch(
@@ -35,7 +35,7 @@ describe('refusals of a mission', () => {
   it('gives the bounds of hours of each format and names the hat to add', () => {
     const { result } = renderHook(() => useMissionProblem(), { wrapper: wrapper('fr') });
     expect(result.current(problem('MISSIONS_HOURS_EXCEEDED'))).toBe(
-      'Trop d’heures pour ce format : 8 h au plus pour une session, 80 h pour une mission courte.',
+      'Trop d’heures pour ce format\u00a0: 8 h au plus pour une session, 80 h pour une mission courte.',
     );
     expect(result.current(problem('MISSIONS_HAT_REQUIRED'))).toMatch(/casquette expert ou mentor/);
   });

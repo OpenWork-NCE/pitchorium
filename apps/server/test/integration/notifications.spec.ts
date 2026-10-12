@@ -450,7 +450,7 @@ describe('notifications', () => {
     });
     const emails = worker.get(NotificationEmailsService);
     expect(await emails.digests()).toBe(1);
-    await mailpit.waitFor(kofi.email, 'Votre résumé du jour : 1 notifications');
+    await mailpit.waitFor(kofi.email, 'Votre résumé du jour\u00a0: 1 notifications');
     expect(await digestsTo(awa.email)).toHaveLength(0);
     // 12:30 UTC: 08:30 in Port-au-Prince; Paris already had its digest today.
     clock.set(new Date('2026-10-12T12:30:00Z'));

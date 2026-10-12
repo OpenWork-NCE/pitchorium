@@ -4,16 +4,16 @@
     "two": "{{first}} · {{second}}"
   },
   "reasons": {
-    "need_matches_hat": "Peut répondre à votre besoin : {{need}}",
-    "hat_matches_need": "Cherche ce que vous apportez : {{need}}",
+    "need_matches_hat": "Peut répondre à votre besoin : {{need}}",
+    "hat_matches_need": "Cherche ce que vous apportez : {{need}}",
     "mentoring_available": "Propose du mentorat",
     "mentoring_wanted": "Cherche du mentorat, que vous proposez",
-    "shared_sector": "Secteur commun : {{sector}}",
+    "shared_sector": "Secteur commun : {{sector}}",
     "country_in_intervention": {
-      "seeker": "Intervient dans votre pays : {{country}}",
-      "team": "Intervient dans un pays du projet : {{country}}"
+      "seeker": "Intervient dans votre pays : {{country}}",
+      "team": "Intervient dans un pays du projet : {{country}}"
     },
-    "intervenes_in_country": "Dans un pays où vous intervenez : {{country}}",
+    "intervenes_in_country": "Dans un pays où vous intervenez : {{country}}",
     "ticket_fits_target": {
       "seeker": "Votre financement visé entre dans son ticket",
       "helper": "Son financement visé entre dans votre ticket",
@@ -21,18 +21,18 @@
       "team": "L’objectif du projet entre dans son ticket"
     },
     "instruments_compatible": {
-      "helper": "Instrument que vous pratiquez : {{instrument}}",
-      "team": "Instrument accepté par le projet : {{instrument}}"
+      "helper": "Instrument que vous pratiquez : {{instrument}}",
+      "team": "Instrument accepté par le projet : {{instrument}}"
     },
-    "same_country_other_sector": "Même pays ({{country}}), autre secteur : {{sector}}",
-    "same_sector_other_country": "Même secteur ({{sector}}), autre pays : {{country}}",
-    "mission_matches_need": "Répond à votre besoin : {{need}}",
-    "mission_matches_hat": "Cherche votre profil : {{hat}}",
+    "same_country_other_sector": "Même pays ({{country}}), autre secteur : {{sector}}",
+    "same_sector_other_country": "Même secteur ({{sector}}), autre pays : {{country}}",
+    "mission_matches_need": "Répond à votre besoin : {{need}}",
+    "mission_matches_hat": "Cherche votre profil : {{hat}}",
     "mission_reachable": {
       "remote": "À distance",
-      "country": "Dans l’un de vos pays : {{country}}"
+      "country": "Dans l’un de vos pays : {{country}}"
     },
-    "event_in_country": "Dans l’un de vos pays : {{country}}",
-    "shared_language": "Langue que vous parlez : {{language}}"
+    "event_in_country": "Dans l’un de vos pays : {{country}}",
+    "shared_language": "Langue que vous parlez : {{language}}"
   }
 }

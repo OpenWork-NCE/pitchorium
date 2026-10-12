@@ -23,7 +23,7 @@ Comment Pitchorium parle à ses visiteurs et à ses membres : site public, inter
 
 - Titres : une phrase courte, avec son point quand elle affirme (« Des projets à découvrir. »), sans point quand elle nomme (« Transparence et frais »).
 - Boutons : un verbe à l'infinitif et son objet (« Rejoindre Pitchorium », « Voir tous les projets »), jamais « Cliquez ici ».
-- Typographie française : espace insécable avant « : ; ! ? » et dans « « » », apostrophe typographique (’, jamais l'apostrophe droite : `pnpm i18n:check` la refuse dans tous les catalogues français), tiret demi-cadratin dans « Afrique–Diaspora ».
+- Typographie française : espace insécable avant « : ; ! ? » et dans « « » », apostrophe typographique (’, jamais l'apostrophe droite), espace insécable U+00A0 avant « : ; ! ? » et dans « « » » (`pnpm i18n:check` refuse l'une et l'autre faute dans tous les catalogues français), tiret demi-cadratin dans « Afrique–Diaspora ».
 
 ## À faire, à éviter
 

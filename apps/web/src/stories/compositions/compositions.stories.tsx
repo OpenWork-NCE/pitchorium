@@ -533,7 +533,7 @@ export const FormWithServerErrors: Story = {
     const first = await canvas.findByRole('group', { name: 'Le formulaire contient 1 erreur.' });
     await waitFor(() => expect(first).toHaveFocus());
     await userEvent.click(
-      within(first).getByRole('link', { name: 'Fin : La fin doit être après le début.' }),
+      within(first).getByRole('link', { name: 'Fin\u00a0: La fin doit être après le début.' }),
     );
     await expect(end.getByRole('spinbutton', { name: 'Jour' })).toHaveFocus();
     // Fifteen days later: the browser accepts it, the api refuses it with its precise reason.
@@ -543,7 +543,7 @@ export const FormWithServerErrors: Story = {
     await waitFor(() => expect(summary).toHaveFocus());
     await expect(
       within(summary).getByRole('link', {
-        name: 'Fin : Un événement dure 14 jours au plus : rapprochez la fin du début.',
+        name: 'Fin\u00a0: Un événement dure 14 jours au plus\u00a0: rapprochez la fin du début.',
       }),
     ).toBeVisible();
     await expect(canvas.getByRole('textbox', { name: 'Lien de la visioconférence' })).toBeValid();

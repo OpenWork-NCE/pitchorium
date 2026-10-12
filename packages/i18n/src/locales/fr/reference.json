@@ -255,9 +255,9 @@
     "mining_quarrying": "Activités extractives",
     "manufacturing": "Activités de fabrication",
     "energy": "Production et distribution d’électricité, de gaz, de vapeur et climatisation",
-    "water_waste": "Distribution d’eau ; assainissement, gestion des déchets et dépollution",
+    "water_waste": "Distribution d’eau ; assainissement, gestion des déchets et dépollution",
     "construction": "Construction",
-    "trade": "Commerce de gros et de détail ; réparation de véhicules automobiles et de motocycles",
+    "trade": "Commerce de gros et de détail ; réparation de véhicules automobiles et de motocycles",
     "transport_storage": "Transport et entreposage",
     "accommodation_food": "Hébergement et restauration",
     "information_communication": "Information et communication",
@@ -265,7 +265,7 @@
     "real_estate": "Activités immobilières",
     "professional_scientific_technical": "Activités professionnelles, scientifiques et techniques",
     "administrative_support": "Activités de services administratifs et d’appui",
-    "public_administration": "Administration publique et défense ; sécurité sociale obligatoire",
+    "public_administration": "Administration publique et défense ; sécurité sociale obligatoire",
     "education": "Enseignement",
     "health_social_work": "Santé humaine et action sociale",
     "arts_entertainment_recreation": "Arts, spectacles et activités récréatives",
@@ -650,8 +650,8 @@
     "restricted": "Restreint"
   },
   "payoutChangeRefusalReasons": {
-    "campaign_in_progress": "Une de vos campagnes est en cours de financement : changez de compte de versement après sa clôture.",
-    "payments_pending": "Des paiements sont encore en attente sur votre compte de versement actuel : réessayez quand ils sont terminés.",
+    "campaign_in_progress": "Une de vos campagnes est en cours de financement : changez de compte de versement après sa clôture.",
+    "payments_pending": "Des paiements sont encore en attente sur votre compte de versement actuel : réessayez quand ils sont terminés.",
     "same_option": "C’est déjà votre compte de versement."
   },
   "kycStatuses": {

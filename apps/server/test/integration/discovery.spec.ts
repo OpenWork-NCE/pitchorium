@@ -295,7 +295,7 @@ describe('discovery', () => {
       'ticket_fits_target',
     ]);
     expect(suggestionSentenceText('fr', aminaSuggestion!.sentence)).toBe(
-      'Peut répondre à votre besoin : Mentorat · secteur commun : Agriculture',
+      'Peut répondre à votre besoin\u00a0: Mentorat · secteur commun\u00a0: Agriculture',
     );
     const complementary = await suggestions(fatou, 'complementary_entrepreneurs');
     expect(complementary.map((item) => item.candidate.title)).toEqual(['Kofi Mensah']);

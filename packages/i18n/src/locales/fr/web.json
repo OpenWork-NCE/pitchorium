@@ -61,18 +61,18 @@
     "title": "Une erreur est survenue.",
     "body": "Le problème a été signalé. Vous pouvez réessayer dans un instant.",
     "retry": "Réessayer",
-    "reference": "Référence : {{reference}}",
+    "reference": "Référence : {{reference}}",
     "home": "Revenir à l’accueil"
   },
   "health": {
     "title": "État de l’api",
-    "description": "Page de développement : elle n’existe pas en production.",
+    "description": "Page de développement : elle n’existe pas en production.",
     "api": "Origine de l’api",
     "status": "Statut",
     "up": "Disponible",
     "down": "Indisponible",
     "checks": "Vérifications",
-    "latency": "Temps de réponse : {{milliseconds}} ms",
+    "latency": "Temps de réponse : {{milliseconds}} ms",
     "activeLocales": "Langues actives",
     "refresh": "Actualiser"
   },
@@ -160,10 +160,10 @@
       "remove": "Retirer {{name}}",
       "states": {
         "pending": "En attente",
-        "uploading": "Envoi : {{percent}} %",
+        "uploading": "Envoi : {{percent}} %",
         "processing": "Vérification en cours",
         "ready": "Prêt",
-        "rejected": "Refusé : {{reason}}"
+        "rejected": "Refusé : {{reason}}"
       }
     },
     "truncate": {
@@ -221,7 +221,7 @@
       "cancel": "Annuler",
       "pending": "Action en cours",
       "phraseMissing": "Saisissez le texte demandé pour confirmer.",
-      "typeToConfirm": "Pour confirmer, saisissez :"
+      "typeToConfirm": "Pour confirmer, saisissez :"
     },
     "toast": {
       "region": "Notifications",
@@ -230,7 +230,7 @@
     "errorState": {
       "title": "Ce contenu n’a pas pu être chargé.",
       "description": "Vérifiez votre connexion, puis réessayez.",
-      "reference": "Référence : {{reference}}",
+      "reference": "Référence : {{reference}}",
       "retry": "Réessayer",
       "retrying": "Nouvel essai en cours"
     },
@@ -240,11 +240,11 @@
       "escape": "Échap",
       "empty": "Aucune action ne correspond.",
       "searchGroup": "Recherche",
-      "searchFor": "Rechercher « {{query}} »",
+      "searchFor": "Rechercher « {{query}} »",
       "actions": "Actions rapides",
       "recent": "Recherches récentes",
       "clearRecent": "Effacer les recherches récentes",
-      "noResults": "Aucun résultat direct : la page de résultats cherche plus largement.",
+      "noResults": "Aucun résultat direct : la page de résultats cherche plus largement.",
       "list": "Résultats et actions"
     },
     "shortcuts": {
@@ -257,21 +257,21 @@
   "notices": {
     "machineTranslation": "{{mention}} ({{provider}}).",
     "notTaxReceipt": "Cette confirmation n’est pas un reçu fiscal.",
-    "moderated": "Contenu retiré : la modération a masqué ce contenu."
+    "moderated": "Contenu retiré : la modération a masqué ce contenu."
   },
   "forms": {
     "summary": {
       "one": "Le formulaire contient {{count}} erreur.",
       "other": "Le formulaire contient {{count}} erreurs.",
       "form": "L’envoi n’a pas abouti.",
-      "separator": " : "
+      "separator": " : "
     },
     "unexpected": "L’opération n’a pas abouti. Réessayez dans un instant.",
-    "reference": "(référence : {{reference}})",
+    "reference": "(référence : {{reference}})",
     "issues": {
       "required": "Renseignez ce champ.",
       "invalid_type": "Saisissez une valeur valide pour ce champ.",
-      "invalid": "Corrigez cette valeur : elle ne respecte pas la règle de ce champ.",
+      "invalid": "Corrigez cette valeur : elle ne respecte pas la règle de ce champ.",
       "too_small": {
         "string": "Saisissez au moins {{minimum}} caractères.",
         "number": "Saisissez un nombre supérieur ou égal à {{minimum}}.",
@@ -293,37 +293,37 @@
       "invalid_format": {
         "email": "Saisissez une adresse email complète, par exemple nom@exemple.org.",
         "url": "Saisissez une adresse web complète, par exemple https://exemple.org.",
-        "uuid": "Cet identifiant n’est pas reconnu : reprenez-le depuis sa page.",
-        "date": "Saisissez une date complète : jour, mois et année.",
+        "uuid": "Cet identifiant n’est pas reconnu : reprenez-le depuis sa page.",
+        "date": "Saisissez une date complète : jour, mois et année.",
         "datetime": "Saisissez une date et une heure complètes.",
-        "time": "Saisissez une heure complète : heures et minutes.",
+        "time": "Saisissez une heure complète : heures et minutes.",
         "generic": "Corrigez le format de cette valeur."
       },
       "invalid_value": "Choisissez l’une des options proposées.",
-      "invalid_union": "Corrigez cette valeur : elle ne correspond à aucune des formes attendues.",
+      "invalid_union": "Corrigez cette valeur : elle ne correspond à aucune des formes attendues.",
       "not_multiple_of": "Saisissez une valeur qui respecte le pas attendu.",
-      "unrecognized_keys": "Rechargez la page : ce formulaire contient des champs inconnus."
+      "unrecognized_keys": "Rechargez la page : ce formulaire contient des champs inconnus."
     },
     "fields": {
       "handle": {
-        "invalid_format": "Utilisez de 3 à 30 caractères : lettres minuscules sans accent, chiffres et tirets, sans tiret au début, à la fin ni deux de suite."
+        "invalid_format": "Utilisez de 3 à 30 caractères : lettres minuscules sans accent, chiffres et tirets, sans tiret au début, à la fin ni deux de suite."
       },
       "linkedin": {
         "custom": "Saisissez l’adresse d’un profil sur linkedin.com, par exemple https://www.linkedin.com/in/votre-nom.",
-        "invalid_format": "Cette adresse n’est pas valide : saisissez l’adresse complète d’un profil, par exemple https://www.linkedin.com/in/votre-nom.",
-        "url": "Cette adresse n’est pas valide : saisissez l’adresse complète d’un profil, par exemple https://www.linkedin.com/in/votre-nom.",
+        "invalid_format": "Cette adresse n’est pas valide : saisissez l’adresse complète d’un profil, par exemple https://www.linkedin.com/in/votre-nom.",
+        "url": "Cette adresse n’est pas valide : saisissez l’adresse complète d’un profil, par exemple https://www.linkedin.com/in/votre-nom.",
         "https_required": "L’adresse du profil doit commencer par https:// (http:// n’est pas accepté).",
         "linkedin_host": "Saisissez l’adresse d’un profil sur linkedin.com, par exemple https://www.linkedin.com/in/votre-nom."
       },
       "website": {
-        "invalid_format": "Cette adresse n’est pas valide : saisissez l’adresse complète du site, par exemple https://exemple.org.",
-        "url": "Cette adresse n’est pas valide : saisissez l’adresse complète du site, par exemple https://exemple.org.",
+        "invalid_format": "Cette adresse n’est pas valide : saisissez l’adresse complète du site, par exemple https://exemple.org.",
+        "url": "Cette adresse n’est pas valide : saisissez l’adresse complète du site, par exemple https://exemple.org.",
         "https_required": "L’adresse du site doit commencer par https:// (http:// n’est pas accepté)."
       },
       "onlineUrl": {
-        "invalid_format": "Ce lien n’est pas une adresse web valide : copiez le lien complet de la visioconférence, par exemple https://meet.exemple.org/atelier.",
-        "required": "Ajoutez le lien de la visioconférence : il est obligatoire pour un événement en ligne ou hybride.",
-        "url": "Ce lien n’est pas une adresse web valide : copiez le lien complet de la visioconférence, par exemple https://meet.exemple.org/atelier.",
+        "invalid_format": "Ce lien n’est pas une adresse web valide : copiez le lien complet de la visioconférence, par exemple https://meet.exemple.org/atelier.",
+        "required": "Ajoutez le lien de la visioconférence : il est obligatoire pour un événement en ligne ou hybride.",
+        "url": "Ce lien n’est pas une adresse web valide : copiez le lien complet de la visioconférence, par exemple https://meet.exemple.org/atelier.",
         "https_required": "Le lien de la visioconférence doit commencer par https:// (http:// n’est pas accepté)."
       },
       "startsAt": {
@@ -372,9 +372,9 @@
       "endsAfterStart": "La fin doit être après le début."
     },
     "problems": {
-      "EVENTS_SCHEDULE_INVALID": "Vérifiez les dates : la fin doit être après le début, l’événement dure {{days}} jours au plus et ne peut pas être déjà terminé.",
-      "MISSIONS_JOB_POSTING_REFUSED": "Une mission est bénévole : retirez le vocabulaire d’une offre d’emploi (salaire, rémunération, contrat, CDI, recrutement, temps plein…). Décrivez l’aide apportée, pas un poste.",
-      "MISSIONS_HOURS_EXCEEDED": "Trop d’heures pour ce format : {{session}} h au plus pour une session, {{short}} h pour une mission courte. Au-delà, ce serait un emploi, pas du mécénat de compétences.",
+      "EVENTS_SCHEDULE_INVALID": "Vérifiez les dates : la fin doit être après le début, l’événement dure {{days}} jours au plus et ne peut pas être déjà terminé.",
+      "MISSIONS_JOB_POSTING_REFUSED": "Une mission est bénévole : retirez le vocabulaire d’une offre d’emploi (salaire, rémunération, contrat, CDI, recrutement, temps plein…). Décrivez l’aide apportée, pas un poste.",
+      "MISSIONS_HOURS_EXCEEDED": "Trop d’heures pour ce format : {{session}} h au plus pour une session, {{short}} h pour une mission courte. Au-delà, ce serait un emploi, pas du mécénat de compétences.",
       "MISSIONS_PROJECT_ROLE_REQUIRED": "Seule l’équipe du projet peut publier une demande en son nom.",
       "MISSIONS_FIELDS_INVALID": "Une mission sur place indique au moins un pays."
     },
@@ -393,13 +393,13 @@
     "problemReasons": {
       "EVENTS_SCHEDULE_INVALID": {
         "ends_before_start": "La fin doit être après le début.",
-        "too_long": "Un événement dure {{days}} jours au plus : rapprochez la fin du début.",
-        "already_over": "Cet événement est déjà terminé : choisissez une fin à venir."
+        "too_long": "Un événement dure {{days}} jours au plus : rapprochez la fin du début.",
+        "already_over": "Cet événement est déjà terminé : choisissez une fin à venir."
       }
     }
   },
   "access": {
-    "missing": "À compléter d’abord : {{list}}.",
+    "missing": "À compléter d’abord : {{list}}.",
     "denied": "Cette action ne vous est pas ouverte."
   },
   "counters": {
@@ -434,14 +434,14 @@
     },
     "offline": {
       "title": "Vous êtes hors ligne.",
-      "body": "Les pages déjà chargées restent consultables ; vos actions partiront au retour de la connexion.",
+      "body": "Les pages déjà chargées restent consultables ; vos actions partiront au retour de la connexion.",
       "pending": {
         "one": "{{count}} action en attente.",
         "other": "{{count}} actions en attente."
       },
       "sent": {
-        "one": "Connexion rétablie : {{count}} action envoyée.",
-        "other": "Connexion rétablie : {{count}} actions envoyées."
+        "one": "Connexion rétablie : {{count}} action envoyée.",
+        "other": "Connexion rétablie : {{count}} actions envoyées."
       },
       "back": "Connexion rétablie."
     }
@@ -459,7 +459,7 @@
     },
     "page": {
       "title": "Recherche",
-      "titleFor": "Résultats pour « {{query}} »",
+      "titleFor": "Résultats pour « {{query}} »",
       "description": "Cherchez des personnes, des organisations, des projets, des événements et des missions sur Pitchorium.",
       "lede": "Personnes, organisations, projets, événements et missions, avec les fautes de frappe et les accents pris en compte.",
       "ledeVisitor": "Vous cherchez parmi ce qui est public. Connectez-vous pour voir aussi ce que les membres partagent entre eux.",
@@ -491,11 +491,11 @@
         "one": "{{count}} résultat affiché",
         "other": "{{count}} résultats affichés"
       },
-      "empty": "Aucun résultat pour « {{query}} »",
+      "empty": "Aucun résultat pour « {{query}} »",
       "emptyFiltered": "Aucun résultat avec ces filtres",
       "emptyBody": "Vérifiez l’orthographe, essayez un mot plus court ou retirez un filtre.",
       "broader": "Chercher sans les filtres",
-      "broaderQuery": "Chercher « {{query}} »",
+      "broaderQuery": "Chercher « {{query}} »",
       "elsewhere": "Ou parcourez",
       "links": {
         "discover": "Découvrir",
@@ -509,10 +509,10 @@
     }
   },
   "actions": {
-    "goTo": "Aller à : {{section}}",
+    "goTo": "Aller à : {{section}}",
     "markAllRead": "Marquer toutes les notifications comme lues",
     "markAllReadDone": "Notifications marquées comme lues.",
-    "queued": "Hors ligne : l’action partira au retour de la connexion.",
+    "queued": "Hors ligne : l’action partira au retour de la connexion.",
     "toDark": "Passer au thème sombre",
     "toLight": "Passer au thème clair",
     "shortcuts": "Afficher les raccourcis clavier",
@@ -522,7 +522,7 @@
     "missions": "Missions"
   },
   "shortcuts": {
-    "goTo": "Aller à : {{section}}",
+    "goTo": "Aller à : {{section}}",
     "navigation": "Navigation"
   },
   "placeholder": {
@@ -580,7 +580,7 @@
       "jobs": "Aller aux tâches en échec"
     },
     "common": {
-      "audited": "Ces données sont personnelles : votre consultation est inscrite au journal d’audit.",
+      "audited": "Ces données sont personnelles : votre consultation est inscrite au journal d’audit.",
       "network": "La connexion a été perdue. Vérifiez votre réseau, puis réessayez.",
       "loadMore": "Afficher plus",
       "none": "Aucun",
@@ -597,14 +597,14 @@
       "filters": "Filtres",
       "all": "Tous",
       "search": "Rechercher",
-      "searchHint": "Appuyez sur « / » pour chercher.",
-      "requestId": "Référence : {{id}}"
+      "searchHint": "Appuyez sur « / » pour chercher.",
+      "requestId": "Référence : {{id}}"
     },
     "reauthentication": {
       "title": "Reconnectez-vous pour continuer",
       "body": "Cette action demande une connexion de moins de {{minutes}} minutes. Vous reviendrez ici, l’action prête à reprendre.",
       "action": "Se reconnecter",
-      "hint": "Action sensible : une connexion de moins de {{minutes}} minutes est demandée."
+      "hint": "Action sensible : une connexion de moins de {{minutes}} minutes est demandée."
     },
     "dashboard": {
       "title": "Tableau de bord",
@@ -643,7 +643,7 @@
       "searchLabel": "Membre",
       "searchPlaceholder": "Email, nom ou identifiant public",
       "prompt": "Tapez au moins deux caractères pour lancer la recherche.",
-      "results": "Membres trouvés pour « {{query}} »",
+      "results": "Membres trouvés pour « {{query}} »",
       "noResult": "Aucun membre ne correspond.",
       "noResultHint": "Vérifiez l’orthographe, ou cherchez par l’email complet.",
       "verified": "Vérifié",
@@ -674,13 +674,13 @@
       "createdAt": "Inscription",
       "roles": "Rôles",
       "noRole": "Aucun rôle de modération ni d’administration.",
-      "roleExplanation": "Un rôle de modération ou d’administration exige la double authentification : le membre l’active avant d’ouvrir la console. Attribuer un rôle ferme toutes ses sessions.",
+      "roleExplanation": "Un rôle de modération ou d’administration exige la double authentification : le membre l’active avant d’ouvrir la console. Attribuer un rôle ferme toutes ses sessions.",
       "grantRoleLabel": "Rôle à attribuer",
       "grantRole": "Attribuer le rôle",
       "revokeRole": "Retirer",
-      "grantTitle": "Attribuer le rôle {{role}} à {{name}} ?",
+      "grantTitle": "Attribuer le rôle {{role}} à {{name}} ?",
       "grantDescription": "Toutes ses sessions seront fermées. Le membre devra se reconnecter et activer la double authentification pour utiliser la console.",
-      "revokeTitle": "Retirer le rôle {{role}} à {{name}} ?",
+      "revokeTitle": "Retirer le rôle {{role}} à {{name}} ?",
       "revokeDescription": "Le membre perd aussitôt l’accès aux outils de ce rôle. Le dernier administrateur ne peut pas être retiré.",
       "roleGranted": "Rôle {{role}} attribué.",
       "roleRevoked": "Rôle {{role}} retiré.",
@@ -695,7 +695,7 @@
       "sessions": "Sessions ouvertes ({{count}})",
       "noSession": "Aucune session ouverte.",
       "revokeSessions": "Déconnecter partout",
-      "revokeSessionsTitle": "Déconnecter {{name}} de tous ses appareils ?",
+      "revokeSessionsTitle": "Déconnecter {{name}} de tous ses appareils ?",
       "revokeSessionsDescription": "Chaque session ouverte est fermée. Le membre pourra se reconnecter aussitôt.",
       "sessionsRevoked": "Sessions fermées.",
       "lastActive": "Active",
@@ -718,7 +718,7 @@
     },
     "moderation": {
       "title": "File de modération",
-      "description": "Les dossiers par priorité : une fraude sur un projet en financement passe avant tout, puis le plus ancien.",
+      "description": "Les dossiers par priorité : une fraude sur un projet en financement passe avant tout, puis le plus ancien.",
       "queueCaption": "Dossiers de modération",
       "emptyQueue": "Aucun dossier ne correspond.",
       "emptyQueueHint": "Élargissez les filtres, ou revenez plus tard.",
@@ -752,15 +752,15 @@
         "signal": "Signal automatique"
       },
       "priority": {
-        "reason": "motif le plus grave : {{reason}}",
+        "reason": "motif le plus grave : {{reason}}",
         "reports": "{{count}} signalements",
         "signal": "signal automatique",
-        "signalKind": "signal : {{kind}}",
+        "signalKind": "signal : {{kind}}",
         "funding_fraud": "fraude sur un projet en financement"
       },
       "case": {
         "title": "Dossier",
-        "target": "Ce qui est signalé : {{type}}",
+        "target": "Ce qui est signalé : {{type}}",
         "targetGone": "Le contenu signalé n’existe plus.",
         "status": {
           "hidden": "Masqué",
@@ -771,14 +771,14 @@
         "reportedMessage": "Message signalé",
         "openTarget": "Ouvrir sa page",
         "reports": "Signalements ({{count}})",
-        "fromSignal": "Dossier ouvert par un signal automatique ({{kind}}) : la décision reste humaine.",
+        "fromSignal": "Dossier ouvert par un signal automatique ({{kind}}) : la décision reste humaine.",
         "fromStaff": "Dossier ouvert depuis la fiche du membre.",
         "anonymous": "Sans compte",
         "by": "Par {{name}}",
         "decisions": "Décisions",
         "decidedBy": "Décidé par {{name}}",
         "appeal": "Appel du membre",
-        "appealOutcome": "Décision finale de {{name}} :",
+        "appealOutcome": "Décision finale de {{name}} :",
         "summary": "En bref",
         "statusLabel": "Statut",
         "open": "Ouvert",
@@ -804,16 +804,16 @@
         "title": "Décider",
         "kind": "Décision",
         "kinds": {
-          "dismiss": "Le contenu reste en ligne ; les auteurs des signalements sont informés.",
+          "dismiss": "Le contenu reste en ligne ; les auteurs des signalements sont informés.",
           "hide": "Le contenu n’est plus visible que par son auteur, qui peut faire appel.",
-          "remove": "Le contenu est retiré ; son auteur peut faire appel.",
+          "remove": "Le contenu est retiré ; son auteur peut faire appel.",
           "warn": "Le membre reçoit un avertissement motivé.",
           "suspend": "Le membre ne peut plus publier, écrire ni contribuer pendant la durée choisie.",
-          "freeze_project": "Le projet n’accepte plus aucune contribution ; des remboursements restent possibles."
+          "freeze_project": "Le projet n’accepte plus aucune contribution ; des remboursements restent possibles."
         },
         "reason": "Motif",
         "statement": "Exposé des motifs",
-        "statementHint": "Partez du modèle et décrivez les faits constatés : la personne concernée lit ce texte.",
+        "statementHint": "Partez du modèle et décrivez les faits constatés : la personne concernée lit ce texte.",
         "statementLength": "Écrivez au moins {{min}} caractères.",
         "statementEmpty": "Exposé des motifs à rédiger.",
         "ground": "Fondement",
@@ -825,28 +825,28 @@
         "daysHint": "De 1 à {{max}} jours pour votre rôle.",
         "daysInvalid": "Choisissez une durée de 1 à {{max}} jours.",
         "preview": "Ce que verra la personne concernée",
-        "previewHint": "L’exposé envoyé par notification et par email, et affiché dans sa page « Modération ».",
+        "previewHint": "L’exposé envoyé par notification et par email, et affiché dans sa page « Modération ».",
         "previewDays": "Suspension de {{count}} jours à partir de la décision.",
         "previewPermanent": "Suspension définitive.",
         "submit": "Décider",
         "deciding": "Décision…",
         "decided": "Décision enregistrée.",
-        "confirmTitle": "Confirmer la décision : {{kind}} ?",
+        "confirmTitle": "Confirmer la décision : {{kind}} ?",
         "confirmDescription": "La décision s’applique aussitôt et la personne concernée reçoit son exposé des motifs. Elle peut faire appel.",
         "confirmIrreversible": "Cette décision ne se défait que par un appel accueilli. Saisissez la phrase pour confirmer.",
-        "confirm": "Confirmer : {{kind}}",
+        "confirm": "Confirmer : {{kind}}",
         "phraseFreeze": "geler le projet",
         "phrasePermanent": "suspendre définitivement"
       },
       "templates": {
-        "spam": "Ce contenu ({{target}}) diffuse des sollicitations commerciales ou répétées que les conditions d’utilisation n’autorisent pas. Faits constatés : à préciser.",
-        "harassment": "Ce contenu ({{target}}) vise une personne de façon insultante, menaçante ou répétée, ce que les conditions d’utilisation interdisent. Faits constatés : à préciser.",
-        "fraud": "Ce contenu ({{target}}) présente des éléments trompeurs liés à l’argent ou à des paiements hors des protections de la plateforme. Faits constatés : à préciser.",
-        "illegal_content": "Ce contenu ({{target}}) a été signalé comme illicite ; après examen, il contrevient à la loi applicable. Faits constatés : à préciser.",
-        "misleading_information": "Ce contenu ({{target}}) présente des informations inexactes ou non sourcées qui peuvent induire les membres en erreur. Faits constatés : à préciser.",
-        "intellectual_property": "Ce contenu ({{target}}) reprend une œuvre, une marque ou une image sans l’autorisation de son titulaire. Faits constatés : à préciser.",
-        "other": "Ce contenu ({{target}}) ne respecte pas les conditions d’utilisation. Faits constatés : à préciser.",
-        "dismiss": "Après examen, ce contenu ({{target}}) ne contrevient ni aux conditions d’utilisation ni à la loi : aucune mesure n’est prise."
+        "spam": "Ce contenu ({{target}}) diffuse des sollicitations commerciales ou répétées que les conditions d’utilisation n’autorisent pas. Faits constatés : à préciser.",
+        "harassment": "Ce contenu ({{target}}) vise une personne de façon insultante, menaçante ou répétée, ce que les conditions d’utilisation interdisent. Faits constatés : à préciser.",
+        "fraud": "Ce contenu ({{target}}) présente des éléments trompeurs liés à l’argent ou à des paiements hors des protections de la plateforme. Faits constatés : à préciser.",
+        "illegal_content": "Ce contenu ({{target}}) a été signalé comme illicite ; après examen, il contrevient à la loi applicable. Faits constatés : à préciser.",
+        "misleading_information": "Ce contenu ({{target}}) présente des informations inexactes ou non sourcées qui peuvent induire les membres en erreur. Faits constatés : à préciser.",
+        "intellectual_property": "Ce contenu ({{target}}) reprend une œuvre, une marque ou une image sans l’autorisation de son titulaire. Faits constatés : à préciser.",
+        "other": "Ce contenu ({{target}}) ne respecte pas les conditions d’utilisation. Faits constatés : à préciser.",
+        "dismiss": "Après examen, ce contenu ({{target}}) ne contrevient ni aux conditions d’utilisation ni à la loi : aucune mesure n’est prise."
       },
       "appeals": {
         "title": "Appels",
@@ -855,15 +855,15 @@
         "emptyHint": "Les appels des membres arrivent ici.",
         "more": "Afficher plus",
         "pending": "Appel en attente",
-        "concerned": "Membre concerné : {{name}}",
+        "concerned": "Membre concerné : {{name}}",
         "decidedBy": "décidé par {{name}}",
         "arguments": "Arguments du membre, le {{date}}",
         "openCase": "Voir le dossier",
-        "ownDecision": "Vous avez pris cette décision : son appel revient à une autre modératrice ou un autre modérateur, pour un réexamen impartial.",
+        "ownDecision": "Vous avez pris cette décision : son appel revient à une autre modératrice ou un autre modérateur, pour un réexamen impartial.",
         "notResolvable": "Vous ne pouvez pas trancher cet appel.",
         "resolve": "Trancher l’appel",
         "resolveTitle": "Trancher l’appel",
-        "resolveDescription": "Votre décision est finale et motivée ; le membre la reçoit.",
+        "resolveDescription": "Votre décision est finale et motivée ; le membre la reçoit.",
         "outcome": "Décision finale",
         "upheld": "Maintenir la décision",
         "upheldHint": "La décision reste appliquée.",
@@ -910,14 +910,14 @@
         "daysHint": "L’api borne la durée selon votre rôle.",
         "confirm": "Suspendre {{count}} jours",
         "confirmPermanent": "Suspendre définitivement",
-        "confirmTitle": "Suspendre {{name}} ?",
-        "confirmDescription": "Ses sessions sont fermées ; il ne peut plus publier, écrire ni contribuer. Il peut faire appel.",
+        "confirmTitle": "Suspendre {{name}} ?",
+        "confirmDescription": "Ses sessions sont fermées ; il ne peut plus publier, écrire ni contribuer. Il peut faire appel.",
         "done": "{{name}} est suspendu."
       },
       "lift": {
         "action": "Lever la suspension",
         "title": "Lever la suspension de {{name}}",
-        "description": "Motivez la levée : le membre la reçoit.",
+        "description": "Motivez la levée : le membre la reçoit.",
         "lifting": "Levée…",
         "done": "Suspension de {{name}} levée."
       }
@@ -964,10 +964,10 @@
       "decide": "Décider",
       "criteria": "Critères remplis",
       "criteriaHint": "Cochez les critères configurés que la demande remplit.",
-      "noCriteria": "Aucun critère n’est configuré pour l’instant : la décision repose sur votre examen motivé.",
+      "noCriteria": "Aucun critère n’est configuré pour l’instant : la décision repose sur votre examen motivé.",
       "decision": "Décision",
       "approve": "Accorder le badge",
-      "approveHint": "L’organisation affiche le badge « vérifiée ».",
+      "approveHint": "L’organisation affiche le badge « vérifiée ».",
       "reject": "Refuser",
       "rejectHint": "Les propriétaires lisent le motif et peuvent faire une nouvelle demande.",
       "reason": "Motivation",
@@ -982,13 +982,13 @@
       "signal": "Signal du domaine",
       "signalYes": "Un membre a un email vérifié sur ce domaine",
       "signalNo": "Aucun email vérifié sur ce domaine",
-      "signalHint": "Un signal, jamais une preuve : la décision reste la vôtre.",
+      "signalHint": "Un signal, jamais une preuve : la décision reste la vôtre.",
       "state": "État",
-      "criteriaMet": "Critères remplis : {{list}}",
+      "criteriaMet": "Critères remplis : {{list}}",
       "revoke": "Retirer le badge",
-      "revokeHint": "Le badge disparaît aussitôt ; les propriétaires reçoivent votre motif.",
+      "revokeHint": "Le badge disparaît aussitôt ; les propriétaires reçoivent votre motif.",
       "revokeReason": "Motif du retrait",
-      "revokeTitle": "Retirer le badge de {{name}} ?",
+      "revokeTitle": "Retirer le badge de {{name}} ?",
       "revokeDescription": "L’organisation n’affiche plus le badge. Saisissez son nom pour confirmer.",
       "revokedDone": "Badge retiré."
     },
@@ -1030,7 +1030,7 @@
         "createdAt": "Créée le",
         "succeededAt": "Payée le",
         "ledger": "Écritures du ledger",
-        "ledgerHint": "Chaque écriture s’équilibre à zéro : un montant positif entre dans le compte, un montant négatif en sort.",
+        "ledgerHint": "Chaque écriture s’équilibre à zéro : un montant positif entre dans le compte, un montant négatif en sort.",
         "noLedger": "Aucune écriture pour cette contribution.",
         "account": "Compte",
         "lineAmount": "Montant",
@@ -1057,7 +1057,7 @@
         },
         "refunds": "Remboursements",
         "noRefund": "Aucun remboursement.",
-        "refundLine": "Demandé le {{date}}, commission rendue : {{commission}}",
+        "refundLine": "Demandé le {{date}}, commission rendue : {{commission}}",
         "parties": "Parties",
         "project": "Projet",
         "contributor": "Contributeur",
@@ -1067,7 +1067,7 @@
       },
       "refund": {
         "title": "Rembourser",
-        "refundable": "Encore remboursable : {{amount}}.",
+        "refundable": "Encore remboursable : {{amount}}.",
         "scope": "Étendue du remboursement",
         "total": "Tout ce qui reste",
         "partial": "Une partie",
@@ -1091,11 +1091,11 @@
           "rewardReleased": "Contrepartie libérée"
         },
         "submit": "Rembourser",
-        "confirmTitle": "Rembourser {{amount}} ?",
-        "confirmDescription": "Le prestataire rend l’argent au contributeur : un remboursement ne s’annule pas. Il est inscrit au ledger et au journal d’audit.",
+        "confirmTitle": "Rembourser {{amount}} ?",
+        "confirmDescription": "Le prestataire rend l’argent au contributeur : un remboursement ne s’annule pas. Il est inscrit au ledger et au journal d’audit.",
         "phrase": "REMBOURSER",
         "done": "Remboursement demandé.",
-        "renewed": "Connexion renouvelée : indiquez de nouveau le montant et le motif, voyez l’effet, puis confirmez le remboursement."
+        "renewed": "Connexion renouvelée : indiquez de nouveau le montant et le motif, voyez l’effet, puis confirmez le remboursement."
       },
       "decision": {
         "decision": "Décision",
@@ -1125,7 +1125,7 @@
         "validateHint": "Le montant entre dans le collecté du projet.",
         "validateHintNoMoney": "L’engagement est compté à part, sans montant.",
         "reject": "Refuser",
-        "rejectHint": "La contribution n’est pas comptée ; le motif est envoyé aux deux parties.",
+        "rejectHint": "La contribution n’est pas comptée ; le motif est envoyé aux deux parties.",
         "validatedDone": "Contribution validée.",
         "rejectedDone": "Contribution refusée."
       },
@@ -1159,10 +1159,10 @@
         "title": "Rapprochement",
         "description": "Les écarts entre les transactions du prestataire et le ledger, relevés chaque jour.",
         "filter": "Statut",
-        "runHint": "Rien n’est corrigé automatiquement : corrigez la cause, puis notez comment l’écart a été traité.",
+        "runHint": "Rien n’est corrigé automatiquement : corrigez la cause, puis notez comment l’écart a été traité.",
         "run": "Lancer un rapprochement",
         "running": "Rapprochement en cours",
-        "runDone": "Rapprochement terminé. Transactions vérifiées : {{checked}}. Écarts trouvés : {{found}}.",
+        "runDone": "Rapprochement terminé. Transactions vérifiées : {{checked}}. Écarts trouvés : {{found}}.",
         "empty": "Aucun écart ouvert.",
         "emptyResolved": "Aucun écart traité.",
         "emptyHint": "Le rapprochement quotidien relève ici chaque écart.",
@@ -1175,10 +1175,10 @@
         "detected": "Relevé le",
         "resolvedAt": "Traité le {{date}}",
         "resolve": "Noter comme traité",
-        "resolveTitle": "Traiter l’écart : {{kind}}",
-        "resolveDescription": "La note est inscrite au journal d’audit ; elle dit ce qui a été corrigé et où.",
+        "resolveTitle": "Traiter l’écart : {{kind}}",
+        "resolveDescription": "La note est inscrite au journal d’audit ; elle dit ce qui a été corrigé et où.",
         "note": "Note",
-        "noteHint": "Par exemple : remboursement relancé chez le prestataire, écriture corrigée.",
+        "noteHint": "Par exemple : remboursement relancé chez le prestataire, écriture corrigée.",
         "noteMissing": "Indiquez comment l’écart a été traité.",
         "resolving": "Enregistrement",
         "resolvedDone": "Écart noté comme traité."
@@ -1186,9 +1186,9 @@
     },
     "impact": {
       "title": "Méthodologies d’impact",
-      "description": "Les versions de la méthodologie de l’impact autodéclaré : une seule publiée, des brouillons pour préparer la suivante, des archives que citent les scores.",
+      "description": "Les versions de la méthodologie de l’impact autodéclaré : une seule publiée, des brouillons pour préparer la suivante, des archives que citent les scores.",
       "version": "Version de la méthodologie",
-      "versionName": "v{{version}} : {{name}}",
+      "versionName": "v{{version}} : {{name}}",
       "copyName": "{{name}} (nouvelle version)",
       "newName": "Nouvelle méthodologie",
       "caption": "Versions de la méthodologie",
@@ -1199,7 +1199,7 @@
       "creating": "Création du brouillon",
       "demo": "Démonstration",
       "labelsComplete": "Complets",
-      "labelsMissing": "Manquants : {{count}}",
+      "labelsMissing": "Manquants : {{count}}",
       "archivedAt": "Archivée le",
       "weightValue": "Poids {{weight}}",
       "columns": {
@@ -1211,9 +1211,9 @@
         "published": "Publiée le"
       },
       "statusDescription": {
-        "draft": "Brouillon : modifiable jusqu’à sa publication.",
-        "published": "Version publiée : elle ne change plus, les scores la citent.",
-        "archived": "Version archivée : lecture seule, citée par les scores déjà donnés."
+        "draft": "Brouillon : modifiable jusqu’à sa publication.",
+        "published": "Version publiée : elle ne change plus, les scores la citent.",
+        "archived": "Version archivée : lecture seule, citée par les scores déjà donnés."
       },
       "save": "Enregistrer le brouillon",
       "saving": "Enregistrement du brouillon",
@@ -1229,12 +1229,12 @@
         "nameHint": "Affiché avec chaque score, à côté du numéro de version.",
         "locale": "Langue des libellés",
         "localeHint": "Les libellés et descriptions ci-dessous sont ceux en {{language}}. Un champ vide reprend le texte du catalogue, affiché en gris quand il existe.",
-        "criterion": "Critère {{index}} : {{label}}",
+        "criterion": "Critère {{index}} : {{label}}",
         "moveUp": "Monter le critère",
         "moveDown": "Descendre le critère",
         "removeCriterion": "Retirer le critère",
         "key": "Clé",
-        "keyHint": "Lettres minuscules, chiffres et tirets bas ; elle identifie les réponses.",
+        "keyHint": "Lettres minuscules, chiffres et tirets bas ; elle identifie les réponses.",
         "weight": "Poids",
         "weightHint": "De 1 à 100, relatif aux autres critères.",
         "label": "Libellé ({{language}})",
@@ -1251,16 +1251,16 @@
       },
       "coverage": {
         "title": "Libellés par langue",
-        "complete": "Chaque critère, description et niveau a son libellé dans les langues actives : {{list}}.",
-        "missing": "Libellés manquants : {{count}}. La version ne peut pas être publiée avant.",
-        "labelItem": "{{criterion}} : libellé en {{language}}",
-        "descriptionItem": "{{criterion}} : description en {{language}}",
-        "levelItem": "{{criterion}}, niveau {{level}} : libellé en {{language}}",
+        "complete": "Chaque critère, description et niveau a son libellé dans les langues actives : {{list}}.",
+        "missing": "Libellés manquants : {{count}}. La version ne peut pas être publiée avant.",
+        "labelItem": "{{criterion}} : libellé en {{language}}",
+        "descriptionItem": "{{criterion}} : description en {{language}}",
+        "levelItem": "{{criterion}}, niveau {{level}} : libellé en {{language}}",
         "afterSave": "La liste se met à jour à l’enregistrement."
       },
       "preview": {
         "title": "Aperçu du score",
-        "hint": "Choisissez une réponse par critère : l’api calcule le score de la version enregistrée, par les règles d’une évaluation.",
+        "hint": "Choisissez une réponse par critère : l’api calcule le score de la version enregistrée, par les règles d’une évaluation.",
         "answer": "{{label}} ({{value}})",
         "compute": "Calculer le score",
         "computing": "Calcul du score",
@@ -1269,24 +1269,24 @@
       },
       "publish": {
         "title": "Publier",
-        "hint": "La version publiée remplace la version en vigueur, qui est archivée ; les porteurs déjà évalués se voient proposer une réévaluation.",
+        "hint": "La version publiée remplace la version en vigueur, qui est archivée ; les porteurs déjà évalués se voient proposer une réévaluation.",
         "action": "Publier la version",
         "labelsMissing": "Complétez d’abord les libellés de chaque langue active.",
-        "confirmTitle": "Publier la v{{version}} ?",
-        "confirmDescription": "Une version publiée ne se modifie plus jamais : les scores la citent. Pour changer un critère ensuite, il faudra créer une nouvelle version.",
+        "confirmTitle": "Publier la v{{version}} ?",
+        "confirmDescription": "Une version publiée ne se modifie plus jamais : les scores la citent. Pour changer un critère ensuite, il faudra créer une nouvelle version.",
         "phrase": "PUBLIER"
       },
       "delete": {
         "action": "Supprimer le brouillon",
-        "confirmTitle": "Supprimer le brouillon {{name}} ?",
-        "confirmDescription": "Le brouillon et ses libellés sont supprimés ; aucune évaluation ne le cite.",
+        "confirmTitle": "Supprimer le brouillon {{name}} ?",
+        "confirmDescription": "Le brouillon et ses libellés sont supprimés ; aucune évaluation ne le cite.",
         "phrase": "SUPPRIMER"
       },
       "archive": {
         "title": "Archiver",
         "hint": "Retirer la version en vigueur rend les évaluations indisponibles jusqu’à la publication d’une autre version.",
         "action": "Archiver la version",
-        "confirmTitle": "Archiver la v{{version}} ?",
+        "confirmTitle": "Archiver la v{{version}} ?",
         "confirmDescription": "Plus aucune évaluation n’est possible tant qu’aucune autre version n’est publiée. Les scores déjà donnés restent affichés avec leur version.",
         "phrase": "ARCHIVER"
       }
@@ -1302,27 +1302,27 @@
       "on": "Activée",
       "off": "Désactivée",
       "locale": {
-        "catalog": "Catalogue : {{done}} textes traduits sur {{total}}.",
+        "catalog": "Catalogue : {{done}} textes traduits sur {{total}}.",
         "reviewed": "Relu par {{by}} le {{date}}.",
         "notReviewed": "Relecture humaine native non enregistrée."
       },
       "blocked": {
-        "catalog_incomplete": "Le catalogue de cette langue est incomplet : elle ne peut pas être activée.",
-        "review_missing": "La relecture humaine native de cette langue n’est pas enregistrée : elle ne peut pas être activée."
+        "catalog_incomplete": "Le catalogue de cette langue est incomplet : elle ne peut pas être activée.",
+        "review_missing": "La relecture humaine native de cette langue n’est pas enregistrée : elle ne peut pas être activée."
       },
       "legal": {
-        "reference": "Validation juridique : {{reference}}",
+        "reference": "Validation juridique : {{reference}}",
         "field": "Référence de la validation juridique",
         "fieldHint": "Avis, licence ou contrat de partenaire qui autorise cet instrument.",
-        "reminder": "Aucun paiement en ligne n’est ouvert pour cet instrument sans adaptateur agréé : l’activer n’ouvre que ce que l’api permet.",
-        "offlineOnly": "Aucun adaptateur agréé : cet instrument n’accepte aucun paiement en ligne.",
+        "reminder": "Aucun paiement en ligne n’est ouvert pour cet instrument sans adaptateur agréé : l’activer n’ouvre que ce que l’api permet.",
+        "offlineOnly": "Aucun adaptateur agréé : cet instrument n’accepte aucun paiement en ligne.",
         "missing": "Indiquez la référence de la validation juridique ({{min}} caractères au moins)."
       },
       "updatedAt": "Modifié le {{date}}",
       "enable": "Activer",
       "disable": "Désactiver",
-      "enableTitle": "Activer {{key}} ?",
-      "disableTitle": "Désactiver {{key}} ?",
+      "enableTitle": "Activer {{key}} ?",
+      "disableTitle": "Désactiver {{key}} ?",
       "confirmEnable": "Le changement s’applique aussitôt à tous les membres et s’inscrit au journal d’audit. Saisissez la clé pour confirmer.",
       "confirmDisable": "Le changement s’applique aussitôt à tous les membres et s’inscrit au journal d’audit. Saisissez la clé pour confirmer.",
       "enabledDone": "{{key}} activée.",
@@ -1337,7 +1337,7 @@
     },
     "highlights": {
       "title": "Mises en avant",
-      "description": "Publications, projets et profils mis en avant, dans leur ordre d’affichage : le dernier mis en avant d’abord.",
+      "description": "Publications, projets et profils mis en avant, dans leur ordre d’affichage : le dernier mis en avant d’abord.",
       "filter": "Type",
       "caption": "Mises en avant",
       "empty": "Rien n’est mis en avant.",
@@ -1354,10 +1354,10 @@
         "featured": "Mis en avant le",
         "actions": "Actions"
       },
-      "moveTop": "Remonter en tête : {{label}}",
-      "remove": "Retirer : {{label}}",
-      "removeTitle": "Retirer {{label}} des mises en avant ?",
-      "removeDescription": "Le contenu reste publié ; il n’est plus mis en avant.",
+      "moveTop": "Remonter en tête : {{label}}",
+      "remove": "Retirer : {{label}}",
+      "removeTitle": "Retirer {{label}} des mises en avant ?",
+      "removeDescription": "Le contenu reste publié ; il n’est plus mis en avant.",
       "removeAction": "Retirer",
       "movedDone": "Remonté en tête.",
       "removedDone": "Retiré des mises en avant.",
@@ -1388,13 +1388,13 @@
       "failedAt": "Échouée le",
       "reason": "Raison",
       "payload": "Données de la tâche",
-      "masked": "Masquées par l’api : structure, identifiants, dates, nombres et codes seulement.",
+      "masked": "Masquées par l’api : structure, identifiants, dates, nombres et codes seulement.",
       "retry": "Relancer",
-      "retryTitle": "Relancer {{name}} ?",
-      "retryDescription": "La tâche repart avec ses données ; une tâche déjà relancée ou disparue n’est pas relancée deux fois. La relance s’inscrit au journal d’audit.",
+      "retryTitle": "Relancer {{name}} ?",
+      "retryDescription": "La tâche repart avec ses données ; une tâche déjà relancée ou disparue n’est pas relancée deux fois. La relance s’inscrit au journal d’audit.",
       "outcomes": {
         "retried": "Tâche relancée.",
-        "not_failed": "Cette tâche n’est plus en échec : elle a déjà été relancée.",
+        "not_failed": "Cette tâche n’est plus en échec : elle a déjà été relancée.",
         "missing": "Cette tâche n’existe plus."
       },
       "queue": "File {{name}}"
@@ -1436,7 +1436,7 @@
     },
     "rights": {
       "title": "Demandes de droits",
-      "description": "Les exports et suppressions demandés par les membres, leur état et l’échéance légale de la réponse : un mois (RGPD, article 12).",
+      "description": "Les exports et suppressions demandés par les membres, leur état et l’échéance légale de la réponse : un mois (RGPD, article 12).",
       "filter": "Type",
       "caption": "Demandes de droits",
       "empty": "Aucune demande.",
@@ -1454,8 +1454,8 @@
         "detail": "Détail"
       },
       "details": {
-        "PRIVACY_CAMPAIGN_IN_PROGRESS": "Bloquée : une campagne du membre est en financement.",
-        "PRIVACY_SOLE_OWNER": "Bloquée : seul propriétaire d’une organisation qui a d’autres membres."
+        "PRIVACY_CAMPAIGN_IN_PROGRESS": "Bloquée : une campagne du membre est en financement.",
+        "PRIVACY_SOLE_OWNER": "Bloquée : seul propriétaire d’une organisation qui a d’autres membres."
       }
     }
   },
@@ -1472,13 +1472,13 @@
       "previewTitle": "Aperçu",
       "previewBody": "La page exactement telle qu’un visiteur la verra une fois le projet publié. Seule l’équipe la voit.",
       "draftTitle": "Brouillon",
-      "draftBody": "Ce projet n’est pas publié : seule son équipe voit cette page.",
+      "draftBody": "Ce projet n’est pas publié : seule son équipe voit cette page.",
       "teamNav": "Outils de l’équipe",
       "manage": "Gérer le projet",
       "edit": "Modifier le projet",
       "fundingColumn": "Financement et actions",
       "story": "Histoire",
-      "impactArea": "Zone d’impact : {{area}}",
+      "impactArea": "Zone d’impact : {{area}}",
       "video": "Vidéo",
       "gallery": "Galerie",
       "posts": "Publications rattachées",
@@ -1512,7 +1512,7 @@
       "instruments": "Moyens acceptés",
       "opensCapital": {
         "title": "Nous ouvrons le capital",
-        "body": "Une intention seulement : aucun investissement ne se fait sur Pitchorium. Pour en parler, manifestez un intérêt pour une prise de participation : l’équipe vous répond directement."
+        "body": "Une intention seulement : aucun investissement ne se fait sur Pitchorium. Pour en parler, manifestez un intérêt pour une prise de participation : l’équipe vous répond directement."
       },
       "barDays": "{{percent}} % · {{days}}",
       "barEnded": "{{percent}} % · {{outcome}}",
@@ -1535,8 +1535,8 @@
         "other": "{{count}} restantes sur {{total}}"
       },
       "unlimited": "Quantité illimitée",
-      "delivery": "Livraison estimée : {{date}}",
-      "loveMoney": "Le love money n’a pas de contrepartie matérielle : c’est un engagement de proches, suivi par les actualités du projet."
+      "delivery": "Livraison estimée : {{date}}",
+      "loveMoney": "Le love money n’a pas de contrepartie matérielle : c’est un engagement de proches, suivi par les actualités du projet."
     },
     "team": {
       "title": "Équipe"
@@ -1582,7 +1582,7 @@
       "kinds": {
         "grant": "Vous représentez un financeur qui accorde des subventions.",
         "honor_loan": "Vous proposez un prêt d’honneur, convenu hors de Pitchorium.",
-        "equity": "Une prise de participation : une intention, aucun investissement en ligne.",
+        "equity": "Une prise de participation : une intention, aucun investissement en ligne.",
         "general": "Une question, un partenariat, une mise en relation."
       },
       "message": "Message",
@@ -1590,7 +1590,7 @@
       "amountHint": "Non engageant, en euros.",
       "documents": "Documents (facultatif)",
       "documentsLimits": "PDF, {{max}} au plus, lus par l’équipe seulement.",
-      "noPayment": "Aucun paiement : l’équipe reçoit votre message et vous répond directement.",
+      "noPayment": "Aucun paiement : l’équipe reçoit votre message et vous répond directement.",
       "submit": "Envoyer",
       "sending": "Envoi en cours",
       "waitUploads": "Patientez jusqu’à la fin de l’envoi des documents.",
@@ -1602,7 +1602,7 @@
     },
     "showcase": {
       "title": "Projets",
-      "description": "Les projets à impact d’Afrique et des Caraïbes : leur histoire, leur financement, leurs paliers et leur impact auto-déclaré.",
+      "description": "Les projets à impact d’Afrique et des Caraïbes : leur histoire, leur financement, leurs paliers et leur impact auto-déclaré.",
       "lede": "Des projets d’Afrique et des Caraïbes, portés par leurs entrepreneurs. Chaque campagne montre son objectif, ses paliers et son impact auto-déclaré.",
       "featured": "Sélection de l’équipe",
       "all_projects": "Tous les projets",
@@ -1662,7 +1662,7 @@
       "none": "Aucune invitation d’équipe",
       "noneHint": "Quand une équipe vous invite à rejoindre son projet, l’invitation apparaît ici.",
       "dialogTitle": "Rejoindre l’équipe de {{title}}",
-      "closed": "Cette invitation n’attend plus de réponse : elle a déjà été traitée ou retirée par l’équipe."
+      "closed": "Cette invitation n’attend plus de réponse : elle a déjà été traitée ou retirée par l’équipe."
     },
     "images": {
       "position": "Image {{index}}",
@@ -1673,7 +1673,7 @@
       "failed": "L’envoi a échoué. Réessayez.",
       "alt": "Texte alternatif de l’image {{index}}",
       "altHint": "Ce que montre l’image, pour qui ne la voit pas.",
-      "altMissing": "Sans texte alternatif : décrivez ce que montre l’image.",
+      "altMissing": "Sans texte alternatif : décrivez ce que montre l’image.",
       "states": {
         "compressing": "Allègement de {{name}}",
         "sending": "Envoi de {{name}}",
@@ -1690,7 +1690,7 @@
       "position": "Étape {{current}} sur {{total}}",
       "done": "terminée",
       "previous": "Étape précédente",
-      "next": "Suivant : {{step}}",
+      "next": "Suivant : {{step}}",
       "backToPage": "Revenir à la page du projet",
       "networkFailure": "La connexion a échoué. Vérifiez le réseau, puis réessayez.",
       "save": {
@@ -1753,7 +1753,7 @@
       "fields": {
         "title": "Titre du projet",
         "summary": "Résumé",
-        "summaryHint": "Deux ou trois phrases : ce que fait le projet, pour qui.",
+        "summaryHint": "Deux ou trois phrases : ce que fait le projet, pour qui.",
         "sector": "Secteur",
         "choose": "Choisir",
         "countries": "Pays",
@@ -1791,7 +1791,7 @@
         "addImages": "Ajouter des images",
         "imageLimits": "JPEG, PNG ou WebP.",
         "documents": "Documents",
-        "documentsHint": "Des PDF privés : seuls les membres connectés les consultent.",
+        "documentsHint": "Des PDF privés : seuls les membres connectés les consultent.",
         "addDocuments": "Ajouter des documents",
         "documentLimits": "PDF, {{max}} au plus.",
         "document": "Document {{index}}",
@@ -1839,14 +1839,14 @@
         }
       },
       "locked": {
-        "contribution": "Verrouillé depuis la première contribution payée : les contributeurs ont soutenu le projet à ces conditions.",
-        "published": "Fixée à la publication : une campagne ne se prolonge pas."
+        "contribution": "Verrouillé depuis la première contribution payée : les contributeurs ont soutenu le projet à ces conditions.",
+        "published": "Fixée à la publication : une campagne ne se prolonge pas."
       },
       "rewards": {
         "loveMoneyTitle": "Le love money n’a pas de contrepartie",
-        "loveMoneyBody": "C’est un engagement de vos proches, sans contrepartie matérielle : les actualités du projet leur disent ce que devient leur soutien.",
+        "loveMoneyBody": "C’est un engagement de vos proches, sans contrepartie matérielle : les actualités du projet leur disent ce que devient leur soutien.",
         "noInstrumentTitle": "Aucun instrument ne donne de contrepartie",
-        "noInstrumentBody": "Une contrepartie s’obtient par un don ou un crowdfunding avec contrepartie : acceptez l’un d’eux à l’étape des instruments.",
+        "noInstrumentBody": "Une contrepartie s’obtient par un don ou un crowdfunding avec contrepartie : acceptez l’un d’eux à l’étape des instruments.",
         "empty": "Aucune contrepartie pour l’instant.",
         "from": "À partir de {{amount}}",
         "soldOut": "Épuisée",
@@ -1858,7 +1858,7 @@
         "edit": "Modifier {{title}}",
         "add": "Ajouter une contrepartie",
         "delete": "Supprimer",
-        "deleteTitle": "Supprimer la contrepartie {{title}} ?",
+        "deleteTitle": "Supprimer la contrepartie {{title}} ?",
         "deleteBody": "Elle disparaît de la page. Une contrepartie déjà réservée par un contributeur ne peut pas être supprimée.",
         "deleteConfirm": "Supprimer la contrepartie",
         "deleted": "Contrepartie supprimée.",
@@ -1889,21 +1889,21 @@
         "collected": "Encaissés sur Pitchorium",
         "collectedHint": "Les contributions arrivent avec le paiement en ligne.",
         "interest": "Par manifestation d’intérêt",
-        "interestHint": "Aucun paiement en ligne : un message à l’équipe, la suite se convient hors de la plateforme.",
+        "interestHint": "Aucun paiement en ligne : un message à l’équipe, la suite se convient hors de la plateforme.",
         "descriptions": {
           "donation": "Un don, sans contrepartie.",
           "reward_crowdfunding": "Une contribution qui donne une contrepartie à partir d’un montant.",
           "love_money": "L’engagement de proches, avec ou sans paiement, sans contrepartie matérielle.",
           "grant": "Une subvention, demandée avec un message et des documents.",
           "honor_loan": "Un prêt d’honneur, convenu hors de Pitchorium.",
-          "equity": "Une prise de participation : une intention seulement.",
-          "convertible_bonds": "Des obligations convertibles : une intention seulement."
+          "equity": "Une prise de participation : une intention seulement.",
+          "convertible_bonds": "Des obligations convertibles : une intention seulement."
         },
         "required": "Choisissez au moins un instrument.",
         "opensCapital": "Nous ouvrons le capital",
         "opensCapitalHint": "La page affiche cette intention à côté du financement.",
         "reachTitle": "Une intention, jamais un investissement en ligne",
-        "reachBody": "Pitchorium n’a pas l’agrément d’une plateforme d’investissement : aucune prise de participation ne se fait sur la page. Les personnes intéressées vous écrivent par une manifestation d’intérêt."
+        "reachBody": "Pitchorium n’a pas l’agrément d’une plateforme d’investissement : aucune prise de participation ne se fait sur la page. Les personnes intéressées vous écrivent par une manifestation d’intérêt."
       },
       "impact": {
         "failed": "La méthodologie n’a pas pu être lue.",
@@ -1919,19 +1919,19 @@
         "you": "vous",
         "roleOf": "Rôle de {{name}}",
         "roleChanged": "Le rôle de {{name}} a changé.",
-        "lastOwnerRule": "Un projet garde toujours au moins un propriétaire : nommez-en un autre avant de partir ou de changer de rôle.",
+        "lastOwnerRule": "Un projet garde toujours au moins un propriétaire : nommez-en un autre avant de partir ou de changer de rôle.",
         "leave": "Quitter l’équipe",
-        "leaveTitle": "Quitter l’équipe de {{title}} ?",
+        "leaveTitle": "Quitter l’équipe de {{title}} ?",
         "leaveBody": "Vous n’apparaîtrez plus sur la page du projet et ne pourrez plus le modifier.",
         "leaveConfirm": "Quitter l’équipe",
         "left": "Vous avez quitté l’équipe.",
         "remove": "Retirer de l’équipe",
-        "removeTitle": "Retirer {{name}} de l’équipe ?",
+        "removeTitle": "Retirer {{name}} de l’équipe ?",
         "removeBody": "Ce membre n’apparaîtra plus sur la page et ne pourra plus modifier le projet.",
         "removeConfirm": "Retirer de l’équipe",
         "removed": "{{name}} ne fait plus partie de l’équipe.",
         "withdraw": "Retirer l’invitation",
-        "withdrawTitle": "Retirer l’invitation de {{name}} ?",
+        "withdrawTitle": "Retirer l’invitation de {{name}} ?",
         "withdrawBody": "L’invitation ne pourra plus être acceptée.",
         "withdrawConfirm": "Retirer l’invitation",
         "cancel": "Annuler",
@@ -1942,7 +1942,7 @@
         "handleInvalid": "Indiquez un identifiant de 3 à 30 lettres minuscules, chiffres et tirets.",
         "role": "Rôle",
         "function": "Fonction affichée",
-        "functionHint": "Par exemple « Responsable technique ».",
+        "functionHint": "Par exemple « Responsable technique ».",
         "send": "Envoyer l’invitation",
         "inviting": "Envoi en cours",
         "invited": "Invitation envoyée à {{handle}}."
@@ -1950,7 +1950,7 @@
       "publish": {
         "missingTitle": "Il reste à compléter",
         "readyTitle": "Tout ce que la publication demande est là",
-        "readyBody": "Relisez l’aperçu, puis publiez : la campagne commence aujourd’hui.",
+        "readyBody": "Relisez l’aperçu, puis publiez : la campagne commence aujourd’hui.",
         "prerequisitesTitle": "À compléter sur votre compte",
         "consentTitle": "Affichage public",
         "consentBody": "La page du projet affichera publiquement votre nom, votre photo et votre titre, et ceux des membres de l’équipe, même si vos profils personnels restent privés.",
@@ -1964,14 +1964,14 @@
         "title": "Supprimer le brouillon",
         "body": "Possible tant que le projet n’est pas publié. Son adresse reste réservée.",
         "action": "Supprimer le brouillon",
-        "confirmTitle": "Supprimer le brouillon {{title}} ?",
+        "confirmTitle": "Supprimer le brouillon {{title}} ?",
         "confirmBody": "Le brouillon, ses images et ses documents disparaissent. Cette action est définitive.",
         "confirm": "Supprimer le brouillon",
         "cancel": "Annuler"
       },
       "create": {
         "title": "Créer un projet",
-        "description": "Commencez par l’essentiel : le brouillon s’enregistre ensuite à mesure, et vous le reprenez quand vous voulez.",
+        "description": "Commencez par l’essentiel : le brouillon s’enregistre ensuite à mesure, et vous le reprenez quand vous voulez.",
         "submit": "Créer le brouillon et continuer",
         "creating": "Création en cours"
       }
@@ -2002,13 +2002,13 @@
       },
       "updates": {
         "draftTitle": "Les actualités suivent la publication",
-        "draftBody": "Publiez le projet pour écrire ses actualités : elles arrivent dans le fil de ses abonnés.",
+        "draftBody": "Publiez le projet pour écrire ses actualités : elles arrivent dans le fil de ses abonnés.",
         "published": "Actualités publiées",
         "empty": "Aucune actualité pour l’instant.",
         "edited": "modifiée",
         "edit": "Modifier",
         "delete": "Supprimer",
-        "deleteTitle": "Supprimer cette actualité ?",
+        "deleteTitle": "Supprimer cette actualité ?",
         "deleteBody": "Elle disparaît de la page et du fil des abonnés.",
         "deleteConfirm": "Supprimer l’actualité",
         "deleted": "Actualité supprimée.",
@@ -2024,14 +2024,14 @@
         "sending": "Envoi en cours",
         "waitImages": "Patientez jusqu’à la fin de l’envoi des images.",
         "saved": "Actualité modifiée.",
-        "publishedNotice": "Actualité publiée : elle arrive dans le fil des abonnés."
+        "publishedNotice": "Actualité publiée : elle arrive dans le fil des abonnés."
       },
       "interests": {
         "filter": "Type d’intérêt",
         "all": "Tous",
         "empty": "Aucune manifestation d’intérêt",
         "emptyBody": "Les messages des membres intéressés arrivent ici.",
-        "amount": "Montant indicatif : {{amount}}",
+        "amount": "Montant indicatif : {{amount}}",
         "document": "Document {{index}}"
       }
     }
@@ -2043,13 +2043,13 @@
       "one": "{{count}} réaction",
       "other": "{{count}} réactions"
     },
-    "mainReactions": "(surtout : {{list}})",
+    "mainReactions": "(surtout : {{list}})",
     "comments": {
       "one": "{{count}} commentaire",
       "other": "{{count}} commentaires"
     },
     "featured": "À la une",
-    "visibility": "Visible par : {{audience}}",
+    "visibility": "Visible par : {{audience}}",
     "repostedBy": "{{name}} a repartagé",
     "repostUnavailable": "Cette publication n’est plus disponible.",
     "images": {
@@ -2113,7 +2113,7 @@
       "share": "Partager",
       "edit": "Modifier",
       "delete": "Supprimer",
-      "deleteTitle": "Supprimer cette publication ?",
+      "deleteTitle": "Supprimer cette publication ?",
       "deleteBody": "Elle disparaîtra du fil, avec ses commentaires et ses réactions. Cette action est définitive.",
       "deleteConfirm": "Supprimer la publication",
       "deleted": "Publication supprimée.",
@@ -2128,7 +2128,7 @@
       "comment": "Votre commentaire",
       "audience": "Audience",
       "widenNotAllowed": "Un repartage ne peut pas élargir l’audience de la publication d’origine.",
-      "noAudience": "Cette publication est réservée aux relations de son auteur : elle ne peut pas être repartagée.",
+      "noAudience": "Cette publication est réservée aux relations de son auteur : elle ne peut pas être repartagée.",
       "submit": "Repartager",
       "done": "Publication repartagée."
     },
@@ -2143,7 +2143,7 @@
       "save": "Enregistrer",
       "cancel": "Annuler",
       "delete": "Supprimer",
-      "deleteTitle": "Supprimer ce commentaire ?",
+      "deleteTitle": "Supprimer ce commentaire ?",
       "deleteBody": "Le commentaire disparaîtra pour tous. Cette action est définitive.",
       "deleteConfirm": "Supprimer le commentaire",
       "deleted": "Commentaire supprimé.",
@@ -2175,8 +2175,8 @@
         "other": "{{count}} jours suivis"
       },
       "peak": {
-        "one": "pic le {{date}} : {{count}} membre unique",
-        "other": "pic le {{date}} : {{count}} membres uniques"
+        "one": "pic le {{date}} : {{count}} membre unique",
+        "other": "pic le {{date}} : {{count}} membres uniques"
       },
       "summary": "{{days}} · {{peak}}",
       "emptyHint": "Les membres qui la voient seront comptés ici, jour par jour. Partagez-la pour lui donner des lecteurs.",
@@ -2188,8 +2188,8 @@
     "history": "Messages de la conversation",
     "today": "Aujourd’hui",
     "yesterday": "Hier",
-    "youWrote": "Vous avez écrit :",
-    "wrote": "{{name}} a écrit :",
+    "youWrote": "Vous avez écrit :",
+    "wrote": "{{name}} a écrit :",
     "someone": "Membre supprimé",
     "deleted": "Message supprimé",
     "edited": "(modifié)",
@@ -2235,7 +2235,7 @@
       "failed": "L’envoi du fichier a échoué.",
       "retry": "Envoyer de nouveau {{name}}",
       "remove": "Retirer {{name}}",
-      "tooMany": "{{count}} fichiers au plus par message : les autres n’ont pas été joints."
+      "tooMany": "{{count}} fichiers au plus par message : les autres n’ont pas été joints."
     },
     "messageActions": "Actions du message",
     "edit": "Modifier",
@@ -2245,8 +2245,8 @@
     "saving": "Enregistrement",
     "cancel": "Annuler",
     "delete": "Supprimer",
-    "deleteTitle": "Supprimer ce message ?",
-    "deleteBody": "Il sera remplacé par « Message supprimé » pour tous les participants, et ses fichiers retirés.",
+    "deleteTitle": "Supprimer ce message ?",
+    "deleteBody": "Il sera remplacé par « Message supprimé » pour tous les participants, et ses fichiers retirés.",
     "deleteConfirm": "Supprimer le message",
     "list": {
       "title": "Conversations",
@@ -2264,7 +2264,7 @@
       "introductionsCount": "Introductions · {{count}} à traiter",
       "someone": "Membre supprimé",
       "noMessage": "Aucun message",
-      "you": "Vous : {{text}}",
+      "you": "Vous : {{text}}",
       "attachment": {
         "one": "{{count}} pièce jointe",
         "other": "{{count}} pièces jointes"
@@ -2280,7 +2280,7 @@
         "other": "{{count}} messages non lus"
       },
       "markedUnread": "Marquée comme non lue",
-      "noResults": "Aucune conversation avec « {{q}} »",
+      "noResults": "Aucune conversation avec « {{q}} »",
       "noResultsBody": "La recherche porte sur le nom des autres participants.",
       "error": "Les conversations n’ont pas pu être chargées.",
       "more": "Afficher plus",
@@ -2288,7 +2288,7 @@
       "empty": {
         "all": {
           "title": "Aucune conversation pour l’instant",
-          "body": "Écrivez à un membre depuis son profil : avec vos connexions, la conversation s’ouvre aussitôt.",
+          "body": "Écrivez à un membre depuis son profil : avec vos connexions, la conversation s’ouvre aussitôt.",
           "action": "Voir mon réseau"
         },
         "unread": {
@@ -2315,11 +2315,11 @@
       "unarchived": "Conversation remise dans la boîte.",
       "mute": "Mettre en sourdine",
       "unmute": "Réactiver les notifications",
-      "muted": "Conversation en sourdine : plus de notification.",
+      "muted": "Conversation en sourdine : plus de notification.",
       "unmuted": "Notifications réactivées.",
       "markUnread": "Marquer comme non lue",
       "leave": "Quitter la conversation",
-      "leaveTitle": "Quitter cette conversation ?",
+      "leaveTitle": "Quitter cette conversation ?",
       "leaveBody": "Vous ne recevrez plus ses messages et ne pourrez plus y écrire. Les autres participants continuent sans vous.",
       "leaveConfirm": "Quitter",
       "choose": "Choisissez une conversation",
@@ -2330,21 +2330,21 @@
     },
     "request": {
       "receivedTitle": "{{name}} souhaite vous écrire",
-      "receivedBody": "Ce membre n’est pas dans votre réseau. Acceptez pour lui répondre ; un refus reste discret, l’expéditeur n’en est pas averti.",
+      "receivedBody": "Ce membre n’est pas dans votre réseau. Acceptez pour lui répondre ; un refus reste discret, l’expéditeur n’en est pas averti.",
       "accept": "Accepter",
       "accepting": "Acceptation",
-      "accepted": "Demande acceptée : vous pouvez écrire.",
+      "accepted": "Demande acceptée : vous pouvez écrire.",
       "decline": "Refuser",
       "declining": "Refus",
       "sentTitle": "Demande envoyée",
-      "sentBody": "{{name}} n’est pas dans votre réseau : votre premier message attend sa réponse. Vous pourrez écrire de nouveau quand la demande sera acceptée.",
+      "sentBody": "{{name}} n’est pas dans votre réseau : votre premier message attend sa réponse. Vous pourrez écrire de nouveau quand la demande sera acceptée.",
       "sentShort": "Votre demande attend la réponse du destinataire"
     },
     "new": {
       "title": "Nouveau message",
       "directBody": "Votre premier message à {{name}} ouvre la conversation.",
       "requestTitle": "Ce premier message sera une demande",
-      "requestBody": "{{name}} n’est pas dans votre réseau : votre message arrivera dans ses demandes, et vous pourrez écrire de nouveau quand il l’aura acceptée.",
+      "requestBody": "{{name}} n’est pas dans votre réseau : votre message arrivera dans ses demandes, et vous pourrez écrire de nouveau quand il l’aura acceptée.",
       "refusedTitle": "Ce membre ne reçoit pas de message de votre part",
       "refusedBody": "{{name}} n’accepte que les messages de membres plus proches de son réseau. Vous pouvez demander à vous connecter depuis son profil.",
       "profile": "Voir son profil",
@@ -2355,7 +2355,7 @@
       "title": "Introductions",
       "one": "Introduction",
       "all": "Toutes les introductions",
-      "description": "Présentez deux de vos connexions l’une à l’autre : quand les deux acceptent, une conversation à trois s’ouvre avec votre note.",
+      "description": "Présentez deux de vos connexions l’une à l’autre : quand les deux acceptent, une conversation à trois s’ouvre avec votre note.",
       "someone": "Membre supprimé",
       "youIntroduced": "Vous présentez {{first}} à {{second}}",
       "introducedYou": "{{introducer}} vous présente {{other}}",
@@ -2375,12 +2375,12 @@
       "decline": "Décliner",
       "declining": "Refus",
       "declined": "Introduction déclinée.",
-      "waitingOther": "Vous avez accepté ; {{name}} n’a pas encore répondu.",
+      "waitingOther": "Vous avez accepté ; {{name}} n’a pas encore répondu.",
       "openConversation": "Ouvrir la conversation",
       "waiting": "À traiter",
       "others": "Toutes les autres",
       "empty": "Aucune introduction",
-      "emptyBody": "Depuis le profil d’une connexion, « Présenter à… » met deux membres en relation.",
+      "emptyBody": "Depuis le profil d’une connexion, « Présenter à… » met deux membres en relation.",
       "emptyAction": "Voir mon réseau",
       "error": "Les introductions n’ont pas pu être chargées.",
       "more": "Afficher plus",
@@ -2388,7 +2388,7 @@
     },
     "introduce": {
       "title": "Présenter {{name}} à…",
-      "description": "Choisissez une autre de vos connexions et dites pourquoi ils devraient se parler. Chacun accepte ou décline ; à deux acceptations, une conversation à trois s’ouvre avec votre note.",
+      "description": "Choisissez une autre de vos connexions et dites pourquoi ils devraient se parler. Chacun accepte ou décline ; à deux acceptations, une conversation à trois s’ouvre avec votre note.",
       "second": "Une autre connexion",
       "secondPlaceholder": "Rechercher parmi vos connexions",
       "secondRequired": "Choisissez la connexion à présenter.",
@@ -2397,13 +2397,13 @@
       "noteRequired": "Écrivez une note.",
       "submit": "Envoyer l’introduction",
       "sending": "Envoi",
-      "sent": "Introduction envoyée : {{name}} et votre autre connexion vont y répondre.",
+      "sent": "Introduction envoyée : {{name}} et votre autre connexion vont y répondre.",
       "cancel": "Annuler"
     },
     "share": {
       "title": "Envoyer en message",
-      "description": "La publication sera jointe à votre message ; chaque destinataire la verra selon son audience.",
-      "target": "À qui ?",
+      "description": "La publication sera jointe à votre message ; chaque destinataire la verra selon son audience.",
+      "target": "À qui ?",
       "targetPlaceholder": "Une conversation ou une connexion",
       "targetRequired": "Choisissez une conversation ou une connexion.",
       "conversation": "Conversation",
@@ -2434,7 +2434,7 @@
       },
       "emailTitle": "Par email",
       "unreadCopy": "Copie par email des messages non lus",
-      "unreadCopyHint": "Un email quand un message reste non lu un moment ; rien pour une conversation en sourdine.",
+      "unreadCopyHint": "Un email quand un message reste non lu un moment ; rien pour une conversation en sourdine.",
       "allNotifications": "Les autres emails se règlent dans <link>Notifications</link>.",
       "saved": "Préférence enregistrée."
     }
@@ -2454,9 +2454,9 @@
       "connect": "Se connecter",
       "connectName": "Se connecter avec {{name}}",
       "pending": "En attente",
-      "pendingName": "Demande envoyée à {{name}}, en attente : la retirer",
+      "pendingName": "Demande envoyée à {{name}}, en attente : la retirer",
       "connected": "En relation",
-      "connectedName": "En relation avec {{name}} : retirer la connexion",
+      "connectedName": "En relation avec {{name}} : retirer la connexion",
       "accept": "Accepter",
       "acceptName": "Accepter la demande de {{name}}",
       "accepting": "Acceptation en cours",
@@ -2471,20 +2471,20 @@
       "unfollowName": "Ne plus suivre {{name}}",
       "followed": "Vous suivez {{name}}.",
       "unfollowed": "Vous ne suivez plus {{name}}.",
-      "withdrawTitle": "Retirer votre demande à {{name}} ?",
+      "withdrawTitle": "Retirer votre demande à {{name}} ?",
       "withdrawDescription": "La demande disparaît de ses invitations. Vous pourrez en envoyer une autre plus tard.",
       "withdraw": "Retirer la demande",
       "withdrawn": "Demande retirée.",
-      "removeTitle": "Retirer la connexion avec {{name}} ?",
-      "removeDescription": "Vous ne serez plus en relation avec {{name}}, qui ne reçoit aucune notification. Les suivis que vous avez choisis restent ; ceux nés de la connexion s’arrêtent.",
+      "removeTitle": "Retirer la connexion avec {{name}} ?",
+      "removeDescription": "Vous ne serez plus en relation avec {{name}}, qui ne reçoit aucune notification. Les suivis que vous avez choisis restent ; ceux nés de la connexion s’arrêtent.",
       "remove": "Retirer la connexion",
       "removed": "Vous n’êtes plus en relation avec {{name}}."
     },
     "connect": {
       "title": "Se connecter avec {{name}}",
-      "description": "Une connexion est une relation d’affaires : {{name}} doit l’accepter.",
+      "description": "Une connexion est une relation d’affaires : {{name}} doit l’accepter.",
       "note": "Note",
-      "noteHint": "Rappelez le contexte, par exemple « Nous nous sommes croisés à… ». 300 caractères au plus.",
+      "noteHint": "Rappelez le contexte, par exemple « Nous nous sommes croisés à… ». 300 caractères au plus.",
       "send": "Envoyer la demande",
       "sending": "Envoi en cours",
       "sent": "Demande envoyée à {{name}}.",
@@ -2497,10 +2497,10 @@
       "copyFailed": "Le lien n’a pas pu être copié.",
       "share": "Partager le profil",
       "block": "Bloquer",
-      "blockTitle": "Bloquer {{name}} ?",
-      "blockDescription": "Vous ne verrez plus son profil, ses publications ni ses commentaires, et {{name}} ne verra plus les vôtres. Votre connexion, vos suivis dans les deux sens et les demandes en cours sont supprimés ; un déblocage ne les rétablit pas. {{name}} ne reçoit aucune notification. Vous pourrez débloquer depuis Paramètres, Confidentialité et réseau.",
+      "blockTitle": "Bloquer {{name}} ?",
+      "blockDescription": "Vous ne verrez plus son profil, ses publications ni ses commentaires, et {{name}} ne verra plus les vôtres. Votre connexion, vos suivis dans les deux sens et les demandes en cours sont supprimés ; un déblocage ne les rétablit pas. {{name}} ne reçoit aucune notification. Vous pourrez débloquer depuis Paramètres, Confidentialité et réseau.",
       "blockConfirm": "Bloquer {{name}}",
-      "blocked": "Membre bloqué : son contenu n’apparaît plus."
+      "blocked": "Membre bloqué : son contenu n’apparaît plus."
     },
     "views": {
       "title": "Qui a consulté votre profil",
@@ -2533,11 +2533,11 @@
       "followerSince": "Abonné depuis le {{date}}",
       "followingSince": "Suivi depuis le {{date}}",
       "remove": "Retirer",
-      "removeTitle": "Retirer la connexion avec {{name}} ?",
+      "removeTitle": "Retirer la connexion avec {{name}} ?",
       "removeDescription": "Vous ne serez plus en relation avec {{name}}, qui ne reçoit aucune notification.",
       "removed": "Vous n’êtes plus en relation avec {{name}}.",
       "unfollow": "Ne plus suivre",
-      "unfollowTitle": "Ne plus suivre {{name}} ?",
+      "unfollowTitle": "Ne plus suivre {{name}} ?",
       "unfollowDescription": "Ses publications n’apparaîtront plus dans votre fil. Vous pourrez le suivre à nouveau.",
       "unfollowed": "Vous ne suivez plus {{name}}.",
       "filter": "Type d’abonnement",
@@ -2567,12 +2567,12 @@
       },
       "sentOn": "Le {{date}}",
       "withdraw": "Retirer",
-      "withdrawTitle": "Retirer votre demande à {{name}} ?",
+      "withdrawTitle": "Retirer votre demande à {{name}} ?",
       "withdrawDescription": "La demande disparaît de ses invitations. Vous pourrez en envoyer une autre plus tard.",
       "withdrawn": "Demande retirée.",
       "people": "Personnes pertinentes pour vous",
       "complementary": "Entrepreneurs complémentaires",
-      "noSuggestions": "Aucune suggestion pour l’instant : complétez votre profil pour en recevoir."
+      "noSuggestions": "Aucune suggestion pour l’instant : complétez votre profil pour en recevoir."
     },
     "member": {
       "title": "Réseau de {{name}}",
@@ -2587,14 +2587,14 @@
       "anonymousUnknown": "Un membre de Pitchorium",
       "privateNote": "Visite privée",
       "day": "Le {{date}}",
-      "privateOn": "Vos visites sont privées : les membres que vous consultez voient une mention anonyme, et vous ne voyez pas le nom de vos visiteurs privés.",
-      "privateOff": "Vos visites sont visibles : les membres que vous consultez voient votre nom.",
+      "privateOn": "Vos visites sont privées : les membres que vous consultez voient une mention anonyme, et vous ne voyez pas le nom de vos visiteurs privés.",
+      "privateOff": "Vos visites sont visibles : les membres que vous consultez voient votre nom.",
       "change": "Modifier dans Confidentialité et réseau"
     },
     "privacy": {
       "title": "Visites de profil",
       "privateVisits": "Visites privées",
-      "privateVisitsHint": "Les membres dont vous consultez le profil voient « un membre du secteur… » plutôt que votre nom.",
+      "privateVisitsHint": "Les membres dont vous consultez le profil voient « un membre du secteur… » plutôt que votre nom.",
       "saved": "Préférence enregistrée.",
       "failed": "La préférence n’a pas pu être enregistrée. Réessayez.",
       "blocked": "Membres bloqués",
@@ -2602,7 +2602,7 @@
       "noBlocked": "Vous n’avez bloqué personne.",
       "blockedSince": "Bloqué le {{date}}",
       "unblock": "Débloquer",
-      "unblockTitle": "Débloquer {{name}} ?",
+      "unblockTitle": "Débloquer {{name}} ?",
       "unblockDescription": "{{name}} pourra de nouveau voir votre profil et vous contacter selon vos réglages. Les connexions et suivis supprimés par le blocage ne reviennent pas.",
       "unblocked": "{{name}} est débloqué."
     },
@@ -2632,7 +2632,7 @@
     "someone": "Un membre",
     "generic": "Nouvelle notification",
     "unread": ", non lue",
-    "excerpt": "« {{text}} »",
+    "excerpt": "« {{text}} »",
     "remove": "Supprimer la notification",
     "removed": "Notification supprimée.",
     "removeFailed": "La notification n’a pas pu être supprimée.",
@@ -2690,11 +2690,11 @@
     },
     "settings": {
       "rhythmTitle": "Rythme des emails",
-      "rhythmHint": "Un seul rythme pour tous les emails qui ne sont pas indispensables : à chaque notification, ou réunis dans un résumé. Chaque type garde son interrupteur email dans la grille ci-dessous. Les emails indispensables partent toujours aussitôt.",
+      "rhythmHint": "Un seul rythme pour tous les emails qui ne sont pas indispensables : à chaque notification, ou réunis dans un résumé. Chaque type garde son interrupteur email dans la grille ci-dessous. Les emails indispensables partent toujours aussitôt.",
       "immediate": "Un email dès que la notification arrive.",
       "daily": "Un résumé chaque jour, à partir de {{time}}.",
       "weekly": "Un résumé chaque {{day}}, à partir de {{time}}.",
-      "timeZone": "Heures de votre fuseau, {{zone}} : <link>le modifier dans les préférences</link>.",
+      "timeZone": "Heures de votre fuseau, {{zone}} : <link>le modifier dans les préférences</link>.",
       "weekdays": {
         "monday": "lundi",
         "tuesday": "mardi",
@@ -2705,9 +2705,9 @@
         "sunday": "dimanche"
       },
       "type": "Notification",
-      "switch": "{{type}} : {{channel}}",
+      "switch": "{{type}} : {{channel}}",
       "locked": "Indispensable, toujours envoyée",
-      "lockedHint": "Les notifications de sécurité, de paiement, de vérification d’identité et de modération restent actives : elles concernent votre compte ou votre argent.",
+      "lockedHint": "Les notifications de sécurité, de paiement, de vérification d’identité et de modération restent actives : elles concernent votre compte ou votre argent.",
       "saved": "Préférence enregistrée.",
       "sections": {
         "network": "Réseau",
@@ -2726,7 +2726,7 @@
     "profileColumn": "Votre profil",
     "suggestions": "Personnes pertinentes pour vous",
     "emptyTitle": "Votre fil est encore vide",
-    "emptyBody": "Suivez des membres, des organisations et des projets : leurs publications viendront ici.",
+    "emptyBody": "Suivez des membres, des organisations et des projets : leurs publications viendront ici.",
     "error": "Le fil n’a pas pu se charger.",
     "moreError": "Les publications suivantes n’ont pas pu se charger. Réessayez dans un instant.",
     "label": "Fil d’actualité",
@@ -2741,7 +2741,7 @@
     "projectUpdate": "Actualité du projet {{project}}",
     "projectUpdateLabel": "Actualité de projet",
     "eventLabel": "Événement",
-    "eventLabelOf": "Événement : {{title}}",
+    "eventLabelOf": "Événement : {{title}}",
     "eventBy": "Organisé par {{name}}",
     "eventOnline": "En ligne"
   },
@@ -2750,7 +2750,7 @@
       "title": "Complétez votre profil",
       "strength": "Force du profil",
       "percent": "{{percent}} %",
-      "missing": "À ajouter : {{list}}.",
+      "missing": "À ajouter : {{list}}.",
       "action": "Compléter mon profil"
     },
     "page": {
@@ -2776,17 +2776,17 @@
         "other": "abonnés"
       },
       "about": "À propos",
-      "aboutEmpty": "Présentez-vous en quelques lignes : votre parcours, ce que vous cherchez, ce que vous proposez.",
+      "aboutEmpty": "Présentez-vous en quelques lignes : votre parcours, ce que vous cherchez, ce que vous proposez.",
       "detailsHidden": "Les détails de ce volet ne sont pas partagés avec vous.",
       "address": "Adresse de votre profil",
       "copyAddress": "Copier l’adresse",
-      "publicOn": "Votre page publique est ouverte : visible sans compte et par les moteurs de recherche.",
-      "publicOff": "Votre page publique est fermée : seuls les membres connectés voient votre profil.",
+      "publicOn": "Votre page publique est ouverte : visible sans compte et par les moteurs de recherche.",
+      "publicOff": "Votre page publique est fermée : seuls les membres connectés voient votre profil.",
       "privacySettings": "Confidentialité et réseau"
     },
     "entrepreneur": {
       "title": "Volet entrepreneur",
-      "empty": "Votre entreprise, son secteur et ce dont elle a besoin : pour être trouvé par les bons contributeurs.",
+      "empty": "Votre entreprise, son secteur et ce dont elle a besoin : pour être trouvé par les bons contributeurs.",
       "sector": "Secteur",
       "stage": "Stade",
       "team": "Équipe",
@@ -2806,7 +2806,7 @@
     },
     "contributor": {
       "title": "Volet contributeur",
-      "empty": "Vos casquettes, vos secteurs et vos pays d’intervention : pour être trouvé par les porteurs de projets.",
+      "empty": "Vos casquettes, vos secteurs et vos pays d’intervention : pour être trouvé par les porteurs de projets.",
       "structure": "Type de structure",
       "organization": "Organisation",
       "countries": "Pays d’intervention",
@@ -2848,7 +2848,7 @@
       "fields": {
         "name": "Nom",
         "headline": "Titre",
-        "headlineHint": "Votre rôle en quelques mots, par exemple « Fondatrice de Sahel Agri ».",
+        "headlineHint": "Votre rôle en quelques mots, par exemple « Fondatrice de Sahel Agri ».",
         "country": "Pays de résidence",
         "countryPlaceholder": "Choisir un pays",
         "city": "Ville",
@@ -2865,7 +2865,7 @@
         "stage": "Stade",
         "choose": "Choisir",
         "companyCountry": "Pays de l’entreprise",
-        "companyCountryHint": "En Afrique ou dans les Caraïbes ; vous pouvez résider ailleurs.",
+        "companyCountryHint": "En Afrique ou dans les Caraïbes ; vous pouvez résider ailleurs.",
         "teamSize": "Taille de l’équipe",
         "foundedYear": "Année de création",
         "pitch": "Pitch",
@@ -2873,11 +2873,11 @@
         "needs": "Besoins",
         "soughtExpertise": "Expertises recherchées",
         "soughtExpertiseHint": "20 au plus, une à une.",
-        "soughtExpertisePlaceholder": "Par exemple : irrigation",
+        "soughtExpertisePlaceholder": "Par exemple : irrigation",
         "fundingTarget": "Financement visé",
         "currency": "Devise",
         "hats": "Casquettes",
-        "hatsHint": "Une ou plusieurs : vous pourrez en changer à tout moment.",
+        "hatsHint": "Une ou plusieurs : vous pourrez en changer à tout moment.",
         "structure": "Type de structure",
         "organization": "Organisation",
         "organizationHint": "Une organisation dont vous êtes membre sur Pitchorium, ou une autre.",
@@ -2906,7 +2906,7 @@
         "description": "Entreprise, secteur, stade et pays suffisent pour commencer.",
         "create": "Ajouter le volet",
         "delete": "Supprimer le volet entrepreneur",
-        "deleteTitle": "Supprimer le volet entrepreneur ?",
+        "deleteTitle": "Supprimer le volet entrepreneur ?",
         "deleteDescription": "Ses informations disparaissent de votre profil et des suggestions. Vous pourrez le créer à nouveau."
       },
       "contributor": {
@@ -2915,7 +2915,7 @@
         "description": "Une casquette et un type de structure suffisent pour commencer.",
         "create": "Ajouter le volet",
         "delete": "Supprimer le volet contributeur",
-        "deleteTitle": "Supprimer le volet contributeur ?",
+        "deleteTitle": "Supprimer le volet contributeur ?",
         "deleteDescription": "Ses informations disparaissent de votre profil et des suggestions. Vous pourrez le créer à nouveau."
       },
       "image": {
@@ -2924,7 +2924,7 @@
           "description": "Une photo carrée, votre visage bien visible.",
           "limits": "JPEG, PNG ou WebP, 5 Mo au plus, 200 × 200 pixels au moins.",
           "remove": "Retirer la photo",
-          "removeTitle": "Retirer votre photo ?",
+          "removeTitle": "Retirer votre photo ?",
           "removeDescription": "Vos initiales la remplacent."
         },
         "cover": {
@@ -2932,7 +2932,7 @@
           "description": "Un bandeau en largeur, recadré au format 4:1.",
           "limits": "JPEG, PNG ou WebP, 8 Mo au plus, 1 200 × 300 pixels au moins.",
           "remove": "Retirer la couverture",
-          "removeTitle": "Retirer la couverture ?",
+          "removeTitle": "Retirer la couverture ?",
           "removeDescription": "Le motif de Pitchorium la remplace."
         }
       },
@@ -2943,11 +2943,11 @@
         "hint": "Lettres minuscules, chiffres et tirets, de 3 à 30 caractères.",
         "newAddress": "Nouvelle adresse",
         "redirectTitle": "Vos liens restent valables",
-        "redirectBody": "L’ancienne adresse {{previous}} mènera vers la nouvelle : les liens déjà partagés continuent de fonctionner, et elle reste réservée à votre profil.",
+        "redirectBody": "L’ancienne adresse {{previous}} mènera vers la nouvelle : les liens déjà partagés continuent de fonctionner, et elle reste réservée à votre profil.",
         "submit": "Changer l’adresse"
       },
       "intention": {
-        "title": "Qu’est-ce qui vous amène ?",
+        "title": "Qu’est-ce qui vous amène ?",
         "description": "Elle oriente vos suggestions, sans rien verrouiller.",
         "clear": "Ne pas préciser",
         "failed": "Votre choix n’a pas pu être enregistré. Réessayez."
@@ -2956,7 +2956,7 @@
     "strength": {
       "title": "Force du profil",
       "percent": "{{percent}} %",
-      "missing": "Pour le compléter :",
+      "missing": "Pour le compléter :",
       "facets": {
         "entrepreneur": "Volet entrepreneur",
         "contributor": "Volet contributeur"
@@ -2977,7 +2977,7 @@
       "entrepreneurDetails": "Détails du volet entrepreneur",
       "contributorDetails": "Détails du volet contributeur",
       "networkLists": "Listes de votre réseau",
-      "levelHint": "Public : tout le monde ; Membres : les membres connectés ; Privé : vous seul.",
+      "levelHint": "Public : tout le monde ; Membres : les membres connectés ; Privé : vous seul.",
       "saved": "Réglage enregistré.",
       "failed": "Le réglage n’a pas pu être enregistré. Réessayez."
     }
@@ -3020,14 +3020,14 @@
     },
     "signUp": {
       "title": "Créer un compte",
-      "lede": "Votre nom, votre email et un mot de passe : vous complèterez le reste plus tard.",
+      "lede": "Votre nom, votre email et un mot de passe : vous complèterez le reste plus tard.",
       "name": "Nom",
       "email": "Adresse email",
       "password": "Mot de passe",
       "passwordHint": "{{length}} caractères au moins. Une phrase facile à retenir fonctionne bien.",
       "submit": "Créer mon compte",
       "creating": "Création en cours",
-      "haveAccount": "Déjà un compte ?",
+      "haveAccount": "Déjà un compte ?",
       "signIn": "Se connecter"
     },
     "magicLink": {
@@ -3057,7 +3057,7 @@
         "lede": "Si un compte utilise {{email}}, un lien de réinitialisation vient de partir. Il est valable 30 minutes.",
         "ledeNoEmail": "Ouvrez le lien reçu par email pour choisir un nouveau mot de passe."
       },
-      "spam": "Rien reçu ? Regardez dans les courriers indésirables, ou renvoyez l’email.",
+      "spam": "Rien reçu ? Regardez dans les courriers indésirables, ou renvoyez l’email.",
       "resend": "Renvoyer l’email",
       "resendIn": "Renvoyer dans {{seconds}} s",
       "sending": "Envoi en cours",
@@ -3084,7 +3084,7 @@
     },
     "forgotPassword": {
       "title": "Mot de passe oublié",
-      "lede": "Indiquez votre adresse : si un compte l’utilise, vous recevrez un lien pour choisir un nouveau mot de passe.",
+      "lede": "Indiquez votre adresse : si un compte l’utilise, vous recevrez un lien pour choisir un nouveau mot de passe.",
       "email": "Adresse email",
       "submit": "Recevoir le lien",
       "sending": "Envoi en cours",
@@ -3135,7 +3135,7 @@
         "title": "Cette adresse a déjà un compte",
         "lede": "Pour protéger ce compte, nous ne le relions pas automatiquement à ce fournisseur.",
         "step1": "Connectez-vous avec la méthode que vous utilisez d’habitude (email, ou un autre fournisseur).",
-        "step2": "Dans Paramètres, Compte, reliez ensuite ce fournisseur : vous pourrez l’utiliser pour vous connecter.",
+        "step2": "Dans Paramètres, Compte, reliez ensuite ce fournisseur : vous pourrez l’utiliser pour vous connecter.",
         "action": "Se connecter, puis relier le compte"
       },
       "generic": {
@@ -3148,7 +3148,7 @@
       "lede": "Saisissez l’adresse et le mot de passe de votre compte.",
       "email": "Adresse email",
       "password": "Mot de passe",
-      "forgotPassword": "Mot de passe oublié ?",
+      "forgotPassword": "Mot de passe oublié ?",
       "submit": "Se connecter",
       "signingIn": "Connexion en cours",
       "useLink": "Recevoir plutôt un lien",
@@ -3179,9 +3179,9 @@
       "failed": "L’acceptation n’a pas été enregistrée. Réessayez."
     },
     "intention": {
-      "title": "Qu’est-ce qui vous amène ?",
+      "title": "Qu’est-ce qui vous amène ?",
       "lede": "Une seule question, pour orienter vos suggestions. Vous pourrez la modifier à tout moment.",
-      "question": "Qu’est-ce qui vous amène ?",
+      "question": "Qu’est-ce qui vous amène ?",
       "options": {
         "carry_project": {
           "label": "Je porte un projet",
@@ -3213,7 +3213,7 @@
       "photoFailed": "La photo n’a pas pu être enregistrée. Réessayez.",
       "name": "Nom affiché",
       "headline": "Titre",
-      "headlineHint": "Votre rôle, en une ligne : « Fondatrice d’une coopérative de karité ».",
+      "headlineHint": "Votre rôle, en une ligne : « Fondatrice d’une coopérative de karité ».",
       "country": "Pays",
       "countryPlaceholder": "Choisir un pays",
       "continue": "Entrer dans Pitchorium",
@@ -3256,7 +3256,7 @@
         "unlink": "Retirer {{provider}}",
         "unlinking": "Retrait en cours",
         "lastMethodShort": "Seule méthode",
-        "lastMethod": "C’est votre seule méthode de connexion : reliez-en une autre avant de la retirer, sinon vous ne pourriez plus vous connecter."
+        "lastMethod": "C’est votre seule méthode de connexion : reliez-en une autre avant de la retirer, sinon vous ne pourriez plus vous connecter."
       },
       "legal": {
         "title": "Conditions acceptées",
@@ -3273,7 +3273,7 @@
       },
       "password": {
         "title": "Mot de passe",
-        "description": "Changer de mot de passe ferme vos autres sessions : seul cet appareil reste connecté.",
+        "description": "Changer de mot de passe ferme vos autres sessions : seul cet appareil reste connecté.",
         "current": "Mot de passe actuel",
         "new": "Nouveau mot de passe",
         "newHint": "12 caractères au moins.",
@@ -3283,7 +3283,7 @@
       },
       "twoFactor": {
         "title": "Double authentification",
-        "description": "Un code de votre application d’authentification vous sera demandé à chaque connexion, quel que soit le moyen : mot de passe, lien de connexion, Google, LinkedIn ou Microsoft.",
+        "description": "Un code de votre application d’authentification vous sera demandé à chaque connexion, quel que soit le moyen : mot de passe, lien de connexion, Google, LinkedIn ou Microsoft.",
         "on": "Activée",
         "off": "Désactivée",
         "enable": "Activer la double authentification",
@@ -3294,7 +3294,7 @@
         "confirmPasswordHint": "Confirmez votre identité avant ce changement.",
         "continue": "Continuer",
         "cancel": "Annuler",
-        "withoutPassword": "Votre compte n’a pas de mot de passe : votre connexion récente confirme ce changement.",
+        "withoutPassword": "Votre compte n’a pas de mot de passe : votre connexion récente confirme ce changement.",
         "stale": {
           "title": "Reconnectez-vous d’abord",
           "body": "Sans mot de passe à confirmer, ce changement exige une connexion récente. Reconnectez-vous, puis revenez ici.",
@@ -3309,7 +3309,7 @@
         "codeLabel": "Code de l’application",
         "activate": "Activer",
         "activated": "Double authentification activée.",
-        "backupCodes": "Gardez ces codes de secours en lieu sûr : chacun permet de vous connecter une fois si vous n’avez plus votre téléphone. Ils ne seront plus affichés.",
+        "backupCodes": "Gardez ces codes de secours en lieu sûr : chacun permet de vous connecter une fois si vous n’avez plus votre téléphone. Ils ne seront plus affichés.",
         "copyCodes": "Copier les codes",
         "downloadCodes": "Télécharger les codes",
         "codesSaved": "J’ai gardé mes codes"
@@ -3348,7 +3348,7 @@
     }
   },
   "prerequisites": {
-    "title": "À compléter : {{element}}",
+    "title": "À compléter : {{element}}",
     "description": "Cette action demande d’abord cet élément. Une fois complété, elle reprend toute seule.",
     "later": "Plus tard",
     "email": {
@@ -3369,7 +3369,7 @@
       "body": "Votre nom, votre titre et votre pays disent qui vous êtes au membre que vous contactez.",
       "name": "Nom",
       "headline": "Titre",
-      "headlineHint": "Votre rôle en quelques mots, par exemple « Fondatrice de Sahel Agri ».",
+      "headlineHint": "Votre rôle en quelques mots, par exemple « Fondatrice de Sahel Agri ».",
       "country": "Pays",
       "countryPlaceholder": "Choisir un pays",
       "submit": "Enregistrer et continuer",
@@ -3402,24 +3402,24 @@
     },
     "contributors": {
       "title": "Contributeurs potentiels",
-      "description": "Des membres que le matching propose pour ce projet, avec la raison : réservé à l’équipe.",
+      "description": "Des membres que le matching propose pour ce projet, avec la raison : réservé à l’équipe.",
       "connect": "Se connecter",
       "connecting": "Envoi en cours",
       "requested": "Demande envoyée",
       "error": "Les suggestions n’ont pas pu être chargées.",
       "none": "Aucun contributeur potentiel pour l’instant",
-      "noneHint": "Complétez les besoins, les secteurs et les pays du projet : les suggestions se recalculent."
+      "noneHint": "Complétez les besoins, les secteurs et les pays du projet : les suggestions se recalculent."
     }
   },
   "media": {
     "image": {
-      "cropHint": "Faites glisser l’image pour la cadrer ; le curseur ou la molette règlent le zoom.",
+      "cropHint": "Faites glisser l’image pour la cadrer ; le curseur ou la molette règlent le zoom.",
       "zoom": "Zoom",
       "zoomValue": "{{percent}} %",
       "save": "Enregistrer l’image",
       "another": "Choisir une autre image",
       "sending": "Envoi de l’image",
-      "sendingValue": "Envoi : {{percent}} %",
+      "sendingValue": "Envoi : {{percent}} %",
       "checking": "Vérification de l’image en cours",
       "choose": "Choisir une image",
       "failed": "L’image n’a pas pu être envoyée. Réessayez.",
@@ -3444,7 +3444,7 @@
     },
     "create": {
       "title": "Créer une organisation",
-      "description": "Fondation, entreprise, ONG ou institution : sa page la présente, ses membres la gèrent. Vous en serez le propriétaire.",
+      "description": "Fondation, entreprise, ONG ou institution : sa page la présente, ses membres la gèrent. Vous en serez le propriétaire.",
       "steps": {
         "label": "Création de l’organisation",
         "identity": "Identité",
@@ -3496,10 +3496,10 @@
         "logo": {
           "change": "Changer le logo",
           "title": "Logo",
-          "description": "Un logo carré ; sa transparence est conservée.",
+          "description": "Un logo carré ; sa transparence est conservée.",
           "limits": "JPEG, PNG ou WebP, 5 Mo au plus, 200 × 200 pixels au moins.",
           "remove": "Retirer le logo",
-          "removeTitle": "Retirer le logo ?",
+          "removeTitle": "Retirer le logo ?",
           "removeDescription": "Les initiales de l’organisation le remplacent."
         },
         "cover": {
@@ -3508,7 +3508,7 @@
           "description": "Une bannière large, recadrée en 4:1.",
           "limits": "JPEG, PNG ou WebP, 8 Mo au plus, 1 200 × 300 pixels au moins.",
           "remove": "Retirer la couverture",
-          "removeTitle": "Retirer la couverture ?",
+          "removeTitle": "Retirer la couverture ?",
           "removeDescription": "Le motif de Pitchorium la remplace."
         }
       },
@@ -3527,8 +3527,8 @@
         "title": "Supprimer l’organisation",
         "description": "Sa page disparaît, les invitations en attente sont révoquées et les volets contributeur de ses membres déliés. Son adresse reste réservée.",
         "action": "Supprimer l’organisation",
-        "confirmTitle": "Supprimer {{name}} ?",
-        "confirmDescription": "Cette action est définitive : la page ne pourra pas être rétablie.",
+        "confirmTitle": "Supprimer {{name}} ?",
+        "confirmDescription": "Cette action est définitive : la page ne pourra pas être rétablie.",
         "deleted": "{{name}} est supprimée."
       },
       "members": {
@@ -3540,10 +3540,10 @@
         "roleOf": "Rôle de {{name}}",
         "roleChanged": "{{name}} est maintenant {{role}}.",
         "remove": "Retirer",
-        "removeTitle": "Retirer {{name}} de l’organisation ?",
+        "removeTitle": "Retirer {{name}} de l’organisation ?",
         "removeDescription": "{{name}} perd son rôle et son volet contributeur n’est plus lié à l’organisation.",
         "removed": "{{name}} est retiré de l’organisation.",
-        "lastOwner": "Vous êtes le seul propriétaire : une organisation garde toujours au moins un propriétaire. Transférez la propriété ou nommez un autre propriétaire avant de partir ou de changer de rôle."
+        "lastOwner": "Vous êtes le seul propriétaire : une organisation garde toujours au moins un propriétaire. Transférez la propriété ou nommez un autre propriétaire avant de partir ou de changer de rôle."
       },
       "invitations": {
         "title": "Inviter",
@@ -3557,27 +3557,27 @@
         "none": "Aucune invitation en attente.",
         "meta": "{{role}}, valable jusqu’au {{date}}",
         "revoke": "Révoquer",
-        "revokeTitle": "Révoquer l’invitation de {{email}} ?",
+        "revokeTitle": "Révoquer l’invitation de {{email}} ?",
         "revokeDescription": "Le lien reçu par email ne fonctionnera plus.",
         "revoked": "Invitation de {{email}} révoquée."
       },
       "transfer": {
         "title": "Transférer la propriété",
-        "description": "Le membre choisi devient propriétaire ; vous restez administrateur.",
+        "description": "Le membre choisi devient propriétaire ; vous restez administrateur.",
         "alone": "Invitez d’abord un autre membre.",
         "to": "Nouveau propriétaire",
         "choose": "Choisir un membre",
         "action": "Transférer",
-        "confirmTitle": "Transférer la propriété à {{name}} ?",
+        "confirmTitle": "Transférer la propriété à {{name}} ?",
         "confirmDescription": "{{name}} pourra tout gérer, y compris supprimer l’organisation. Vous restez administrateur.",
         "done": "{{name}} est maintenant propriétaire."
       },
       "leave": {
         "title": "Quitter l’organisation",
-        "description": "Vous perdez votre rôle ; votre volet contributeur n’est plus lié à l’organisation.",
-        "lastOwner": "Le dernier propriétaire ne peut pas partir : transférez d’abord la propriété.",
+        "description": "Vous perdez votre rôle ; votre volet contributeur n’est plus lié à l’organisation.",
+        "lastOwner": "Le dernier propriétaire ne peut pas partir : transférez d’abord la propriété.",
         "action": "Quitter",
-        "confirmTitle": "Quitter {{name}} ?",
+        "confirmTitle": "Quitter {{name}} ?",
         "confirmDescription": "Pour revenir, il faudra une nouvelle invitation.",
         "left": "Vous avez quitté {{name}}."
       },
@@ -3588,8 +3588,8 @@
           "unverified": "Le badge de vérification est attribué par Pitchorium après examen des pièces justificatives.",
           "pending": "Votre demande est en cours d’examen.",
           "verified": "Organisation vérifiée par Pitchorium.",
-          "rejected": "La dernière demande a été refusée : voyez son motif ci-dessous, puis faites une nouvelle demande.",
-          "revoked": "Le badge a été retiré : voyez le motif ci-dessous, puis faites une nouvelle demande."
+          "rejected": "La dernière demande a été refusée : voyez son motif ci-dessous, puis faites une nouvelle demande.",
+          "revoked": "Le badge a été retiré : voyez le motif ci-dessous, puis faites une nouvelle demande."
         },
         "history": "Demandes",
         "noRequest": "Aucune demande pour l’instant.",
@@ -3605,7 +3605,7 @@
         },
         "reason": "Motif de la décision du {{date}}",
         "requestTitle": "Demander la vérification",
-        "requestDescription": "Joignez des pièces qui établissent l’existence de l’organisation et votre mandat. Elles restent privées : seuls ses propriétaires, ses administrateurs et l’équipe de Pitchorium les consultent.",
+        "requestDescription": "Joignez des pièces qui établissent l’existence de l’organisation et votre mandat. Elles restent privées : seuls ses propriétaires, ses administrateurs et l’équipe de Pitchorium les consultent.",
         "documentsLabel": "Pièces justificatives",
         "documentsLimits": "PDF, JPEG ou PNG, 10 Mo au plus, 10 pièces au plus.",
         "documentsRequired": "Joignez au moins une pièce justificative.",
@@ -3616,7 +3616,7 @@
         "certified": "Je certifie l’exactitude de cette déclaration et l’authenticité des pièces jointes.",
         "submit": "Envoyer la demande",
         "sending": "Envoi en cours",
-        "requested": "Demande envoyée : elle est en cours d’examen."
+        "requested": "Demande envoyée : elle est en cours d’examen."
       }
     },
     "invitation": {
@@ -3664,7 +3664,7 @@
     "title": "Créer une publication",
     "editTitle": "Modifier la publication",
     "editor": "Texte de la publication",
-    "placeholder": "De quoi voulez-vous parler ?",
+    "placeholder": "De quoi voulez-vous parler ?",
     "counter": "{{count}} / {{max}}",
     "publish": "Publier",
     "publishing": "Publication en cours",
@@ -3688,21 +3688,21 @@
     "images": "Images de la publication",
     "imageLabel": "Image {{index}} sur {{count}}",
     "alt": "Texte alternatif de l’image {{index}}",
-    "altHint": "Décrivez l’image pour les personnes qui ne la voient pas : ce qu’elle montre et pourquoi elle compte.",
+    "altHint": "Décrivez l’image pour les personnes qui ne la voient pas : ce qu’elle montre et pourquoi elle compte.",
     "altMissing": "Sans texte alternatif",
     "moveBefore": "Déplacer avant",
     "moveAfter": "Déplacer après",
-    "reorder": "Réorganiser : glisser, ou Espace puis les flèches",
+    "reorder": "Réorganiser : glisser, ou Espace puis les flèches",
     "moved": "Image déplacée en position {{index}} sur {{count}}.",
     "remove": "Retirer",
     "retry": "Réessayer",
     "compressing": "Allègement de la photo",
-    "sending": "Envoi : {{percent}} %",
+    "sending": "Envoi : {{percent}} %",
     "checking": "Vérification",
     "uploadFailed": "L’envoi n’a pas abouti.",
     "documentTitle": "Titre du document",
     "linkPending": "Préparation de l’aperçu",
-    "linkFailed": "Pas d’aperçu pour ce lien : il restera dans le texte.",
+    "linkFailed": "Pas d’aperçu pour ce lien : il restera dans le texte.",
     "removePreview": "Retirer l’aperçu",
     "project": "Projet lié",
     "projectNone": "Aucun projet",
@@ -3716,7 +3716,7 @@
     "title": "Publications enregistrées",
     "description": "Les publications que vous avez enregistrées, de la plus récente à la plus ancienne.",
     "emptyTitle": "Aucune publication enregistrée",
-    "emptyBody": "Enregistrez une publication depuis son menu « Plus d’actions » pour la retrouver ici.",
+    "emptyBody": "Enregistrez une publication depuis son menu « Plus d’actions » pour la retrouver ici.",
     "savedAt": "Enregistrée {{date}}"
   },
   "post": {
@@ -3732,13 +3732,13 @@
   "impact": {
     "unavailable": {
       "title": "Aucune méthodologie publiée",
-      "body": "Le score d’impact attend la publication de la méthodologie : aucun score n’est demandé ni affiché d’ici là, et la publication d’un projet n’en a pas besoin."
+      "body": "Le score d’impact attend la publication de la méthodologie : aucun score n’est demandé ni affiché d’ici là, et la publication d’un projet n’en a pas besoin."
     },
     "form": {
       "label": "Évaluation de l’impact",
       "methodology": "Méthodologie {{name}}, version {{version}}",
-      "current": "Score actuel : {{score}} sur 100, niveau {{level}} (version {{version}}).",
-      "reassess": "La méthodologie est passée à la version {{version}} : une nouvelle évaluation est proposée.",
+      "current": "Score actuel : {{score}} sur 100, niveau {{level}} (version {{version}}).",
+      "reassess": "La méthodologie est passée à la version {{version}} : une nouvelle évaluation est proposée.",
       "required": "Choisissez une réponse.",
       "saving": "Enregistrement en cours"
     },
@@ -3747,16 +3747,16 @@
       "description": "Les critères, l’échelle et les pondérations du score d’impact auto-déclaré des projets et des entrepreneurs de Pitchorium.",
       "lede": "Comment se calcule le score d’impact affiché à côté des projets et des entrepreneurs.",
       "version": "{{name}}, version {{version}}, publiée le {{date}}.",
-      "notCertified": "Le score est déclaré par le porteur lui-même, selon cette méthodologie. Pitchorium ne le vérifie pas : ce n’est ni une certification, ni un label.",
+      "notCertified": "Le score est déclaré par le porteur lui-même, selon cette méthodologie. Pitchorium ne le vérifie pas : ce n’est ni une certification, ni un label.",
       "criteria": "Les {{count}} critères",
       "criterion": "{{index}}. {{label}}",
-      "weight": "Pondération : {{percent}}",
+      "weight": "Pondération : {{percent}}",
       "scale": "Échelle de réponse",
       "levels": "Les niveaux",
       "score": "Le score, de 0 à 100, est la moyenne des réponses pondérée par critère.",
-      "emerging": "{{level}} : moins de 40",
-      "moderate": "{{level}} : de 40 à 69",
-      "strong": "{{level}} : 70 et plus"
+      "emerging": "{{level}} : moins de 40",
+      "moderate": "{{level}} : de 40 à 69",
+      "strong": "{{level}} : 70 et plus"
     },
     "entrepreneur": {
       "title": "Impact de mon activité",
@@ -3778,7 +3778,7 @@
     "problems": {
       "network": "La connexion a été interrompue. Vérifiez votre réseau, puis réessayez.",
       "PAYMENTS_PROJECT_NOT_OPEN": {
-        "campaign_closed": "Cette campagne est terminée : elle ne reçoit plus de contributions.",
+        "campaign_closed": "Cette campagne est terminée : elle ne reçoit plus de contributions.",
         "funding_frozen": "Les contributions à ce projet sont suspendues pour le moment."
       },
       "PAYMENTS_HOLDER_PAYOUT_NOT_COVERED": {
@@ -3804,8 +3804,8 @@
       },
       "PAYMENTS_PAYOUT_CHANGE_REFUSED": {
         "same_option": "C’est déjà votre option de versement.",
-        "campaign_in_progress": "Une de vos campagnes reçoit des contributions sur ce compte : le changement sera possible après sa clôture.",
-        "payments_pending": "Des paiements sont encore en attente sur ce compte : réessayez quand ils seront terminés."
+        "campaign_in_progress": "Une de vos campagnes reçoit des contributions sur ce compte : le changement sera possible après sa clôture.",
+        "payments_pending": "Des paiements sont encore en attente sur ce compte : réessayez quand ils seront terminés."
       }
     },
     "methods": {
@@ -3820,8 +3820,8 @@
         "currency_not_supported": "{{method}} n’est pas disponible dans cette devise.",
         "amount_out_of_range": "{{method}} n’accepte pas ce montant."
       },
-      "accepted": "Accepté pour ce paiement : {{methods}}.",
-      "noneAvailable": "Aucun moyen n’est disponible pour ce paiement : changez de pays, de devise ou de montant."
+      "accepted": "Accepté pour ce paiement : {{methods}}.",
+      "noneAvailable": "Aucun moyen n’est disponible pour ce paiement : changez de pays, de devise ou de montant."
     },
     "availability": {
       "alternativesTitle": "Vous pouvez quand même soutenir ce projet",
@@ -3835,7 +3835,7 @@
       },
       "campaign_closed": {
         "title": "Campagne terminée",
-        "body": "Cette campagne est terminée : elle ne reçoit plus de contributions."
+        "body": "Cette campagne est terminée : elle ne reçoit plus de contributions."
       },
       "funding_frozen": {
         "title": "Contributions suspendues",
@@ -3846,7 +3846,7 @@
       "contribute": "Contribuer",
       "signInToContribute": "Se connecter pour contribuer",
       "unreadable": "Les moyens de contribuer n’ont pas pu être chargés.",
-      "declareOffline": "Vous avez contribué hors plateforme ? Déclarez-le",
+      "declareOffline": "Vous avez contribué hors plateforme ? Déclarez-le",
       "loveMoneyCommitment": "Prendre un engagement de love money",
       "interest": "Manifester un intérêt",
       "resume": {
@@ -3859,7 +3859,7 @@
     },
     "journey": {
       "title": "Contribuer à {{title}}",
-      "progress": "Étape {{current}} sur {{total}} : {{step}}",
+      "progress": "Étape {{current}} sur {{total}} : {{step}}",
       "steps": {
         "kind": "type de contribution",
         "country": "pays",
@@ -3878,19 +3878,19 @@
         "country": "Choisissez d’abord le pays d’où vous payez.",
         "amount": "Saisissez d’abord un montant.",
         "method": "Choisissez d’abord un moyen de paiement.",
-        "reward": "Le montant n’atteint pas le minimum de cette contrepartie : ajustez-le ou choisissez-en une autre."
+        "reward": "Le montant n’atteint pas le minimum de cette contrepartie : ajustez-le ou choisissez-en une autre."
       },
       "kind": {
-        "label": "Comment souhaitez-vous soutenir ce projet ?",
+        "label": "Comment souhaitez-vous soutenir ce projet ?",
         "commitment": "Engagement de love money, sans paiement",
         "descriptions": {
           "donation": "Un don, sans contrepartie. Un don n’est pas un titre financier.",
           "reward_crowdfunding": "Un financement avec une contrepartie choisie parmi celles du projet.",
           "love_money": "Un engagement de proche, accompagné d’un paiement.",
-          "love_money_commitment": "Un engagement de proche, déclaré sans paiement ; l’équipe le confirme."
+          "love_money_commitment": "Un engagement de proche, déclaré sans paiement ; l’équipe le confirme."
         },
         "interestTitle": "Les autres instruments ne se paient pas en ligne",
-        "interestBody": "Ce projet accepte aussi : {{instruments}}. Ces instruments passent par une manifestation d’intérêt : l’équipe vous répond hors de la plateforme.",
+        "interestBody": "Ce projet accepte aussi : {{instruments}}. Ces instruments passent par une manifestation d’intérêt : l’équipe vous répond hors de la plateforme.",
         "interestAction": "Manifester un intérêt"
       },
       "country": {
@@ -3904,7 +3904,7 @@
         "bounds": "Entre {{min}} et {{max}}.",
         "noCurrency": "Aucune devise n’est disponible pour ce pays. Revenez à l’étape précédente pour en choisir un autre.",
         "equivalent": "Soit {{amount}}.",
-        "fixedParity": "Parité fixe : 1 € = {{rate}} francs CFA."
+        "fixedParity": "Parité fixe : 1 € = {{rate}} francs CFA."
       },
       "reward": {
         "label": "Contrepartie",
@@ -3936,7 +3936,7 @@
         "label": "Moyen de paiement",
         "hints": {
           "card": "Visa, Mastercard et cartes internationales, sur la page sécurisée du prestataire.",
-          "sepa_debit": "Prélèvement depuis un compte bancaire de la zone SEPA ; la confirmation peut prendre quelques jours.",
+          "sepa_debit": "Prélèvement depuis un compte bancaire de la zone SEPA ; la confirmation peut prendre quelques jours.",
           "apple_pay": "Proposé par la page du prestataire sur les appareils compatibles.",
           "google_pay": "Proposé par la page du prestataire sur les appareils compatibles.",
           "paypal": "Avec votre compte PayPal.",
@@ -3950,7 +3950,7 @@
       },
       "review": {
         "quoting": "Calcul du récapitulatif",
-        "method": "Moyen de paiement : {{method}}",
+        "method": "Moyen de paiement : {{method}}",
         "pay": "Payer {{amount}}",
         "payPending": "Payer",
         "paying": "Redirection vers le paiement sécurisé",
@@ -3963,7 +3963,7 @@
         }
       },
       "commitment": {
-        "body": "Vous déclarez un engagement de love money sans paiement. L’équipe du projet le confirme ; il ne compte pas dans le montant collecté.",
+        "body": "Vous déclarez un engagement de love money sans paiement. L’équipe du projet le confirme ; il ne compte pas dans le montant collecté.",
         "description": "Message pour l’équipe",
         "declare": "Déclarer mon engagement",
         "declaring": "Déclaration en cours",
@@ -3981,10 +3981,10 @@
       "holder": "Montant estimé pour le porteur",
       "holderUnknown": "Non estimé sans frais connus",
       "fixedParity": "Équivalent exact à la parité fixe de 1 € = {{rate}} {{currency}}.",
-      "floatingRate": "Taux du moment : 1 € = {{rate}} {{currency}} ({{at}}). Il est verrouillé à la création du paiement, pour la durée de la session."
+      "floatingRate": "Taux du moment : 1 € = {{rate}} {{currency}} ({{at}}). Il est verrouillé à la création du paiement, pour la durée de la session."
     },
     "mentions": {
-      "hosted": "Pitchorium ne détient pas les fonds : vous payez sur la page sécurisée d’un prestataire agréé, qui verse au porteur et prélève la commission à la source. Aucune donnée de carte ne passe par Pitchorium.",
+      "hosted": "Pitchorium ne détient pas les fonds : vous payez sur la page sécurisée d’un prestataire agréé, qui verse au porteur et prélève la commission à la source. Aucune donnée de carte ne passe par Pitchorium.",
       "notASecurity": "Un don n’est pas un titre financier.",
       "noGuarantee": "Un palier débloqué n’est pas une garantie de succès du projet.",
       "selfDeclared": "L’impact du projet est auto-déclaré, non certifié.",
@@ -3998,9 +3998,9 @@
         "title": "Paiement en cours de confirmation",
         "body": "Le prestataire confirme votre paiement. Cette page se met à jour toute seule.",
         "checking": "Vérification en cours",
-        "slow": "La confirmation prend plus de temps que prévu. Rien n’est perdu : vous pouvez vérifier à nouveau ou revenir plus tard.",
-        "amount": "Montant : {{amount}}",
-        "later": "Vous pouvez quitter cette page : le paiement suit son cours et son état apparaîtra dans vos contributions.",
+        "slow": "La confirmation prend plus de temps que prévu. Rien n’est perdu : vous pouvez vérifier à nouveau ou revenir plus tard.",
+        "amount": "Montant : {{amount}}",
+        "later": "Vous pouvez quitter cette page : le paiement suit son cours et son état apparaîtra dans vos contributions.",
         "checkAgain": "Vérifier à nouveau",
         "seeLater": "Voir cette contribution"
       },
@@ -4052,9 +4052,9 @@
         "amount": "Montant",
         "descriptionLabel": "Précisions",
         "proofs": "Pièces justificatives",
-        "proofsLimits": "PDF, JPEG ou PNG, {{max}} fichiers au plus. Privées : seules les parties et l’administration les lisent.",
+        "proofsLimits": "PDF, JPEG ou PNG, {{max}} fichiers au plus. Privées : seules les parties et l’administration les lisent.",
         "countsAfterValidation": "Un montant ne compte dans le collecté qu’après confirmation par l’autre partie et validation par Pitchorium sur pièce justificative.",
-        "notCounted": "Un engagement ou un mécénat de compétences est affiché à part ; il ne compte pas dans le montant collecté.",
+        "notCounted": "Un engagement ou un mécénat de compétences est affiché à part ; il ne compte pas dans le montant collecté.",
         "submit": "Déclarer",
         "declaring": "Déclaration en cours",
         "declared": "Contribution déclarée.",
@@ -4070,11 +4070,11 @@
         "equivalent": "soit {{amount}}",
         "states": {
           "declared": "En attente de la confirmation de l’autre partie.",
-          "confirmed": "Confirmée ; un montant attend la validation par Pitchorium sur pièce justificative.",
-          "validated": "Validée : comptée dans le montant collecté.",
+          "confirmed": "Confirmée ; un montant attend la validation par Pitchorium sur pièce justificative.",
+          "validated": "Validée : comptée dans le montant collecté.",
           "rejected": "Refusée."
         },
-        "reason": "Motif : {{reason}}",
+        "reason": "Motif : {{reason}}",
         "proofs": "Pièces justificatives",
         "proof": "Pièce {{number}}",
         "confirm": "Confirmer",
@@ -4095,11 +4095,11 @@
       "chooseDescription": "Les contributions en ligne à vos projets arrivent sur ce compte, chez un prestataire agréé. Pitchorium ne détient jamais les fonds.",
       "coverage": {
         "title": "Zones couvertes",
-        "principle": "Ce qui compte est le pays du compte bancaire qui reçoit les fonds, pas votre pays de résidence ni celui du projet : un porteur établi au Sénégal peut recevoir sur un compte en France s’il remplit les conditions du prestataire.",
+        "principle": "Ce qui compte est le pays du compte bancaire qui reçoit les fonds, pas votre pays de résidence ni celui du projet : un porteur établi au Sénégal peut recevoir sur un compte en France s’il remplit les conditions du prestataire.",
         "none": "Aucune option de versement n’est ouverte pour le moment.",
-        "countries": "Pays du compte de versement : {{countries}}.",
-        "currencies": "Devise de versement : {{currencies}}.",
-        "methods": "Vos contributeurs pourront payer par : {{methods}}.",
+        "countries": "Pays du compte de versement : {{countries}}.",
+        "currencies": "Devise de versement : {{currencies}}.",
+        "methods": "Vos contributeurs pourront payer par : {{methods}}.",
         "verified": "Couverture vérifiée auprès des prestataires (version {{version}}, vérifiée depuis le {{date}})."
       },
       "choice": {
@@ -4111,14 +4111,14 @@
         "uncoveredOther": "Si vous détenez un compte dans un pays couvert ({{countries}}), choisissez ce pays.",
         "uncoveredAlternatives": "En attendant, vos projets restent ouverts au love money, aux manifestations d’intérêt et aux contributions hors plateforme.",
         "option": "Option de versement",
-        "optionTitle": "{{provider}}, compte tenu dans ce pays : {{country}}",
+        "optionTitle": "{{provider}}, compte tenu dans ce pays : {{country}}",
         "settledIn": "Versement en {{currency}}",
         "requirements": "Conditions du prestataire",
         "documents": "Pièces demandées",
         "companyOnly": "(pour un compte au nom d’une société)",
         "contributorsPay": "Vos contributeurs pourront payer par",
-        "methodFrom": "{{method}}, depuis : {{countries}}",
-        "notCovered": "Non couvert avec cette option : {{methods}}.",
+        "methodFrom": "{{method}}, depuis : {{countries}}",
+        "notCovered": "Non couvert avec cette option : {{methods}}.",
         "sameOption": "C’est l’option de votre compte actuel.",
         "confirm": "Je confirme remplir les conditions de {{provider}} pour un compte tenu dans ce pays ({{country}}).",
         "confirmFirst": "Confirmez d’abord remplir les conditions du prestataire.",
@@ -4127,8 +4127,8 @@
         "saving": "Enregistrement en cours",
         "cancel": "Annuler",
         "changeTitle": "Ce que change un changement d’option",
-        "changeNewAccount": "Un nouveau compte est ouvert chez le prestataire choisi ; il reçoit les prochaines contributions.",
-        "changeStripeCountry": "Le pays d’un compte Stripe ne peut jamais être modifié : pour un autre pays, un nouveau compte est ouvert.",
+        "changeNewAccount": "Un nouveau compte est ouvert chez le prestataire choisi ; il reçoit les prochaines contributions.",
+        "changeStripeCountry": "Le pays d’un compte Stripe ne peut jamais être modifié : pour un autre pays, un nouveau compte est ouvert.",
         "changeKept": "Votre compte actuel reste chez son prestataire pour les contributions déjà reçues (remboursements et litiges compris).",
         "stale": {
           "title": "Reconnectez-vous pour changer de compte",
@@ -4158,10 +4158,10 @@
         "openTitle": "Contributions ouvertes",
         "openBody": "Vos projets reçoivent des contributions en ligne sur ce compte.",
         "notCoveredTitle": "Compte plus couvert",
-        "notCoveredBody": "Cette option n’est plus couverte par la vérification des prestataires : vos projets ne reçoivent plus de contributions en ligne. Choisissez une autre option.",
+        "notCoveredBody": "Cette option n’est plus couverte par la vérification des prestataires : vos projets ne reçoivent plus de contributions en ligne. Choisissez une autre option.",
         "pendingTitle": "Contributions pas encore ouvertes",
         "pendingKyc": "Il reste à faire vérifier votre identité, plus bas.",
-        "pendingAccount": "Le prestataire n’a pas encore activé votre compte : terminez les étapes demandées chez lui.",
+        "pendingAccount": "Le prestataire n’a pas encore activé votre compte : terminez les étapes demandées chez lui.",
         "continueOnboarding": "Continuer chez le prestataire",
         "refresh": "Actualiser l’état",
         "refreshing": "Actualisation en cours",
@@ -4174,18 +4174,18 @@
           "not_submitted": "Le prestataire vérifie votre identité pendant l’ouverture du compte.",
           "pending": "Le prestataire examine votre identité.",
           "verified": "Votre identité est vérifiée par le prestataire.",
-          "rejected": "Le prestataire n’a pas pu vérifier votre identité : reprenez les étapes chez lui."
+          "rejected": "Le prestataire n’a pas pu vérifier votre identité : reprenez les étapes chez lui."
         },
         "manual_review": {
-          "not_submitted": "Déposez une pièce d’identité : l’équipe de Pitchorium l’examine.",
+          "not_submitted": "Déposez une pièce d’identité : l’équipe de Pitchorium l’examine.",
           "pending": "Vos pièces sont en cours d’examen par l’équipe de Pitchorium.",
           "verified": "Votre identité est vérifiée.",
-          "rejected": "La vérification a été refusée : lisez le motif, puis déposez de nouvelles pièces."
+          "rejected": "La vérification a été refusée : lisez le motif, puis déposez de nouvelles pièces."
         },
         "rejectedTitle": "Motif du refus",
         "submittedAt": "Dernier dépôt le {{date}}.",
         "documents": "Pièces d’identité",
-        "documentsLimits": "PDF, JPEG ou PNG, {{max}} fichiers au plus. Privées : lues par l’équipe de vérification seulement.",
+        "documentsLimits": "PDF, JPEG ou PNG, {{max}} fichiers au plus. Privées : lues par l’équipe de vérification seulement.",
         "certification": "Je certifie que ces pièces sont authentiques et me concernent.",
         "certificationRequired": "Cochez d’abord la certification.",
         "documentsRequired": "Déposez d’abord au moins une pièce.",
@@ -4196,15 +4196,15 @@
       },
       "unavailable": {
         "title": "Versement réservé aux porteurs de projet",
-        "body": "Pour recevoir des contributions, complétez d’abord : {{elements}}.",
+        "body": "Pour recevoir des contributions, complétez d’abord : {{elements}}.",
         "action": "Compléter mon profil"
       },
       "loading": "Chargement"
     },
     "prerequisites": {
-      "payout_account": "Un compte de versement couvert est nécessaire pour recevoir des contributions en ligne. Il se choisit dans « Versement et vérification ».",
-      "kyc_verified": "Votre identité doit être vérifiée avant l’ouverture des contributions en ligne. Elle se fait dans « Versement et vérification ».",
-      "action": "Ouvrir « Versement et vérification »"
+      "payout_account": "Un compte de versement couvert est nécessaire pour recevoir des contributions en ligne. Il se choisit dans « Versement et vérification ».",
+      "kyc_verified": "Votre identité doit être vérifiée avant l’ouverture des contributions en ligne. Elle se fait dans « Versement et vérification ».",
+      "action": "Ouvrir « Versement et vérification »"
     },
     "rewardStates": {
       "none": "Sans contrepartie",
@@ -4248,7 +4248,7 @@
       },
       "offline": {
         "title": "Contributions hors plateforme",
-        "description": "Les contributions faites en dehors de Pitchorium : confirmez ou refusez celles qu’un contributeur a déclarées. Un montant ne compte dans le collecté qu’après validation par Pitchorium sur pièce justificative.",
+        "description": "Les contributions faites en dehors de Pitchorium : confirmez ou refusez celles qu’un contributeur a déclarées. Un montant ne compte dans le collecté qu’après validation par Pitchorium sur pièce justificative.",
         "declare": "Déclarer une contribution reçue",
         "filter": "Contributions affichées",
         "filters": {
@@ -4275,11 +4275,11 @@
         "loading": "Chargement des soutiens",
         "unreadable": "Les soutiens n’ont pas pu être chargés.",
         "emptyTitle": "Aucun soutien public pour l’instant",
-        "emptyBody": "Un contributeur choisit d’apparaître au moment de payer ; l’affichage est désactivé par défaut."
+        "emptyBody": "Un contributeur choisit d’apparaître au moment de payer ; l’affichage est désactivé par défaut."
       },
       "banner": {
         "action": "Configurer le versement",
-        "missing": "Il reste : {{elements}}.",
+        "missing": "Il reste : {{elements}}.",
         "holder_not_verified": {
           "title": "Contributions en ligne bientôt ouvertes",
           "holder": "Votre compte de versement attend son activation ou la vérification de votre identité.",
@@ -4288,7 +4288,7 @@
         "holder_without_covered_payout_account": {
           "title": "Contributions en ligne pas encore ouvertes",
           "holder": "Choisissez un compte de versement dans un pays couvert pour ouvrir les contributions en ligne.",
-          "team": "Le porteur n’a pas encore de compte de versement couvert : les contributions en ligne ne sont pas ouvertes."
+          "team": "Le porteur n’a pas encore de compte de versement couvert : les contributions en ligne ne sont pas ouvertes."
         }
       }
     },
@@ -4306,7 +4306,7 @@
       "browse": "Découvrir les projets",
       "offline": {
         "title": "Contributions hors plateforme",
-        "description": "Celles que vous avez déclarées, et celles qu’une équipe a déclarées pour vous : confirmez-les ou refusez-les.",
+        "description": "Celles que vous avez déclarées, et celles qu’une équipe a déclarées pour vous : confirmez-les ou refusez-les.",
         "loading": "Chargement des contributions hors plateforme",
         "unreadable": "Les contributions hors plateforme n’ont pas pu être chargées.",
         "emptyTitle": "Aucune contribution hors plateforme",
@@ -4324,7 +4324,7 @@
       "eurEquivalent": "Équivalent en euros",
       "rate": "Taux appliqué",
       "rateIdentity": "Paiement en euros",
-      "rate_fixed_parity": "Parité fixe : 1 € = {{rate}} {{currency}}",
+      "rate_fixed_parity": "Parité fixe : 1 € = {{rate}} {{currency}}",
       "rate_provider": "1 € = {{rate}} {{currency}}, taux du prestataire verrouillé le {{at}}",
       "rate_simulated": "1 € = {{rate}} {{currency}}, taux simulé verrouillé le {{at}}",
       "commission": "Commission de Pitchorium",
@@ -4340,9 +4340,9 @@
       "status": {
         "pending_payment": "Le paiement attend la confirmation du prestataire.",
         "succeeded": "Le paiement est confirmé et compte dans le montant collecté.",
-        "failed": "Le paiement n’a pas abouti ; rien n’a été prélevé.",
-        "expired": "La session de paiement a expiré ; rien n’a été prélevé.",
-        "canceled": "Le paiement a été abandonné ; rien n’a été prélevé.",
+        "failed": "Le paiement n’a pas abouti ; rien n’a été prélevé.",
+        "expired": "La session de paiement a expiré ; rien n’a été prélevé.",
+        "canceled": "Le paiement a été abandonné ; rien n’a été prélevé.",
         "partially_refunded": "Une partie du paiement vous a été remboursée.",
         "refunded": "Le paiement vous a été remboursé en totalité.",
         "disputed": "Un litige est ouvert sur ce paiement.",
@@ -4353,7 +4353,7 @@
       "resume": "Reprendre le paiement",
       "cancel": "Abandonner ce paiement",
       "canceling": "Abandon en cours",
-      "lockExpired": "La session de paiement a expiré, et le taux verrouillé avec elle. Recommencez avec un nouveau devis : vos choix sont repris.",
+      "lockExpired": "La session de paiement a expiré, et le taux verrouillé avec elle. Recommencez avec un nouveau devis : vos choix sont repris.",
       "newQuote": "Demander un nouveau devis"
     }
   },
@@ -4361,10 +4361,10 @@
     "dashboard": {
       "title": "Tableau de bord d’engagement",
       "organizationTitle": "Engagement de {{name}}",
-      "description": "Ce que vous avez réellement donné et partagé : euros versés, projets soutenus, heures de savoir.",
+      "description": "Ce que vous avez réellement donné et partagé : euros versés, projets soutenus, heures de savoir.",
       "views": "Tableaux de bord",
       "mine": "Le mien",
-      "notABank": "C’est un tableau de bord d’engagement, pas un compte en banque : aucun solde, seulement ce qui a réellement été versé et partagé.",
+      "notABank": "C’est un tableau de bord d’engagement, pas un compte en banque : aucun solde, seulement ce qui a réellement été versé et partagé.",
       "timeLog": "Ouvrir le journal du temps partagé",
       "projects": "Projets soutenus",
       "noProject": "Aucun projet soutenu pour l’instant."
@@ -4381,7 +4381,7 @@
       "title": "Euros versés sur douze mois",
       "month": "Mois",
       "given": "Versé",
-      "summary": "{{total}} versés sur {{count}} mois · pic en {{month}} : {{amount}}",
+      "summary": "{{total}} versés sur {{count}} mois · pic en {{month}} : {{amount}}",
       "emptyTitle": "Aucune contribution sur les {{count}} derniers mois",
       "emptyDescription": "Les euros versés à des projets apparaîtront ici, mois par mois, dès la première contribution payée.",
       "discover": "Découvrir des projets"
@@ -4397,7 +4397,7 @@
       "back": "Revenir au tableau de bord",
       "declareAction": "Déclarer des heures",
       "received": "Déclarations reçues",
-      "receivedHint": "Des heures déclarées pour vous ou pour vos projets : confirmez-les, ou contestez-les avec un motif.",
+      "receivedHint": "Des heures déclarées pour vous ou pour vos projets : confirmez-les, ou contestez-les avec un motif.",
       "declared": "Mes déclarations",
       "network": "La connexion a été interrompue. Réessayez.",
       "loading": "Chargement des déclarations",
@@ -4409,7 +4409,7 @@
       "deleted": "Membre supprimé",
       "summary": "{{kind}} · {{duration}} · {{date}}",
       "durationValue": "{{hours}} h {{minutes}}",
-      "disputeReason": "Contestée : {{reason}}",
+      "disputeReason": "Contestée : {{reason}}",
       "disputeLabel": "Motif de la contestation",
       "dispute": "Contester",
       "disputing": "Contestation en cours",
@@ -4419,7 +4419,7 @@
       "cancel": "Annuler",
       "declare": {
         "title": "Déclarer des heures",
-        "description": "Le bénéficiaire confirme ou conteste ; seules les heures confirmées comptent comme confirmées.",
+        "description": "Le bénéficiaire confirme ou conteste ; seules les heures confirmées comptent comme confirmées.",
         "target": "Pour",
         "project": "Un projet",
         "entrepreneur": "Un entrepreneur",
@@ -4453,7 +4453,7 @@
     "offBody": "Vous ne recevrez plus {{what}}.",
     "backTitle": "Désinscription annulée",
     "backBody": "Vous recevez de nouveau {{what}}.",
-    "type": "les emails « {{type}} »",
+    "type": "les emails « {{type}} »",
     "digest": "le résumé de vos notifications par email",
     "others": "Vos autres emails ne changent pas.",
     "undo": "Annuler la désinscription",
@@ -4579,8 +4579,8 @@
       "timeLocal": "{{time}} chez vous",
       "canceled": "Événement annulé",
       "canceledBody": "Cet événement n’aura pas lieu. Les inscrits ont été prévenus.",
-      "canceledReason": "Cet événement n’aura pas lieu : {{reason}}",
-      "draft": "Brouillon : seuls les organisateurs voient cette page. Publiez-le pour ouvrir les inscriptions.",
+      "canceledReason": "Cet événement n’aura pas lieu : {{reason}}",
+      "draft": "Brouillon : seuls les organisateurs voient cette page. Publiez-le pour ouvrir les inscriptions.",
       "signInToRegister": "Se connecter pour s’inscrire",
       "seatsLeft": "{{left}} places restantes sur {{capacity}}",
       "seatsFull": "Complet · {{count}} en liste d’attente",
@@ -4611,21 +4611,21 @@
       "registering": "Inscription en cours",
       "withdraw": "Se désinscrire",
       "leaveWaitlist": "Quitter la liste d’attente",
-      "withdrawTitle": "Se désinscrire de cet événement ?",
-      "leaveWaitlistTitle": "Quitter la liste d’attente ?",
+      "withdrawTitle": "Se désinscrire de cet événement ?",
+      "leaveWaitlistTitle": "Quitter la liste d’attente ?",
       "withdrawBody": "Vous pourrez vous inscrire de nouveau tant que l’événement n’a pas commencé.",
-      "withdrawFullBody": "Votre place ira à la première personne de la liste d’attente : l’événement est complet, vous ne la retrouverez peut-être pas.",
+      "withdrawFullBody": "Votre place ira à la première personne de la liste d’attente : l’événement est complet, vous ne la retrouverez peut-être pas.",
       "youAreRegistered": "Vous êtes inscrit.",
       "position": "Vous êtes en liste d’attente, position",
       "consent": "Apparaître dans la liste des participants",
       "consentHint": "Les autres inscrits verront votre nom et votre titre. Les organisateurs voient toujours les inscriptions.",
-      "fullHint": "Plus de place : vous serez inscrit automatiquement si une place se libère, et prévenu.",
+      "fullHint": "Plus de place : vous serez inscrit automatiquement si une place se libère, et prévenu.",
       "registered": "Inscription confirmée.",
       "waitlisted": "Vous êtes en liste d’attente, position {{position}}.",
       "withdrawn": "Désinscription enregistrée.",
-      "promoted": "Une place s’est libérée : vous êtes inscrit.",
-      "closed": "Les inscriptions sont fermées : l’événement a commencé ou est terminé.",
-      "canceled": "Événement annulé : plus d’inscription possible."
+      "promoted": "Une place s’est libérée : vous êtes inscrit.",
+      "closed": "Les inscriptions sont fermées : l’événement a commencé ou est terminé.",
+      "canceled": "Événement annulé : plus d’inscription possible."
     },
     "attendees": {
       "list": "Participants",
@@ -4639,24 +4639,24 @@
       "edit": "Modifier",
       "publish": "Publier",
       "publishing": "Publication en cours",
-      "published": "Événement publié : les inscriptions sont ouvertes.",
+      "published": "Événement publié : les inscriptions sont ouvertes.",
       "delete": "Supprimer le brouillon",
-      "deleteTitle": "Supprimer le brouillon « {{title}} » ?",
+      "deleteTitle": "Supprimer le brouillon « {{title}} » ?",
       "deleteBody": "Le brouillon et son image sont supprimés. Cette action est définitive.",
       "deleted": "Brouillon supprimé.",
       "cancel": "Annuler l’événement",
-      "cancelTitle": "Annuler « {{title}} » ?",
-      "cancelBody": "Les inscrits et la liste d’attente sont prévenus. L’événement reste visible avec la mention de l’annulation ; il ne pourra pas être rouvert.",
+      "cancelTitle": "Annuler « {{title}} » ?",
+      "cancelBody": "Les inscrits et la liste d’attente sont prévenus. L’événement reste visible avec la mention de l’annulation ; il ne pourra pas être rouvert.",
       "reason": "Motif",
       "reasonHint": "Il est donné aux inscrits et affiché sur la page.",
       "confirmCancel": "Annuler l’événement",
       "canceling": "Annulation en cours",
       "keep": "Garder l’événement",
-      "canceled": "Événement annulé : les inscrits sont prévenus."
+      "canceled": "Événement annulé : les inscrits sont prévenus."
     },
     "form": {
       "createTitle": "Créer un événement",
-      "createLede": "Un brouillon d’abord : publiez-le depuis sa page quand il est prêt. Les événements sont gratuits.",
+      "createLede": "Un brouillon d’abord : publiez-le depuis sa page quand il est prêt. Les événements sont gratuits.",
       "editTitle": "Modifier l’événement",
       "organizer": "Organisé par",
       "organizerSelf": "Moi",
@@ -4664,7 +4664,7 @@
       "projectNone": "Aucun",
       "title": "Titre",
       "description": "Description",
-      "descriptionHint": "Markdown simple : titres, listes, gras, liens https.",
+      "descriptionHint": "Markdown simple : titres, listes, gras, liens https.",
       "format": "Type",
       "formatHints": {
         "online": "Un lien de connexion, donné aux inscrits.",
@@ -4674,7 +4674,7 @@
       "startsAt": "Début",
       "endsAt": "Fin",
       "timeZone": "Fuseau horaire",
-      "timeZoneHint": "Les heures sont celles du lieu : chaque visiteur les voit aussi dans son propre fuseau.",
+      "timeZoneHint": "Les heures sont celles du lieu : chaque visiteur les voit aussi dans son propre fuseau.",
       "place": "Lieu",
       "placeName": "Nom du lieu",
       "placeAddress": "Adresse",
@@ -4689,7 +4689,7 @@
       "visibility": "Audience",
       "visibilityHints": {
         "members": "Les membres connectés de Pitchorium.",
-        "public": "Tout le monde, référencé par les moteurs de recherche ; demande une page publique ou une organisation."
+        "public": "Tout le monde, référencé par les moteurs de recherche ; demande une page publique ou une organisation."
       },
       "image": "Image",
       "imageHint": "Au format 16:9, recadrée avant l’envoi.",
@@ -4703,7 +4703,7 @@
         "description": "Cadrez l’image au format 16:9.",
         "limits": "JPEG, PNG ou WebP, 10 Mo au plus, 600 pixels de large au moins.",
         "remove": "Retirer l’image",
-        "removeTitle": "Retirer l’image de l’événement ?",
+        "removeTitle": "Retirer l’image de l’événement ?",
         "removeDescription": "L’événement s’affichera avec le motif de la marque."
       },
       "choose": "Choisir",
@@ -4719,30 +4719,30 @@
       "creating": "Création en cours",
       "created": "Adresse de calendrier créée.",
       "secretTitle": "Adresse secrète",
-      "secret": "Toute personne qui la connaît voit vos inscriptions, sans se connecter. Ne la partagez pas ; elle n’est affichée qu’une fois. Régénérez-la si elle a circulé.",
+      "secret": "Toute personne qui la connaît voit vos inscriptions, sans se connecter. Ne la partagez pas ; elle n’est affichée qu’une fois. Régénérez-la si elle a circulé.",
       "address": "Adresse du calendrier",
       "copy": "Copier l’adresse",
       "copied": "Adresse copiée",
       "regenerate": "Régénérer l’adresse",
-      "regenerateTitle": "Régénérer l’adresse du calendrier ?",
-      "regenerateBody": "L’adresse actuelle cesse de fonctionner : abonnez de nouveau vos agendas à la nouvelle.",
+      "regenerateTitle": "Régénérer l’adresse du calendrier ?",
+      "regenerateBody": "L’adresse actuelle cesse de fonctionner : abonnez de nouveau vos agendas à la nouvelle.",
       "revoke": "Révoquer l’adresse",
-      "revokeTitle": "Révoquer l’adresse du calendrier ?",
+      "revokeTitle": "Révoquer l’adresse du calendrier ?",
       "revokeBody": "Vos agendas abonnés ne recevront plus vos événements. Vous pourrez créer une nouvelle adresse.",
-      "revoked": "Adresse révoquée : elle ne fonctionne plus.",
+      "revoked": "Adresse révoquée : elle ne fonctionne plus.",
       "howTo": "S’abonner depuis son agenda",
       "apps": {
         "google": {
           "name": "Google Agenda",
-          "steps": "Sur un ordinateur, ouvrez Google Agenda, puis « Autres agendas », « + », « À partir de l’URL », collez l’adresse et validez."
+          "steps": "Sur un ordinateur, ouvrez Google Agenda, puis « Autres agendas », « + », « À partir de l’URL », collez l’adresse et validez."
         },
         "apple": {
           "name": "Apple Calendrier",
-          "steps": "Sur Mac, Fichier puis « Nouvel abonnement à un calendrier… » ; sur iPhone, Réglages, Calendrier, Comptes, « Ajouter un compte », « Autre », « Ajouter un calendrier avec abonnement », puis collez l’adresse."
+          "steps": "Sur Mac, Fichier puis « Nouvel abonnement à un calendrier… » ; sur iPhone, Réglages, Calendrier, Comptes, « Ajouter un compte », « Autre », « Ajouter un calendrier avec abonnement », puis collez l’adresse."
         },
         "outlook": {
           "name": "Outlook",
-          "steps": "Dans Outlook sur le web, « Ajouter un calendrier », « S’abonner à partir du web », collez l’adresse, nommez le calendrier et importez."
+          "steps": "Dans Outlook sur le web, « Ajouter un calendrier », « S’abonner à partir du web », collez l’adresse, nommez le calendrier et importez."
         }
       }
     }
@@ -4750,10 +4750,10 @@
   "missions": {
     "list": {
       "title": "Missions d’expertise",
-      "description": "Mentorat et expertise bénévoles entre la diaspora, l’Afrique et les Caraïbes : des offres d’experts et des demandes de projets.",
-      "lede": "Des experts et des mentors offrent quelques heures ; des porteurs de projets demandent un coup de main. Tout est bénévole.",
+      "description": "Mentorat et expertise bénévoles entre la diaspora, l’Afrique et les Caraïbes : des offres d’experts et des demandes de projets.",
+      "lede": "Des experts et des mentors offrent quelques heures ; des porteurs de projets demandent un coup de main. Tout est bénévole.",
       "volunteerTitle": "Mécénat de compétences, bénévole",
-      "volunteer": "Une mission n’est ni un emploi ni une prestation payée : pas de salaire, pas de contrat. Les heures données sont déclarées dans le journal du temps partagé et confirmées par la personne aidée.",
+      "volunteer": "Une mission n’est ni un emploi ni une prestation payée : pas de salaire, pas de contrat. Les heures données sont déclarées dans le journal du temps partagé et confirmées par la personne aidée.",
       "views": "Vues des missions",
       "tabs": {
         "all": "Toutes les missions",
@@ -4824,17 +4824,17 @@
       "takePart": "Participer",
       "yourMission": "Votre mission",
       "signIn": "Se connecter pour participer",
-      "closed": "Cette mission est fermée : elle ne reçoit plus de nouvel engagement.",
+      "closed": "Cette mission est fermée : elle ne reçoit plus de nouvel engagement.",
       "yourEngagement": "Voir mon échange"
     },
     "engage": {
       "apply": "Proposer mon aide",
       "solicit": "Solliciter cette mission",
-      "applyHint": "Vous donnez de votre temps : présentez ce que vous pouvez apporter.",
-      "solicitHint": "Vous êtes aidé : présentez votre besoin et votre projet.",
+      "applyHint": "Vous donnez de votre temps : présentez ce que vous pouvez apporter.",
+      "solicitHint": "Vous êtes aidé : présentez votre besoin et votre projet.",
       "applyTitle": "Proposer mon aide",
       "solicitTitle": "Solliciter cette mission",
-      "volunteer": "Mission bénévole : aucune rémunération ni contrat.",
+      "volunteer": "Mission bénévole : aucune rémunération ni contrat.",
       "forProject": "Pour",
       "forMyself": "Moi-même",
       "message": "Message",
@@ -4852,15 +4852,15 @@
       "engagements": "Engagements reçus",
       "none": "Aucun engagement pour l’instant.",
       "close": "Fermer la mission",
-      "closeTitle": "Fermer cette mission ?",
-      "closeBody": "Elle ne reçoit plus de nouvel engagement ; ceux en cours continuent jusqu’à leur fin.",
+      "closeTitle": "Fermer cette mission ?",
+      "closeBody": "Elle ne reçoit plus de nouvel engagement ; ceux en cours continuent jusqu’à leur fin.",
       "closed": "Mission fermée."
     },
     "engagement": {
       "title": "Engagement sur une mission",
       "breadcrumb": "Mes engagements",
       "seeMission": "Voir la mission",
-      "volunteer": "Mécénat de compétences bénévole : le temps donné se déclare une fois, à la fin, dans le journal du temps partagé.",
+      "volunteer": "Mécénat de compétences bénévole : le temps donné se déclare une fois, à la fin, dans le journal du temps partagé.",
       "roles": {
         "expert": "Donne son temps",
         "beneficiary": "Est aidé"
@@ -4880,13 +4880,13 @@
       "answerMessage": "Message de réponse",
       "accept": "Accepter",
       "accepting": "Acceptation en cours",
-      "accepted": "Engagement accepté : la mission est en cours.",
+      "accepted": "Engagement accepté : la mission est en cours.",
       "decline": "Refuser",
       "declining": "Refus en cours",
       "declined": "Engagement refusé.",
       "complete": "Marquer comme terminée",
       "completeTitle": "Terminer la mission",
-      "completeBody": "Déclarez le temps donné : il entre dans le journal du temps partagé, où la personne aidée le confirme. Pas de seconde saisie.",
+      "completeBody": "Déclarez le temps donné : il entre dans le journal du temps partagé, où la personne aidée le confirme. Pas de seconde saisie.",
       "duration": "Durée",
       "hours": "Heures",
       "minutes": "Minutes",
@@ -4895,13 +4895,13 @@
       "descriptionHint": "Quelques lignes, visibles de la personne aidée.",
       "completeSubmit": "Terminer et déclarer le temps",
       "completing": "Enregistrement en cours",
-      "completed": "Mission terminée : le temps est déclaré dans le journal du temps.",
+      "completed": "Mission terminée : le temps est déclaré dans le journal du temps.",
       "back": "Retour",
       "cancel": "Annuler la mission",
-      "cancelTitle": "Annuler la mission en cours ?",
+      "cancelTitle": "Annuler la mission en cours ?",
       "cancelBody": "L’autre personne est prévenue. Aucun temps n’est déclaré.",
       "withdraw": "Retirer ma demande",
-      "withdrawTitle": "Retirer votre demande ?",
+      "withdrawTitle": "Retirer votre demande ?",
       "withdrawBody": "L’auteur de la mission ne pourra plus y répondre.",
       "canceled": "Engagement annulé."
     },
@@ -4914,11 +4914,11 @@
         "request": "Je demande de l’aide"
       },
       "directionHints": {
-        "offer": "Comme expert ou mentor : une casquette de votre volet contributeur.",
+        "offer": "Comme expert ou mentor : une casquette de votre volet contributeur.",
         "request": "Pour votre entreprise ou un projet de votre équipe."
       },
       "project": "Au nom du projet",
-      "projectNone": "Aucun : pour moi",
+      "projectNone": "Aucun : pour moi",
       "missionTitle": "Titre",
       "description": "Description",
       "descriptionHints": {
@@ -4927,7 +4927,7 @@
       },
       "kind": "Domaine",
       "domain": "Champ d’expertise",
-      "domainHint": "Par exemple : comptabilité, irrigation, marketing digital.",
+      "domainHint": "Par exemple : comptabilité, irrigation, marketing digital.",
       "format": "Format",
       "formatHours": "{{hours}} h au plus",
       "estimatedHours": "Heures estimées",
@@ -4945,7 +4945,7 @@
       "visibility": "Audience",
       "visibilityHints": {
         "members": "Les membres connectés de Pitchorium.",
-        "public": "Tout le monde ; demande votre page publique."
+        "public": "Tout le monde ; demande votre page publique."
       },
       "choose": "Choisir",
       "publish": "Publier la mission",
@@ -4953,8 +4953,8 @@
       "cancel": "Annuler"
     },
     "refusals": {
-      "jobPosting": "Une mission est bénévole : retirez le vocabulaire d’une offre d’emploi (salaire, rémunération, contrat, CDI, recrutement, temps plein…).",
-      "hours": "Trop d’heures pour ce format : {{session}} h au plus pour une session, {{short}} h pour une mission courte.",
+      "jobPosting": "Une mission est bénévole : retirez le vocabulaire d’une offre d’emploi (salaire, rémunération, contrat, CDI, recrutement, temps plein…).",
+      "hours": "Trop d’heures pour ce format : {{session}} h au plus pour une session, {{short}} h pour une mission courte.",
       "hat": "Une offre demande la casquette expert ou mentor sur votre volet contributeur.",
       "fields": "Une mission sur place indique au moins un pays.",
       "beneficiary": "Une demande vient d’un entrepreneur ou de l’équipe d’un projet."
@@ -4974,7 +4974,7 @@
       "label": "Pied de page",
       "legal": "Informations légales",
       "language": "Langue",
-      "contact": "Contact : <email>{{address}}</email>",
+      "contact": "Contact : <email>{{address}}</email>",
       "about": "Pitchorium",
       "tagline": "Afrique · Caraïbes · Diaspora européenne",
       "report": "Signaler un contenu illégal"
@@ -4991,7 +4991,7 @@
       "kicker": "Informations légales",
       "pendingTitle": "Texte en attente de validation juridique",
       "pendingBody": "Cette page donne la structure du document. Son texte sera publié une fois validé par le conseil juridique de Pitchorium.",
-      "version": "Version en vigueur : {{version}}",
+      "version": "Version en vigueur : {{version}}",
       "description": "{{title}} de Pitchorium."
     },
     "home": {
@@ -5012,7 +5012,7 @@
         "discover": {
           "kicker": "Découvrir",
           "title": "Voyez où en est chaque projet, en un coup d’œil.",
-          "body": "Objectif, paliers, contreparties, actualités : chaque campagne se lit clairement. Vous savez ce que votre soutien permet."
+          "body": "Objectif, paliers, contreparties, actualités : chaque campagne se lit clairement. Vous savez ce que votre soutien permet."
         },
         "support": {
           "kicker": "Soutenir",
@@ -5033,11 +5033,11 @@
       },
       "contributor": {
         "title": "Je souhaite soutenir",
-        "body": "Investisseur, mécène, mentor, expert, partenaire ou recruteur : un seul compte vous suffit pour plusieurs casquettes, que vous précisez quand vous le souhaitez.",
+        "body": "Investisseur, mécène, mentor, expert, partenaire ou recruteur : un seul compte vous suffit pour plusieurs casquettes, que vous précisez quand vous le souhaitez.",
         "steps": {
           "first": "Découvrez des projets et des personnes",
           "second": "Contribuez par carte, virement ou Mobile Money, selon votre pays",
-          "third": "Suivez votre engagement : sommes versées, projets soutenus, heures données"
+          "third": "Suivez votre engagement : sommes versées, projets soutenus, heures données"
         }
       },
       "principlesKicker": "Nos engagements",
@@ -5045,7 +5045,7 @@
       "principles": {
         "money": {
           "title": "Les montants affichés sont de vrais paiements confirmés",
-          "body": "Aucun solde fictif, aucun bouton « payer » de façade : une contribution compte une fois son paiement confirmé."
+          "body": "Aucun solde fictif, aucun bouton « payer » de façade : une contribution compte une fois son paiement confirmé."
         },
         "impact": {
           "title": "L’impact est déclaré par le porteur, jamais présenté comme certifié",
@@ -5078,11 +5078,11 @@
         },
         "present": {
           "title": "Présentez votre projet",
-          "body": "Votre projet a sa page publique : objectif, paliers, contreparties, actualités et impact auto-déclaré."
+          "body": "Votre projet a sa page publique : objectif, paliers, contreparties, actualités et impact auto-déclaré."
         },
         "verify": {
           "title": "Faites vérifier votre identité",
-          "body": "Votre identité est vérifiée avant votre premier versement : vos contributeurs savent à qui ils donnent."
+          "body": "Votre identité est vérifiée avant votre premier versement : vos contributeurs savent à qui ils donnent."
         },
         "receive": {
           "title": "Recevez de vraies contributions",
@@ -5097,7 +5097,7 @@
         },
         "choose": {
           "title": "Choisissez votre soutien",
-          "body": "Don, contribution avec contrepartie ou love money : vous choisissez, et les contreparties auxquelles vous avez droit vous sont proposées."
+          "body": "Don, contribution avec contrepartie ou love money : vous choisissez, et les contreparties auxquelles vous avez droit vous sont proposées."
         },
         "pay": {
           "title": "Payez en toute sécurité",
@@ -5122,7 +5122,7 @@
       "fundsTitle": "Pitchorium ne détient pas votre argent",
       "fundsBody": "Vos paiements sont encaissés par des prestataires de paiement agréés, qui versent les fonds au porteur du projet. Pitchorium n’est ni une banque ni un établissement de paiement.",
       "impactTitle": "Un impact déclaré par le porteur",
-      "impactBody": "Le porteur du projet déclare son score d’impact selon une méthodologie publique. Ce score vous aide à vous orienter : ce n’est ni un label ni une certification.",
+      "impactBody": "Le porteur du projet déclare son score d’impact selon une méthodologie publique. Ce score vous aide à vous orienter : ce n’est ni un label ni une certification.",
       "impactLink": "Lire la méthodologie",
       "titleTitle": "Une contribution n’est pas un placement",
       "titleBody": "Un don ou une contribution avec contrepartie ne vous donne aucune part du capital ni aucun droit financier. Un palier atteint ne garantit pas la réussite du projet.",
@@ -5137,18 +5137,18 @@
       "contents": "Sur cette page"
     },
     "previews": {
-      "funding": "Aperçu du financement d’un projet sur Pitchorium : montant collecté, barre de progression et paliers",
+      "funding": "Aperçu du financement d’un projet sur Pitchorium : montant collecté, barre de progression et paliers",
       "project-page": "Aperçu d’une page projet sur Pitchorium",
       "suggestion": "Aperçu de personnes suggérées sur Pitchorium, chacune avec la raison de la suggestion",
       "conversation": "Aperçu d’une conversation dans la messagerie de Pitchorium",
       "notification": "Aperçu d’une notification qui regroupe les réactions à une publication",
-      "dashboard": "Aperçu du tableau de bord d’engagement : sommes versées, projets soutenus et heures déclarées"
+      "dashboard": "Aperçu du tableau de bord d’engagement : sommes versées, projets soutenus et heures déclarées"
     }
   },
   "trust": {
     "report": {
       "action": "Signaler",
-      "actionNamed": "Signaler : {{name}}",
+      "actionNamed": "Signaler : {{name}}",
       "titles": {
         "profile": "Signaler ce profil",
         "organization": "Signaler cette organisation",
@@ -5172,7 +5172,7 @@
       "loading": "Chargement des motifs",
       "unreadable": "Les motifs n’ont pas pu être chargés.",
       "receivedTitle": "Signalement reçu",
-      "received": "Merci. La modération examine votre signalement ; vous serez prévenu de la suite dans vos notifications.",
+      "received": "Merci. La modération examine votre signalement ; vous serez prévenu de la suite dans vos notifications.",
       "close": "Fermer"
     },
     "notice": {
@@ -5182,7 +5182,7 @@
       "addressHint": "L’adresse de la page d’un profil, d’une organisation, d’une publication, d’un projet, d’un événement ou d’une mission.",
       "addressInvalid": "Cette adresse ne désigne pas un contenu de Pitchorium.",
       "addressNotFound": "Ce contenu est introuvable ou n’est pas public.",
-      "target": "Contenu signalé : {{target}}",
+      "target": "Contenu signalé : {{target}}",
       "details": "Explication",
       "detailsHint": "Pourquoi ce contenu vous paraît illégal, et la règle qu’il enfreint si vous la connaissez.",
       "name": "Votre nom",
@@ -5192,11 +5192,11 @@
       "submit": "Envoyer le signalement",
       "sending": "Envoi en cours",
       "receivedTitle": "Signalement reçu",
-      "received": "Votre signalement a été reçu le {{date}}. Sa référence : {{reference}}.",
-      "receivedEmail": "Un accusé de réception part à l’adresse donnée ; la décision vous y sera envoyée.",
+      "received": "Votre signalement a été reçu le {{date}}. Sa référence : {{reference}}.",
+      "receivedEmail": "Un accusé de réception part à l’adresse donnée ; la décision vous y sera envoyée.",
       "receivedNoEmail": "Sans adresse email, vous ne serez pas informé de la décision.",
       "another": "Signaler un autre contenu",
-      "member": "Vous êtes membre ? Signalez plutôt depuis le contenu lui-même, avec le bouton « Signaler » : vous serez prévenu de la suite."
+      "member": "Vous êtes membre ? Signalez plutôt depuis le contenu lui-même, avec le bouton « Signaler » : vous serez prévenu de la suite."
     },
     "moderation": {
       "title": "Modération",
@@ -5208,14 +5208,14 @@
       "empty": "Aucune décision ne vous concerne",
       "emptyBody": "Si la modération prend une décision sur l’un de vos contenus ou sur votre compte, elle s’affiche ici avec ses motifs.",
       "decidedOn": "Décision du {{date}}",
-      "concerns": "Concerne : {{target}}",
+      "concerns": "Concerne : {{target}}",
       "reason": "Motif",
       "facts": "Exposé des motifs",
       "ground": "Fondement",
-      "groundWithReference": "{{ground}} : {{reference}}",
+      "groundWithReference": "{{ground}} : {{reference}}",
       "automated": "Le dossier est né d’un signal automatique. La décision a été prise par une personne.",
       "human": "La décision a été prise par une personne de l’équipe de modération.",
-      "suspensionEnds": "Fin de la suspension : {{date}}",
+      "suspensionEnds": "Fin de la suspension : {{date}}",
       "appealUntil": "Vous pouvez faire appel jusqu’au {{date}}.",
       "notAppealable": "Cette décision ne peut plus faire l’objet d’un appel.",
       "appealAction": "Faire appel",
@@ -5263,20 +5263,20 @@
       "title": "Supprimer votre compte",
       "body": "La suppression devient définitive après un délai de grâce, pendant lequel vous pouvez l’annuler.",
       "whatTitle": "Ce que devient chaque donnée",
-      "deleted": "Supprimés : votre compte et votre profil, vos publications, commentaires et réactions, votre réseau, vos fichiers, vos préférences, vos notifications et vos traductions.",
-      "pseudonymized": "Gardés sous un pseudonyme qui ne permet plus de vous retrouver : vos contributions et leurs montants, vos comptes de versement et vos vérifications d’identité, vos acceptations des conditions, les décisions de modération, les projets financés par d’autres membres, vos missions et vos messages, réduits à « Message supprimé ».",
+      "deleted": "Supprimés : votre compte et votre profil, vos publications, commentaires et réactions, votre réseau, vos fichiers, vos préférences, vos notifications et vos traductions.",
+      "pseudonymized": "Gardés sous un pseudonyme qui ne permet plus de vous retrouver : vos contributions et leurs montants, vos comptes de versement et vos vérifications d’identité, vos acceptations des conditions, les décisions de modération, les projets financés par d’autres membres, vos missions et vos messages, réduits à « Message supprimé ».",
       "legal": "Les données financières sont conservées pour nos obligations légales (comptabilité, lutte contre le blanchiment). Leur durée de conservation est en cours de validation juridique.",
       "blockedTitle": "Votre compte ne peut pas être supprimé pour l’instant",
       "blockers": {
-        "PRIVACY_CAMPAIGN_IN_PROGRESS": "La campagne « {{name}} » est en financement : attendez sa clôture.",
-        "PRIVACY_SOLE_OWNER": "Vous êtes le seul propriétaire de l’organisation « {{name}} », qui a d’autres membres : transférez d’abord la propriété."
+        "PRIVACY_CAMPAIGN_IN_PROGRESS": "La campagne « {{name}} » est en financement : attendez sa clôture.",
+        "PRIVACY_SOLE_OWNER": "Vous êtes le seul propriétaire de l’organisation « {{name}} », qui a d’autres membres : transférez d’abord la propriété."
       },
       "blockerActions": {
         "PRIVACY_CAMPAIGN_IN_PROGRESS": "Voir la campagne",
         "PRIVACY_SOLE_OWNER": "Gérer les membres"
       },
       "action": "Supprimer mon compte",
-      "confirmTitle": "Supprimer votre compte ?",
+      "confirmTitle": "Supprimer votre compte ?",
       "confirmDescription": "La suppression aura lieu après un délai de grâce, pendant lequel vous pourrez l’annuler. Ensuite, elle ne pourra pas être défaite.",
       "phrase": "supprimer mon compte",
       "confirm": "Programmer la suppression",
@@ -5292,7 +5292,7 @@
       "canceled": "La suppression de votre compte est annulée.",
       "scheduled": "La suppression de votre compte est programmée.",
       "running": "La suppression de votre compte est en cours.",
-      "postponed": "La suppression a été reportée : {{reason}}"
+      "postponed": "La suppression a été reportée : {{reason}}"
     },
     "deleted": {
       "title": "Votre compte a été supprimé",

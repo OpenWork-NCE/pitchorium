@@ -106,6 +106,6 @@ describe('the methods a contributor cannot use', () => {
     const text = screen.getByTestId('unavailable-methods').textContent;
     expect(text).toContain('Mobile Money n’est pas disponible depuis ce pays (France).');
     expect(text).toContain('PayPal n’est pas disponible pour ce projet.');
-    expect(text).toContain('Accepté pour ce paiement : carte bancaire.');
+    expect(text).toContain('Accepté pour ce paiement\u00a0: carte bancaire.');
   });
 });

@@ -31,9 +31,9 @@ describe('preferences of the notifications', () => {
   it('shows each type by channel in its section, a transactional one locked with the reason', () => {
     renderWithProviders(<NotificationSettings initial={preferences} />);
     const posts = screen.getByRole('table', { name: 'Publications' });
-    const reactions = within(posts).getByRole('switch', { name: 'Réactions : Email' });
+    const reactions = within(posts).getByRole('switch', { name: 'Réactions\u00a0: Email' });
     expect(reactions.getAttribute('aria-checked')).toBe('false');
-    const security = screen.getByRole('switch', { name: 'Sécurité du compte : Email' });
+    const security = screen.getByRole('switch', { name: 'Sécurité du compte\u00a0: Email' });
     expect(security.getAttribute('aria-checked')).toBe('true');
     expect((security as HTMLButtonElement).disabled).toBe(true);
     expect(screen.getByText('Indispensable, toujours envoyée')).toBeTruthy();
@@ -49,7 +49,7 @@ describe('preferences of the notifications', () => {
   it('applies a change at once and puts it back when the api refuses it', async () => {
     update.mockRejectedValueOnce(new Error('refused'));
     renderWithProviders(<NotificationSettings initial={preferences} />);
-    const reactions = screen.getByRole('switch', { name: 'Réactions : Email' });
+    const reactions = screen.getByRole('switch', { name: 'Réactions\u00a0: Email' });
     await act(async () => {
       fireEvent.click(reactions);
       await Promise.resolve();

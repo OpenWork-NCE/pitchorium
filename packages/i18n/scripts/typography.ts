@@ -16,3 +16,18 @@ export function straightApostrophes(tree: Tree, prefix = ''): string[] {
     return value.replace(ICU_QUOTING, '').includes("'") ? [`${prefix}${key}`] : [];
   });
 }
+
+/** A breakable space before « : ; ! ? » or inside guillemets (« », U+00AB and U+00BB). */
+const BREAKABLE_SPACE = / [:;!?»]|« /;
+
+/**
+ * Keys of the texts with a breakable space where French typography wants a non-breaking one
+ * (U+00A0, docs/design/voice.md): before « : ; ! ? » and inside guillemets, so that a line never
+ * starts with a colon or a closing guillemet.
+ */
+export function breakableSpaces(tree: Tree, prefix = ''): string[] {
+  return Object.entries(tree).flatMap(([key, value]) => {
+    if (typeof value !== 'string') return breakableSpaces(value, `${prefix}${key}.`);
+    return BREAKABLE_SPACE.test(value) ? [`${prefix}${key}`] : [];
+  });
+}

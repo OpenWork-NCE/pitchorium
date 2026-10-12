@@ -57,8 +57,8 @@ describe('Form', () => {
     expect(document.activeElement).toBe(summary);
     const links = screen.getAllByRole('link');
     expect(links.map((link) => link.textContent)).toEqual([
-      'Titre : Renseignez ce champ.',
-      'Site : L’adresse du site doit commencer par https:// (http:// n’est pas accepté).',
+      'Titre\u00a0: Renseignez ce champ.',
+      'Site\u00a0: L’adresse du site doit commencer par https:// (http:// n’est pas accepté).',
     ]);
     fireEvent.click(links[1]!);
     expect(document.activeElement).toBe(screen.getByRole('textbox', { name: 'Site' }));
@@ -84,7 +84,7 @@ describe('Form', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Publier' }));
     await waitFor(() =>
       expect(screen.getAllByRole('link').map((link) => link.textContent)).toEqual([
-        'Fin : Vérifiez les dates : la fin doit être après le début, l’événement dure 14 jours au plus et ne peut pas être déjà terminé.',
+        'Fin\u00a0: Vérifiez les dates\u00a0: la fin doit être après le début, l’événement dure 14 jours au plus et ne peut pas être déjà terminé.',
       ]),
     );
   });
@@ -108,7 +108,7 @@ describe('Form', () => {
     });
     fireEvent.click(screen.getByRole('button', { name: 'Publier' }));
     const summary = await screen.findByRole('group', { name: 'L’envoi n’a pas abouti.' });
-    expect(summary.textContent).toContain('(référence : 01JD7Q)');
+    expect(summary.textContent).toContain('(référence\u00a0: 01JD7Q)');
   });
 
   it('shows the counter from 80 % of the limit, otherwise while the field has the focus', () => {

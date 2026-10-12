@@ -28,7 +28,7 @@ describe('the message says the reason the value was refused (A11)', () => {
   it('never answers about https to a link that already starts with https', () => {
     const malformed = messageFor(onlineUrl, 'onlineUrl', 'https://meet exemple org');
     expect(malformed).toBe(
-      'Ce lien n’est pas une adresse web valide : copiez le lien complet de la visioconférence, par exemple https://meet.exemple.org/atelier.',
+      'Ce lien n’est pas une adresse web valide\u00a0: copiez le lien complet de la visioconférence, par exemple https://meet.exemple.org/atelier.',
     );
     expect(malformed).not.toMatch(/http:\/\/ n’est pas accepté/);
     expect(messageFor(onlineUrl, 'onlineUrl', 'http://meet.exemple.org/atelier')).toBe(
@@ -90,7 +90,7 @@ describe('the message says the reason the value was refused (A11)', () => {
       'invalid_format',
       { reason: 'url' },
       'website',
-      'Cette adresse n’est pas valide : saisissez l’adresse complète du site, par exemple https://exemple.org.',
+      'Cette adresse n’est pas valide\u00a0: saisissez l’adresse complète du site, par exemple https://exemple.org.',
     ],
     [
       'custom',
@@ -114,7 +114,7 @@ describe('the message says the reason the value was refused (A11)', () => {
       'invalid_format',
       { reason: 'regex' },
       'handle',
-      'Utilisez de 3 à 30 caractères : lettres minuscules sans accent, chiffres et tirets, sans tiret au début, à la fin ni deux de suite.',
+      'Utilisez de 3 à 30 caractères\u00a0: lettres minuscules sans accent, chiffres et tirets, sans tiret au début, à la fin ni deux de suite.',
     ],
     ['invalid_format', { reason: 'regex' }, 'code', 'Saisissez les 6 chiffres du code.'],
     ['invalid_value', {}, 'terms', 'Cochez cette case pour continuer.'],

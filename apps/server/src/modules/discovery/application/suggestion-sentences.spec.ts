@@ -56,7 +56,7 @@ describe('reason sentences', () => {
     expect(sentenceOf(match.reasons.slice(0, 1)).key).toBe('sentences.one');
     // Neutral, without the name shown above the reason, the short label of the sector.
     expect(suggestionSentenceText('fr', sentence)).toBe(
-      'Peut répondre à votre besoin : Mentorat · secteur commun : Agriculture',
+      'Peut répondre à votre besoin\u00a0: Mentorat · secteur commun\u00a0: Agriculture',
     );
     expect(suggestionSentenceText('en', sentenceOf(match.reasons.slice(2, 3)))).toBe(
       'Works in your country: Senegal',

@@ -89,7 +89,9 @@ export const ClientValidation: Story = {
     const summary = await canvas.findByRole('group', { name: 'Le formulaire contient 1 erreur.' });
     await waitFor(() => expect(summary).toHaveFocus());
     await userEvent.click(
-      within(summary).getByRole('link', { name: /^Identifiant du membre : Renseignez ce champ/ }),
+      within(summary).getByRole('link', {
+        name: /^Identifiant du membre\u00a0: Renseignez ce champ/,
+      }),
     );
     const handle = canvas.getByRole('textbox', { name: 'Identifiant du membre' });
     await expect(handle).toHaveFocus();
