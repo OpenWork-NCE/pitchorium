@@ -1,10 +1,14 @@
 'use client';
 
 import type { Action } from '@pitchorium/contracts';
-import { useAccessControllerPrerequisites } from '@pitchorium/api-client';
+import {
+  accessControllerPrerequisites,
+  getAccessControllerPrerequisitesQueryKey,
+} from '@pitchorium/api-client';
 import { useLocale, useTranslations } from 'next-intl';
 import type { ReactNode } from 'react';
 import { formatList } from '@/lib/format/list';
+import { useCachedData } from '@/lib/query/use-cached-data';
 
 export interface Access {
   /** Indicative: the api decides on every call (ACCESS_PREREQUISITES_MISSING otherwise). */
@@ -24,8 +28,17 @@ export interface Access {
 export function useAccess(action: Action): Access {
   const t = useTranslations('reference.prerequisiteElements');
   const shell = useTranslations('web.access');
+  const errors = useTranslations('errors');
   const locale = useLocale();
-  const query = useAccessControllerPrerequisites(action, { query: { staleTime: 30_000 } });
+  // Read without a query observer (useCachedData): the shell of every page of the member space
+  // asks it, and the observer would be copied into its chunk (ADR 0094).
+  const data = useCachedData({
+    queryKey: getAccessControllerPrerequisitesQueryKey(action),
+    queryFn: ({ signal }) => accessControllerPrerequisites(action, { signal }),
+    initialData: null,
+    staleTime: 30_000,
+  });
+  const query = { data, isPending: data === undefined };
   const missing = query.data?.missing ?? [];
   return {
     allowed: query.data?.allowed ?? true,
@@ -39,7 +52,10 @@ export function useAccess(action: Action): Access {
             ),
           })
         : query.data && !query.data.allowed
-          ? shell('denied')
+          ? // The refusal the api names (a suspended account, ACCESS_ACCOUNT_SUSPENDED), in words.
+            query.data.code && errors.has(query.data.code as never)
+            ? errors(query.data.code as never)
+            : shell('denied')
           : undefined,
     missing,
   };
