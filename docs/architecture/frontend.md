@@ -158,6 +158,16 @@ sequenceDiagram
 - Lecture d'un écran par `consoleRead` (`lib/api/console-read.ts`) : une ressource absente, un identifiant refusé ou un écran dont le lecteur n'a pas l'action répondent par la vue 404 du groupe ; chargement par `AdminLoading` (squelette à la forme d'une `AdminPage`).
 - Données personnelles (`features/privacy/components/admin`) : `/admin/privacy` (`GET /v1/admin/privacy/requests?kind=`, lecture auditée).
 
+## Audits et livraison (PROMPT FRONT 9B)
+
+- Audit de chaque écran et pseudo-localisation (ADR 0175) : `e2e/audit`, `pnpm --filter @pitchorium/web audit:screens`, niveau 3. La pseudo-locale (`WEB_PSEUDO_LOCALIZATION`, `lib/i18n/pseudo-locale.ts`) n'existe que pour les tests et sur un site local.
+- Parcours d'acceptation du produit au clavier seul : `e2e-live/acceptance.spec.ts` (`@acceptance`).
+- Lectures publiques sans lecteur par `sharedRead(secondes)` (`lib/api/server.ts`) : sans cookie, langue ni adresse du visiteur, gardées par le cache de données de Next.js (sa clé contient les en-têtes) ; une lecture qui dépend du lecteur ne l'utilise jamais.
+- Une adresse publique affichée (identifiant d'un profil, d'une organisation) se compose avec `publicEnv.siteUrl`, identique sur le serveur et dans le navigateur, jamais avec `window.location` (écart d'hydratation).
+- Un logo par écran : les coquilles publique et légère gardent leur pied de page sous le premier écran (`BELOW_FIRST_SCREEN`) ; `StatusView` ne montre le symbole que sans en-tête (`mark`).
+- Budgets : chaque page et chaque vue gardent 10 % de leur budget (`check:bundles` échoue au-delà de 90 %) ; aucune carte de sources parmi les fichiers publics.
+- Déploiement : Vercel, `docs/operations/deployment-web.md` (ADR 0176) ; en-têtes de cache des fichiers de `public/` dans `next.config.ts`.
+
 ## Fournisseurs
 
 Chaque groupe ne charge que ce qu'il utilise (ADR 0094) :

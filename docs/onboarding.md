@@ -16,11 +16,12 @@ Pour un développeur qui rejoint le projet. Compter une demi-journée.
 corepack enable
 pnpm install
 cp apps/server/.env.example apps/server/.env
+cp apps/web/.env.example apps/web/.env
 pnpm infra:up && pnpm db:migrate && pnpm db:seed && pnpm db:seed:dev
 pnpm dev
 ```
 
-Vérifier : http://localhost:3000/v1/health/ready, Swagger UI sur http://localhost:3000/docs, Mailpit sur http://localhost:8025. Se connecter avec `aissatou.ba@demo.pitchorium.test` / `pitchorium-demo-2026`. Si le port 3000 est pris, `API_PORT=3100 pnpm dev:api`.
+Vérifier : http://localhost:3000/v1/health/ready, Swagger UI sur http://localhost:3000/docs, Mailpit sur http://localhost:8025. Se connecter avec `aissatou.ba@demo.pitchorium.test` / `pitchorium-demo-2026`. Le web répond sur http://localhost:3200/fr. Si le port 3000 est pris, `API_PORT=3100 pnpm dev:api`.
 
 ## 3. Se repérer dans le code
 
@@ -43,7 +44,17 @@ Vérifier : http://localhost:3000/v1/health/ready, Swagger UI sur http://localho
 - `pnpm test:integration` : modules avec PostgreSQL, Valkey, Mailpit, MinIO en conteneurs.
 - `pnpm test:e2e` : après `pnpm build`, api et worker réels.
 - `pnpm test:providers` : vraies API de test des prestataires, avec leurs clés.
+- Web : `pnpm --filter @pitchorium/web test` (unitaires et architecture), `test:stories` (design system), `test:e2e` (api simulée, Docker), `test:e2e:live` (vraie api), `audit:screens` (chaque écran), `lighthouse`, `check:bundles`.
+- Les trois niveaux de vérification et leurs commandes : `docs/architecture/testing.md`.
 
-## 6. Exploitation
+## 6. Application web
 
-Déploiement, environnements, alertes, sauvegardes et runbooks : `docs/operations/` ; sécurité : `docs/security/` ; ce qu'il reste à faire avant la production : `docs/production-readiness.md`.
+1. Lire `apps/web/README.md`, `docs/architecture/frontend.md`, puis `docs/design/direction.md`, `voice.md`, `patterns.md` et `components.md`.
+2. Une page se pose dans une coquille et une mise en page (`ThreeColumnLayout`, `SingleColumnLayout`) ; ses données viennent de l'api, lues par le serveur au premier rendu (`lib/api/server.ts`), puis par TanStack Query ; aucune règle métier recalculée, aucune Server Action d'écriture.
+3. Une feature vit dans `src/features/<domaine>` (façade `index.ts`) ; les primitives dans `src/components/ui` (Radix, tokens) ; aucun texte en dur (namespace `web` de `packages/i18n`, FR et EN, typographie de `voice.md`), aucune couleur en dur.
+4. Une page nouvelle : son dossier dans `config/routes.ts` si elle exige une session, son entrée dans le registre de l'audit (`e2e/audit/screens.ts`), une story ou une capture de revue, un parcours simulé, et un parcours réel si elle écrit.
+5. Avant de pousser : le niveau 2 (`docs/architecture/testing.md`) et la liste de contrôle de `docs/design/direction.md` sur les captures.
+
+## 7. Exploitation
+
+Déploiement de l'api et du worker : `docs/operations/deployment.md` ; du web : `docs/operations/deployment-web.md` ; environnements, alertes, sauvegardes et runbooks : `docs/operations/` ; sécurité : `docs/security/` ; ce qu'il reste à faire avant la production : `docs/production-readiness.md`.

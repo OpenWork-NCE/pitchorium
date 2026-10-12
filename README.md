@@ -3,6 +3,8 @@
 Plateforme professionnelle de réseau et de financement à impact entre l'Afrique, les Caraïbes et la diaspora européenne.
 Ce dépôt est un monorepo pnpm et Turborepo : un serveur NestJS (api et worker), une application web Next.js (`apps/web`) et des packages partagés.
 
+État : périmètre V1 à V3 livré, version candidate `v1.0.0-rc.1` préparée par release-please. La mise en ligne attend les décisions, comptes et validations listés dans [la préparation de la mise en production](docs/production-readiness.md) (juridique, prestataires de paiement, comptes de production).
+
 ## Prérequis
 
 - Node.js 24 (voir `.nvmrc`)
@@ -88,7 +90,7 @@ Les deux `.env.example` suffisent tels quels : aucune variable à ajouter pour `
 - [Notifications](docs/architecture/notifications.md) et [délivrabilité des emails](docs/architecture/email-deliverability.md)
 - [Décisions d'architecture (ADR)](docs/adr/README.md)
 - [Référence de l'api et politique de version](docs/api/README.md), [passation au frontend](docs/frontend-handoff.md)
-- Exploitation : [déploiement](docs/operations/deployment.md), [environnements](docs/operations/environments.md), [SLO et alertes](docs/operations/slo-and-alerts.md), [sauvegardes](docs/operations/backup-and-restore.md), [performance](docs/operations/performance.md), [résilience](docs/operations/resilience.md), [runbooks](docs/operations/runbooks/)
+- Exploitation : [déploiement de l'api](docs/operations/deployment.md), [déploiement du web](docs/operations/deployment-web.md), [environnements](docs/operations/environments.md), [SLO et alertes](docs/operations/slo-and-alerts.md), [sauvegardes](docs/operations/backup-and-restore.md), [performance](docs/operations/performance.md), [résilience](docs/operations/resilience.md), [runbooks](docs/operations/runbooks/)
 - Sécurité : [revue](docs/security/review.md), [ASVS niveau 2](docs/security/asvs.md) ; conformité : [conservation](docs/compliance/retention.md), [registre des traitements](docs/compliance/records-of-processing.md)
 - [Préparation de la mise en production](docs/production-readiness.md)
 - [Questions ouvertes](docs/open-questions.md)

@@ -1,6 +1,6 @@
 # OWASP ASVS 4.0.3, niveau 2
 
-État de l'api au 2026-10-08, par section de l'ASVS (granularité : la section ; une exigence d'une section couverte qui ne s'applique pas est signalée dans la colonne Preuve). Statuts : **Couvert** (avec sa preuve), **N/A** (avec sa justification), **Reporté** (avec la question ouverte qui le porte). Le frontend n'existe pas encore : les exigences propres au navigateur (V5.3 en partie, V14.4 côté pages) seront à reprendre avec lui.
+État de l'api au 2026-10-08, par section de l'ASVS (granularité : la section ; une exigence d'une section couverte qui ne s'applique pas est signalée dans la colonne Preuve). Statuts : **Couvert** (avec sa preuve), **N/A** (avec sa justification), **Reporté** (avec la question ouverte qui le porte). Les exigences propres au navigateur sont reprises pour l'application web dans la dernière section (état au 2026-10-12).
 
 ## V1 Architecture, conception, modélisation des menaces
 
@@ -86,7 +86,7 @@
 | Section                | Statut  | Preuve ou justification                                                                               |
 | ---------------------- | ------- | ----------------------------------------------------------------------------------------------------- |
 | V8.1 Généralités       | Couvert | `Cache-Control` adapté sur les routes publiques, pas de cache des réponses authentifiées par le proxy |
-| V8.2 Côté client       | Reporté | À vérifier avec le frontend (aucune donnée sensible en stockage local, `docs/frontend-handoff.md`)    |
+| V8.2 Côté client       | Couvert | Voir « Application web » ci-dessous                                                                   |
 | V8.3 Données sensibles | Couvert | Droits RGPD, minimisation des payloads d'événements, pseudonymisation, URL présignées courtes         |
 
 ## V9 Communications
@@ -139,3 +139,17 @@
 | V14.3 Fuite d'information     | Couvert | `X-Powered-By` retiré, erreurs sans détail technique, Swagger UI désactivé en production |
 | V14.4 En-têtes HTTP           | Couvert | helmet (`review.md`)                                                                     |
 | V14.5 Validation des en-têtes | Couvert | `Origin` de confiance pour les écritures par cookie, CORS en liste blanche               |
+
+## Application web (`apps/web`)
+
+Revue du PROMPT FRONT 9B (audit B4), section par section de l'ASVS concernée par le navigateur.
+
+- **V3.4 Cookies** : couvert. La session est le cookie `HttpOnly`, `Secure`, `SameSite=Lax` de l'api, jamais lisible ni recopié par le web ; le web ne pose que `NEXT_LOCALE` et `pitchorium.tz`, sans donnée personnelle (`docs/compliance/cookies.md`).
+- **V5.3 Encodage de sortie** : couvert. Rendu React (échappement), aucun `dangerouslySetInnerHTML` hors des données structurées sérialisées et des scripts signés par le nonce ; Markdown restreint rendu en éléments React (`MarkdownContent`, pages juridiques).
+- **V8.2 Côté client** : couvert. Aucun jeton, mot de passe, secret ni état de paiement dans le stockage du navigateur : IndexedDB pour les brouillons et les mutations en attente (effacés à la publication, à l'envoi, à la déconnexion et après 24 h), `localStorage` pour le thème et les recherches récentes (effacées à la déconnexion), `sessionStorage` pour la position de lecture du fil. Le navigateur n'écrit rien dans sa console en production, sauf le garde des noms de transition en double (sans donnée) ; les parcours échouent sur toute erreur de console.
+- **V8.3 Données sensibles** : couvert. Coordonnées bancaires masquées et jamais gardées (ADR 0140) ; Sentry sans utilisateur, cookie, en-tête, corps ni paramètre d'adresse (ADR 0091).
+- **V10.3 Intégrité** : couvert. Scripts par nonce et `strict-dynamic`, aucune ressource tierce hors Turnstile (écrans d'authentification) et vidéos au clic ; cartes de sources jamais servies (`check:bundles`).
+- **V12.5 Téléchargement** : couvert. Fichiers privés par adresses présignées courtes de l'api, ouvertes au clic.
+- **V14.4 En-têtes HTTP** : couvert. CSP par requête avec nonce, origines exactes (api, son WebSocket, CDN, stockage objet, Sentry, vidéos, Turnstile), `frame-ancestors 'none'`, `form-action 'self'`, `upgrade-insecure-requests` ; `X-Content-Type-Options`, `X-Frame-Options: DENY`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy` restrictive, `Cross-Origin-Opener-Policy: same-origin`, HSTS avec `preload` en HTTPS (`next.config.ts`, ADR 0088). Révision : stockage objet ajouté à `img-src` (images privées présignées), api et origines de Vercel retirées.
+- **V14.5 Redirections** : couvert. `redirectTo` de même origine seulement (`lib/auth/redirect.ts`, testé), adresse de paiement acceptée seulement si elle vient de l'api (`safePaymentUrl`), langue inactive redirigée vers la même page en français.
+- **V14.2 Dépendances** : couvert. Versions figées, `pnpm audit --prod` sans vulnérabilité connue pour le web au 2026-10-12, licences vérifiées en CI.
