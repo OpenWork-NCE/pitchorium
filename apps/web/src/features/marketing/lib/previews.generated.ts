@@ -13,7 +13,7 @@ export const PREVIEW_SIZES = {
   },
   suggestion: {
     width: 290,
-    height: 681,
+    height: 705,
     widths: [480, 580],
   },
   conversation: {
