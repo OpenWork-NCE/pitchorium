@@ -817,14 +817,19 @@ html[data-theme-transition='fade']::view-transition-new(root) {
   }
 }
 
-/* Reduced motion, or a data saver: every transition jumps to its final state. */
+/*
+ * Reduced motion, or a data saver: every transition jumps to its final state. A transition of
+ * 0s is none at all; one of 0.01ms (transition-property is `all` by default) made every change of
+ * any element a transition for a frame. The animations keep 0.01ms: their end event still fires
+ * (the presence of the primitives waits for it), no code waits for the end of a transition.
+ */
 @media (prefers-reduced-motion: reduce) {
   *,
   ::before,
   ::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    transition-duration: 0s !important;
     scroll-behavior: auto !important;
   }
 }
@@ -834,7 +839,7 @@ html[data-theme-transition='fade']::view-transition-new(root) {
   ::before,
   ::after {
     animation-duration: 0.01ms !important;
-    transition-duration: 0.01ms !important;
+    transition-duration: 0s !important;
   }
 }
 
