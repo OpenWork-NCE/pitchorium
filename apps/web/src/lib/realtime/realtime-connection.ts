@@ -31,6 +31,9 @@ export const RECONNECTION = {
  * been missed is read again: the counters, the lists, and the open conversation by its sequence
  * (`local:resumed`).
  */
+/** When the handlers are fetched after the connection: past the start of the page. */
+const HANDLERS_PRELOAD_DELAY_MS = 10_000;
+
 export function connect(queryClient: QueryClient): () => void {
   const socket = io(publicEnv.apiUrl, {
     withCredentials: true,
@@ -50,9 +53,18 @@ export function connect(queryClient: QueryClient): () => void {
     });
     return loading;
   };
-  // Fetched when the page is idle, while the network is there: an event that arrives offline
-  // finds them (they carry Zod and the schemas, kept off the start of the page, ADR 0094).
-  const cancelPreload = preloadWhenIdle(load);
+  // Fetched while the network is there, so that an event that arrives offline finds them (they
+  // carry Zod and the schemas, kept off the start of the page, ADR 0094), but once the start of
+  // the page is over: evaluated at its first idle moment, Zod was a task of 125 ms on the
+  // emulated phone, a third of the blocking time of the feed (ADR 0163).
+  let cancelIdle: () => void = () => undefined;
+  const preloadTimer = setTimeout(() => {
+    cancelIdle = preloadWhenIdle(load);
+  }, HANDLERS_PRELOAD_DELAY_MS);
+  const cancelPreload = () => {
+    clearTimeout(preloadTimer);
+    cancelIdle();
+  };
   // One promise for every event: they are handled in the order they arrived.
   socket.onAny((event: string, payload: unknown) => {
     void load()

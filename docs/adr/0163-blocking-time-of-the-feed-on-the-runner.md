@@ -11,13 +11,16 @@ Mesure sur le runner (workflow `diagnose.yaml`, suite `lighthouse`, `scripts/ci/
 - `c0a5941b`, dernier commit vert avant le 8A-R : 210, 208, 220, 169, 189, 183, 178, 155, 146, 143 ms ; médiane 180,5, de 143 à 220, écart interquartile 44,8 ;
 - `bc7e7ec7`, état du 8A-R : 189, 167, 181, 147, 171, 254, 181, 174, 177, 192 ms ; médiane 179, de 147 à 254, écart interquartile 15,3.
 
-Les deux séries sont équivalentes : aucune régression du code. Un passage isolé dépasse 250 ms (254) sans changement de code, et l'indice du processeur varie de 9 % d'un passage à l'autre sur le même runner (3 774 à 4 506), d'où des ralentissements calibrés de 3,3 à 5,7 d'un run à l'autre.
+Les deux séries sont équivalentes : aucune régression du code entre ces deux commits. Un passage isolé dépasse 250 ms (254) sans changement de code, et l'indice du processeur varie de 9 % d'un passage à l'autre sur le même runner (3 774 à 4 506), d'où des ralentissements calibrés de 3,3 à 5,7 d'un run à l'autre.
+
+Ces dix passages étaient pourtant trop rapides : calibré sur un seul passage à froid (indice 3 180), le runner tournait ensuite à 4 200 environ, soit un téléphone émulé d'indice 977 au lieu de 740. Le niveau 3 suivant, calibré sur trois mesures (indice 2 440, ralentissement 3,3, indice des passages 2 387 à 2 476 : le téléphone de référence), mesure le fil à 297, 303 et 307 ms. La trace de ces passages nomme la cause : une tâche de 125 ms à 8,3 s, l'évaluation de Zod et des schémas du temps réel, préchargés à la première inactivité de la page depuis le FRONT 8A (pour qu'un événement arrivé hors ligne trouve leur code), soit 75 ms de blocage dans la fenêtre que Lighthouse mesure. Le fil dépassait donc sa cible au téléphone de référence avant comme après le 8A-R ; seule la calibration à froid le faisait parfois passer.
 
 ## Décision
 
+- Les gestionnaires du temps réel (Zod et les schémas) sont chargés dix secondes après la connexion, puis à l'inactivité, hors du démarrage de la page : toujours avant la plupart des événements, et un premier événement arrivé hors ligne est déjà rattrapé à la reconnexion (FRONT 8A). Mesure locale calibrée : 150 à 159 ms, la tâche de Zod à 18 s.
 - Le ralentissement est calibré sur la médiane de trois mesures de l'indice du processeur, et non plus sur une seule.
 - Le Total Blocking Time du fil est jugé sur la médiane de trois passages (`aggregationMethod: 'median'`). Au niveau 2, où chaque page a un passage, le fil en reçoit deux de plus (`scripts/lighthouse.sh`).
-- Le seuil reste 250 ms.
+- Le seuil reste 250 ms : il n'est pas relevé, la cause est corrigée.
 
 ## Conséquences
 
