@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const answer = (locales: string[]) =>
   new Response(JSON.stringify({ defaultLocale: 'fr', locales }), {
@@ -10,11 +10,15 @@ const answer = (locales: string[]) =>
  * clock is faked, and only `Date` is faked: an import while `setTimeout` is faked waits on the
  * timers of the module runner, which never fire. Alone, the import came from the cache in time;
  * beside the stories (`vitest run` of every project), it waited for its transform and the test ran
- * out of time (FRONT 7, A3).
+ * out of time (FRONT 7, A3). The first import, which transforms the module, runs once before
+ * the tests with its own time: each test then evaluates it again from the cache.
  */
 const fakeClock = () => vi.useFakeTimers({ toFake: ['Date'] });
 
 describe('active locales', () => {
+  beforeAll(async () => {
+    await import('./active-locales');
+  }, 60_000);
   beforeEach(() => vi.resetModules());
   afterEach(() => {
     vi.unstubAllGlobals();
