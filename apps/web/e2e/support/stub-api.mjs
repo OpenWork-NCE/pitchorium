@@ -11,6 +11,7 @@ import { discoveryRoutes } from './stub-discovery.mjs';
 import { messagingRoutes } from './stub-messaging.mjs';
 import { collectionMissing, paymentRoutes } from './stub-payments.mjs';
 import { projectRoutes } from './stub-projects.mjs';
+import { trustRoutes } from './stub-trust.mjs';
 
 const port = Number(process.env.STUB_API_PORT ?? 3299);
 const origin = process.env.STUB_WEB_ORIGIN ?? 'http://localhost:3201';
@@ -605,7 +606,7 @@ function prerequisites(request, action) {
         missing.length > 0
           ? 'ACCESS_PREREQUISITES_MISSING'
           : account.suspended
-            ? 'ACCESS_SUSPENDED'
+            ? 'ACCESS_ACCOUNT_SUSPENDED'
             : null,
       missing,
     },
@@ -641,6 +642,7 @@ const server = createServer(async (request, response) => {
   const handler = routes[`${request.method} ${path}`];
   const url = new URL(request.url ?? '/', `http://localhost:${port}`);
   const project =
+    (await trust(request, path)) ??
     (await discovery(request, path, url)) ??
     (await messaging(request, path, url)) ??
     (await payments(request, path, url)) ??
@@ -672,6 +674,15 @@ const content = contentRoutes({
 });
 
 const messaging = messagingRoutes({
+  origin: `http://localhost:${port}`,
+  accounts: ACCOUNTS,
+  sessionOf,
+  problem,
+  readJson,
+  state: () => state,
+});
+
+const trust = trustRoutes({
   origin: `http://localhost:${port}`,
   accounts: ACCOUNTS,
   sessionOf,

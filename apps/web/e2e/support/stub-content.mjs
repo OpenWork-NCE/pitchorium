@@ -161,7 +161,9 @@ export function feedItems(origin, authors, viewer) {
   push(
     'post',
     post(origin, 2, nadia, {
-      text: 'Court et clair : nous recrutons une mentore finance.',
+      // Written in English: a member reading in French may have it translated (§8.3).
+      text: 'Short and clear: we are hiring a finance mentor.',
+      language: 'en',
       images: images(origin, 2),
     }),
   );
