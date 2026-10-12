@@ -61,7 +61,7 @@ describe('internal links (A6)', () => {
   it('finds the pages of the app', () => {
     expect(PATTERNS.length).toBeGreaterThan(20);
     expect(leadsToAPage('/members/aissatou-ba')).toBe(true);
-    expect(leadsToAPage('/settings/moderation')).toBe(false);
+    expect(leadsToAPage('/settings/not-a-page')).toBe(false);
   });
 
   it('gives every address of routes a page of the app', () => {

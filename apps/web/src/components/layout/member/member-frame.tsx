@@ -11,6 +11,7 @@ import { RouteFocus } from '../route-focus';
 import { MemberHeader } from './member-header';
 import { OfflineBanner } from './offline-banner';
 import { PersistedMutations } from './persisted-mutations';
+import { ReportHost } from './report-host';
 import { SendAsMessageHost } from './send-as-message-host';
 import { MEMBER_PREREQUISITE_FORMS } from './prerequisite-forms';
 
@@ -22,9 +23,9 @@ export interface MemberFrameProps {
 }
 
 /**
- * Client part of the member shell (ADR 0099): data, realtime, current member,
- * announcements, prerequisites, shortcuts, « Envoyer en message » of the publications, then the
- * header, the banners and the page.
+ * Client part of the member shell (ADR 0099): data, realtime, current member, announcements,
+ * prerequisites, shortcuts, « Envoyer en message » of the publications and « Signaler » of every
+ * content, then the header, the banners and the page.
  */
 export function MemberFrame({ member, counters, children }: MemberFrameProps) {
   return (
@@ -35,12 +36,14 @@ export function MemberFrame({ member, counters, children }: MemberFrameProps) {
             <PrerequisiteGateProvider forms={MEMBER_PREREQUISITE_FORMS}>
               <ShortcutsProvider>
                 <SendAsMessageHost>
-                  <div className="flex min-h-dvh flex-col [--header-height:4.5rem]">
-                    <MemberHeader initialCounters={counters} />
-                    <AccountBanners />
-                    <OfflineBanner />
-                    <div className="flex-1">{children}</div>
-                  </div>
+                  <ReportHost>
+                    <div className="flex min-h-dvh flex-col [--header-height:4.5rem]">
+                      <MemberHeader initialCounters={counters} />
+                      <AccountBanners />
+                      <OfflineBanner />
+                      <div className="flex-1">{children}</div>
+                    </div>
+                  </ReportHost>
                 </SendAsMessageHost>
                 <RouteFocus />
                 <PersistedMutations memberId={member.user.id} />

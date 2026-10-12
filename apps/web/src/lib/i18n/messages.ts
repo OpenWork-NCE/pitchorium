@@ -186,6 +186,10 @@ const MEMBER_MESSAGES = [
   'web.messagingEntry',
   'web.messaging.share',
   'web.messaging.introduce',
+  // « Signaler » and « Traduire » of every content (PROMPT FRONT 8B), their dialog and texts.
+  'web.trust.report',
+  'reference.reportReasons',
+  'web.translation',
 ] as const;
 
 export const CLIENT_MESSAGES = {
@@ -229,6 +233,28 @@ export const CLIENT_MESSAGES = {
     'reference.notificationTypes',
     'reference.notificationChannels',
     'reference.emailDigests',
+  ],
+  /** The moderation decisions of the member and their appeal (PROMPT FRONT 8B). */
+  trust: [
+    ...MEMBER_MESSAGES,
+    'web.trust.moderation',
+    'reference.reportTargetTypes',
+    'reference.reportStatuses',
+    'reference.reportOutcomes',
+    'reference.moderationDecisionKinds',
+    'reference.moderationGrounds',
+    'reference.appealStatuses',
+  ],
+  /** The export of the data and the deletion of the account (PROMPT FRONT 8B). */
+  privacy: [...MEMBER_MESSAGES, 'web.privacy', 'reference.exportStatuses'],
+  /** The notice of illegal content without an account, in the frame of the authentication. */
+  notice: [
+    ...DOCUMENT_MESSAGES,
+    ...DESIGN_SYSTEM_MESSAGES,
+    'errors',
+    'web.auth.turnstile',
+    'web.trust.notice',
+    'reference.reportTargetTypes',
   ],
   /** The page of the link of an email, for a visitor as for a member. */
   unsubscribe: [

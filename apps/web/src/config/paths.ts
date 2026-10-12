@@ -65,6 +65,10 @@ export const settingsOrganizations = '/settings/organizations';
  * return address of a hosted onboarding the api gives the provider.
  */
 export const settingsPayouts = '/settings/payouts';
+/** « Données personnelles »: the export of the data and the deletion of the account (§13). */
+export const settingsPersonalData = '/settings/personal-data';
+/** « Modération »: the decisions that concern the member, their reasons and the appeal (§13). */
+export const settingsModeration = '/settings/moderation';
 // Pages of a resource, one address for visitors and members (ADR 0101), the showcase included.
 export const project = (slug: string) => `/projects/${encodeURIComponent(slug)}`;
 /** Creation of a project, step by step (`new` is a reserved slug, ADR 0131). */
@@ -123,6 +127,10 @@ export const post = (id: string) => `/posts/${encodeURIComponent(id)}`;
 export const saved = '/saved';
 /** The page of the link of an email that turns its notifications off (`?token=`), no session. */
 export const unsubscribe = '/unsubscribe';
+/** Notice of illegal content without an account (§13), for anyone. */
+export const report = '/report';
+/** The neutral page shown once the account is deleted. */
+export const accountDeleted = '/account-deleted';
 /**
  * Return from the hosted page of a payment provider (§9.3, ADR 0137), the address the api gives
  * the provider: `/contributions/<id>/return`.
