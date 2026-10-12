@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import type { Role, TrustLevels } from '@pitchorium/contracts';
-import { AccessService } from './access.service';
+import type { Action, Role, TrustLevels } from '@pitchorium/contracts';
+import type { Actor } from '../domain/actor';
+import { AccessService, selfResource } from './access.service';
 import { RegisteredAccountStatusProvider } from './account-status.registry';
 import { RegisteredKycStatusProvider } from './kyc-status.registry';
 import type { AccountStatusSource, KycStatusSource, PrerequisiteProvider } from './ports';
@@ -22,6 +23,14 @@ export class AccessFacade {
 
   trustLevels(userId: string, emailVerified: boolean): Promise<TrustLevels> {
     return this.access.trustLevels(userId, emailVerified);
+  }
+
+  /**
+   * Asserts a second action within a route, for a refusal that depends on the request (the kind
+   * of a moderation decision): the same policy, audit and error codes as a route.
+   */
+  assertAllowed(actor: Actor, action: Action, requestId?: string): Promise<void> {
+    return this.access.assert(actor, action, selfResource(actor), requestId);
   }
 
   /** Called at startup by the module that owns the elements (profiles owns profile.*). */

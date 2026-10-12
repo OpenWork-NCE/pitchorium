@@ -140,6 +140,8 @@ export const ACTIONS = [
   'trust.appeal.resolve',
   'trust.suspension.lift',
   'trust.project.refund',
+  'trust.project.freeze',
+  'trust.suspension.permanent',
   'trust.transparency.read',
   'privacy.read',
   'privacy.export.request',
@@ -156,6 +158,9 @@ export const ACTIONS = [
   'admin.jobs.retry',
   'admin.stats.read',
   'admin.audit.read',
+  'admin.audit.export',
+  'admin.console.read',
+  'admin.sessions.revoke',
 ] as const;
 export const actionSchema = z.enum(ACTIONS);
 
@@ -187,6 +192,27 @@ export const actionPrerequisitesSchema = z.object({
   missing: z.array(prerequisiteElementSchema),
 });
 
+/**
+ * What the console of the administration may offer the reader (§13, ADR 0172): every action
+ * reserved to a privileged role, decided by the access policies as for a call. `allowed` false
+ * with `code` ACCESS_REAUTHENTICATION_REQUIRED: allowed after a new sign-in. The interface hides
+ * or disables an action from this answer, never from a rule of its own.
+ */
+export const consoleCapabilitySchema = z.object({
+  action: actionSchema,
+  allowed: z.boolean(),
+  code: errorCodeSchema.nullable(),
+  /** The action asks for a session opened recently (ACCESS_REAUTHENTICATION_MAX_AGE_MINUTES). */
+  recentAuthentication: z.boolean(),
+});
+
+export const consoleCapabilitiesSchema = z.object({
+  roles: z.array(roleSchema),
+  actions: z.array(consoleCapabilitySchema),
+  /** Minutes a session stays recent enough for the sensitive actions. */
+  reauthenticationMaxAgeMinutes: z.number().int().positive(),
+});
+
 export const roleAssignmentSchema = z.object({
   role: assignableRoleSchema,
   grantedAt: z.iso.datetime(),
@@ -209,3 +235,5 @@ export type TrustLevels = z.infer<typeof trustLevelsSchema>;
 export type ActionPrerequisites = z.infer<typeof actionPrerequisitesSchema>;
 export type RoleAssignment = z.infer<typeof roleAssignmentSchema>;
 export type UserRoles = z.infer<typeof userRolesSchema>;
+export type ConsoleCapability = z.infer<typeof consoleCapabilitySchema>;
+export type ConsoleCapabilities = z.infer<typeof consoleCapabilitiesSchema>;

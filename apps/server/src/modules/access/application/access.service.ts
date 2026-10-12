@@ -1,7 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import {
+  ACTIONS,
   type Action,
   type ActionPrerequisites,
+  type ConsoleCapabilities,
   type Role,
   type TrustLevels,
 } from '@pitchorium/contracts';
@@ -109,6 +111,32 @@ export class AccessService {
       });
     }
     throw new DomainError(decision.code, `Action ${action} denied`, { missing: decision.missing });
+  }
+
+  /**
+   * Every action reserved to a privileged role, decided for the actor as a call would be (the
+   * console hides or disables what is refused, ADR 0172).
+   */
+  async consoleCapabilities(actor: Actor): Promise<ConsoleCapabilities> {
+    const privileged = ACTIONS.filter((action) => ACTION_POLICIES[action].roles !== undefined);
+    const actions = await Promise.all(
+      privileged.map(async (action) => {
+        const decision = await this.decide(actor, action, selfResource(actor));
+        return {
+          action,
+          allowed: decision.allowed,
+          code: decision.allowed ? null : decision.code,
+          recentAuthentication: ACTION_POLICIES[action].recentAuthentication ?? false,
+        };
+      }),
+    );
+    return {
+      roles: [...actor.roles],
+      actions,
+      reauthenticationMaxAgeMinutes: Math.round(
+        this.config.access.reauthenticationMaxAgeMs / 60_000,
+      ),
+    };
   }
 
   /**

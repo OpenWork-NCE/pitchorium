@@ -24,10 +24,12 @@ import type { ErrorType } from '../../http/fetcher';
 import {
   AccessControllerGrantRoleMutationVariables,
   AccessControllerRevokeRoleMutationVariables,
+  accessControllerCapabilities,
   accessControllerGrantRole,
   accessControllerListRoles,
   accessControllerPrerequisites,
   accessControllerRevokeRole,
+  getAccessControllerCapabilitiesQueryOptions,
   getAccessControllerGrantRoleMutationOptions,
   getAccessControllerListRolesQueryOptions,
   getAccessControllerPrerequisitesQueryOptions,
@@ -182,6 +184,8 @@ export function useAccessControllerPrerequisites<
     | 'trust.appeal.resolve'
     | 'trust.suspension.lift'
     | 'trust.project.refund'
+    | 'trust.project.freeze'
+    | 'trust.suspension.permanent'
     | 'trust.transparency.read'
     | 'privacy.read'
     | 'privacy.export.request'
@@ -197,7 +201,10 @@ export function useAccessControllerPrerequisites<
     | 'admin.jobs.read'
     | 'admin.jobs.retry'
     | 'admin.stats.read'
-    | 'admin.audit.read',
+    | 'admin.audit.read'
+    | 'admin.audit.export'
+    | 'admin.console.read'
+    | 'admin.sessions.revoke',
   options: {
     query: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof accessControllerPrerequisites>>, TError, TData>
@@ -346,6 +353,8 @@ export function useAccessControllerPrerequisites<
     | 'trust.appeal.resolve'
     | 'trust.suspension.lift'
     | 'trust.project.refund'
+    | 'trust.project.freeze'
+    | 'trust.suspension.permanent'
     | 'trust.transparency.read'
     | 'privacy.read'
     | 'privacy.export.request'
@@ -361,7 +370,10 @@ export function useAccessControllerPrerequisites<
     | 'admin.jobs.read'
     | 'admin.jobs.retry'
     | 'admin.stats.read'
-    | 'admin.audit.read',
+    | 'admin.audit.read'
+    | 'admin.audit.export'
+    | 'admin.console.read'
+    | 'admin.sessions.revoke',
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof accessControllerPrerequisites>>, TError, TData>
@@ -510,6 +522,8 @@ export function useAccessControllerPrerequisites<
     | 'trust.appeal.resolve'
     | 'trust.suspension.lift'
     | 'trust.project.refund'
+    | 'trust.project.freeze'
+    | 'trust.suspension.permanent'
     | 'trust.transparency.read'
     | 'privacy.read'
     | 'privacy.export.request'
@@ -525,7 +539,10 @@ export function useAccessControllerPrerequisites<
     | 'admin.jobs.read'
     | 'admin.jobs.retry'
     | 'admin.stats.read'
-    | 'admin.audit.read',
+    | 'admin.audit.read'
+    | 'admin.audit.export'
+    | 'admin.console.read'
+    | 'admin.sessions.revoke',
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof accessControllerPrerequisites>>, TError, TData>
@@ -670,6 +687,8 @@ export function useAccessControllerPrerequisites<
     | 'trust.appeal.resolve'
     | 'trust.suspension.lift'
     | 'trust.project.refund'
+    | 'trust.project.freeze'
+    | 'trust.suspension.permanent'
     | 'trust.transparency.read'
     | 'privacy.read'
     | 'privacy.export.request'
@@ -685,7 +704,10 @@ export function useAccessControllerPrerequisites<
     | 'admin.jobs.read'
     | 'admin.jobs.retry'
     | 'admin.stats.read'
-    | 'admin.audit.read',
+    | 'admin.audit.read'
+    | 'admin.audit.export'
+    | 'admin.console.read'
+    | 'admin.sessions.revoke',
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof accessControllerPrerequisites>>, TError, TData>
@@ -695,6 +717,86 @@ export function useAccessControllerPrerequisites<
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
   const queryOptions = getAccessControllerPrerequisitesQueryOptions(action, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export function useAccessControllerCapabilities<
+  TData = Awaited<ReturnType<typeof accessControllerCapabilities>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof accessControllerCapabilities>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof accessControllerCapabilities>>,
+          TError,
+          Awaited<ReturnType<typeof accessControllerCapabilities>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useAccessControllerCapabilities<
+  TData = Awaited<ReturnType<typeof accessControllerCapabilities>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof accessControllerCapabilities>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof accessControllerCapabilities>>,
+          TError,
+          Awaited<ReturnType<typeof accessControllerCapabilities>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useAccessControllerCapabilities<
+  TData = Awaited<ReturnType<typeof accessControllerCapabilities>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof accessControllerCapabilities>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+/**
+ * @summary Capabilities
+ */
+
+export function useAccessControllerCapabilities<
+  TData = Awaited<ReturnType<typeof accessControllerCapabilities>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof accessControllerCapabilities>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getAccessControllerCapabilitiesQueryOptions(options);
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>;

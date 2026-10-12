@@ -3,6 +3,8 @@ import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import {
   type ActionPrerequisites,
   actionPrerequisitesSchema,
+  type ConsoleCapabilities,
+  consoleCapabilitiesSchema,
   actionSchema,
   assignableRoleSchema,
   grantRoleRequestSchema,
@@ -28,6 +30,7 @@ class UserRoleParamsDto extends createZodDto(
 ) {}
 class GrantRoleRequestDto extends createZodDto(grantRoleRequestSchema) {}
 class UserRolesDto extends createZodDto(userRolesSchema) {}
+class ConsoleCapabilitiesDto extends createZodDto(consoleCapabilitiesSchema) {}
 
 const requestIdOf = (request: Request) => (typeof request.id === 'string' ? request.id : undefined);
 
@@ -49,6 +52,15 @@ export class AccessController {
     @Param() params: ActionParamsDto,
   ): Promise<ActionPrerequisites> {
     return this.access.prerequisitesOf(actor, params.action);
+  }
+
+  /** What the console may offer the reader: each privileged action, decided (ADR 0172). */
+  @Get('admin/capabilities')
+  @RequireAction('admin.console.read')
+  @ZodSerializerDto(ConsoleCapabilitiesDto)
+  @ApiOkResponse({ type: ConsoleCapabilitiesDto.Output })
+  capabilities(@CurrentActor() actor: Actor): Promise<ConsoleCapabilities> {
+    return this.access.consoleCapabilities(actor);
   }
 
   @Get('admin/members/:userId/roles')

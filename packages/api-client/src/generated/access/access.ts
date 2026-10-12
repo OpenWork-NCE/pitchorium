@@ -15,6 +15,7 @@ import type {
 } from '@tanstack/react-query';
 import type {
   ActionPrerequisitesDtoOutput,
+  ConsoleCapabilitiesDtoOutput,
   GrantRoleRequestDto,
   ProblemDetails,
   UserRolesDtoOutput,
@@ -152,6 +153,8 @@ export const getAccessControllerPrerequisitesUrl = (
     | 'trust.appeal.resolve'
     | 'trust.suspension.lift'
     | 'trust.project.refund'
+    | 'trust.project.freeze'
+    | 'trust.suspension.permanent'
     | 'trust.transparency.read'
     | 'privacy.read'
     | 'privacy.export.request'
@@ -167,7 +170,10 @@ export const getAccessControllerPrerequisitesUrl = (
     | 'admin.jobs.read'
     | 'admin.jobs.retry'
     | 'admin.stats.read'
-    | 'admin.audit.read',
+    | 'admin.audit.read'
+    | 'admin.audit.export'
+    | 'admin.console.read'
+    | 'admin.sessions.revoke',
 ) => {
   return `/v1/me/prerequisites/${action}`;
 };
@@ -308,6 +314,8 @@ export const accessControllerPrerequisites = async (
     | 'trust.appeal.resolve'
     | 'trust.suspension.lift'
     | 'trust.project.refund'
+    | 'trust.project.freeze'
+    | 'trust.suspension.permanent'
     | 'trust.transparency.read'
     | 'privacy.read'
     | 'privacy.export.request'
@@ -323,7 +331,10 @@ export const accessControllerPrerequisites = async (
     | 'admin.jobs.read'
     | 'admin.jobs.retry'
     | 'admin.stats.read'
-    | 'admin.audit.read',
+    | 'admin.audit.read'
+    | 'admin.audit.export'
+    | 'admin.console.read'
+    | 'admin.sessions.revoke',
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<ActionPrerequisitesDtoOutput> => {
   return apiFetch<ActionPrerequisitesDtoOutput>(getAccessControllerPrerequisitesUrl(action), {
@@ -460,6 +471,8 @@ export const getAccessControllerPrerequisitesQueryKey = (
     | 'trust.appeal.resolve'
     | 'trust.suspension.lift'
     | 'trust.project.refund'
+    | 'trust.project.freeze'
+    | 'trust.suspension.permanent'
     | 'trust.transparency.read'
     | 'privacy.read'
     | 'privacy.export.request'
@@ -475,7 +488,10 @@ export const getAccessControllerPrerequisitesQueryKey = (
     | 'admin.jobs.read'
     | 'admin.jobs.retry'
     | 'admin.stats.read'
-    | 'admin.audit.read',
+    | 'admin.audit.read'
+    | 'admin.audit.export'
+    | 'admin.console.read'
+    | 'admin.sessions.revoke',
 ) => {
   return [`/v1/me/prerequisites/${action}`] as const;
 };
@@ -611,6 +627,8 @@ export const getAccessControllerPrerequisitesQueryOptions = <
     | 'trust.appeal.resolve'
     | 'trust.suspension.lift'
     | 'trust.project.refund'
+    | 'trust.project.freeze'
+    | 'trust.suspension.permanent'
     | 'trust.transparency.read'
     | 'privacy.read'
     | 'privacy.export.request'
@@ -626,7 +644,10 @@ export const getAccessControllerPrerequisitesQueryOptions = <
     | 'admin.jobs.read'
     | 'admin.jobs.retry'
     | 'admin.stats.read'
-    | 'admin.audit.read',
+    | 'admin.audit.read'
+    | 'admin.audit.export'
+    | 'admin.console.read'
+    | 'admin.sessions.revoke',
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof accessControllerPrerequisites>>, TError, TData>
@@ -657,6 +678,61 @@ export type AccessControllerPrerequisitesQueryResult = NonNullable<
 >;
 
 export type AccessControllerPrerequisitesQueryError = ErrorType<ProblemDetails>;
+
+export const getAccessControllerCapabilitiesUrl = () => {
+  return `/v1/admin/capabilities`;
+};
+
+/**
+ * Action `admin.console.read` (session cookie).
+ *
+ * Roles: moderator, admin, with 2FA.
+ *
+ * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.
+ * @summary Capabilities
+ */
+export const accessControllerCapabilities = async (
+  options?: Parameters<typeof apiFetch>[1],
+): Promise<ConsoleCapabilitiesDtoOutput> => {
+  return apiFetch<ConsoleCapabilitiesDtoOutput>(getAccessControllerCapabilitiesUrl(), {
+    ...options,
+    method: 'GET',
+  });
+};
+
+export const getAccessControllerCapabilitiesQueryKey = () => {
+  return [`/v1/admin/capabilities`] as const;
+};
+
+export const getAccessControllerCapabilitiesQueryOptions = <
+  TData = Awaited<ReturnType<typeof accessControllerCapabilities>>,
+  TError = ErrorType<ProblemDetails>,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<Awaited<ReturnType<typeof accessControllerCapabilities>>, TError, TData>
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getAccessControllerCapabilitiesQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof accessControllerCapabilities>>> = ({
+    signal,
+  }) => accessControllerCapabilities({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof accessControllerCapabilities>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type AccessControllerCapabilitiesQueryResult = NonNullable<
+  Awaited<ReturnType<typeof accessControllerCapabilities>>
+>;
+
+export type AccessControllerCapabilitiesQueryError = ErrorType<ProblemDetails>;
 
 export const getAccessControllerListRolesUrl = (userId: string) => {
   return `/v1/admin/members/${userId}/roles`;

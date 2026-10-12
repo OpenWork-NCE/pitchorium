@@ -1,4 +1,5 @@
 import type { NestExpressApplication } from '@nestjs/platform-express';
+import type { ConsoleCapabilities } from '@pitchorium/contracts';
 import request from 'supertest';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { AdminBootstrapService } from '../../src/modules/access';
@@ -9,6 +10,7 @@ import {
   type Agent,
   browser,
   createMember,
+  grantRoleWith2fa,
   PASSWORD,
   signIn,
   twoFactorRequest,
@@ -194,6 +196,26 @@ describe('access', () => {
         .get(`/v1/admin/members/${member.userId}/roles`)
         .expect(403);
       expect(response.body.code).toBe('FORBIDDEN');
+    });
+
+    it('tells the console what it may offer each role (ADR 0172)', async () => {
+      const moderator = await createMember(app, 'moderator@example.com');
+      await grantRoleWith2fa(moderator, 'moderator');
+      const capabilities = (await moderator.agent.get('/v1/admin/capabilities').expect(200))
+        .body as ConsoleCapabilities;
+      const of = (action: string) => capabilities.actions.find((entry) => entry.action === action);
+      expect(capabilities.roles).toEqual(['member', 'moderator']);
+      expect(of('trust.moderation.decide')).toMatchObject({ allowed: true, code: null });
+      expect(of('trust.project.freeze')).toMatchObject({
+        allowed: false,
+        code: 'FORBIDDEN',
+        recentAuthentication: true,
+      });
+      expect(of('payment.refund')).toMatchObject({ allowed: false, code: 'FORBIDDEN' });
+      expect(capabilities.reauthenticationMaxAgeMinutes).toBe(15);
+      const member = await createMember(app, 'member@example.com');
+      const refused = await member.agent.get('/v1/admin/capabilities').expect(403);
+      expect(refused.body.code).toBe('FORBIDDEN');
     });
   });
 });

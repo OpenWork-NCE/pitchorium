@@ -615,6 +615,8 @@ export const getAdminControllerRetryUrl = (queue: string, jobId: string) => {
  *
  * Roles: admin, with 2FA.
  *
+ * Requires a recent sign-in.
+ *
  * Idempotent: the `Idempotency-Key` header is required, a replay returns the stored answer.
  *
  * Errors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.

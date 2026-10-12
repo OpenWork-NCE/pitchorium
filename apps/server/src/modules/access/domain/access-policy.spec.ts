@@ -323,6 +323,8 @@ const MATRIX: Record<Action, Record<Scenario, Expected>> = {
   'trust.appeal.resolve': moderatorsAndAdminsWith2fa,
   'trust.suspension.lift': moderatorsAndAdminsWith2fa,
   'trust.project.refund': adminsWith2fa,
+  'trust.project.freeze': adminsWith2fa,
+  'trust.suspension.permanent': adminsWith2fa,
   'trust.transparency.read': adminsWith2fa,
   'privacy.read': everyoneSignedIn,
   'privacy.export.request': everyoneSignedIn,
@@ -339,6 +341,9 @@ const MATRIX: Record<Action, Record<Scenario, Expected>> = {
   'admin.jobs.retry': adminsWith2fa,
   'admin.stats.read': adminsWith2fa,
   'admin.audit.read': adminsWith2fa,
+  'admin.audit.export': adminsWith2fa,
+  'admin.console.read': moderatorsAndAdminsWith2fa,
+  'admin.sessions.revoke': adminsWith2fa,
 };
 
 function outcome(action: Action, scenario: Scenario): Expected {
@@ -569,9 +574,12 @@ describe('access policies', () => {
     for (const action of [
       'access.roles.manage',
       'trust.project.refund',
+      'trust.project.freeze',
+      'trust.suspension.permanent',
       'payment.refund',
       'privacy.erasure.request',
       'admin.flags.manage',
+      'admin.jobs.retry',
     ] as const) {
       expect(decide(action, stale)).toEqual({
         allowed: false,

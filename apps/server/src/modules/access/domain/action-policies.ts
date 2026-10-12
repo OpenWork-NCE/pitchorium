@@ -226,6 +226,10 @@ export const ACTION_POLICIES: Readonly<Record<Action, ActionPolicy>> = {
   'trust.appeal.resolve': { roles: ['moderator', 'admin'], sensitive: true },
   'trust.suspension.lift': { roles: ['moderator', 'admin'], sensitive: true },
   'trust.project.refund': { roles: ['admin'], sensitive: true, recentAuthentication: true },
+  // Asserted by trust on a decision of these kinds, on top of trust.moderation.decide: the
+  // freeze of a project and a permanent suspension, by an administrator with a recent session.
+  'trust.project.freeze': { roles: ['admin'], sensitive: true, recentAuthentication: true },
+  'trust.suspension.permanent': { roles: ['admin'], sensitive: true, recentAuthentication: true },
   'trust.transparency.read': { roles: ['admin'], sensitive: true },
   // Rights of the GDPR (§13): open to every member, even suspended or behind on the terms; the
   // erasure asks for a recent session. Administrators follow the requests and their delays.
@@ -250,7 +254,11 @@ export const ACTION_POLICIES: Readonly<Record<Action, ActionPolicy>> = {
   'admin.flags.manage': { roles: ['admin'], sensitive: true, recentAuthentication: true },
   'admin.highlights.manage': { roles: ['moderator', 'admin'], sensitive: true },
   'admin.jobs.read': { roles: ['admin'] },
-  'admin.jobs.retry': { roles: ['admin'], sensitive: true },
+  'admin.jobs.retry': { roles: ['admin'], sensitive: true, recentAuthentication: true },
   'admin.stats.read': { roles: ['admin'] },
   'admin.audit.read': { roles: ['admin'], sensitive: true },
+  'admin.audit.export': { roles: ['admin'], sensitive: true },
+  // The console itself: what it may offer and the queues of the reader (ADR 0172).
+  'admin.console.read': { roles: ['moderator', 'admin'] },
+  'admin.sessions.revoke': { roles: ['admin'], sensitive: true },
 };
