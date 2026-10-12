@@ -20,6 +20,7 @@ import { resumableContribution } from '../../lib/status';
 import { usePaymentProblem } from '../shared/use-payment-problem';
 import { AvailabilityNotice } from './availability-notice';
 import { usePaymentOptions } from './use-payment-options';
+import { useAccess } from '@/features/access';
 
 const ContributeDialog = lazy(() => import('./contribute-dialog'));
 const DeclareOfflineDialog = lazy(() => import('../offline/declare-offline-dialog'));
@@ -57,6 +58,7 @@ function Entry({ project, layout }: { project: ContributeProject; layout: 'stack
   const queryClient = useQueryClient();
   const options = usePaymentOptions(project.id);
   const pending = usePendingContributions();
+  const contribute = useAccess('payment.contribute');
   const [step, setStep] = useQueryState(
     'contribute',
     parseAsString.withOptions({ history: 'push' }),
@@ -125,6 +127,7 @@ function Entry({ project, layout }: { project: ContributeProject; layout: 'stack
       <Button
         type="button"
         onClick={() => openJourney('kind')}
+        disabledReason={contribute.allowed ? undefined : contribute.reason}
         data-testid="contribute-bar"
         data-bar-main=""
       >
@@ -178,7 +181,13 @@ function Entry({ project, layout }: { project: ContributeProject; layout: 'stack
       {data.availability === 'open' ? (
         <>
           {resumable ? null : (
-            <Button type="button" className="w-full" onClick={() => openJourney('kind')}>
+            <Button
+              type="button"
+              className="w-full"
+              onClick={() => openJourney('kind')}
+              // A suspended account contributes no more: the api says why (§13).
+              disabledReason={contribute.allowed ? undefined : contribute.reason}
+            >
               <HandHeart aria-hidden />
               {t('contribute')}
             </Button>
