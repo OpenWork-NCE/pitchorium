@@ -40,8 +40,14 @@ export function threadRows(
     ...pending.map((message) => ({ state: 'pending' as const, message })),
   ].map((item) => ({ ...item, author: authorOf(item), createdAt: item.message.createdAt }));
   const rows: ThreadRow[] = [];
+  // The thread follows the order of the api (sequence); an instant out of that order brings a
+  // day back after another one: its separator then needs a key of its own.
+  const seen = new Map<string, number>();
   for (const day of groupMessages(items, timeZone)) {
-    rows.push({ kind: 'day', key: `d:${day.day}`, day: day.day });
+    const repeat = seen.get(day.day) ?? 0;
+    seen.set(day.day, repeat + 1);
+    const key = repeat === 0 ? `d:${day.day}` : `d:${day.day}:${repeat + 1}`;
+    rows.push({ kind: 'day', key, day: day.day });
     for (const group of day.groups) {
       group.messages.forEach((item, index) => {
         const threadItem = { state: item.state, message: item.message } as ThreadItem;
