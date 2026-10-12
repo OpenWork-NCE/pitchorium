@@ -22,6 +22,7 @@ import type {
   AdminPaymentsControllerDiscrepanciesParams,
   AdminPaymentsControllerKycQueueParams,
   AdminPaymentsControllerOfflineQueueParams,
+  AdminPaymentsControllerSearchParams,
   ProblemDetails,
 } from '../api.schemas';
 import { apiFetch } from '../../http/fetcher';
@@ -30,6 +31,7 @@ import {
   AdminPaymentsControllerDecideKycMutationVariables,
   AdminPaymentsControllerDecideOfflineMutationVariables,
   AdminPaymentsControllerRefundMutationVariables,
+  AdminPaymentsControllerRefundPreviewMutationVariables,
   AdminPaymentsControllerResolveMutationVariables,
   adminPaymentsControllerContribution,
   adminPaymentsControllerDecideKyc,
@@ -40,7 +42,9 @@ import {
   adminPaymentsControllerOfflineQueue,
   adminPaymentsControllerReconcile,
   adminPaymentsControllerRefund,
+  adminPaymentsControllerRefundPreview,
   adminPaymentsControllerResolve,
+  adminPaymentsControllerSearch,
   getAdminPaymentsControllerContributionQueryOptions,
   getAdminPaymentsControllerDecideKycMutationOptions,
   getAdminPaymentsControllerDecideOfflineMutationOptions,
@@ -50,7 +54,9 @@ import {
   getAdminPaymentsControllerOfflineQueueQueryOptions,
   getAdminPaymentsControllerReconcileMutationOptions,
   getAdminPaymentsControllerRefundMutationOptions,
+  getAdminPaymentsControllerRefundPreviewMutationOptions,
   getAdminPaymentsControllerResolveMutationOptions,
+  getAdminPaymentsControllerSearchQueryOptions,
 } from './payments-admin';
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
@@ -69,6 +75,90 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   }
   return result;
 };
+
+export function useAdminPaymentsControllerSearch<
+  TData = Awaited<ReturnType<typeof adminPaymentsControllerSearch>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params: undefined | AdminPaymentsControllerSearchParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof adminPaymentsControllerSearch>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof adminPaymentsControllerSearch>>,
+          TError,
+          Awaited<ReturnType<typeof adminPaymentsControllerSearch>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useAdminPaymentsControllerSearch<
+  TData = Awaited<ReturnType<typeof adminPaymentsControllerSearch>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: AdminPaymentsControllerSearchParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof adminPaymentsControllerSearch>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof adminPaymentsControllerSearch>>,
+          TError,
+          Awaited<ReturnType<typeof adminPaymentsControllerSearch>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useAdminPaymentsControllerSearch<
+  TData = Awaited<ReturnType<typeof adminPaymentsControllerSearch>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: AdminPaymentsControllerSearchParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof adminPaymentsControllerSearch>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+/**
+ * @summary Search
+ */
+
+export function useAdminPaymentsControllerSearch<
+  TData = Awaited<ReturnType<typeof adminPaymentsControllerSearch>>,
+  TError = ErrorType<ProblemDetails>,
+>(
+  params?: AdminPaymentsControllerSearchParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof adminPaymentsControllerSearch>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getAdminPaymentsControllerSearchQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
 
 export function useAdminPaymentsControllerContribution<
   TData = Awaited<ReturnType<typeof adminPaymentsControllerContribution>>,
@@ -169,6 +259,32 @@ export function useAdminPaymentsControllerContribution<
 
   return withQueryKey(query, queryOptions.queryKey);
 }
+
+/**
+ * @summary Refund preview
+ */
+export const useAdminPaymentsControllerRefundPreview = <
+  TError = ErrorType<ProblemDetails>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof adminPaymentsControllerRefundPreview>>,
+      TError,
+      AdminPaymentsControllerRefundPreviewMutationVariables,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof adminPaymentsControllerRefundPreview>>,
+  TError,
+  AdminPaymentsControllerRefundPreviewMutationVariables,
+  TContext
+> => {
+  return useMutation(getAdminPaymentsControllerRefundPreviewMutationOptions(options), queryClient);
+};
 
 /**
  * @summary Refund

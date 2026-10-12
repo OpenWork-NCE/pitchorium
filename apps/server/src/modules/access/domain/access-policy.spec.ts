@@ -272,6 +272,7 @@ const MATRIX: Record<Action, Record<Scenario, Expected>> = {
   'payment.kyc.submit': entrepreneursWithVerifiedEmail,
   'payment.kyc.review': adminsWith2fa,
   'payment.refund': adminsWith2fa,
+  'payment.contributions.read': adminsWith2fa,
   'payment.reconciliation.manage': adminsWith2fa,
   'engagement.dashboard.read': membersWithAcceptedTerms,
   'engagement.organization.dashboard.read': organizationRoleRequired,

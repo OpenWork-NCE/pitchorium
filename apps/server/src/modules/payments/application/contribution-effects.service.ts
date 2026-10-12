@@ -4,7 +4,7 @@ import { TransactionManager } from '../../../platform/database';
 import { Clock, IdGenerator, Money } from '../../../platform/kernel';
 import { Metrics } from '../../../platform/observability';
 import { ProjectsFacade } from '../../projects';
-import { commissionRefundFor, eurPartFor } from '../domain/commission';
+import { eurPartFor } from '../domain/commission';
 import {
   assertTransition,
   type ContributionRecord,
@@ -16,6 +16,7 @@ import {
   wasPaid,
 } from '../domain/contribution';
 import { EUR } from '../domain/fx';
+import { refundEffect } from '../domain/refund';
 import {
   disputeLost,
   disputeOpened,
@@ -216,21 +217,10 @@ export class ContributionEffectsService {
       });
       return contribution;
     }
-    const full = refund.amountMinor === remainingMinor(contribution);
-    const status = full ? 'refunded' : 'partially_refunded';
+    const effect = refundEffect(contribution, refund.amountMinor);
+    const { full, status, eurMinor } = effect;
     assertTransition(contribution.status, status);
-    const commission = commissionRefundFor(
-      contribution.commissionMinor,
-      contribution.amountMinor,
-      contribution.refundedMinor,
-      refund.amountMinor,
-    );
-    const eurMinor = eurPartFor(
-      contribution.eurMinor,
-      contribution.amountMinor,
-      contribution.refundedMinor + contribution.lostMinor,
-      refund.amountMinor,
-    );
+    const commission = effect.commissionMinor;
     const now = this.clock.now();
     await this.payments.updateRefund(refund.id, {
       status: 'succeeded',
@@ -252,7 +242,7 @@ export class ContributionEffectsService {
       });
     }
     let rewardState = contribution.rewardState;
-    if (full && rewardState === 'confirmed') {
+    if (effect.rewardReleased) {
       await this.projects.release(contribution.id);
       rewardState = 'released';
     }

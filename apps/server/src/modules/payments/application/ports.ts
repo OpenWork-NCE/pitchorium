@@ -235,6 +235,9 @@ export type ContributionPatch = Partial<
 >;
 
 export interface ContributionFilter {
+  id?: string;
+  /** Payment identifier at the provider. */
+  providerPaymentId?: string;
   contributorId?: string;
   projectId?: string;
   organizationId?: string;
@@ -304,6 +307,8 @@ export abstract class PaymentsRepository {
   /** False when the entry of this kind and source already exists. */
   abstract insertLedgerEntry(entry: LedgerEntryRecord): Promise<boolean>;
   abstract findLedgerEntry(kind: LedgerKind, sourceId: string): Promise<LedgerEntryRecord | null>;
+  /** Entries of a contribution (payment, fees, refunds, disputes), oldest first. */
+  abstract ledgerOf(contributionId: string): Promise<LedgerEntryRecord[]>;
   /** Sum of the lines of an account per currency, for a contribution or a project. */
   abstract ledgerSum(
     account: string,

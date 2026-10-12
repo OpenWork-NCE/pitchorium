@@ -152,6 +152,8 @@ export const ACTION_POLICIES: Readonly<Record<Action, ActionPolicy>> = {
   },
   'payment.kyc.review': { roles: ['admin'], sensitive: true },
   'payment.refund': { roles: ['admin'], sensitive: true, recentAuthentication: true },
+  // Reading the contributions (search, detail with the ledger, effect of a refund): audited.
+  'payment.contributions.read': { roles: ['admin'], sensitive: true },
   'payment.reconciliation.manage': { roles: ['admin'], sensitive: true },
   // Engagement (section 9.4): own dashboard, the dashboard of an organization for its members.
   'engagement.dashboard.read': {},

@@ -27,6 +27,7 @@ import {
 } from './infrastructure/payment-providers';
 import { PaymentsMailer } from './infrastructure/payments-mailer';
 import { AdminPaymentsController } from './interface/admin-payments.controller';
+import { AdminContributionsService } from './application/admin-contributions.service';
 import { ContributionsController } from './interface/contributions.controller';
 import { CoverageController } from './interface/coverage.controller';
 import {
@@ -63,6 +64,7 @@ const SHARED_PROVIDERS: Provider[] = [
   ContributionEffectsService,
   ContributionsService,
   RefundsService,
+  AdminContributionsService,
   OfflineService,
   WebhooksService,
   ReconciliationService,

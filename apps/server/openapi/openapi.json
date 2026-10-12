@@ -1721,6 +1721,7 @@
                 "payment.kyc.submit",
                 "payment.kyc.review",
                 "payment.refund",
+                "payment.contributions.read",
                 "payment.reconciliation.manage",
                 "engagement.dashboard.read",
                 "engagement.organization.dashboard.read",
@@ -22329,6 +22330,161 @@
         "x-access": "payment.kyc.submit"
       }
     },
+    "/v1/admin/payments/contributions": {
+      "get": {
+        "operationId": "AdminPaymentsController_search",
+        "parameters": [
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minLength": 1,
+              "maxLength": 512,
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "q",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minLength": 2,
+              "maxLength": 120,
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "pending_payment",
+                "succeeded",
+                "failed",
+                "expired",
+                "canceled",
+                "partially_refunded",
+                "refunded",
+                "disputed",
+                "dispute_won",
+                "dispute_lost"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminContributionPageDto_Output"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error (RFC 9457 problem details)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "VALIDATION_FAILED": {
+                    "$ref": "#/components/examples/VALIDATION_FAILED"
+                  },
+                  "UNAUTHENTICATED": {
+                    "$ref": "#/components/examples/UNAUTHENTICATED"
+                  },
+                  "FORBIDDEN": {
+                    "$ref": "#/components/examples/FORBIDDEN"
+                  },
+                  "ACCESS_ORIGIN_NOT_ALLOWED": {
+                    "$ref": "#/components/examples/ACCESS_ORIGIN_NOT_ALLOWED"
+                  },
+                  "ACCESS_PREREQUISITES_MISSING": {
+                    "$ref": "#/components/examples/ACCESS_PREREQUISITES_MISSING"
+                  },
+                  "ACCESS_ACCOUNT_SUSPENDED": {
+                    "$ref": "#/components/examples/ACCESS_ACCOUNT_SUSPENDED"
+                  },
+                  "RATE_LIMITED": {
+                    "$ref": "#/components/examples/RATE_LIMITED"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "tags": [
+          "payments-admin"
+        ],
+        "summary": "Search",
+        "description": "Action `payment.contributions.read` (session cookie).\n\nRoles: admin, with 2FA.\n\nErrors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.",
+        "x-error-codes": [
+          "VALIDATION_FAILED",
+          "UNAUTHENTICATED",
+          "FORBIDDEN",
+          "ACCESS_ORIGIN_NOT_ALLOWED",
+          "ACCESS_PREREQUISITES_MISSING",
+          "ACCESS_ACCOUNT_SUSPENDED",
+          "RATE_LIMITED",
+          "PAYMENTS_PROJECT_NOT_OPEN",
+          "PAYMENTS_HOLDER_NOT_READY",
+          "PAYMENTS_HOLDER_PAYOUT_NOT_COVERED",
+          "PAYMENTS_METHOD_NOT_AVAILABLE",
+          "PAYMENTS_CURRENCY_NOT_AVAILABLE",
+          "PAYMENTS_INSTRUMENT_NOT_ACCEPTED",
+          "PAYMENTS_INSTRUMENT_NOT_COLLECTIBLE",
+          "PAYMENTS_LICENSED_PARTNER_REQUIRED",
+          "PAYMENTS_AMOUNT_OUT_OF_RANGE",
+          "PAYMENTS_REWARD_NOT_ELIGIBLE",
+          "PAYMENTS_ANONYMOUS_NOT_ALLOWED",
+          "PAYMENTS_RATE_LIMITED",
+          "PAYMENTS_CONTRIBUTION_NOT_FOUND",
+          "PAYMENTS_INVALID_TRANSITION",
+          "PAYMENTS_REFUND_INVALID",
+          "PAYMENTS_PROVIDER_UNAVAILABLE",
+          "PAYMENTS_PAYOUT_ACCOUNT_EXISTS",
+          "PAYMENTS_PAYOUT_ACCOUNT_NOT_FOUND",
+          "PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED",
+          "PAYMENTS_PAYOUT_CHANGE_REFUSED",
+          "PAYMENTS_PAYOUT_DETAILS_REQUIRED",
+          "PAYMENTS_KYC_NOT_MANUAL",
+          "PAYMENTS_KYC_PENDING",
+          "PAYMENTS_KYC_ALREADY_VERIFIED",
+          "PAYMENTS_KYC_NOT_FOUND",
+          "PAYMENTS_KYC_ALREADY_DECIDED",
+          "PAYMENTS_OFFLINE_NOT_FOUND",
+          "PAYMENTS_OFFLINE_AMOUNT_INVALID",
+          "PAYMENTS_OFFLINE_INVALID_TRANSITION",
+          "PAYMENTS_OFFLINE_PROOF_REQUIRED",
+          "PAYMENTS_DISCREPANCY_NOT_FOUND",
+          "PAYMENTS_WEBHOOK_INVALID"
+        ],
+        "x-access": "payment.contributions.read"
+      }
+    },
     "/v1/admin/payments/contributions/{contributionId}": {
       "get": {
         "operationId": "AdminPaymentsController_contribution",
@@ -22381,9 +22537,6 @@
                   "ACCESS_ACCOUNT_SUSPENDED": {
                     "$ref": "#/components/examples/ACCESS_ACCOUNT_SUSPENDED"
                   },
-                  "ACCESS_REAUTHENTICATION_REQUIRED": {
-                    "$ref": "#/components/examples/ACCESS_REAUTHENTICATION_REQUIRED"
-                  },
                   "NOT_FOUND": {
                     "$ref": "#/components/examples/NOT_FOUND"
                   },
@@ -22404,7 +22557,7 @@
           "payments-admin"
         ],
         "summary": "Contribution",
-        "description": "Action `payment.refund` (session cookie).\n\nRoles: admin, with 2FA.\n\nRequires a recent sign-in.\n\nErrors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.",
+        "description": "Action `payment.contributions.read` (session cookie).\n\nRoles: admin, with 2FA.\n\nErrors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.",
         "x-error-codes": [
           "VALIDATION_FAILED",
           "UNAUTHENTICATED",
@@ -22412,7 +22565,6 @@
           "ACCESS_ORIGIN_NOT_ALLOWED",
           "ACCESS_PREREQUISITES_MISSING",
           "ACCESS_ACCOUNT_SUSPENDED",
-          "ACCESS_REAUTHENTICATION_REQUIRED",
           "NOT_FOUND",
           "RATE_LIMITED",
           "PAYMENTS_PROJECT_NOT_OPEN",
@@ -22448,7 +22600,139 @@
           "PAYMENTS_DISCREPANCY_NOT_FOUND",
           "PAYMENTS_WEBHOOK_INVALID"
         ],
-        "x-access": "payment.refund"
+        "x-access": "payment.contributions.read"
+      }
+    },
+    "/v1/admin/payments/contributions/{contributionId}/refund-preview": {
+      "post": {
+        "operationId": "AdminPaymentsController_refundPreview",
+        "parameters": [
+          {
+            "name": "contributionId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefundPreviewRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RefundPreviewDto_Output"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error (RFC 9457 problem details)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                },
+                "examples": {
+                  "VALIDATION_FAILED": {
+                    "$ref": "#/components/examples/VALIDATION_FAILED"
+                  },
+                  "PAYLOAD_TOO_LARGE": {
+                    "$ref": "#/components/examples/PAYLOAD_TOO_LARGE"
+                  },
+                  "UNAUTHENTICATED": {
+                    "$ref": "#/components/examples/UNAUTHENTICATED"
+                  },
+                  "FORBIDDEN": {
+                    "$ref": "#/components/examples/FORBIDDEN"
+                  },
+                  "ACCESS_ORIGIN_NOT_ALLOWED": {
+                    "$ref": "#/components/examples/ACCESS_ORIGIN_NOT_ALLOWED"
+                  },
+                  "ACCESS_PREREQUISITES_MISSING": {
+                    "$ref": "#/components/examples/ACCESS_PREREQUISITES_MISSING"
+                  },
+                  "ACCESS_ACCOUNT_SUSPENDED": {
+                    "$ref": "#/components/examples/ACCESS_ACCOUNT_SUSPENDED"
+                  },
+                  "NOT_FOUND": {
+                    "$ref": "#/components/examples/NOT_FOUND"
+                  },
+                  "RATE_LIMITED": {
+                    "$ref": "#/components/examples/RATE_LIMITED"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "tags": [
+          "payments-admin"
+        ],
+        "summary": "Refund preview",
+        "description": "Action `payment.contributions.read` (session cookie).\n\nRoles: admin, with 2FA.\n\nErrors: RFC 9457 problem details; `x-error-codes` lists the stable codes this operation may return (module codes included), to translate with `errors.<code>`.",
+        "x-error-codes": [
+          "VALIDATION_FAILED",
+          "PAYLOAD_TOO_LARGE",
+          "UNAUTHENTICATED",
+          "FORBIDDEN",
+          "ACCESS_ORIGIN_NOT_ALLOWED",
+          "ACCESS_PREREQUISITES_MISSING",
+          "ACCESS_ACCOUNT_SUSPENDED",
+          "NOT_FOUND",
+          "RATE_LIMITED",
+          "PAYMENTS_PROJECT_NOT_OPEN",
+          "PAYMENTS_HOLDER_NOT_READY",
+          "PAYMENTS_HOLDER_PAYOUT_NOT_COVERED",
+          "PAYMENTS_METHOD_NOT_AVAILABLE",
+          "PAYMENTS_CURRENCY_NOT_AVAILABLE",
+          "PAYMENTS_INSTRUMENT_NOT_ACCEPTED",
+          "PAYMENTS_INSTRUMENT_NOT_COLLECTIBLE",
+          "PAYMENTS_LICENSED_PARTNER_REQUIRED",
+          "PAYMENTS_AMOUNT_OUT_OF_RANGE",
+          "PAYMENTS_REWARD_NOT_ELIGIBLE",
+          "PAYMENTS_ANONYMOUS_NOT_ALLOWED",
+          "PAYMENTS_RATE_LIMITED",
+          "PAYMENTS_CONTRIBUTION_NOT_FOUND",
+          "PAYMENTS_INVALID_TRANSITION",
+          "PAYMENTS_REFUND_INVALID",
+          "PAYMENTS_PROVIDER_UNAVAILABLE",
+          "PAYMENTS_PAYOUT_ACCOUNT_EXISTS",
+          "PAYMENTS_PAYOUT_ACCOUNT_NOT_FOUND",
+          "PAYMENTS_PAYOUT_COUNTRY_NOT_SUPPORTED",
+          "PAYMENTS_PAYOUT_CHANGE_REFUSED",
+          "PAYMENTS_PAYOUT_DETAILS_REQUIRED",
+          "PAYMENTS_KYC_NOT_MANUAL",
+          "PAYMENTS_KYC_PENDING",
+          "PAYMENTS_KYC_ALREADY_VERIFIED",
+          "PAYMENTS_KYC_NOT_FOUND",
+          "PAYMENTS_KYC_ALREADY_DECIDED",
+          "PAYMENTS_OFFLINE_NOT_FOUND",
+          "PAYMENTS_OFFLINE_AMOUNT_INVALID",
+          "PAYMENTS_OFFLINE_INVALID_TRANSITION",
+          "PAYMENTS_OFFLINE_PROOF_REQUIRED",
+          "PAYMENTS_DISCREPANCY_NOT_FOUND",
+          "PAYMENTS_WEBHOOK_INVALID"
+        ],
+        "x-access": "payment.contributions.read"
       }
     },
     "/v1/admin/payments/contributions/{contributionId}/refunds": {
@@ -37707,6 +37991,7 @@
               "payment.kyc.submit",
               "payment.kyc.review",
               "payment.refund",
+              "payment.contributions.read",
               "payment.reconciliation.manage",
               "engagement.dashboard.read",
               "engagement.organization.dashboard.read",
@@ -38166,6 +38451,7 @@
                     "payment.kyc.submit",
                     "payment.kyc.review",
                     "payment.refund",
+                    "payment.contributions.read",
                     "payment.reconciliation.manage",
                     "engagement.dashboard.read",
                     "engagement.organization.dashboard.read",
@@ -59464,6 +59750,385 @@
         ],
         "additionalProperties": false
       },
+      "AdminContributionPageDto_Output": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$"
+                },
+                "project": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$"
+                    },
+                    "slug": {
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "slug",
+                    "title"
+                  ],
+                  "additionalProperties": false
+                },
+                "organizationId": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "donation",
+                    "reward_crowdfunding",
+                    "love_money"
+                  ]
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "pending_payment",
+                    "succeeded",
+                    "failed",
+                    "expired",
+                    "canceled",
+                    "partially_refunded",
+                    "refunded",
+                    "disputed",
+                    "dispute_won",
+                    "dispute_lost"
+                  ]
+                },
+                "method": {
+                  "type": "string",
+                  "enum": [
+                    "card",
+                    "sepa_debit",
+                    "apple_pay",
+                    "google_pay",
+                    "paypal",
+                    "mobile_money",
+                    "bank_transfer",
+                    "bank_account",
+                    "ussd"
+                  ]
+                },
+                "amount": {
+                  "type": "object",
+                  "properties": {
+                    "amountMinor": {
+                      "type": "string",
+                      "pattern": "^-?(0|[1-9]\\d*)$"
+                    },
+                    "currency": {
+                      "type": "string",
+                      "pattern": "^[A-Z]{3}$"
+                    }
+                  },
+                  "required": [
+                    "amountMinor",
+                    "currency"
+                  ],
+                  "additionalProperties": false
+                },
+                "eurEquivalent": {
+                  "type": "object",
+                  "properties": {
+                    "amountMinor": {
+                      "type": "string",
+                      "pattern": "^-?(0|[1-9]\\d*)$"
+                    },
+                    "currency": {
+                      "type": "string",
+                      "pattern": "^[A-Z]{3}$"
+                    }
+                  },
+                  "required": [
+                    "amountMinor",
+                    "currency"
+                  ],
+                  "additionalProperties": false
+                },
+                "rate": {
+                  "type": "object",
+                  "properties": {
+                    "unitsPerEur": {
+                      "type": "string",
+                      "pattern": "^(0|[1-9]\\d*)(\\.\\d+)?$"
+                    },
+                    "source": {
+                      "type": "string",
+                      "enum": [
+                        "identity",
+                        "fixed_parity",
+                        "provider",
+                        "simulated"
+                      ]
+                    },
+                    "at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                    }
+                  },
+                  "required": [
+                    "unitsPerEur",
+                    "source",
+                    "at"
+                  ],
+                  "additionalProperties": false
+                },
+                "commission": {
+                  "type": "object",
+                  "properties": {
+                    "amountMinor": {
+                      "type": "string",
+                      "pattern": "^-?(0|[1-9]\\d*)$"
+                    },
+                    "currency": {
+                      "type": "string",
+                      "pattern": "^[A-Z]{3}$"
+                    }
+                  },
+                  "required": [
+                    "amountMinor",
+                    "currency"
+                  ],
+                  "additionalProperties": false
+                },
+                "commissionRateBps": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "providerFee": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "amountMinor": {
+                          "type": "string",
+                          "pattern": "^-?(0|[1-9]\\d*)$"
+                        },
+                        "currency": {
+                          "type": "string",
+                          "pattern": "^[A-Z]{3}$"
+                        }
+                      },
+                      "required": [
+                        "amountMinor",
+                        "currency"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "refunded": {
+                  "type": "object",
+                  "properties": {
+                    "amountMinor": {
+                      "type": "string",
+                      "pattern": "^-?(0|[1-9]\\d*)$"
+                    },
+                    "currency": {
+                      "type": "string",
+                      "pattern": "^[A-Z]{3}$"
+                    }
+                  },
+                  "required": [
+                    "amountMinor",
+                    "currency"
+                  ],
+                  "additionalProperties": false
+                },
+                "rewardId": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "rewardState": {
+                  "type": "string",
+                  "enum": [
+                    "none",
+                    "reserved",
+                    "confirmed",
+                    "released"
+                  ]
+                },
+                "publicDisplay": {
+                  "type": "boolean"
+                },
+                "anonymous": {
+                  "type": "boolean"
+                },
+                "paymentUrl": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "expiresAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                },
+                "createdAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                },
+                "succeededAt": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "contributor": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "handle": {
+                          "type": "string",
+                          "pattern": "^[a-z0-9](?:[a-z0-9]|-(?=[a-z0-9])){2,29}$"
+                        },
+                        "displayName": {
+                          "type": "string"
+                        },
+                        "headline": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "avatarUrl": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "handle",
+                        "displayName",
+                        "headline",
+                        "avatarUrl"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "organization": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "slug": {
+                          "type": "string"
+                        },
+                        "title": {
+                          "type": "string"
+                        },
+                        "id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$"
+                        }
+                      },
+                      "required": [
+                        "slug",
+                        "title",
+                        "id"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "id",
+                "project",
+                "organizationId",
+                "kind",
+                "status",
+                "method",
+                "amount",
+                "eurEquivalent",
+                "rate",
+                "commission",
+                "commissionRateBps",
+                "providerFee",
+                "refunded",
+                "rewardId",
+                "rewardState",
+                "publicDisplay",
+                "anonymous",
+                "paymentUrl",
+                "expiresAt",
+                "createdAt",
+                "succeededAt",
+                "contributor",
+                "organization"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "nextCursor": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "items",
+          "nextCursor"
+        ],
+        "additionalProperties": false
+      },
       "AdminContributionDto_Output": {
         "type": "object",
         "properties": {
@@ -59875,6 +60540,68 @@
               ],
               "additionalProperties": false
             }
+          },
+          "ledger": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$"
+                },
+                "kind": {
+                  "type": "string"
+                },
+                "occurredAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                },
+                "lines": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "account": {
+                        "type": "string"
+                      },
+                      "amount": {
+                        "type": "object",
+                        "properties": {
+                          "amountMinor": {
+                            "type": "string",
+                            "pattern": "^-?(0|[1-9]\\d*)$"
+                          },
+                          "currency": {
+                            "type": "string",
+                            "pattern": "^[A-Z]{3}$"
+                          }
+                        },
+                        "required": [
+                          "amountMinor",
+                          "currency"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "account",
+                      "amount"
+                    ],
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "required": [
+                "id",
+                "kind",
+                "occurredAt",
+                "lines"
+              ],
+              "additionalProperties": false
+            }
           }
         },
         "required": [
@@ -59901,7 +60628,192 @@
           "succeededAt",
           "contributor",
           "organization",
-          "refunds"
+          "refunds",
+          "ledger"
+        ],
+        "additionalProperties": false
+      },
+      "RefundPreviewRequestDto": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "object",
+            "properties": {
+              "amountMinor": {
+                "type": "string",
+                "pattern": "^[1-9]\\d{0,17}$"
+              },
+              "currency": {
+                "type": "string",
+                "pattern": "^[A-Z]{3}$"
+              }
+            },
+            "required": [
+              "amountMinor",
+              "currency"
+            ]
+          }
+        }
+      },
+      "RefundPreviewDto_Output": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "object",
+            "properties": {
+              "amountMinor": {
+                "type": "string",
+                "pattern": "^-?(0|[1-9]\\d*)$"
+              },
+              "currency": {
+                "type": "string",
+                "pattern": "^[A-Z]{3}$"
+              }
+            },
+            "required": [
+              "amountMinor",
+              "currency"
+            ],
+            "additionalProperties": false
+          },
+          "refundable": {
+            "type": "object",
+            "properties": {
+              "amountMinor": {
+                "type": "string",
+                "pattern": "^-?(0|[1-9]\\d*)$"
+              },
+              "currency": {
+                "type": "string",
+                "pattern": "^[A-Z]{3}$"
+              }
+            },
+            "required": [
+              "amountMinor",
+              "currency"
+            ],
+            "additionalProperties": false
+          },
+          "full": {
+            "type": "boolean"
+          },
+          "statusAfter": {
+            "type": "string",
+            "enum": [
+              "pending_payment",
+              "succeeded",
+              "failed",
+              "expired",
+              "canceled",
+              "partially_refunded",
+              "refunded",
+              "disputed",
+              "dispute_won",
+              "dispute_lost"
+            ]
+          },
+          "commissionRefunded": {
+            "type": "object",
+            "properties": {
+              "amountMinor": {
+                "type": "string",
+                "pattern": "^-?(0|[1-9]\\d*)$"
+              },
+              "currency": {
+                "type": "string",
+                "pattern": "^[A-Z]{3}$"
+              }
+            },
+            "required": [
+              "amountMinor",
+              "currency"
+            ],
+            "additionalProperties": false
+          },
+          "fundingReversed": {
+            "type": "object",
+            "properties": {
+              "amountMinor": {
+                "type": "string",
+                "pattern": "^-?(0|[1-9]\\d*)$"
+              },
+              "currency": {
+                "type": "string",
+                "pattern": "^[A-Z]{3}$"
+              }
+            },
+            "required": [
+              "amountMinor",
+              "currency"
+            ],
+            "additionalProperties": false
+          },
+          "project": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "collected": {
+                    "type": "object",
+                    "properties": {
+                      "amountMinor": {
+                        "type": "string",
+                        "pattern": "^-?(0|[1-9]\\d*)$"
+                      },
+                      "currency": {
+                        "type": "string",
+                        "pattern": "^[A-Z]{3}$"
+                      }
+                    },
+                    "required": [
+                      "amountMinor",
+                      "currency"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "collectedAfter": {
+                    "type": "object",
+                    "properties": {
+                      "amountMinor": {
+                        "type": "string",
+                        "pattern": "^-?(0|[1-9]\\d*)$"
+                      },
+                      "currency": {
+                        "type": "string",
+                        "pattern": "^[A-Z]{3}$"
+                      }
+                    },
+                    "required": [
+                      "amountMinor",
+                      "currency"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "collected",
+                  "collectedAfter"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "rewardReleased": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "amount",
+          "refundable",
+          "full",
+          "statusAfter",
+          "commissionRefunded",
+          "fundingReversed",
+          "project",
+          "rewardReleased"
         ],
         "additionalProperties": false
       },

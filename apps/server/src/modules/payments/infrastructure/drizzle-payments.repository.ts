@@ -170,6 +170,10 @@ export class DrizzlePaymentsRepository extends PaymentsRepository {
       .from(table)
       .where(
         and(
+          filter.id ? eq(table.id, filter.id) : undefined,
+          filter.providerPaymentId
+            ? eq(table.providerPaymentId, filter.providerPaymentId)
+            : undefined,
           filter.contributorId ? eq(table.contributorId, filter.contributorId) : undefined,
           filter.projectId ? eq(table.projectId, filter.projectId) : undefined,
           filter.organizationId ? eq(table.organizationId, filter.organizationId) : undefined,
@@ -459,6 +463,36 @@ export class DrizzlePaymentsRepository extends PaymentsRepository {
         amountMinor: line.amountMinor,
       })),
     };
+  }
+
+  async ledgerOf(contributionId: string): Promise<LedgerEntryRecord[]> {
+    const headers = await this.db
+      .select()
+      .from(paymentsLedgerEntries)
+      .where(eq(paymentsLedgerEntries.contributionId, contributionId))
+      .orderBy(asc(paymentsLedgerEntries.occurredAt), asc(paymentsLedgerEntries.id));
+    if (headers.length === 0) return [];
+    const lines = await this.db
+      .select()
+      .from(paymentsLedgerLines)
+      .where(
+        inArray(
+          paymentsLedgerLines.entryId,
+          headers.map((header) => header.id),
+        ),
+      )
+      .orderBy(asc(paymentsLedgerLines.id));
+    return headers.map((header) => ({
+      ...header,
+      kind: header.kind as LedgerKind,
+      lines: lines
+        .filter((line) => line.entryId === header.id)
+        .map((line) => ({
+          account: line.account as LedgerAccount,
+          currency: line.currency,
+          amountMinor: line.amountMinor,
+        })),
+    }));
   }
 
   async ledgerSum(

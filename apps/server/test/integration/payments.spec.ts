@@ -2,6 +2,7 @@ import { randomUUID } from 'node:crypto';
 import type { NestExpressApplication } from '@nestjs/platform-express';
 import type { TestingModule } from '@nestjs/testing';
 import type {
+  AdminContribution,
   Contribution,
   ContributionQuote,
   ImpactDashboard,
@@ -685,6 +686,39 @@ describe('payments', () => {
       .send({ reason: 'x' })
       .expect(403);
 
+    // The console finds it and shows what a partial refund would do, by the same rules.
+    const found = await admin.agent
+      .get(`/v1/admin/payments/contributions?q=${contribution.id}`)
+      .expect(200);
+    expect((found.body as { items: { id: string }[] }).items.map((item) => item.id)).toEqual([
+      contribution.id,
+    ]);
+    const preview = await admin.agent
+      .post(`/v1/admin/payments/contributions/${contribution.id}/refund-preview`)
+      .send({ amount: eur(30) })
+      .expect(200);
+    expect(preview.body).toEqual({
+      amount: eur(30),
+      refundable: eur(100),
+      full: false,
+      statusAfter: 'partially_refunded',
+      commissionRefunded: eur(1.5),
+      fundingReversed: eur(30),
+      project: {
+        collected: { amountMinor: String(before + 10_000n), currency: 'EUR' },
+        collectedAfter: { amountMinor: String(before + 7_000n), currency: 'EUR' },
+      },
+      rewardReleased: false,
+    });
+    expect(
+      (
+        await admin.agent
+          .post(`/v1/admin/payments/contributions/${contribution.id}/refund-preview`)
+          .send({ amount: eur(101) })
+          .expect(409)
+      ).body.code,
+    ).toBe('PAYMENTS_REFUND_INVALID');
+
     const partial = await admin.agent
       .post(`/v1/admin/payments/contributions/${contribution.id}/refunds`)
       .set('Idempotency-Key', randomUUID())
@@ -717,6 +751,11 @@ describe('payments', () => {
       .expect(200);
     expect(details.body.refunds).toHaveLength(2);
     expect(details.body.commission).toEqual(eur(0));
+    expect((details.body as AdminContribution).ledger.map((entry) => entry.kind)).toEqual([
+      'payment_succeeded',
+      'refund',
+      'refund',
+    ]);
   });
 
   it('reverses the funding of a lost dispute', async () => {

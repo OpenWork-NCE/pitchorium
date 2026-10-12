@@ -3,11 +3,19 @@ import type { Refund } from '@pitchorium/contracts';
 import { AuditService } from '../../../platform/audit';
 import { TransactionManager } from '../../../platform/database';
 import { Clock, DomainError, IdGenerator, Money } from '../../../platform/kernel';
-import { isRefundable, remainingMinor } from '../domain/contribution';
+import { isRefundable } from '../domain/contribution';
+import { refundAmountOf } from '../domain/refund';
 import { ContributionEffectsService } from './contribution-effects.service';
 import { contributionNotFound } from './contributions.service';
 import { refundView } from './payments-views';
 import { PaymentProviders, PaymentsRepository, type RefundRecord } from './ports';
+
+/** Refunds asked and not yet confirmed by the provider: deducted from what remains. */
+export function pendingRefundsMinor(refunds: readonly RefundRecord[]): bigint {
+  return refunds
+    .filter((existing) => existing.status === 'pending')
+    .reduce((sum, existing) => sum + existing.amountMinor, 0n);
+}
 
 export interface RefundOrder {
   amount?: { amountMinor: string; currency: string } | undefined;
@@ -44,23 +52,11 @@ export class RefundsService {
           `Cannot refund a ${contribution.status} contribution`,
         );
       }
-      const pending = (await this.payments.refundsOf(contributionId))
-        .filter((existing) => existing.status === 'pending')
-        .reduce((sum, existing) => sum + existing.amountMinor, 0n);
-      const refundable = remainingMinor(contribution) - pending;
-      const amount = order.amount
-        ? Money.fromJSON(order.amount)
-        : Money.of(refundable, contribution.currency);
-      if (
-        amount.currency !== contribution.currency ||
-        amount.amountMinor <= 0n ||
-        amount.amountMinor > refundable
-      ) {
-        throw new DomainError(
-          'PAYMENTS_REFUND_INVALID',
-          'The refund exceeds the refundable amount',
-        );
-      }
+      const amount = refundAmountOf(
+        contribution,
+        order.amount,
+        pendingRefundsMinor(await this.payments.refundsOf(contributionId)),
+      );
       const now = this.clock.now();
       const record: RefundRecord = {
         id: this.ids.next(),

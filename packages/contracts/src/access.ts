@@ -89,6 +89,7 @@ export const ACTIONS = [
   'payment.kyc.submit',
   'payment.kyc.review',
   'payment.refund',
+  'payment.contributions.read',
   'payment.reconciliation.manage',
   'engagement.dashboard.read',
   'engagement.organization.dashboard.read',

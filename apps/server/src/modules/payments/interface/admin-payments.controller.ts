@@ -2,7 +2,9 @@ import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Query } from 
 import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import {
   type AdminContribution,
+  adminContributionPageSchema,
   adminContributionSchema,
+  adminContributionSearchQuerySchema,
   contributionIdParamsSchema,
   type CursorPage,
   type Discrepancy,
@@ -23,7 +25,11 @@ import {
   offlineContributionPageSchema,
   offlineContributionSchema,
   offlineDecisionRequestSchema,
+  type ProjectContribution,
   type Refund,
+  type RefundPreview,
+  refundPreviewRequestSchema,
+  refundPreviewSchema,
   refundRequestSchema,
   refundSchema,
   uuidV7Schema,
@@ -35,16 +41,19 @@ import { CurrentPrincipal, type Principal, RequireAction } from '../../../platfo
 import { Idempotent } from '../../../platform/idempotency';
 import { Clock, decodeKeyset, DomainError, encodeKeyset } from '../../../platform/kernel';
 import { ProfilesFacade } from '../../profiles';
-import { ContributionsService, contributionNotFound } from '../application/contributions.service';
+import { AdminContributionsService } from '../application/admin-contributions.service';
 import { OfflineService } from '../application/offline.service';
 import { kycView, PayoutService } from '../application/payout.service';
-import { refundView } from '../application/payments-views';
 import { type DiscrepancyRecord, PaymentsRepository } from '../application/ports';
 import { ReconciliationService } from '../application/reconciliation.service';
 import { RefundsService } from '../application/refunds.service';
 
 class ContributionIdParamsDto extends createZodDto(contributionIdParamsSchema) {}
 class AdminContributionDto extends createZodDto(adminContributionSchema) {}
+class AdminContributionPageDto extends createZodDto(adminContributionPageSchema) {}
+class AdminContributionSearchDto extends createZodDto(adminContributionSearchQuerySchema) {}
+class RefundPreviewRequestDto extends createZodDto(refundPreviewRequestSchema) {}
+class RefundPreviewDto extends createZodDto(refundPreviewSchema) {}
 class RefundRequestDto extends createZodDto(refundRequestSchema) {}
 class RefundDto extends createZodDto(refundSchema) {}
 class KycIdParamsDto extends createZodDto(kycSubmissionIdParamsSchema) {}
@@ -98,7 +107,7 @@ function discrepancyView(record: DiscrepancyRecord): Discrepancy {
 export class AdminPaymentsController {
   constructor(
     private readonly payments: PaymentsRepository,
-    private readonly contributions: ContributionsService,
+    private readonly contributions: AdminContributionsService,
     private readonly refunds: RefundsService,
     private readonly payout: PayoutService,
     private readonly offline: OfflineService,
@@ -108,17 +117,41 @@ export class AdminPaymentsController {
     private readonly clock: Clock,
   ) {}
 
+  /** By exact identifier, contributor handle or payment reference at the provider; audited. */
+  @Get('contributions')
+  @RequireAction('payment.contributions.read')
+  @ZodSerializerDto(AdminContributionPageDto)
+  @ApiOkResponse({ type: AdminContributionPageDto.Output })
+  search(
+    @CurrentPrincipal() principal: Principal,
+    @Query() query: AdminContributionSearchDto,
+  ): Promise<CursorPage<ProjectContribution>> {
+    return this.contributions.search(principal.userId, query);
+  }
+
+  /** The contribution with its quote, its refunds and its ledger entries; audited. */
   @Get('contributions/:contributionId')
-  @RequireAction('payment.refund')
+  @RequireAction('payment.contributions.read')
   @ZodSerializerDto(AdminContributionDto)
   @ApiOkResponse({ type: AdminContributionDto.Output })
-  async contribution(@Param() params: ContributionIdParamsDto): Promise<AdminContribution> {
-    const row = await this.payments.findContribution(params.contributionId);
-    if (!row) throw contributionNotFound();
-    const [view] = await this.contributions.projectViews([row]);
-    if (!view) throw contributionNotFound();
-    const refunds = await this.payments.refundsOf(row.id);
-    return { ...view, refunds: refunds.map(refundView) };
+  contribution(
+    @CurrentPrincipal() principal: Principal,
+    @Param() params: ContributionIdParamsDto,
+  ): Promise<AdminContribution> {
+    return this.contributions.detail(principal.userId, params.contributionId);
+  }
+
+  /** What a refund would do (amount, commission, collected amount), before it is asked. */
+  @Post('contributions/:contributionId/refund-preview')
+  @RequireAction('payment.contributions.read')
+  @HttpCode(HttpStatus.OK)
+  @ZodSerializerDto(RefundPreviewDto)
+  @ApiOkResponse({ type: RefundPreviewDto.Output })
+  refundPreview(
+    @Param() params: ContributionIdParamsDto,
+    @Body() body: RefundPreviewRequestDto,
+  ): Promise<RefundPreview> {
+    return this.contributions.preview(params.contributionId, body);
   }
 
   /** Total by default, partial with an amount; the commission is refunded in proportion. */

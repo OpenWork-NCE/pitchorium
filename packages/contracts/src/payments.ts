@@ -594,8 +594,51 @@ export const refundSchema = z.object({
   createdAt: z.iso.datetime(),
 });
 
+/** A line of a ledger entry: a signed amount on an account (ADR 0048). */
+export const ledgerLineSchema = z.object({ account: z.string(), amount: moneySchema });
+
+/** An entry of the double-entry ledger linked to a contribution, its lines summing to zero. */
+export const ledgerEntrySchema = z.object({
+  id: uuidV7Schema,
+  kind: z.string(),
+  occurredAt: z.iso.datetime(),
+  lines: z.array(ledgerLineSchema),
+});
+
 export const adminContributionSchema = projectContributionSchema.extend({
   refunds: z.array(refundSchema),
+  /** Entries of the ledger written for the contribution, its refunds and disputes. */
+  ledger: z.array(ledgerEntrySchema),
+});
+
+/**
+ * Search of the contributions by an administrator: an exact identifier of contribution, the
+ * handle of the contributor, or the payment identifier of the provider; newest first.
+ */
+export const adminContributionSearchQuerySchema = cursorPageQuerySchema.extend({
+  q: z.string().trim().min(2).max(120).optional(),
+  status: contributionStatusSchema.optional(),
+});
+export const adminContributionPageSchema = cursorPageSchema(projectContributionSchema);
+
+/** What a refund would do, before it is asked: total by default, partial with an amount. */
+export const refundPreviewRequestSchema = z.object({ amount: positiveMoneySchema.optional() });
+
+/**
+ * The effect of a refund computed by the rules of the refund itself (section 13): what the
+ * contributor gets back, the share of the commission given back, the euros removed from the
+ * collected amount of the project, the state that follows, the reward released.
+ */
+export const refundPreviewSchema = z.object({
+  amount: moneySchema,
+  /** Refundable before this refund, refunds still pending deducted. */
+  refundable: moneySchema,
+  full: z.boolean(),
+  statusAfter: contributionStatusSchema,
+  commissionRefunded: moneySchema,
+  fundingReversed: moneySchema,
+  project: z.object({ collected: moneySchema, collectedAfter: moneySchema }).nullable(),
+  rewardReleased: z.boolean(),
 });
 
 /** Daily reconciliation of the provider transactions with the ledger (ADR 0048). */
@@ -696,3 +739,7 @@ export type RefundRequest = z.infer<typeof refundRequestSchema>;
 export type Refund = z.infer<typeof refundSchema>;
 export type DiscrepancyKind = z.infer<typeof discrepancyKindSchema>;
 export type Discrepancy = z.infer<typeof discrepancySchema>;
+export type LedgerEntry = z.infer<typeof ledgerEntrySchema>;
+export type AdminContributionSearchQuery = z.infer<typeof adminContributionSearchQuerySchema>;
+export type RefundPreviewRequest = z.infer<typeof refundPreviewRequestSchema>;
+export type RefundPreview = z.infer<typeof refundPreviewSchema>;
