@@ -349,6 +349,8 @@ export const projectUpdateSchema = z.object({
   projectId: uuidV7Schema,
   author: memberCardSchema,
   text: z.string(),
+  /** Language of the text, detected (ISO 639-1), null when undetermined: its translation is offered (§8.3). */
+  language: z.string().nullable(),
   images: z.array(projectImageSchema),
   publishedAt: z.iso.datetime(),
   editedAt: z.iso.datetime().nullable(),
@@ -384,6 +386,8 @@ export const projectManagementSchema = z.object({
 /** The project page (section 11.2), as seen by a visitor, a member or the team (preview). */
 export const projectSchema = projectCardSchema.extend({
   description: z.string().nullable(),
+  /** Language of the description (or the summary), detected (ISO 639-1), null when undetermined. */
+  language: z.string().nullable(),
   impactArea: z.string().nullable(),
   video: projectVideoSchema.nullable(),
   gallery: z.array(projectImageSchema),

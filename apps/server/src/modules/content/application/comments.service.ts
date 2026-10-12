@@ -9,8 +9,9 @@ import type {
 import { TransactionManager } from '../../../platform/database';
 import {
   Clock,
-  DomainError,
   decodeKeyset,
+  detectLanguage,
+  DomainError,
   encodeKeyset,
   IdGenerator,
 } from '../../../platform/kernel';
@@ -208,6 +209,7 @@ export class CommentsService {
           parentId: comment.parentId,
           author: memberCardView(card),
           text: comment.text,
+          language: detectLanguage(comment.text),
           mentions: mentions.get(comment.id) ?? [],
           reactions: reactionSummary(reactions.get(comment.id), viewerReactions.get(comment.id)),
           replyCount: replies.get(comment.id) ?? 0,

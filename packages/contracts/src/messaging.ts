@@ -109,6 +109,8 @@ export const messageSchema = z.object({
   mine: z.boolean(),
   /** Null for a deleted message (tombstone) or one hidden by moderation. */
   body: z.string().nullable(),
+  /** Language of the text, detected (ISO 639-1), null when undetermined: its translation is offered (§8.3). */
+  language: z.string().nullable(),
   attachments: z.array(messageAttachmentSchema),
   sharedPost: sharedPostSchema.nullable(),
   edited: z.boolean(),

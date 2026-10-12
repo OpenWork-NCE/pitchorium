@@ -1453,6 +1453,8 @@ export interface OwnProfileDtoOutput {
   headline: string | null;
   /** @nullable */
   bio: string | null;
+  /** @nullable */
+  language: string | null;
   countryCode: string | null;
   /** @nullable */
   city: string | null;
@@ -2060,6 +2062,8 @@ export interface ProfileViewDtoOutput {
   headline: string | null;
   /** @nullable */
   bio: string | null;
+  /** @nullable */
+  language: string | null;
   countryCode: string | null;
   /** @nullable */
   city: string | null;
@@ -4293,6 +4297,8 @@ export type FeedPageDtoOutputItemsItem =
           avatarUrl: string | null;
         };
         text: string;
+        /** @nullable */
+        language: string | null;
         images: {
           /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
           mediaId: string;
@@ -6082,6 +6088,8 @@ export interface CommentDtoOutput {
   parentId: string | null;
   author: CommentDtoOutputAuthor;
   text: string;
+  /** @nullable */
+  language: string | null;
   mentions: CommentDtoOutputMentionsItem[];
   reactions: CommentDtoOutputReactions;
   /**
@@ -6173,6 +6181,8 @@ export type CommentPageDtoOutputItemsItem = {
   parentId: string | null;
   author: CommentPageDtoOutputItemsItemAuthor;
   text: string;
+  /** @nullable */
+  language: string | null;
   mentions: CommentPageDtoOutputItemsItemMentionsItem[];
   reactions: CommentPageDtoOutputItemsItemReactions;
   /**
@@ -6982,6 +6992,8 @@ export type ProjectDtoOutputUpdatesItem = {
   projectId: string;
   author: ProjectDtoOutputUpdatesItemAuthor;
   text: string;
+  /** @nullable */
+  language: string | null;
   images: ProjectDtoOutputUpdatesItemImagesItem[];
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
   publishedAt: string;
@@ -7206,6 +7218,8 @@ export interface ProjectDtoOutput {
   endsAt: string | null;
   /** @nullable */
   description: string | null;
+  /** @nullable */
+  language: string | null;
   /** @nullable */
   impactArea: string | null;
   video: ProjectDtoOutputVideo;
@@ -7940,6 +7954,8 @@ export interface UpdateDtoOutput {
   projectId: string;
   author: UpdateDtoOutputAuthor;
   text: string;
+  /** @nullable */
+  language: string | null;
   images: UpdateDtoOutputImagesItem[];
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
   publishedAt: string;
@@ -7991,6 +8007,8 @@ export type UpdatePageDtoOutputItemsItem = {
   projectId: string;
   author: UpdatePageDtoOutputItemsItemAuthor;
   text: string;
+  /** @nullable */
+  language: string | null;
   images: UpdatePageDtoOutputItemsItemImagesItem[];
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$ */
   publishedAt: string;
@@ -10995,6 +11013,8 @@ export type ConversationPageDtoOutputItemsItemLastMessage = {
   mine: boolean;
   /** @nullable */
   body: string | null;
+  /** @nullable */
+  language: string | null;
   attachments: ConversationPageDtoOutputItemsItemLastMessageAttachmentsItem[];
   sharedPost: ConversationPageDtoOutputItemsItemLastMessageSharedPost;
   edited: boolean;
@@ -11589,6 +11609,8 @@ export interface MessageDtoOutput {
   mine: boolean;
   /** @nullable */
   body: string | null;
+  /** @nullable */
+  language: string | null;
   attachments: MessageDtoOutputAttachmentsItem[];
   sharedPost: MessageDtoOutputSharedPost;
   edited: boolean;
@@ -12132,6 +12154,8 @@ export type ConversationDtoOutputLastMessage = {
   mine: boolean;
   /** @nullable */
   body: string | null;
+  /** @nullable */
+  language: string | null;
   attachments: ConversationDtoOutputLastMessageAttachmentsItem[];
   sharedPost: ConversationDtoOutputLastMessageSharedPost;
   edited: boolean;
@@ -12677,6 +12701,8 @@ export type MessagePageDtoOutputItemsItem = {
   mine: boolean;
   /** @nullable */
   body: string | null;
+  /** @nullable */
+  language: string | null;
   attachments: MessagePageDtoOutputItemsItemAttachmentsItem[];
   sharedPost: MessagePageDtoOutputItemsItemSharedPost;
   edited: boolean;

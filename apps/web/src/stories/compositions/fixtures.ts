@@ -336,6 +336,7 @@ function message(sequence: number, mine: boolean, body: string, hours: number): 
     senderHandle: mine ? members.aissatou.handle : members.kofi.handle,
     mine,
     body,
+    language: 'fr',
     attachments: [],
     sharedPost: null,
     edited: false,
@@ -522,6 +523,7 @@ export const feedVariantsPage: FeedPage = {
         projectId: project.id,
         author: members.aissatou,
         text: 'Premier palier atteint : la pompe est commandée.',
+        language: 'fr',
         images: [],
         publishedAt: hoursAgo(30),
         editedAt: null,
@@ -556,6 +558,7 @@ function comment(
     parentId: null,
     author,
     text,
+    language: 'fr',
     mentions: [],
     reactions: {
       counts: { like: n % 3, bravo: 0, insightful: n % 2, support: 0 },

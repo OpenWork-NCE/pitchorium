@@ -273,6 +273,8 @@ export const commentSchema = z.object({
   parentId: uuidV7Schema.nullable(),
   author: memberCardSchema,
   text: z.string(),
+  /** Language of the text, detected (ISO 639-1), null when undetermined: its translation is offered (§8.3). */
+  language: z.string().nullable(),
   /** Members and organizations mentioned, resolved when it was written (as a publication). */
   mentions: z.array(mentionSchema),
   reactions: reactionSummarySchema,

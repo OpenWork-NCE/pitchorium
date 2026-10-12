@@ -17,9 +17,10 @@ import type {
 import {
   Clock,
   decodeCursor,
+  decodeKeyset,
+  detectLanguage,
   DomainError,
   encodeKeyset,
-  decodeKeyset,
   keysetFrom,
 } from '../../../platform/kernel';
 import { ImpactFacade } from '../../impact';
@@ -387,6 +388,7 @@ export class ProjectReadsService {
     return {
       ...card,
       description: project.description,
+      language: detectLanguage(project.description ?? project.summary),
       impactArea: project.impactArea,
       video: project.video ? videoView(project.video) : null,
       gallery: project.galleryMediaIds.flatMap((mediaId) =>
@@ -495,6 +497,7 @@ export class ProjectReadsService {
               projectId: update.projectId,
               author,
               text: update.text,
+              language: detectLanguage(update.text),
               images: update.imageMediaIds.flatMap((mediaId) =>
                 imageView(mediaId, images.get(mediaId), update.imageAlts),
               ),

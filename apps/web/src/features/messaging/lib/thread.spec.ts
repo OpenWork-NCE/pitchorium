@@ -19,6 +19,7 @@ function message(sequence: number, body = `m${sequence}`): Message {
     senderHandle: 'kofi',
     mine: false,
     body,
+    language: null,
     attachments: [],
     sharedPost: null,
     edited: false,

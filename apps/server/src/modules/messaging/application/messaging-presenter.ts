@@ -17,6 +17,7 @@ import {
 } from '../domain/conversation';
 import { type IntroductionRecord, roleIn } from '../domain/introduction';
 import type { ConversationListItem } from './ports';
+import { detectLanguage } from '../../../platform/kernel';
 
 export function cardView(card: MemberCard | undefined): MemberCardView | null {
   return card
@@ -64,6 +65,7 @@ export class MessagingPresenter {
         senderHandle: cards.get(message.senderId)?.handle ?? null,
         mine: message.senderId === viewerId,
         body: hidden ? null : message.body,
+        language: hidden ? null : detectLanguage(message.body),
         attachments: hidden
           ? []
           : message.attachmentIds.map((mediaId, index) => {

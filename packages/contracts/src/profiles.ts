@@ -293,6 +293,8 @@ const profileBaseViewFields = {
   displayName: z.string(),
   headline: z.string().nullable(),
   bio: z.string().nullable(),
+  /** Language of the presentation (bio, else headline), detected (ISO 639-1), null when undetermined. */
+  language: z.string().nullable(),
   countryCode: countryCodeSchema.nullable(),
   city: z.string().nullable(),
   languages: z.array(z.string()),

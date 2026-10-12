@@ -37964,6 +37964,12 @@
               "null"
             ]
           },
+          "language": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
           "countryCode": {
             "anyOf": [
               {
@@ -38658,6 +38664,7 @@
           "displayName",
           "headline",
           "bio",
+          "language",
           "countryCode",
           "city",
           "languages",
@@ -39392,6 +39399,12 @@
               "null"
             ]
           },
+          "language": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
           "countryCode": {
             "anyOf": [
               {
@@ -39976,6 +39989,7 @@
           "displayName",
           "headline",
           "bio",
+          "language",
           "countryCode",
           "city",
           "languages",
@@ -46134,6 +46148,12 @@
                         "text": {
                           "type": "string"
                         },
+                        "language": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
                         "images": {
                           "type": "array",
                           "items": {
@@ -46256,6 +46276,7 @@
                         "projectId",
                         "author",
                         "text",
+                        "language",
                         "images",
                         "publishedAt",
                         "editedAt",
@@ -50458,6 +50479,12 @@
           "text": {
             "type": "string"
           },
+          "language": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
           "mentions": {
             "type": "array",
             "items": {
@@ -50588,6 +50615,7 @@
           "parentId",
           "author",
           "text",
+          "language",
           "mentions",
           "reactions",
           "replyCount",
@@ -50661,6 +50689,12 @@
                 },
                 "text": {
                   "type": "string"
+                },
+                "language": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
                 },
                 "mentions": {
                   "type": "array",
@@ -50792,6 +50826,7 @@
                 "parentId",
                 "author",
                 "text",
+                "language",
                 "mentions",
                 "reactions",
                 "replyCount",
@@ -52059,6 +52094,12 @@
               "null"
             ]
           },
+          "language": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
           "impactArea": {
             "type": [
               "string",
@@ -52412,6 +52453,12 @@
                 "text": {
                   "type": "string"
                 },
+                "language": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
                 "images": {
                   "type": "array",
                   "items": {
@@ -52504,6 +52551,7 @@
                 "projectId",
                 "author",
                 "text",
+                "language",
                 "images",
                 "publishedAt",
                 "editedAt"
@@ -52941,6 +52989,7 @@
           "publishedAt",
           "endsAt",
           "description",
+          "language",
           "impactArea",
           "video",
           "gallery",
@@ -54661,6 +54710,12 @@
           "text": {
             "type": "string"
           },
+          "language": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
           "images": {
             "type": "array",
             "items": {
@@ -54753,6 +54808,7 @@
           "projectId",
           "author",
           "text",
+          "language",
           "images",
           "publishedAt",
           "editedAt"
@@ -54810,6 +54866,12 @@
                 },
                 "text": {
                   "type": "string"
+                },
+                "language": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
                 },
                 "images": {
                   "type": "array",
@@ -54903,6 +54965,7 @@
                 "projectId",
                 "author",
                 "text",
+                "language",
                 "images",
                 "publishedAt",
                 "editedAt"
@@ -60194,6 +60257,12 @@
                             "null"
                           ]
                         },
+                        "language": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
                         "attachments": {
                           "type": "array",
                           "items": {
@@ -61345,6 +61414,7 @@
                         "senderHandle",
                         "mine",
                         "body",
+                        "language",
                         "attachments",
                         "sharedPost",
                         "edited",
@@ -61580,6 +61650,12 @@
             "type": "boolean"
           },
           "body": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "language": {
             "type": [
               "string",
               "null"
@@ -62736,6 +62812,7 @@
           "senderHandle",
           "mine",
           "body",
+          "language",
           "attachments",
           "sharedPost",
           "edited",
@@ -62868,6 +62945,12 @@
                     "type": "boolean"
                   },
                   "body": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "language": {
                     "type": [
                       "string",
                       "null"
@@ -64024,6 +64107,7 @@
                   "senderHandle",
                   "mine",
                   "body",
+                  "language",
                   "attachments",
                   "sharedPost",
                   "edited",
@@ -64171,6 +64255,12 @@
                   "type": "boolean"
                 },
                 "body": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "language": {
                   "type": [
                     "string",
                     "null"
@@ -65327,6 +65417,7 @@
                 "senderHandle",
                 "mine",
                 "body",
+                "language",
                 "attachments",
                 "sharedPost",
                 "edited",

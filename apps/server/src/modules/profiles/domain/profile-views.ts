@@ -7,6 +7,7 @@ import type {
   VisibilityLevel,
 } from '@pitchorium/contracts';
 import type { Profile } from './profile';
+import { detectLanguage } from '../../../platform/kernel';
 
 export type Audience = 'owner' | 'member' | 'public';
 
@@ -59,6 +60,7 @@ export function profileView(
     displayName: base.displayName,
     headline: base.headline,
     bio: base.bio,
+    language: detectLanguage(base.bio ?? base.headline),
     countryCode: base.countryCode,
     city: base.city,
     languages: base.languages,
