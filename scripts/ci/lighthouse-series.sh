@@ -4,7 +4,8 @@
 # RUNS runs of the page with its own lighthouserc.cjs, signed in as for the level 2. The processor
 # is calibrated once, on the first commit (median of three samples, as scripts/lighthouse.sh), and
 # the same slowdown serves every series, so that two series differ only by their code. Prints each Total Blocking Time, the median, the spread
-# (minimum, maximum, interquartile range) and writes them to $SERIES_OUT (series.json).
+# (minimum, maximum, interquartile range), each Largest Contentful Paint and its median, and writes
+# them to $SERIES_OUT (series.json).
 #
 #   bash scripts/ci/lighthouse-series.sh /fr/feed 10 c0a5941b bc7e7ec7
 set -euo pipefail
@@ -66,10 +67,12 @@ const series = refs.map((ref) => {
     const report = JSON.parse(readFileSync(`${out}/${sha}/${file}`, 'utf8'));
     return {
       tbt: Math.round(report.audits['total-blocking-time'].numericValue),
+      lcp: Math.round(report.audits['largest-contentful-paint'].numericValue),
       benchmarkIndex: Math.round(report.environment.benchmarkIndex),
     };
   });
   const sorted = runs.map((run) => run.tbt).sort((a, b) => a - b);
+  const lcp = runs.map((run) => run.lcp).sort((a, b) => a - b);
   return {
     ref,
     sha,
@@ -79,12 +82,15 @@ const series = refs.map((ref) => {
     min: sorted[0],
     max: sorted[sorted.length - 1],
     iqr: quantile(sorted, 0.75) - quantile(sorted, 0.25),
+    lcp: runs.map((run) => run.lcp),
+    lcpMedian: quantile(lcp, 0.5),
   };
 });
 writeFileSync(`${out}/series.json`, `${JSON.stringify(series, null, 2)}\n`);
 for (const s of series) {
   console.log(`${s.ref}: TBT ${s.tbt.join(', ')} ms`);
   console.log(`  median ${s.median}, min ${s.min}, max ${s.max}, interquartile range ${s.iqr}`);
+  console.log(`  LCP ${s.lcp.join(', ')} ms, median ${s.lcpMedian}`);
   console.log(`  benchmark index ${s.benchmarkIndex.join(', ')}`);
 }
 EOF
