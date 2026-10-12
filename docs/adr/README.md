@@ -165,3 +165,4 @@ Un fichier par décision, numéroté, au format Contexte / Décision / Conséque
 | [0165](0165-report-and-appeal-journey.md)                             | Signalement et appel                                            |
 | [0166](0166-suspended-account-experience.md)                          | Expérience d'un compte suspendu                                 |
 | [0167](0167-translation-on-demand-interface.md)                       | Interface de la traduction à la demande                         |
+| [0168](0168-realtime-events-before-their-handlers.md)                 | Événements du temps réel reçus avant leurs gestionnaires        |

@@ -31,7 +31,11 @@ export const RECONNECTION = {
  * been missed is read again: the counters, the lists, and the open conversation by its sequence
  * (`local:resumed`).
  */
-/** When the handlers are fetched after the connection: past the start of the page. */
+/**
+ * When the handlers are fetched after the connection when no event came: past the start of the
+ * page. The first event fetches them at once, and the events received meanwhile wait for them in
+ * their order (ADR 0168).
+ */
 const HANDLERS_PRELOAD_DELAY_MS = 10_000;
 
 export function connect(queryClient: QueryClient): () => void {
@@ -66,7 +70,8 @@ export function connect(queryClient: QueryClient): () => void {
     clearTimeout(preloadTimer);
     cancelIdle();
   };
-  // One promise for every event: they are handled in the order they arrived.
+  // One promise for every event: they are handled in the order they arrived, the first one
+  // fetching the handlers at once rather than after the delay (ADR 0168).
   socket.onAny((event: string, payload: unknown) => {
     void load()
       .then((byEvent) => byEvent[event]?.(payload))
