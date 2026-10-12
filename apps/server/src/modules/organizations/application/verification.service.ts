@@ -117,13 +117,12 @@ export class VerificationService {
         (organization) => [organization.id, organization],
       ),
     );
-    return {
-      items: requests.flatMap((request) => {
-        const organization = organizations.get(request.organizationId);
-        return organization ? [this.view(request, organization)] : [];
-      }),
-      criteria: this.config.organizations.verificationCriteria,
-    };
+    const items: VerificationRequest[] = [];
+    for (const request of requests) {
+      const organization = organizations.get(request.organizationId);
+      if (organization) items.push(await this.view(request, organization));
+    }
+    return { items, criteria: this.config.organizations.verificationCriteria };
   }
 
   /**
@@ -241,10 +240,12 @@ export class VerificationService {
     return { websiteDomain: domain, memberEmailOnWebsiteDomain: match };
   }
 
-  private view(
+  /** The request as the reviewers read it, its requester named by their account. */
+  private async view(
     request: VerificationRequestRecord,
     organization: OrganizationRecord,
-  ): VerificationRequest {
+  ): Promise<VerificationRequest> {
+    const requester = await this.identity.findUser(request.requestedBy);
     return {
       id: request.id,
       organization: {
@@ -255,6 +256,7 @@ export class VerificationService {
         verificationStatus: organization.verificationStatus,
       },
       requestedBy: request.requestedBy,
+      requester: requester ? { name: requester.name } : null,
       declaration: request.declaration,
       documentMediaIds: request.documentMediaIds,
       signals: request.signals,

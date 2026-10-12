@@ -199,6 +199,8 @@ export const verificationRequestSchema = z.object({
     verificationStatus: verificationStatusSchema,
   }),
   requestedBy: uuidV7Schema,
+  /** The owner who asked, named for the reviewers; null for a member deleted since. */
+  requester: z.object({ name: z.string() }).nullable(),
   declaration: z.string(),
   documentMediaIds: z.array(uuidV7Schema),
   signals: verificationSignalsSchema,

@@ -43334,6 +43334,25 @@
             "format": "uuid",
             "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$"
           },
+          "requester": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "declaration": {
             "type": "string"
           },
@@ -43418,6 +43437,7 @@
           "id",
           "organization",
           "requestedBy",
+          "requester",
           "declaration",
           "documentMediaIds",
           "signals",
@@ -43560,6 +43580,25 @@
                   "format": "uuid",
                   "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$"
                 },
+                "requester": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "name"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
                 "declaration": {
                   "type": "string"
                 },
@@ -43644,6 +43683,7 @@
                 "id",
                 "organization",
                 "requestedBy",
+                "requester",
                 "declaration",
                 "documentMediaIds",
                 "signals",

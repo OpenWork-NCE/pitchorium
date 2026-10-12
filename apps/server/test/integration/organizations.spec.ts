@@ -396,6 +396,7 @@ describe('organizations', () => {
       status: 'rejected',
       decisionReason: 'Récépissé illisible.',
       decidedBy: reviewer.userId,
+      requester: { name: 'Awa Ndiaye' },
       organization: { verificationStatus: 'rejected' },
     });
     const page = await browser(app).get('/v1/public/organizations/fondation-teranga').expect(200);

@@ -3439,6 +3439,10 @@ export type VerificationRequestDtoOutputOrganization = {
   verificationStatus: VerificationRequestDtoOutputOrganizationVerificationStatus;
 };
 
+export type VerificationRequestDtoOutputRequester = {
+  name: string;
+} | null;
+
 export type VerificationRequestDtoOutputSignals = {
   /** @nullable */
   websiteDomain: string | null;
@@ -3460,6 +3464,7 @@ export interface VerificationRequestDtoOutput {
   organization: VerificationRequestDtoOutputOrganization;
   /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
   requestedBy: string;
+  requester: VerificationRequestDtoOutputRequester;
   declaration: string;
   /** @items.pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
   documentMediaIds: string[];
@@ -3526,6 +3531,10 @@ export type VerificationQueueDtoOutputItemsItemOrganization = {
   verificationStatus: VerificationQueueDtoOutputItemsItemOrganizationVerificationStatus;
 };
 
+export type VerificationQueueDtoOutputItemsItemRequester = {
+  name: string;
+} | null;
+
 export type VerificationQueueDtoOutputItemsItemSignals = {
   /** @nullable */
   websiteDomain: string | null;
@@ -3547,6 +3556,7 @@ export type VerificationQueueDtoOutputItemsItem = {
   organization: VerificationQueueDtoOutputItemsItemOrganization;
   /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
   requestedBy: string;
+  requester: VerificationQueueDtoOutputItemsItemRequester;
   declaration: string;
   /** @items.pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$ */
   documentMediaIds: string[];
