@@ -265,6 +265,11 @@ Comment assembler les composants (`components.md`) pour les situations récurren
 - Décider : les décisions en cartes, celles que l'api refuse au lecteur désactivées avec leur raison ; l'exposé des motifs part du modèle du motif (ADR 0174) ; une suspension se borne au rôle du lecteur ; l'aperçu « Ce que verra la personne concernée » reprend la carte de sa page « Modération ». Une suspension définitive ou un gel demandent une phrase saisie et une connexion récente.
 - Appels : la décision, les arguments du membre, puis « Trancher l'appel » ; pour l'auteur de la décision, une phrase dit pourquoi l'appel revient à une autre personne, à la place du bouton.
 
+### Vérification des organisations
+
+- File par statut (en attente d'abord) : organisation, demandeur, nombre de pièces, domaine du site et le signal « email du domaine », date, statut.
+- Demande : la déclaration, les pièces privées (un bouton par pièce, ouverte par une adresse signée), à droite l'organisation et le signal, dit « un signal, jamais une preuve » ; les critères configurés à cocher (aucun configuré : la phrase le dit), accorder ou refuser avec une motivation partagée ; une organisation vérifiée se retire avec un motif et son nom saisi.
+
 ## Comptes et bannières
 
 Bannières de l'espace membre, de la plus grave à la moins grave, une seule action chacune : compte suspendu (« Voir la décision », vers `/settings/moderation`, ADR 0166), conditions à accepter (vers l'étape de l'onboarding, puis retour à la page), adresse email à vérifier (renvoi sur place), double authentification exigée par un rôle, prérequis manquants, hors ligne. Elles lisent `GET /v1/me` et l'état du réseau ; aucune ne bloque la navigation.

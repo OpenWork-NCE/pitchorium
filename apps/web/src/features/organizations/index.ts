@@ -10,3 +10,5 @@ export { MyOrganizations } from './components/my-organizations';
 export { OrganizationInvitations } from './components/organization-invitations';
 export { OrganizationProfile } from './components/organization-profile';
 export { organizationJsonLd } from './lib/json-ld';
+export { VerificationQueue } from './components/admin/verification-queue';
+export { VerificationReview } from './components/admin/verification-review';

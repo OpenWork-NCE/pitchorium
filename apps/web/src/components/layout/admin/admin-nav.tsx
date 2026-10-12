@@ -2,6 +2,7 @@
 
 import type { Action } from '@pitchorium/contracts';
 import {
+  BadgeCheck,
   Flag,
   Gauge,
   Gavel,
@@ -67,6 +68,12 @@ export const ADMIN_NAV: readonly { group: Group; items: readonly Item[] }[] = [
         href: routes.adminTransparency,
         icon: Gauge,
         action: 'trust.transparency.read',
+      },
+      {
+        key: 'organizations',
+        href: routes.adminOrganizations,
+        icon: BadgeCheck,
+        action: 'organization.verification.review',
       },
       { key: 'members', href: routes.adminMembers, icon: Users, action: 'admin.members.read' },
     ],
