@@ -10,7 +10,7 @@ export function AdminLoading() {
   return (
     <>
       <PageLoading />
-      <Loading className="mx-auto grid w-full max-w-6xl gap-6">
+      <Loading className="mx-auto grid w-full max-w-6xl grid-cols-[minmax(0,1fr)] gap-6">
         <div className="grid gap-3">
           <Skeleton className="h-4 w-48" />
           <Skeleton className="h-9 w-72 max-w-full" />

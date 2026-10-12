@@ -1395,7 +1395,8 @@
         "retried": "Job retried.",
         "not_failed": "This job is no longer failed: it was already retried.",
         "missing": "This job no longer exists."
-      }
+      },
+      "queue": "Queue {{name}}"
     },
     "audit": {
       "title": "Audit log",

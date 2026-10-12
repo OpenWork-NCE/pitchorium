@@ -38,8 +38,8 @@ export function FailedJobs({ items }: { items: readonly FailedJob[] }) {
     <div className="grid gap-8">
       {queues.map((queue) => (
         <section key={queue} aria-labelledby={`queue-${queue}`} className="grid gap-3">
-          <Heading level={2} size="section" id={`queue-${queue}`} className="font-mono">
-            {queue}
+          <Heading level={2} size="section" id={`queue-${queue}`}>
+            {t('queue', { name: queue })}
           </Heading>
           <ul className="grid gap-3">
             {items

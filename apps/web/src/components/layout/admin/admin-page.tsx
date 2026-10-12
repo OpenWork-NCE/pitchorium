@@ -43,7 +43,7 @@ export function AdminPage({
   children,
 }: AdminPageProps) {
   return (
-    <div className="mx-auto grid w-full max-w-6xl gap-6">
+    <div className="mx-auto grid w-full max-w-6xl grid-cols-[minmax(0,1fr)] gap-6">
       <div className="grid gap-3">
         <Breadcrumbs items={breadcrumbs} />
         <div className="flex flex-wrap items-end justify-between gap-4">

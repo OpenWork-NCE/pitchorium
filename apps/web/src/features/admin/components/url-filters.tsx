@@ -40,7 +40,8 @@ export function UrlFilters({
     startTransition,
   });
   return (
-    <div className="grid gap-4">
+    // Columns of minmax(0, 1fr): a long row of filters scrolls instead of widening the page.
+    <div className="grid grid-cols-[minmax(0,1fr)] gap-4">
       <div role="group" aria-label={t('filters')} className="flex flex-wrap items-end gap-3">
         {filters.map((filter) =>
           filter.control === 'buttons' ? (

@@ -45,10 +45,10 @@ export async function Dashboard({
         </Heading>
         <ul className="grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
           {queues.items.map((item) => (
-            <li key={item.queue}>
+            <li key={item.queue} className="grid">
               <Link
                 href={QUEUE_LINKS[item.queue]}
-                className="group flex items-center justify-between gap-3 rounded-lg border border-border bg-surface px-4 py-3 outline-none hover:border-accent focus-visible:outline-2 focus-visible:outline-focus"
+                className="group flex h-full items-center justify-between gap-3 rounded-lg border border-border bg-surface px-4 py-3 outline-none hover:border-accent focus-visible:outline-2 focus-visible:outline-focus"
               >
                 <span className="grid gap-0.5">
                   <span className="text-sm font-medium">{t(`queue.${item.queue}`)}</span>

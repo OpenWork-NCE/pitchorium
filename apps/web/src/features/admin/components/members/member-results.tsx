@@ -60,7 +60,7 @@ export function MemberResults({ query, page }: { query: string; page: CursorPage
       header: t('columns.createdAt'),
       align: 'end',
       cell: (row) => (
-        <span className="font-numeric tabular-nums">
+        <span className="font-numeric whitespace-nowrap tabular-nums">
           {format.dateTime(new Date(row.createdAt), { dateStyle: 'medium' })}
         </span>
       ),

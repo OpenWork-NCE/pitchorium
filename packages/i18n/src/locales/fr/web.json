@@ -1395,7 +1395,8 @@
         "retried": "Tâche relancée.",
         "not_failed": "Cette tâche n’est plus en échec : elle a déjà été relancée.",
         "missing": "Cette tâche n’existe plus."
-      }
+      },
+      "queue": "File {{name}}"
     },
     "audit": {
       "title": "Journal d’audit",
