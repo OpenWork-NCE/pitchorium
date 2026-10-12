@@ -26,7 +26,7 @@ function SecondFactorBanner({ action }: { action: (label: string, href: string) 
 
 /**
  * Banners of the account across the top of the member space, from the most serious (patterns.md):
- * suspension (to the notice of the decision, among the notifications), terms to accept (to the
+ * suspension (to the decision and its appeal, `/settings/moderation`), terms to accept (to the
  * step of the onboarding, then back here), email to verify (resend in place), second factor
  * required by a role. Read from `GET /v1/me` and, for the second factor, from the prerequisites
  * the api gives; none blocks the navigation, the api decides on every call.
@@ -65,7 +65,7 @@ export function AccountBanners() {
       {member.trust.suspended ? (
         // The notice and its appeal arrive by email and in the notifications; the page of the
         // decision and of the appeal comes with the moderation (PROMPT FRONT 8).
-        <Banner tone="danger" action={action(t('suspended.action'), routes.notifications)}>
+        <Banner tone="danger" action={action(t('suspended.action'), routes.settingsModeration)}>
           {t('suspended.body')}
         </Banner>
       ) : null}
