@@ -4,9 +4,10 @@ import {
   meControllerCreateContributorFacet,
   meControllerDeleteContributorFacet,
   meControllerUpdateContributorFacet,
-  useOrganizationsControllerMine,
-  useProfilesControllerReferenceData,
+  getOrganizationsControllerMineQueryOptions,
+  getProfilesControllerReferenceDataQueryOptions,
 } from '@pitchorium/api-client';
+import { useQuery } from '@tanstack/react-query';
 import {
   CONTRIBUTOR_HATS,
   type ContributorFacet,
@@ -62,8 +63,12 @@ export function ContributorForm({
   const t = useTranslations('web.profile.edit');
   const reference = useTranslations('reference');
   const locale = useLocale();
-  const data = useProfilesControllerReferenceData({ query: { staleTime: Infinity } }).data;
-  const mine = useOrganizationsControllerMine({ query: { staleTime: 60_000 } }).data?.items ?? [];
+  const data = useQuery(
+    getProfilesControllerReferenceDataQueryOptions({ query: { staleTime: Infinity } }),
+  ).data;
+  const mine =
+    useQuery(getOrganizationsControllerMineQueryOptions({ query: { staleTime: 60_000 } })).data
+      ?.items ?? [];
   const options = useMemo(
     () => ({
       hats: CONTRIBUTOR_HATS.map((code) => ({

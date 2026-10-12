@@ -4,8 +4,9 @@ import {
   meControllerCreateEntrepreneurFacet,
   meControllerDeleteEntrepreneurFacet,
   meControllerUpdateEntrepreneurFacet,
-  useProfilesControllerReferenceData,
+  getProfilesControllerReferenceDataQueryOptions,
 } from '@pitchorium/api-client';
+import { useQuery } from '@tanstack/react-query';
 import {
   BIO_MAX_LENGTH,
   type CreateEntrepreneurFacetRequest,
@@ -61,7 +62,9 @@ export function EntrepreneurForm({
   const t = useTranslations('web.profile.edit');
   const reference = useTranslations('reference');
   const locale = useLocale();
-  const data = useProfilesControllerReferenceData({ query: { staleTime: Infinity } }).data;
+  const data = useQuery(
+    getProfilesControllerReferenceDataQueryOptions({ query: { staleTime: Infinity } }),
+  ).data;
   const options = useMemo(
     () => ({
       sectors: (data?.sectors ?? []).map(({ code }) => ({

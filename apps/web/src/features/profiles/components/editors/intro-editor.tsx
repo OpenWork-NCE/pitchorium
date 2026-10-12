@@ -2,8 +2,9 @@
 
 import {
   meControllerUpdateProfile,
-  useProfilesControllerReferenceData,
+  getProfilesControllerReferenceDataQueryOptions,
 } from '@pitchorium/api-client';
+import { useQuery } from '@tanstack/react-query';
 import { updateBaseProfileRequestSchema } from '@pitchorium/contracts';
 import { useTranslations } from 'next-intl';
 import { useMemo } from 'react';
@@ -46,7 +47,9 @@ type IntroValues = {
  */
 export function IntroEditor({ own, locale, onClose }: EditorProps) {
   const t = useTranslations('web.profile.edit');
-  const reference = useProfilesControllerReferenceData({ query: { staleTime: Infinity } });
+  const reference = useQuery(
+    getProfilesControllerReferenceDataQueryOptions({ query: { staleTime: Infinity } }),
+  );
   const countries = useMemo(
     () => countryOptions(reference.data?.countries.map(({ code }) => code) ?? [], locale),
     [reference.data, locale],

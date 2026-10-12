@@ -1,6 +1,7 @@
 'use client';
 
-import { useMemberNetworkControllerRelationship } from '@pitchorium/api-client';
+import { getMemberNetworkControllerRelationshipQueryOptions } from '@pitchorium/api-client';
+import { useQuery } from '@tanstack/react-query';
 import { useFormatter, useTranslations } from 'next-intl';
 import { Badge, Skeleton } from '@/components/ui';
 import { usePlural } from '@/lib/i18n/plural';
@@ -14,9 +15,11 @@ export default function RelationLine({ handle }: { handle: string }) {
   const reference = useTranslations('reference.relationDegrees');
   const format = useFormatter();
   const plural = usePlural();
-  const relationship = useMemberNetworkControllerRelationship(handle, {
-    query: { staleTime: 60_000, retry: false },
-  });
+  const relationship = useQuery(
+    getMemberNetworkControllerRelationshipQueryOptions(handle, {
+      query: { staleTime: 60_000, retry: false },
+    }),
+  );
   if (relationship.isPending) return <Skeleton className="h-5 w-40" />;
   if (!relationship.data || relationship.data.degree === 'self') return null;
   const { degree, mutualConnections } = relationship.data;
