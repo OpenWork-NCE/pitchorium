@@ -549,14 +549,15 @@ export function pathOf(type: NotificationTargetType, key: string): string {
       return `/missions/engagements/${key}`;
     case 'suggestions':
       return '/network?view=suggestions';
+    // The settings of the member (PROMPT FRONT 8B): moderation, its decisions and reports.
     case 'reports':
-      return '/me/reports';
+      return '/settings/moderation#reports';
     case 'moderation_decision':
-      return `/me/moderation/decisions/${key}`;
+      return `/settings/moderation#decision-${key}`;
     case 'moderation':
-      return '/me/moderation';
+      return '/settings/moderation';
     case 'privacy':
-      return '/me/privacy';
+      return '/settings/personal-data';
   }
 }
 
