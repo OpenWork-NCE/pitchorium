@@ -7,6 +7,7 @@ import * as routes from '@/config/paths';
 import { UrlFilters } from '@/features/admin';
 import { Discrepancies } from '@/features/payments';
 import { asLocale } from '@/i18n/routing';
+import { consoleRead } from '@/lib/api/console-read';
 import { configureServerApi } from '@/lib/api/server';
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -25,9 +26,8 @@ export default async function Page({
   configureServerApi();
   const t = await getTranslations('web.admin');
   const reference = await getTranslations('reference');
-  const page = await adminPaymentsControllerDiscrepancies(
-    { status, limit: 20 },
-    { cache: 'no-store' },
+  const page = await consoleRead(
+    adminPaymentsControllerDiscrepancies({ status, limit: 20 }, { cache: 'no-store' }),
   );
   return (
     <AdminPage

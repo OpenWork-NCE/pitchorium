@@ -1,11 +1,11 @@
-import { ApiProblemError, adminPaymentsControllerContribution } from '@pitchorium/api-client';
+import { adminPaymentsControllerContribution } from '@pitchorium/api-client';
 import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { AdminPage } from '@/components/layout/admin/admin-page';
 import * as routes from '@/config/paths';
 import { AdminContributionDetail } from '@/features/payments';
 import { asLocale } from '@/i18n/routing';
+import { consoleRead } from '@/lib/api/console-read';
 import { configureServerApi } from '@/lib/api/server';
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -21,12 +21,11 @@ export default async function Page({
   setRequestLocale(asLocale(locale));
   configureServerApi();
   const t = await getTranslations('web.admin');
-  const contribution = await adminPaymentsControllerContribution(contributionId, {
-    cache: 'no-store',
-  }).catch((error: unknown) => {
-    if (error instanceof ApiProblemError && [400, 404].includes(error.problem.status)) notFound();
-    throw error;
-  });
+  const contribution = await consoleRead(
+    adminPaymentsControllerContribution(contributionId, {
+      cache: 'no-store',
+    }),
+  );
   return (
     <AdminPage
       breadcrumbs={[

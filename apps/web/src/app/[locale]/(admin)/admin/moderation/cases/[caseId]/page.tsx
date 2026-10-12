@@ -1,15 +1,11 @@
-import {
-  ApiProblemError,
-  moderationControllerDetail,
-  moderationControllerModerators,
-} from '@pitchorium/api-client';
+import { moderationControllerDetail, moderationControllerModerators } from '@pitchorium/api-client';
 import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { AdminPage } from '@/components/layout/admin/admin-page';
 import * as routes from '@/config/paths';
 import { CaseDetail } from '@/features/trust';
 import { asLocale } from '@/i18n/routing';
+import { consoleRead } from '@/lib/api/console-read';
 import { configureServerApi } from '@/lib/api/server';
 import { getCurrentMember } from '@/lib/auth/session';
 
@@ -28,10 +24,7 @@ export default async function Page({
   const t = await getTranslations('web.admin');
   const reference = await getTranslations('reference');
   const [detail, moderators, member] = await Promise.all([
-    moderationControllerDetail(caseId, { cache: 'no-store' }).catch((error: unknown) => {
-      if (error instanceof ApiProblemError && error.problem.status === 404) notFound();
-      throw error;
-    }),
+    consoleRead(moderationControllerDetail(caseId, { cache: 'no-store' })),
     moderationControllerModerators({ cache: 'no-store' }).then(
       (list) => list.items,
       () => [],

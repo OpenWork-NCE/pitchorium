@@ -1,11 +1,11 @@
-import { ApiProblemError, adminPaymentsControllerKycSubmission } from '@pitchorium/api-client';
+import { adminPaymentsControllerKycSubmission } from '@pitchorium/api-client';
 import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { AdminPage } from '@/components/layout/admin/admin-page';
 import * as routes from '@/config/paths';
 import { KycReview } from '@/features/payments';
 import { asLocale } from '@/i18n/routing';
+import { consoleRead } from '@/lib/api/console-read';
 import { configureServerApi } from '@/lib/api/server';
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -22,12 +22,11 @@ export default async function Page({
   configureServerApi();
   const t = await getTranslations('web.admin');
   const common = await getTranslations('web.admin.common');
-  const submission = await adminPaymentsControllerKycSubmission(submissionId, {
-    cache: 'no-store',
-  }).catch((error: unknown) => {
-    if (error instanceof ApiProblemError && [400, 404].includes(error.problem.status)) notFound();
-    throw error;
-  });
+  const submission = await consoleRead(
+    adminPaymentsControllerKycSubmission(submissionId, {
+      cache: 'no-store',
+    }),
+  );
   const name = submission.holder?.displayName ?? common('deletedMember');
   return (
     <AdminPage

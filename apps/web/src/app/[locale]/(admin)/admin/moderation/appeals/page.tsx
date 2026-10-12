@@ -5,6 +5,7 @@ import { AdminPage } from '@/components/layout/admin/admin-page';
 import * as routes from '@/config/paths';
 import { AppealsQueue } from '@/features/trust';
 import { asLocale } from '@/i18n/routing';
+import { consoleRead } from '@/lib/api/console-read';
 import { configureServerApi } from '@/lib/api/server';
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -17,7 +18,7 @@ export default async function Page({ params }: PageProps<'/[locale]/admin/modera
   setRequestLocale(asLocale((await params).locale));
   configureServerApi();
   const t = await getTranslations('web.admin');
-  const page = await moderationControllerAppeals({ limit: 20 }, { cache: 'no-store' });
+  const page = await consoleRead(moderationControllerAppeals({ limit: 20 }, { cache: 'no-store' }));
   return (
     <AdminPage
       breadcrumbs={[

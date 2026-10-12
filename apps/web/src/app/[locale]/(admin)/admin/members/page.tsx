@@ -6,6 +6,7 @@ import { Text } from '@/components/ui';
 import * as routes from '@/config/paths';
 import { MemberResults, SearchField } from '@/features/admin';
 import { asLocale } from '@/i18n/routing';
+import { consoleRead } from '@/lib/api/console-read';
 import { configureServerApi } from '@/lib/api/server';
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -22,7 +23,7 @@ export default async function Page({ params, searchParams }: PageProps<'/[locale
   configureServerApi();
   const page =
     query.length >= 2
-      ? await adminControllerMembers({ q: query, limit: 25 }, { cache: 'no-store' })
+      ? await consoleRead(adminControllerMembers({ q: query, limit: 25 }, { cache: 'no-store' }))
       : null;
   return (
     <AdminPage

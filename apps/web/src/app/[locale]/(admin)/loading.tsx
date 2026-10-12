@@ -1,3 +1,3 @@
-import { PageLoading } from '@/components/layout/page-loading';
+import { AdminLoading } from '@/components/layout/admin/admin-loading';
 
-export default PageLoading;
+export default AdminLoading;

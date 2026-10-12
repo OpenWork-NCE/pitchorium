@@ -7,6 +7,7 @@ import * as routes from '@/config/paths';
 import { UrlFilters } from '@/features/admin';
 import { ModerationQueue } from '@/features/trust';
 import { asLocale } from '@/i18n/routing';
+import { consoleRead } from '@/lib/api/console-read';
 import { configureServerApi } from '@/lib/api/server';
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -64,7 +65,7 @@ export default async function Page({
   };
   configureServerApi();
   const [page, moderators] = await Promise.all([
-    moderationControllerQueue({ ...query, limit: 25 }, { cache: 'no-store' }),
+    consoleRead(moderationControllerQueue({ ...query, limit: 25 }, { cache: 'no-store' })),
     moderationControllerModerators({ cache: 'no-store' }).then(
       (list) => list.items,
       () => [],

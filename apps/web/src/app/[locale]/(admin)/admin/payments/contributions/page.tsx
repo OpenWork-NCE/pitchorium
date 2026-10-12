@@ -7,6 +7,7 @@ import * as routes from '@/config/paths';
 import { SearchField, UrlFilters } from '@/features/admin';
 import { ContributionResults } from '@/features/payments';
 import { asLocale } from '@/i18n/routing';
+import { consoleRead } from '@/lib/api/console-read';
 import { configureServerApi } from '@/lib/api/server';
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -30,7 +31,9 @@ export default async function Page({
   configureServerApi();
   const t = await getTranslations('web.admin');
   const reference = await getTranslations('reference');
-  const page = await adminPaymentsControllerSearch({ ...query, limit: 25 }, { cache: 'no-store' });
+  const page = await consoleRead(
+    adminPaymentsControllerSearch({ ...query, limit: 25 }, { cache: 'no-store' }),
+  );
   return (
     <AdminPage
       breadcrumbs={[{ label: t('label'), href: routes.admin }, { label: t('nav.contributions') }]}

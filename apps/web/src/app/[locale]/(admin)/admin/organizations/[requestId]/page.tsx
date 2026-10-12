@@ -1,15 +1,11 @@
-import {
-  ApiProblemError,
-  verificationControllerGet,
-  verificationControllerQueue,
-} from '@pitchorium/api-client';
+import { verificationControllerGet, verificationControllerQueue } from '@pitchorium/api-client';
 import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { AdminPage } from '@/components/layout/admin/admin-page';
 import * as routes from '@/config/paths';
 import { VerificationReview } from '@/features/organizations';
 import { asLocale } from '@/i18n/routing';
+import { consoleRead } from '@/lib/api/console-read';
 import { configureServerApi } from '@/lib/api/server';
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -26,12 +22,9 @@ export default async function Page({
   configureServerApi();
   const t = await getTranslations('web.admin');
   const [request, queue] = await Promise.all([
-    verificationControllerGet(requestId, { cache: 'no-store' }).catch((error: unknown) => {
-      if (error instanceof ApiProblemError && error.problem.status === 404) notFound();
-      throw error;
-    }),
+    consoleRead(verificationControllerGet(requestId, { cache: 'no-store' })),
     // The configured criteria come with the queue.
-    verificationControllerQueue({ status: 'pending' }, { cache: 'no-store' }),
+    consoleRead(verificationControllerQueue({ status: 'pending' }, { cache: 'no-store' })),
   ]);
   return (
     <AdminPage

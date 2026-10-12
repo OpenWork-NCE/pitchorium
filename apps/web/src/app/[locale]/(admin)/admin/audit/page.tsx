@@ -5,6 +5,7 @@ import { AdminPage } from '@/components/layout/admin/admin-page';
 import * as routes from '@/config/paths';
 import { AuditLog, auditFiltersOf, auditQueryOf } from '@/features/admin';
 import { asLocale } from '@/i18n/routing';
+import { consoleRead } from '@/lib/api/console-read';
 import { configureServerApi } from '@/lib/api/server';
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -18,9 +19,8 @@ export default async function Page({ params, searchParams }: PageProps<'/[locale
   const filters = auditFiltersOf(await searchParams);
   configureServerApi();
   const t = await getTranslations('web.admin');
-  const page = await adminControllerAuditLog(
-    { ...auditQueryOf(filters), limit: 50 },
-    { cache: 'no-store' },
+  const page = await consoleRead(
+    adminControllerAuditLog({ ...auditQueryOf(filters), limit: 50 }, { cache: 'no-store' }),
   );
   return (
     <AdminPage

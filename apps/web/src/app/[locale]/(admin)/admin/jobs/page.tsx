@@ -5,6 +5,7 @@ import { AdminPage } from '@/components/layout/admin/admin-page';
 import * as routes from '@/config/paths';
 import { FailedJobs } from '@/features/admin';
 import { asLocale } from '@/i18n/routing';
+import { consoleRead } from '@/lib/api/console-read';
 import { configureServerApi } from '@/lib/api/server';
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -17,7 +18,9 @@ export default async function Page({ params }: PageProps<'/[locale]/admin/jobs'>
   setRequestLocale(asLocale((await params).locale));
   configureServerApi();
   const t = await getTranslations('web.admin');
-  const { items } = await adminControllerFailedJobs({ limit: 100 }, { cache: 'no-store' });
+  const { items } = await consoleRead(
+    adminControllerFailedJobs({ limit: 100 }, { cache: 'no-store' }),
+  );
   return (
     <AdminPage
       breadcrumbs={[{ label: t('label'), href: routes.admin }, { label: t('nav.jobs') }]}

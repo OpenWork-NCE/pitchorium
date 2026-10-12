@@ -6,6 +6,7 @@ import * as routes from '@/config/paths';
 import { UrlFilters } from '@/features/admin';
 import { VerificationQueue } from '@/features/organizations';
 import { asLocale } from '@/i18n/routing';
+import { consoleRead } from '@/lib/api/console-read';
 import { configureServerApi } from '@/lib/api/server';
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -25,7 +26,7 @@ export default async function Page({
   const status = STATUSES.find((value) => value === requested) ?? 'pending';
   configureServerApi();
   const t = await getTranslations('web.admin');
-  const queue = await verificationControllerQueue({ status }, { cache: 'no-store' });
+  const queue = await consoleRead(verificationControllerQueue({ status }, { cache: 'no-store' }));
   return (
     <AdminPage
       breadcrumbs={[{ label: t('label'), href: routes.admin }, { label: t('nav.organizations') }]}

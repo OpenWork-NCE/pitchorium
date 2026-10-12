@@ -5,6 +5,7 @@ Application de `ELITE-MOTION.md` (référence, même dossier) à une webapp prof
 ## Doctrine
 
 - **Espace membre** (`(app)`, `(admin)`, `(auth)`, `(public)`) : un document natif plus des micro-interactions. Horloge R1, défilement natif ; ni pin, ni WebGL, ni curseur personnalisé, ni marquee, ni préchargeur, ni détournement de la molette, ni défilement lissé (pas de Lenis).
+- **Console** (`(admin)`, PROMPT FRONT 9A) : niveau 1 seulement, sobre : transition de page, apparition des dialogues et des avis, aucun compteur ni montant animé (une file ou un montant s'affiche à sa valeur), squelettes de `AdminLoading` à la forme de la page ; avec moins de mouvement, l'état final immédiat.
 - **Pages publiques éditoriales** (`(marketing)`) : dialecte primaire D4 (EDITORIAL_REVEAL), aucun dialecte secondaire à ce stade. Moteurs E0 (transitions CSS), E1 (animations liées au défilement, avec repli par IntersectionObserver) et E3 (GSAP ScrollTrigger avec SplitText, chargés quand un titre éditorial approche de l'écran).
 - **Matière** : le motif d'élévation des fonds de marque (trois figures superposées, en ton sur ton), posé comme sur du papier mat, sans grain animé ni WebGL au lancement.
 - **Sobriété** : seuls `transform`, `opacity`, `filter` et `clip-path` s'animent ; pas d'élastique, pas de rebond. Une révélation apparaît en fondu, monte et se défloute ; le contraste AA se juge au repos : les audits d'accessibilité (axe dans Playwright et Storybook) s'exécutent en mouvement réduit, où chaque élément est dans son état final.

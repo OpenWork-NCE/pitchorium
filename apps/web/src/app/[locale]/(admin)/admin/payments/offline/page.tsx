@@ -5,6 +5,7 @@ import { AdminPage } from '@/components/layout/admin/admin-page';
 import * as routes from '@/config/paths';
 import { OfflineReview } from '@/features/payments';
 import { asLocale } from '@/i18n/routing';
+import { consoleRead } from '@/lib/api/console-read';
 import { configureServerApi } from '@/lib/api/server';
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -17,9 +18,8 @@ export default async function Page({ params }: PageProps<'/[locale]/admin/paymen
   setRequestLocale(asLocale((await params).locale));
   configureServerApi();
   const t = await getTranslations('web.admin');
-  const page = await adminPaymentsControllerOfflineQueue(
-    { status: 'confirmed', limit: 20 },
-    { cache: 'no-store' },
+  const page = await consoleRead(
+    adminPaymentsControllerOfflineQueue({ status: 'confirmed', limit: 20 }, { cache: 'no-store' }),
   );
   return (
     <AdminPage

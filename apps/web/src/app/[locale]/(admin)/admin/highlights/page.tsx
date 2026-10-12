@@ -6,6 +6,7 @@ import { AdminPage } from '@/components/layout/admin/admin-page';
 import * as routes from '@/config/paths';
 import { Highlights, UrlFilters } from '@/features/admin';
 import { asLocale } from '@/i18n/routing';
+import { consoleRead } from '@/lib/api/console-read';
 import { configureServerApi } from '@/lib/api/server';
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -23,9 +24,11 @@ export default async function Page({
   const targetType = HIGHLIGHT_TARGET_TYPES.find((value) => value === requested);
   configureServerApi();
   const t = await getTranslations('web.admin');
-  const { items } = await adminControllerHighlights(targetType ? { targetType } : {}, {
-    cache: 'no-store',
-  });
+  const { items } = await consoleRead(
+    adminControllerHighlights(targetType ? { targetType } : {}, {
+      cache: 'no-store',
+    }),
+  );
   return (
     <AdminPage
       breadcrumbs={[{ label: t('label'), href: routes.admin }, { label: t('nav.highlights') }]}

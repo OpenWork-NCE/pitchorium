@@ -5,6 +5,7 @@ import { AdminPage } from '@/components/layout/admin/admin-page';
 import * as routes from '@/config/paths';
 import { TransparencyPeriod, TransparencyReport } from '@/features/trust';
 import { asLocale } from '@/i18n/routing';
+import { consoleRead } from '@/lib/api/console-read';
 import { configureServerApi } from '@/lib/api/server';
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -32,7 +33,7 @@ export default async function Page({
       : dayOf(Date.parse(to) - 29 * 86_400_000);
   configureServerApi();
   const t = await getTranslations('web.admin');
-  const report = await moderationControllerReport({ from, to }, { cache: 'no-store' });
+  const report = await consoleRead(moderationControllerReport({ from, to }, { cache: 'no-store' }));
   return (
     <AdminPage
       breadcrumbs={[

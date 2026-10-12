@@ -1,12 +1,12 @@
-import { adminControllerMember, ApiProblemError } from '@pitchorium/api-client';
+import { adminControllerMember } from '@pitchorium/api-client';
 import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { AdminPage } from '@/components/layout/admin/admin-page';
 import * as routes from '@/config/paths';
 import { MemberFile } from '@/features/admin';
 import { MemberModeration } from '@/features/trust';
 import { asLocale } from '@/i18n/routing';
+import { consoleRead } from '@/lib/api/console-read';
 import { configureServerApi } from '@/lib/api/server';
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -20,12 +20,7 @@ export default async function Page({ params }: PageProps<'/[locale]/admin/member
   setRequestLocale(asLocale(locale));
   configureServerApi();
   const t = await getTranslations('web.admin');
-  const file = await adminControllerMember(userId, { cache: 'no-store' }).catch(
-    (error: unknown) => {
-      if (error instanceof ApiProblemError && error.problem.status === 404) notFound();
-      throw error;
-    },
-  );
+  const file = await consoleRead(adminControllerMember(userId, { cache: 'no-store' }));
   return (
     <AdminPage
       breadcrumbs={[
