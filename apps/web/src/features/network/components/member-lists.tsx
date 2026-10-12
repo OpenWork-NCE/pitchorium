@@ -14,8 +14,6 @@ import {
 import type { Connection, Follow, Follower, MemberCard } from '@pitchorium/contracts';
 import { Building2, Lock } from 'lucide-react';
 import { useFormatter, useTranslations } from 'next-intl';
-import { parseAsStringLiteral, useQueryState } from 'nuqs';
-import { UrlStateProvider } from '@/components/layout/url-state';
 import { type ComponentProps, type ReactNode, useState } from 'react';
 import {
   AlertDialog,
@@ -33,6 +31,7 @@ import { MemberHoverCard } from '@/features/profiles';
 import { Link } from '@/i18n/navigation';
 import { CursorList, useCursorList } from './cursor-list';
 import { useProblemMessage } from './use-relationship';
+import { useSearchParams } from 'next/navigation';
 
 export const LIST_TABS = ['connections', 'followers', 'following'] as const;
 
@@ -86,14 +85,26 @@ function MemberListsContent({
   signedIn: boolean;
 }) {
   const t = useTranslations('web.network.lists');
-  const [tab, setTab] = useQueryState(
-    'tab',
-    parseAsStringLiteral(LIST_TABS).withDefault('connections'),
-  );
+  // The tab lives in the address, written without a navigation (Next.js follows replaceState):
+  // no URL-state library in the island of the page of a member (ADR 0094).
+  const params = useSearchParams();
+  const asked = params.get('tab');
+  const tab = LIST_TABS.find((value) => value === asked) ?? 'connections';
+  const setTab = (next: string) => {
+    const query = new URLSearchParams(params.toString());
+    if (next === 'connections') query.delete('tab');
+    else query.set('tab', next);
+    const search = query.toString();
+    window.history.replaceState(
+      null,
+      '',
+      `${window.location.pathname}${search ? `?${search}` : ''}`,
+    );
+  };
   return (
     <Tabs
       value={tab}
-      onValueChange={(next) => void setTab(next)}
+      onValueChange={setTab}
       label={t('label', { name })}
       tabs={LIST_TABS.map((value) => ({ value, label: t(`tabs.${value}`) }))}
     >
@@ -341,9 +352,5 @@ function Following({
 
 /** MemberLists, with the URL state it keeps its tab in (nuqs, mounted by its users only, ADR 0094). */
 export function MemberLists(props: ComponentProps<typeof MemberListsContent>) {
-  return (
-    <UrlStateProvider>
-      <MemberListsContent {...props} />
-    </UrlStateProvider>
-  );
+  return <MemberListsContent {...props} />;
 }
