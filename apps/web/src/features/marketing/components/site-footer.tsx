@@ -1,6 +1,7 @@
 import { getLocale, getTranslations } from 'next-intl/server';
 import { BrandMicro } from '@/components/brand';
 import { Container } from '@/components/layout/container';
+import { cn } from '@/lib/cn';
 import * as routes from '@/config/paths';
 import { Link } from '@/i18n/navigation';
 import { getActiveLocales } from '@/lib/i18n/active-locales';
@@ -31,7 +32,7 @@ export async function SiteFooter({
   return (
     <footer
       aria-label={t('footer.label')}
-      className={`border-t border-border bg-surface${uncover ? 'footer-uncover' : ''}`}
+      className={cn('border-t border-border bg-surface', uncover && 'footer-uncover')}
     >
       <Container className="grid gap-10 py-12 md:grid-cols-[1fr_auto_auto] md:gap-16">
         <div className="grid content-start gap-3">

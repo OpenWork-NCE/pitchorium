@@ -74,6 +74,18 @@ test.describe('home page', () => {
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Politique de cookies');
   });
 
+  test('pins the footer under the content, which slides over it (H29)', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.goto('/fr');
+    const footer = page.getByRole('contentinfo');
+    await expect(footer).toHaveCSS('position', 'sticky');
+    await expect(footer).toHaveCSS('bottom', '0px');
+    // Its own surface: the content passes over it, never through it.
+    expect(await footer.evaluate((element) => getComputedStyle(element).backgroundColor)).not.toBe(
+      'rgba(0, 0, 0, 0)',
+    );
+  });
+
   test('shows every element in its final state with less motion', async ({ browser }) => {
     const context = await browser.newContext({ reducedMotion: 'reduce' });
     const page = await context.newPage();
