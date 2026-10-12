@@ -155,6 +155,7 @@ sequenceDiagram
 - Paiements (`features/payments/components/admin`) : `/admin/payments/contributions` (recherche, `?q=` et `?status=`) et `/admin/payments/contributions/{id}` (devis, ledger, remboursement avec `POST .../refund-preview` puis `POST .../refunds`, `Idempotency-Key` par intention), `/admin/payments/offline`, `/admin/payments/kyc` et `/admin/payments/kyc/{id}`, `/admin/payments/discrepancies` (`?status=`, lancement d'un rapprochement) ; raccourci `g p`.
 - Méthodologies (`features/impact/components/admin`) : `/admin/impact` et `/admin/impact/{id}` (brouillon enregistré entier par `PUT`, aperçu `POST .../preview`, publication, archivage, suppression d'un brouillon) ; les clés des critères écrits dans la console suivent leur clé (`impactAuthored.<critère>.…`, `lib/draft.ts`), celles du catalogue restent.
 - Plateforme (`features/admin`) : `/admin/flags`, `/admin/highlights` (`?type=`), `/admin/jobs`, `/admin/audit` (filtres dans l'adresse, export par `GET /v1/admin/audit-log/export` puis `downloadCsv`) ; raccourcis `g j` et `g l`.
+- Données personnelles (`features/privacy/components/admin`) : `/admin/privacy` (`GET /v1/admin/privacy/requests?kind=`, lecture auditée).
 
 ## Fournisseurs
 

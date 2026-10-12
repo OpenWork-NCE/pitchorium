@@ -4,3 +4,4 @@
  */
 export { AccountDeleted } from './components/account-deleted';
 export { PersonalDataSettings } from './components/personal-data-settings';
+export { RightsRequests } from './components/admin/rights-requests';

@@ -292,6 +292,10 @@ Comment assembler les composants (`components.md`) pour les situations récurren
 - Tâches en échec : par file, données masquées par l'api dans un bloc à chasse fixe, relance confirmée, session récente, clé d'idempotence par tâche ; le résultat (relancée, déjà relancée, disparue) s'annonce.
 - Journal d'audit : filtres dans l'adresse (auteur, action, cible, période en jours UTC, `lib/audit-query.ts`), détail d'une entrée dans un dialogue, export CSV des mêmes filtres ; la lecture est elle-même auditée (mention permanente).
 
+### Demandes de droits dans la console
+
+- Exports et suppressions (`?kind=`) : date, type, lien vers la fiche du membre (« Compte effacé » une fois pseudonymisé), état, échéance légale d'un mois, réponse et détail (blocage, résidus) ; une demande en retard (`overdue` de l'api) porte un badge et une date dans le ton danger, une demande sans réponse (`answered`) sa date en gras avec le temps restant ; aucun contenu des données.
+
 ## Comptes et bannières
 
 Bannières de l'espace membre, de la plus grave à la moins grave, une seule action chacune : compte suspendu (« Voir la décision », vers `/settings/moderation`, ADR 0166), conditions à accepter (vers l'étape de l'onboarding, puis retour à la page), adresse email à vérifier (renvoi sur place), double authentification exigée par un rôle, prérequis manquants, hors ligne. Elles lisent `GET /v1/me` et l'état du réseau ; aucune ne bloque la navigation.

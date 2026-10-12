@@ -1431,6 +1431,26 @@
         "id": "Entry",
         "metadata": "Data of the entry"
       }
+    },
+    "rights": {
+      "title": "Rights requests",
+      "description": "The exports and erasures asked by the members, their state and the legal deadline of the answer: one month (GDPR, article 12).",
+      "filter": "Type",
+      "caption": "Rights requests",
+      "empty": "No request.",
+      "emptyHint": "Members make their requests from their personal data settings.",
+      "openFile": "Open the file",
+      "erased": "Account erased",
+      "overdue": "Overdue",
+      "columns": {
+        "requested": "Asked on",
+        "kind": "Type",
+        "member": "Member",
+        "status": "State",
+        "due": "Legal deadline",
+        "completed": "Answered on",
+        "detail": "Detail"
+      }
     }
   },
   "projects": {

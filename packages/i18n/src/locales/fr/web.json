@@ -1431,6 +1431,26 @@
         "id": "Entrée",
         "metadata": "Données de l’entrée"
       }
+    },
+    "rights": {
+      "title": "Demandes de droits",
+      "description": "Les exports et suppressions demandés par les membres, leur état et l’échéance légale de la réponse : un mois (RGPD, article 12).",
+      "filter": "Type",
+      "caption": "Demandes de droits",
+      "empty": "Aucune demande.",
+      "emptyHint": "Les membres font leurs demandes depuis leurs réglages de données personnelles.",
+      "openFile": "Ouvrir la fiche",
+      "erased": "Compte effacé",
+      "overdue": "En retard",
+      "columns": {
+        "requested": "Demandée le",
+        "kind": "Type",
+        "member": "Membre",
+        "status": "État",
+        "due": "Échéance légale",
+        "completed": "Réponse le",
+        "detail": "Détail"
+      }
     }
   },
   "projects": {

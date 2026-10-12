@@ -4,6 +4,7 @@ import type { Action } from '@pitchorium/contracts';
 import {
   BadgeCheck,
   CreditCard,
+  FileLock,
   Flag,
   Gauge,
   Gavel,
@@ -137,6 +138,7 @@ export const ADMIN_NAV: readonly { group: Group; items: readonly Item[] }[] = [
   {
     group: 'compliance',
     items: [
+      { key: 'rights', href: routes.adminRights, icon: FileLock, action: 'privacy.requests.read' },
       { key: 'audit', href: routes.adminAudit, icon: ScrollText, action: 'admin.audit.read' },
     ],
   },
