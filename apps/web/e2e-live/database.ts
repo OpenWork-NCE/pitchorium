@@ -1,8 +1,10 @@
+import type { BrowserContext } from '@playwright/test';
 import pg from 'pg';
 
 /**
  * The database of the run (scripts/e2e-live.sh, LIVE_DATABASE_URL), only to move a date into the
- * past: the end of a campaign, the end of the grace period of a deletion. The worker then does the
+ * past: the end of a campaign, the end of the grace period of a deletion, the opening of a session
+ * (a sensitive action then asks for a new sign-in). The worker then does the
  * real work at its next pass (SCHEDULED_TASKS_EVERY_MS). Nothing else is written here: every
  * other state goes through the api.
  */
@@ -31,5 +33,18 @@ export function endGracePeriod(userId: string): Promise<number> {
     `update privacy.erasures set scheduled_for = now() - interval '1 minute'
       where user_id = $1 and status = 'scheduled'`,
     [userId],
+  );
+}
+
+/**
+ * The session of this browser context was opened an hour ago: a sensitive action of the console
+ * asks for a new sign-in (ACCESS_REAUTHENTICATION_REQUIRED). Only this session, by its token.
+ */
+export async function ageSession(context: BrowserContext): Promise<number> {
+  const cookie = (await context.cookies()).find((item) => item.name.endsWith('session_token'));
+  const token = decodeURIComponent(cookie?.value ?? '').split('.')[0];
+  return run(
+    `update identity.sessions set created_at = now() - interval '1 hour' where token = $1`,
+    [token],
   );
 }

@@ -231,6 +231,101 @@ export const ADMIN_STATE = 'node_modules/.cache/pitchorium-live/admin-state.json
 export const MODERATOR_EMAIL = 'koffi.agbodjan@demo.pitchorium.test';
 export const MODERATOR_STATE = 'node_modules/.cache/pitchorium-live/moderator-state.json';
 
+/** Where the staff sessions, their second factors and the codes already used are kept. */
+export const STAFF_CACHE = 'node_modules/.cache/pitchorium-live';
+/**
+ * Second factor of the demonstration staff, turned on by `db:seed:dev` (base32 of
+ * DEMO_STAFF_TOTP_SECRET, scripts/dev-seed/seed-dev-console.ts, docs/frontend-handoff.md).
+ */
+export const DEMO_STAFF_TOTP_BASE32 = 'OBUXIY3IN5ZGS5LNFVSGK3LPFVZXIYLGMYWXI33UOAWTEMBSGY';
+
+/** The secret of the second factor of a role of the run (global-setup.ts), else the demo one. */
+export async function staffSecret(role: 'admin' | 'moderator'): Promise<string> {
+  const { existsSync, readFileSync } = await import('node:fs');
+  const file = `${STAFF_CACHE}/${role}-secret.json`;
+  return existsSync(file)
+    ? (JSON.parse(readFileSync(file, 'utf8')) as { secret: string }).secret
+    : DEMO_STAFF_TOTP_BASE32;
+}
+
+/**
+ * A code of the authenticator this account has not used yet: the api refuses a code twice, so
+ * each sign-in of a run takes the window after the last one used (kept on disk, global-setup.ts
+ * included), waiting for it when needed.
+ */
+export async function unusedTotp(email: string, secret: string): Promise<string> {
+  const { existsSync, mkdirSync, readFileSync, writeFileSync } = await import('node:fs');
+  const file = `${STAFF_CACHE}/totp-windows.json`;
+  mkdirSync(STAFF_CACHE, { recursive: true });
+  const used = existsSync(file)
+    ? (JSON.parse(readFileSync(file, 'utf8')) as Record<string, number>)
+    : {};
+  const last = used[email] ?? -1;
+  const wait = (last + 1) * 30_000 - Date.now();
+  if (wait > 0) await new Promise((resolve) => setTimeout(resolve, wait + 200));
+  const window = Math.floor(Date.now() / 30_000);
+  writeFileSync(file, JSON.stringify({ ...used, [email]: window }));
+  return totp(secret, window * 30_000 + 1_000);
+}
+
+/**
+ * A member of the staff signed in afresh in a context of its own, with its second factor: its
+ * session is new (the sensitive actions accept it) and its own, so a journey may age it without
+ * touching the sessions of the run (global-setup.ts). Null without the role of the run.
+ */
+export async function freshStaffPage(
+  browser: Browser,
+  email: string,
+  role: 'admin' | 'moderator',
+): Promise<{ context: BrowserContext; page: Page } | null> {
+  const context = await browser.newContext();
+  const page = await context.newPage();
+  const signIn = await api(page, 'POST', '/v1/auth/sign-in/email', {
+    email,
+    password: DEMO_PASSWORD,
+  });
+  if (
+    !signIn.ok() ||
+    !((await signIn.json()) as { twoFactorRedirect?: boolean }).twoFactorRedirect
+  ) {
+    await context.close();
+    return null;
+  }
+  const code = await unusedTotp(email, await staffSecret(role));
+  await ok(api(page, 'POST', '/v1/auth/two-factor/verify-totp', { code }));
+  return { context, page };
+}
+
+/**
+ * The new sign-in a sensitive action asks for, from its notice (« Se reconnecter »): email and
+ * password, then the second factor; the page comes back to the action, open again.
+ */
+export async function reauthenticate(
+  page: Page,
+  email: string,
+  role: 'admin' | 'moderator',
+): Promise<void> {
+  await page.getByRole('link', { name: 'Se reconnecter' }).click();
+  await hydrated(page);
+  await page.getByRole('link', { name: 'Continuer avec un email' }).click();
+  await hydrated(page);
+  await page.getByRole('link', { name: 'Utiliser un mot de passe' }).click();
+  await hydrated(page);
+  // Filled again until the form keeps it: a field filled during the hydration is reset.
+  await expect(async () => {
+    await page.getByLabel('Adresse email').fill(email);
+    await page.getByRole('textbox', { name: 'Mot de passe', exact: true }).fill(DEMO_PASSWORD);
+    await expect(page.getByLabel('Adresse email')).toHaveValue(email, { timeout: 500 });
+  }).toPass({ timeout: 10_000 });
+  await page.getByRole('button', { name: 'Se connecter' }).click();
+  await expect(page.getByRole('heading', { name: 'Double authentification' })).toBeVisible();
+  await hydrated(page);
+  await page
+    .getByRole('textbox', { name: 'Code de l’application' })
+    .fill(await unusedTotp(email, await staffSecret(role)));
+  await expect(page).toHaveURL(/[?&]resume=/);
+}
+
 /** Origins of the run (scripts/e2e-live.sh). */
 export const WEB_URL = process.env.LIVE_WEB_URL ?? 'http://localhost:3200';
 export const API_URL = process.env.LIVE_API_URL ?? 'http://localhost:3000';

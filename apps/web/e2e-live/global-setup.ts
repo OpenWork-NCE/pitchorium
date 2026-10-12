@@ -5,19 +5,15 @@ import {
   ADMIN_EMAIL,
   ADMIN_STATE,
   API_URL,
+  DEMO_STAFF_TOTP_BASE32,
   MODERATOR_EMAIL,
   MODERATOR_STATE,
   TEST_CAPTCHA_TOKEN,
-  totp,
+  unusedTotp,
   WEB_URL,
 } from './support';
 
 const DEMO_PASSWORD = 'pitchorium-demo-2026';
-/**
- * Second factor of the demonstration staff, turned on by `db:seed:dev` (base32 of
- * DEMO_STAFF_TOTP_SECRET, scripts/dev-seed/seed-dev-console.ts, docs/frontend-handoff.md).
- */
-export const DEMO_STAFF_TOTP_BASE32 = 'OBUXIY3IN5ZGS5LNFVSGK3LPFVZXIYLGMYWXI33UOAWTEMBSGY';
 
 /**
  * Once per run: the staff of the journeys sign in with the second factor their role requires
@@ -49,16 +45,26 @@ async function signInStaff(email: string, statePath: string, role: string): Prom
     if (!signIn.ok()) throw new Error(`Sign-in of ${email}: ${await signIn.text()}`);
     const body = (await signIn.json()) as { twoFactorRedirect?: boolean };
     if (body.twoFactorRedirect) {
-      // The second factor of the demonstration data, or one turned on by an earlier run against
-      // the same servers.
-      const secret = existsSync(secretFile)
+      // The second factor of the demonstration data first (a new stack), then one turned on by
+      // an earlier run against the same servers; the one that works is kept for the journeys
+      // (staffSecret). A secret left by another stack never hides the staff of this one.
+      const kept = existsSync(secretFile)
         ? (JSON.parse(readFileSync(secretFile, 'utf8')) as { secret: string }).secret
-        : DEMO_STAFF_TOTP_BASE32;
+        : null;
+      let secret: string | null = null;
+      for (const candidate of [
+        ...new Set([DEMO_STAFF_TOTP_BASE32, kept ?? DEMO_STAFF_TOTP_BASE32]),
+      ]) {
+        const verified = await context.post(`${API_URL}/v1/auth/two-factor/verify-totp`, {
+          data: { code: await unusedTotp(email, candidate) },
+        });
+        if (verified.ok()) {
+          secret = candidate;
+          break;
+        }
+      }
+      if (!secret) throw new Error(`No second factor of ${email} is accepted.`);
       writeFileSync(secretFile, JSON.stringify({ secret }));
-      const verified = await context.post(`${API_URL}/v1/auth/two-factor/verify-totp`, {
-        data: { code: await totp(secret) },
-      });
-      if (!verified.ok()) return;
     } else {
       const me = (await (await context.get(`${API_URL}/v1/me`)).json()) as { roles: string[] };
       if (!me.roles.includes(role)) return;
@@ -70,7 +76,7 @@ async function signInStaff(email: string, statePath: string, role: string): Prom
       const secret = new URL(totpURI).searchParams.get('secret')!;
       writeFileSync(secretFile, JSON.stringify({ secret }));
       const verified = await context.post(`${API_URL}/v1/auth/two-factor/verify-totp`, {
-        data: { code: await totp(secret) },
+        data: { code: await unusedTotp(email, secret) },
       });
       if (!verified.ok()) throw new Error(`two-factor/verify-totp: ${await verified.text()}`);
     }
