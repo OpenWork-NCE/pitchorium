@@ -116,7 +116,7 @@ export function MethodologyDetail({ methodology }: { methodology: AdminImpactMet
               coverage={current.labelCoverage}
               reference={reference}
             />
-            <div className="sticky bottom-0 flex flex-wrap items-center justify-end gap-3 border-t border-border bg-background py-3">
+            <div className="flex flex-wrap items-center justify-end gap-3 border-t border-border pt-4">
               {dirty ? (
                 <Text size="sm" tone="muted">
                   {t('unsaved')}
