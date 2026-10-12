@@ -25,3 +25,4 @@ export { MemberFile } from './components/members/member-file';
 export { MemberResults } from './components/members/member-results';
 export { SearchField } from './components/search-field';
 export { type UrlFilter, UrlFilters } from './components/url-filters';
+export { PrivateDocuments } from './components/private-documents';

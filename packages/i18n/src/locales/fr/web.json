@@ -920,6 +920,12 @@
         "lifting": "Levée…",
         "done": "Suspension de {{name}} levée."
       }
+    },
+    "documents": {
+      "none": "Aucune pièce jointe.",
+      "document": "Pièce {{index}}",
+      "opening": "Ouverture…",
+      "signed": "Chaque pièce s’ouvre par une adresse signée, valable quelques minutes."
     }
   },
   "projects": {

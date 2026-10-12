@@ -920,6 +920,12 @@
         "lifting": "Lifting…",
         "done": "Suspension of {{name}} lifted."
       }
+    },
+    "documents": {
+      "none": "No document attached.",
+      "document": "Document {{index}}",
+      "opening": "Opening…",
+      "signed": "Each document opens by a signed address, valid a few minutes."
     }
   },
   "projects": {
